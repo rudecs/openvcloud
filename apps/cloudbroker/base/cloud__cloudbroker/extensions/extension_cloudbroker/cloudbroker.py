@@ -25,7 +25,9 @@ class CloudProvider(object):
                 kwargs['ex_force_auth_url'] = stack['apiUrl']
                 kwargs['ex_force_auth_version'] = '2.0_password'
                 kwargs['ex_tenant_name'] = stack['login']
-            CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
+            elif stack['type'] == 'DUMMY':
+                args = [1,]
+            CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)    
         self.client = CloudProvider._providers[stackId]
 
     def getSize(self, sizeId):
