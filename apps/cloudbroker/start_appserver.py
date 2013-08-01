@@ -1,9 +1,7 @@
-import time
 from OpenWizzy import o
+o.application.start('cloudbroker')
 import OpenWizzy.portal
 
-o.application.appname = "appserver6_test"
-o.application.start()
 
 
 o.manage.portal.startprocess()
