@@ -1,0 +1,268 @@
+{{htmlhead:
+ 
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+
+    
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src=".files/js/excanvas.min.js"></script>
+<script src=".files/js/jquery.flot.js"></script>
+<script src=".files/js/jquery.flot.pie.js"></script>
+<script src=".files/js/jquery.flot.orderBars.js"></script>
+<script src=".files/js/jquery.flot.resize.js"></script>
+<script src="js/base.js"></script>
+<script src="js/charts/area.js"></script>
+<script src="js/charts/donut.js"></script>
+<script src="/$$space/.files/js/knockout-2.3.0.js" type="text/javascript"></script>
+
+
+}}
+
+
+{{title:CloudScalers - $$space}}
+
+{{projectname:CloudScalers}}
+
+
+{{css:/$$space/.files/css/font-awesome.css}}
+{{css:/$$space/.files/css/base-admin.css}}
+{{css:/$$space/.files/css/base-admin-responsive.css}}
+{{css:/$$space/.files/css/pages/dashboard.css}}
+{{css:/$$space/.files/custom.css}}
+{{css:/$$space/.files/css/bootstrap-5ea5a2e30467b4c22db7cbaf6c0ee1a6.css}}
+{{css:/$$space/.files/css/control_panel-c023aecfdc37db8cece025bc43cc8510.css}}
+{{css:/$$space/.files/css/d.css}}
+{{css:/$$space/.files/css/normalize-f2f50cf9ffdd9e826a5eb92d93d528bd.css}}
+
+
+
+#{{find}}
+
+
+{{menu:
+System:/System
+}}
+
+{{menuadmin}}
+
+
+
+
+
+
+{{html:
+
+<div class="subnavbar">
+
+	<div class="subnavbar-inner">
+	
+		<div class="container">
+
+			<ul class="mainnav">
+			
+				<li class="active">
+					<a href="../$$space">
+						<i class="icon-home"></i>
+						<span>Home</span>
+					</a>	    				
+				</li>
+				
+
+				<li>
+					<a href="../$$space/MachineBuckets">
+						<i class="icon-cogs"></i>
+						<span>Machine Buckets</span>
+					</a>	    				
+				</li>
+				
+				<li>					
+					<a href="../$$space/ApplicationBuckets" class="dropdown-toggle">
+						<i class="icon-tasks"></i>
+						<span>Application Buckets</span>
+					</a>	  				
+				</li>
+				
+				<li>
+					<a href="../$$space/DevelopmentBuckets">
+						<i class="icon-wrench"></i>
+						<span>Development Buckets</span>
+					</a>    				
+				</li>
+				
+				<li>					
+					<a href="../$$space/FAQ">
+						<i class="icon-question-sign"></i>
+						<span>FAQ </span>
+					</a>  									
+				</li>
+				
+				<li>					
+					<a href="../$$space/Tour">
+						<i class="icon-facetime-video"></i>
+						<span>Guided Tour</span>
+                    </a>	
+                </li>
+
+				<!--
+
+					<li class="dropdown">					
+					<a href="../$$space/javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-facetime-video"></i>
+						<span>More Pages</span>
+						<b class="caret"></b>
+					</a>	
+				
+					<ul class="dropdown-menu">
+						<li><a href="../$$space/./charts.html">Charts</a></li>
+						<li><a href="../$$space/./account.html">User Account</a></li>
+						<li class="divider"></li>
+						<li><a href="../$$space/./login.html">Login</a></li>
+						<li><a href="../$$space/./signup.html">Signup</a></li>
+						<li><a href="../$$space/./error.html">Error</a></li>
+					</ul>    				
+				</li>
+				-->
+
+
+				<li>					
+					<a href="../$$space/Support">
+						<i class="icon-ambulance"></i>
+						<span>Support </span>
+					</a>  									
+				</li>
+
+			
+			</ul>
+
+		</div> <!-- /container -->
+	
+	</div> <!-- /subnavbar-inner -->
+
+</div> <!-- /subnavbar -->
+}}
+
+
+
+
+
+
+
+{{html: 
+
+<div class="main">
+	
+	<div class="main-inner">
+
+	    <div class="container">
+		<div class="row">
+		}}
+
+
+@col 3
+{{navigation}}
+@divend
+
+@col 9
+{content}
+@divend
+
+
+
+
+@divend
+@divend
+@divend
+@divend
+
+
+
+{{div: class=footer}}
+	{{div2: class=container}}
+
+		{{div3: class=row-fluid}}
+			{{div4: class=span4}}
+               
+		        {{div5: class=headline}}
+                h3. Awingu
+                {{div5}}
+                {{html:
+				<p class="margin-bottom-25">Awingu is an international corporation with headquarters in Ghent, Belgium. Awingu`s aim is to change the way we all use IT in our daily lives through innovative cloud computing solutions that make a real difference to our industry.</p>	
+                }}
+	            
+
+			{{div4}}
+			
+			{{div4: class=span4}}
+                {{div5: class=posts}}
+                    {{div6: class=headline}}
+                h3. Smart Global Office
+                    {{div6}}
+
+                Smart Global Office is a browser based, next generation application portal solution that provides an alternative to VDI thanks to unified access on multiple devices to any desktop and server application.
+
+               {{div5}}
+			{{div4}}
+
+			{{div4: class=span4}}
+	            
+		        {{div5: class=headline}}
+                 h3. Contact Us
+                {{div5}}
+                {{html:	
+                <address>
+					Antwerpsesteenweg 19 <br />
+					9080 Lochristi <br />
+					Belgium <br />
+					Phone: +32 9 324 20 55 <br />
+					Email: <a href="mailto:info@awingu.com" class="">info@awingu.com</a>
+                </address>
+                  }}
+                
+			{{div4}}
+		{{div3}}
+
+	{{div2}}
+{{div}}
+
+
+{{div: class=copyright}}
+	{{div2: class=container}}
+
+		{{div3: class=row-fluid}}
+			{{div4: class=span8}}	
+                {{html:					
+	            <p>2013 &copy; Awingu NV. All Rights Reserved.</p>
+			     }}
+             {{div4}}
+			{{div4: class=span4}}	
+                {{html:
+				<a href="../$$space"><img src="/$$space/.files/img/logo1.png" class="pull-right" alt="" /></a>
+                 }}
+			{{div4}}
+		{{div3}}
+
+	{{div2}}	
+	{{html:
+	<script src="/$$space/.files/js/app.js" type="text/javascript"></script>
+	}}
+{{div}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

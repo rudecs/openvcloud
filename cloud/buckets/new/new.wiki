@@ -1,0 +1,496 @@
+{{html:
+<div id="container">
+<div id="content">
+<div class="contents droplets new">
+<div id="main">
+
+
+<header>
+<span class="icon"></span>
+
+<h1>Create Bucket</h1>
+</header>
+<div id="new_droplet">
+<div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="3Ywo7sQviiX2y/oK3hLn8ro/UnFzcgpjC7409ffF/Ls="></div><div class="inner">
+<div id="name">
+<div class="control-group string required"><div class="controls"><input class="string required text_field name form_inputs" data-toggle="tooltip" id="appendedInput" name="droplet[name]" placeholder="Enter Hostname" size="50" title="" type="text" data-original-title="Enter Hostname" data-bind='value: newBucket().name, valueUpdate: "afterkeydown"'></div></div>
+</div>
+<h2 class="section-header size">Select Size</h2>
+<div class="tabbable size_selection" id="size">
+<div class="sizes-selection carousel slider" id="sizes">
+<div class="carousel-inner">
+<div class="active item">
+<div class="selected size" data-id="66" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>512MB</strong>
+/ 1 CPU
+</span>
+<span class="disk">
+<strong>20GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>1TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$5.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.007</span>
+</span>
+</span>
+<input id="size_66" name="droplet[size_id]" type="radio" value="66" data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="63" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>1GB</strong>
+/ 1 CPU
+</span>
+<span class="disk">
+<strong>30GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>2TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$10.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.015</span>
+</span>
+</span>
+<input id="size_63" name="droplet[size_id]" type="radio" value="63" data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="62" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>2GB</strong>
+/ 2 CPUs
+</span>
+<span class="disk">
+<strong>40GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>3TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$20.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.030</span>
+</span>
+</span>
+<input id="size_62" name="droplet[size_id]" type="radio" value="62"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="64" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>4GB</strong>
+/ 2 CPUs
+</span>
+<span class="disk">
+<strong>60GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>4TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$40.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.060</span>
+</span>
+</span>
+<input id="size_64" name="droplet[size_id]" type="radio" value="64"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="65" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>8GB</strong>
+/ 4 CPUs
+</span>
+<span class="disk">
+<strong>80GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>5TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$80.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.119</span>
+</span>
+</span>
+<input id="size_65" name="droplet[size_id]" type="radio" value="65"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="61" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>16GB</strong>
+/ 8 CPUs
+</span>
+<span class="disk">
+<strong>160GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>6TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$160.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.238</span>
+</span>
+</span>
+<input id="size_61" name="droplet[size_id]" type="radio" value="61"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+
+<div class="size" data-id="60" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>32GB</strong>
+/ 12 CPUs
+</span>
+<span class="disk">
+<strong>320GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>7TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$320.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.476</span>
+</span>
+</span>
+<input id="size_60" name="droplet[size_id]" type="radio" value="60"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="70" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>48GB</strong>
+/ 16 CPUs
+</span>
+<span class="disk">
+<strong>480GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>8TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$480.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.714</span>
+</span>
+</span>
+<input id="size_70" name="droplet[size_id]" type="radio" value="70"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="69" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>64GB</strong>
+/ 20 CPUs
+</span>
+<span class="disk">
+<strong>640GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>9TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$640.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$0.952</span>
+</span>
+</span>
+<input id="size_69" name="droplet[size_id]" type="radio" value="69"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+<div class="size" data-id="68" data-original-title="" title="">
+<span class="memory_and_cpu">
+<strong>96GB</strong>
+/ 24 CPUs
+</span>
+<span class="disk">
+<strong>960GB</strong>
+SSD Disk
+</span>
+<span class="bandwidth">
+<strong>10TB</strong>
+Transfer
+</span>
+
+<span class="pricing">
+<span class="price">
+<span class="period">Monthly</span>
+<span class="cost">$960.00</span>
+</span>
+<span class="price">
+<span class="period">Hourly</span>
+<span class="cost">$1.429</span>
+</span>
+</span>
+<input id="size_68" name="droplet[size_id]" type="radio" value="68"  data-bind='checked: newBucket().planId, valueUpdate: "afterkeydown"'>
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+<h2 class="section-header region">Select Region</h2>
+<div id="region">
+<ul id="regions">
+<li class="region" data-available-sizes="[66, 63, 62, 64, 65, 61, 60, 70, 69, 68]" id="region-2">
+<span class="icon"></span>
+<span class="name">Amsterdam</span>
+<input id="region_2" name="droplet[region_id]" type="radio" value="2" data-bind="checked: newBucket().regionId">
+</li>
+
+<li class="region" data-available-sizes="[66, 63, 62, 64, 65, 61, 60, 70, 69, 68]" id="region-3">
+<span class="icon"></span>
+<span class="name">San Francisco</span>
+<input id="region_3" name="droplet[region_id]" type="radio" value="3" data-bind="checked: newBucket().regionId">
+</li>
+
+<li class="region selected" data-available-sizes="[66, 63, 62, 64, 65, 61, 60, 70, 69, 68]" id="region-4">
+<span class="icon"></span>
+<span class="name">New York</span>
+<input checked="checked" id="region_4" name="droplet[region_id]" type="radio" value="4" data-bind="checked: newBucket().regionId">
+</li>
+
+</ul>
+
+</div>
+</div>
+<h2 class="section-header image">Select Image</h2>
+<div class="tabbable image_selection" id="images">
+<ul class="tabs">
+<li class="active"><a href="#distributions" data-toggle="tab">Linux Distributions</a></li>
+<li><a href="#applications" data-toggle="tab">Applications</a></li>
+<li><a href="#my_images" data-toggle="tab">My Images</a></li>
+<li><a href="#my_backups" data-toggle="tab">My Backups</a></li>
+</ul>
+<div class="tab-contents">
+<div class="active" id="distributions">
+<a href="#images-ubuntu" class="distro ubuntu active" data-toggle="tab">Ubuntu
+
+</a><a href="#images-centos" class="distro centos " data-toggle="tab">CentOS
+
+</a><a href="#images-debian" class="distro debian " data-toggle="tab">Debian
+
+</a><a href="#images-arch-linux" class="distro arch-linux " data-toggle="tab">Arch Linux
+
+</a><a href="#images-fedora" class="distro fedora " data-toggle="tab">Fedora
+
+</a><div class="tab-contents" id="distributions-images">
+<div class="active" id="images-ubuntu">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_350076">
+Ubuntu 13.04 x64
+<input id="droplet_image_id_350076" name="droplet[image_id]" type="radio" value="350076">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_345791">
+Ubuntu 13.04 x32
+<input id="droplet_image_id_345791" name="droplet[image_id]" type="radio" value="345791">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_473136">
+Ubuntu 12.10 x64 Desktop
+<input id="droplet_image_id_473136" name="droplet[image_id]" type="radio" value="473136">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_473123">
+Ubuntu 12.10 x64
+<input id="droplet_image_id_473123" name="droplet[image_id]" type="radio" value="473123">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_433240">
+Ubuntu 12.10 x32
+<input id="droplet_image_id_433240" name="droplet[image_id]" type="radio" value="433240">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_284203">
+Ubuntu 12.04 x64
+<input id="droplet_image_id_284203" name="droplet[image_id]" type="radio" value="284203">
+</label>
+<label class="radio_select selected" data-input="droplet[image_id]" for="droplet_image_id_284211">
+Ubuntu 12.04 x32
+<input checked="checked" id="droplet_image_id_284211" name="droplet[image_id]" type="radio" value="284211">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_14097">
+Ubuntu 10.04 x64
+<input id="droplet_image_id_14097" name="droplet[image_id]" type="radio" value="14097">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_14098">
+Ubuntu 10.04 x32
+<input id="droplet_image_id_14098" name="droplet[image_id]" type="radio" value="14098">
+</label>
+
+</div>
+<div id="images-centos">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_562354">
+CentOS 6.4 x64
+<input id="droplet_image_id_562354" name="droplet[image_id]" type="radio" value="562354">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_376568">
+CentOS 6.4 x32
+<input id="droplet_image_id_376568" name="droplet[image_id]" type="radio" value="376568">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_1601">
+CentOS 5.8 x64
+<input id="droplet_image_id_1601" name="droplet[image_id]" type="radio" value="1601">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_1602">
+CentOS 5.8 x32
+<input id="droplet_image_id_1602" name="droplet[image_id]" type="radio" value="1602">
+</label>
+
+</div>
+<div id="images-debian">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_308287">
+Debian 7.0 x64
+<input id="droplet_image_id_308287" name="droplet[image_id]" type="radio" value="308287">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_303619">
+Debian 7.0 x32
+<input id="droplet_image_id_303619" name="droplet[image_id]" type="radio" value="303619">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_12573">
+Debian 6.0 x64
+<input id="droplet_image_id_12573" name="droplet[image_id]" type="radio" value="12573">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_12575">
+Debian 6.0 x32
+<input id="droplet_image_id_12575" name="droplet[image_id]" type="radio" value="12575">
+</label>
+
+</div>
+<div id="images-arch-linux">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_350424">
+Arch Linux 2013.05 x64
+<input id="droplet_image_id_350424" name="droplet[image_id]" type="radio" value="350424">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_361740">
+Arch Linux 2013.05 x32
+<input id="droplet_image_id_361740" name="droplet[image_id]" type="radio" value="361740">
+</label>
+
+</div>
+<div id="images-fedora">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_32419">
+Fedora 17 x64 Desktop
+<input id="droplet_image_id_32419" name="droplet[image_id]" type="radio" value="32419">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_32428">
+Fedora 17 x64
+<input id="droplet_image_id_32428" name="droplet[image_id]" type="radio" value="32428">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_32399">
+Fedora 17 x32 Desktop
+<input id="droplet_image_id_32399" name="droplet[image_id]" type="radio" value="32399">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_32387">
+Fedora 17 x32
+<input id="droplet_image_id_32387" name="droplet[image_id]" type="radio" value="32387">
+</label>
+
+</div>
+</div>
+</div>
+<div id="applications">
+<h2>Applications (BETA)</h2>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_459444">
+LAMP on Ubuntu 12.04
+<input id="droplet_image_id_459444" name="droplet[image_id]" type="radio" value="459444">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" data-toggle="tooltip" for="droplet_image_id_464235" title="" data-original-title="Ruby on Rails on Ubuntu 12.10 (Nginx + Unicorn)">
+Ruby on Rails on Ubunt...
+<input id="droplet_image_id_464235" name="droplet[image_id]" type="radio" value="464235">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_483575">
+Redmine on Ubuntu 12.04
+<input id="droplet_image_id_483575" name="droplet[image_id]" type="radio" value="483575">
+</label>
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_532043">
+Wordpress on Ubuntu 12.10
+<input id="droplet_image_id_532043" name="droplet[image_id]" type="radio" value="532043">
+</label>
+
+</div>
+<div id="my_images">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_599458">
+bala7-1375616079
+<input id="droplet_image_id_599458" name="droplet[image_id]" type="radio" value="599458">
+</label>
+
+</div>
+<div id="my_backups">
+<label class="radio_select" data-input="droplet[image_id]" for="droplet_image_id_587173">
+testarvid.com 2013-08-02
+<input id="droplet_image_id_587173" name="droplet[image_id]" type="radio" value="587173">
+</label>
+
+</div>
+</div>
+</div>
+<h2 class="section-header settings">Settings</h2>
+<div id="virtio">
+<label class="checked" data-toggle="tooltip" for="droplet_is_virtio" id="toggle_virtio" title="" data-original-title="VirtIO provides enhanced network and disk I/O throughput and is enabled by default">Enable VirtIO</label>
+<input name="droplet[is_virtio]" type="hidden" value="1"><input id="droplet_is_virtio" name="droplet[is_virtio]" type="checkbox" value="1" checked>
+</div>
+<div class="actions">
+<input class="btn btn-success btn-large" name="commit" type="submit" value="Create Bucket" data-bind="click: saveBucket">
+<div class="message" id="root_password_emailed">Your root password will be emailed to you</div>
+<div class="message hidden" id="root_password_not_emailed">No root password will be emailed to you because you have selected an SSH key for access</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+}}

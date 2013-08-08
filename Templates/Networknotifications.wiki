@@ -1,0 +1,25 @@
+{{html:
+<form class="form-horizontal">
+  <fieldset>
+    <div id="legend" class="">
+      <legend class="">Shield network to disconnect users</legend>
+    </div>
+    <div class="control-group">
+      <label class="control-label"></label>
+      <div class="controls">
+        <label class="checkbox inline">
+          <input type="checkbox" value="Cut network prior to start decomissioning tasks"> Cut network prior to start decomissioning tasks
+        </label>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label"></label>
+      <div class="controls">
+        <button class="btn btn-success" name="save">Save</button>
+      </div>
+    </div>
+
+  </fieldset>
+</form>
+}}

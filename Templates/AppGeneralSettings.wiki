@@ -1,0 +1,64 @@
+{{html:
+<form class="form-horizontal">
+  <fieldset>
+
+    <div id="legend" class="">
+      <legend class="">Settings</legend>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Select Space</label>
+      <div class="controls">
+        <select class="input-xlarge">
+          <option>MySpace1</option>
+          <option>KristofSpace1</option>
+          <option>IncubaidMain</option>
+          <option>Ghent</option></select>
+      </div>
+
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Application mane</label>
+      <div class="controls">
+        <input type="text" placeholder="$$applicationname" class="input-xlarge">
+        <p class="help-block">Helps you to identify when there are multiple of these applications in your account</p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Initial login</label>
+        <div class="controls">
+          <input type="text" placeholder="$$initiallogin" class="input-xlarge">
+          <p class="help-block"></p>
+        </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Initial password</label>
+        <div class="controls">
+          <input type="text" placeholder="$$initialpassword" class="input-xlarge">
+          <p class="help-block"></p>
+        </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Domain</label>
+      <div class="controls">
+        <input type="text" placeholder="$$domain" class="input-xlarge">
+        <p class="help-block"></p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label"></label>
+      <div class="controls">
+        <button class="btn btn-success" name="save">Save</button>
+      </div>
+    </div>
+
+  </fieldset>
+
+</form>
+
+}}

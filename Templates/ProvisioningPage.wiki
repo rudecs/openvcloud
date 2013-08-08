@@ -1,0 +1,9 @@
+h2. Provisioning $$appname
+
+Welcome to the provisioning page for $$appname. On this page all actions for $$appname are contained that include settings prior to use the application.
+
+{{include:AppGeneralSettings}}
+
+{{include:BackupMonitoring}}  
+
+{{include:Reset}}
