@@ -1,4 +1,4 @@
-// Source: http://stackoverflow.com/a/901144
+// Source of this function: http://stackoverflow.com/a/901144
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -7,7 +7,7 @@ function getParameterByName(name) {
 }
 
 function goHome() {
-    window.location = '/gcb/buckets/';
+    window.location = '/test_gcb/buckets_list';
 }
 
 function reload() {
@@ -32,76 +32,31 @@ jQuery(function(){
     };
 
     var regions = {
-        '2': 'Amsterdam 1', '3': 'San Francisco 1', '4': 'New York 2'
+        '2': 'Region 1', '3': 'Region 2', '4': 'Region 3'
     };
 
     var images = {
-        '350076': 'Ubuntu 13.04 x64',
-        '345791': 'Ubuntu 13.04 x32',
-        '473136': 'Ubuntu 12.10 x64 Desktop',
-        '473123': 'Ubuntu 12.10 x64',
-        '433240': 'Ubuntu 12.10 x32',
-        '284203': 'Ubuntu 12.04 x64',
-        '284211': 'Ubuntu 12.04 x32',
-        '14097':  'Ubuntu 10.04 x64',
-        '14098':  'Ubuntu 10.04 x32',
-        '562354': 'CentOS 6.4 x64',
-        '376568': 'CentOS 6.4 x32',
-        '1601':   'CentOS 5.8 x64',
-        '1602':   'CentOS 5.8 x32',
-        '308287': 'Debian 7.0 x64',
-        '303619': 'Debian 7.0 x32',
-        '12573':  'Debian 6.0 x64',
-        '12575':  'Debian 6.0 x32',
-        '350424': 'Arch Linux 2013.05 x64',
-        '361740': 'Arch Linux 2013.05 x32',
-        '32419':  'Fedora 17 x64 Desktop',
-        '32428':  'Fedora 17 x64',
-        '32399':  'Fedora 17 x32 Desktop',
-        '32387':  'Fedora 17 x32',
-        '459444': 'LAMP on Ubuntu 12.04',
-        '464235': 'Ruby on Rails on Ubuntu',
-        '483575': 'Redmine on Ubuntu 12.04',
-        '532043': 'Wordpress on Ubuntu 12.10',
-        '599458': 'bala7-1375616079',
-        '587173': 'testarvid.com 2013-08-02'
+        '1': 'Image 1',
+        '2':  'Image 2',
     };
 
-    var Bucket = function(name, planId, regionId, imageId, virtIO, status) {
+    var Bucket = function(id, name, plan, region, imageName, status) {
         var self = this;
+        this.id = ko.observable(id || (Math.random() * 1000000000));
         this.name = ko.observable(name);
-        this.ip = ko.observable('192.241.173.134');
         this.status = ko.observable(status || 'active');
 
-        this.planId = ko.observable(planId);
-        this.memory = ko.computed(function() {
-            return plans[self.planId()] ? plans[self.planId()].memory : '';
-        });
-        this.disk = ko.computed(function() {
-            return plans[self.planId()] ? plans[self.planId()].disk : '';
-        });
+        this.plan = ko.observable(plan);
 
-        this.regionId = ko.observable(regionId); 
-        this.region = ko.computed(function() {
-            return regions[self.regionId()] ? regions[self.regionId()] : '';
-        });
+        this.region = ko.observable(region);
         
-        this.imageId = ko.observable(imageId);
-        this.imageName = ko.computed(function() {
-            return images[self.imageId()];
-        });
-        this.vertIO = ko.observable(virtIO);
+        this.imageName = ko.observable(imageName);
         this.bucketUrl = ko.computed(function() {
-            return "buckets/bucket?name=" + self.name();
+            return "/test_gcb/bucket?id=" + self.id();
         });
 
         this.history = ko.observableArray();
-
-        this.snapshots = ko.computed(function(){
-            /*return ko.utils.arrayFilter(viewModel.snapshots(), function(item){
-                return item.name() === self.name();
-            });*/
-        });
+        self.history.push(new BucketHistory('Created', new Date(), '15 seconds'));
 
         this.powerOffBucket = function() {
             self.status('off');
@@ -123,6 +78,7 @@ jQuery(function(){
 
         this.resize = function() {
             viewModel.saveAllBuckets();
+            self.history.push(new BucketHistory('Plan changed to ' + self.plan(), new Date(), '15 seconds'));
             reload();
         }
     };
@@ -134,21 +90,20 @@ jQuery(function(){
         this.execution = ko.observable(execution);
     }
 
-    var Snapshot = function(name, bucketName) {
+    var Snapshot = function(name, bucketId) {
         var self = this;
         this.name = ko.observable(name);
-        this.bucketName = ko.observable(bucketName);
+        this.bucketId = ko.observable();
     }
 
     var ViewModel = function() {
         var self = this;
         this.username = ko.observable('Bob');
-        //buckets: ko.observableArray(),
         if (!!localStorage.getItem(GCB_BUCKETS))
             this.buckets = ko.observableArray(ko.utils.arrayMap(
                                               ko.utils.parseJson(localStorage.getItem(GCB_BUCKETS)),
                                               function(bucket){
-                                                return new Bucket(bucket.name, bucket.planId, bucket.regionId, bucket.imageId, bucket.vertIO, bucket.status);
+                                                return new Bucket(bucket.id, bucket.name, bucket.plan, bucket.region, bucket.imageName, bucket.status);
                                               }));
         else
             this.buckets = ko.observableArray();
@@ -157,52 +112,57 @@ jQuery(function(){
         this.newBucket = ko.observable(new Bucket());
 
         this.saveBucket = function() {
-            self.buckets.push(self.newBucket());
+            if (self.buckets.indexOf(self.selectedBucket()) == -1)
+                self.buckets.push(self.newBucket());
+
             self.newBucket(new Bucket());
             self.saveAllBuckets();
             goHome();
         }
 
         this.selectedBucket = ko.computed(function(){
-            var bucketName = getParameterByName('name');
+            var bucketId = getParameterByName('id');
             for (var i = 0; i < self.buckets().length; i++) {
-                if (self.buckets()[i].name() == bucketName)
+                if (self.buckets()[i].id() == bucketId)
                     return self.buckets()[i];
             }
-            return new Bucket();
+            return self.newBucket();
         });
 
         this.saveAllBuckets = function() {
             localStorage.setItem(GCB_BUCKETS, ko.toJSON(self.buckets));
-        }
+        };
 
-        this.snapshots = ko.observableArray();
+        if (!!localStorage.getItem('gcb-snapshots'))
+            this.snapshots = ko.observableArray(ko.utils.arrayMap(
+                                                ko.utils.parseJson(localStorage.getItem('gcb-snapshots')),
+                                                function(snap) {
+                                                    var snapshot = new Snapshot();
+                                                    snapshot.bucketId(snap.bucketId);
+                                                    snapshot.name(snap.name);
+                                                    return snapshot;
+                                                }));
+        else
+            this.snapshots = ko.observableArray();
 
+        this.newSnapshot = ko.observable(new Snapshot());
+        this.saveSnapshot = function() {
+            self.newSnapshot().bucketId(self.selectedBucket().id());
+            self.snapshots.push(self.newSnapshot());
+            self.newSnapshot(new Snapshot());
+            localStorage.setItem('gcb-snapshots', ko.toJSON(self.snapshots));
+        };
+
+        this.restoreSnapshot = function() {
+            reload();
+        };
+        
         // internal ko.computed that saves buckets whenever they change
         ko.computed(function() {
             self.saveAllBuckets();
         }).extend({
             throttle: 500
         }); // save at most twice per second
-
-        // Knockout doesn't handle when radio buttons are changed by JS, so I need to update viewModel on events
-        $('.sizes-selection .size').on('click', function(){
-            viewModel.newBucket().planId($(this).find('input').val());
-        });
-        $('.size').on('click', function() {
-            $('.size').removeClass('selected');
-            $(this).addClass('selected');
-        });
-        $('li.region input').on('click', function(){ 
-            viewModel.newBucket().regionId($(this).val()) 
-        });
-        $('.tab-contents .radio_select').on('click', function(){ 
-            viewModel.newBucket().imageId($(this).val()) 
-        });
-        $('#action-select > ul > li > a').on('click', function(){
-            $($(this).attr('href') + ' a:first').click();
-            console.log($(this).attr('href'));
-        });
     };
 
     var viewModel = window.viewModel = new ViewModel();

@@ -1,0 +1,16 @@
+@usedefault
+
+{{html:
+  Name: <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"/>
+  <br />
+  Plan:
+  {{include:plan_list}}
+   Region
+   {{include:region_list}}
+  <br />
+
+  Select Image
+   {{include:image_list}}
+ 
+<button data-bind="click: saveBucket">Create</button>
+}}

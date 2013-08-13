@@ -1,0 +1,104 @@
+@usedefault
+{{html:
+ <h1 data-bind="text: selectedBucket().name"></h1>
+   <ul>
+    <li data-bind="text: selectedBucket().status">
+    </li>
+    <li data-bind="text: selectedBucket().plan">
+    </li>
+    <li data-bind="text: selectedBucket().region">
+    </li>
+    <li data-bind="text: selectedBucket().imageName">
+    </li>
+   </ul>
+  <div>
+    <h1>Power</h1>
+    <input data-bind="click: selectedBucket().powerOffBucket, visible: selectedBucket().status() == 'active'" type="submit" value="Power Off"/>
+    <input data-bind="click: selectedBucket().bootBucket, visible: selectedBucket().status() != 'active'" type="submit" value="Boot"/>
+  </div>
+  <div>
+    <h1>Access</h1>
+    <h2>Console Access</h2>
+    <h2>Reset Root Password</h2>
+    Coming soon...
+  </div>
+  <div>
+    <h1>Plan</h1>
+    {{include:plan_list}}
+  </div>
+  <div>
+    <h1>Snapshots</h1>
+    <h2>Take a Snapshot</h2>
+    <div data-bind="visible: selectedBucket().status() == 'off'">
+      Snapshot name: <input data-bind='value: newSnapshot().name, valueUpdate: "afterkeydown"' type="text"/>
+      <input type="submit" value="Create snapshot" data-bind="click: saveSnapshot" />
+    </div>
+    <div data-bind="visible: selectedBucket().status() == 'active'">
+      You must turn it off before creating snapshot
+    </div>
+    <h2>Restore from Snapshot</h2>
+    <ul data-bind="foreach: snapshots">
+      <li><input type="radio" name="snapshot" /><span data-bind="text: name"></span></li>
+    </ul>
+    <input type="submit" value="Create snapshot" data-bind="click: restoreSnapshot" />
+  </div>
+  <div>
+    <h1>Backups</h1>
+    <h2>Automatic backups</h2>
+    <h2>Restore from backup</h2>
+    Coming soon...
+  </div>
+  <div>
+    <h1>Settings</h1>
+    <h2>Kernel</h2>
+    {{include:image_list}}
+
+
+
+    <h2>Rename</h2>
+    New name: <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"/>
+    <input type="submit" value="Change name" data-bind="click: saveAllBuckets" />
+
+  </div>
+  <div>
+    <h1>Graphs</h1>
+    <h2>Real Time</h2>
+    <h2>7 Days</h2>
+    <h2>30 Days</h2>
+    <h2>365 Days</h2>
+    Coming soon...
+  </div>
+  <div>
+    <h1>Destroy</h1>
+    <input data-bind="click: selectedBucket().destroy" data-confirm="Are you sure you want to destroy this droplet?" name="commit" type="submit" value="Destroy"></input>
+  </div>
+  <div>
+    <h1>History</h1>
+    <table data-bind="visible: selectedBucket().history().length > 0">
+  <thead>
+   <tr>
+    <th>
+     Event
+    </th>
+    <th>
+     Initiated
+    </th>
+    <th>
+     Execution Time
+    </th>
+   </tr>
+  </thead>
+  <tbody data-bind="foreach: selectedBucket().history">
+   <tr>
+    <td data-bind="text: event">
+    </td>
+    <td data-bind="text: initiated">
+    </td>
+    <td data-bind="text: execution">
+    </td>
+   </tr>
+  </tbody>
+ </table>
+  </div>
+
+}}

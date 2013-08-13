@@ -1,0 +1,11 @@
+         Image 1
+         <input name="image_id" type="radio" value="Image 1" data-bind="checked: selectedBucket().imageName">
+         </input>
+     <br>
+         Image 2
+         <input name="image_id" type="radio" value="Image 2" data-bind="checked: selectedBucket().imageName">
+         </input>
+        <br>
+         Image 3
+         <input name="image_id" type="radio" value="Image 3" data-bind="checked: selectedBucket().imageName">
+         </input>

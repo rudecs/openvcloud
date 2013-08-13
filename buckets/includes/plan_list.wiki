@@ -1,0 +1,14 @@
+<ul>
+      <li>
+         Plan 1
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 512MB, disk 20GB"></input>
+      </li>
+      <li>
+         Plan 2
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 1GB, disk 30GB"></input>
+      </li>
+      <li>
+         Plan 3
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 2GB, disk 40GB"></input>
+      </li>
+ </ul>

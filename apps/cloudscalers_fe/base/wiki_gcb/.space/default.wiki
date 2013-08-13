@@ -8,20 +8,6 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-
-
-<!-- Placed at the end of the document so the pages load faster -->
-<script src=".files/js/excanvas.min.js"></script>
-<script src=".files/js/jquery.flot.js"></script>
-<script src=".files/js/jquery.flot.pie.js"></script>
-<script src=".files/js/jquery.flot.orderBars.js"></script>
-<script src=".files/js/jquery.flot.resize.js"></script>
-<script src="js/base.js"></script>
-<script src="js/charts/area.js"></script>
-<script src="js/charts/donut.js"></script>
-<script src="/$$space/.files/js/knockout-2.3.0.js" type="text/javascript"></script>
-
-
 }}
 
 
@@ -35,10 +21,6 @@
 {{css:/$$space/.files/css/base-admin-responsive.css}}
 {{css:/$$space/.files/css/pages/dashboard.css}}
 {{css:/$$space/.files/custom.css}}
-{{css:/$$space/.files/css/bootstrap-5ea5a2e30467b4c22db7cbaf6c0ee1a6.css}}
-{{css:/$$space/.files/css/control_panel-c023aecfdc37db8cece025bc43cc8510.css}}
-{{css:/$$space/.files/css/d.css}}
-{{css:/$$space/.files/css/normalize-f2f50cf9ffdd9e826a5eb92d93d528bd.css}}
 
 
 
@@ -242,13 +224,14 @@ System:/System
              {{div4}}
 			{{div4: class=span4}}	
                 {{html:
-				<a href="../$$space"><img src="/$$space/.files/img/logo1.png" class="pull-right" alt="" /></a>
+				<a href="../$$space"><img src="/$$space/.files/img/logo.png" class="pull-right" alt="" /></a>
                  }}
 			{{div4}}
 		{{div3}}
 
 	{{div2}}	
 	{{html:
+	<script src="/$$space/.files/js/knockout-2.3.0.js" type="text/javascript"></script>
 	<script src="/$$space/.files/js/app.js" type="text/javascript"></script>
 	}}
 {{div}}

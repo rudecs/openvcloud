@@ -1,0 +1,8 @@
+    Region 1
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 1"></input>
+   <br/>
+    Region 2
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 2"></input>
+   <br/>
+    Region 3
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 3"></input>
