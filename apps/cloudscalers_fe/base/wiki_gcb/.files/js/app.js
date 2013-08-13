@@ -93,7 +93,12 @@ jQuery(function(){
         var self = this;
         this.name = ko.observable(name);
         this.bucketId = ko.observable();
-    }
+    };
+
+    var SSHKey = function() {
+        this.name = ko.observable();
+        this.key = ko.observable();
+    };
 
     var ViewModel = function() {
         var self = this;
@@ -107,7 +112,7 @@ jQuery(function(){
         else
             this.buckets = ko.observableArray();
 
-        // Used when creating a new bucket
+        // ================ Buckets =======================
         this.newBucket = ko.observable(new Bucket());
 
         this.saveBucket = function() {
@@ -132,6 +137,7 @@ jQuery(function(){
             localStorage.setItem(GCB_BUCKETS, ko.toJSON(self.buckets));
         };
 
+        // ================ Snapshots =======================
         if (!!localStorage.getItem('gcb-snapshots'))
             this.snapshots = ko.observableArray(ko.utils.arrayMap(
                                                 ko.utils.parseJson(localStorage.getItem('gcb-snapshots')),
@@ -155,10 +161,29 @@ jQuery(function(){
         this.restoreSnapshot = function() {
             reload();
         };
+
+        // ================ SSH Keys =======================
+        if (!!localStorage.getItem('gcb-sshKeys'))
+            this.sshKeys = ko.observableArray(ko.utils.arrayMap(
+                                                ko.utils.parseJson(localStorage.getItem('gcb-sshKeys')),
+                                                function(key) {
+                                                    var sshKey = new SSHKey();
+                                                    sshKey.name(key.name);
+                                                    sshKey.key(key.key);
+                                                    return sshKey;
+                                                }));
+        else
+            this.sshKeys = ko.observableArray();
+        this.newSSHKey = ko.observable(new SSHKey());
+        this.addSSHKey = function() {
+            this.sshKeys.push(self.newSSHKey());
+            this.newSSHKey(new SSHKey());
+        };
         
         // internal ko.computed that saves buckets whenever they change
         ko.computed(function() {
             self.saveAllBuckets();
+            localStorage.setItem('gcb-sshKeys', ko.toJSON(self.sshKeys));
         }).extend({
             throttle: 500
         }); // save at most twice per second

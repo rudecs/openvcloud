@@ -1,7 +1,7 @@
 @usedefault
 {{html:
      Buckets List
-     <a href="/$$space/new_bucket" class="btn btn-info btn-large">
+     <a href="/$$space/new_bucket" class="btn btn-info btn-large btnfull">
       Create Bucket
      </a>
     <table   class="table table-striped table-bordered">

@@ -1,0 +1,14 @@
+@usedefault
+{{html:
+<!-- ko if: sshKeys().length > 0 -->
+<h1>SSH keys</h1>
+<!-- ko foreach: sshKeys -->
+    Item <span data-bind="text: name"></span>
+<!-- /ko -->
+<!-- /ko -->
+
+<h1>Create SSH Key</h1>
+<input type="text" data-bind="value: newSSHKey().name">
+<textarea name="" id="" cols="30" rows="10" data-bind="value: newSSHKey().key, valueUpdate: 'afterkeydown'"></textarea>
+<input type="submit" value="Create" data-bind="click: addSSHKey">
+}}
