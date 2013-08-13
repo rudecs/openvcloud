@@ -19,12 +19,14 @@
   <div>
     <h1>Access</h1>
     <h2>Console Access</h2>
+    Coming soon...
     <h2>Reset Root Password</h2>
     Coming soon...
   </div>
   <div>
     <h1>Plan</h1>
     {{include:plan_list}}
+    <input type="submit" value="Resize" data-bind="click: selectedBucket().resize" />
   </div>
   <div>
     <h1>Snapshots</h1>
@@ -40,11 +42,13 @@
     <ul data-bind="foreach: snapshots">
       <li><input type="radio" name="snapshot" /><span data-bind="text: name"></span></li>
     </ul>
-    <input type="submit" value="Create snapshot" data-bind="click: restoreSnapshot" />
+    <input type="submit" value="Restore" data-bind="click: restoreSnapshot" />
   </div>
   <div>
     <h1>Backups</h1>
     <h2>Automatic backups</h2>
+    Coming soon...
+
     <h2>Restore from backup</h2>
     Coming soon...
   </div>

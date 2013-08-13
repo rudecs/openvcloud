@@ -79,7 +79,6 @@ jQuery(function(){
         this.resize = function() {
             viewModel.saveAllBuckets();
             self.history.push(new BucketHistory('Plan changed to ' + self.plan(), new Date(), '15 seconds'));
-            reload();
         }
     };
 
