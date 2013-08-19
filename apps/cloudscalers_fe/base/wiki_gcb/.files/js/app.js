@@ -15,45 +15,33 @@ function reload() {
 }
 
 jQuery(function(){
-
+    // require KnockoutJS, jQuery.validate, Knockout.validation
     var GCB_BUCKETS = 'gcb-buckets';
 
-    var plans = {
-        '66': {'memory': '512MB',  'disk': '20GB'},
-        '63': {'memory': '1GB',    'disk': '30GB'},
-        '62': {'memory': '2GB',    'disk': '40GB'},
-        '64': {'memory': '4GB',    'disk': '60GB'},
-        '65': {'memory': '8GB',    'disk': '80GB'},
-        '61': {'memory': '16GB',   'disk': '160GB'},
-        '60': {'memory': '32GB',   'disk': '320GB'},
-        '70': {'memory': '48GB',   'disk': '480GB'},
-        '69': {'memory': '64GB',   'disk': '640GB'},
-        '68': {'memory': '96GB',   'disk': '960GB'},
-    };
-
-    var regions = {
-        '2': 'Region 1', '3': 'Region 2', '4': 'Region 3'
-    };
-
-    var images = {
-        '1': 'Image 1',
-        '2':  'Image 2',
-    };
-
-    var Bucket = function(id, name, plan, region, imageName, status) {
+    var Bucket = function(params) {
         var self = this;
-        this.id = ko.observable(id || (Math.random() * 1000000000));
-        this.name = ko.observable(name);
-        this.status = ko.observable(status || 'active');
+        this.id = ko.observable(Math.random() * 1000000000);
+        this.name = ko.observable();
+        this.status = ko.observable('active');
 
-        this.plan = ko.observable(plan);
+        this.plan = ko.observable();
 
-        this.region = ko.observable(region);
+        this.region = ko.observable();
         
-        this.imageName = ko.observable(imageName);
+        this.imageName = ko.observable();
         this.bucketUrl = ko.computed(function() {
             return "/test_gcb/bucket?id=" + self.id();
         });
+
+        this.valid = ko.computed(function(){
+            return !!(self.name() && self.plan() && self.region() && self.imageName());
+        });
+
+        for (var attr in params) {
+            try {
+                this[attr](params[attr]);
+            } catch (e) {}
+        }
 
         this.history = ko.observableArray();
         self.history.push(new BucketHistory('Created', new Date(), '15 seconds'));
@@ -107,7 +95,7 @@ jQuery(function(){
             this.buckets = ko.observableArray(ko.utils.arrayMap(
                                               ko.utils.parseJson(localStorage.getItem(GCB_BUCKETS)),
                                               function(bucket){
-                                                return new Bucket(bucket.id, bucket.name, bucket.plan, bucket.region, bucket.imageName, bucket.status);
+                                                return new Bucket(bucket);
                                               }));
         else
             this.buckets = ko.observableArray();
@@ -179,11 +167,83 @@ jQuery(function(){
             this.sshKeys.push(self.newSSHKey());
             this.newSSHKey(new SSHKey());
         };
+
+        // ====================== DNS Record
+        var DNSRecord = function(params) {
+            var self = this;
+            this.type = ko.observable(); // A, NS, CNAME
+            this.name = ko.observable();
+            this.hostname = ko.observable();
+            this.ipAddress = ko.observable();
+            this.priority = ko.observable();
+            this.text = ko.observable();
+            this.port = ko.observable();
+            this.weight = ko.observable();
+
+            // update attributes from the passed object
+            for (var attr in params) {
+                try {
+                    this[attr](params[attr]);
+                } catch (e) {}
+            };
+
+            this.valid = function() {
+                if (self.type() == 'A')
+                    return !! (self.name() && self.ipAddress());
+                else if (self.type() == 'NS')
+                    return !! self.hostname();
+                else if (self.type() == 'CNAME')
+                    return !! (self.name() && self.hostname());
+                return false;
+            };
+        };
+
+        var DNSDomain = function(params) {
+            var self = this;
+            this.name = ko.observable();
+            this.bucket = ko.observable();
+            this.records = ko.observableArray([
+                new DNSRecord({type: 'A', name: '@', ipAddress: '10.10.10.10'}),
+                new DNSRecord({type: 'NS', hostname: 'ns1.oursite.com'}),
+                new DNSRecord({type: 'NS', hostname: 'ns2.oursite.com'})
+            ]);
+            for (var attr in params) {
+                try {
+                    this[attr](params[attr]);
+                } catch (e) {}
+            }
+            this.newRecord = ko.observable(new DNSRecord({}));
+            this.addRecord = function() {
+                self.records.push(self.newRecord());
+                self.newRecord(new DNSRecord({}));
+            };
+        };
+
+        if (!!localStorage.getItem('gcb-domains'))
+        {
+            this.domains = ko.observableArray(ko.utils.arrayMap(
+                                                ko.utils.parseJson(localStorage.getItem('gcb-domains')),
+                                                function(key) {
+                                                    var domain = new DNSDomain(key);
+                                                    domain.bucket(new Bucket(key.bucket));
+                                                    domain.records(ko.utils.arrayMap(key.records, function(rec) { return new DNSRecord(rec); }))
+                                                    return domain;
+                                                }));
+        }
+        else
+            this.domains = ko.observableArray();
+
+        this.newDomain = ko.observable(new DNSDomain());
+        this.addDomain = function() {
+            self.domains.push(self.newDomain());
+            self.newDomain(new DNSDomain());
+        };
         
         // internal ko.computed that saves buckets whenever they change
         ko.computed(function() {
             self.saveAllBuckets();
             localStorage.setItem('gcb-sshKeys', ko.toJSON(self.sshKeys));
+            localStorage.setItem('gcb-domains', ko.toJSON(self.domains));
         }).extend({
             throttle: 500
         }); // save at most twice per second

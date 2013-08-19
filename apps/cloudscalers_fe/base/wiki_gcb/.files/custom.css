@@ -272,3 +272,60 @@ margin:20px 0px;
 .btnright {
 float:right;
 }
+
+.shortcuts .shortcut {
+    background: linear-gradient(to bottom, #FFFFFF, #EEEEEE) repeat-x scroll 0 0 #F8F8F8;
+    border: 1px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    display: inline-block;
+    float: left;
+    margin-bottom: 1em;
+    margin-left: 0 !important;
+    margin-right: 10px !important;
+    margin-top: 0;
+    padding: 12px 0;
+    text-decoration: none;
+    vertical-align: top;
+    width: 110px;
+}
+.shortcuts ul {
+    margin:0px;
+}
+
+ 
+.big-stats-container .widget-content {
+    background: -moz-linear-gradient(center top , #FAFAFA 0%, #E9E9E9 100%) repeat scroll 0 0 transparent;
+}
+
+#big_stats .stat {
+    border-left: 1px solid #FFFFFF;
+    border-right: 1px solid #CCCCCC;
+    display: table-cell;
+    height: 90px;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    width: 25%;
+}
+
+#big_stats .stat:first-child {
+    border-left: medium none;
+}
+
+#big_stats .stat:last-child {
+    border-right: medium none;
+}
+
+.stat {
+ color: #333333;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 1.5em;
+    padding: 10px !important;
+    vertical-align: middle;
+}
+
+.input-large {
+    margin-bottom: 0px !important;
+    padding: 10px 6px !important; 
+}

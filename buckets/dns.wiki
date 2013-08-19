@@ -1,0 +1,50 @@
+@usedefault
+{{html:
+<h1>DNS</h1>
+<!-- ko if: domains().length > 0 -->
+<!-- ko foreach: domains -->
+    <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'">
+    <select data-bind="options: $parent.buckets, optionsText: 'name', value: bucket"></select>
+    <br>
+    <!-- ko foreach: records -->
+    <input type=radio value='A'  data-bind="checked: type">A
+    <input type=radio value='NS'  data-bind="checked: type">NS
+    <input type=radio value='CNAME'  data-bind="checked: type">CNAME
+    <br>
+    <div data-bind="visible: type() == 'A'">
+        <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
+        <input type=text data-bind="value: ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address">
+    </div>
+    <div data-bind="visible: type() == 'NS'">
+        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+    </div>
+    <div data-bind="visible: type() == 'CNAME'">
+        <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
+        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+    </div>
+    <br>
+    <!-- /ko -->
+    <input type=radio value='A'  data-bind="checked: newRecord().type">A
+    <input type=radio value='NS'  data-bind="checked: newRecord().type">NS
+    <input type=radio value='CNAME'  data-bind="checked: newRecord().type">CNAME
+    <br>
+    <div data-bind="visible: newRecord().type() == 'A'">
+        <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
+        <input type=text data-bind="value: newRecord().ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address">
+    </div>
+    <div data-bind="visible: newRecord().type() == 'NS'">
+        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+    </div>
+    <div data-bind="visible: newRecord().type() == 'CNAME'">
+        <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
+        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+    </div>
+    <input type='submit' value='Add record' data-bind="click: addRecord, enable: newRecord().valid() == true" class="btn btn-info btn-large " />
+    
+    <hr>
+<!-- /ko -->
+<!-- /ko -->
+<input type="text" data-bind="value: newDomain().name, valueUpdate: 'afterkeydown'">
+<select data-bind="options: buckets, optionsText: 'name', value: newDomain().bucket, optionsCaption: 'Select bucket...'"></select>
+<input type="submit" value="Add Domain" data-bind="click: addDomain, enable: !!(newDomain().name() && newDomain().bucket())">
+}}

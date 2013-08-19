@@ -1,84 +1,118 @@
 @usedefault
 {{html:
  <h1 data-bind="text: selectedBucket().name"></h1>
-   <ul>
-    <li data-bind="text: selectedBucket().status">
-    </li>
-    <li data-bind="text: selectedBucket().plan">
-    </li>
-    <li data-bind="text: selectedBucket().region">
-    </li>
-    <li data-bind="text: selectedBucket().imageName">
-    </li>
-   </ul>
-  <div>
-    <h1>Power</h1>
-    <input data-bind="click: selectedBucket().powerOffBucket, visible: selectedBucket().status() == 'active'" type="submit" value="Power Off"/>
-    <input data-bind="click: selectedBucket().bootBucket, visible: selectedBucket().status() != 'active'" type="submit" value="Boot"/>
+
+ <div class="widget big-stats-container stacked">
+<div class="widget-content">
+<div id="big_stats" class="cf">
+
+    <div class="stat" data-bind="text: selectedBucket().status">
+    </div>
+    <div class="stat" data-bind="text: selectedBucket().plan">
+    </div>
+    <div class="stat" data-bind="text: selectedBucket().region">
+    </div>
+    <div class="stat" data-bind="text: selectedBucket().imageName">
+    </div>
+
+
+   
   </div>
-  <div>
-    <h1>Access</h1>
-    <h2>Console Access</h2>
-    Coming soon...
-    <h2>Reset Root Password</h2>
-    Coming soon...
+    </div>
+	  </div>
+	  <div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a data-toggle="tab" href="#power">Power</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#Plan">Plan</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#Snapshots">Snapshots</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#Backups">Backups</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#Settings">Settings</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#Destroy">Destroy</a>
+        </li>
+        <li >
+            <a data-toggle="tab" href="#History">History</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+    <div id="power" class="tab-pane active">
+    <h3>Power control</h3>
+    <input class="btn btn-info btn-large " data-bind="click: selectedBucket().powerOffBucket, visible: selectedBucket().status() == 'active'" type="submit" value="Power Off"/>
+    <input  class="btn btn-info btn-large " data-bind="click: selectedBucket().bootBucket, visible: selectedBucket().status() != 'active'" type="submit" value="Boot"/>
   </div>
-  <div>
-    <h1>Plan</h1>
+
+    <div id="Plan" class="control-group tab-pane">
+    <h3>Choose your Plan</h3>
+	<div class="controls shortcuts"> 
     {{include:plan_list}}
-    <input type="submit" value="Resize" data-bind="click: selectedBucket().resize" />
+	</div>
+	<br><br><br>
+    <input class="btn btn-info btn-large " type="submit" value="Resize" data-bind="click: selectedBucket().resize" />
   </div>
-  <div>
-    <h1>Snapshots</h1>
-    <h2>Take a Snapshot</h2>
-    <div data-bind="visible: selectedBucket().status() == 'off'">
-      Snapshot name: <input data-bind='value: newSnapshot().name, valueUpdate: "afterkeydown"' type="text"/>
-      <input type="submit" value="Create snapshot" data-bind="click: saveSnapshot" />
+    <div id="Snapshots" class="tab-pane">
+    <h3>Manage & creat Snapshots</h3>
+    <h4>Take a Snapshot</h4>
+    <div  data-bind="visible: selectedBucket().status() == 'off'">
+      Snapshot name: <input class="input-large"  data-bind='value: newSnapshot().name, valueUpdate: "afterkeydown"' type="text"/>
+      <input class="btn btn-info btn-large"  type="submit" value="Create snapshot" data-bind="click: saveSnapshot" />
     </div>
     <div data-bind="visible: selectedBucket().status() == 'active'">
       You must turn it off before creating snapshot
     </div>
-    <h2>Restore from Snapshot</h2>
-    <ul data-bind="foreach: snapshots">
-      <li><input type="radio" name="snapshot" /><span data-bind="text: name"></span></li>
-    </ul>
-    <input type="submit" value="Restore" data-bind="click: restoreSnapshot" />
-  </div>
-  <div>
-    <h1>Backups</h1>
-    <h2>Automatic backups</h2>
-    Coming soon...
+	<hr>
+    <h4>Restore from Snapshot</h4>
 
-    <h2>Restore from backup</h2>
-    Coming soon...
+	<table class="table table-bordered table-striped">
+	<thead>
+	<tr><th>Select</th><th>Name</th></tr>
+	</thead>
+	<tbody  data-bind="foreach: snapshots">
+    <tr>
+      <td><input type="radio" name="snapshot" /></td ><td width="89%"  data-bind="text: name"></td>
+    </tr>
+	</tbody>
+	</table>
+
+    <input class="btn btn-info btn-large"  type="submit" value="Restore" data-bind="click: restoreSnapshot" />
   </div>
-  <div>
-    <h1>Settings</h1>
-    <h2>Kernel</h2>
+    <div id="Backups" class="tab-pane">
+    <h3>Backups</h3>
+    <h4>Coming soon...</h4>
+
+  </div>
+    <div id="Settings" class="control-group tab-pane">
+    <h3>Settings</h3>
+    <h4>Kernel</h4>
+	<div class="controls shortcuts"> 
     {{include:image_list}}
-
-
-
-    <h2>Rename</h2>
-    New name: <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"/>
-    <input type="submit" value="Change name" data-bind="click: saveAllBuckets" />
+	</div>
+	<br>
+	<br>
+	<hr>
+    <h4>Rename</h4>
+    New name: <input  class="input-large" data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"/>
+    <input class="btn btn-info btn-large"   type="submit" value="Change name" data-bind="click: saveAllBuckets" />
 
   </div>
-  <div>
-    <h1>Graphs</h1>
-    <h2>Real Time</h2>
-    <h2>7 Days</h2>
-    <h2>30 Days</h2>
-    <h2>365 Days</h2>
-    Coming soon...
+    <div id="Destroy" class="tab-pane">
+    <h3>Destroy</h3>
+	<p>warning message goes here warning message goes here warning message goes here</p>
+	<hr>
+    <input class="btn btn-danger btn-large"  data-bind="click: selectedBucket().destroy" data-confirm="Are you sure you want to destroy this droplet?" name="commit" type="submit" value="Destroy"></input>
   </div>
-  <div>
-    <h1>Destroy</h1>
-    <input data-bind="click: selectedBucket().destroy" data-confirm="Are you sure you want to destroy this droplet?" name="commit" type="submit" value="Destroy"></input>
-  </div>
-  <div>
-    <h1>History</h1>
-    <table data-bind="visible: selectedBucket().history().length > 0">
+    <div id="History" class="tab-pane">
+    <h3>History</h3>
+    <table  class="table table-bordered table-striped" data-bind="visible: selectedBucket().history().length > 0">
   <thead>
    <tr>
     <th>
@@ -104,5 +138,6 @@
   </tbody>
  </table>
   </div>
-
+</div>
+</div>
 }}

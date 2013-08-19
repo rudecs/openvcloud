@@ -1,6 +1,6 @@
 @usedefault
 {{html:
-     Buckets List
+     <h1>Buckets List</h1>
      <a href="/$$space/new_bucket" class="btn btn-info btn-large btnfull">
       Create Bucket
      </a>
