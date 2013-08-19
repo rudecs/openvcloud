@@ -5,6 +5,8 @@
 <!-- ko foreach: domains -->
     <input type="text" data-bind="value: name, valueUpdate: 'afterkeydown'">
     <select data-bind="options: $parent.buckets, optionsText: 'name', value: bucket"></select>
+    <input type='submit' value='Remove domain' data-bind="click: remove" class="btn btn-info btn-large " />
+
     <br>
     <!-- ko foreach: records -->
     <input type=radio value='A'  data-bind="checked: type">A

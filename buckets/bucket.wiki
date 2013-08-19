@@ -92,9 +92,10 @@
   </div>
     <div id="Settings" class="control-group tab-pane">
     <h3>Settings</h3>
-    <h4>Kernel</h4>
+    <h4>Image</h4>
 	<div class="controls shortcuts"> 
     {{include:image_list}}
+    <input class="btn btn-info btn-large"   type="submit" value="Change image" onclick="reload()" />
 	</div>
 	<br>
 	<br>

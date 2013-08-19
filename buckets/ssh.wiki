@@ -3,8 +3,9 @@
 <!-- ko if: sshKeys().length > 0 -->
 <h1>SSH keys</h1>
 <!-- ko foreach: sshKeys -->
-    <span data-bind="text: name"></span>
-    <textarea name="" id="" cols="30" rows="10" data-bind="value: key, valueUpdate: 'afterkeydown'"></textarea>
+    <input type="text" data-bind="value: name">
+    <textarea name="" id="" cols="30" rows="3" data-bind="value: key, valueUpdate: 'afterkeydown'"></textarea>
+    <input type="submit" value="Destroy" data-bind="click: destroy">
     <br>
 <!-- /ko -->
 <!-- /ko -->

@@ -84,8 +84,14 @@ jQuery(function(){
     };
 
     var SSHKey = function() {
+        var self = this;
         this.name = ko.observable();
         this.key = ko.observable();
+
+        this.destroy = function() {
+            viewModel.sshKeys.remove(self);
+            localStorage.setItem('gcb-sshKeys', ko.toJSON(self.sshKeys));
+        }
     };
 
     var ViewModel = function() {
@@ -216,6 +222,11 @@ jQuery(function(){
             this.addRecord = function() {
                 self.records.push(self.newRecord());
                 self.newRecord(new DNSRecord({}));
+            };
+
+            this.remove = function() {
+                viewModel.domains.remove(self);
+                localStorage.setItem('gcb-domains', ko.toJSON(self.domains));
             };
         };
 
