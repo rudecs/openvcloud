@@ -328,4 +328,24 @@ float:right;
 .input-large {
     margin-bottom: 0px !important;
     padding: 10px 6px !important; 
+
+}
+
+#domains-list .right {
+float:right; margin-left:10px;margin-top: 5px;
+}
+#domains-list h3 {
+ display: inline-block;
+ margin:0px;
+}
+.select-large {
+height:42px;
+
+}
+.radio {
+display:inline-block; margin-right:20px;
+}
+
+td.mark {
+background:#74B7CB !important;
 }

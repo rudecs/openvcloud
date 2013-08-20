@@ -83,15 +83,50 @@ jQuery(function(){
         this.bucketId = ko.observable();
     };
 
+    function bufferedObservable(initialValue) {
+        var property = ko.observable(initialValue);
+        property.tempValue = initialValue;
+        property.buffer = ko.computed({
+            read: function() { 
+                property.tempValue = property();
+                return property();
+            },
+            write: function(value) {
+                property.tempValue = value;
+            }
+        });
+
+        property.commit = function() {
+            property(property.tempValue);
+        }
+        return property;
+    };
+
     var SSHKey = function() {
         var self = this;
-        this.name = ko.observable();
-        this.key = ko.observable();
+        this.name = bufferedObservable();
+        this.key = bufferedObservable();
+
+        this.editing = ko.observable(false);
 
         this.destroy = function() {
             viewModel.sshKeys.remove(self);
             localStorage.setItem('gcb-sshKeys', ko.toJSON(self.sshKeys));
-        }
+        };
+
+        this.startEditing = function() {
+            this.editing(true);
+        };
+
+        this.stopEditing = function() {
+            this.editing(false);
+        };
+
+        this.save = function() {
+            self.name.commit();
+            self.key.commit();
+            self.stopEditing();
+        };
     };
 
     var ViewModel = function() {
@@ -228,6 +263,11 @@ jQuery(function(){
                 viewModel.domains.remove(self);
                 localStorage.setItem('gcb-domains', ko.toJSON(self.domains));
             };
+
+            this.removeRecord = function(record) {
+                self.records.remove(record);
+                localStorage.setItem('gcb-domains', ko.toJSON(viewModel.domains));
+            };
         };
 
         if (!!localStorage.getItem('gcb-domains'))
@@ -263,4 +303,6 @@ jQuery(function(){
     var viewModel = window.viewModel = new ViewModel();
 
     ko.applyBindings(viewModel);
+
 });
+
