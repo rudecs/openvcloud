@@ -283,13 +283,20 @@ float:right;
     margin-left: 0 !important;
     margin-right: 10px !important;
     margin-top: 0;
-    padding: 12px 0;
+    /*padding: 12px 0;*/
+    padding: 0;
     text-decoration: none;
     vertical-align: top;
     width: 110px;
 }
 .shortcuts ul {
     margin:0px;
+}
+
+.shortcuts label {
+    padding: 12px 0px;
+    height: 100%;
+    margin: 0px;
 }
 
  

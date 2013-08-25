@@ -1,15 +1,14 @@
 <ul>
 
-<li class="shortcut">
-		 Image 1
-         <input name="image_id" type="radio" value="Image 1" data-bind="checked: selectedBucket().imageName">
-        </li>
-		 <li class="shortcut">
-         Image 2
-         <input name="image_id" type="radio" value="Image 2" data-bind="checked: selectedBucket().imageName">
-       </li>
-	   <li class="shortcut">
-         Image 3
-         <input name="image_id" type="radio" value="Image 3" data-bind="checked: selectedBucket().imageName">
-   </li>
+  <li class="shortcut">
+    <label for=id_image1>Image 1</label>
+    <input name="image_id" type="radio" value="Image 1" data-bind="checked: selectedBucket().imageName" id=id_image1></li>
+  
+  <li class="shortcut">
+    <label for=id_image2>Image 2</label>
+    <input name="image_id" type="radio" value="Image 2" data-bind="checked: selectedBucket().imageName" id=id_image2></li>
+  
+  <li class="shortcut">
+    <label for=id_image3>Image 3</label>
+    <input name="image_id" type="radio" value="Image 3" data-bind="checked: selectedBucket().imageName" id=id_image3></li>
 </ul>

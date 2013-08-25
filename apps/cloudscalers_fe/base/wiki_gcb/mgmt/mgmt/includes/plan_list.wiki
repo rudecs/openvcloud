@@ -1,18 +1,18 @@
 <ul>
       <li class="shortcut">
-         Plan 1
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 512MB, disk 20GB"></input>
+        <label for="id_plan1">Plan 1</label>
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan1" name="size_id" type="radio" value="memory 512MB, disk 20GB"></input>
       </li>
       <li class="shortcut">
-         Plan 2
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 1GB, disk 30GB"></input>
+        <label for="id_plan2">Plan 2</label>
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan2" name="size_id" type="radio" value="memory 1GB, disk 30GB"></input>
       </li>
       <li class="shortcut"> 
-         Plan 3
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 2GB, disk 40GB"></input>
+        <label for="id_plan3">Plan 3</label>
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan3" name="size_id" type="radio" value="memory 2GB, disk 40GB"></input>
       </li>
      <li class="shortcut"> 
-         Plan 4
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' name="size_id" type="radio" value="memory 8GB, disk 40GB"></input>
+        <label for="id_plan4">Plan 4</label>
+       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan4" name="size_id" type="radio" value="memory 8GB, disk 40GB"></input>
       </li>
  </ul>

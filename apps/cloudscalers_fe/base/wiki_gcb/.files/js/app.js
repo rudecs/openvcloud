@@ -7,7 +7,7 @@ function getParameterByName(name) {
 }
 
 function goHome() {
-    window.location = '/test_gcb/buckets_list';
+    window.location = '/test_gcb/buckets';
 }
 
 function reload() {
@@ -342,14 +342,13 @@ jQuery(function(){
     };
     $('.shortcut > input[type=radio]').on('change', selectParent);
     $('.shortcut > input[type=radio]:checked').each(selectParent);
-    var insideClick = false;
-    $('.shortcut').on('click', function(e) {
+    /*$('.shortcut').on('click', function(e) {
         e.preventDefault();
         $(this).find('input[type=radio]').click();
     });
     $('.shortcut > input[type=radio]').on('click', function(e) {
         e.stopPropagation();
-    });
+    });*/
 
 });
 

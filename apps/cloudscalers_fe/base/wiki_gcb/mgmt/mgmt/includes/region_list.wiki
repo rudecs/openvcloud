@@ -1,13 +1,14 @@
 <ul>
-   <li class="shortcut"> Region 1
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 1">
+   <li class="shortcut">
+    <label for=id_region1>Region 1</label>
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 1" id=id_region1>
    </li>
    <li class="shortcut">
-    Region 2
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 2">
+    <label for=id_region2>Region 2</label>
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 2" id=id_region2>
    </li>
    <li class="shortcut">
-    Region 3
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 3">
+    <label for=id_region3>Region 3</label>
+   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Region 3" id=id_region3>
    </li>
 </ul>

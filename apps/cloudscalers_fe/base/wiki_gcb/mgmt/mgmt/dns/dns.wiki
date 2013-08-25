@@ -15,11 +15,13 @@
         <h4 data-bind="text: bucket().name"></h4>
 
 
-       <!-- Create new DNS record -->
- <label class="radio"> <input type=radio value='A'  data-bind="checked: newRecord().type"> A </label>
-   <label class="radio"><input type=radio value='NS'  data-bind="checked: newRecord().type"> NS </label>
-   <label class="radio"><input type=radio value='CNAME'  data-bind="checked: newRecord().type"> CNAME </label>
-    <br> 
+   <!-- Create new DNS record -->
+   <ul class="shortcuts">
+        <li class="shortcut"><label for=id_a>A </label> <input id="id_a" type=radio value='A'  data-bind="checked: newRecord().type"> </li>
+        <li class="shortcut"><label for=id_ns> NS </label><input id="id_ns" type=radio value='NS'  data-bind="checked: newRecord().type"></li>
+        <li class="shortcut"><label for=id_cname> CNAME </label><input id="id_cname" type=radio value='CNAME'  data-bind="checked: newRecord().type"></li>
+   </ul>
+   <div style="clear: both"></div>
     <div data-bind="visible: newRecord().type() == 'A'">
         <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
         <input type=text data-bind="value: newRecord().ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address">
