@@ -207,6 +207,7 @@ jQuery(function(){
         this.addSSHKey = function() {
             this.sshKeys.push(self.newSSHKey());
             this.newSSHKey(new SSHKey());
+            $('.popup-background').parent().hide();
         };
 
         // ====================== DNS Record
@@ -286,9 +287,24 @@ jQuery(function(){
 
         this.newDomain = ko.observable(new DNSDomain());
         this.addDomain = function() {
-            self.domains.push(self.newDomain());
+            self.domains.unshift(self.newDomain());
             self.newDomain(new DNSDomain());
         };
+
+        var LoginModel = function() {
+            var self = this;
+            this.username = ko.observable();
+            this.password = ko.observable();
+
+            this.login = function() {
+                if (self.username() === 'admin' && self.password() === '123')
+                    location.href = '/test_gcb/buckets';
+                else
+                    $('.alert-error').show('fast');
+            };
+        };
+
+        this.loginModel = new LoginModel();
         
         // internal ko.computed that saves buckets whenever they change
         ko.computed(function() {
@@ -303,6 +319,37 @@ jQuery(function(){
     var viewModel = window.viewModel = new ViewModel();
 
     ko.applyBindings(viewModel);
+
+
+    // Popups
+    $('.popup-show').on('click', function(e) {
+        e.preventDefault();
+        $($(this).attr('href')).toggle('fast');
+    });
+    $('.popup-background').on('click', function() {
+        $(this).parent().hide();
+    });
+    $('.popup-content').on('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // When radio buttons inside li.shortcut is selected, make the whole li selected, for better UI
+    function selectParent() {
+        var btn = $(this);
+        btn.parents('ul').find('li.shortcut').removeClass('selected');
+        if (btn.attr('checked'))
+            btn.parents('.shortcut').addClass('selected');
+    };
+    $('.shortcut > input[type=radio]').on('change', selectParent);
+    $('.shortcut > input[type=radio]:checked').each(selectParent);
+    var insideClick = false;
+    $('.shortcut').on('click', function(e) {
+        e.preventDefault();
+        $(this).find('input[type=radio]').click();
+    });
+    $('.shortcut > input[type=radio]').on('click', function(e) {
+        e.stopPropagation();
+    });
 
 });
 

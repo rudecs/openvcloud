@@ -2,7 +2,7 @@
 {{html:
 <h1>DNS</h1>
 
-<input class="input-large" type="text" data-bind="value: newDomain().name, valueUpdate: 'afterkeydown'" >
+<input class="input-large" type="text" data-bind="value: newDomain().name, valueUpdate: 'afterkeydown'" placeholder="Name">
 <select  class="input-large select-large" data-bind="options: buckets, optionsText: 'name', value: newDomain().bucket, optionsCaption: 'Select bucket...'"></select>
 <input type="submit" value="Add Domain" data-bind="click: addDomain, enable: !!(newDomain().name() && newDomain().bucket())" class="btn btn-info btn-large ">
 
@@ -34,7 +34,7 @@
     <input type='submit' value='Add record' data-bind="click: addRecord, enable: newRecord().valid() == true" class="btn btn-info " />
     <!-- /Create new DNS record -->
 
-	<br> <br> <br>
+	<br> <br>
 
 	 
         <table data-bind="foreach: records"  class="table table-striped table-bordered">

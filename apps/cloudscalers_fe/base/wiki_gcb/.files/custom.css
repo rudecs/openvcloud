@@ -347,5 +347,108 @@ display:inline-block; margin-right:20px;
 }
 
 td.mark {
-background:#74B7CB !important;
+    background: none repeat scroll 0 0 #FFFFFF !important;
+    color: #00BAFF;
+    font-weight: bold;
+    text-align: center;
+}
+
+.shortcuts li input[type="radio"] {
+display:none;
+}
+
+.shortcuts li.selected  {
+    background:#00BAFF;
+}
+
+.popup-background {
+    background: url("img/tbg.png") ;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.popup-content {
+background:#fff;
+}
+
+.popup-content {
+    background: none repeat scroll 0 0 #FFFFFF;
+    margin: 150px auto;
+    padding: 30px;
+    width: 36%;
+    -moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px; /* future proofing */
+
+}
+
+.account-container {
+    background: none repeat scroll 0 0 #F9F9F9;
+    border: 1px solid #D5D5D5;
+    border-radius: 5px 5px 5px 5px;
+    display: block;
+    margin: 60px auto 0;
+    width: 380px;
+}
+.padding {
+    padding: 16px 28px 23px;
+}
+
+
+.login-fields input {
+    background-color: #FDFDFD;
+    box-shadow: 2px 2px 4px #F1F1F1 inset;
+    color: #8E8D8D;
+    display: block;
+    font-family: 'Open Sans';
+    font-size: 13px;
+    margin: 0;
+    padding: 8px 15px 10px 50px;
+    width: 255px;
+}
+
+.login-fields input.username-field {
+    background: url("img/signin/user.png") no-repeat scroll 0 0 #fff;
+}
+
+.login-fields input.password-field {
+    background: url("img/signin/password.png") no-repeat scroll 0 0 #fff;
+}
+
+span.login-checkbox {
+    float: left;
+    margin-top: 31px;
+}
+span.login-checkbox > input[type="checkbox"] {
+    float: left;
+    opacity: 0;
+    width: 15px;
+}
+
+span.login-checkbox > input[type="checkbox"] + label {
+    background: url("img/signin/check.png") no-repeat scroll 0 0 transparent;
+    clear: none;
+    cursor: pointer;
+    display: block;
+    font-size: 12px;
+    height: 15px;
+    line-height: 1.2em;
+    margin: 0;
+    padding: 0 0 0 22px;
+}
+
+.button {
+    border-radius: 3px 3px 3px 3px;
+    display: inline-block;
+    float: right;
+    margin-top: 18px;
+}
+
+.login-fields label {
+    display: none;
+}
+.login-fields .field {
+    margin-bottom: 1.25em;
 }

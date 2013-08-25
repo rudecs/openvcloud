@@ -7,7 +7,7 @@
  <label class="control-label" >Name: </label> 
 
 <div class="controls">
-   <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text" class="input-large"/>
+   <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text" class="input-large" placeholder="Name"/>
    </div>
       </div>
  

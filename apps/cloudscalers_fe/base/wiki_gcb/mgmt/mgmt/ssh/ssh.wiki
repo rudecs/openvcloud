@@ -1,14 +1,19 @@
 @usedefault
 {{html:
-<a class="btn btn-info btn-large btnfull" > Add SSH key</a>
+<a class="btn btn-info btn-large btnfull popup-show" href="#create-ssh" > Add SSH key</a>
 
-<h3>Create SSH Key</h3>
-<input type="text" data-bind="value: newSSHKey().name">
-<br>
-<textarea name="" id="" cols="30" rows="10" data-bind="value: newSSHKey().key, valueUpdate: 'afterkeydown'"></textarea>
-<br>
-<input type="submit" value="Create" data-bind="click: addSSHKey, enable: !!(newSSHKey().name() && newSSHKey().key())" class="btn btn-info btn-large ">
-<br>
+
+<div id="create-ssh" style="display: none">
+    <div class="popup-background">
+        <div class="popup-content">
+            <h3>Create SSH Key</h3>
+            <input class="input-large" type="text" data-bind="value: newSSHKey().name" placeholder="Name">
+            <input class="input-large" type="text" data-bind="value: newSSHKey().key, valueUpdate: 'afterkeydown'" placeholder="Key">
+            <input type="submit" value="Create" data-bind="click: addSSHKey, enable: !!(newSSHKey().name() && newSSHKey().key())" class="btn btn-info btn-large ">
+        </div>
+    </div>
+</div>
+
 <hr>
 <!-- ko if: sshKeys().length > 0 -->
 <h3>SSH keys</h3>
@@ -27,10 +32,10 @@
         </tr>
         <tr data-bind="visible: editing() == true">
             <td>
-                <input type="text" data-bind="value: name.buffer, valueUpdate: 'afterkeydown'">
+                <input type="text" data-bind="value: name.buffer, valueUpdate: 'afterkeydown'" placeholder="Name">
             </td>
             <td>
-                <input type="text" data-bind="value: key.buffer, valueUpdate: 'afterkeydown'">
+                <input type="text" data-bind="value: key.buffer, valueUpdate: 'afterkeydown'" placeholder="Key">
             </td>
             <td>
                 <input type="submit" value="Save" class="btn btn-info " data-bind="click: save"> 
@@ -41,5 +46,7 @@
 </table>
 
 <!-- /ko -->
+
+
 
 }}

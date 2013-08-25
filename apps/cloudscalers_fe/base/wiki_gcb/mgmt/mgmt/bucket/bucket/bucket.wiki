@@ -60,10 +60,10 @@
     <input class="btn btn-info btn-large " type="submit" value="Resize" data-bind="click: selectedBucket().resize" />
   </div>
     <div id="Snapshots" class="tab-pane">
-    <h3>Manage & creat Snapshots</h3>
+    <h3>Manage & create Snapshots</h3>
     <h4>Take a Snapshot</h4>
     <div  data-bind="visible: selectedBucket().status() == 'off'">
-      Snapshot name: <input class="input-large"  data-bind='value: newSnapshot().name, valueUpdate: "afterkeydown"' type="text"/>
+      Snapshot name: <input class="input-large"  data-bind='value: newSnapshot().name, valueUpdate: "afterkeydown"' type="text"  placeholder="Snapshot Name"/>
       <input class="btn btn-info btn-large"  type="submit" value="Create snapshot" data-bind="click: saveSnapshot" />
     </div>
     <div data-bind="visible: selectedBucket().status() == 'active'">
@@ -101,7 +101,7 @@
 	<br>
 	<hr>
     <h4>Rename</h4>
-    New name: <input  class="input-large" data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"/>
+    New name: <input  class="input-large" data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"  placeholder="New Name"/>
     <input class="btn btn-info btn-large"   type="submit" value="Change name" data-bind="click: saveAllBuckets" />
 
   </div>
