@@ -17,9 +17,9 @@
 
    <!-- Create new DNS record -->
    <ul class="shortcuts">
-        <li class="shortcut"><label for=id_a>A </label> <input id="id_a" type=radio value='A'  data-bind="checked: newRecord().type"> </li>
-        <li class="shortcut"><label for=id_ns> NS </label><input id="id_ns" type=radio value='NS'  data-bind="checked: newRecord().type"></li>
-        <li class="shortcut"><label for=id_cname> CNAME </label><input id="id_cname" type=radio value='CNAME'  data-bind="checked: newRecord().type"></li>
+        <li class="shortcut"><label data-bind="attr: {'for': 'id_a_' + name()}">A </label> <input type=radio value='A'  data-bind="checked: newRecord().type, attr: {'id': 'id_a_' + name()}"> </li>
+        <li class="shortcut"><label data-bind="attr: {'for': 'id_ns_' + name()}"> NS </label><input id="id_ns" type=radio value='NS'  data-bind="checked: newRecord().type, attr: {'id': 'id_ns_' + name()}"></li>
+        <li class="shortcut"><label data-bind="attr: {'for': 'id_cname_' + name()}"> CNAME </label><input id="id_cname" type=radio value='CNAME'  data-bind="checked: newRecord().type, attr: {'id': 'id_cname_' + name()}"></li>
    </ul>
    <div style="clear: both"></div>
     <div data-bind="visible: newRecord().type() == 'A'">
@@ -27,11 +27,11 @@
         <input type=text data-bind="value: newRecord().ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address">
 	</div>
     <div data-bind="visible: newRecord().type() == 'NS'">
-        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname">
 	</div>
     <div data-bind="visible: newRecord().type() == 'CNAME'">
         <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
-        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="hostname">
+        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname">
 	</div>
     <input type='submit' value='Add record' data-bind="click: addRecord, enable: newRecord().valid() == true" class="btn btn-info " />
     <!-- /Create new DNS record -->
@@ -47,10 +47,10 @@
                         <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
                         <input type=text data-bind="value: ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address"></div>
                     <div data-bind="visible: type() == 'NS'">
-                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="hostname"></div>
+                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname"></div>
                     <div data-bind="visible: type() == 'CNAME'">
                         <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
-                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="hostname"></div>
+                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname"></div>
                 </td>
                 <td>
                     <input type='submit' value='Remove record' data-bind="click: $parent.removeRecord"  class="btn btn-danger btn-small " />
