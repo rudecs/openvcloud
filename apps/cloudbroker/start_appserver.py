@@ -1,10 +1,10 @@
-from OpenWizzy import o
-o.application.start('cloudbroker')
-import OpenWizzy.portal
+from JumpScale import j
+j.application.start('cloudbroker')
+import JumpScale.portal
 
 
 
 o.manage.portal.startprocess()
     
 
-o.application.stop()
+j.application.stop()

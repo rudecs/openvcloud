@@ -1,9 +1,9 @@
-from OpenWizzy import o
+from JumpScale import j
 from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 
-cloudbroker = o.apps.cloud.cloudbroker
-ujson = o.db.serializers.ujson
+cloudbroker = j.apps.cloud.cloudbroker
+ujson = j.db.serializers.ujson
 
 ROUNDROBIN = -1
 

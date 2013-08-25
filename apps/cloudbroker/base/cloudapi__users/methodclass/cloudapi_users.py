@@ -1,4 +1,4 @@
-from OpenWizzy import o
+from JumpScale import j
 from cloudapi_users_osis import cloudapi_users_osis
 
 
@@ -28,7 +28,7 @@ class cloudapi_users(cloudapi_users_osis):
         result str,,session
         """
         ctx = kwargs['ctx']
-        if o.apps.system.usermanager.authenticate(username, password):
+        if j.apps.system.usermanager.authenticate(username, password):
             session = ctx.env['beaker.get_session']() #create new session
             session['user'] = username
             session.save()

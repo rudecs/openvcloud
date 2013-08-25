@@ -1,6 +1,6 @@
-from OpenWizzy import o
+from JumpScale import j
 from cloud_cloudbroker_osis import cloud_cloudbroker_osis
-json = o.db.serializers.ujson
+json = j.db.serializers.ujson
 
 
 class cloud_cloudbroker(cloud_cloudbroker_osis):

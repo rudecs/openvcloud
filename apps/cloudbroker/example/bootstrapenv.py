@@ -1,8 +1,8 @@
-from OpenWizzy import o
+from JumpScale import j
 
-cl = o.core.appserver6.getAppserverClient(secret='1234')
+cl = j.core.appserver6.getAppserverClient(secret='1234')
 cl.getActor('cloud', 'cloudbroker')
-api = o.apps.cloud.cloudbroker
+api = j.apps.cloud.cloudbroker
 #create stack
 
 stack = api.models.stack.new()

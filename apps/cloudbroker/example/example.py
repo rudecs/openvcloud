@@ -1,10 +1,10 @@
-from OpenWizzy import o
-import OpenWizzy.portal
+from JumpScale import j
+import JumpScale.portal
 
-cl = o.core.portal.getPortalClient(secret='1234')
+cl = j.core.portal.getPortalClient(secret='1234')
 cl.getActor('cloud', 'cloudbroker')
 #create network
-api = o.apps.cloud.cloudbroker
+api = j.apps.cloud.cloudbroker
 clid = api.cloudSpaceCreate('mycloud', ['admin'])
 machineid = api.machineCreate(clid, 'mymachine', 'used for testing', 1)
 diskid = api.machineAddDisk(machineid, 'mydisk')

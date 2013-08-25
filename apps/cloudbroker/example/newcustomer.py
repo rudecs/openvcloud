@@ -1,12 +1,12 @@
-from OpenWizzy import o
+from JumpScale import j
 
-cl = o.core.appserver6.getAppserverClient(secret='mysecret')
+cl = j.core.appserver6.getAppserverClient(secret='mysecret')
 cl.getActor('cloudapi', 'account')
 cl.getActor('cloudapi', 'cloudspace')
 cl.getActor('cloudapi', 'machine')
 cl.getActor('cloudapi', 'sizes')
 cl.getActor('cloudapi', 'images')
-api = o.apps.cloudapi
+api = j.apps.cloudapi
 
 #create an account
 accountId = api.account.create('myCompany', ['admin'])

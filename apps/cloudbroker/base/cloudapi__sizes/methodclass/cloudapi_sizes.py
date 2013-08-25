@@ -1,4 +1,4 @@
-from OpenWizzy import o
+from JumpScale import j
 from cloudapi_sizes_osis import cloudapi_sizes_osis
 
 
@@ -26,4 +26,4 @@ class cloudapi_sizes(cloudapi_sizes_osis):
 
         """
         # put your code here to implement this method
-        return o.apps.cloud.cloudbroker.model_size_list()
+        return j.apps.cloud.cloudbroker.model_size_list()

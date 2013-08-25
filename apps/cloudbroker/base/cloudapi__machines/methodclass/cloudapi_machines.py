@@ -1,7 +1,7 @@
-from OpenWizzy import o
+from JumpScale import j
 from cloudapi_machines_osis import cloudapi_machines_osis
 from cloudbrokerlib import authenticator
-ujson = o.db.serializers.ujson
+ujson = j.db.serializers.ujson
 
 
 class cloudapi_machines(cloudapi_machines_osis):
@@ -22,7 +22,7 @@ class cloudapi_machines(cloudapi_machines_osis):
     @property
     def cb(self):
         if not self._cb:
-            self._cb = o.apps.cloud.cloudbroker
+            self._cb = j.apps.cloud.cloudbroker
         return self._cb
 
     @authenticator.auth(acl='X')

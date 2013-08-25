@@ -1,6 +1,6 @@
-from OpenWizzy import o
-import OpenWizzy.portal
-import OpenWizzy.baselib.http_client
+from JumpScale import j
+import JumpScale.portal
+import JumpScale.baselib.http_client
 import unittest
 
 SESSION_DATA = {}
@@ -8,15 +8,15 @@ SESSION_DATA = {}
 class ScenarioTest(unittest.TestCase):
 
     def setUp(self):
-        cl = o.core.portal.getPortalClient(secret='1234')
+        cl = j.core.portal.getPortalClient(secret='1234')
         cl.getActor('cloud', 'cloudbroker')
         cl.getActor('cloudapi', 'accounts')
         cl.getActor('cloudapi', 'cloudspaces')
         cl.getActor('cloudapi', 'machines')
         cl.getActor('cloudapi', 'sizes')
         cl.getActor('cloudapi', 'images')
-        self.brokerapi = o.apps.cloud.cloudbroker
-        self.cloudapi = o.apps.cloudapi
+        self.brokerapi = j.apps.cloud.cloudbroker
+        self.cloudapi = j.apps.cloudapi
         if 'stackid' in SESSION_DATA:
             self.brokerapi.stackImportImages(SESSION_DATA['stackid'])
             self.brokerapi.stackImportSizes(SESSION_DATA['stackid'])
@@ -58,12 +58,12 @@ class ScenarioTest(unittest.TestCase):
         self.assertIsNotNone(machineid)
 
 def tearDownModule():
-    cl = o.core.portal.getPortalClient(secret='1234')
+    cl = j.core.portal.getPortalClient(secret='1234')
     cl.getActor('cloud', 'cloudbroker')
     cl.getActor('cloudapi', 'accounts')
     cl.getActor('cloudapi', 'cloudspaces')
-    brokerapi = o.apps.cloud.cloudbroker
-    cloudapi = o.apps.cloudapi
+    brokerapi = j.apps.cloud.cloudbroker
+    cloudapi = j.apps.cloudapi
 
     brokerapi.model_stack_delete(SESSION_DATA['stackid'])
     brokerapi.model_resourceprovider_delete(SESSION_DATA['resourceproviderid'])

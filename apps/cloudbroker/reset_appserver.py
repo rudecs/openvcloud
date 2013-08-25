@@ -1,18 +1,18 @@
 
-from OpenWizzy import o
+from JumpScale import j
 
-o.application.appname = "usercreation"
-o.application.start()
+j.application.appname = "usercreation"
+j.application.start()
 
-o.system.fs.changeDir("../appserver6Base")
+j.system.fs.changeDir("../appserver6Base")
 
-o.system.fs.removeDirTree(o.system.fs.joinPaths(o.dirs.varDir,"db","system"))
+j.system.fs.removeDirTree(j.system.fs.joinPaths(j.dirs.varDir,"db","system"))
 
-o.core.appserver6.loadActorsInProcess()
-#client=o.core.appserver6.getAppserverClient("127.0.0.1",9999,"1234")
+j.core.appserver6.loadActorsInProcess()
+#client=j.core.appserver6.getAppserverClient("127.0.0.1",9999,"1234")
 #usermanager=client.getActor("system","usermanager",instance=0)
 
-usermanager=o.apps.system.usermanager
+usermanager=j.apps.system.usermanager
 
 usermanager.usercreate("despiegk","1234","","all,admin","kristof@despiegeleer.com,kristof@incubaid.com",0)
 usermanager.usercreate("desmedt","1234","","all,admin","kristof@despiegeleer.com,kristof@incubaid.com",0)
@@ -23,4 +23,4 @@ print "users created, appserver reset"
 
 
 
-o.application.stop()
+j.application.stop()

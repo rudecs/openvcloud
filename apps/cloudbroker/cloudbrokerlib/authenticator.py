@@ -1,4 +1,4 @@
-from OpenWizzy import o
+from JumpScale import j
 
 
 class auth(object):
@@ -7,7 +7,7 @@ class auth(object):
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):
         fullacl = self.expandAcl(users, groups, cloudspace['acl'])
-        account = o.apps.cloud.cloudbroker.model_account_get(cloudspace['accountId'])
+        account = j.apps.cloud.cloudbroker.model_account_get(cloudspace['accountId'])
         fullacl.update(self.expandAcl(users, groups, account['acl']))
         return fullacl
 
@@ -27,17 +27,17 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             fullacl = set()
             if self.acl:
-                groups = o.apps.system.usermanager.getusergroups(user)
+                groups = j.apps.system.usermanager.getusergroups(user)
                 # add brokeradmin access
                 if 'admin' in groups:
                     return func(*args, **kwargs)
                 cloudspace = None
                 if 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
-                    cloudspace = o.apps.cloud.cloudbroker.model_cloudspace_get(kwargs['cloudspaceId'])
+                    cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(kwargs['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
-                    machine = o.apps.cloud.cloudbroker.mode_vmachine_get(kwargs['machineId'])
-                    cloudspace = o.apps.cloud.cloudbroker.model_cloudspace_get(machine['cloudspaceId'])
+                    machine = j.apps.cloud.cloudbroker.mode_vmachine_get(kwargs['machineId'])
+                    cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(machine['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:

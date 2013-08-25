@@ -1,4 +1,4 @@
-from OpenWizzy import o
+from JumpScale import j
 from cloudapi_accounts_osis import cloudapi_accounts_osis
 from cloudbrokerlib import authenticator
 
@@ -21,7 +21,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
     @property
     def cb(self):
         if not self._cb:
-            self._cb = o.apps.cloud.cloudbroker
+            self._cb = j.apps.cloud.cloudbroker
         return self._cb
 
     @authenticator.auth(acl='A')
