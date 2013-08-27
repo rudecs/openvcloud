@@ -4,6 +4,18 @@
 
 {{html:
 <link  href='/$$space/.files/css/jquery.contextMenu.css' type='text/css' rel='Stylesheet'/>
+<style>
+  /* To fix context menu screwed by bootstrap CSS */
+  .context-menu-list {
+min-width: 120px;
+max-width: 120px;
+
+}
+
+.context-menu-item {
+width:94px;
+}
+</style>
 <script type="text/javascript" src="/$$space/.files/js/jquery.ui.position.js"></script>
 <script type="text/javascript" src="/$$space/.files/js/jquery.contextMenu.js"></script>
 <script type="text/javascript">

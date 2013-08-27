@@ -1,8 +1,6 @@
 h2. Development Buckets
 
-Development buckets bring agile deployment for Java, Python, and others.
-
-Awingu’s development buckets  allows developers to run and scale any type of app. 
+Development buckets bring agile deployment for Java, Python, and others. Development buckets allow developers to run and scale any type of app. 
 
 Developers can focus 100% on your code where they do not need to handle or think anymore in servers.
 

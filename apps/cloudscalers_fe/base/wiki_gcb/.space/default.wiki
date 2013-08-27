@@ -57,7 +57,7 @@ System:/System
 				
 
 				<li>
-					<a href="../$$space/MachineBuckets">
+					<a href="../$$space/Buckets">
 						<i class="icon-cogs"></i>
 						<span>Machine Buckets</span>
 					</a>	    				

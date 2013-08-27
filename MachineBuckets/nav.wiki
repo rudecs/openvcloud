@@ -1,2 +1,2 @@
 
-{{children: page:MachineBuckets}}
+{{children: page:mgmt}}
