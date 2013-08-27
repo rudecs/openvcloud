@@ -13,7 +13,8 @@ max-width: 120px;
 }
 
 .context-menu-item {
-width:94px;
+  display: block;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 </style>
 <script type="text/javascript" src="/$$space/.files/js/jquery.ui.position.js"></script>
@@ -28,13 +29,13 @@ width:94px;
                 window.console && console.log(m) || alert(m); 
             },
             items: {
-                "edit": {name: "Edit", icon: "edit"},
-                "cut": {name: "Cut", icon: "cut"},
-                "copy": {name: "Copy", icon: "copy"},
-                "paste": {name: "Paste", icon: "paste"},
-                "delete": {name: "Delete", icon: "delete"},
+                "edit": {name: "Edit"},
+                "monitoring": {name: "Monitoring"},
+                "rename": {name: "Rename"},
+                "create snapshot": {name: "Create snapshot"},
+                "delete": {name: "Delete"},
                 "sep1": "---------",
-                "quit": {name: "Quit", icon: "quit"}
+                "quit": {name: "Quit"}
             }
         });
     });
