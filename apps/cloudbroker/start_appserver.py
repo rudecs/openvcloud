@@ -4,7 +4,7 @@ import JumpScale.portal
 
 
 
-o.manage.portal.startprocess()
+j.manage.portal.startprocess()
     
 
 j.application.stop()
