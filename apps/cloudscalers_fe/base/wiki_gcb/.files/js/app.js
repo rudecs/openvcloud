@@ -210,6 +210,8 @@ jQuery(function(){
             $('.popup-background').parent().hide();
         };
 
+        this.enableVirtIO = ko.observable(true);
+
         // ====================== DNS Record
         var DNSRecord = function(params) {
             var self = this;
@@ -336,19 +338,32 @@ jQuery(function(){
     // When radio buttons inside li.shortcut is selected, make the whole li selected, for better UI
     function selectParent() {
         var btn = $(this);
-        btn.parents('ul').find('li.shortcut').removeClass('selected');
+        btn.parents('.shortcuts').find('li.shortcut').removeClass('selected');
         if (btn.attr('checked'))
             btn.parents('.shortcut').addClass('selected');
     };
     $('.shortcut > input[type=radio]').on('change', selectParent);
     $('.shortcut > input[type=radio]:checked').each(selectParent);
-    /*$('.shortcut').on('click', function(e) {
-        e.preventDefault();
-        $(this).find('input[type=radio]').click();
-    });
-    $('.shortcut > input[type=radio]').on('click', function(e) {
-        e.stopPropagation();
-    });*/
 
+
+    // Context-menu on buckets list
+    $(function(){
+        $('#machine_buckets > tbody > tr').contextMenu({
+            selector: 'tr', 
+            callback: function(key, options) {
+                var m = "clicked: " + key + " on " + $(this).text();
+                window.console && console.log(m) || alert(m); 
+            },
+            items: {
+                "edit": {name: "Edit", icon: "edit"},
+                "cut": {name: "Cut", icon: "cut"},
+                "copy": {name: "Copy", icon: "copy"},
+                "paste": {name: "Paste", icon: "paste"},
+                "delete": {name: "Delete", icon: "delete"},
+                "sep1": "---------",
+                "quit": {name: "Quit", icon: "quit"}
+            }
+        });
+    });
 });
 

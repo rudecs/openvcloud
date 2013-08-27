@@ -62,6 +62,13 @@ System:/System
 						<span>Machine Buckets</span>
 					</a>	    				
 				</li>
+
+				<li>
+					<a href="../$$space/DesktopBuckets">
+						<i class="icon-cogs"></i>
+						<span>Desktop Buckets</span>
+					</a>	    				
+				</li>
 				
 				<li>					
 					<a href="../$$space/ApplicationBuckets" class="dropdown-toggle">
@@ -167,47 +174,6 @@ System:/System
 {{div: class=footer}}
 	{{div2: class=container}}
 
-		{{div3: class=row-fluid}}
-			{{div4: class=span4}}
-               
-		        {{div5: class=headline}}
-                h3. Awingu
-                {{div5}}
-                {{html:
-				<p class="margin-bottom-25">Awingu is an international corporation with headquarters in Ghent, Belgium. Awingu`s aim is to change the way we all use IT in our daily lives through innovative cloud computing solutions that make a real difference to our industry.</p>	
-                }}
-	            
-
-			{{div4}}
-			
-			{{div4: class=span4}}
-                {{div5: class=posts}}
-                    {{div6: class=headline}}
-                h3. Smart Global Office
-                    {{div6}}
-
-                Smart Global Office is a browser based, next generation application portal solution that provides an alternative to VDI thanks to unified access on multiple devices to any desktop and server application.
-
-               {{div5}}
-			{{div4}}
-
-			{{div4: class=span4}}
-	            
-		        {{div5: class=headline}}
-                 h3. Contact Us
-                {{div5}}
-                {{html:	
-                <address>
-					Antwerpsesteenweg 19 <br />
-					9080 Lochristi <br />
-					Belgium <br />
-					Phone: +32 9 324 20 55 <br />
-					Email: <a href="mailto:info@awingu.com" class="">info@awingu.com</a>
-                </address>
-                  }}
-                
-			{{div4}}
-		{{div3}}
 
 	{{div2}}
 {{div}}
@@ -219,13 +185,11 @@ System:/System
 		{{div3: class=row-fluid}}
 			{{div4: class=span8}}	
                 {{html:					
-	            <p>2013 &copy; Awingu NV. All Rights Reserved.</p>
+	            <p>2013 &copy; CloudScalers. All Rights Reserved.</p>
 			     }}
              {{div4}}
 			{{div4: class=span4}}	
-                {{html:
-				<a href="../$$space"><img src="/$$space/.files/img/logo.png" class="pull-right" alt="" /></a>
-                 }}
+
 			{{div4}}
 		{{div3}}
 
