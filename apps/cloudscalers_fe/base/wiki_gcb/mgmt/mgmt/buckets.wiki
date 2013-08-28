@@ -19,27 +19,6 @@ max-width: 120px;
 </style>
 <script type="text/javascript" src="/$$space/.files/js/jquery.ui.position.js"></script>
 <script type="text/javascript" src="/$$space/.files/js/jquery.contextMenu.js"></script>
-<script type="text/javascript">
-  // Context-menu on buckets list
-    $(function(){
-        $('#machine_buckets_list > tbody').contextMenu({
-            selector: 'tr', 
-            callback: function(key, options) {
-                var m = "clicked: " + key + " on " + $(this).text();
-                window.console && console.log(m) || alert(m); 
-            },
-            items: {
-                "edit": {name: "Edit"},
-                "monitoring": {name: "Monitoring"},
-                "rename": {name: "Rename"},
-                "create snapshot": {name: "Create snapshot"},
-                "delete": {name: "Delete"},
-                "sep1": "---------",
-                "quit": {name: "Quit"}
-            }
-        });
-    });
-</script>
 
 <div id="tabbable">
   <ul class="nav nav-tabs">

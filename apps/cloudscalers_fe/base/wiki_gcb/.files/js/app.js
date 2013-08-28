@@ -1,3 +1,5 @@
+var SPACE = 'test_gcb';
+
 // Source of this function: http://stackoverflow.com/a/901144
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -7,7 +9,7 @@ function getParameterByName(name) {
 }
 
 function goHome() {
-    window.location = '/test_gcb/buckets';
+    window.location = '/' + SPACE + '/buckets';
 }
 
 function reload() {
@@ -30,7 +32,7 @@ jQuery(function(){
         
         this.imageName = ko.observable();
         this.bucketUrl = ko.computed(function() {
-            return "/test_gcb/bucket?id=" + self.id();
+            return "/" + SPACE + "/bucket?id=" + self.id();
         });
 
         this.valid = ko.computed(function(){
@@ -300,7 +302,7 @@ jQuery(function(){
 
             this.login = function() {
                 if (self.username() === 'admin' && self.password() === '123')
-                    location.href = '/test_gcb/buckets';
+                    location.href = '/' + SPACE + '/buckets';
                 else
                     $('.alert-error').show('fast');
             };
@@ -345,25 +347,35 @@ jQuery(function(){
     $('.shortcut > input[type=radio]').on('change', selectParent);
     $('.shortcut > input[type=radio]:checked').each(selectParent);
 
-
     // Context-menu on buckets list
-    $(function(){
-        $('#machine_buckets > tbody > tr').contextMenu({
-            selector: 'tr', 
-            callback: function(key, options) {
-                var m = "clicked: " + key + " on " + $(this).text();
-                window.console && console.log(m) || alert(m); 
-            },
-            items: {
-                "edit": {name: "Edit", icon: "edit"},
-                "cut": {name: "Cut", icon: "cut"},
-                "copy": {name: "Copy", icon: "copy"},
-                "paste": {name: "Paste", icon: "paste"},
-                "delete": {name: "Delete", icon: "delete"},
-                "sep1": "---------",
-                "quit": {name: "Quit", icon: "quit"}
-            }
-        });
+    $.contextMenu({
+        selector: '#machine_buckets_list > tbody > tr', 
+        build: function($trigger, e) {
+            var bucket = ko.dataFor(e.srcElement);
+            var startOrStop = bucket.status() == 'off' ? 'start': 'stop';
+            return {
+                callback: function(key, options) {
+                    if (key === 'startOrStop') {
+                        if (bucket.status() == 'off')
+                            bucket.status('active');
+                        else
+                            bucket.status('off');
+                    } else if (key === 'edit') {
+                        location.href = bucket.bucketUrl();
+                    } else if (key == 'destroy') {
+                        bucket.destroy();
+                    }
+                },
+                items: {
+                    startOrStop: {name: startOrStop[0].toUpperCase() + startOrStop.substr(1).toLowerCase()},
+                    "edit": {name: "Edit"},
+                    "monitoring": {name: "Monitoring"},
+                    "rename": {name: "Rename"},
+                    "create snapshot": {name: "Create snapshot"},
+                    "destroy": {name: "Destroy"}
+                }
+            };
+        }
     });
 });
 
