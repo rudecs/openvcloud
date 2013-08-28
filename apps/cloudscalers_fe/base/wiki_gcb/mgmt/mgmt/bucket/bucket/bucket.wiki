@@ -38,6 +38,9 @@
             <a data-toggle="tab" href="#Settings">Settings</a>
         </li>
         <li >
+            <a data-toggle="tab" href="#Monitoring">Monitoring</a>
+        </li>
+        <li >
             <a data-toggle="tab" href="#Destroy">Destroy</a>
         </li>
         <li >
@@ -104,6 +107,16 @@
     New name: <input  class="input-large" data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text"  placeholder="New Name"/>
     <input class="btn btn-info btn-large"   type="submit" value="Change name" data-bind="click: saveAllBuckets" />
 
+  </div>
+  <div id="Monitoring" class="tab-pane">
+    <h3>Monitoring</h3>
+    <p>
+      CPU Utilization
+}}
+      {{jgauge: id:1 width:200 height:114 start:0 end:100 val:40 random:10 style:black labelsuffix:%}}
+
+{{html:
+    </p>
   </div>
     <div id="Destroy" class="tab-pane">
     <h3>Destroy</h3>
