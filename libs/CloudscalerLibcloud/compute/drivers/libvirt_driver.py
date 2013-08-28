@@ -2,11 +2,13 @@
 
 from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
 from libcloud.compute.base import NodeImage, NodeSize
-
+from jinja2 import Environment, PackageLoader
+import uuid
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     CPUMAPPING = {1: 1700, 2: 3600, 3: 7200}
+    env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
     def list_sizes(self, location=None):
@@ -47,14 +49,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = [{'UNCPath': 'file:///ISOS/ubuntu-2.iso', 
+        images = [{'UNCPath': 'vmhendrik.img',
             'description': '',
             'guid': '3c655a10-7e04-4d93-8ea1-ec5536d9689b',
             'id': 1,
             'name': 'ubuntu-2',
             'referenceId': '',
             'size': 10,
-            'type': 'ubuntu'}, {'UNCPath': 'file:///ISOS/windows-2008.iso', 
+            'type': 'ubuntu'}, {'UNCPath': 'file:///ISOS/windows-2008.iso',
             'description': '',
             'guid': '3c655a10-7e04-4d93-8ea1-ec5536d9689b',
             'id': 2,
@@ -75,7 +77,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                     'imagetype': image['type']}
                 )
 
-    def create_node(self, name, size, image, location, auth):
+    def create_node(self, name, size, image, location=None, auth=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -88,7 +90,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @keyword    size:   The size of resources allocated to this node.
                         (required)
         @type       size:   L{NodeSize}
-   
+
         @keyword    image:  OS Image to boot on node. (required)
         @type       image:  L{NodeImage}
 
@@ -103,5 +105,24 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @return: The newly created node.
         @rtype: L{Node}
         """
+        storagepool = self.connection.storagePoolLookupByName('VMStor')
 
-        return None 
+        disktemplate = self.env.get_template("disk.xml")
+        machinetemplate = self.env.get_template("machine.xml")
+
+        diskname = str(uuid.uuid4())
+        diskbasevolume = image.extra['path']
+        disksize = size.disk
+
+        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
+            diskbasevolume, 'disksize':disksize})
+
+        machinexml = machinetemplate.render({'machinename': name,'diskname':
+            diskname, 'memory': size.ram, 'nrcpu': 1})
+
+        #0 means not to preallocate data
+        storagepool.createXML(diskxml, 0)
+        #0 means default behaviour, e.g machine is auto started.
+        domain = self.connection.createXML(machinexml, 0)
+
+        return domain 
