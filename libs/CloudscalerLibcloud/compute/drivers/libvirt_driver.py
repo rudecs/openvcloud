@@ -1,7 +1,7 @@
 #Add extra specific cloudscaler functions for libvirt libcloud driver
 
 from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
-from libcloud.compute.base import NodeImage, NodeSize
+from libcloud.compute.base import NodeImage, NodeSize, Node
 from jinja2 import Environment, PackageLoader
 import uuid
 
@@ -125,4 +125,21 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         #0 means default behaviour, e.g machine is auto started.
         domain = self.connection.createXML(machinexml, 0)
 
-        return domain 
+        return self._to_node(domain)
+
+
+    def _to_node(self, domain):
+         state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
+         if state in self.NODE_STATE_MAP:
+            state = self.NODE_STATE_MAP[state]
+         else:
+            state = NodeState.UNKNOWN
+
+         extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(),
+                     'types': self.connection.getType(),
+                     'used_memory': memory / 1024, 'vcpu_count': vcpu_count,
+                     'used_cpu_time': used_cpu_time}
+         node = Node(id=domain.ID(), name=domain.name(), state=state,
+                        public_ips=[], private_ips=[], driver=self,
+                        extra=extra)
+         return node
