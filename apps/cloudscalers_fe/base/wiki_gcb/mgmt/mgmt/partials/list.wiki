@@ -1,0 +1,40 @@
+{{html:
+
+<div id="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#machine_buckets">Machine buckets</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#desktop_buckets">Desktop buckets</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div id="machine_buckets" class="tab-pane active">
+      <h1>Buckets List</h1>
+      <a href="#/new" class="btn btn-info btn-large btnfull">Create Bucket</a>
+      <table id="machine_buckets_list"  class="table table-striped table-bordered">
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Plan</th>
+          <th>Region</th>
+        </tr>
+        <tbody class="box menu-1">
+          <tr ng-repeat="bucket in buckets">
+            <td>{[bucket.image]}</td>
+            <td>
+              <a ng-href="#/edit/{[bucket.id]}">{[bucket.name]}</a>
+            </td>
+            <td>{[bucket.status]}</td>
+            <td>{[bucket.plan]}</td>
+            <td>{[bucket.region]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="desktop_buckets" class="tab-pane">Coming soon...</div>
+  </div>
+</div>
+}}

@@ -20,42 +20,12 @@ max-width: 120px;
 <script type="text/javascript" src="/$$space/.files/js/jquery.ui.position.js"></script>
 <script type="text/javascript" src="/$$space/.files/js/jquery.contextMenu.js"></script>
 
-<div id="tabbable">
-  <ul class="nav nav-tabs">
-    <li class="active">
-      <a data-toggle="tab" href="#machine_buckets">Machine buckets</a>
-    </li>
-    <li>
-      <a data-toggle="tab" href="#desktop_buckets">Desktop buckets</a>
-    </li>
-  </ul>
-  <div class="tab-content">
-    <div id="machine_buckets" class="tab-pane active">
-      <h1>Buckets List</h1>
-      <a href="/$$space/new_bucket" class="btn btn-info btn-large btnfull">Create Bucket</a>
-      <table id="machine_buckets_list"  class="table table-striped table-bordered">
-        <tr>
-          <th>Image</th>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Plan</th>
-          <th>Region</th>
-        </tr>
-        <tbody data-bind="foreach: buckets" class=" box menu-1">
-          <tr>
-            <td data-bind="text: imageName"></td>
-            <td data-bind="title: name">
-              <a data-bind="text: name, attr: {href: bucketUrl}"></a>
-            </td>
-            <td data-bind="text: status"></td>
-            <td data-bind="text: plan"></td>
-            <td data-bind="text: region"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div id="desktop_buckets" class="tab-pane">Coming soon...</div>
-  </div>
+<div ng-app="myApp">
+  <div ng-view></div>
 </div>
+
+
+
+
 
 }}

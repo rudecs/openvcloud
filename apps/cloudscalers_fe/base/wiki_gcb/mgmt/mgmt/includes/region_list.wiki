@@ -1,14 +1,5 @@
-<ul>
-   <li class="shortcut">
-    <label for=id_region1>Ghent, Belgium</label>
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Ghent, Belgium" id=id_region1>
-   </li>
-   <li class="shortcut">
-    <label for=id_region2>Bruges, Belgium</label>
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Bruges, Belgium" id=id_region2>
-   </li>
-   <li class="shortcut">
-    <label for=id_region3>Lenoir, NC, USA</label>
-   <input data-bind="checked: selectedBucket().region" name="region_id" type="radio" value="Lenoir, NC, USA" id=id_region3>
-   </li>
-</ul>
+<div class="btn-group">
+    <button type="button" class="btn btn-primary" ng-model="bucket.region" btn-radio="'Ghent, Belgium'">Ghent, Belgium</button>
+    <button type="button" class="btn btn-primary" ng-model="bucket.region" btn-radio="'Bruges, Belgium'">Bruges, Belgium</button>
+    <button type="button" class="btn btn-primary" ng-model="bucket.region" btn-radio="'Lenoir, NC, USA'">Lenoir, NC, USA</button>
+</div>

@@ -1,45 +1,32 @@
 <ul>
-      <li class="shortcut">
-        <label for="id_plan1">512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan1" name="size_id" type="radio" value="512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month"></input>
-      </li>
-      <li class="shortcut">
-        <label for="id_plan2">1GB Memory, 1 Core, 30GB SSD Disk, 2TB Transfer - 10 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan2" name="size_id" type="radio" value="1GB Memory, 1 Core, 30GB SSD Disk, 2TB Transfer - 10 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan3">2GB Memory, 2 Cores, 40GB SSD Disk, 3TB Transfer - 20 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan3" name="size_id" type="radio" value="2GB Memory, 2 Cores, 40GB SSD Disk, 3TB Transfer - 20 USD/month"></input>
-      </li>
-     <li class="shortcut"> 
-        <label for="id_plan4">4GB Memory, 2 Cores, 60GB SSD Disk, 4TB Transfer - 40 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan4" name="size_id" type="radio" value="4GB Memory, 2 Cores, 60GB SSD Disk, 4TB Transfer - 40 USD/month"></input>
-      </li>
-
-
-
-      <li class="shortcut"> 
-        <label for="id_plan5">8GB Memory, 4 Cores, 80GB SSD Disk, 5TB Transfer - 80 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan5" name="size_id" type="radio" value="8GB Memory, 4 Cores, 80GB SSD Disk, 5TB Transfer - 80 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan6">16GB Memory, 8 Cores, 160GB SSD, 6TB Transfer - 160 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan6" name="size_id" type="radio" value="16GB Memory, 8 Cores, 160GB SSD, 6TB Transfer - 160 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan7">32GB Memory, 12 Cores, 320GB SSD, 7TB Transfer - 320 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan7" name="size_id" type="radio" value="32GB Memory, 12 Cores, 320GB SSD, 7TB Transfer - 320 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan8">48GB Memory, 16 Cores, 480GB SSD, 8TB Transfer - 480 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan8" name="size_id" type="radio" value="48GB Memory, 16 Cores, 480GB SSD, 8TB Transfer - 480 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan9">64GB Memory, 20 Cores, 640GB SSD, 9TB Transfer - 640 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan9" name="size_id" type="radio" value="4GB Memory, 20 Cores, 640GB SSD, 9TB Transfer - 640 USD/month"></input>
-      </li>
-      <li class="shortcut"> 
-        <label for="id_plan10">96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month</label>
-       <input data-bind='checked: selectedBucket().plan, valueUpdate: "afterkeydown"' id="id_plan10" name="size_id" type="radio" value="96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month"></input>
-      </li>
- </ul>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month'">
+    512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'1GB Memory, 1 Core, 30GB SSD Disk, 2TB Transfer - 10 USD/month'">
+    1GB Memory, 1 Core, 30GB SSD Disk, 2TB Transfer - 10 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'2GB Memory, 2 Cores, 40GB SSD Disk, 3TB Transfer - 20 USD/month'">
+    2GB Memory, 2 Cores, 40GB SSD Disk, 3TB Transfer - 20 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'4GB Memory, 2 Cores, 60GB SSD Disk, 4TB Transfer - 40 USD/month'">
+    4GB Memory, 2 Cores, 60GB SSD Disk, 4TB Transfer - 40 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'8GB Memory, 4 Cores, 80GB SSD Disk, 5TB Transfer - 80 USD/month'">
+    8GB Memory, 4 Cores, 80GB SSD Disk, 5TB Transfer - 80 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'16GB Memory, 8 Cores, 160GB SSD, 6TB Transfer - 160 USD/month'">
+    16GB Memory, 8 Cores, 160GB SSD, 6TB Transfer - 160 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'32GB Memory, 12 Cores, 320GB SSD, 7TB Transfer - 320 USD/month'">
+    32GB Memory, 12 Cores, 320GB SSD, 7TB Transfer - 320 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'48GB Memory, 16 Cores, 480GB SSD, 8TB Transfer - 480 USD/month'">
+    48GB Memory, 16 Cores, 480GB SSD, 8TB Transfer - 480 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'64GB Memory, 20 Cores, 640GB SSD, 9TB Transfer - 640 USD/month'">
+    64GB Memory, 20 Cores, 640GB SSD, 9TB Transfer - 640 USD/month
+  </button>
+  <button type="button" class="btn btn-primary" ng-model="bucket.plan" btn-radio="'96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month'">
+    96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month
+  </button>
+</ul>

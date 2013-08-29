@@ -1,5 +1,3 @@
-
-
 <div id="tabbable">
     <ul class="nav nav-tabs">
         <li class="active">
@@ -21,97 +19,42 @@
     <div class="tab-content">
         <div id="ubuntu" class="tab-pane active">
             <ul>
-              <li class="shortcut">
-                <label for=id_image1>Ubuntu 13.04 x64</label>
-                <input name="image_id" type="radio" value="Ubuntu 13.04 x64" data-bind="checked: selectedBucket().imageName" id=id_image1></li>
-              
-              <li class="shortcut">
-                <label for=id_image2>Ubuntu 13.04 x32</label>
-                <input name="image_id" type="radio" value="Ubuntu 13.04 x32" data-bind="checked: selectedBucket().imageName" id=id_image2></li>
-              
-              <li class="shortcut">
-                <label for=id_image3>Ubuntu 12.10 x64</label>
-                <input name="image_id" type="radio" value="Ubuntu 12.10 x64" data-bind="checked: selectedBucket().imageName" id=id_image3></li>
-
-            <li class="shortcut">
-                <label for=id_image4>Ubuntu 12.10 x32</label>
-                <input name="image_id" type="radio" value="Ubuntu 12.10 x32" data-bind="checked: selectedBucket().imageName" id=id_image4></li>
-
-            <li class="shortcut">
-                <label for=id_image5>Ubuntu 12.04 x64</label>
-                <input name="image_id" type="radio" value="Ubuntu 12.04 x64" data-bind="checked: selectedBucket().imageName" id=id_image5></li>
-
-            <li class="shortcut">
-                <label for=id_image6>Ubuntu 12.04 x32</label>
-                <input name="image_id" type="radio" value="Ubuntu 12.04 x32" data-bind="checked: selectedBucket().imageName" id=id_image6></li>
-
-            <li class="shortcut">
-                <label for=id_image7>Ubuntu 10.04 x64</label>
-                <input name="image_id" type="radio" value="Ubuntu 10.04 x64" data-bind="checked: selectedBucket().imageName" id=id_image7></li>
-
-            <li class="shortcut">
-                <label for=id_image8>Ubuntu 10.04 x32</label>
-                <input name="image_id" type="radio" value="Ubuntu 10.04 x32" data-bind="checked: selectedBucket().imageName" id=id_image8></li>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 13.04 x64'">Ubuntu 13.04 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 13.04 x32'">Ubuntu 13.04 x32</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 12.10 x64'">Ubuntu 12.10 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 12.10 x32'">Ubuntu 12.10 x32</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 12.04 x64'">Ubuntu 12.04 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 12.04 x32'">Ubuntu 12.04 x32</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 10.04 x64'">Ubuntu 10.04 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Ubuntu 10.04 x32'">Ubuntu 10.04 x32</button>
             </ul>
         </div>
         <div id="CentOS" class="tab-pane">
             <ul>
-              <li class="shortcut">
-                <label for=id_image9>CentOS 6.4 x64</label>
-                <input name="image_id" type="radio" value="CentOS 6.4 x64" data-bind="checked: selectedBucket().imageName" id=id_image9></li>
-              
-              <li class="shortcut">
-                <label for=id_image10>CentOS 6.4 x32</label>
-                <input name="image_id" type="radio" value="CentOS 6.4 x32" data-bind="checked: selectedBucket().imageName" id=id_image10></li>
-
-            <li class="shortcut">
-                <label for=id_image11>CentOS 5.8 x64</label>
-                <input name="image_id" type="radio" value="CentOS 5.8 x64" data-bind="checked: selectedBucket().imageName" id=id_image11></li>
-
-            <li class="shortcut">
-                <label for=id_image12>CentOS 5.8 x32</label>
-                <input name="image_id" type="radio" value="CentOS 5.8 x32" data-bind="checked: selectedBucket().imageName" id=id_image12></li>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'CentOS 6.4 x64'">CentOS 6.4 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'CentOS 6.4 x32'">CentOS 6.4 x32</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'CentOS 5.8 x64'">CentOS 5.8 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'CentOS 5.8 x32'">CentOS 5.8 x32</button>
             </ul>
         </div>
         <div id="Debian" class="tab-pane">
             <ul>
-              <li class="shortcut">
-                <label for=id_image13>Debian 7.0 x64</label>
-                <input name="image_id" type="radio" value="Debian 7.0 x64" data-bind="checked: selectedBucket().imageName" id=id_image13></li>
-              
-              <li class="shortcut">
-                <label for=id_image14>Debian 7.0 x32</label>
-                <input name="image_id" type="radio" value="Debian 7.0 x32" data-bind="checked: selectedBucket().imageName" id=id_image14></li>
-
-            <li class="shortcut">
-                <label for=id_image15>Debian 6.0 x64</label>
-                <input name="image_id" type="radio" value="Debian 6.0 x64" data-bind="checked: selectedBucket().imageName" id=id_image15></li>
-
-            <li class="shortcut">
-                <label for=id_image16>Debian 6.0 x32</label>
-                <input name="image_id" type="radio" value="Debian 6.0 x32" data-bind="checked: selectedBucket().imageName" id=id_image16></li>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Debian 7.0 x64'">Debian 7.0 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Debian 7.0 x32'">Debian 7.0 x32</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Debian 6.0 x64'">Debian 6.0 x64</button>
+                <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Debian 6.0 x32'">Debian 6.0 x32</button>
             </ul>
         </div>
         <div id="ArchLinux" class="tab-pane">
             <ul>
-              <li class="shortcut">
-                <label for=id_image17>Arch Linux 2013.05 x64</label>
-                <input name="image_id" type="radio" value="Arch Linux 2013.05 x64" data-bind="checked: selectedBucket().imageName" id=id_image17></li>
-              
-              <li class="shortcut">
-                <label for=id_image18>Arch Linux 2013.05 x32</label>
-                <input name="image_id" type="radio" value="Arch Linux 2013.05 x32" data-bind="checked: selectedBucket().imageName" id=id_image18></li>
+              <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Arch Linux 2013.05 x64'">Arch Linux 2013.05 x64</button>
+              <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Arch Linux 2013.05 x32'">Arch Linux 2013.05 x32</button>
             </ul>
         </div>
         <div id="Fedora" class="tab-pane">
             <ul>
-              <li class="shortcut">
-                <label for=id_image19>Fedora 17 x64</label>
-                <input name="image_id" type="radio" value="Fedora 17 x64" data-bind="checked: selectedBucket().imageName" id=id_image19></li>
-              
-              <li class="shortcut">
-                <label for=id_image20>Fedora 17 x32</label>
-                <input name="image_id" type="radio" value="Fedora 17 x32" data-bind="checked: selectedBucket().imageName" id=id_image20></li>
+              <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Fedora 17 x64'">Fedora 17 x64</button>
+              <button type="button" class="btn btn-primary" ng-model="bucket.image" btn-radio="'Fedora 17 x32'">Fedora 17 x32</button>
             </ul>
         </div>
     </div>

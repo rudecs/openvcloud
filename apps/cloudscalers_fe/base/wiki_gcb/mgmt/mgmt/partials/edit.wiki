@@ -1,0 +1,5 @@
+{{html:
+<p>
+  Edit bucket
+</p>
+}}
