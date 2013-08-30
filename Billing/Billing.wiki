@@ -11,7 +11,7 @@ h3. Balance & Usage
 
 <!-- Appended Input-->
 <div class="control-group">
-  <label class="control-label" for="appendedtext">Upload your account</label>
+  <label class="control-label" for="appendedtext">Add credit to your account</label>
   <div class="controls">
     <div class="input-append">
       <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="100 USD" type="text">
