@@ -126,8 +126,12 @@ Netmask: 255.255.255.0
 
 
     <div id="monitoring" class="tab-pane">
+}}
 
+| CPU Usage | RAM Assigned | Server Load |
+|{{jgauge: id:1 start:0 end:100 random:100 style:default val:20 labelsuffix:%}}|{{jgauge: id:2 start:0 end:2 random:0.5 style:default val:1.6 labelsuffix:GB}}| {{jgauge: id:3 start:0 end:100 random:0.5 style:default val:0.8 labelsuffix:GB}}|
 
+{{html:
     </div>
 
     <div id="logging" class="tab-pane">
