@@ -9,4 +9,19 @@ The machine buckets tool is a portal that consolidates your resources on multipl
 * Work with different hypervisors and clouds
 * Use true cloud units consumption thanks to metering tools
 
-The Machine Buckets admin pages will be added soon!
+Start now and create your Machine Bucket:
+{{html:
+<form class="form-horizontal" method="get" action="Buckets#/new">
+<fieldset>
+
+<!-- Button -->
+<div class="control-group">
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Create Machine Bucket</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}
+

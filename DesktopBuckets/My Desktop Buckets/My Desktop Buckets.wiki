@@ -1,0 +1,5 @@
+h2. My Desktop Buckets
+
+||  ||  || Name || Number of users || Storage || Number of data locations ||
+|| [Edit Package|Main Office] | [Manage|Connecting] | Main Office | 7 | 140GB | 2 |
+|| [Edit Package|Main Office] | [Manage|Connecting] | Sattelite Office | 5 | 100GB | 1 |

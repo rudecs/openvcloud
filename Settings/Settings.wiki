@@ -1,0 +1,97 @@
+h2. Settings
+
+{{html:
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend></legend>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">Name</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="Mr. Test" class="input-xlarge">
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">E-mail</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="mrtest@cloudscalers.com" class="input-xlarge">
+    
+  </div>
+</div>
+
+<!-- Password input-->
+<div class="control-group">
+  <label class="control-label" for="passwordinput">Password</label>
+  <div class="controls">
+    <input id="passwordinput" name="passwordinput" type="password" placeholder="xxxxxxx" class="input-xlarge">
+    
+  </div>
+</div>
+
+<!-- Multiple Radios (inline) -->
+<div class="control-group">
+  <label class="control-label" for="radios">Credit Card Type</label>
+  <div class="controls">
+    <label class="radio inline" for="radios-0">
+      <input type="radio" name="radios" id="radios-0" value="Visa" checked="checked">
+      Visa
+    </label>
+    <label class="radio inline" for="radios-1">
+      <input type="radio" name="radios" id="radios-1" value="Mastercard">
+      Mastercard
+    </label>
+    <label class="radio inline" for="radios-2">
+      <input type="radio" name="radios" id="radios-2" value="American Express">
+      American Express
+    </label>
+    <label class="radio inline" for="radios-3">
+      <input type="radio" name="radios" id="radios-3" value="Diners">
+      Diners
+    </label>
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">Credit Card Number</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="xxxx-xxxx-xxxx-x765" class="input-xlarge">
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">Expiration date</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="dd/mm" class="input-mini">
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">CCV</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini">
+    <p class="help-block">3 or 4 digits on the backside</p>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="control-group">
+  <label class="control-label" for="singlebutton"></label>
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}

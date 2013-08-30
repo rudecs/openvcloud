@@ -1,0 +1,123 @@
+h2. Manage Machine
+
+{{html:
+<div id="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#actions">Machine actions</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#console">Console Access</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#snapshots">Manage Snapshots</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#monitoring">Monitoring</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#package">Change Package</a>
+    </li>
+
+  </ul>
+  <div class="tab-content">
+    <div id="actions" class="tab-pane active">
+<table width=100%><tr><td valign="top">
+}}
+
+| Name: | Machine Name |
+| IP Address: | xxx.xxx.xxx.xxx |
+| Status: | Started |
+| Memory: | 2GB |
+| Disk: | Boot 11 GB |
+| Data Locations: | Lenoir |
+| | Bruges |
+
+{{html:
+</td><td valign="top">
+}}
+
+Actions:
+
+* Start
+* Stop
+* Pauze
+* Take Snapshot
+* Rename
+* Destroy
+* Rebuild
+
+{{html:
+</td></tr></table>
+    </div>
+
+
+    <div id="console" class="tab-pane">
+
+
+    </div>
+
+
+    <div id="snapshots" class="tab-pane">
+}}
+
+{{html:
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Select Basic -->
+<div class="control-group">
+  <label class="control-label" for="selectbasic">Snapshot every</label>
+  <div class="controls">
+    <select id="selectbasic" name="selectbasic" class="input-medium">
+      <option>15 minutes</option>
+      <option>1 hour</option>
+      <option>4 hours</option>
+      <option>12 hours</option>
+      <option>1 day</option>
+      <option>1 week</option>
+      <option>1 month</option>
+    </select>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="control-group">
+  <label class="control-label" for="singlebutton"></label>
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+}}
+
+|| Name || Date || Action ||
+| dfdfsdfsdfsd | 2013-08-30 14:24 | [Rollback] |
+| dfdfsdsdsdsdsdsd | 2013-08-29 14:24 | [Rollback] |
+
+{{html:
+    </div>
+
+
+    <div id="monitoring" class="tab-pane">
+
+
+    </div>
+
+
+    <div id="package" class="tab-pane">
+}}
+
+{{include:new}}
+
+{{html:
+    </div>
+
+
+  </div>
+</div>
+
+}}

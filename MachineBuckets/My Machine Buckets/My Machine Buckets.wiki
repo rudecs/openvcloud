@@ -1,0 +1,5 @@
+h2. My Machine Buckets
+
+|| Status || Name || IP Address || Memory || CPU || Storage || Main Region ||
+| Running | [John Windows Server|Manage Machine] | 87.56.87.102 | 2 GB | 1 core | 100GB | Bruges, Belgium |
+| Halted | [Ubuntu Jim|Manage Machine] | 188.12.24.111 | 5 GB | 2 Cores | 20 GB | Lenoir, NC, USA|

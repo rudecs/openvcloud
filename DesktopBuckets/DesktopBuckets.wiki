@@ -1,3 +1,20 @@
 h2. Desktop Buckets
 
 Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage his applications and data across all his devices!
+
+Start now and create your Desktop Bucket:
+{{html:
+<form class="form-horizontal" method="get" action="Create Desktop Bucket">
+<fieldset>
+
+<!-- Button -->
+<div class="control-group">
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Create Desktop Bucket</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}
+

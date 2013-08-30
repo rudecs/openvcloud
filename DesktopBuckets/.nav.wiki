@@ -1,0 +1,3 @@
+Desktop Buckets:DesktopBuckets
+My Desktop Buckets:My Desktop Buckets
+Create Desktop Bucket:Create Desktop Bucket

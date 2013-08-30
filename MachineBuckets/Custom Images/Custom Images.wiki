@@ -1,0 +1,24 @@
+h2. Custom Images
+
+h3. Upload your custom image!
+
+{{html:
+<form class="form-horizontal">
+<fieldset>
+
+<!-- File Button --> 
+<div class="control-group">
+  <label class="control-label" for="filebutton">Upload Server Image</label>
+  <div class="controls">
+    <input id="filebutton" name="filebutton" class="input-file" type="file">
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}
+
+h3. Uploaded custom images
+
+|| Image Name || Size || Upload Date ||
+| WindowsServer64.qcow2 | 11,3 GB | 2013-08-30 13:53 |

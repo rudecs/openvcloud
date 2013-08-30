@@ -1,0 +1,32 @@
+h2. Billing
+
+h3. Balance & Usage
+
+| Available credit | $44.67 |
+| Usage this month | $5.35  |
+
+{{html:
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Appended Input-->
+<div class="control-group">
+  <label class="control-label" for="appendedtext">Upload your account</label>
+  <div class="controls">
+    <div class="input-append">
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="100 USD" type="text">
+      <span class="add-on">Upload</span>
+    </div>
+    
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}
+
+h3. Billing History
+
+|| Date || Description || Amount ||
+| June 25, 2013 |	Payment (John Tester) | -$50.00 |
+| May 20, 2013 |	Payment (John Tester) | -$100.00 |

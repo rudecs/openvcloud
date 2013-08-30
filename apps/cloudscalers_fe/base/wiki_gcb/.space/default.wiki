@@ -71,7 +71,7 @@ System:/System
 				
 
 				<li>
-					<a href="../$$space/Buckets">
+					<a href="../$$space/MachineBuckets">
 						<i class="icon-cogs"></i>
 						<span>Machine Buckets</span>
 					</a>	    				
@@ -79,7 +79,7 @@ System:/System
 
 				<li>
 					<a href="../$$space/DesktopBuckets">
-						<i class="icon-cogs"></i>
+						<i class="icon-desktop"></i>
 						<span>Desktop Buckets</span>
 					</a>	    				
 				</li>
@@ -99,16 +99,16 @@ System:/System
 				</li>
 				
 				<li>					
-					<a href="../$$space/FAQ">
-						<i class="icon-question-sign"></i>
-						<span>FAQ </span>
+					<a href="../$$space/Settings">
+						<i class="icon-cog"></i>
+						<span>Settings</span>
 					</a>  									
 				</li>
 				
 				<li>					
-					<a href="../$$space/Tour">
-						<i class="icon-facetime-video"></i>
-						<span>Guided Tour</span>
+					<a href="../$$space/Billing">
+						<i class="icon-money"></i>
+						<span>Billing</span>
                     </a>	
                 </li>
 

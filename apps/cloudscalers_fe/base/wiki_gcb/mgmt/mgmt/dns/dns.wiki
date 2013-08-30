@@ -1,7 +1,8 @@
 @usedefault
-{{html:
-<h1>DNS</h1>
 
+h2. Manage DNS
+
+{{html:
 <input class="input-large" type="text" data-bind="value: newDomain().name, valueUpdate: 'afterkeydown'" placeholder="Name">
 <select  class="input-large select-large" data-bind="options: buckets, optionsText: 'name', value: newDomain().bucket, optionsCaption: 'Select bucket...'"></select>
 <input type="submit" value="Add Domain" data-bind="click: addDomain, enable: !!(newDomain().name() && newDomain().bucket())" class="btn btn-info btn-large ">

@@ -1,0 +1,143 @@
+h2. Main Office
+
+{{html:
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Text input-->
+<div class="control-group">
+  <label class="control-label" for="textinput">Project Name</label>
+  <div class="controls">
+    <input id="textinput" name="textinput" type="text" placeholder="Main Office" class="input-xlarge">
+    
+  </div>
+</div>
+
+<!-- Multiple Checkboxes -->
+<div class="control-group">
+  <label class="control-label" for="checkboxes">Manage Users</label>
+  <div class="controls">
+    <label class="checkbox" for="checkboxes-0">
+      <input type="checkbox" name="checkboxes" id="checkboxes-0" value="john@cloudscalers.com">
+      john@cloudscalers.com [Admin]
+    </label>
+    <label class="checkbox" for="checkboxes-1">
+      <input type="checkbox" name="checkboxes" id="checkboxes-1" value="claudia@cloudscalers.com">
+      claudia@cloudscalers.com
+    </label>
+    <label class="checkbox" for="checkboxes-2">
+      <input type="checkbox" name="checkboxes" id="checkboxes-2" value="brad@cloudscalers.com">
+      brad@cloudscalers.com
+    </label>
+    <label class="checkbox" for="checkboxes-3">
+      <input type="checkbox" name="checkboxes" id="checkboxes-3" value="jennifer@cloudscalers.com">
+      jennifer@cloudscalers.com
+    </label>
+    <label class="checkbox" for="checkboxes-4">
+      <input type="checkbox" name="checkboxes" id="checkboxes-4" value="heather@cloudscalers.com">
+      heather@cloudscalers.com
+    </label>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="control-group">
+  <label class="control-label" for="singlebutton"></label>
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Edit users</button>
+  </div>
+</div>
+
+<!-- Appended Input-->
+<div class="control-group">
+  <label class="control-label" for="appendedtext">Add User</label>
+  <div class="controls">
+    <div class="input-append">
+      <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="placeholder" type="text">
+      <span class="add-on">Add</span>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Multiple Checkboxes (inline) -->
+<div class="control-group">
+  <label class="control-label" for="checkboxes">Select User Type</label>
+  <div class="controls">
+    <label class="checkbox inline" for="checkboxes-0">
+      <input type="checkbox" name="checkboxes" id="checkboxes-0" value="User">
+      User
+    </label>
+    <label class="checkbox inline" for="checkboxes-1">
+      <input type="checkbox" name="checkboxes" id="checkboxes-1" value="Administrator">
+      Administrator
+    </label>
+  </div>
+</div>
+
+<!-- Appended Input-->
+<div class="control-group">
+  <label class="control-label" for="appendedtext">Storage</label>
+  <div class="controls">
+    <div class="input-append">
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="140 GB" type="text">
+      <span class="add-on">Update</span>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Multiple Checkboxes -->
+<div class="control-group">
+  <label class="control-label" for="checkboxes">Data Locations</label>
+  <div class="controls">
+    <label class="checkbox" for="checkboxes-0">
+      <input type="checkbox" name="checkboxes" id="checkboxes-0" value="Ghent, Belgium">
+      Ghent, Belgium
+    </label>
+    <label class="checkbox" for="checkboxes-1">
+      <input type="checkbox" name="checkboxes" id="checkboxes-1" value="Bruges, Belgium">
+      Bruges, Belgium
+    </label>
+    <label class="checkbox" for="checkboxes-2">
+      <input type="checkbox" name="checkboxes" id="checkboxes-2" value="Lenoir, NC, USA">
+      Lenoir, NC, USA
+    </label>
+  </div>
+</div>
+
+<!-- Appended Input-->
+<div class="control-group">
+  <label class="control-label" for="appendedtext"># MS Office Licenses</label>
+  <div class="controls">
+    <div class="input-append">
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="5" type="text">
+      <span class="add-on">Up - Down</span>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Appended Input-->
+<div class="control-group">
+  <label class="control-label" for="appendedtext"># MS Office Full Licenses</label>
+  <div class="controls">
+    <div class="input-append">
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="0" type="text">
+      <span class="add-on">Up - Down</span>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Button -->
+<div class="control-group">
+  <label class="control-label" for="singlebutton"></label>
+  <div class="controls">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Update Desktop Bucket</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+}}
