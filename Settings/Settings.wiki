@@ -38,21 +38,21 @@ h2. Settings
 <div class="control-group">
   <label class="control-label" for="radios">Credit Card Type</label>
   <div class="controls">
+    <label class="radio inline" for="radios-3">
+      <input type="radio" name="radios" id="radios-3" value="Paypal">
+      Diners
+    </label>
     <label class="radio inline" for="radios-0">
-      <input type="radio" name="radios" id="radios-0" value="Visa" checked="checked">
+      <input type="radio" name="radios" id="radios-0" value="Visa (Coming Soon)" checked="checked">
       Visa
     </label>
     <label class="radio inline" for="radios-1">
-      <input type="radio" name="radios" id="radios-1" value="Mastercard">
+      <input type="radio" name="radios" id="radios-1" value="Mastercard (Coming Soon)">
       Mastercard
     </label>
     <label class="radio inline" for="radios-2">
-      <input type="radio" name="radios" id="radios-2" value="American Express">
+      <input type="radio" name="radios" id="radios-2" value="American Express (Coming Soon)">
       American Express
-    </label>
-    <label class="radio inline" for="radios-3">
-      <input type="radio" name="radios" id="radios-3" value="Diners">
-      Diners
     </label>
   </div>
 </div>
