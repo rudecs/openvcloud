@@ -16,6 +16,9 @@ h2. Manage Machine
       <a data-toggle="tab" href="#monitoring">Monitoring</a>
     </li>
     <li>
+      <a data-toggle="tab" href="#logging">Change Log</a>
+    </li>
+    <li>
       <a data-toggle="tab" href="#package">Change Package</a>
     </li>
 
@@ -25,36 +28,56 @@ h2. Manage Machine
 <table width=100%><tr><td valign="top">
 }}
 
-| Name: | Machine Name |
-| IP Address: | xxx.xxx.xxx.xxx |
-| Status: | Started |
-| Memory: | 2GB |
-| Disk: | Boot 11 GB |
-| Data Locations: | Lenoir |
+| *Name*: | Machine Name |
+| *IP Address*: | xxx.xxx.xxx.xxx |
+| *Status*: | Started |
+| *Memory*: | 2GB |
+| *Disk*: | Boot 11 GB |
+| *Data Locations*: | Lenoir |
 | | Bruges |
 
 {{html:
-</td><td valign="top">
+</td><td valign="top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td valign="top">
 }}
 
-Actions:
+*Actions*:
 
-* Start
-* Stop
-* Pauze
-* Take Snapshot
-* Rename
-* Destroy
-* Rebuild
+[Start]
+[Stop]
+[Pauze]
+[Take Snapshot]
+[Rename]
+[Destroy]
+[Rebuild]
 
 {{html:
 </td></tr></table>
+}}
+
+Most recent changes:
+
+|| Event || Initiated || User ||
+| Access Console | 2013-08-31 14:24 | jimmyh |
+| Start Machine | 2013-08-30 14:24 | johnm |
+| Create Machine | 2013-08-29 14:24 | jimmyh |
+
+{{html:
     </div>
 
 
     <div id="console" class="tab-pane">
+}}
 
+If you see a black screen just click on it and click any button to activate the console window.
 
+Public Network
+IP Address: 192.241.173.134
+Gateway: 192.241.173.1
+Netmask: 255.255.255.0
+
+!console.png!
+
+{{html:
     </div>
 
 
@@ -107,6 +130,16 @@ Actions:
 
     </div>
 
+    <div id="logging" class="tab-pane">
+}}
+
+|| Event || Initiated || User ||
+| Access Console | 2013-08-31 14:24 | jimmyh |
+| Start Machine | 2013-08-30 14:24 | johnm |
+| Create Machine | 2013-08-29 14:24 | jimmyh |
+
+{{html:
+    </div>
 
     <div id="package" class="tab-pane">
 }}
