@@ -5,11 +5,12 @@ def installFreshComputeNode(nocps_url):
     print 'Installing Ubuntu 13.04 on the compute node'
     
     ps = xmlrpclib.ServerProxy(nocps_url)
+    macaddress = '00:e0:81:b2:32:89' #'00:e0:81:b2:89:f9'
     
     serverdetails = {
                      'adminuser': 'cs',
                      'hostname': 'cloudscale02',
-                     'mac': '00:e0:81:b2:89:f9',    #Physical machine identifier
+                     'mac': macaddress,    #Physical machine identifier
                      'profile': 403,                #Ubuntu 13.04
                      'rebootmethod': 'auto',
                      'rootpassword': 'R00t3r',
@@ -21,7 +22,7 @@ def installFreshComputeNode(nocps_url):
     if not provisioning_result['success']:
         raise provisioning_result
     
-    while ps.PXE_API.getProvisioningStatusByServer('00:e0:81:b2:89:f9'):
+    while ps.PXE_API.getProvisioningStatusByServer(macaddress):
         print '.',
         time.sleep(5)
     
