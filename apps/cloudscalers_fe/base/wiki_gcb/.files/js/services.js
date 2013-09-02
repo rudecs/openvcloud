@@ -28,14 +28,32 @@ function LocalStorageService(keyName) {
                 return elements[i];
         }
         return null;
-    }
+    };
 
+    this.save = function(element) {
+        var elements = this.getAll();
+        for(var i = 0; i < elements.length; i++) {
+            if (elements[i].id && elements[i].id === element.id) {
+                elements[i] = element;
+                break;
+            }
+        }
+        this.saveAll(elements);
+    };
+
+    this.remove = function(element) {
+        var elements = this.getAll();
+        elements.splice(elements.indexOf(element), 1);
+        this.saveAll(elements);
+    }
     return this;
 }
-
 
 angular.module('myApp.services', [])
     .factory('Buckets', function() {
         return new LocalStorageService('gcb-buckets');
+    })
+    .factory('Snapshots', function() {
+        return new LocalStorageService('gcb-snapshots');
     });
 

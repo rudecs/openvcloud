@@ -393,7 +393,14 @@ background:#fff;
 border-radius: 10px; /* future proofing */
 
 }
+#back-to-top {
 
+    display: inline;
+    float: right;
+    margin-right: 20px;
+    margin-top: -30px;
+    right: 0;
+}
 .account-container {
     background: none repeat scroll 0 0 #F9F9F9;
     border: 1px solid #D5D5D5;
@@ -471,6 +478,31 @@ span.login-checkbox > input[type="checkbox"] + label {
     width: 25%;
     background: #CCCCCC !important;
 }
+    .btn-selector.active {
+    
+      background: #eee !important;
+    } 
 .form-horizontal .form-actions {
     padding-left: 180px;
+    background:#eee;
+}
+
+input[type="file"] {
+    border-radius: 3px 3px 3px 3px;
+    color: #555555;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 9px;
+    padding: 4px 6px;
+
+     background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}
+.x-btn {
+    margin-left: 10px;
+    margin-top: -6px;
+    padding: 7px 20px;
 }

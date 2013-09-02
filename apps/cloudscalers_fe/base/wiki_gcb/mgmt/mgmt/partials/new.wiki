@@ -8,15 +8,17 @@
             <input ng-model="bucket.name" type="text" class="input-large" placeholder="Name"/>
         </div>
     </div>
-
+	<hr>
     <div class="control-group">
         <label class="control-label" >Plan:</label>
         <div class="controls shortcuts" >{{include:plan_list}}</div>
     </div>
+	<hr>
     <div class="control-group">
         <label class="control-label" >Region</label>
         <div class="controls shortcuts">{{include:region_list}}</div>
     </div>
+	<hr>
     <div class="control-group">
         <label class="control-label" >Image</label>
         <div class="controls shortcuts">{{include:image_list}}</div>
