@@ -111,7 +111,7 @@
             <p>
                 CPU Utilization
 }}
-      {{jgauge: id:1 width:200 height:114 start:0 end:100 val:40 random:10 style:black labelsuffix:%}}
+      {{jgauge: id:1 width:200 height:114 start:0 end:100 val:40  style:black labelsuffix:%}}
 
 {{html:
             </p>

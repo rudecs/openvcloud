@@ -3,22 +3,6 @@
 
 
 {{html:
-<link  href='/$$space/.files/css/jquery.contextMenu.css' type='text/css' rel='Stylesheet'/>
-<style>
-  /* To fix context menu screwed by bootstrap CSS */
-  .context-menu-list {
-min-width: 120px;
-max-width: 120px;
-
-}
-
-.context-menu-item {
-  display: block;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-}
-</style>
-<script type="text/javascript" src="/$$space/.files/js/jquery.ui.position.js"></script>
-<script type="text/javascript" src="/$$space/.files/js/jquery.contextMenu.js"></script>
 
 <div ng-app="myApp">
   <div ng-view></div>
