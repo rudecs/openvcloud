@@ -26,4 +26,9 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             Buckets.add($scope.bucket);
             location.href = "#/list";
         };
+    }])
+
+    .controller('BucketEditCtrl', ['$scope', '$routeParams', 'Buckets', function($scope, $routeParams, Buckets) {
+        $scope.bucket = Buckets.getById(parseFloat($routeParams.bucketId));
+
     }]);
