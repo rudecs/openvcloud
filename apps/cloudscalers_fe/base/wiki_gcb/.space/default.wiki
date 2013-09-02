@@ -71,7 +71,7 @@ System:/System
 				
 
 				<li>
-					<a href="../$$space/MachineBuckets">
+					<a href="../$$space/Buckets">
 						<i class="icon-cogs"></i>
 						<span>Machine Buckets</span>
 					</a>	    				
@@ -79,7 +79,7 @@ System:/System
 
 				<li>
 					<a href="../$$space/DesktopBuckets">
-						<i class="icon-desktop"></i>
+						<i class="icon-cogs"></i>
 						<span>Desktop Buckets</span>
 					</a>	    				
 				</li>
@@ -99,16 +99,16 @@ System:/System
 				</li>
 				
 				<li>					
-					<a href="../$$space/Settings">
-						<i class="icon-cog"></i>
-						<span>Settings</span>
+					<a href="../$$space/FAQ">
+						<i class="icon-question-sign"></i>
+						<span>FAQ </span>
 					</a>  									
 				</li>
 				
 				<li>					
-					<a href="../$$space/Billing">
-						<i class="icon-money"></i>
-						<span>Billing</span>
+					<a href="../$$space/Tour">
+						<i class="icon-facetime-video"></i>
+						<span>Guided Tour</span>
                     </a>	
                 </li>
 
@@ -215,8 +215,8 @@ System:/System
 	<script type="text/javascript" src="/$$space/.files/js/jquery.contextMenu.js"></script>
 
 	<!--<script src="/$$space/.files/js/knockout-2.3.0.js" type="text/javascript"></script>-->
-	<script src="/$$space/.files/js/lib/angular/angular.js"></script>
-	<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.5.0.js"></script>
+	<script src="/$$space/.files/lib/angular/angular.js"></script>
+	<script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.5.0.js"></script>
 	<script src="/$$space/.files/js/controllers.js" type="text/javascript"></script>
 	<script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
 	<script src="/$$space/.files/js/filters.js" type="text/javascript"></script>

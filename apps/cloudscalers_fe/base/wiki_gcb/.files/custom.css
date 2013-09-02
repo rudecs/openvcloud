@@ -1,7 +1,10 @@
 .main .container {
 
 }
-
+hr {
+ border-bottom: 3px dotted #CCCCCC;
+    border-top: medium none;
+}
 
 h2 { color:#00baff; }
 
@@ -461,8 +464,13 @@ span.login-checkbox > input[type="checkbox"] + label {
 }
 
 
-.btn-primary {
+ .btn-selector {
     float: left;
     margin: 10px 20px 10px 0px;
+    font-size: 12px !important;
     width: 25%;
+    background: #CCCCCC !important;
+}
+.form-horizontal .form-actions {
+    padding-left: 180px;
 }

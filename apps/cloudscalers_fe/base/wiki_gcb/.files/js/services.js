@@ -1,10 +1,14 @@
 'use strict';
 
+// Read & write JSON objects from/to localStorage
 function LocalStorageService(keyName) {
     this.keyName = keyName;
 
     this.getAll = function() {
-        return angular.fromJson(localStorage.getItem(keyName));
+        if (localStorage.getItem(keyName))
+            return angular.fromJson(localStorage.getItem(keyName));
+        else
+            return [];
     };
 
     this.saveAll = function(elements) {
@@ -12,16 +16,24 @@ function LocalStorageService(keyName) {
     };
 
     this.add = function(element) {
-        var elements = this.getAll() || [];
+        var elements = this.getAll();
         elements.push(element);
         this.saveAll(elements);
+    };
+
+    this.getById = function(id) {
+        var elements = this.getAll();
+        for(var i = 0; i < elements.length; i++) {
+            if (elements[i].id && elements[i].id === id)
+                return elements[i];
+        }
+        return null;
     }
 
     return this;
 }
 
 
-// Demonstrate how to register services
 angular.module('myApp.services', [])
     .factory('Buckets', function() {
         return new LocalStorageService('gcb-buckets');

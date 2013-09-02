@@ -1,5 +1,5 @@
 {{html:
-<p>
-  Edit bucket
-</p>
+<h1>
+  Edit bucket: {[bucket.id]}
+</h1>
 }}
