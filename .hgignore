@@ -1,5 +1,6 @@
-\.pyc$
-\.gen\.py$
-methodclass/.*_osis\.py$
-specs/\w+_model_\w+.spec$
-space_\w+__\w+
+.pyc$
+.swp$
+.rej$
+.orig$
+~$
+

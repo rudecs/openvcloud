@@ -1,6 +1,7 @@
 #Add extra specific cloudscaler functions for libvirt libcloud driver
 
 from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
+from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node
 from jinja2 import Environment, PackageLoader
 import uuid
@@ -9,7 +10,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     CPUMAPPING = {1: 1700, 2: 3600, 3: 7200}
     env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
+    backendconnection = connection.DummyConnection()
 
+    def set_backend(self, connection):
+        """
+        Set a connection to the cloudbroker backend, this is used
+        to get all the supported images and sizes
+        """
+        self.backendconnection = connection
 
     def list_sizes(self, location=None):
         """
@@ -20,12 +28,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @type: C{str}
         @rtype: C{list} of L{NodeSize}
         """
-        sizes = [{'CU': 2, 'disks': 40, 'guid':
-            '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 1, 'name': u'BIG',
-            'referenceId': ''},{'CU': 1, 'disks': 20, 'guid':
-            '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 2, 'name': u'SMALL',
-            'referenceId': ''}]
-
+        sizes = self.backendconnection.listSizes()
         return [self._to_size(size) for size in sizes]
 
     def _to_size(self, size):
@@ -49,22 +52,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = [{'UNCPath': 'vmhendrik.img',
-            'description': '',
-            'guid': '3c655a10-7e04-4d93-8ea1-ec5536d9689b',
-            'id': 1,
-            'name': 'ubuntu-2',
-            'referenceId': '',
-            'size': 10,
-            'type': 'ubuntu'}, {'UNCPath': 'file:///ISOS/windows-2008.iso',
-            'description': '',
-            'guid': '3c655a10-7e04-4d93-8ea1-ec5536d9689b',
-            'id': 2,
-            'name': 'windows-2008',
-            'referenceId': '',
-            'size': 20,
-            'type': 'WINDOWS'}]
-
+        images = self.backendconnection.listImages()
         return [self._to_image(image) for image in images]
 
     def _to_image(self, image):
