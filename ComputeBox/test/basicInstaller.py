@@ -10,4 +10,4 @@ def install_prereqs():
     WORKSPACE = os.environ.get('WORKSPACE')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/libvirt_no_sparse.patch'), '/usr/share/pyshared/')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/raring.patch'), '/tmp/')
-    run('python /opt/jumpscale/shellcmds/jpackage_install --package installEnv')
+    run('jpackage_install --package installEnv')
