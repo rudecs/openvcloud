@@ -477,7 +477,7 @@ span.login-checkbox > input[type="checkbox"] + label {
 
  .btn-selector {
     float: left;
-    margin: 10px 20px 10px 0px;
+    margin: 0px 20px 20px 0px;
     font-size: 12px !important;
     width: 25%;
     /*background: #CCCCCC !important;*/
@@ -554,8 +554,13 @@ min-width:90px;
     background:#fff;
      border-radius: 4px;
 }
+    #monitoring .span3:hover {
+ box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+    }
 
 #monitoring .span3 h4 {
-
-    padding:10px;
+padding: 10px;
+    text-align: center;
 }
+
+.controls  

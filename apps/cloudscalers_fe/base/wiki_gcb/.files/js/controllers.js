@@ -115,7 +115,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             users: [],
             newUser: { email: '', userType: '' },
             storage: 100,
-            region: '',
+            locations: [false, false, false],
             numOfficeLicenses: 5,
             numFullOfficeLicenses: 0,
 
@@ -128,4 +128,17 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         $scope.create = function() {
             DesktopBucketService.add($scope.bucket);
         };
+    }])
+
+    .controller('ListDesktopBucketsController', ['$scope', 'DesktopBucketService', function($scope, DesktopBucketService) {
+        $scope.buckets = DesktopBucketService.getAll();
+        $scope.numOfDataLocations = function(bucket) {
+            var numOfLocations = 0;
+            for (var i = 0; i < bucket.locations.length; i++) {
+                if (bucket.locations[i]) {
+                    numOfLocations++;
+                }
+            }
+            return numOfLocations;
+        }
     }]);

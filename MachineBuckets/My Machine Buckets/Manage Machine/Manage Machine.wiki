@@ -149,14 +149,18 @@ h4. Server Load
     </div>
 
     <div id="logging" class="tab-pane">
-}}
 
-|| Event || Initiated || User ||
-| Access Console | 2013-08-31 14:24 | jimmyh |
-| Start Machine | 2013-08-30 14:24 | johnm |
-| Create Machine | 2013-08-29 14:24 | jimmyh |
+<table class="table table-striped table-bordered">
+<thead>
+<tr><th> Event </th><th> Initiated </th><th> User </th></tr>
+</thead>
+<tbody>
+<tr><td> Access Console </td><td> 2013-08-31 14:24 </td><td> jimmyh </td></tr>
+<tr><td> Start Machine </td><td> 2013-08-30 14:24 </td><td> johnm </td></tr>
+<tr><td> Create Machine </td><td> 2013-08-29 14:24 </td><td> jimmyh </td></tr>
+</tbody>
+</table>
 
-{{html:
     </div>
 
     <div id="package" class="tab-pane">

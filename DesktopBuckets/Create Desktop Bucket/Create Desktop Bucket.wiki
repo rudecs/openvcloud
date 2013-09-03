@@ -1,13 +1,13 @@
 h2. Create Desktop Bucket
 
 {{html:
-<form class="form-horizontal" method="get" action="My Desktop Buckets" ng-app="myApp" ng-controller="CreateDesktopBucketController">
+<form class="form-horizontal" ng-app="myApp" ng-controller="CreateDesktopBucketController">
 <fieldset>
 
 <div class="control-group">
   <label class="control-label" for="textinput">Project Name</label>
   <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="" class="input-xlarge" ng-model="bucket.projectName">    
+    <input id="textinput" name="textinput" type="text" class="input-xlarge" ng-model="bucket.projectName">    
   </div>
 </div>
 
@@ -15,10 +15,9 @@ h2. Create Desktop Bucket
   <label class="control-label" for="appendedtext">Add User</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="e-mail" type="email" ng-model="bucket.newUser.email">
-      <button>Add</button>
+      <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="E-mail" type="text" ng-model="bucket.newUser.email">
+      <button class="btn btn-primary" ng-click="bucket.addNewUser()">Add</button>
     </div>
-    
   </div>
 </div>
 
@@ -36,6 +35,24 @@ h2. Create Desktop Bucket
   </div>
 </div>
 
+<div class="control-group" ng-show="bucket.users.length > 0">
+  <label class="control-label" for="radios">&nbsp;</label>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>User type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in bucket.users">
+        <td>{[user.email]}</td>
+        <td>{[user.userType]}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <div class="control-group">
   <label class="control-label" for="appendedtext">Choose Storage</label>
   <div class="controls">
@@ -49,7 +66,13 @@ h2. Create Desktop Bucket
 
 <div class="control-group">
   <label class="control-label" for="checkboxes">Data Locations</label>
-  {{include:region_list}}
+  <div class="controls">
+    <div class="btn-group">
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[0]" btn-checkbox>Ghent, Belgium</button>
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[1]" btn-checkbox>Bruges, Belgium</button>
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[2]" btn-checkbox>Lenoir, NC, USA</button>
+    </div>
+  </div>
 </div>
 
 <div class="control-group">
