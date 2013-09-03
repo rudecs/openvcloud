@@ -42,8 +42,8 @@
     <div class="tab-content">
         <div id="power" class="tab-pane active">
             <h3>Power control</h3>
-            <button class="btn btn-info btn-large" ng-show="bucket.status == 'active'" ng-click="bucket.powerOff()">Power Off</button>
-            <button class="btn btn-info btn-large" ng-show="bucket.status != 'active'" ng-click="bucket.boot()">Boot</button>
+            <button class="btn btn-info btn-large" ng-show="bucket.status == 'Running'" ng-click="bucket.powerOff()">Power Off</button>
+            <button class="btn btn-info btn-large" ng-show="bucket.status != 'Running'" ng-click="bucket.boot()">Boot</button>
         </div>
 
         <div id="Plan" class="control-group tab-pane">
@@ -56,12 +56,12 @@
         <div id="Snapshots" class="tab-pane">
             <h3>Manage & create Snapshots</h3>
             <h4>Take a Snapshot</h4>
-            <div ng-show="bucket.status == 'off'">
+            <div ng-show="bucket.status == 'Halted'">
                 Snapshot name:
                 <input class="input-large"  ng-model='newSnapshot.name' type="text"  placeholder="Snapshot Name"/>
                 <input class="btn btn-info btn-large"  type="submit" value="Create snapshot" ng-click="createSnapshot()" />
             </div>
-            <div ng-show="bucket.status == 'active'">You must turn the bucket off before creating snapshot</div>
+            <div ng-show="bucket.status == 'Running'">You must turn the bucket off before creating snapshot</div>
             <hr>
 
             <h4>Restore from Snapshot</h4>

@@ -14,10 +14,11 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
     .controller('BucketNewCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
         $scope.bucket = {
             id: Math.random() * 1000000000,
+            ip: Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256),
             name: '',
             plan: '',
             region: '',
-            status: 'active',
+            status: 'Running',
             image: '',
             history: []
         };
@@ -40,13 +41,13 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         $scope.selectedSnapshot = '';
 
         $scope.bucket.boot = function() {
-            $scope.bucket.status = 'active';
+            $scope.bucket.status = 'Running';
             $scope.bucket.history.push({event: 'Booted', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
         };
 
         $scope.bucket.powerOff = function() {
-            $scope.bucket.status = 'off';
+            $scope.bucket.status = 'Halted';
             $scope.bucket.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
         };

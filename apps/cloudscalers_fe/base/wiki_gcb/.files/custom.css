@@ -563,4 +563,13 @@ padding: 10px;
     text-align: center;
 }
 
-.controls  
+.support  textarea  { 
+    height: 150px;
+    width: 50%;
+
+}
+.support  input[type="text"]  { 
+ width: 50%;
+
+
+}
