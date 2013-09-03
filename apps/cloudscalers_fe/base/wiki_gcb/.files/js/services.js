@@ -62,5 +62,8 @@ angular.module('myApp.services', [])
     })
     .factory('SettingsService', function() {
         return new LocalStorageService('gcb-settings');
+    })
+    .factory('DesktopBucketService', function() {
+        return new LocalStorageService('gcb-desktop-buckets');
     });
 

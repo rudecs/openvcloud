@@ -107,4 +107,25 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
             SettingsService.save($scope.settings);
         }
+    }])
+
+    .controller('CreateDesktopBucketController', ['$scope', 'DesktopBucketService', function($scope, DesktopBucketService) {
+        $scope.bucket = {
+            projectName: '',
+            users: [],
+            newUser: { email: '', userType: '' },
+            storage: 100,
+            region: '',
+            numOfficeLicenses: 5,
+            numFullOfficeLicenses: 0,
+
+            addNewUser: function() {
+                this.users.push(this.newUser);
+                this.newUser = { email: '', userType: '' };
+            }
+        };
+
+        $scope.create = function() {
+            DesktopBucketService.add($scope.bucket);
+        };
     }]);
