@@ -30,7 +30,7 @@ class cloudapi_images(cloudapi_images_osis):
 
         """
         term = dict()
-        query = {'fields': ['id', 'name','description', 'type']}
+        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size']}
         results = self.cb.model_image_find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         return images

@@ -1,5 +1,6 @@
 from JumpScale import j
 from cloudapi_sizes_osis import cloudapi_sizes_osis
+import ujson
 
 
 class cloudapi_sizes(cloudapi_sizes_osis):
@@ -16,8 +17,15 @@ class cloudapi_sizes(cloudapi_sizes_osis):
         self.actorname = "sizes"
         self.appname = "cloudapi"
         cloudapi_sizes_osis.__init__(self)
+        self._cb = None
 
         pass
+
+    @property
+    def cb(self):
+        if not self._cb:
+            self._cb = j.apps.cloud.cloudbroker
+        return self._cb
 
     def list(self, **kwargs):
         """
@@ -25,5 +33,8 @@ class cloudapi_sizes(cloudapi_sizes_osis):
         result list
 
         """
-        # put your code here to implement this method
-        return j.apps.cloud.cloudbroker.model_size_list()
+        term = dict()
+        query = {'fields': ['id', 'name', 'CU', 'disks']}
+        results  = self.cb.model_size_find(ujson.dumps(query))['result']
+        sizes = [res['fields'] for res in results]
+        return sizes
