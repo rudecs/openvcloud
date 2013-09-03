@@ -1,4 +1,5 @@
-from fabric.api import run, put, append
+from fabric.api import run, put
+from fabric.contrib.files import append
 import os
 
 def install_prereqs():
