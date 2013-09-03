@@ -1,0 +1,79 @@
+h1. Security.
+
+On this page we explain how authentication and authorisation works in the OpenWizzyCloud Broker.
+
+
+h2. Authentication.
+
+h3.  API key
+
+This is using the existing key system of pylabs6.
+
+Users should be able to create multiple api keys and manage(Option) them(e.g add/remove)
+
+Normally a user will login and receive a secrete key.
+The secret key will be vallid for x amount of time.
+
+This secret key will be used as authkey in all the api requests
+
+Example: Creating a cloudspace.
+
+{{code:
+rest/cloudapi/cloudspace/create?authkey=5454654&access=&accountId=1&maxDiskCapacity=&name=&maxMemoryCapacity=&format=text
+}}
+
+h3. Authorisation
+
+The main idea is to have access level authorisation on account and cloudspaces. 
+Each cloudspace is part of an account.
+An account can only be created by users who are part of the systems 'admin' group.
+
+Access granted on an account overrules cloudspace access.
+This means that if a user gets a certain access level on a account he has the same access on all cloudspaces of this account.
+
+When creating an account/cloudspace you can pass some default users who should get admin access
+
+* account.create('name', &#91;'myuserid'])
+* clouspace.create(accountId, 'name', &#91;'myuserid']...)
+
+Both cloudspace and account has methods to control these access levels
+
+* cloudspace.addUser / account.addUser
+* cloudspace.delUser / account.delUser
+
+
+Later we can extend this to the level of single machines or disks.
+The system is based on a ace.
+When a user get access on a cloudspace a ace is created which contains the proper access rights.
+
+h3. ACE structure
+
+* User or group id
+* Access rights.
+
+The access rights:
+
+* Create machines, snapshots, backups. E.g actions which has influence on the amount of storage: C
+* Actions: e.g start/stop/... E.g action which has influence on the cpu usage: X
+* Delete machines, snapshots, ... D
+* Read only access(e.g no actions are possible): R
+* Create new cloudspaces: A This accesslevel should be granted from the account of the cloudspace
+* Add users and groups to the account/cloudspace(usermanagement): U
+
+Examples: CXDRAU -> User is a admin
+          R -> User can only read 
+          RXCDU -> A user can do everything except creating new spaces, e.g he is admin in the specific space.
+
+h4. How the validation is done.
+
+Authorisation is done on the cloudbroker.
+The cloudbroker is responsible to filter the result to only show the resources on which the user has access.
+
+
+
+
+
+
+
+
+
