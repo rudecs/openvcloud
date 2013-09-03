@@ -306,12 +306,14 @@ float:right;
 .big-stats-container .widget-content {
     background: -moz-linear-gradient(center top , #FAFAFA 0%, #E9E9E9 100%) repeat scroll 0 0 transparent;
 }
-
+.widget-content {
+padding:5px;  background: none repeat scroll 0 0 #EEEEEE !important;
+}
 #big_stats .stat {
     border-left: 1px solid #FFFFFF;
     border-right: 1px solid #CCCCCC;
     display: table-cell;
-    height: 90px;
+     color: #888888;
     padding: 0;
     position: relative;
     text-align: center;
@@ -328,7 +330,7 @@ float:right;
 
 .stat {
  color: #333333;
-    font-size: 17px;
+    font-size: 12px;
     font-weight: bold;
     line-height: 1.5em;
     padding: 10px !important;
@@ -362,7 +364,9 @@ td.mark {
     font-weight: bold;
     text-align: center;
 }
-
+.shortcuts {
+    display: inline-block;
+}
 .shortcuts li input[type="radio"] {
 display:none;
 }
@@ -476,7 +480,7 @@ span.login-checkbox > input[type="checkbox"] + label {
     margin: 10px 20px 10px 0px;
     font-size: 12px !important;
     width: 25%;
-    background: #CCCCCC !important;
+    /*background: #CCCCCC !important;*/
 }
     .btn-selector.active {
     

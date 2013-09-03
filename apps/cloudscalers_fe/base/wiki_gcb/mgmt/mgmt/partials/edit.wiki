@@ -49,8 +49,7 @@
         <div id="Plan" class="control-group tab-pane">
             <h3>Choose your Plan</h3>
             <div class="controls shortcuts">{{include:plan_list}}</div>
-            <br>
-            <br>
+            
             <br>
             <input class="btn btn-info btn-large " type="submit" value="Resize" ng-click="bucket.resize()" />
         </div>
@@ -95,8 +94,8 @@
             <h4>Image</h4>
             <div class="controls shortcuts">
                 {{include:image_list}}
-                <input class="btn btn-info btn-large"   type="submit" value="Change image" ng-click="bucket.save()" />
             </div>
+			<input class="btn btn-info btn-large"   type="submit" value="Change image" ng-click="bucket.save()" />
             <br>
             <br>
             <hr>

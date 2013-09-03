@@ -1,5 +1,31 @@
 h2. My Machine Buckets
+{{html:
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Status</th><th>Name</th><th>IP Address</th><th>Memory</th><th>CPU</th><th>Storage</th><th>Main Region</th>
+        </tr>
 
-|| Status || Name || IP Address || Memory || CPU || Storage || Main Region ||
-| Running | [John Windows Server|Manage Machine] | 87.56.87.102 | 2 GB | 1 core | 100GB | Bruges, Belgium |
-| Halted | [Ubuntu Jim|Manage Machine] | 188.12.24.111 | 5 GB | 2 Cores | 20 GB | Lenoir, NC, USA|
+    </thead>
+    <tbody>
+        <tr>
+            <td>Running</td> 
+			<td><a href="Manage Machine">John Windows Server</a></td>
+			<td>87.56.87.102</td>
+			<td>2 GB</td>
+			<td>1 core </td>
+			<td>100GB </td>
+			<td>Bruges, Belgium</td>
+        </tr>
+        <tr>
+            <td>Halted</td> 
+			<td><a href="Manage Machine">Ubuntu Jim</a></td>
+			<td>188.12.24.111</td>
+			<td>5 GB</td>
+			<td>2 Cores</td>
+			<td>20 GB</td>
+			<td>Lenoir, NC, USA</td>
+        </tr>
+    </tbody>
+</table>
+}}

@@ -25,36 +25,34 @@ h2. Manage Machine
   </ul>
   <div class="tab-content">
     <div id="actions" class="tab-pane active">
-<table width=100%><tr><td valign="top">
+	<div class="row">
+<div class="span6">
+<ul>
+<li><span>Name</span> Machine Name</li>
+<li><span>IP Address</span>  xxx.xxx.xxx.xxx </li>
+<li><span>Status</span> Started </li>
+<li><span>Memory</span>  2GB </li>
+<li><span>Disk</span>  Boot 11 GB </li>
+<li><span>Data Locations</span>  Lenoir  Bruges </li>
+</ul>
+</div>
+<div class="span3">
+<h4>Actions</h4>
+<ul>
+<li>Start</li>
+<li>Stop</li>
+<li>Pauze</li>
+<li>Take Snapshot</li>
+<li>Rename</li>
+<li>Destroy</li>
+<li>Rebuild</li>
+</ul>
+</div>
+</div>
+<hr>
 }}
 
-| *Name*: | Machine Name |
-| *IP Address*: | xxx.xxx.xxx.xxx |
-| *Status*: | Started |
-| *Memory*: | 2GB |
-| *Disk*: | Boot 11 GB |
-| *Data Locations*: | Lenoir |
-| | Bruges |
-
-{{html:
-</td><td valign="top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td valign="top">
-}}
-
-*Actions*:
-
-[Start]
-[Stop]
-[Pauze]
-[Take Snapshot]
-[Rename]
-[Destroy]
-[Rebuild]
-
-{{html:
-</td></tr></table>
-}}
-
-Most recent changes:
+h2. Most recent changes:
 
 || Event || Initiated || User ||
 | Access Console | 2013-08-31 14:24 | jimmyh |

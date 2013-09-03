@@ -32,6 +32,10 @@ function LocalStorageService(keyName) {
 
     this.save = function(element) {
         var elements = this.getAll();
+        if (elements.length == 0) {
+            this.add(element);
+            return;
+        }
         for(var i = 0; i < elements.length; i++) {
             if (elements[i].id && elements[i].id === element.id) {
                 elements[i] = element;
@@ -55,5 +59,8 @@ angular.module('myApp.services', [])
     })
     .factory('Snapshots', function() {
         return new LocalStorageService('gcb-snapshots');
+    })
+    .factory('SettingsService', function() {
+        return new LocalStorageService('gcb-settings');
     });
 
