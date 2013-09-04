@@ -1,4 +1,4 @@
- <domain type='kvm'>
+ <domain type='qemu'>
         <name>{{machinename}}</name>
         <memory unit='MB'>{{memory}}</memory>
         <currentMemory unit='KiB'>{{memory}}</currentMemory>

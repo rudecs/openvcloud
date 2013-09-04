@@ -29,12 +29,16 @@ class DummyConnection():
 
 class CloudBrokerConnection():
 
-     def __init__(self, ipaddress, port, secret):
+     def __init__(self, ipaddress=None, port=None, secret=None):
          from JumpScale import j
          import JumpScale.portal
-         self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
-         self.size_actor = self.client.getActor('cloudapi', 'sizes')
-         self.image_actor = self.client.getActor('cloudapi', 'images')
+         if ipaddress:
+             self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
+             self.size_actor = self.client.getActor('cloudapi', 'sizes')
+             self.image_actor = self.client.getActor('cloudapi', 'images')
+         else:
+             self.size_actor = j.apps.cloudapi.sizes
+             self.image_actor = j.apps.cloudapi.images
          
      def listSizes(self):
          return self.size_actor.list()
