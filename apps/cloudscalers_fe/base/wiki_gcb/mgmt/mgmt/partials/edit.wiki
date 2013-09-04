@@ -1,67 +1,211 @@
+h2. Manage Machine
 {{html:
-<h1>{[bucket.name]}</h1>
-
-<div class="widget big-stats-container stacked">
-    <div class="widget-content">
-        <div id="big_stats" class="cf">
-            <div class="stat">{[bucket.status]}</div>
-            <div class="stat">{[bucket.plan]}</div>
-            <div class="stat">{[bucket.region]}</div>
-            <div class="stat">{[bucket.image]}</div>
-
-        </div>
-    </div>
-</div>
 <div class="tabbable">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a data-toggle="tab" href="#power">Power</a>
+            <a data-toggle="tab" href="#actions">Machine actions</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Plan">Plan</a>
+        <li>
+            <a data-toggle="tab" href="#console">Console Access</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Snapshots">Snapshots</a>
+        <li>
+            <a data-toggle="tab" href="#snapshots">Manage Snapshots</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Backups">Backups</a>
+        <li>
+            <a data-toggle="tab" href="#monitoring">Monitoring</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Settings">Settings</a>
+        <li>
+            <a data-toggle="tab" href="#logging">Change Log</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Monitoring">Monitoring</a>
+        <li>
+            <a data-toggle="tab" href="#package">Change Package</a>
         </li>
-        <li >
-            <a data-toggle="tab" href="#Destroy">Destroy</a>
-        </li>
-        <li >
-            <a data-toggle="tab" href="#History">History</a>
-        </li>
+
     </ul>
     <div class="tab-content">
-        <div id="power" class="tab-pane active">
-            <h3>Power control</h3>
-            <button class="btn btn-info btn-large" ng-show="bucket.status == 'active'" ng-click="bucket.powerOff()">Power Off</button>
-            <button class="btn btn-info btn-large" ng-show="bucket.status != 'active'" ng-click="bucket.boot()">Boot</button>
+        <div id="actions" class="tab-pane active">
+            <div class="row">
+                <div class="span6">
+                    <ul class="list">
+                        <li>
+                            <h5>Name</h5>
+                            {[bucket.name]}
+                        </li>
+                        <li>
+                            <h5>IP Address</h5>
+                            {[bucket.ip]}
+                        </li>
+                        <li>
+                            <h5>Status</h5>
+                            {[bucket.status]}
+                        </li>
+                        <li>
+                            <h5>CPU</h5>
+                            {[bucket.cpu]}
+                        </li>
+                        <li>
+                            <h5>Memory</h5>
+                            {[bucket.memory]}
+                        </li>
+                        <li>
+                            <h5>Storage</h5>
+                            {[bucket.storage]}
+                        </li>
+                        <li>
+                            <h5>Data Locations</h5>
+                            {[bucket.region]}
+                        </li>
+                    </ul>
+                </div>
+                <div class="span3 actions">
+                    <h4>Actions</h4>
+                    <ul class="actions">
+                        <li ng-show="bucket.status != 'Running'"> 
+                            <a ng-click="bucket.boot()">
+                                <i class="icon-play-circle"></i>
+                                Start
+                            </a>
+                        </li>
+                        <li ng-show="bucket.status == 'Running'">
+                            <a ng-click="bucket.powerOff()">
+                                <i class="icon-stop "></i>
+                                Stop
+                            </a>
+                        </li>
+                        <li ng-show="bucket.status == 'Running'">
+                            <a ng-click="bucket.pause()">
+                                <i class=" icon-pause"></i>
+                                Pause
+                            </a>
+                        </li>
+                        <li>
+                            <i class="icon-camera"></i>
+                            Take Snapshot
+                        </li>
+                        <li>
+                            <a ng-click="showRenameModal()">
+                                <i class="icon-edit"></i>
+                                Rename
+                            </a>
+                            <style>
+                                .modal .modal-header, .modal .modal-footer {
+                                    display: block;
+                                }
+                                .modal .modal-body {
+                                    border: 0px;
+                                }
+                            </style>
+                            <div modal="renameModalOpen" close="closeRenameModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Rename</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name: <input ng-model="bucket.oldName" type="text" class="input-large" placeholder="Name"/>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="bucket.rename()">Save</button>
+                                    <button class="btn cancel" ng-click="closeRenameModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a ng-click="bucket.remove()">
+                                <i class=" icon-remove-circle"></i>
+                                Destroy
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="location.reload()">
+                                <i class="icon-undo"></i>
+                                Rebuild
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            {{include:bucket_history}}
         </div>
 
-        <div id="Plan" class="control-group tab-pane">
-            <h3>Choose your Plan</h3>
-            <div class="controls shortcuts">{{include:plan_list}}</div>
-            
-            <br>
-            <input class="btn btn-info btn-large " type="submit" value="Resize" ng-click="bucket.resize()" />
+        <div id="console" class="tab-pane">
+            <p class="note">
+                If you see a black screen just click on it and click any button to activate the console window.
+            </p>
+            <hr>
+            <h3>Public Network</h3>
+            <ul  class="list">
+                <li>
+                    <h5>IP Address</h5>
+                    {[bucket.ip]}
+                </li>
+                <li>
+                    <h5>Gateway</h5>
+                    192.241.173.1
+                </li>
+                <li>
+                    <h5>Netmask</h5>
+                    255.255.255.0
+                </li>
+            </ul>
+            <hr>
+            }}
+!console.png!
+
+{{html:
         </div>
-        <div id="Snapshots" class="tab-pane">
+        <div id="logging" class="tab-pane">
+            {{include:bucket_history}}
+        </div>
+        <div class="tab-pane" id="package">
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" >CPU:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> Core
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Memory:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.memory" class="input-mini" min="1"> GB
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Storage:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.storage" class="input-mini" min="1"> GB
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Region</label>
+                    <div class="controls ">{{include:region_list}}</div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Image</label>
+                    <div class="controls ">{{include:image_list}}</div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-info btn-large " ng-click="bucket.save()" ng-disabled="!bucket.isValid()">Change</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="snapshots" class="tab-pane">
             <h3>Manage & create Snapshots</h3>
             <h4>Take a Snapshot</h4>
-            <div ng-show="bucket.status == 'off'">
+            <div ng-show="bucket.status == 'Halted'">
                 Snapshot name:
                 <input class="input-large"  ng-model='newSnapshot.name' type="text"  placeholder="Snapshot Name"/>
                 <input class="btn btn-info btn-large"  type="submit" value="Create snapshot" ng-click="createSnapshot()" />
             </div>
-            <div ng-show="bucket.status == 'active'">You must turn the bucket off before creating snapshot</div>
+            <div ng-show="bucket.status == 'Running'">You must turn the bucket off before creating snapshot</div>
             <hr>
 
             <h4>Restore from Snapshot</h4>
@@ -92,10 +236,8 @@
         <div id="Settings" class="control-group tab-pane">
             <h3>Settings</h3>
             <h4>Image</h4>
-            <div class="controls shortcuts">
-                {{include:image_list}}
-            </div>
-			<input class="btn btn-info btn-large"   type="submit" value="Change image" ng-click="bucket.save()" />
+            <div class="controls shortcuts">{{include:image_list}}</div>
+            <input class="btn btn-info btn-large"   type="submit" value="Change image" ng-click="bucket.save()" />
             <br>
             <br>
             <hr>
@@ -122,25 +264,6 @@
             </p>
             <hr>
             <input class="btn btn-danger btn-large"  ng-click="bucket.remove()" name="commit" type="submit" value="Destroy"></input>
-    </div>
-    <div id="History" class="tab-pane">
-        <h3>History</h3>
-        <table class="table table-bordered table-striped" ng-show="bucket.history.length > 0">
-            <thead>
-                <tr>
-                    <th>Event</th>
-                    <th>Initiated</th>
-                    <th>Execution Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="history in bucket.history">
-                    <td>{[history.event]}</td>
-                    <td>{[history.initiated]}</td>
-                    <td>{[history.user]}</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 </div>

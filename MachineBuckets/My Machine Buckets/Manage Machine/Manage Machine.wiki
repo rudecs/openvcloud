@@ -27,52 +27,58 @@ h2. Manage Machine
     <div id="actions" class="tab-pane active">
 	<div class="row">
 <div class="span6">
-<ul>
-<li><span>Name</span> Machine Name</li>
-<li><span>IP Address</span>  xxx.xxx.xxx.xxx </li>
-<li><span>Status</span> Started </li>
-<li><span>Memory</span>  2GB </li>
-<li><span>Disk</span>  Boot 11 GB </li>
-<li><span>Data Locations</span>  Lenoir  Bruges </li>
+<ul class="list">
+<li><h5>Name</h5> Machine Name</li>
+<li><h5>IP Address</h5>  xxx.xxx.xxx.xxx </li>
+<li><h5>Status</h5> Started </li>
+<li><h5>Memory</h5>  2GB </li>
+<li><h5>Disk</h5>  Boot 11 GB </li>
+<li><h5>Data Locations</h5>  Lenoir  Bruges </li>
 </ul>
 </div>
-<div class="span3">
+<div class="span3 actions">
 <h4>Actions</h4>
-<ul>
-<li>Start</li>
-<li>Stop</li>
-<li>Pauze</li>
-<li>Take Snapshot</li>
-<li>Rename</li>
-<li>Destroy</li>
-<li>Rebuild</li>
+<ul class="actions">
+<li><i class=" icon-play-circle"></i>Start</li>
+<li><i class="icon-stop "></i>Stop</li>
+<li><i class=" icon-pause"></i>Pauze</li>
+<li><i class=" icon-camera"></i>Take Snapshot</li>
+<li><i class="icon-edit "></i>Rename</li>
+<li><i class=" icon-remove-circle"></i>Destroy</li>
+<li><i class=" icon-undo"></i>Rebuild</li>
 </ul>
 </div>
 </div>
 <hr>
-}}
 
-h2. Most recent changes:
 
-|| Event || Initiated || User ||
-| Access Console | 2013-08-31 14:24 | jimmyh |
-| Start Machine | 2013-08-30 14:24 | johnm |
-| Create Machine | 2013-08-29 14:24 | jimmyh |
-
-{{html:
+<h3> Most recent changes:</h3>
+<table class="table table-striped table-bordered">
+<thead>
+<tr> <th>Event </th><th> Initiated </th><th> User </th></tr>
+</thead>
+<tbody>
+<tr><td> Access Console </td><td> 2013-08-31 14:24 </td><td> jimmyh </td></tr>
+<tr><td> Start Machine </td><td> 2013-08-30 14:24 </td><td> johnm </td></tr>
+<tr><td> Create Machine </td><td> 2013-08-29 14:24 </td><td> jimmyh </td></tr>
+</tbody>
+</table>
     </div>
 
 
     <div id="console" class="tab-pane">
+
+
+<p class="note">If you see a black screen just click on it and click any button to activate the console window.</p>
+<hr>
+<h3>Public Network</h3>
+<ul  class="list">
+<li><h5>IP Address</h5> 192.241.173.134</li>
+<li><h5>Gateway</h5> 192.241.173.1</li>
+<li><h5>Netmask</h5> 255.255.255.0</li>
+</ul>
+<hr>
 }}
-
-If you see a black screen just click on it and click any button to activate the console window.
-
-Public Network
-IP Address: 192.241.173.134
-Gateway: 192.241.173.1
-Netmask: 255.255.255.0
-
 !console.png!
 
 {{html:
@@ -83,14 +89,15 @@ Netmask: 255.255.255.0
 }}
 
 {{html:
-<form class="form-horizontal">
-<fieldset>
+<h3> Snapshot settinges</h3>
 
-<!-- Select Basic -->
+ <form class="form-horizontal">
+<fieldset>
+<!-- File Button -->
 <div class="control-group">
-  <label class="control-label" for="selectbasic">Snapshot every</label>
-  <div class="controls">
-    <select id="selectbasic" name="selectbasic" class="input-medium">
+<label for="filebutton" class="control-label">Snapshot every</label>
+<div class="controls">
+    <select id="selectbasic" name="selectbasic"  class="input-large select-large">
       <option>15 minutes</option>
       <option>1 hour</option>
       <option>4 hours</option>
@@ -99,48 +106,61 @@ Netmask: 255.255.255.0
       <option>1 week</option>
       <option>1 month</option>
     </select>
-  </div>
+	    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Save</button>
 </div>
-
-<!-- Button -->
-<div class="control-group">
-  <label class="control-label" for="singlebutton"></label>
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save</button>
-  </div>
 </div>
-
 </fieldset>
 </form>
+<hr>
 
-}}
+<h3> Snapshots</h3>
+<table class="table table-striped table-bordered">
+<thead>
+<tr><th>Name </th><th> Date</th><th> Action</th> </tr>
+</thead>
+<tbody>
+<tr><td> dfdfsdfsdfsd </td><td> 2013-08-30 14:24 </td><td> <a href="Rollback">Rollback</a> </td> </tr>
+<tr><td> dfdfsdsdsdsdsdsd </td><td> 2013-08-29 14:24 </td><td> <a href="Rollback">Rollback</a> </td> </tr>
+</tbody>
+</table>
 
-|| Name || Date || Action ||
-| dfdfsdfsdfsd | 2013-08-30 14:24 | [Rollback] |
-| dfdfsdsdsdsdsdsd | 2013-08-29 14:24 | [Rollback] |
-
-{{html:
     </div>
 
 
     <div id="monitoring" class="tab-pane">
 }}
 
-| CPU Usage | RAM Assigned | Server Load |
-|{{jgauge: id:1 start:0 end:100 random:100 style:default val:20 labelsuffix:%}}|{{jgauge: id:2 start:0 end:2 random:0.5 style:default val:1.6 labelsuffix:GB}}| {{jgauge: id:3 start:0 end:100 random:0.5 style:default val:0.8 labelsuffix:GB}}|
+{{div3: class=row}}
+{{div4: class=span3}}
+h4. CPU Usage
+{{jgauge: id:1 start:0 end:100 random:100 style:default val:20 labelsuffix:%}}
+{{div4}}
+{{div4: class=span3}}
+h4. RAM Assigned
+{{jgauge: id:2 start:0 end:2 random:0.5 style:default val:1.6 labelsuffix:GB}}
+{{div4}}
+{{div4: class=span3}}
+h4. Server Load
+{{jgauge: id:3 start:0 end:100 random:0.5 style:default val:0.8 labelsuffix:GB}}
+{{div4}}
+{{div3}}
 
 {{html:
     </div>
 
     <div id="logging" class="tab-pane">
-}}
 
-|| Event || Initiated || User ||
-| Access Console | 2013-08-31 14:24 | jimmyh |
-| Start Machine | 2013-08-30 14:24 | johnm |
-| Create Machine | 2013-08-29 14:24 | jimmyh |
+<table class="table table-striped table-bordered">
+<thead>
+<tr><th> Event </th><th> Initiated </th><th> User </th></tr>
+</thead>
+<tbody>
+<tr><td> Access Console </td><td> 2013-08-31 14:24 </td><td> jimmyh </td></tr>
+<tr><td> Start Machine </td><td> 2013-08-30 14:24 </td><td> johnm </td></tr>
+<tr><td> Create Machine </td><td> 2013-08-29 14:24 </td><td> jimmyh </td></tr>
+</tbody>
+</table>
 
-{{html:
     </div>
 
     <div id="package" class="tab-pane">

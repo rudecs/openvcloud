@@ -9,8 +9,8 @@ Start now and create your Desktop Bucket:
 
 <!-- Button -->
 <div class="control-group">
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Create Desktop Bucket</button>
+  <div class="">
+    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Create Desktop Bucket</button>
   </div>
 </div>
 

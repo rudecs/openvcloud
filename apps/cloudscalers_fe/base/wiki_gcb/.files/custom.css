@@ -1,5 +1,5 @@
-.main .container {
-
+body{
+    color:#666;
 }
 hr {
  border-bottom: 3px dotted #CCCCCC;
@@ -266,7 +266,7 @@ border-radius: 5px;
 color:#fff !important;
 }
 tr:hover td {
-background:#c4ebf6  !important;
+background:#eee  !important;
 }
 .btnfull {
 display:block !important;
@@ -477,14 +477,14 @@ span.login-checkbox > input[type="checkbox"] + label {
 
  .btn-selector {
     float: left;
-    margin: 10px 20px 10px 0px;
+    margin: 0px 20px 20px 0px;
     font-size: 12px !important;
     width: 25%;
     /*background: #CCCCCC !important;*/
 }
     .btn-selector.active {
     
-      background: #eee !important;
+      background: #ccc !important;
     } 
 .form-horizontal .form-actions {
     padding-left: 180px;
@@ -510,3 +510,96 @@ input[type="file"] {
     margin-top: -6px;
     padding: 7px 20px;
 }
+
+ul.list li {
+     list-style:none;
+     border-bottom:1px solid #ddd;
+}
+ul.list li  h5 {
+    width: 40%;display: inline-block; 
+}
+
+ul.actions {
+margin:0px;
+}
+ul.actions li {
+list-style:none;
+padding:5px ;
+border-bottom:1px solid #ddd;  color:#0088CC;
+}
+    ul.actions li:last-child, ul.list li:last-child {
+    border:none;
+    }
+    ul.actions li:hover {
+    color:#1A668A;     background :#EEEEEE;
+    }
+ul.actions i {
+font-size:17px; margin-right:10px;
+}
+
+    ul.actions li:hover i {
+
+    }
+div.actions {
+border-left :1px solid #ddd; width: 249px; padding-left:20px;
+}
+.note {
+background:#eee; padding:5px; font-style:italic;
+}
+
+.btn-large {
+min-width:90px;
+}
+#monitoring .span3 {
+    background:#fff;
+     border-radius: 4px;
+}
+    #monitoring .span3:hover {
+ box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+    }
+
+#monitoring .span3 h4 {
+padding: 10px;
+    text-align: center;
+}
+
+.support  textarea  { 
+    height: 150px;
+    width: 50%;
+
+}
+.support  input[type="text"]  { 
+ width: 50%;
+
+
+}
+
+
+/*---leftnav---*/
+
+.sidebar-nav {
+    border:none; 
+border-right: 3px dotted #CCCCCC;
+box-shadow:none;
+border-radius:0px;
+background:none;
+padding-top: 12px;
+
+}
+.sidebar-nav li {
+  text-align:right; list-style:none;
+  padding:5px ; 
+  border-bottom: 1px dotted #ddd;   
+
+    }
+.sidebar-nav li a {
+     color: #00B0F0;
+    }
+    .sidebar-nav li:hover a {
+    text-decoration:none;
+
+    }
+       .sidebar-nav li:hover  {
+
+    background:#eee;
+    }
