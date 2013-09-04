@@ -19,7 +19,8 @@
         <devices>
             <emulator>/usr/bin/kvm</emulator>
             <disk type='block' device='disk'>
-                <source dev='/dev/VMStor/{{diskname}}'/>
+                <driver name='qemu' type='qcow2'/>
+                <source dev='/home/VMStor/{{diskname}}'/>
                 <target dev='vda' bus='virtio'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
             </disk>

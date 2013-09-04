@@ -7,7 +7,8 @@
                 <capacity unit='GB'>{{disksize}}</capacity>
                 <allocation unit='GB'>{{disksize}}</allocation>
                 <target>
-                    <path>/dev/VMStor/{{diskname}}</path>
+                    <path>/home/VMStor/{{diskname}}</path>
+                    <format type='qcow2'/>
                     <permissions>
                         <mode>0660</mode>
                         <owner>106</owner>
@@ -15,7 +16,7 @@
                     </permissions>
                 </target>
                 <backingStore>
-                    <path>/dev/VMStor/{{diskbasevolume}}</path>
+                    <path>/home/VMStor/{{diskbasevolume}}</path>
                 </backingStore>
  </volume> 
 
