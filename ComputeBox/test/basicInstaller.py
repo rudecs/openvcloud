@@ -12,6 +12,7 @@ def install_prereqs():
     put(os.path.join(WORKSPACE, 'ComputeBox/test/libvirt_no_sparse.patch'), '/usr/share/pyshared/')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/raring.patch'), '/tmp/')
     run('mkdir -p /opt/jumpscale/cfg/jpackages/')
+    run('touch /opt/jumpscale/cfg/jpackages/sources.cfg')
     run('mv opt/jumpscale/cfg/jpackages/sources.cfg opt/jumpscale/cfg/jpackages/sources.cfg.bak')
     run('touch /opt/jumpscale/cfg/jpackages/sources.cfg')
     append('/opt/jumpscale/cfg/jpackages/sources.cfg', "\n[cloudscalers]\nmetadatafromtgz = 0\nqualitylevel = unstable\nmetadatadownload = \nmetadataupload = \nbitbucketaccount = incubaid\nbitbucketreponame = jp_cloudscalers\nblobstorremote = jpackages_remote\nblobstorlocal = jpackages_local")
