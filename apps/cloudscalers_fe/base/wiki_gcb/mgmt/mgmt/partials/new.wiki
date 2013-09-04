@@ -4,17 +4,32 @@ h2. Create Machine Bucket
 <div class="form-horizontal">
     <div class="control-group">
         <label class="control-label" >Name:</label>
-
         <div class="controls">
             <input ng-model="bucket.name" type="text" class="input-large" placeholder="Name"/>
         </div>
     </div>
 	<hr>
     <div class="control-group">
-        <label class="control-label" >Plan:</label>
-        <div class="controls " >{{include:plan_list}}</div>
+        <label class="control-label" >CPU:</label>
+        <div class="controls " >
+            <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> Core
+        </div>
     </div>
 	<hr>
+    <div class="control-group">
+        <label class="control-label" >Memory:</label>
+        <div class="controls " >
+            <input type="number" ng-model="bucket.memory" class="input-mini" min="1"> GB
+        </div>
+    </div>
+    <hr>
+    <div class="control-group">
+        <label class="control-label" >Storage:</label>
+        <div class="controls " >
+            <input type="number" ng-model="bucket.storage" class="input-mini" min="1"> GB
+        </div>
+    </div>
+    <hr>
     <div class="control-group">
         <label class="control-label" >Region</label>
         <div class="controls ">{{include:region_list}}</div>

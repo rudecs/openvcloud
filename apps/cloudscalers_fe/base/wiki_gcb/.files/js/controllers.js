@@ -16,7 +16,9 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             id: Math.random() * 1000000000,
             ip: Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256),
             name: '',
-            plan: '',
+            cpu: 1,
+            memory: 1,
+            storage: 10,
             region: '',
             status: 'Running',
             image: '',
@@ -24,7 +26,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         };
   
         $scope.bucketValid = function() {
-            return $scope.bucket.name && $scope.bucket.plan && $scope.bucket.region && $scope.bucket.image;
+            return $scope.bucket.name && $scope.bucket.cpu && $scope.bucket.memory &&$scope.bucket.storage && $scope.bucket.region && $scope.bucket.image;
         };
 
         $scope.saveBucket = function() {
@@ -82,7 +84,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         };
 
         $scope.bucket.isValid = function() {
-            return $scope.bucket.name && $scope.bucket.plan && $scope.bucket.region && $scope.bucket.image;
+            return $scope.bucket.name && $scope.bucket.cpu && $scope.bucket.memory &&$scope.bucket.storage && $scope.bucket.region && $scope.bucket.image;
         };
 
         $scope.renameModalOpen = false;

@@ -6,7 +6,9 @@
       <th>Status</th>
       <th>Name</th>
       <th>IP Address</th>
-      <th>Plan</th>
+      <th>CPU</th>
+      <th>Memory</th>
+      <th>Storage</th>
       <th>Main Region</th>
     </tr>
     <tbody>
@@ -16,7 +18,9 @@
           <a ng-href="#/edit/{[bucket.id]}">{[bucket.name]}</a>
         </td>
         <td>{[bucket.ip]}</td>
-        <td>{[bucket.plan]}</td>
+        <td>{[bucket.cpu]}</td>
+        <td>{[bucket.memory]}</td>
+        <td>{[bucket.storage]}</td>
         <td>{[bucket.region]}</td>
       </tr>
     </tbody>

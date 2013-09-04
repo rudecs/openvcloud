@@ -40,8 +40,16 @@ h2. Manage Machine
                             {[bucket.status]}
                         </li>
                         <li>
-                            <h5>Plan</h5>
-                            {[bucket.plan]}
+                            <h5>CPU</h5>
+                            {[bucket.cpu]}
+                        </li>
+                        <li>
+                            <h5>Memory</h5>
+                            {[bucket.memory]}
+                        </li>
+                        <li>
+                            <h5>Storage</h5>
+                            {[bucket.storage]}
                         </li>
                         <li>
                             <h5>Data Locations</h5>
@@ -153,8 +161,24 @@ h2. Manage Machine
         <div class="tab-pane" id="package">
             <div class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" >Plan:</label>
-                    <div class="controls " >{{include:plan_list}}</div>
+                    <label class="control-label" >CPU:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> Core
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Memory:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.memory" class="input-mini" min="1"> GB
+                    </div>
+                </div>
+                <hr>
+                <div class="control-group">
+                    <label class="control-label" >Storage:</label>
+                    <div class="controls " >
+                        <input type="number" ng-model="bucket.storage" class="input-mini" min="1"> GB
+                    </div>
                 </div>
                 <hr>
                 <div class="control-group">
