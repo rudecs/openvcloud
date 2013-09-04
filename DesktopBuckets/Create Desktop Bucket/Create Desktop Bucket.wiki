@@ -1,106 +1,105 @@
 h2. Create Desktop Bucket
 
 {{html:
-<form class="form-horizontal" method="get" action="My Desktop Buckets">
+<hr>
+<form class="form-horizontal" ng-app="myApp" ng-controller="CreateDesktopBucketController">
 <fieldset>
 
-<!-- Text input-->
 <div class="control-group">
   <label class="control-label" for="textinput">Project Name</label>
   <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="" class="input-xlarge">
-    
+    <input id="textinput" name="textinput" type="text" class="input-xlarge" ng-model="bucket.projectName">    
   </div>
 </div>
-
-<!-- Appended Input-->
+<hr>
 <div class="control-group">
   <label class="control-label" for="appendedtext">Add User</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="e-mail" type="text">
-      <span class="add-on">Add</span>
+      <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="E-mail" type="text" ng-model="bucket.newUser.email">
+      <button class="btn " ng-click="bucket.addNewUser()">Add</button>
     </div>
-    
   </div>
 </div>
 
-<!-- Multiple Checkboxes (inline) -->
 <div class="control-group">
-  <label class="control-label" for="checkboxes">Select User Type</label>
+  <label class="control-label" for="radios">Select User Type</label>
   <div class="controls">
-    <label class="checkbox inline" for="checkboxes-0">
-      <input type="checkbox" name="checkboxes" id="checkboxes-0" value="User">
+    <label class="radio inline" for="radios-0">
+      <input type="radio" name="radios" id="radios-0" value="User" ng-model="bucket.newUser.userType">
       User
     </label>
-    <label class="checkbox inline" for="checkboxes-1">
-      <input type="checkbox" name="checkboxes" id="checkboxes-1" value="Administrator">
+    <label class="radio inline" for="radios-1">
+      <input type="radio" name="radios" id="radios-1" value="Administrator" ng-model="bucket.newUser.userType">
       Administrator
     </label>
   </div>
 </div>
 
-<!-- Appended Input-->
+<div class="control-group" ng-show="bucket.users.length > 0">
+  <label class="control-label" for="radios">&nbsp;</label>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>User type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="user in bucket.users">
+        <td>{[user.email]}</td>
+        <td>{[user.userType]}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+  <hr>
 <div class="control-group">
   <label class="control-label" for="appendedtext">Choose Storage</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="140 GB" type="text">
-      <span class="add-on">Up - Down</span>
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="140 GB" type="number" ng-model="bucket.storage">
+      <span class="add-on">GB</span>
     </div>
     
   </div>
 </div>
-
-<!-- Multiple Checkboxes -->
+<hr>
 <div class="control-group">
   <label class="control-label" for="checkboxes">Data Locations</label>
   <div class="controls">
-    <label class="checkbox" for="checkboxes-0">
-      <input type="checkbox" name="checkboxes" id="checkboxes-0" value="Ghent, Belgium">
-      Ghent, Belgium
-    </label>
-    <label class="checkbox" for="checkboxes-1">
-      <input type="checkbox" name="checkboxes" id="checkboxes-1" value="Bruges, Belgium">
-      Bruges, Belgium
-    </label>
-    <label class="checkbox" for="checkboxes-2">
-      <input type="checkbox" name="checkboxes" id="checkboxes-2" value="Lenoir, NC, USA">
-      Lenoir, NC, USA
-    </label>
+    <div class="btn-group">
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[0]" btn-checkbox>Ghent, Belgium</button>
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[1]" btn-checkbox>Bruges, Belgium</button>
+      <button type="button" class="btn btn-selector" ng-model="bucket.locations[2]" btn-checkbox>Lenoir, NC, USA</button>
+    </div>
   </div>
 </div>
-
-<!-- Appended Input-->
+<hr>
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Licenses</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="5" type="text">
-      <span class="add-on">Up - Down</span>
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="5" type="number" ng-model="bucket.numOfficeLicenses">
     </div>
     
   </div>
 </div>
-
-<!-- Appended Input-->
+<hr>
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Full Licenses</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="0" type="text">
-      <span class="add-on">Up - Down</span>
+      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="0" type="number" ng-model="bucket.numFullOfficeLicenses">
     </div>
     
   </div>
 </div>
 
-<!-- Button -->
-<div class="control-group">
-  <label class="control-label" for="singlebutton"></label>
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Create Desktop Bucket</button>
-  </div>
+<div class="form-actions">
+    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large " ng-click="create()">Create Desktop Bucket</button>
+
 </div>
 
 </fieldset>

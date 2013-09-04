@@ -1,4 +1,4 @@
-<ul>
+
   <button type="button" class="btn btn-selector" ng-model="bucket.plan" btn-radio="'512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month'">
     512MB Memory, 1 Core, 20GB SSD Disk, 1TB Transfer - 5 USD/month
   </button>
@@ -29,4 +29,3 @@
   <button type="button" class="btn btn-selector" ng-model="bucket.plan" btn-radio="'96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month'">
     96GB Memory, 24 Cores, 960GB SSD, 10TB Transfer - 960 USD/month
   </button>
-</ul>

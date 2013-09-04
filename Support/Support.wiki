@@ -1,7 +1,8 @@
 h2. Support
 
 {{html:
-<form class="form-horizontal">
+<hr>
+<form class="form-horizontal support">
 <fieldset>
 
 <!-- Text input-->
@@ -22,11 +23,10 @@ h2. Support
 </div>
 
 <!-- Button -->
-<div class="control-group">
-  <label class="control-label" for="singlebutton"></label>
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Send to Support</button>
-  </div>
+<div class="form-actions">
+
+    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Send to Support</button>
+ 
 </div>
 
 </fieldset>

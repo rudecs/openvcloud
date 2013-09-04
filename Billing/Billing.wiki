@@ -1,11 +1,17 @@
 h2. Billing
-
+{{html:  <hr> }}
 h3. Balance & Usage
-
-| Available credit | $44.67 |
-| Usage this month | $5.35  |
-
 {{html:
+
+<table class="table table-striped table-bordered"> 
+<thead>
+<tr><th>Available credit </th><th> $44.67 </th> </tr>
+</thead>
+<tbody>
+<tr><td>Usage this month </td><td> $5.35  </td> </tr>
+</tbody>
+</table>
+<hr>
 <form class="form-horizontal">
 <fieldset>
 
@@ -23,10 +29,19 @@ h3. Balance & Usage
 
 </fieldset>
 </form>
+<hr>
 }}
 
 h3. Billing History
+{{html:
+<table class="table table-striped table-bordered"> 
+<thead>
+<tr><th>Date </th><th>Description</th> <th>Amount</th> </tr>
+</thead>
+<tbody>
+<tr><td>June 25, 2013 </td><td>Payment (John Tester) </td> <td>-$50.00</td></tr>
+<tr><td>May 20, 2013 </td><td>Payment (John Tester) </td> <td>-$100.00</td></tr>
+</tbody>
+</table>
 
-|| Date || Description || Amount ||
-| June 25, 2013 |	Payment (John Tester) | -$50.00 |
-| May 20, 2013 |	Payment (John Tester) | -$100.00 |
+}}

@@ -1,11 +1,11 @@
 h2. Settings
 
 {{html:
+<hr>
 <form class="form-horizontal" ng-controller="SettingsController" ng-app="myApp">
 <fieldset>
 
 <!-- Form Name -->
-<legend></legend>
 
 <!-- Text input-->
 <div class="control-group">
@@ -25,7 +25,7 @@ h2. Settings
     
   </div>
 </div>
-
+<hr>
 <!-- Password input-->
 <div class="control-group">
   <label class="control-label" for="passwordinput">Password</label>
@@ -34,7 +34,7 @@ h2. Settings
     
   </div>
 </div>
-
+<hr>
 <!-- Multiple Radios (inline) -->
 <div class="control-group">
   <label class="control-label" for="radios">Credit Card Type</label>
@@ -83,18 +83,35 @@ h2. Settings
 <div class="control-group">
   <label class="control-label" for="textinput">CCV</label>
   <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini" ng-model="ccv" pattern="\d{3,4}">
-    <p class="help-block">3 or 4 digits on the backside</p>
+    <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini" ng-model="ccv" pattern="\d{3,4}"> <span class="note"> 3 or 4 digits on the backside </span>
+
   </div>
 </div>
 
 <!-- Button -->
-<div class="control-group">
-  <label class="control-label" for="singlebutton"></label>
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary" ng-click="save()">Save</button>
-  </div>
+<div class="form-actions">
+<button id="singlebutton" name="singlebutton" class="btn btn-info btn-large " ng-click="save()" >Save</button> 
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </fieldset>
 </form>
