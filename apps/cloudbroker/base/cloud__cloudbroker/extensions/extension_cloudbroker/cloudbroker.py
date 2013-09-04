@@ -35,7 +35,10 @@ class CloudProvider(object):
                 CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
             if stack['type'] == 'LIBVIRT':
                 kwargs['uri'] = stack['apiUrl']
-                CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)                 
+                CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
+                cb = CloudBrokerConnection()
+                CloudProvider._providers[stackId].set_backend(cb)
+
         self.client = CloudProvider._providers[stackId]
 
     def getSize(self, sizeId):
