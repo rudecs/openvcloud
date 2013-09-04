@@ -1,5 +1,5 @@
-.main .container {
-
+body{
+    color:#666;
 }
 hr {
  border-bottom: 3px dotted #CCCCCC;
@@ -484,7 +484,7 @@ span.login-checkbox > input[type="checkbox"] + label {
 }
     .btn-selector.active {
     
-      background: #eee !important;
+      background: #ccc !important;
     } 
 .form-horizontal .form-actions {
     padding-left: 180px;
@@ -573,3 +573,33 @@ padding: 10px;
 
 
 }
+
+
+/*---leftnav---*/
+
+.sidebar-nav {
+    border:none; 
+border-right: 3px dotted #CCCCCC;
+box-shadow:none;
+border-radius:0px;
+background:none;
+padding-top: 12px;
+
+}
+.sidebar-nav li {
+  text-align:right; list-style:none;
+  padding:5px ; 
+  border-bottom: 1px dotted #ddd;   
+
+    }
+.sidebar-nav li a {
+     color: #00B0F0;
+    }
+    .sidebar-nav li:hover a {
+    text-decoration:none;
+
+    }
+       .sidebar-nav li:hover  {
+
+    background:#eee;
+    }

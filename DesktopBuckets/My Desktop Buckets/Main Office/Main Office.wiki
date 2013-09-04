@@ -1,5 +1,5 @@
 h2. Main Office
-
+<hr>
 {{html:
 <form class="form-horizontal">
 <fieldset>
@@ -12,7 +12,7 @@ h2. Main Office
     
   </div>
 </div>
-
+<hr>
 <!-- Multiple Checkboxes -->
 <div class="control-group">
   <label class="control-label" for="checkboxes">Manage Users</label>
@@ -44,10 +44,10 @@ h2. Main Office
 <div class="control-group">
   <label class="control-label" for="singlebutton"></label>
   <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Edit users</button>
+    <button id="singlebutton" name="singlebutton" class="btn ">Edit users</button>
   </div>
 </div>
-
+<hr>
 <!-- Appended Input-->
 <div class="control-group">
   <label class="control-label" for="appendedtext">Add User</label>
@@ -74,7 +74,7 @@ h2. Main Office
     </label>
   </div>
 </div>
-
+<hr>
 <!-- Appended Input-->
 <div class="control-group">
   <label class="control-label" for="appendedtext">Storage</label>
@@ -86,7 +86,7 @@ h2. Main Office
     
   </div>
 </div>
-
+<hr>
 <!-- Multiple Checkboxes -->
 <div class="control-group">
   <label class="control-label" for="checkboxes">Data Locations</label>
@@ -105,7 +105,7 @@ h2. Main Office
     </label>
   </div>
 </div>
-
+<hr>
 <!-- Appended Input-->
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Licenses</label>
@@ -117,7 +117,7 @@ h2. Main Office
     
   </div>
 </div>
-
+<hr>
 <!-- Appended Input-->
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Full Licenses</label>
@@ -131,11 +131,10 @@ h2. Main Office
 </div>
 
 <!-- Button -->
-<div class="control-group">
-  <label class="control-label" for="singlebutton"></label>
-  <div class="controls">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Update Desktop Bucket</button>
-  </div>
+<div class="form-actions">
+
+    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Update Desktop Bucket</button>
+
 </div>
 
 </fieldset>

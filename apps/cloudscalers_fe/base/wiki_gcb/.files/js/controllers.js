@@ -2,7 +2,7 @@
 
 function getFormattedDate() {
     var d = new Date();
-    return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
 }
 
 angular.module('myApp.controllers', ['ui.bootstrap'])
@@ -42,7 +42,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
         $scope.bucket.boot = function() {
             $scope.bucket.status = 'Running';
-            $scope.bucket.history.push({event: 'Booted', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.history.push({event: 'Started', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
         };
 
@@ -52,21 +52,54 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             Buckets.save($scope.bucket);
         };
 
+        $scope.bucket.pause = function() {
+            $scope.bucket.status = 'Paused';
+            $scope.bucket.history.push({event: 'Paused', initiated: getFormattedDate(), user: 'John Q.'})
+            Buckets.save($scope.bucket);
+        };
+
         $scope.bucket.resize = function() {
             $scope.bucket.history.push({event: 'Bucket resized', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
         };
 
         $scope.bucket.remove = function() {
-            if (confirm('Are you sure you want to destroy this droplet?')) {
+            if (confirm('Are you sure you want to destroy this bucket?')) {
                 Buckets.remove($scope.bucket);
                 location.href = "#/list";
             }
         };
 
+        $scope.bucket.rename = function() {
+            if ($scope.bucket.oldName)
+                $scope.bucket.name = $scope.bucket.oldName;
+            $scope.bucket.save();
+        };
+
         $scope.bucket.save = function() {
             Buckets.save($scope.bucket);
-        }
+            $scope.renameModalOpen = false;
+        };
+
+        $scope.bucket.isValid = function() {
+            return $scope.bucket.name && $scope.bucket.plan && $scope.bucket.region && $scope.bucket.image;
+        };
+
+        $scope.renameModalOpen = false;
+        $scope.snapshotModalOpen = false;
+        $scope.modalOpts = {
+            backdropFade: true,
+            dialogFade: true
+        };
+
+        $scope.showRenameModal = function() {
+            $scope.bucket.oldName = $scope.bucket.name;
+            $scope.renameModalOpen = true;
+        };        
+
+        $scope.closeRenameModal = function() {
+            $scope.renameModalOpen = false;
+        };
 
         $scope.restoreSnapshot = function() {
             // Real implementation will call Snapshots.restoreSnapshot(), but for now we just reload
