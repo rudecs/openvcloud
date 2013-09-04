@@ -13,6 +13,7 @@ def install_prereqs():
     put(os.path.join(WORKSPACE, 'ComputeBox/test/raring.patch'), '/tmp/')
     run('mkdir -p /opt/jumpscale/cfg/jpackages/')
     append('/opt/jumpscale/cfg/jpackages/sources.cfg', "\n[cloudscalers]\nmetadatafromtgz = 0\nqualitylevel = unstable\nmetadatadownload = \nmetadataupload = \nbitbucketaccount = incubaid\nbitbucketreponame = jp_cloudscalers\nblobstorremote = jpackages_remote\nblobstorlocal = jpackages_local")
+    run('mkdir -p ~/.ssh/')
     put(os.path.join(WORKSPACE, 'config/*'), '~/.ssh/')
     run('jpackage_update')
     run('jpackage_install --package bootstrapper')
