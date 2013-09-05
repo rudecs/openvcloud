@@ -22,7 +22,7 @@ def install_prereqs():
     run('mkdir -p ~/.ssh/')
     put(os.path.join(WORKSPACE, 'config/*'), '~/.ssh/')
     run('chmod 0600 ~/.ssh/*')
-    run('hg clone ssh://hg@bitbucket.org/incubaid/cloudscalers /opt/jumpscale/var/jpackages/metadata/')
+    run('hg clone ssh://hg@bitbucket.org/incubaid/jp_cloudscalers /opt/jumpscale/var/jpackages/metadata/')
     run('jpackage_install --package bootstrapper')
     run('mv /opt/jumpscale/cfg/jpackages/sources.cfg.bak /opt/jumpscale/cfg/jpackages/sources.cfg', pty=True)
     run('mv /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg.bak /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg', pty=True)
