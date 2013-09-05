@@ -1,4 +1,33 @@
 h2. Support
+{{div3: class=support | ng-app=myApp | ng-controller=SupportController}}
+{{ contact_form: receiver_email:tayseerm@incubaid.com | custom | subject: CloudScalers.com support}}
+    {{html: <!-- Angular doesn't bind hidden input. This is a workaround to make it work -->}}
+    {{html: <input type="text" style="display: none" name="sender_name" ng-model="settings.name">}}
+    {{html: <input type="text" style="display: none" name="sender_email" ng-model="settings.email">}}
+
+    {{div: class=control-group}}
+        {{html: <label class="control-label" for="topic">Topic</label>}}
+        {{div2: class=controls}}
+            {{ text: name=topic | required=true | class=input-large}}
+        {{div2}}
+    {{div}}
+
+    {{div: class=control-group}}
+        {{html: <label class="control-label" for="body">Description</label>}}
+        {{div2: class=controls}}
+            {{ textarea: name=body | required=true }}
+        {{div2}}
+    {{div}}
+
+    {{div: class=form-actions}}
+        {{ submit: class=btn btn-info btn-large | data-loading-text=Sending... }}
+            {{html: Send to Support}}
+        {{submit}}
+    {{div}}
+
+{{ contact_form }}
+{{div3}}
+
 
 {{html:
 <hr>

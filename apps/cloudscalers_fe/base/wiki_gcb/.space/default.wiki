@@ -44,18 +44,18 @@ System:/System
 	<div class="subnavbar-inner">
 	
 		<div class="container">
-
+		<a class="brand" href="../$$space">CloudScalers</a>
 			<ul class="mainnav">
 			
-				<li class="active">
+				<!-- <li class="active">
 					<a href="../$$space">
 						<i class="icon-home"></i>
 						<span>Home</span>
 					</a>	    				
-				</li>
+				</li> -->
 				
 
-				<li>
+				<li  class="active">
 					<a href="../$$space/MachineBuckets">
 						<i class="icon-cogs"></i>
 						<span>Machine Buckets</span>
@@ -170,12 +170,7 @@ System:/System
 
 
 
-{{div: class=footer}}
-	{{div2: class=container}}
 
-
-	{{div2}}
-{{div}}
 
 
 {{div: class=copyright}}

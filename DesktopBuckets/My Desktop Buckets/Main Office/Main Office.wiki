@@ -105,8 +105,8 @@ h2. Main Office
     </label>
   </div>
 </div>
-<hr>
-<!-- Appended Input-->
+<!-- <hr>
+
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Licenses</label>
   <div class="controls">
@@ -118,7 +118,7 @@ h2. Main Office
   </div>
 </div>
 <hr>
-<!-- Appended Input-->
+
 <div class="control-group">
   <label class="control-label" for="appendedtext"># MS Office Full Licenses</label>
   <div class="controls">
@@ -129,7 +129,7 @@ h2. Main Office
     
   </div>
 </div>
-
+-->
 <!-- Button -->
 <div class="form-actions">
 

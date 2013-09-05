@@ -1,5 +1,13 @@
 h2. Manage Machine
 {{html:
+<style>
+    .modal .modal-header, .modal .modal-footer {
+        display: block;
+    }
+    .modal .modal-body {
+        border: 0px;
+    }
+</style>
 <div class="tabbable">
     <ul class="nav nav-tabs">
         <li class="active">
@@ -41,15 +49,15 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[bucket.cpu]}
+                            {[bucket.cpu]} <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[bucket.memory]}
+                            {[bucket.memory]} GB
                         </li>
                         <li>
                             <h5>Storage</h5>
-                            {[bucket.storage]}
+                            {[bucket.storage]} GB
                         </li>
                         <li>
                             <h5>Data Locations</h5>
@@ -79,22 +87,31 @@ h2. Manage Machine
                             </a>
                         </li>
                         <li>
-                            <i class="icon-camera"></i>
-                            Take Snapshot
+                            <a ng-click="showSnapshotModal()"> 
+                                <i class="icon-camera"></i>
+                                Take Snapshot
+                            </a>
+                            <div modal="snapshotModalOpen" close="closeSnapshotModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Take snapshot</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name:
+                                        <input ng-model="newSnapshot.name" type="text" class="input-large" placeholder="Name"/>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="createSnapshot()">Save</button>
+                                    <button class="btn cancel" ng-click="closeSnapshotModal()">Cancel</button>
+                                </div>
+                            </div>
                         </li>
                         <li>
                             <a ng-click="showRenameModal()">
                                 <i class="icon-edit"></i>
                                 Rename
                             </a>
-                            <style>
-                                .modal .modal-header, .modal .modal-footer {
-                                    display: block;
-                                }
-                                .modal .modal-body {
-                                    border: 0px;
-                                }
-                            </style>
                             <div modal="renameModalOpen" close="closeRenameModal()" options="modalOpts">
                                 <div class="modal-header">
                                     <h3>Rename</h3>
@@ -117,7 +134,7 @@ h2. Manage Machine
                             </a>
                         </li>
                         <li>
-                            <a ng-click="location.reload()">
+                            <a onclick="location.reload()">
                                 <i class="icon-undo"></i>
                                 Rebuild
                             </a>
@@ -163,7 +180,7 @@ h2. Manage Machine
                 <div class="control-group">
                     <label class="control-label" >CPU:</label>
                     <div class="controls " >
-                        <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> Core
+                        <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                     </div>
                 </div>
                 <hr>
@@ -198,17 +215,7 @@ h2. Manage Machine
         </div>
 
         <div id="snapshots" class="tab-pane">
-            <h3>Manage & create Snapshots</h3>
-            <h4>Take a Snapshot</h4>
-            <div ng-show="bucket.status == 'Halted'">
-                Snapshot name:
-                <input class="input-large"  ng-model='newSnapshot.name' type="text"  placeholder="Snapshot Name"/>
-                <input class="btn btn-info btn-large"  type="submit" value="Create snapshot" ng-click="createSnapshot()" />
-            </div>
-            <div ng-show="bucket.status == 'Running'">You must turn the bucket off before creating snapshot</div>
-            <hr>
-
-            <h4>Restore from Snapshot</h4>
+            <h3>Restore from Snapshot</h3>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -228,11 +235,6 @@ h2. Manage Machine
 
             <input class="btn btn-info btn-large"  type="submit" value="Restore" ng-click="restoreSnapshot()" />
         </div>
-        <div id="Backups" class="tab-pane">
-            <h3>Backups</h3>
-            <h4>Coming soon...</h4>
-
-        </div>
         <div id="Settings" class="control-group tab-pane">
             <h3>Settings</h3>
             <h4>Image</h4>
@@ -247,7 +249,7 @@ h2. Manage Machine
             <input class="btn btn-info btn-large" type="submit" value="Change name" ng-click="bucket.save()" />
 
         </div>
-        <div id="Monitoring" class="tab-pane">
+        <div id="monitoring" class="tab-pane">
             <h3>Monitoring</h3>
             <p>
                 CPU Utilization
@@ -257,14 +259,7 @@ h2. Manage Machine
 {{html:
             </p>
         </div>
-        <div id="Destroy" class="tab-pane">
-            <h3>Destroy</h3>
-            <p>
-                warning message goes here warning message goes here warning message goes here
-            </p>
-            <hr>
-            <input class="btn btn-danger btn-large"  ng-click="bucket.remove()" name="commit" type="submit" value="Destroy"></input>
     </div>
 </div>
-</div>
 }}
+{{jgauge: id:2 width:200 height:114 start:0 end:100 val:40  style:black labelsuffix:%}}

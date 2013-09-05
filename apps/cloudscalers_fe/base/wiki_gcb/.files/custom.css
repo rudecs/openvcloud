@@ -1,5 +1,6 @@
 body{
     color:#666;
+    background:#fff;
 }
 hr {
  border-bottom: 3px dotted #CCCCCC;
@@ -603,3 +604,128 @@ padding-top: 12px;
 
     background:#eee;
     }
+
+
+/*-----------------new theme---------*/
+.subnavbar-inner {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-bottom: 1px solid #EEEEEE;
+    box-shadow: 10px -7px 10px black;
+    height: 45px;
+}
+
+.subnavbar .container > ul {
+    border-left: none;
+    border-right: none;
+    display: inline-block;
+    height: 45px;
+    margin: 0;
+    padding: 0;
+}
+
+.subnavbar .container > ul > li {
+    border-left: none;
+    border-right: none;
+    float: left;
+    height: 46px;
+    list-style: none outside none;
+    margin: 0;
+    min-width: 90px;
+    padding: 0;
+    text-align: center;
+}
+
+
+.subnavbar .container > ul > li > a {
+ color: #3E4753 !important;
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    height: 57%;
+    padding: 12px 15px 7px;
+    text-shadow: none;
+}
+    .subnavbar .container > ul > li > a:hover {
+
+    padding: 12px 15px 6px;
+    border-bottom: 2px solid #00BAFF;
+    }
+.subnavbar .container > ul > li > a > i {
+    display: inline;
+    font-size: 19px;
+    height: 24px;
+    margin-bottom: 0;
+    margin-top: 0;
+    width: 24px;
+}
+
+.subnavbar .container > ul > li > a > span {
+    display: inline;
+}
+
+.subnavbar .container > ul > li > a {
+    color: #636363;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: none;
+}
+
+.subnavbar .container > ul > li.active > a {
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: #00BAFF !important;
+}
+    .subnavbar .container > ul > li.active > a {
+    border:none !important;
+    }
+
+
+.brand {
+    color: #777777;
+    display: block;
+    float: left;
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: -20px;
+    padding: 10px 20px;
+    position: relative;
+    text-shadow: 0 1px 0 #FFFFFF;
+    top: 2px;
+}
+    .brand:hover {
+    text-decoration:none;
+    color:#3E4753;
+    }
+
+.navbar-fixed-top {
+opacity: 0.3;
+    position: fixed;
+    right: 0;
+    top: 45px;
+    width: 85px;
+}
+.navbar-fixed-top .brand {
+display:none;
+}
+.navbar-fixed-top  .navbar-inner {
+    background:#fff !important;
+    border:none !important;
+}
+.navbar-fixed-top .container {
+    width:100% !important;
+}
+
+
+.copyright {
+    background: none repeat scroll 0 0 transparent;
+    border-top: 1px solid #DDDDDD;
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-top: 40px;
+}
+
+.copyright p {
+    color:#666666;
+}
+.copyright .span8 {
+    padding-top: 0px;
+}

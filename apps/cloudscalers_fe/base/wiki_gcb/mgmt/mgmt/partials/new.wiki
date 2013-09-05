@@ -12,7 +12,7 @@ h2. Create Machine Bucket
     <div class="control-group">
         <label class="control-label" >CPU:</label>
         <div class="controls " >
-            <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> Core
+            <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
         </div>
     </div>
 	<hr>

@@ -97,11 +97,19 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         $scope.showRenameModal = function() {
             $scope.bucket.oldName = $scope.bucket.name;
             $scope.renameModalOpen = true;
-        };        
+        };
 
         $scope.closeRenameModal = function() {
             $scope.renameModalOpen = false;
         };
+
+        $scope.showSnapshotModal = function() {
+            $scope.snapshotModalOpen = true;
+        };
+
+        $scope.closeSnapshotModal = function() {
+            $scope.snapshotModalOpen = false;
+        }
 
         $scope.restoreSnapshot = function() {
             // Real implementation will call Snapshots.restoreSnapshot(), but for now we just reload
@@ -112,7 +120,16 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             Snapshots.add($scope.newSnapshot);
             $scope.snapshots = Snapshots.getAll();
             $scope.newSnapshot = {name: ''};
+            $scope.closeSnapshotModal();
         };
+
+        $scope.$evalAsync(function() {
+            myGauge1.init();
+            myGauge1.setValue(40);
+
+            myGauge2.init();
+            myGauge2.setValue(40)
+        });
 
     }])
 
@@ -177,4 +194,23 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             }
             return numOfLocations;
         }
+    }])
+
+    .controller('SupportController', ['$scope', 'SettingsService', function($scope, SettingsService) {
+        var settings = SettingsService.getAll();
+        if (settings.length == 0) {
+            settings = {
+                id: 1,
+                name: 'User name',
+                email: 'email@site.com',
+                // password: '', // Passwords must not be saved locally
+                //ccType: '',
+                //ccNum: '',
+                //ccExpiration: '',
+                //ccv: ''
+            };
+        } else {
+            settings = settings[0];
+        }
+        $scope.settings = settings;
     }]);

@@ -6,8 +6,8 @@
       <th>Status</th>
       <th>Name</th>
       <th>IP Address</th>
-      <th>CPU</th>
       <th>Memory</th>
+      <th>CPU</th>
       <th>Storage</th>
       <th>Main Region</th>
     </tr>
@@ -18,9 +18,9 @@
           <a ng-href="#/edit/{[bucket.id]}">{[bucket.name]}</a>
         </td>
         <td>{[bucket.ip]}</td>
-        <td>{[bucket.cpu]}</td>
-        <td>{[bucket.memory]}</td>
-        <td>{[bucket.storage]}</td>
+        <td>{[bucket.memory]} GB</td>
+        <td>{[bucket.cpu]} <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
+        <td>{[bucket.storage]} GB</td>
         <td>{[bucket.region]}</td>
       </tr>
     </tbody>
