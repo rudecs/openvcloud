@@ -533,7 +533,12 @@ border-bottom:1px solid #ddd;  color:#0088CC;
     }
     ul.actions li:hover {
     color:#1A668A;     background :#EEEEEE;
+
     }
+        ul.actions li:hover a {
+        cursor:pointer; 
+        text-decoration:none;
+        }
 ul.actions i {
 font-size:17px; margin-right:10px;
 }

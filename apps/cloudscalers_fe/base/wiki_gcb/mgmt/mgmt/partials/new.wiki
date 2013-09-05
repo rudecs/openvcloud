@@ -10,23 +10,16 @@ h2. Create Machine Bucket
     </div>
 	<hr>
     <div class="control-group">
-        <label class="control-label" >CPU:</label>
+        <label class="control-label" >Plan:</label>
         <div class="controls " >
-            <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
-        </div>
-    </div>
-	<hr>
-    <div class="control-group">
-        <label class="control-label" >Memory:</label>
-        <div class="controls " >
-            <input type="number" ng-model="bucket.memory" class="input-mini" min="1"> GB
+            {{include:plan_list}}
         </div>
     </div>
     <hr>
     <div class="control-group">
-        <label class="control-label" >Storage:</label>
+        <label class="control-label" >Additional storage:</label>
         <div class="controls " >
-            <input type="number" ng-model="bucket.storage" class="input-mini" min="1"> GB
+            {{include:storage_list}}
         </div>
     </div>
     <hr>

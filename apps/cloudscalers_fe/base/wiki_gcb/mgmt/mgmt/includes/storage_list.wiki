@@ -1,0 +1,31 @@
+
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="10">
+    10GB SSD - 5 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="20">
+    20GB SSD - 10 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="30">
+    30GB SSD - 15 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="40">
+    40GB SSD - 20 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="50">
+    50GB SSD - 25 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="60">
+    60GB SSD - 30 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="70">
+    70GB SSD - 35 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="80">
+    80GB SSD - 40 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="90">
+    90GB SSD - 45 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="bucket.additionalStorage" btn-radio="100">
+    100GB SSD - 50 USD/month
+  </button>

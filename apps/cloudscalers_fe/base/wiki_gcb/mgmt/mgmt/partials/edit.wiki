@@ -139,6 +139,32 @@ h2. Manage Machine
                                 Rebuild
                             </a>
                         </li>
+                        <li>
+                            <a ng-click="showCloneModal()">
+                                <i class="icon-copy"></i>
+                                Clone
+                            </a>
+                            <div modal="cloneModalOpen" close="closeCloneModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Clone</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name: <input ng-model="cloneName" type="text" class="input-large" />
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="cloneBucket()">Clone</button>
+                                    <button class="btn cancel" ng-click="closeCloneModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a>
+                                <i class="icon-download"></i>
+                                Export
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -178,31 +204,20 @@ h2. Manage Machine
         <div class="tab-pane" id="package">
             <div class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" >CPU:</label>
-                    <div class="controls " >
-                        <input type="number" ng-model="bucket.cpu" class="input-mini" min="1"> <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
-                    </div>
+                    <label class="control-label" >Plan:</label>
+                    <div class="controls " >{{include:plan_list}}</div>
                 </div>
-                <hr>
+                <hr>        
                 <div class="control-group">
-                    <label class="control-label" >Memory:</label>
-                    <div class="controls " >
-                        <input type="number" ng-model="bucket.memory" class="input-mini" min="1"> GB
-                    </div>
+                    <label class="control-label" >Additional storage:</label>
+                    <div class="controls " >{{include:storage_list}}</div>
                 </div>
-                <hr>
-                <div class="control-group">
-                    <label class="control-label" >Storage:</label>
-                    <div class="controls " >
-                        <input type="number" ng-model="bucket.storage" class="input-mini" min="1"> GB
-                    </div>
-                </div>
-                <hr>
+                <hr>        
                 <div class="control-group">
                     <label class="control-label" >Region</label>
                     <div class="controls ">{{include:region_list}}</div>
                 </div>
-                <hr>
+                <hr>        
                 <div class="control-group">
                     <label class="control-label" >Image</label>
                     <div class="controls ">{{include:image_list}}</div>
@@ -219,21 +234,23 @@ h2. Manage Machine
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Select</th>
                         <th>Name</th>
+                        <th>Date</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="snapshot in snapshots">
-                        <td>
-                            <input type="radio" name="snapshot" ng-model="selectedSnapshot" value="{[snapshot.name]}" />
-                        </td>
                         <td width="89%">{[snapshot.name]}</td>
+                        <td>
+                            {[snapshot.date]}
+                        </td>
+                        <td>
+                            <a ng-click="restoreSnapshot()">Rollback</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
-            <input class="btn btn-info btn-large"  type="submit" value="Restore" ng-click="restoreSnapshot()" />
         </div>
         <div id="Settings" class="control-group tab-pane">
             <h3>Settings</h3>
@@ -245,14 +262,14 @@ h2. Manage Machine
             <hr>
             <h4>Rename</h4>
             New name:
-            <input  class="input-large" ng-model='bucket.name' type="text" placeholder="New Name"/>
+            <input class="input-large" ng-model='bucket.name' type="text" placeholder="New Name"/>
             <input class="btn btn-info btn-large" type="submit" value="Change name" ng-click="bucket.save()" />
 
         </div>
         <div id="monitoring" class="tab-pane">
             <h3>Monitoring</h3>
             <p>
-                CPU Utilization
+                <h4>CPU Utilization</h4>
 }}
       {{jgauge: id:1 width:200 height:114 start:0 end:100 val:40  style:black labelsuffix:%}}
 
@@ -262,4 +279,3 @@ h2. Manage Machine
     </div>
 </div>
 }}
-{{jgauge: id:2 width:200 height:114 start:0 end:100 val:40  style:black labelsuffix:%}}

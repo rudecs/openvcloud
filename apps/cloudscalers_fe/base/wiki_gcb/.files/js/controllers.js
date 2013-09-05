@@ -9,6 +9,16 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
     .controller('BucketListCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
         $scope.buckets = Buckets.getAll();
+        $scope.$watch('buckets', function() {
+            for (var i = 0; i < $scope.buckets.length; i++) {
+                try {
+                    var bucket = $scope.buckets[i];
+                    bucket.cpu = bucket.plan.cpu;
+                    bucket.memory = bucket.plan.memory;
+                    bucket.storage = bucket.plan.storage + bucket.additionalStorage;
+                } catch(e) {}
+            }
+        }, true);
     }])
 
     .controller('BucketNewCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
@@ -16,17 +26,27 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             id: Math.random() * 1000000000,
             ip: Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256),
             name: '',
+            plan: {},
+            additionalStorage: 0,
+
             cpu: 1,
             memory: 1,
             storage: 10,
+            
             region: '',
             status: 'Running',
             image: '',
             history: []
         };
+
+        $scope.$watch('plan + additionalStorage', function() {
+            $scope.bucket.cpu = $scope.bucket.plan.cpu;
+            $scope.bucket.memory = $scope.bucket.plan.memory;
+            $scope.bucket.storage = $scope.bucket.plan.storage + $scope.bucket.additionalStorage;
+        });
   
         $scope.bucketValid = function() {
-            return $scope.bucket.name && $scope.bucket.cpu && $scope.bucket.memory &&$scope.bucket.storage && $scope.bucket.region && $scope.bucket.image;
+            return $scope.bucket.name && $scope.bucket.plan && $scope.bucket.region && $scope.bucket.image;
         };
 
         $scope.saveBucket = function() {
@@ -36,11 +56,18 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         };
     }])
 
-    .controller('BucketEditCtrl', ['$scope', '$routeParams', 'Buckets', 'Snapshots', function($scope, $routeParams, Buckets, Snapshots) {
+    .controller('BucketEditCtrl', ['$scope', '$routeParams', '$location', 'Buckets', 'Snapshots', function($scope, $routeParams, $location, Buckets, Snapshots) {
         $scope.bucket = Buckets.getById(parseFloat($routeParams.bucketId));
         $scope.snapshots = Snapshots.getAll();
         $scope.newSnapshot = {name: ''};
+        $scope.cloneName = '';
         $scope.selectedSnapshot = '';
+
+        $scope.$watch('plan + additionalStorage', function() {
+            $scope.bucket.cpu = $scope.bucket.plan.cpu;
+            $scope.bucket.memory = $scope.bucket.plan.memory;
+            $scope.bucket.storage = $scope.bucket.plan.storage + $scope.bucket.additionalStorage;
+        });
 
         $scope.bucket.boot = function() {
             $scope.bucket.status = 'Running';
@@ -89,6 +116,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
         $scope.renameModalOpen = false;
         $scope.snapshotModalOpen = false;
+        $scope.cloneModalOpen = false;
         $scope.modalOpts = {
             backdropFade: true,
             dialogFade: true
@@ -109,7 +137,15 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
         $scope.closeSnapshotModal = function() {
             $scope.snapshotModalOpen = false;
-        }
+        };
+
+        $scope.showCloneModal = function() {
+            $scope.cloneModalOpen = true;
+        };
+
+        $scope.closeCloneModal = function() {
+            $scope.cloneModalOpen = false;
+        };
 
         $scope.restoreSnapshot = function() {
             // Real implementation will call Snapshots.restoreSnapshot(), but for now we just reload
@@ -119,18 +155,28 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         $scope.createSnapshot = function() {
             Snapshots.add($scope.newSnapshot);
             $scope.snapshots = Snapshots.getAll();
-            $scope.newSnapshot = {name: ''};
+            $scope.newSnapshot = {name: '', date: getFormattedDate()};
             $scope.closeSnapshotModal();
         };
 
-        $scope.$evalAsync(function() {
-            myGauge1.init();
-            myGauge1.setValue(40);
+        $scope.cloneBucket = function() {
+            var cloneId = Math.random() * 1000000000;
+            Buckets.add({
+                id: cloneId,
+                ip: Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256),
+                name: $scope.cloneName,
+                cpu: $scope.bucket.cpu,
+                memory: $scope.bucket.memory,
+                storage: $scope.bucket.storage,
+                region: $scope.bucket.region,
+                status: 'Running',
+                image: $scope.bucket.image,
+                history: [{event: 'Created', initiated: getFormattedDate(), user: 'John Q.'}]
+            });
 
-            myGauge2.init();
-            myGauge2.setValue(40)
-        });
-
+            $scope.closeCloneModal();
+            $location.path("/edit/" + cloneId);
+        };
     }])
 
     .controller('SettingsController', ['$scope', 'SettingsService', function($scope, SettingsService) {
