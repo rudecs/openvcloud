@@ -20,7 +20,7 @@ def installFreshComputeNode(nocps_url):
     
     provisioning_result = ps.PXE_API.provisionHost(serverdetails)
     if not provisioning_result['success']:
-        raise provisioning_result
+        print provisioning_result
     
     while ps.PXE_API.getProvisioningStatusByServer(macaddress):
         print '.',
