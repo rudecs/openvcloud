@@ -209,7 +209,7 @@ h2. Manage Machine
                 </div>
                 <hr>        
                 <div class="control-group">
-                    <label class="control-label" >Additional storage:</label>
+                    <label class="control-label" >Storage:</label>
                     <div class="controls " >{{include:storage_list}}</div>
                 </div>
                 <hr>        
@@ -242,7 +242,7 @@ h2. Manage Machine
                 <tbody>
                     <tr ng-repeat="snapshot in snapshots">
                         <td width="89%">{[snapshot.name]}</td>
-                        <td>
+                        <td style="white-space:nowrap" >
                             {[snapshot.date]}
                         </td>
                         <td>
@@ -267,14 +267,9 @@ h2. Manage Machine
 
         </div>
         <div id="monitoring" class="tab-pane">
-            <h3>Monitoring</h3>
-            <p>
-                <h4>CPU Utilization</h4>
-}}
-      {{jgauge: id:1 width:200 height:114 start:0 end:100 val:40  style:black labelsuffix:%}}
-
-{{html:
-            </p>
+            <h3>Monitoring</h3>            
+            <h4>CPU Utilization</h4>
+            <chart value='bucket.chart' type="area" height="400"></chart>
         </div>
     </div>
 </div>
