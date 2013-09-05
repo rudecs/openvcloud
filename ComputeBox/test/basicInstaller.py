@@ -21,6 +21,7 @@ def install_prereqs():
     put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/')
     run('mkdir -p ~/.ssh/')
     put(os.path.join(WORKSPACE, 'config/*'), '~/.ssh/')
+    run('chmod 0600 ~/.ssh/*')
     run('jpackage_update')
     run('jpackage_install --package bootstrapper')
     run('mv /opt/jumpscale/cfg/jpackages/sources.cfg.bak /opt/jumpscale/cfg/jpackages/sources.cfg', pty=True)
