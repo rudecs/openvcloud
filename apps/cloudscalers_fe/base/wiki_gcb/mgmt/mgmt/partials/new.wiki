@@ -10,7 +10,7 @@ h2. Create Machine Bucket
     </div>
 	<hr>
     <div class="control-group">
-        <label class="control-label" >Plan:</label>
+        <label class="control-label" >Plan *:</label>
         <div class="controls " >
             {{include:plan_list}}
         </div>
@@ -36,5 +36,12 @@ h2. Create Machine Bucket
     <div class="form-actions">
         <button class="btn btn-info btn-large " ng-click="saveBucket()" ng-disabled="!bucketValid()">Create</button>
     </div>
+    <hr>
+}}
+    Fair use policy for Unlimited Transfer:
+        * Small machines: <= 4 cores = 1 Mbit/s average usage per month
+        * Large machines: >= 5 cores = 5 Mbit/saverage usage per month
+        This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us!
+{{html:
 </div>
 }}

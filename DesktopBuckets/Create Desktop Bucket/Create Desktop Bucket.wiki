@@ -98,7 +98,7 @@ h2. Create Desktop Bucket
 </div>
 -->
 <div class="form-actions">
-    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large " ng-click="create()">Create Desktop Bucket</button>
+    <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large " ng-disabled="!bucket.isValid()" ng-click="create()">Create Desktop Bucket</button>
 
 </div>
 

@@ -9,7 +9,7 @@
       <th>Memory</th>
       <th>CPU</th>
       <th>Storage</th>
-      <th>Main Region</th>
+      <th>Number of Data Locations</th>
     </tr>
     <tbody>
       <tr ng-repeat="bucket in buckets">
@@ -21,7 +21,7 @@
         <td>{[bucket.memory]} GB</td>
         <td>{[bucket.cpu]} <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
         <td>{[bucket.storage]} GB</td>
-        <td>{[bucket.region]}</td>
+        <td>{[numOfDataLocations(bucket)]}</td>
       </tr>
     </tbody>
   </table>

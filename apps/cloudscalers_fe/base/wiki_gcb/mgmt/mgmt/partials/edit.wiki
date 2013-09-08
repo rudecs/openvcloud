@@ -28,7 +28,6 @@ h2. Manage Machine
         <li>
             <a data-toggle="tab" href="#package">Change Package</a>
         </li>
-
     </ul>
     <div class="tab-content">
         <div id="actions" class="tab-pane active">
@@ -252,24 +251,12 @@ h2. Manage Machine
                 </tbody>
             </table>
         </div>
-        <div id="Settings" class="control-group tab-pane">
-            <h3>Settings</h3>
-            <h4>Image</h4>
-            <div class="controls shortcuts">{{include:image_list}}</div>
-            <input class="btn btn-info btn-large"   type="submit" value="Change image" ng-click="bucket.save()" />
-            <br>
-            <br>
-            <hr>
-            <h4>Rename</h4>
-            New name:
-            <input class="input-large" ng-model='bucket.name' type="text" placeholder="New Name"/>
-            <input class="btn btn-info btn-large" type="submit" value="Change name" ng-click="bucket.save()" />
-
-        </div>
         <div id="monitoring" class="tab-pane">
             <h3>Monitoring</h3>            
             <h4>CPU Utilization</h4>
-            <chart value='bucket.chart' type="area" height="400"></chart>
+}}
+{{jgauge: id:1 start:0 end:100 random:50 style:black val:60 labelsuffix:%}}
+{{html:
         </div>
     </div>
 </div>
