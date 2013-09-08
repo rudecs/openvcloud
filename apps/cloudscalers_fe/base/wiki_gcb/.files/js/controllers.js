@@ -349,5 +349,6 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             $scope.settings.credit += $scope.addedAmount;
             $scope.settings.creditHistory.push({date: getFormattedDate(), description: 'Payment', amount: $scope.addedAmount});
             SettingsService.save($scope.settings);
+            showLoading();
         };
     }]);

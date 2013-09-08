@@ -29,4 +29,11 @@ jQuery(function() {
     $('.popup-content').on('click', function(e) {
         e.stopPropagation();
     });
+
+    var href = window.location.href;
+    var parts = href.split("/");
+    $(".sidebar-nav li.active a").parent().removeClass("active");
+    $(".sidebar-nav li:has(a[href$='"+ decodeURIComponent(parts[parts.length -1]) +"'])").addClass("active");
+    $(".mainnav li.active a").parent().removeClass("active");
+    $(".mainnav li:has(a[href$='"+ decodeURIComponent(parts[parts.length -1]) +"'])").addClass("active");
 });
