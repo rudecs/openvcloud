@@ -157,6 +157,17 @@ System:/System
 @divend
 
 @col 9
+{{html:
+<div id="create-ssh" style="display: none;">
+    <div class="popup-background">
+        <div class="popup-content">
+            <h3>In progress</h3>
+            <img src="/test_gcb/.files/img/progress_bar.gif">
+        </div>
+    </div>
+</div>
+}}
+
 {content}
 @divend
 

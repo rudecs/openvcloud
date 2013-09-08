@@ -3,16 +3,18 @@ h2. Billing
 h3. Balance & Usage
 {{html:
 
+<div ng-app="myApp" ng-controller="BillingController">
+
 <table class="table table-striped table-bordered"> 
 <thead>
-<tr><th>Available credit </th><th> $44.67 </th> </tr>
+<tr><th>Available credit </th><th>Usage this month </th> </tr>
 </thead>
 <tbody>
-<tr><td>Usage this month </td><td> $5.35  </td> </tr>
+<tr><td> {[settings.credit | currency]} </td><td> $5.35  </td> </tr>
 </tbody>
 </table>
 <hr>
-<form class="form-horizontal">
+<form class="form-horizontal" >
 <fieldset>
 
 <!-- Appended Input-->
@@ -20,8 +22,9 @@ h3. Balance & Usage
   <label class="control-label" for="appendedtext">Add credit to your account</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="100 USD" type="text">
-      <span class="add-on">Upload</span>
+      <input type="number" class="input-mini" ng-model="addedAmount" min=1> 
+      <span class="add-on">USD</span>
+      <button class="btn" ng-click="add()">Add</button>
     </div>
     
   </div>
@@ -34,14 +37,21 @@ h3. Balance & Usage
 
 h3. Billing History
 {{html:
-<table class="table table-striped table-bordered"> 
-<thead>
-<tr><th>Date </th><th>Description</th> <th>Amount</th> </tr>
-</thead>
-<tbody>
-<tr><td>June 25, 2013 </td><td>Payment (John Tester) </td> <td>-$50.00</td></tr>
-<tr><td>May 20, 2013 </td><td>Payment (John Tester) </td> <td>-$100.00</td></tr>
-</tbody>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="hist in settings.creditHistory">
+            <td>{[hist.date]}</td>
+            <td>{[hist.description]}</td>
+            <td>{[hist.amount]}</td>
+        </tr>
+    </tbody>
 </table>
-
+</div>
 }}

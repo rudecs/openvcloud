@@ -244,6 +244,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
     .controller('CreateDesktopBucketController', ['$scope', 'DesktopBucketService', function($scope, DesktopBucketService) {
         $scope.bucket = {
+            id: Math.random() * 1000000000,
             projectName: '',
             users: [],
             newUser: { email: '', userType: '' },
@@ -281,6 +282,24 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
         }
     }])
 
+    .controller('EditDesktopBucketController', ['$scope', '$routeParams', 'DesktopBucketService', function($scope, $routeParams, DesktopBucketService) {
+        $scope.bucket = DesktopBucketService.getById(parseFloat(location.hash.substr(2)));
+
+        $scope.bucket.isValid = function() {
+            return this.projectName && this.users.length > 0 && this.storage;
+        };
+
+        $scope.bucket.addNewUser = function() {
+            this.users.push(this.newUser);
+            this.newUser = { email: '', userType: '' };
+        };
+
+        $scope.update = function() {
+            DesktopBucketService.save($scope.bucket);
+            location.href = "My Desktop Buckets"
+        };
+    }])
+
     .controller('SupportController', ['$scope', 'SettingsService', function($scope, SettingsService) {
         var settings = SettingsService.getAll();
         if (settings.length == 0) {
@@ -288,6 +307,8 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
                 id: 1,
                 name: 'User name',
                 email: 'email@site.com',
+                credit: 50,
+                creditHistory: [],
                 // password: '', // Passwords must not be saved locally
                 //ccType: '',
                 //ccNum: '',
@@ -298,4 +319,35 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             settings = settings[0];
         }
         $scope.settings = settings;
+    }])
+
+    .controller('BillingController', ['$scope', 'SettingsService', function($scope, SettingsService) {
+        var settings = SettingsService.getAll();
+        if (settings.length == 0) {
+            settings = {
+                id: 1,
+                name: 'User name',
+                email: 'email@site.com',
+                credit: 50,
+                creditHistory: [],
+                addedAmount: 0,
+                // password: '', // Passwords must not be saved locally
+                //ccType: '',
+                //ccNum: '',
+                //ccExpiration: '',
+                //ccv: ''
+            };
+        } else {
+            settings = settings[0];
+        }
+        $scope.settings = settings;
+        $scope.addedAmount = 0;
+
+        $scope.add = function() {
+            if (!$scope.addedAmount || $scope.addedAmount <= 0)
+                return;
+            $scope.settings.credit += $scope.addedAmount;
+            $scope.settings.creditHistory.push({date: getFormattedDate(), description: 'Payment', amount: $scope.addedAmount});
+            SettingsService.save($scope.settings);
+        };
     }]);

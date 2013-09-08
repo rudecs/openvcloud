@@ -14,7 +14,7 @@ h2. My Desktop Buckets
     </thead>
     <tbody>
         <tr ng-repeat="bucket in buckets">
-            <td><a href="Main Office">Edit Package</a></td>
+            <td><a href="Main Office#/{[bucket.id]}">Edit Package</a></td>
             <td><a href="Connecting">Manage</a></td>
             <td>{[bucket.projectName]}</td>
             <td>{[bucket.users.length]}</td>
