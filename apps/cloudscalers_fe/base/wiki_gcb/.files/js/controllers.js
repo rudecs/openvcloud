@@ -5,6 +5,13 @@ function getFormattedDate() {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
 }
 
+function showLoading() {
+    $('#create-ssh').show('fast');
+    setTimeout(function() {
+        $('#create-ssh').hide('fast');
+    }, 3000);
+}
+
 angular.module('myApp.controllers', ['ui.bootstrap'])
 
     .controller('BucketListCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
@@ -92,23 +99,27 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             $scope.bucket.status = 'Running';
             $scope.bucket.history.push({event: 'Started', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
+            showLoading();
         };
 
         $scope.bucket.powerOff = function() {
             $scope.bucket.status = 'Halted';
             $scope.bucket.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
+            showLoading();
         };
 
         $scope.bucket.pause = function() {
             $scope.bucket.status = 'Paused';
             $scope.bucket.history.push({event: 'Paused', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
+            showLoading();
         };
 
         $scope.bucket.resize = function() {
             $scope.bucket.history.push({event: 'Bucket resized', initiated: getFormattedDate(), user: 'John Q.'})
             Buckets.save($scope.bucket);
+            showLoading();
         };
 
         $scope.bucket.remove = function() {
@@ -122,11 +133,13 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             if ($scope.bucket.oldName)
                 $scope.bucket.name = $scope.bucket.oldName;
             $scope.bucket.save();
+            showLoading();
         };
 
         $scope.bucket.save = function() {
             Buckets.save($scope.bucket);
             $scope.renameModalOpen = false;
+            showLoading();
         };
 
         $scope.bucket.isValid = function() {
@@ -168,7 +181,8 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
 
         $scope.restoreSnapshot = function() {
             // Real implementation will call Snapshots.restoreSnapshot(), but for now we just reload
-            location.reload();
+            //location.reload();
+            showLoading();
         };
 
         $scope.createSnapshot = function() {
@@ -176,6 +190,7 @@ angular.module('myApp.controllers', ['ui.bootstrap'])
             $scope.snapshots = Snapshots.getAll();
             $scope.newSnapshot = {name: '', date: getFormattedDate()};
             $scope.closeSnapshotModal();
+            showLoading();
         };
 
         $scope.cloneBucket = function() {

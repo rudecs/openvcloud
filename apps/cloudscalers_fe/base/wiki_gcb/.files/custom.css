@@ -482,6 +482,7 @@ span.login-checkbox > input[type="checkbox"] + label {
     font-size: 12px !important;
     width: 25%;
     /*background: #CCCCCC !important;*/
+    min-height:49px;
 }
     .btn-selector.active {
     
@@ -733,4 +734,21 @@ display:none;
 }
 .copyright .span8 {
     padding-top: 0px;
+}
+
+
+.msg {
+   background: none repeat scroll 0 0 #FFFAD2;
+    border: 2px solid #FDD78F;
+    font-size: 11px !important;
+    line-height: 10px !important;
+    padding: 20px;
+}
+
+.msg * {
+    color: #333333;
+    font-size: 11px;
+    line-height: 16px;
+    margin: 0;
+    list-style:inside;
 }
