@@ -18,7 +18,8 @@ var Application = function () {
 		enableLightbox ();
 		enableCirque ();
 		enableEnhancedAccordion ();
-
+		enableNavigationHighlight();
+		enablePopups();
 	}
 
 	function enableCirque () {
@@ -95,5 +96,40 @@ var Application = function () {
 	    
 	    return custom;
 	}
+
+	function enableNavigationHighlight() {
+		var href = window.location.href;
+	    var parts = href.split("/");
+	    $(".sidebar-nav li.active a").parent().removeClass("active");
+	    $(".sidebar-nav li:has(a[href$='"+ decodeURIComponent(parts[parts.length -1]) +"'])").addClass("active");
+	    $(".mainnav li.active a").parent().removeClass("active");
+	    $(".mainnav li:has(a[href$='"+ decodeURIComponent(parts[parts.length -1]) +"'])").addClass("active");
+	}
+
+	function enablePopups() {
+		$('.popup-show').on('click', function(e) {
+	        e.preventDefault();
+	        $($(this).attr('href')).toggle('fast');
+	    });
+	    $('.popup-background').on('click', function() {
+	        $(this).parent().hide();
+	    });
+	    $('.popup-content').on('click', function(e) {
+	        e.stopPropagation();
+	    });
+	}
 	
 }();
+
+
+function getFormattedDate() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
+}
+
+function showLoading() {
+    $('#create-ssh').show('fast');
+    setTimeout(function() {
+        $('#create-ssh').hide('fast');
+    }, 3000);
+}

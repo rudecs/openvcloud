@@ -3,65 +3,69 @@
 h2. Manage DNS
 
 {{html:
-<input class="input-large" type="text" data-bind="value: newDomain().name, valueUpdate: 'afterkeydown'" placeholder="Name">
-<select  class="input-large select-large" data-bind="options: buckets, optionsText: 'name', value: newDomain().bucket, optionsCaption: 'Select bucket...'"></select>
-<input type="submit" value="Add Domain" data-bind="click: addDomain, enable: !!(newDomain().name() && newDomain().bucket())" class="btn btn-info btn-large ">
+<div ng-app="myApp" ng-controller="DNSController">
+    <input class="input-large" type="text" ng-model="newDomain.name" placeholder="Name">
+    <select ng-model="newDomain.bucket" ng-options="b.name for b in buckets" required class="input-large select-large"></select>
+    <input type="submit" value="Add Domain" ng-click="addDomain()" ng-disable="!newDomain.isValid()" class="btn btn-info btn-large ">
 
+    <div id="domains-list">
+        <div ng-repeat="domain in domains">
+            <hr >
+            <h3>{[domain.name]}</h3>
+            <input type='submit' value='Remove' ng-click="removeDomain($index)" class="btn btn-danger right " />
+            <a class="btn btn-info right " onclick="$(this).next().toggle('fast')">Edit</a>
+            <div style="display: none" class="form-actions">
+                <!-- Create new DNS record -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'A'">A</button>
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'CNAME'">CNAME</button>
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'NS'">NS</button>
+                </div>
+                <div ng-show="domain.newRecord.type == 'A'">
+                    <input type=text ng-model="domain.newRecord.name" placeholder="Name">
+                    <input type=text ng-model="domain.newRecord.ipAddress" placeholder="IP Address">
+                </div>
+                <div ng-show="domain.newRecord.type == 'NS'">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Hostname">
+                </div>
+                <div ng-show="domain.newRecord.type == 'CNAME'">
+                    <input type=text ng-model="domain.newRecord.name" placeholder="Name">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Hostname">
+                </div>
+                <input type='submit' value='Add record' ng-click="addRecord(domain)" ng-disable="!isRecordValid(domain.newRecord)" class="btn btn-info " />
+                <!-- /Create new DNS record -->
 
-<div id="domains-list"  data-bind="foreach: domains">
-<hr>
-    <h3 data-bind="text: name"></h3>
-	 <input type='submit' value='Remove' data-bind="click: remove" class="btn btn-danger right " /><a class="btn btn-info right " onclick="$(this).next().toggle('fast')">Edit</a>
-    <div style="display: none" class="form-actions">
-        <h4 data-bind="text: bucket().name"></h4>
+                <br>
+                <br>
 
-
-   <!-- Create new DNS record -->
-   <ul class="shortcuts">
-        <li class="shortcut"><label data-bind="attr: {'for': 'id_a_' + name()}">A </label> <input type=radio value='A'  data-bind="checked: newRecord().type, attr: {'id': 'id_a_' + name()}"> </li>
-        <li class="shortcut"><label data-bind="attr: {'for': 'id_ns_' + name()}"> NS </label><input id="id_ns" type=radio value='NS'  data-bind="checked: newRecord().type, attr: {'id': 'id_ns_' + name()}"></li>
-        <li class="shortcut"><label data-bind="attr: {'for': 'id_cname_' + name()}"> CNAME </label><input id="id_cname" type=radio value='CNAME'  data-bind="checked: newRecord().type, attr: {'id': 'id_cname_' + name()}"></li>
-   </ul>
-   <div style="clear: both"></div>
-    <div data-bind="visible: newRecord().type() == 'A'">
-        <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
-        <input type=text data-bind="value: newRecord().ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address">
-	</div>
-    <div data-bind="visible: newRecord().type() == 'NS'">
-        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname">
-	</div>
-    <div data-bind="visible: newRecord().type() == 'CNAME'">
-        <input type=text data-bind="value: newRecord().name, valueUpdate: 'afterkeydown'" placeholder="Name">
-        <input type=text data-bind="value: newRecord().hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname">
-	</div>
-    <input type='submit' value='Add record' data-bind="click: addRecord, enable: newRecord().valid() == true" class="btn btn-info " />
-    <!-- /Create new DNS record -->
-
-	<br> <br>
-
-	 
-        <table data-bind="foreach: records"  class="table table-striped table-bordered">
-            <tr>
-                <td data-bind="text: type" class="mark"></td>
-                <td>
-                    <div data-bind="visible: type() == 'A'">
-                        <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
-                        <input type=text data-bind="value: ipAddress, valueUpdate: 'afterkeydown'" placeholder="IP Address"></div>
-                    <div data-bind="visible: type() == 'NS'">
-                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname"></div>
-                    <div data-bind="visible: type() == 'CNAME'">
-                        <input type=text data-bind="value: name, valueUpdate: 'afterkeydown'" placeholder="Name">
-                        <input type=text data-bind="value: hostname, valueUpdate: 'afterkeydown'" placeholder="Hostname"></div>
-                </td>
-                <td>
-                    <input type='submit' value='Remove record' data-bind="click: $parent.removeRecord"  class="btn btn-danger btn-small " />
-                </td>
-            </tr>
-        </table>
-    
-
+                <table class="table table-striped table-bordered">
+                    <tr ng-repeat="record in domain.records">
+                        <td class="mark">{[record.type]}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'A'">A</button>
+                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'CNAME'">CNAME</button>
+                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'NS'">NS</button>
+                            </div>
+                            <div ng-show="record.type == 'A'">
+                                <input type=text ng-model="record.name" placeholder="Name">
+                                <input type=text ng-model="record.ipAddress" placeholder="IP Address">
+                            </div>
+                            <div ng-show="record.type == 'NS'">
+                                <input type=text ng-model="record.hostname" placeholder="Hostname">
+                            </div>
+                            <div ng-show="record.type == 'CNAME'">
+                                <input type=text ng-model="record.name" placeholder="Name">
+                                <input type=text ng-model="record.hostname" placeholder="Hostname">
+                            </div>
+                        </td>
+                        <td>
+                            <input type='submit' value='Remove record' ng-click="removeRecord(domain, $index)"  class="btn btn-danger btn-small " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
-
 </div>
-
 }}
