@@ -77,9 +77,9 @@ System:/System
 				</li>
 				
 				<li>
-					<a href="../$$space/DevelopmentBuckets">
+					<a href="../$$space/StorageBuckets">
 						<i class="icon-wrench"></i>
-						<span>Development Buckets</span>
+						<span>Storage Buckets</span>
 					</a>    				
 				</li>
 				
