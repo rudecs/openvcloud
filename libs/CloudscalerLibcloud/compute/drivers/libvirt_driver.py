@@ -2,8 +2,9 @@
 
 from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
 from CloudscalerLibcloud.utils import connection
-from libcloud.compute.base import NodeImage, NodeSize, Node
+from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
+from xml.etree import ElementTree
 import uuid
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
@@ -114,6 +115,24 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domain = self.connection.createXML(machinexml, 0)
 
         return self._to_node(domain)
+
+
+    def destroy_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        xml = ElementTree.fromstring(domain.XMLDesc(0))
+        disks = xml.findall('devices/disk')
+        diskfiles = list()
+        for disk in disks:
+            if disk.attrib['device'] == 'disk':
+                source = disk.find('source')
+                if source != None:
+                    diskfiles.append(source.attrib['dev'])
+
+        result = domain.destroy() == 0
+        for diskfile in diskfiles:
+            vol = self.connection.storageVolLookupByPath(diskfile)
+            vol.delete(0)
+        return result
 
 
     def _to_node(self, domain):

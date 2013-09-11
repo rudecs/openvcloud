@@ -77,8 +77,10 @@ class CloudBroker(object):
     def deleteMachine(self, machine):
         provider = self.getProvider(machine)
         if provider:
-            node = Dummy(id=machine.referenceId)
-            provider.client.destroy_node(node)
+            for node in provider.client.list_nodes():
+                if node.id == machine.referenceId:
+                    provider.client.destroy_node(node)
+                    break
             return True
         else:
             return False
