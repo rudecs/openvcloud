@@ -88,12 +88,16 @@ class cloudapi_machines(cloudapi_machines_osis):
         result bool
 
         """
+        for m in self.list(cloudspaceId, **kwargs):
+            if m['name'] == name:
+                raise ValueError("Machine with name %s already exists" % name)
         machine = self.cb.models.vmachine.new()
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
+        machine.id = self.cb.model_vmachine_set(machine.obj2dict())
         self.cb.extensions.imp.createMachine(machine)
         return self.cb.model_vmachine_set(machine.obj2dict())
 
@@ -165,7 +169,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method importtoremote")
 
     @authenticator.auth(acl='R')
-    def list(self, cloudspaceId, type, **kwargs):
+    def list(self, cloudspaceId, type=None, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
         param:cloudspaceId id of cloudspace in which machine exists

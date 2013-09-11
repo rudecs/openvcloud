@@ -62,7 +62,8 @@ class CloudBroker(object):
         image, pimage = provider.getImage(machine.imageId)
         machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
         machine.resourceProviderId = resourceprovider['id']
-        node = provider.client.create_node(name=machine.name, image=pimage, size=psize)
+        name = 'vm-%s' % machine.id
+        node = provider.client.create_node(name=name, image=pimage, size=psize)
         machine.referenceId = node.id
         return True
 
