@@ -1,3 +1,5 @@
+@usedefault
+
 {{carousel:
 
 Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/1.png
