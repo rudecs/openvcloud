@@ -134,6 +134,26 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
             vol.delete(0)
         return result
 
+    def stop_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.destroy() == 0
+
+    def pause_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.suspend() == 0
+
+    def resume_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.resume() == 0
+
+    def reboot_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.reset() == 0
+
+    def start_node(self, node):
+        node.extension.createMachine(node.machine)
+        return True
+
 
     def _to_node(self, domain):
          state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
