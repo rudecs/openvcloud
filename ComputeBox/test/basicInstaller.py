@@ -26,5 +26,6 @@ def install_prereqs():
     run('mkdir /opt/jumpscale/var/jpackages/metadata/cloudscalers')
     run('mv /opt/jumpscale/var/jpackages/metadata/unstable/* /opt/jumpscale/var/jpackages/metadata/cloudscalers')
     run('jpackage_install --name bootstrapper')
+    run('jpackage_install --name cloudbroker')
     run('mv /opt/jumpscale/cfg/jpackages/sources.cfg.bak /opt/jumpscale/cfg/jpackages/sources.cfg', pty=True)
     run('mv /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg.bak /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg', pty=True)
