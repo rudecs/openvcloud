@@ -33,5 +33,5 @@ def install_prereqs():
     run('jpackage_install --name cloudscalers_fe')
     run('mv /opt/jumpscale/cfg/jpackages/sources.cfg.bak /opt/jumpscale/cfg/jpackages/sources.cfg', pty=True)
     run('mv /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg.bak /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg', pty=True)
-    run('/etc/init.d/elasticsearch restart')
-    
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/startall.py'), '/tmp/')
+    run('python /tmp/startall.py')
