@@ -29,26 +29,26 @@ myAppControllers
             domain.records.push(domain.newRecord);
             domain.newRecord = {};
             DNSService.save(domain);
-            showLoading();
+            showLoading('Adding DNS record');
         }
 
         $scope.addDomain = function() {
             $scope.domains.push($scope.newDomain);
             DNSService.add($scope.newDomain);
             $scope.resetNewDomain();
-            showLoading();
+            showLoading('Creating domain');
         };
 
         $scope.removeDomain = function(domainIndex) {
             $scope.domains.splice(domainIndex, 1);
             DNSService.saveAll($scope.domains);
-            showLoading();
+            showLoading('Removing domain');
         };
 
         $scope.removeRecord = function(domain, recordIndex) {
             domain.records.splice(recordIndex, 1);
             DNSService.saveAll($scope.domains);
-            showLoading();
+            showLoading('Removing DNS record');
         };
 
 

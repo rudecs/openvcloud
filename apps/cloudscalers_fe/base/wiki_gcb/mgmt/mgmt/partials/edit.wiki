@@ -60,7 +60,7 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>Data Locations</h5>
-                            {[bucket.region]}
+                            {[bucket.locations()]}
                         </li>
                     </ul>
                 </div>
@@ -223,7 +223,7 @@ h2. Manage Machine
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn btn-info btn-large " ng-click="bucket.save()" ng-disabled="!bucket.isValid()">Change</button>
+                    <button class="btn btn-info btn-large " ng-click="bucket.resize()" ng-disabled="!bucket.isValid()">Change</button>
                 </div>
             </div>
         </div>
@@ -239,23 +239,38 @@ h2. Manage Machine
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="snapshot in snapshots">
+                    <tr ng-repeat="snapshot in bucket.snapshots">
                         <td width="89%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}
                         </td>
                         <td>
-                            <a ng-click="restoreSnapshot()">Rollback</a>
+                            <a ng-click="restoreSnapshot(snapshot)">Rollback</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div id="monitoring" class="tab-pane">
-            <h3>Monitoring</h3>            
-            <h4>CPU Utilization</h4>
 }}
-{{jgauge: id:1 start:0 end:100 random:50 style:black val:60 labelsuffix:%}}
+{{div3: class=row}}
+    {{div4: class=span3}}
+        h4. CPU Usage
+        {{jgauge: id:1 start:0 end:100 random:100 style:default val:20 labelsuffix:%}}
+    {{div4}}
+    {{div4: class=span3}}
+        h4. RAM Assigned
+        {{jgauge: id:2 start:0 end:2 random:0.5 style:default val:1.6 labelsuffix:GB}}
+    {{div4}}
+    {{div4: class=span3}}
+        h4. Server Load
+        {{jgauge: id:3 start:0 end:100 random:0.5 style:default val:0.8 labelsuffix:GB}}
+    {{div4}}
+    {{div4: class=span3}}
+        h4. I/O Waiting time
+        {{jgauge: id:4 start:0 end:100 random:0.5 style:default val:0.8 labelsuffix:ms}}
+    {{div4}}
+{{div3}}
 {{html:
         </div>
     </div>

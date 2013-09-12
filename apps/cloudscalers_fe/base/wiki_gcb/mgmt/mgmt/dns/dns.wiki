@@ -8,6 +8,12 @@ h2. Manage DNS
     <select ng-model="newDomain.bucket" ng-options="b.name for b in buckets" required class="input-large select-large"></select>
     <input type="submit" value="Add Domain" ng-click="addDomain()" ng-disable="!newDomain.isValid()" class="btn btn-info btn-large ">
 
+    <script type="text/ng-template" id="your/view/file/path.htm">
+     
+        ... view content goes here ...
+     
+    </script>
+
     <div id="domains-list">
         <div ng-repeat="domain in domains">
             <hr >
@@ -19,18 +25,38 @@ h2. Manage DNS
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'A'">A</button>
                     <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'CNAME'">CNAME</button>
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'MX'">MX</button>
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'TXT'">TXT</button>
+                    <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'SRV'">SRV</button>
                     <button type="button" class="btn btn-primary" ng-model="domain.newRecord.type" btn-radio="'NS'">NS</button>
                 </div>
                 <div ng-show="domain.newRecord.type == 'A'">
-                    <input type=text ng-model="domain.newRecord.name" placeholder="Name">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Host name">
                     <input type=text ng-model="domain.newRecord.ipAddress" placeholder="IP Address">
-                </div>
-                <div ng-show="domain.newRecord.type == 'NS'">
-                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Hostname">
                 </div>
                 <div ng-show="domain.newRecord.type == 'CNAME'">
                     <input type=text ng-model="domain.newRecord.name" placeholder="Name">
                     <input type=text ng-model="domain.newRecord.hostname" placeholder="Hostname">
+                </div>
+
+                <div ng-show="domain.newRecord.type == 'MX'">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Host name">
+                    <input type=text ng-model="domain.newRecord.priority" placeholder="Priority">
+                </div>
+
+                <div ng-show="domain.newRecord.type == 'TXT'">
+                    <input type=text ng-model="domain.newRecord.name" placeholder="Name">
+                    <input type=text ng-model="domain.newRecord.text" placeholder="Text">
+                </div>
+                <div ng-show="domain.newRecord.type == 'SRV'">
+                    <input type=text ng-model="domain.newRecord.name" placeholder="Name">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Host name">
+                    <input type=number min=0 step=1 ng-model="domain.newRecord.priority" placeholder="Priority">
+                    <input type=number min=1 max=65535 step=1 ng-model="domain.newRecord.port" placeholder="Port">
+                    <input type=number min=1 step=1 ng-model="domain.newRecord.weight" placeholder="Weight">
+                </div>
+                <div ng-show="domain.newRecord.type == 'NS'">
+                    <input type=text ng-model="domain.newRecord.hostname" placeholder="Host name">
                 </div>
                 <input type='submit' value='Add record' ng-click="addRecord(domain)" ng-disable="!isRecordValid(domain.newRecord)" class="btn btn-info " />
                 <!-- /Create new DNS record -->
@@ -42,21 +68,33 @@ h2. Manage DNS
                     <tr ng-repeat="record in domain.records">
                         <td class="mark">{[record.type]}</td>
                         <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'A'">A</button>
-                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'CNAME'">CNAME</button>
-                                <button type="button" class="btn btn-primary" ng-model="record.type" btn-radio="'NS'">NS</button>
-                            </div>
-                            <div ng-show="record.type == 'A'">
-                                <input type=text ng-model="record.name" placeholder="Name">
+                            <div ng-show="domain.newRecord.type == 'A'">
+                                <input type=text ng-model="record.hostname" placeholder="Host name">
                                 <input type=text ng-model="record.ipAddress" placeholder="IP Address">
-                            </div>
-                            <div ng-show="record.type == 'NS'">
-                                <input type=text ng-model="record.hostname" placeholder="Hostname">
                             </div>
                             <div ng-show="record.type == 'CNAME'">
                                 <input type=text ng-model="record.name" placeholder="Name">
                                 <input type=text ng-model="record.hostname" placeholder="Hostname">
+                            </div>
+
+                            <div ng-show="record.type == 'MX'">
+                                <input type=text ng-model="record.hostname" placeholder="Host name">
+                                <input type=text ng-model="record.priority" placeholder="Priority">
+                            </div>
+
+                            <div ng-show="record.type == 'TXT'">
+                                <input type=text ng-model="record.name" placeholder="Name">
+                                <input type=text ng-model="record.text" placeholder="Text">
+                            </div>
+                            <div ng-show="record.type == 'SRV'">
+                                <input type=text ng-model="record.name" placeholder="Name">
+                                <input type=text ng-model="record.hostname" placeholder="Host name">
+                                <input type=number min=0 step=1 ng-model="record.priority" placeholder="Priority">
+                                <input type=number min=1 max=65535 step=1 ng-model="record.port" placeholder="Port">
+                                <input type=number min=1 step=1 ng-model="record.weight" placeholder="Weight">
+                            </div>
+                            <div ng-show="record.type == 'NS'">
+                                <input type=text ng-model="record.hostname" placeholder="Host name">
                             </div>
                         </td>
                         <td>

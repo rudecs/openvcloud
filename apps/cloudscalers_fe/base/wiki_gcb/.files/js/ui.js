@@ -127,9 +127,11 @@ function getFormattedDate() {
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
 }
 
-function showLoading() {
-    $('#create-ssh').show('fast');
+function showLoading(msg) {
+	$('.loader h2').text(msg || '');
+
+    $('.loader, .loading').fadeIn('fast');
     setTimeout(function() {
-        $('#create-ssh').hide('fast');
+        $('.loader, .loading').fadeOut('fast');
     }, 3000);
 }

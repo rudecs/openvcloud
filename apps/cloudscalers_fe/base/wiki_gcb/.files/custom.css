@@ -752,3 +752,43 @@ display:none;
     margin: 0;
     list-style:inside;
 }
+.loader   {
+
+ background: none repeat scroll 0 0 #EFEFEF;
+    border-radius: 10px 10px 10px 10px;
+    left: 50%;
+    margin-left: -100px;
+    margin-top: -100px;
+    padding: 10px 40px;
+    position: fixed;
+    top: 50%;
+    width: 200px;
+    z-index: 10;
+    border: 3px solid #CCCCCC;
+}
+.loader img  {
+   border-radius: 10px 10px 10px 10px;
+    width: 200px;
+    z-index: 10;
+}
+.loader h2 {
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: -60px;
+    z-index: 20000000000;
+    position: relative;
+
+}
+
+
+.loading {
+    display: inline-block;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background:#fff;
+    opacity:0.7;
+
+}

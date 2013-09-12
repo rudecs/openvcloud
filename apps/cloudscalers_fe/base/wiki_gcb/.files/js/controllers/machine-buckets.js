@@ -1,3 +1,15 @@
+
+function getSnapshot(bucket) {
+    // $watch doesn't always update the values. This is why I need to recalculate here.
+    return {
+        name: bucket.name + '_' + getFormattedDate(), // TODO: change
+        cpu: bucket.plan.cpu,
+        memory: bucket.plan.memory,
+        storage: bucket.plan.storage,
+        additionalStorage: bucket.additionalStorage
+    };
+}
+
 myAppControllers
     .controller('BucketListCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
         $scope.buckets = Buckets.getAll();
@@ -39,7 +51,8 @@ myAppControllers
             region: [false, false, false],
             status: 'Running',
             image: '',
-            history: []
+            history: [],
+            snapshots: []
         };
 
         $scope.$watch('plan + additionalStorage', function() {
@@ -53,15 +66,15 @@ myAppControllers
         };
 
         $scope.saveBucket = function() {
-            $scope.bucket.history.push({event: 'Created', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.snapshots.push(getSnapshot($scope.bucket));
+            $scope.bucket.history.push({event: 'Created', initiated: getFormattedDate(), user: 'Admin'})
             Buckets.add($scope.bucket);
             location.href = "#/list";
         };
     }])
 
-    .controller('BucketEditCtrl', ['$scope', '$routeParams', '$location', 'Buckets', 'Snapshots', '$timeout', function($scope, $routeParams, $location, Buckets, Snapshots, $timeout) {
+    .controller('BucketEditCtrl', ['$scope', '$routeParams', '$location', 'Buckets', '$timeout', function($scope, $routeParams, $location, Buckets, $timeout) {
         $scope.bucket = Buckets.getById(parseFloat($routeParams.bucketId));
-        $scope.snapshots = Snapshots.getAll();
         $scope.newSnapshot = {name: '', date: getFormattedDate()};
         $scope.cloneName = '';
         $scope.selectedSnapshot = '';
@@ -72,6 +85,17 @@ myAppControllers
                     myGauge1.setValue(60)
                     setInterval('randVal1()', 3000);
 
+                    myGauge2.init();
+                    myGauge2.setValue(60)
+                    setInterval('randVal2()', 3000);
+                    
+                    myGauge3.init();
+                    myGauge3.setValue(60)
+                    setInterval('randVal3()', 3000);
+                    
+                    myGauge4.init();
+                    myGauge4.setValue(60)
+                    setInterval('randVal4()', 3000);
         }, 0);
 
         $scope.$watch('plan + additionalStorage', function() {
@@ -80,31 +104,38 @@ myAppControllers
             $scope.bucket.storage = $scope.bucket.plan.storage + $scope.bucket.additionalStorage;
         });
 
+        $scope.bucket.locations = function() {
+            // TODO: Get list of regions from a single source
+            return ["Ghent, Belgium", "Bruges, Belgium", "Lenoir, NC, USA"]
+                .filter(function(element, index) { return $scope.bucket.region[index]; })
+                .join(" - ");
+        }
+
         $scope.bucket.boot = function() {
             $scope.bucket.status = 'Running';
-            $scope.bucket.history.push({event: 'Started', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'})
             Buckets.save($scope.bucket);
-            showLoading();
+            showLoading('Starting machine');
         };
 
         $scope.bucket.powerOff = function() {
             $scope.bucket.status = 'Halted';
-            $scope.bucket.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'})
             Buckets.save($scope.bucket);
-            showLoading();
+            showLoading('Stopping machine');
         };
 
         $scope.bucket.pause = function() {
             $scope.bucket.status = 'Paused';
-            $scope.bucket.history.push({event: 'Paused', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.history.push({event: 'Paused', initiated: getFormattedDate(), user: 'Admin'})
             Buckets.save($scope.bucket);
-            showLoading();
+            showLoading('Pausing machine');
         };
 
         $scope.bucket.resize = function() {
-            $scope.bucket.history.push({event: 'Bucket resized', initiated: getFormattedDate(), user: 'John Q.'})
+            $scope.bucket.history.push({event: 'Bucket resized', initiated: getFormattedDate(), user: 'Admin'})
             Buckets.save($scope.bucket);
-            showLoading();
+            showLoading('Changing package');
         };
 
         $scope.bucket.remove = function() {
@@ -118,13 +149,12 @@ myAppControllers
             if ($scope.bucket.oldName)
                 $scope.bucket.name = $scope.bucket.oldName;
             $scope.bucket.save();
-            showLoading();
+            showLoading('Renaming machine');
         };
 
         $scope.bucket.save = function() {
             Buckets.save($scope.bucket);
             $scope.renameModalOpen = false;
-            showLoading();
         };
 
         $scope.bucket.isValid = function() {
@@ -164,18 +194,22 @@ myAppControllers
             $scope.cloneModalOpen = false;
         };
 
-        $scope.restoreSnapshot = function() {
-            // Real implementation will call Snapshots.restoreSnapshot(), but for now we just reload
-            //location.reload();
-            showLoading();
+        $scope.restoreSnapshot = function(snapshot) {
+            $scope.bucket.plan.cpu = snapshot.cpu;
+            $scope.bucket.plan.memory = snapshot.memory;
+            $scope.bucket.plan.storage = snapshot.storage;
+            $scope.bucket.additionalStorage = snapshot.additionalStorage;
+            showLoading('Restoring snapshot');
         };
 
         $scope.createSnapshot = function() {
-            Snapshots.add($scope.newSnapshot);
-            $scope.snapshots = Snapshots.getAll();
+            var snapshot = getSnapshot($scope.bucket);
+            snapshot.name = $scope.newSnapshot.name;
+            $scope.bucket.snapshots.push(snapshot);
+            Buckets.save($scope.bucket);
             $scope.newSnapshot = {name: '', date: getFormattedDate()};
             $scope.closeSnapshotModal();
-            showLoading();
+            showLoading('Creating a snapshot');
         };
 
         $scope.cloneBucket = function() {
@@ -190,7 +224,7 @@ myAppControllers
                 region: $scope.bucket.region,
                 status: 'Running',
                 image: $scope.bucket.image,
-                history: [{event: 'Created', initiated: getFormattedDate(), user: 'John Q.'}]
+                history: [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}]
             });
 
             $scope.closeCloneModal();

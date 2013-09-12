@@ -27,6 +27,6 @@ myAppControllers
             $scope.settings.credit += $scope.addedAmount;
             $scope.settings.creditHistory.push({date: getFormattedDate(), description: 'Payment', amount: $scope.addedAmount});
             SettingsService.save($scope.settings);
-            showLoading();
+            showLoading('Adding credit');
         };
     }]);

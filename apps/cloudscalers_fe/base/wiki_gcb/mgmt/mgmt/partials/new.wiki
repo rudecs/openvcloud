@@ -44,6 +44,7 @@ h2. Create Machine Bucket
         * Large machines: >= 5 cores = 5 Mbit/saverage usage per month
     _This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us!_
 	{{div}}
-{{html:
-</div>
-}}
+
+
+{{html: </div>}}
+
