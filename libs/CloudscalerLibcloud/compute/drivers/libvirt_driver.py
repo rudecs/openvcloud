@@ -132,6 +132,12 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         snapshot = domain.snapshotLookupByName(snapshotname, 0)
         return snapshot.delete(0) == 0
 
+
+    def ex_snapshot_rollback(self, node, snapshotname):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        return domain.revertToSnapshot(snapshot, 4) == 0
+
     def destroy_node(self, node):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain.XMLDesc(0))
@@ -147,7 +153,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         for diskfile in diskfiles:
             vol = self.connection.storageVolLookupByPath(diskfile)
             vol.delete(0)
+        domain.undefineFlags(2)
         return result
+
+    def list_nodes(self):
+        return [ self._to_node(x) for x in self.connection.listAllDomains(0) ]
 
     def ex_stop(self, node):
         domain = self._get_domain_for_node(node=node)

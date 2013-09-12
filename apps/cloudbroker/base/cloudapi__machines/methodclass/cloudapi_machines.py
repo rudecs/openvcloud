@@ -214,6 +214,12 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.dict2obj(self.cb.model_vmachine_get(machineId))
         return self.cb.extensions.imp.deleteSnapshot(machine, name)
 
+    @authenticator.auth(acl='C')
+    def rollbackSnapshot(self, machineId, name, **kwargs):
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        return self.cb.extensions.imp.rollbackSnapshot(machine, name)
+
     def update(self, machineId, name, description, size, **kwargs):
         """
         Change basic properties of a machine.

@@ -114,6 +114,15 @@
 	    var:name str,, name of the snapshot to delete
 		result:str
 
+
+	method:rollbackSnapshot
+		"""
+		Rollback a snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+	    var:name str,, name of the snapshot to rollback
+		result:str
+
 	method:backup
 		"""		
 		backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running

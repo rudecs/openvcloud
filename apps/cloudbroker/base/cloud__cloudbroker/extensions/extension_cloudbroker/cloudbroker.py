@@ -114,6 +114,12 @@ class CloudBroker(object):
         node = Dummy(id=machine.referenceId)
         return provider.client.ex_snapshot_delete(node, name)
 
+
+    def rollbackSnapshot(self, machine, name):
+        provider = self.getProvider(machine)
+        node = Dummy(id=machine.referenceId)
+        return provider.client.ex_snapshot_rollback(node, name)
+
     def addDiskToMachine(self, machine, disk):
         provider = self.getProvider(machine)
         volume = provider.client.create_volume(disk.sizeMax, disk.name)
