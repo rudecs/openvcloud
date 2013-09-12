@@ -6,6 +6,7 @@ from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
 from xml.etree import ElementTree
 import uuid
+import libvirt
 POOLNAME = 'VMStor'
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
@@ -119,8 +120,9 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     def ex_snapshot(self, node, name):
         domain = self._get_domain_for_node(node=node)
-        snapshot = self.env.get_template('snapshot.xml').render(name=name)
-        return domain.snapshotCreateXML(snapshot, 0).getName()
+        diskfiles = self._get_disk_file_names(domain)
+        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles)
+        return domain.snapshotCreateXML(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY).getName()
 
     def ex_listsnapshots(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -135,10 +137,9 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
     def ex_snapshot_rollback(self, node, snapshotname):
         domain = self._get_domain_for_node(node=node)
         snapshot = domain.snapshotLookupByName(snapshotname, 0)
-        return domain.revertToSnapshot(snapshot, 4) == 0
+        return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
 
-    def destroy_node(self, node):
-        domain = self._get_domain_for_node(node=node)
+    def _get_disk_file_names(self, domain):
         xml = ElementTree.fromstring(domain.XMLDesc(0))
         disks = xml.findall('devices/disk')
         diskfiles = list()
@@ -147,13 +148,19 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                 source = disk.find('source')
                 if source != None:
                     diskfiles.append(source.attrib['dev'])
+        return diskfiles
 
-        result = domain.destroy() == 0
+
+    def destroy_node(self, node):
+        domain = self._get_domain_for_node(node=node)
+        diskfiles = self._get_disk_file_names(domain)
+        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+            domain.destroy()
         for diskfile in diskfiles:
             vol = self.connection.storageVolLookupByPath(diskfile)
             vol.delete(0)
-        domain.undefineFlags(2)
-        return result
+        domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        return True
 
     def list_nodes(self):
         return [ self._to_node(x) for x in self.connection.listAllDomains(0) ]

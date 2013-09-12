@@ -1,0 +1,12 @@
+<domainsnapshot>
+    <description>Machine snapshot</description>
+    {% if name %}
+    <name>{{name}}</name>
+    {% endif %}
+    <disks>
+    {% for file in diskfiles %}
+        <disk name='{{file}}' snapshot='external'>
+        </disk>
+    {% endfor %}
+    </disks>
+</domainsnapshot>
