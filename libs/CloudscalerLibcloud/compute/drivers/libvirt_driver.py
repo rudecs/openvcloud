@@ -6,6 +6,7 @@ from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
 from xml.etree import ElementTree
 import uuid
+POOLNAME = 'VMStor'
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
@@ -94,7 +95,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @return: The newly created node.
         @rtype: L{Node}
         """
-        storagepool = self.connection.storagePoolLookupByName('VMStor')
+        storagepool = self.connection.storagePoolLookupByName(POOLNAME)
 
         disktemplate = self.env.get_template("disk.xml")
         machinetemplate = self.env.get_template("machine.xml")
@@ -112,10 +113,30 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         #0 means not to preallocate data
         storagepool.createXML(diskxml, 0)
         #0 means default behaviour, e.g machine is auto started.
-        domain = self.connection.createXML(machinexml, 0)
+        domain = self.connection.defineXML(machinexml)
+        domain.create()
 
         return self._to_node(domain)
 
+    def ex_snapshot(self, node, name):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = self.env.get_template('snapshot.xml').render(name=name)
+        return domain.snapshotCreateXML(snapshot, 0).getName()
+
+    def ex_listsnapshots(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.snapshotListNames(0)
+
+    def ex_snapshot_delete(self, node, snapshotname):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        return snapshot.delete(0) == 0
+
+
+    def ex_snapshot_rollback(self, node, snapshotname):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        return domain.revertToSnapshot(snapshot, 4) == 0
 
     def destroy_node(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -132,8 +153,26 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         for diskfile in diskfiles:
             vol = self.connection.storageVolLookupByPath(diskfile)
             vol.delete(0)
+        domain.undefineFlags(2)
         return result
 
+    def list_nodes(self):
+        return [ self._to_node(x) for x in self.connection.listAllDomains(0) ]
+
+    def ex_stop(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.destroy() == 0
+
+    def ex_reboot(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.reset() == 0
+
+    def ex_start(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.create() == 0
+
+    def _get_domain_for_node(self, node):
+        return self.connection.lookupByUUIDString(node.id)
 
     def _to_node(self, domain):
          state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
@@ -146,7 +185,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                      'types': self.connection.getType(),
                      'used_memory': memory / 1024, 'vcpu_count': vcpu_count,
                      'used_cpu_time': used_cpu_time}
-         node = Node(id=domain.ID(), name=domain.name(), state=state,
+         node = Node(id=domain.UUIDString(), name=domain.name(), state=state,
                         public_ips=[], private_ips=[], driver=self,
                         extra=extra)
          return node

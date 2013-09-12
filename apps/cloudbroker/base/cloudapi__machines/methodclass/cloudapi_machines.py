@@ -197,8 +197,28 @@ class cloudapi_machines(cloudapi_machines_osis):
         result int
 
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method snapshot")
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        return self.cb.extensions.imp.snapshot(machine, snapshotname)
+
+
+    @authenticator.auth(acl='C')
+    def listSnapshots(self, machineId, **kwargs):
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        return self.cb.extensions.imp.listSnapshots(machine)
+
+    @authenticator.auth(acl='C')
+    def deleteSnapshot(self, machineId, name, **kwargs):
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        return self.cb.extensions.imp.deleteSnapshot(machine, name)
+
+    @authenticator.auth(acl='C')
+    def rollbackSnapshot(self, machineId, name, **kwargs):
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        return self.cb.extensions.imp.rollbackSnapshot(machine, name)
 
     def update(self, machineId, name, description, size, **kwargs):
         """
