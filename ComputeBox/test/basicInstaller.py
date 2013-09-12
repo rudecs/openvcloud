@@ -3,7 +3,7 @@ from fabric.contrib.files import append, comment
 import os
 
 def install_prereqs():
-    run('apt-get install python2.7 dialog nginx curl mc ssh mercurial python-gevent python-simplejson python-numpy byobu python-apt ipython python-pip python-imaging python-requests python-paramiko gcc g++ python-dev python-zmq msgpack-python python-mhash python-libvirt wget mercurial ssh python2.7 python-apt openssl ca-certificates -y')
+    run('apt-get install python2.7 dialog nginx curl mc ssh mercurial python-gevent python-simplejson python-numpy byobu python-apt ipython python-pip python-imaging python-requests python-paramiko gcc g++ python-dev python-zmq msgpack-python python-mhash python-libvirt wget mercurial ssh python2.7 python-apt openssl ca-certificates php5-cgi -y')
     run('yes w | pip install urllib3 ujson blosc pycrypto pylzma')
     run('apt-get update')
     run('mkdir -p /home/ISO')
@@ -34,4 +34,5 @@ def install_prereqs():
     run('mv /opt/jumpscale/cfg/jpackages/sources.cfg.bak /opt/jumpscale/cfg/jpackages/sources.cfg', pty=True)
     run('mv /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg.bak /usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/sources.cfg', pty=True)
     put(os.path.join(WORKSPACE, 'ComputeBox/test/startall.py'), '/tmp/')
+    run('export PYTHONPATH=/opt/jumpscale/var/jpackages/files/cloudscalers/cloudbroker/1.0/generic/libs/')
     run('python /tmp/startall.py')
