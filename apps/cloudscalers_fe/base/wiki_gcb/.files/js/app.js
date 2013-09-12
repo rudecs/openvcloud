@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers'])
+var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'machineServices', 'myApp.directives', 'myApp.controllers'])
 
 myApp
     .config(['$routeProvider', function($routeProvider) {
@@ -21,3 +21,11 @@ myApp
 
 var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap']);
 
+
+if(cloudspaceconfig.apibaseurl == ''){
+    myApp.config(function($provide) {
+       $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
+    myApp.run(defineApiStub);
+
+
+};
