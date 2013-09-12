@@ -94,7 +94,7 @@ class CloudBroker(object):
         actionname = "%s_node" % action.lower()
         method = getattr(provider.client, actionname, None)
         if not method:
-            method = getattr(provider.client, "ex_%s" % actionname, None)
+            method = getattr(provider.client, "ex_%s" % action.lower(), None)
             if not method:
                 raise RuntimeError("Action %s is not support on machine %s" % (action, machine.name))
         return method(node)

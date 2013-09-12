@@ -25,7 +25,7 @@
 
     method:machineAction
         """
-        Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME.
+        Perform a action on a machine, supported types are STOP, START, SUSPEND, RESUME.
 
         """
         var:machineId int,, id of the machine
