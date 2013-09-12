@@ -98,6 +98,21 @@
         var:snapshotname str,, Optional name to give snapshot
 		result:int #returns id of new machine which gets created when snapshot was successfull
 
+	method:listSnapshots
+		"""
+		List the snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+		result:list 
+
+
+	method:deleteSnapshot
+		"""
+		Delete a snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+	    var:name str,, name of the snapshot to delete
+		result:str
 
 	method:backup
 		"""		
@@ -107,6 +122,3 @@
 		var:backupName str,,name of backup
 		result:int  #returns id of new machine created
 
-
-
-	

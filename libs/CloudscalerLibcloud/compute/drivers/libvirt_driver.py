@@ -118,6 +118,19 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
         return self._to_node(domain)
 
+    def ex_snapshot(self, node, name):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = self.env.get_template('snapshot.xml').render(name=name)
+        return domain.snapshotCreateXML(snapshot, 0).getName()
+
+    def ex_listsnapshots(self, node):
+        domain = self._get_domain_for_node(node=node)
+        return domain.snapshotListNames(0)
+
+    def ex_snapshot_delete(self, node, snapshotname):
+        domain = self._get_domain_for_node(node=node)
+        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        return snapshot.delete(0) == 0
 
     def destroy_node(self, node):
         domain = self._get_domain_for_node(node=node)
