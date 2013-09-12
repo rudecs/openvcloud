@@ -1,6 +1,7 @@
-from fabric.api import run
+from fabric.api import put, run
+import os
 
 def startall():
-	run('/etc/init.d/elasticsearch restart')
-	run('cd /opt/jumpscale/apps/osis; python osisServerStart.py')
-	run('cd /opt/jumpscale/apps/cloudbroker; python start_appserver.py')
+	WORKSPACE = os.environ.get('WORKSPACE')
+	put(os.path.join(WORKSPACE, 'ComputeBox/test/startall.py'), '/tmp/')
+	run('python /tmp/startall.py')
