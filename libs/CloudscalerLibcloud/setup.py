@@ -25,8 +25,6 @@ def list_files(basedir='.', subdir='.'):
             package_data.append(os.path.join(dirpath[basedir_length+1:],file))
     return package_data
             
-import pdb;pdb.set_trace()
-
 setup(name='CloudScalers-LibCloud',
       version=version,
       description='Extension for Apache LibCloud libvirt to include cloud concepts like sizes,..',
