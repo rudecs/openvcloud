@@ -19,13 +19,13 @@ myApp
     }]);
 
 
-var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap']);
+var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap', 'machineServices']);
 
 
 if(cloudspaceconfig.apibaseurl == ''){
-    myApp.config(function($provide) {
+    myAppControllers.config(function($provide) {
        $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
-    myApp.run(defineApiStub);
+    myAppControllers.run(defineApiStub);
 
 
 };
