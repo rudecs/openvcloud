@@ -52,7 +52,7 @@
 
 	method:action
 	    """
-	    Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME.
+	    Perform a action on a machine, supported types are STOP, START, SUSPEND, RESUME.
 	    """
 	    var:machineId int,, id of the machine
 	    var:actiontype str,, type of the action(e.g stop, start, ...)
@@ -99,6 +99,30 @@
         var:snapshotname str,, Optional name to give snapshot
 		result:int #returns id of new machine which gets created when snapshot was successfull
 
+	method:listSnapshots
+		"""
+		List the snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+		result:list 
+
+
+	method:deleteSnapshot
+		"""
+		Delete a snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+	    var:name str,, name of the snapshot to delete
+		result:str
+
+
+	method:rollbackSnapshot
+		"""
+		Rollback a snapshot of a machine
+        """
+	    var:machineId int,, id of the machine
+	    var:name str,, name of the snapshot to rollback
+		result:str
 
 	method:backup
 		"""		
@@ -108,6 +132,3 @@
 		var:backupName str,,name of backup
 		result:int  #returns id of new machine created
 
-
-
-	
