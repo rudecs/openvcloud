@@ -76,7 +76,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method backup")
 
     @authenticator.auth(acl='C')
-    def create(self, cloudspaceId, name, description, sizeId, imageId, **kwargs):
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
         Create a machine based on the available flavors, in a certain space.
         The user needs write access rights on the space.
@@ -94,6 +94,14 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
+
+        disk = self.cb.models.disk.new()
+        disk.name = '%s_1'
+        disk.descr = 'Machine boot disk'
+        disk.sizeMax = disksize
+        diskid = self.cb.model_disk_set(disk)
+        machine.disks.append(diskid)
+        self.cb.model_vmachine_set(machine)
         self.cb.extensions.imp.createMachine(machine)
         return self.cb.model_vmachine_set(machine.obj2dict())
 

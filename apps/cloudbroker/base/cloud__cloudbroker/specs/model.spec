@@ -5,7 +5,7 @@
     prop:id int,,
     prop:name str,,name as given by customer
     prop:descr str,,
-    prop:sizeId int,,id of size used by machine
+    prop:sizeId int,,id of size used by machine, size is the cloudbroker size.
     prop:imageId int,,id of image used to create machine
     prop:dedicatedCU bool,False,if true the compute capacity will be dedicated
     prop:disks list(int),,List of id of Disk objects
@@ -22,6 +22,7 @@
     prop:acl list(ACE),,access control list
     prop:cloudspaceId int,,id of space which holds this vmachine
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
+    prop:referenceSizeId str,, reference to the size used on the stack
 
 [model:VMAccount]
     """
@@ -158,12 +159,13 @@
 
 [rootmodel:Size] @dbtype:osis
     """
-    Size is a combination of CU and Storage.
+    Size is a combination of memory and cores
     It will map to a specific size on a cloud platform(if this is supported by the platform)
     When not supported, the integration code for the platform uses the disksize and CU.
     """
     prop:id int, 0,id of the size
     prop:name str,,Public name of the size
-    prop:CU int,,Number of CU
-    prop:disks int,,disk size in MB
-    prop:referenceId str,,Reference to the specific size on the cloud platform(if used)
+    prop:memory int,, Memory in Mb
+    prop:vcpus int,, Number of vcpus assigned to the machine
+
+

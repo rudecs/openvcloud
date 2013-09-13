@@ -8,7 +8,6 @@ import uuid
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
-    CPUMAPPING = {1: 1700, 2: 3600, 3: 7200}
     env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
     backendconnection = connection.DummyConnection()
 
@@ -35,11 +34,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return NodeSize(
                 id = size['id'],
                 name = size['name'],
-                ram = self.CPUMAPPING[size['CU']],
+                ram = size['memory'],
                 bandwidth = 0,
                 price = 0,
                 driver = self,
-                disk = size['disks'])
+                disk = size['disk'])
 
 
 

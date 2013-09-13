@@ -1,9 +1,9 @@
 class DummyConnection():
     
     def listSizes(self):
-        sizes = [{'CU': 2, 'disks': 40, 'guid':
+        sizes = [{'memory': '1750', 'vcpus': 1, 'disk': 40, 'guid':
             '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 1, 'name': u'BIG',
-            'referenceId': ''},{'CU': 1, 'disks': 20, 'guid':
+            'referenceId': ''},{'memory': '3600', 'vcpus': 2, 'disk': 20, 'guid':
             '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 2, 'name': u'SMALL',
             'referenceId': ''}]
         return sizes
@@ -34,17 +34,15 @@ class CloudBrokerConnection():
          import JumpScale.portal
          if ipaddress:
              self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
-             self.size_actor = self.client.getActor('cloudapi', 'sizes')
-             self.image_actor = self.client.getActor('cloudapi', 'images')
+             self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
-             self.size_actor = j.apps.cloudapi.sizes
-             self.image_actor = j.apps.cloudapi.images
+             self.libvirt_actor = j.apps.libcloud.libvirt
          
      def listSizes(self):
-         return self.size_actor.list()
+         return self.libvirt_actor.listSizes()
 
      def listImages(self):
-         return self.image_actor.list()
+         return self.libvirt_actor.listImages()
      
 
 
