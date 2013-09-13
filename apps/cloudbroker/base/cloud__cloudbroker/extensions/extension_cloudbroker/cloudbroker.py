@@ -51,8 +51,6 @@ class CloudProvider(object):
     def getImage(self, imageId):
         iimage = cloudbroker.model_image_get(imageId)
         for image in self.client.list_images():
-            print iimage
-            print image
             if image.id == iimage['referenceId']:
                 return image, image
 
