@@ -21,11 +21,12 @@ myApp
 
 var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap', 'machineServices']);
 
-
-if(cloudspaceconfig.apibaseurl == ''){
+/*
+if(cloudspaceconfig && cloudspaceconfig.apibaseurl == ''){
     myAppControllers.config(function($provide) {
        $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
     myAppControllers.run(defineApiStub);
 
 
 };
+*/

@@ -15,12 +15,12 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'test/unit/files/lib/jquery/jquery-latest.js',
-      '.files/lib/underscore/underscore-min.js',
-      '.files/lib/angular/angular.js',
-      '.files/lib/angular/angular-resource.js',
-      '.files/lib/angular/angular-mocks.js',
-      '.files/lib/angular-ui/ui-bootstrap-tpls-0.5.0.js',
-      '.files/js/**/*.js',
+      'lib/underscore/underscore-min.js',
+      'lib/angular/angular.js',
+      'lib/angular/angular-resource.js',
+      'lib/angular/angular-mocks.js',
+      'lib/angular-ui/ui-bootstrap-tpls-0.5.0.js',
+      'js/**/*.js',
       'test/unit/config.js',
       'test/unit/apiStub.js',
       'test/unit/**/*.js',
@@ -63,7 +63,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // If browser does not capture in given timeout [ms], kill it
