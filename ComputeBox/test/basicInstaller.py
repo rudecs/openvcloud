@@ -2,6 +2,10 @@ from fabric.api import run, put, reboot
 import os
 
 def install_prereqs():
+    run('apt-get update')
+    run('apt-get install python2.7 dialog nginx curl mc ssh mercurial python-gevent python-simplejson python-numpy byobu python-apt ipython python-pip python-imaging python-requests python-paramiko gcc g++ python-dev python-zmq msgpack-python python-mhash python-libvirt wget mercurial ssh python2.7 python-apt openssl ca-certificates php5-cgi -y')
+    run('yes w | pip install urllib3 ujson blosc pycrypto pylzma')
+    
     WORKSPACE = os.environ.get('WORKSPACE')
     run('mkdir -p /opt/jumpscale/cfg/jpackages/')
     run('touch /opt/jumpscale/cfg/jpackages/sources.cfg')
@@ -24,11 +28,7 @@ def install_prereqs():
     run('mv /opt/jumpscale/var/jpackages/metadata/test/unstable/* /opt/jumpscale/var/jpackages/metadata/test')
     run('jpackage_install --name test_os')
     reboot(wait=120)
-
-
-    run('apt-get install python2.7 dialog nginx curl mc ssh mercurial python-gevent python-simplejson python-numpy byobu python-apt ipython python-pip python-imaging python-requests python-paramiko gcc g++ python-dev python-zmq msgpack-python python-mhash python-libvirt wget mercurial ssh python2.7 python-apt openssl ca-certificates php5-cgi -y')
-    run('yes w | pip install urllib3 ujson blosc pycrypto pylzma')
-    run('apt-get update')
+    
     run('mkdir -p /home/ISO')
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
     
