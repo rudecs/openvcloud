@@ -34,7 +34,7 @@ h2. Create Machine Bucket
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-info btn-large " ng-click="saveBucket()" ng-disabled="!bucketValid()">Create</button>
+        <button class="btn btn-info btn-large " ng-click="saveBucket()" ng-disabled="!bucket.isValid()">Create</button>
     </div>
     <hr>
 }}

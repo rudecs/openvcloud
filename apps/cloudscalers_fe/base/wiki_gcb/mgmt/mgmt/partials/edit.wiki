@@ -60,7 +60,7 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>Data Locations</h5>
-                            {[bucket.locations()]}
+                            {[bucket.locations]}
                         </li>
                     </ul>
                 </div>
@@ -68,19 +68,19 @@ h2. Manage Machine
                     <h4>Actions</h4>
                     <ul class="actions">
                         <li ng-show="bucket.status != 'Running'"> 
-                            <a ng-click="bucket.boot()">
+                            <a ng-click="boot()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
                         <li ng-show="bucket.status == 'Running'">
-                            <a ng-click="bucket.powerOff()">
+                            <a ng-click="powerOff()">
                                 <i class="icon-stop "></i>
                                 Stop
                             </a>
                         </li>
                         <li ng-show="bucket.status == 'Running'">
-                            <a ng-click="bucket.pause()">
+                            <a ng-click="pause()">
                                 <i class=" icon-pause"></i>
                                 Pause
                             </a>
@@ -117,17 +117,17 @@ h2. Manage Machine
                                 </div>
                                 <div class="modal-body">
                                     <ul>
-                                        Name: <input ng-model="bucket.oldName" type="text" class="input-large" placeholder="Name"/>
+                                        Name: <input ng-model="oldName" type="text" class="input-large" placeholder="Name"/>
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="bucket.rename()">Save</button>
+                                    <button class="btn btn-primary ok" ng-click="rename()">Save</button>
                                     <button class="btn cancel" ng-click="closeRenameModal()">Cancel</button>
                                 </div>
                             </div>
                         </li>
                         <li>
-                            <a ng-click="bucket.remove()">
+                            <a ng-click="remove()">
                                 <i class=" icon-remove-circle"></i>
                                 Destroy
                             </a>
@@ -223,7 +223,7 @@ h2. Manage Machine
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn btn-info btn-large " ng-click="bucket.resize()" ng-disabled="!bucket.isValid()">Change</button>
+                    <button class="btn btn-info btn-large " ng-click="resize()" ng-disabled="!bucket.isValid()">Change</button>
                 </div>
             </div>
         </div>

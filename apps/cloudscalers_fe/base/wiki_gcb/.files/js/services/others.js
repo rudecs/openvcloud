@@ -1,14 +1,139 @@
 'use strict';
 
+function generateIp() {
+    return Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256);
+}
+
+function MachineBucket(backendService, props) {
+    // Set attributes of the object
+    for (var attr in props) {
+        try {
+            this[attr] = props[attr];
+        } catch (e) {}
+    }
+
+    this.backendService = backendService;
+}
+
+MachineBucket.prototype.isValid = function() {
+    return this.name && this.cpu && this.memory && this.storage && this.region && this.image;
+}
+
+MachineBucket.prototype.getSnapshot = function() {
+    // $watch doesn't always update the values. This is why I need to recalculate here.
+    return {
+        name: this.name + '_' + getFormattedDate(),
+        date: getFormattedDate(),
+        cpu: this.plan.cpu,
+        memory: this.plan.memory,
+        storage: this.plan.storage,
+        additionalStorage: this.additionalStorage
+    };
+}
+
+MachineBucket.prototype.createSnapshot = function(snapshotName) {
+    var snapshot = this.getSnapshot();
+    snapshot.name = snapshotName;
+    this.snapshots.push(snapshot);
+    this.save();
+}
+
+MachineBucket.prototype.save = function() {
+    this.backendService.save(this);
+}
+
+MachineBucket.prototype.add = function() {
+    this.history.push({event: 'Created', initiated: getFormattedDate(), user: 'Admin'});
+    this.snapshots.push(this.getSnapshot());
+    this.backendService.add(this);
+}
+
+MachineBucket.prototype.boot = function() {
+    this.status = 'Running';
+    this.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'})
+    this.save();
+}
+
+MachineBucket.prototype.powerOff = function() {
+    this.status = 'Halted';
+    this.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'})
+    this.save();
+};
+
+MachineBucket.prototype.pause = function() {
+    this.status = 'Paused';
+    this.history.push({event: 'Paused', initiated: getFormattedDate(), user: 'Admin'})
+    this.save();
+};
+
+MachineBucket.prototype.resize = function() {
+    this.history.push({event: 'Bucket resized', initiated: getFormattedDate(), user: 'Admin'})
+    this.save();
+};
+
+MachineBucket.prototype.remove = function() {
+    this.backendService.remove(this);
+};
+
+MachineBucket.prototype.clone = function(cloneName) {
+    this.backendService.add({
+        id: Math.random() * 1000000000,
+        ip: generateIp(),
+        name: cloneName,
+        plan: this.plan,
+        additionalStorage: this.additionalStorage,
+        region: this.region,
+        status: 'Running',
+        image: this.image,
+        history: [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}]
+    });
+}
+
+MachineBucket.prototype.restoreSnapshot = function(snapshot) {
+    this.plan.cpu = snapshot.cpu;
+    this.plan.memory = snapshot.memory;
+    this.plan.storage = snapshot.storage;
+    this.additionalStorage = snapshot.additionalStorage;
+    this.save();
+}
+
+// The default way of creating computed properties in Angular is by using $scope.$watch. Computed properties belong to
+// the model itself, not the controller.
+Object.defineProperty(MachineBucket.prototype, 'cpu', {
+    get: function() { return this.plan.cpu; }
+});
+
+Object.defineProperty(MachineBucket.prototype, 'memory', {
+    get: function() { return this.plan.memory; }
+});
+
+Object.defineProperty(MachineBucket.prototype, 'storage', {
+    get: function() { return this.plan.storage + this.additionalStorage; }
+});
+
+Object.defineProperty(MachineBucket.prototype, 'locations', {
+    get: function() {
+    // TODO: Get list of regions from a single source
+    var self = this;
+    return ["Ghent, Belgium", "Bruges, Belgium", "Lenoir, NC, USA"]
+        .filter(function(element, index) { return self.region[index]; })
+        .join(" - ");
+}});
+
+
 // Read & write JSON objects from/to localStorage
-function LocalStorageService(keyName) {
+function LocalStorageService(keyName, Constructor) {
     this.keyName = keyName;
 
     this.getAll = function() {
+        var all = [];
         if (localStorage.getItem(keyName))
-            return angular.fromJson(localStorage.getItem(keyName));
-        else
-            return [];
+            all = angular.fromJson(localStorage.getItem(keyName));
+        if (Constructor) {   
+            var service = this;
+            all = all.map(function(e) { return new Constructor(service, e); });
+        }
+        return all;
     };
 
     this.saveAll = function(elements) {
@@ -55,7 +180,7 @@ function LocalStorageService(keyName) {
 
 angular.module('myApp.services', [])
     .factory('Buckets', function() {
-        return new LocalStorageService('gcb-buckets');
+        return new LocalStorageService('gcb-buckets', MachineBucket);
     })
     .factory('Snapshots', function() {
         return new LocalStorageService('gcb-snapshots');
