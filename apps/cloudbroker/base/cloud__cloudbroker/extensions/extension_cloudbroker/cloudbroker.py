@@ -41,16 +41,17 @@ class CloudProvider(object):
 
         self.client = CloudProvider._providers[stackId]
 
-    def getSize(self, sizeId):
-        isize = cloudbroker.model_size_get(sizeId)
-        for size in self.client.list_sizes():
-            if size.name == isize['referenceId']:
-                return isize, size
+    def getSize(self, brokersize, firstdisk):
+        providersizes = self.client.list_sizes()
+        for s in providersizes:
+             if s.ram == brokersize['memory'] and firstdisk['sizeMax'] == s.disk:
+                return s
+        return None
 
     def getImage(self, imageId):
         iimage = cloudbroker.model_image_get(imageId)
         for image in self.client.list_images():
-            if image.name == iimage['referenceId']:
+            if image.id == iimage['referenceId']:
                 return image, image
 
 class CloudBroker(object):
@@ -58,15 +59,19 @@ class CloudBroker(object):
     def createMachine(self, machine):
         resourceprovider = self.getBestProvider(machine)
         provider =  CloudProvider(resourceprovider['stackId'])
-        size, psize = provider.getSize(machine.sizeId)
+        brokersize = cloudbroker.model_size_get(machine.sizeId)
+        firstdisk = cloudbroker.model_disk_get(machine.disks[0])
+        psize = provider.getSize(brokersize, firstdisk)
+        print machine.imageId
         image, pimage = provider.getImage(machine.imageId)
         machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
         machine.resourceProviderId = resourceprovider['id']
         name = 'vm-%s' % machine.id
         node = provider.client.create_node(name=name, image=pimage, size=psize)
         machine.referenceId = node.id
+        machine.referenceSizeId = psize.id
         return True
-
+    
 
     def getProvider(self, machine):
         if machine.resourceProviderId and machine.referenceId:

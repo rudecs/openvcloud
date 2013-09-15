@@ -76,7 +76,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method backup")
 
     @authenticator.auth(acl='C')
-    def create(self, cloudspaceId, name, description, sizeId, imageId, **kwargs):
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
         Create a machine based on the available flavors, in a certain space.
         The user needs write access rights on the space.
@@ -88,16 +88,20 @@ class cloudapi_machines(cloudapi_machines_osis):
         result bool
 
         """
-        for m in self.list(cloudspaceId, **kwargs):
-            if m['name'] == name:
-                raise ValueError("Machine with name %s already exists" % name)
         machine = self.cb.models.vmachine.new()
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
-        machine.id = self.cb.model_vmachine_set(machine.obj2dict())
+
+        disk = self.cb.models.disk.new()
+        disk.name = '%s_1'
+        disk.descr = 'Machine boot disk'
+        disk.sizeMax = disksize
+        diskid = self.cb.model_disk_set(disk)
+        machine.disks.append(diskid)
+        self.cb.model_vmachine_set(machine)
         self.cb.extensions.imp.createMachine(machine)
         return self.cb.model_vmachine_set(machine.obj2dict())
 
@@ -169,7 +173,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method importtoremote")
 
     @authenticator.auth(acl='R')
-    def list(self, cloudspaceId, type=None, **kwargs):
+    def list(self, cloudspaceId, type, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
         param:cloudspaceId id of cloudspace in which machine exists
@@ -200,6 +204,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine = self.cb.model_vmachine_new()
         machine.dict2obj(self.cb.model_vmachine_get(machineId))
         return self.cb.extensions.imp.snapshot(machine, snapshotname)
+
 
 
     @authenticator.auth(acl='C')

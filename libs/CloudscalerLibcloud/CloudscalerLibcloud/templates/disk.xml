@@ -14,8 +14,10 @@
                         <owner>106</owner>
                         <group>112</group>
                     </permissions>
+                    <compat>1.1</compat>
                 </target>
                 <backingStore>
+                    <format type='qcow2'/>
                     <path>/home/VMStor/{{diskbasevolume}}</path>
                 </backingStore>
  </volume> 
