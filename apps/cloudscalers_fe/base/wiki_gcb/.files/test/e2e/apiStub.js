@@ -43,7 +43,7 @@ defineApiStub = function($httpBackend){
 		return [200,matchedMachine];
 	  });
 
-    $httpBackend.whenGET('/machines/list?authkey=yep123456789' + '&cloudspaceId=' + 0 + '&type=').respond(function(method, url, data) {return [200,_.values(machines)];});
+    $httpBackend.whenGET('/machines/list?authkey=null' + '&cloudspaceId=' + 0 + '&type=').respond(function(method, url, data) {return [200,_.values(machines)];});
     $httpBackend.whenGET('/images/list?authkey=yep123456789').respond(images);
     $httpBackend.whenGET('/sizes/list?authkey=yep123456789').respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?authkey\=yep123456789/).respond(function(method, url, data) {
