@@ -28,16 +28,29 @@ class DummyConnection():
         return images
 
 class CloudBrokerConnection():
+     NAMESPACE = 'libvirt'
+     CATEGORY = 'domain'
 
      def __init__(self, ipaddress=None, port=None, secret=None):
          from JumpScale import j
+         self._j = j
          import JumpScale.portal
          if ipaddress:
              self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
              self.libvirt_actor = j.apps.libcloud.libvirt
-         
+         self.db = self._getKeyValueStore()
+
+     def _getKeyValueStore(self):
+         import JumpScale.grid.osis
+         client = self._j.core.osis.getClient()
+         if self.NAMESPACE not in client.listNamespaces():
+             client.createNamespace(self.NAMESPACE, 'blob')
+         if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
+            client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
+         return self._j.core.osis.getClientForCategory(self.NAMESPACE, self.CATEGORY)
+
      def listSizes(self):
          return self.libvirt_actor.listSizes()
 
