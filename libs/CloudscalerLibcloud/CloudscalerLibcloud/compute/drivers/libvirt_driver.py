@@ -116,7 +116,9 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domain = self.connection.defineXML(machinexml)
         domain.create()
 
-        return self._to_node(domain)
+        node = self._to_node(domain)
+        self._set_persistent_xml(node, domain.XMLDesc(0))
+        return node
 
     def ex_snapshot(self, node, name):
         domain = self._get_domain_for_node(node=node)
@@ -174,8 +176,27 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return domain.reset() == 0
 
     def ex_start(self, node):
-        domain = self._get_domain_for_node(node=node)
+        try:
+            domain = self._get_domain_for_node(node=node)
+        except libvirt.libvirtError, e:
+            if e.get_error_code() == libvirt.VIR_ERR_NO_DOMAIN:
+                xml = self._get_persistent_xml(node)
+                domain = self.connection.defineXML(xml)
+            else:
+                raise
         return domain.create() == 0
+
+    def _get_persistent_xml(self, node):
+        return self.backendconnection.db.get('domain_%s' % node.id)
+
+    def _set_persistent_xml(self, node, xml):
+        self.backendconnection.db.set(key='domain_%s' % node.id, value=xml)
+
+    def _remove_persistent_xml(self, node):
+        try:
+            self.backendconnection.db.delete(key='domain_%s' % node.id)
+        except:
+            pass
 
     def _get_domain_for_node(self, node):
         return self.connection.lookupByUUIDString(node.id)
