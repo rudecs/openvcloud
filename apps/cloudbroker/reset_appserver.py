@@ -1,6 +1,5 @@
 
 from JumpScale import j
-
 j.application.appname = "usercreation"
 j.application.start()
 

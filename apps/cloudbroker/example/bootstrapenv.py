@@ -3,6 +3,7 @@ import JumpScale.portal
 
 cl = j.core.portal.getPortalClient('127.0.0.1', 80, '1234')
 cl.getActor('cloud','cloudbroker')
+cl.getActor('libcloud', 'libvirt')
 
 #create a new stack:
 computenodeip = j.console.askString("Enter computenode IP")
@@ -24,21 +25,56 @@ j.apps.cloud.cloudbroker.model_resourceprovider_set(rp)
 
 #A image
 
-image = j.apps.cloud.cloudbroker.models.image.new()
+image = j.apps.libcloud.libvirt.models.image.new()
 image.name = 'ubuntu-2'
-#this should be the name of the image in the VMStor
-image.UNCPath = 'ubuntu-base.img'
-image.referenceId = 'ubuntu-2'
+image.description = 'testimage'
+image.UNCPath = 'base-image.img'
 image.size = 10
 image.type='ubuntu'
-j.apps.cloud.cloudbroker.model_image_set(image)
+j.apps.libcloud.libvirt.model_image_set(image)
 
-#A size is also needed:
 
-size = j.apps.cloud.cloudbroker.models.size.new()
-size.name = 'big'
-size.referenceId='big'
-size.CU = '1'
-size.disks = '20'
-j.apps.cloud.cloudbroker.model_size_set(size)
+
+imagecb = j.apps.cloud.cloudbroker.models.image.new()
+imagecb.name = 'ubuntu-2'
+#this should be the name of the image in the VMStor
+imagecb.UNCPath = 'ubuntu-base.img'
+imagecb.referenceId = str(image.id)
+imagecb.size = 10
+imagecb.type='ubuntu'
+j.apps.cloud.cloudbroker.model_image_set(imagecb)
+
+
+#Create a libcloud_libvirt size
+size = j.apps.libcloud.libvirt.models.size.new()
+size.disk = 20
+size.memory = 1740
+size.name = 'SMALL'
+size.vcpus = 1
+j.apps.libcloud.libvirt.model_size_set(size)
+
+size2 = j.apps.libcloud.libvirt.models.size.new()
+size2.disk = 40
+size2.memory = 3000
+size2.name = 'BIG'
+size2.vcpus = 2
+j.apps.libcloud.libvirt.model_size_set(size2)
+
+
+
+#A size is also needed in the cloudbroker
+
+sizecb = j.apps.cloud.cloudbroker.models.size.new()
+sizecb.name = 'SMALL-CB'
+sizecb.referenceId= size.id
+sizecb.memory = 1740
+sizecb.vcpus = 1
+j.apps.cloud.cloudbroker.model_size_set(sizecb)
+
+sizecb2 = j.apps.cloud.cloudbroker.models.size.new()
+sizecb2.name = 'BIG-CB'
+sizecb2.referenceId= size2.id
+sizecb2.memory = 3000
+sizecb2.vcpus = 2
+j.apps.cloud.cloudbroker.model_size_set(sizecb2)
 
