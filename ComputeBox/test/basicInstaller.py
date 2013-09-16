@@ -27,7 +27,7 @@ def install_prereqs():
     run('hg clone https://hg@bitbucket.org/jumpscale/jp_test /opt/jumpscale/var/jpackages/metadata/test/')
     run('mv /opt/jumpscale/var/jpackages/metadata/test/unstable/* /opt/jumpscale/var/jpackages/metadata/test')
     run('jpackage_install --name test_os')
-    reboot(wait=120)
+    reboot(wait=360)
     
     run('mkdir -p /home/ISO')
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
