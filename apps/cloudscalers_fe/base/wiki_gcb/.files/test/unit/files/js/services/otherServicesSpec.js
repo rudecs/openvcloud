@@ -73,6 +73,64 @@ describe("Machine buckets", function() {
 
         it('can retrieve saved bucket', function() {
             expect(Buckets.getById(bucket.id)).toBeDefined();
-        })
+        });
+
+        it("can boot", function() {
+            bucket.boot();
+            expect(bucket.status).toBe('Running');
+        });
+
+        it("can power-off", function() {
+            bucket.powerOff();
+            expect(bucket.status).toBe('Halted');
+        });
+
+        it("can pause", function() {
+            bucket.pause();
+            expect(bucket.status).toBe('Paused');
+        });
+
+        it("can be destroyed", function() {
+            var numBeforeAnything = Buckets.getAll().length;
+            
+            bucket.add();
+            var numAfterAddition = Buckets.getAll().length;
+            expect(numAfterAddition - numBeforeAnything).toBe(1);
+            
+            bucket.remove();
+            var numAfterDestroy = Buckets.getAll().length;
+            expect(numAfterAddition - numAfterDestroy).toBe(1);
+        });
+
+        it('can change plan', function() {
+            bucket.plan = {cpu: 2, memory: 8, storage: 15};
+            expect(bucket.cpu).toBe(2);
+            expect(bucket.memory).toBe(8);
+            expect(bucket.storage).toBe(27);
+        });
+
+        describe("snapshots", function() {
+            it('can create snapshot', function() {
+                expect(bucket.snapshots.length).toBe(1); // The one created on bucket creation 
+                bucket.createSnapshot("snapshot 1");
+                expect(bucket.snapshots.length).toBe(2);
+                expect(bucket.snapshots[1].name).toBe("snapshot 1");
+            });
+
+            it('when I restore from snapshot, it restores the plan to the plan of the snapshot', function() {
+                expect(bucket.cpu).toBe(1);
+                expect(bucket.memory).toBe(1);
+                expect(bucket.storage).toBe(22);
+
+                bucket.createSnapshot("snapshot 2");
+                bucket.plan = {cpu: 2, memory: 8, storage: 15};
+                bucket.restoreSnapshot(bucket.snapshots[1]);
+                expect(bucket.cpu).toBe(1);
+                expect(bucket.memory).toBe(1);
+                expect(bucket.storage).toBe(22);
+            });
+          
+        });
+
     });
 });
