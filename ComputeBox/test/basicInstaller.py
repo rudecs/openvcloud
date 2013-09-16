@@ -26,11 +26,8 @@ def install_prereqs():
     run('mv /opt/jumpscale/var/jpackages/metadata/jpackagesbase/unstable/* /opt/jumpscale/var/jpackages/metadata/jpackagesbase')
     run('hg clone https://hg@bitbucket.org/jumpscale/jp_test /opt/jumpscale/var/jpackages/metadata/test/')
     run('mv /opt/jumpscale/var/jpackages/metadata/test/unstable/* /opt/jumpscale/var/jpackages/metadata/test')
-    debians = ('linux-headers-3.11.0-5_3.11.0-5.10_all.deb', 'linux-headers-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-extra-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-tools-common_3.11.0-5.10_all.deb', 'bcache-tools-1.0.0_1.0.0-1_all.deb')
-    for deb in debians:
-        run('dpkg -i /opt/jumpscale/var/jpackages/files/test/test_os/1.0/generic/%s' % deb)
-    reboot(wait=120)
     run('jpackage_install --name test_os')
+    reboot(wait=120)
     
     run('mkdir -p /home/ISO')
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
