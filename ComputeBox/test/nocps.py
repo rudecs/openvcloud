@@ -5,7 +5,7 @@ def installFreshComputeNode(nocps_url):
     print 'Installing Ubuntu 13.04 on the compute node'
     
     ps = xmlrpclib.ServerProxy(nocps_url)
-    macaddress = '00:30:48:fb:6f:45' #'00:e0:81:b2:32:89' #'00:e0:81:b2:89:f9'
+    macaddress = '00:30:48:fc:23:5d' #'00:e0:81:b2:32:89' #'00:e0:81:b2:89:f9'
     
     serverdetails = {
                      'adminuser': 'cs',
