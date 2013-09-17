@@ -39,11 +39,8 @@ def install_prereqs():
     
     run('mkdir -p /home/ISO')
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
-    
-    put(os.path.join(WORKSPACE, 'ComputeBox/test/libvirt_no_sparse.patch'), '/usr/share/pyshared/')
-    put(os.path.join(WORKSPACE, 'ComputeBox/test/raring.patch'), '/tmp/')
-   
-
+       
+    run('jpackage_install --name test_compute')
     # run('jpackage_install --name bootstrapper')
     run('jpackage_install --name cloudbroker')
     run('jpackage_install --name cloudscalers_fe')
