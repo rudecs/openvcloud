@@ -28,8 +28,8 @@ class DummyConnection():
         return images
 
 class CloudBrokerConnection():
-     NAMESPACE = 'libvirt'
-     CATEGORY = 'domain'
+     NAMESPACE = 'libcloud'
+     CATEGORY = 'libvirtdomain'
 
      def __init__(self, ipaddress=None, port=None, secret=None):
          from JumpScale import j
