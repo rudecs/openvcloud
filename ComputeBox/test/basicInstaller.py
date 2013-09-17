@@ -7,7 +7,7 @@ def install_prereqs():
     
     debians = ('linux-headers-3.11.0-5_3.11.0-5.10_all.deb', 'linux-headers-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-extra-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-tools-common_3.11.0-5.10_all.deb', '')
     for deb in debians:
-        run('wget -P -r /tmp/ http://files.incubaid.com/iaas/CloudScalers/%s' % deb)
+        run('wget -P /tmp/ http://files.incubaid.com/iaas/CloudScalers/%s' % deb)
         run('dpkg -i /tmp/CloudScalers/%s' % deb)
 
     run('make-bcache -B /dev/sdb')
