@@ -31,7 +31,7 @@ image.description = 'testimage'
 image.UNCPath = 'base-image.img'
 image.size = 10
 image.type='ubuntu'
-j.apps.libcloud.libvirt.model_image_set(image)
+imageid = j.apps.libcloud.libvirt.model_image_set(image)
 
 
 
@@ -39,7 +39,7 @@ imagecb = j.apps.cloud.cloudbroker.models.image.new()
 imagecb.name = 'ubuntu-2'
 #this should be the name of the image in the VMStor
 imagecb.UNCPath = 'ubuntu-base.img'
-imagecb.referenceId = str(image.id)
+imagecb.referenceId = str(imageid)
 imagecb.size = 10
 imagecb.type='ubuntu'
 j.apps.cloud.cloudbroker.model_image_set(imagecb)
@@ -51,14 +51,14 @@ size.disk = 20
 size.memory = 1740
 size.name = 'SMALL'
 size.vcpus = 1
-j.apps.libcloud.libvirt.model_size_set(size)
+sizeid = j.apps.libcloud.libvirt.model_size_set(size)
 
 size2 = j.apps.libcloud.libvirt.models.size.new()
 size2.disk = 40
 size2.memory = 3000
 size2.name = 'BIG'
 size2.vcpus = 2
-j.apps.libcloud.libvirt.model_size_set(size2)
+size2id = j.apps.libcloud.libvirt.model_size_set(size2)
 
 
 
@@ -66,14 +66,14 @@ j.apps.libcloud.libvirt.model_size_set(size2)
 
 sizecb = j.apps.cloud.cloudbroker.models.size.new()
 sizecb.name = 'SMALL-CB'
-sizecb.referenceId= size.id
+sizecb.referenceId= sizeid
 sizecb.memory = 1740
 sizecb.vcpus = 1
 j.apps.cloud.cloudbroker.model_size_set(sizecb)
 
 sizecb2 = j.apps.cloud.cloudbroker.models.size.new()
 sizecb2.name = 'BIG-CB'
-sizecb2.referenceId= size2.id
+sizecb2.referenceId= size2id
 sizecb2.memory = 3000
 sizecb2.vcpus = 2
 j.apps.cloud.cloudbroker.model_size_set(sizecb2)
