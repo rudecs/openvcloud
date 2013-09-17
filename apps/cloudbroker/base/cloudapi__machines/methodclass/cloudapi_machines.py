@@ -178,7 +178,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method importtoremote")
 
     @authenticator.auth(acl='R')
-    def list(self, cloudspaceId, type, **kwargs):
+    def list(self, cloudspaceId, type=None, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
         param:cloudspaceId id of cloudspace in which machine exists
@@ -189,7 +189,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         term = dict()
         if cloudspaceId:
             term["cloudspaceId"] = cloudspaceId
-        if type: 
+        if type:
             term["type"] = type
         if not term:
             return self.cb.model_vmachine_list()
