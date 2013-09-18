@@ -5,7 +5,7 @@ def install_jumpscale_core():
     run('apt-get update')
     run('apt-get install python-pip -y')
     run('pip install https://bitbucket.org/jumpscale/jumpscale_core/get/default.zip')
-    run('apt-get install python2.7 python-dev ssh mercurial -y')
+    run('apt-get install python2.7 python-dev ssh mercurial ipython -y')
 
     debians = ('linux-headers-3.11.0-5_3.11.0-5.10_all.deb', 'linux-headers-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-image-extra-3.11.0-5-generic_3.11.0-5.10_amd64.deb', 'linux-tools-common_3.11.0-5.10_all.deb', 'bcache-tools-1.0.0_1.0.0-1_all.deb')
     for deb in debians:
@@ -14,6 +14,7 @@ def install_jumpscale_core():
 
     run('make-bcache -B /dev/sdb')
     run('make-bcache -C /dev/sdc')
+    run('mkfs.ext4 /dev/bcache0')
 
     reboot(wait=300)
 
