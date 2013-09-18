@@ -203,10 +203,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     def _to_node(self, domain):
          state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
-         if state in self.NODE_STATE_MAP:
-            state = self.NODE_STATE_MAP[state]
-         else:
-            state = NodeState.UNKNOWN
+         state = self.NODE_STATE_MAP.get(state, NodeState.UNKNOWN)
 
          extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(),
                      'types': self.connection.getType(),
