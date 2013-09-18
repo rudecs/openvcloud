@@ -14,7 +14,6 @@ def install_jumpscale_core():
 
     run('make-bcache -B /dev/sdb')
     run('make-bcache -C /dev/sdc')
-    run('mkfs.ext4 /dev/bcache0')
 
     reboot(wait=300)
 
