@@ -39,3 +39,38 @@ defineUnitApiStub = function($httpBackend){
     
 };
 
+var machines = [
+    {id: 1, name: "Machine 1"},
+    {id: 2, name: "Machine 2"},
+];
+
+// I need these to be globals, for persistence
+defineMachineBucketsStubInLocalStorage = function($httpBackend) {
+    // Machines
+    $httpBackend.whenGET('/restmachine/cloudapi/machines/list?api_key=special-key&cloudspaceId=1').respond(machines);
+    $httpBackend.whenGET('/restmachine/cloudapi/machines/get?api_key=special-key&cloudspaceId=1&machineId=1').respond(machines[0]);
+
+    $httpBackend.whenGET('/restmachine/cloudapi/machines/listSnapshots?api_key=special-key&cloudspaceId=1&machineId=7').respond([
+        "snap1",
+        "snap2",
+        "snap3",
+        "snap4"
+    ]);
+
+    // Sizes
+    $httpBackend.whenGET('/restmachine/cloudapi/sizes/list?api_key=special-key').respond([
+        {
+            id: 3,
+            name: 'HUGE-CB'
+        },
+        {
+            "id": 2,
+            "name": "BIG-CB"
+        },
+        {
+            "id": 1,
+            "name": "SMALL-CB"
+        }
+    ]);
+};
+

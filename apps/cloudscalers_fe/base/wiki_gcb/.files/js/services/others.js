@@ -1,8 +1,26 @@
 'use strict';
 
+///////////////////////////////////////////////////// Utilities ///////////////////////////////////////////////////// 
 function generateIp() {
     return Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256) + '.' + Math.round(Math.random() * 1000 % 256);
 }
+
+// Creates a new object with the properties of all the objects passed. Last objects will override the first.
+function mergeObjects() {
+    var newObj = {};
+
+    for (var i = 0; i < arguments.length; i++) {
+        var obj = arguments[i];
+        for (var attr in obj) {
+            try {
+                newObj[attr] = obj[attr];
+            } catch (e) {}
+        } 
+    }
+    return newObj;
+}
+
+///////////////////////////////////////////////////// Entities ///////////////////////////////////////////////////// 
 
 function MachineBucket(backendService, props) {
     // Set attributes of the object
@@ -120,6 +138,21 @@ Object.defineProperty(MachineBucket.prototype, 'locations', {
         .join(" - ");
 }});
 
+///////////////////////////////////////////////////// Services ///////////////////////////////////////////////////// 
+
+function HttpService(entityName, Constructor, $resource, additionalParams) {
+    this.additionalParams = additionalParams;
+    this.$resource = $resource('/restmachine/cloudapi/' + entityName + '/:action',
+                               additionalParams);
+
+    this.getAll = function() {
+        return this.$resource.query({action: 'list'});
+    };
+
+    this.get = function(params) {
+        return this.$resource.get(mergeObjects({action: 'get'}, additionalParams, params));
+    }
+}
 
 // Read & write JSON objects from/to localStorage
 function LocalStorageService(keyName, Constructor) {
@@ -178,20 +211,27 @@ function LocalStorageService(keyName, Constructor) {
     return this;
 }
 
-angular.module('myApp.services', [])
-    .factory('Buckets', function() {
-        return new LocalStorageService('gcb-buckets', MachineBucket);
+angular.module('myApp.services', ['ngResource'])
+    .factory('Buckets', function($resource) {
+        //return new LocalStorageService('gcb-buckets', MachineBucket, $http);
+        var Buckets = new HttpService('machines', MachineBucket, $resource, {api_key: 'special-key', cloudspaceId: 1});
+
+        Buckets.listSnapshots = function(params) {
+            return this.$resource.query(mergeObjects(this.additionalParams, {action: 'listSnapshots'}, params));
+        };
+        
+        return Buckets;
     })
-    .factory('Snapshots', function() {
-        return new LocalStorageService('gcb-snapshots');
+    .factory('SettingsService', function($http) {
+        return new LocalStorageService('gcb-settings', undefined, $http);
     })
-    .factory('SettingsService', function() {
-        return new LocalStorageService('gcb-settings');
+    .factory('DesktopBucketService', function($http) {
+        return new LocalStorageService('gcb-desktop-buckets', undefined, $http);
     })
-    .factory('DesktopBucketService', function() {
-        return new LocalStorageService('gcb-desktop-buckets');
+    .factory('DNSService', function($http) {
+        return new LocalStorageService('gcb-domains', undefined, $http);
     })
-    .factory('DNSService', function() {
-        return new LocalStorageService('gcb-domains');
+    .factory('SizesService', function($resource) {
+        return new HttpService('sizes', undefined, $resource, {api_key: 'special-key'});
     });
 
