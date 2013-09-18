@@ -20,16 +20,16 @@ module.exports = function(config) {
       'lib/angular/angular-resource.js',
       'lib/angular/angular-mocks.js',
       'lib/angular-ui/ui-bootstrap-tpls-0.5.0.js',
-      'js/**/*.js',
       'test/unit/config.js',
       'test/unit/apiStub.js',
+      'js/**/*.js',
       'test/unit/**/*.js',
     ],
 
 
     // list of files to exclude
     exclude: [
-      
+      'js/config.js'
     ],
 
 
