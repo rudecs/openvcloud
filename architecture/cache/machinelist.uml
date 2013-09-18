@@ -1,0 +1,29 @@
+@startuml
+
+title Machine List caching
+
+start
+
+
+:machines.list(cloudspaceId);
+note left 
+  Caching has a timeout of 5min 
+  and can be invalidated by explicit actions
+  like start/stop
+end note
+
+if (cloudspaceId in cache) then (yes)
+    : get data from cache;
+else (no)
+    : list machines on provider of cloudspaceId (libcloud);
+    while (iterate machines listed)
+        : get machine details from libcloud;
+        : combine details with cloudbroker metadata;
+    endwhile
+endif
+
+:return data;
+
+stop
+
+@enduml
