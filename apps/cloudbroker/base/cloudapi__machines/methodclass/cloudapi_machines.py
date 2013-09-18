@@ -91,6 +91,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         for m in self.list(cloudspaceId, **kwargs):
             if m['name'] == name:
                 raise ValueError("Machine with name %s already exists" % name)
+        if not disksize:
+            raise ValueError("Invalid disksize %s" % disksize)
 
         machine = self.cb.models.vmachine.new()
         machine.cloudspaceId = cloudspaceId
@@ -107,7 +109,12 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.disks.append(diskid)
         machineid = self.cb.model_vmachine_set(machine)
         machine.id = machineid
-        self.cb.extensions.imp.createMachine(machine)
+        try:
+            self.cb.extensions.imp.createMachine(machine)
+        except:
+            if not machine.referenceId:
+                self.cb.model_vmachine_delete(machine.id)
+            raise
         return self.cb.model_vmachine_set(machine.obj2dict())
 
     @authenticator.auth(acl='D')
@@ -178,11 +185,11 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method importtoremote")
 
     @authenticator.auth(acl='R')
-    def list(self, cloudspaceId, type=None, **kwargs):
+    def list(self, cloudspaceId, status=None, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
         param:cloudspaceId id of cloudspace in which machine exists
-        param:type when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT)
+        param:status when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT)
         result list
 
         """
@@ -190,10 +197,10 @@ class cloudapi_machines(cloudapi_machines_osis):
         if cloudspaceId:
             term["cloudspaceId"] = cloudspaceId
         if type:
-            term["type"] = type
-        if not term:
-            return self.cb.model_vmachine_list()
-        query = {'query': {'term': term }, 'fields': ['id', 'cloudspaceid','hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
+            term["status"] = type
+        query = {'fields': ['id', 'referenceId', 'cloudspaceid','hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
+        if term:
+            query['query'] = {'term': term }
         results = self.cb.model_vmachine_find(ujson.dumps(query))['result']
         machines = [res['fields'] for res in results]
         return machines
