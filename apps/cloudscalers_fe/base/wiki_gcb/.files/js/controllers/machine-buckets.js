@@ -2,20 +2,6 @@
 
 
 myAppControllers
-    .controller('BucketListCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
-        $scope.buckets = Buckets.getAll();
-        
-        $scope.numOfDataLocations = function(bucket) {
-            var numOfLocations = 0;
-            for (var i = 0; i < bucket.region.length; i++) {
-                if (bucket.region[i]) {
-                    numOfLocations++;
-                }
-            }
-            return numOfLocations;
-        };
-    }])
-
     .controller('BucketNewCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
         $scope.bucket = new MachineBucket(Buckets,
         {

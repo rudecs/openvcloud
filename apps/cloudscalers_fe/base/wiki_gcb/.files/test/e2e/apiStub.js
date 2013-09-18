@@ -18,8 +18,8 @@ defineApiStub = function($httpBackend){
     {'id': 1, 'name': 'Production cloudspace', 'description': 'Production Cloudspace'}
     ];
 
-    var machines = {0:{"status": "RUNNING", "hostname": "OpenWizzy.com", "description": "OW Webserver", "name": "OpenWizzy", "nics": [], "sizeId": 0, "imageId": 0, "id": 0},1:
-     {"status": "HALTED", "hostname": "Awingu.com", "description": "Awingu Webserver",  "name": "Awingu", "nics": [], "sizeId": 0, "imageId": 1, "id": 1}};
+    var machines = {0:{"status": "RUNNING", "hostname": "jenkins.cloudscalers.com", "description": "JS Webserver", "name": "CloudScalers Jenkins", "nics": [], "sizeId": 0, "imageId": 0, "id": 0},1:
+     {"status": "HALTED", "hostname": "cloudbroker.cloudscalers.com", "description": "CloudScalers CloudBroker",  "name": "CloudBroker", "nics": [], "sizeId": 0, "imageId": 1, "id": 1}};
 
     var images = [
              {'id':0, 'name':'Linux', 'description':'An ubuntu 13.04 image', "type": "Ubuntu"},

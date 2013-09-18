@@ -248,6 +248,7 @@ h2. loading
     <script src="/$$space/.files/js/filters.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/machine-buckets.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/desktop-buckets.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/support.js" type="text/javascript"></script>

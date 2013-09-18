@@ -6,7 +6,7 @@ var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'machine
 
 myApp
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'BucketListCtrl'});
+        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
         $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'BucketNewCtrl'});
         $routeProvider.when('/edit/:bucketId', {templateUrl: 'partials/edit', controller: 'BucketEditCtrl'});
         $routeProvider.otherwise({redirectTo: '/list'});
