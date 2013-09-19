@@ -55,30 +55,32 @@ class CloudProvider(object):
                 return image, image
 
 class CloudBroker(object):
+    _cloudspaceId2StackId = dict()
 
     def createMachine(self, machine):
-        resourceprovider = self.getBestProvider(machine)
-        provider =  CloudProvider(resourceprovider['stackId'])
+        provider =  self.getProvider(machine)
         brokersize = cloudbroker.model_size_get(machine.sizeId)
         firstdisk = cloudbroker.model_disk_get(machine.disks[0])
         psize = provider.getSize(brokersize, firstdisk)
         print machine.imageId
         image, pimage = provider.getImage(machine.imageId)
         machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-        machine.resourceProviderId = resourceprovider['id']
         name = 'vm-%s' % machine.id
         node = provider.client.create_node(name=name, image=pimage, size=psize)
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
         return True
-    
+
+    def getProviderByCloudSpaceId(self, cloudspaceId):
+        if cloudspaceId not in CloudBroker._cloudspaceId2StackId:
+            cloudspace = cloudbroker.model_cloudspace_get(cloudspaceId)
+            CloudBroker._providerId2StackId[cloudspaceId] =  cloudspace['stackId']
+        return CloudProvider(CloudBroker._providerId2StackId[cloudspaceId])
 
     def getProvider(self, machine):
-        if machine.resourceProviderId and machine.referenceId:
-            resourceprovider = cloudbroker.model_resourceprovider_get(machine.resourceProviderId)
-            return CloudProvider(resourceprovider['stackId'])
+        if machine.referenceId:
+            return self.getProviderByCloudSpaceId(machine.cloudspaceId)
         return None
-
 
     def deleteMachine(self, machine):
         provider = self.getProvider(machine)
@@ -103,6 +105,9 @@ class CloudBroker(object):
             if not method:
                 raise RuntimeError("Action %s is not support on machine %s" % (action, machine.name))
         return method(node)
+
+    def listMachines(cloudspaceId):
+        pass
 
     def listSnapshots(self, machine):
         provider = self.getProvider(machine)
@@ -141,7 +146,7 @@ class CloudBroker(object):
         return ids[0] if ids else None
 
 
-    def getBestProvider(self, machine):
+    def getBestProvider(self):
         global ROUNDROBIN
         ROUNDROBIN += 1
         capacityinfo = self.getCapacityInfo()

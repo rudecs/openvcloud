@@ -138,7 +138,7 @@
     prop:descr str,,
     prop:acl list(ACE),,access control list
     prop:accountId int,, Id of account this cloudspace belongs to
-    prop:resourceProviderStacks list(int),,ordered list of stacks which provide resources; values are the id's of the stacks
+    prop:stackId int,,stack id this cloudspace uses
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
     prop:resourcesUsed dict(ResourceUtilization),,key is type of resource (CU;SU;VSU)
 

@@ -65,6 +65,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
             ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
+        cs.stackId = self.cb.impl.getBestProvider()['stackId']
         return self.cb.models.cloudspace.set(cs.obj2dict())
 
     @authenticator.auth(acl='A')

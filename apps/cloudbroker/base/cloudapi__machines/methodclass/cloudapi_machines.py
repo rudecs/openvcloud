@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudapi_machines_osis import cloudapi_machines_osis
 from cloudbrokerlib import authenticator
+import memcache
 ujson = j.db.serializers.ujson
 
 
@@ -17,6 +18,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         self.actorname = "machines"
         self.appname = "cloudapi"
         cloudapi_machines_osis.__init__(self)
+        self.cache = memcache.Client(['localhost:11211'])
         self._cb = None
 
     @property
