@@ -82,8 +82,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method backup")
 
     def getProvider(self, machine):
-        if machine.referenceId:
-            return self.cb.extensions.imp.getProviderByCloudSpaceId(machine.cloudspaceId)
+        if machine.referenceId and machine.resourceProviderId:
+            return self.cb.extensions.imp.getProviderByResourceProvider(machine.resourceProviderId)
         return None
 
     @authenticator.auth(acl='C')
@@ -111,20 +111,20 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
+
         disk = self.cb.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
         diskid = self.cb.model_disk_set(disk)
         machine.disks.append(diskid)
-        machineid = self.cb.model_vmachine_set(machine)
-        machine.id = machineid
+        machine.id = self.cb.model_vmachine_set(machine)
         try:
-            provider =  self.getProvider(machine)
+            resourceprovider = self.cb.extensions.imp.getBestProvider()
+            provider = self.cb.extensions.imp.getProviderByStackId(resourceprovider['stackId'])
             brokersize = self.cb.model_size_get(machine.sizeId)
             firstdisk = self.cb.model_disk_get(machine.disks[0])
             psize = provider.getSize(brokersize, firstdisk)
-            print machine.imageId
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
@@ -134,7 +134,15 @@ class cloudapi_machines(cloudapi_machines_osis):
         node = provider.client.create_node(name=name, image=pimage, size=psize)
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
-        return self.cb.model_vmachine_set(machine.obj2dict())
+        machine.resourceProviderId = resourceprovider['id']
+        self.cb.model_vmachine_set(machine.obj2dict())
+
+        cloudspace = self.cb.model_cloudspace_new()
+        cloudspace.dict2obj(self.cb.model_cloudspace_get(cloudspaceId))
+        cloudspace.resourceProviderStacks.append(resourceprovider['stackId'])
+        self.cb.model_cloudspace_set(cloudspace)
+
+        return machine.id
 
     @authenticator.auth(acl='D')
     def delDisk(self, machineId, diskId, **kwargs):

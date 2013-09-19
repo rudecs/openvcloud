@@ -55,17 +55,19 @@ class CloudProvider(object):
                 return image, image
 
 class CloudBroker(object):
-    _cloudspaceId2StackId = dict()
+    _resourceProviderId2StackId = dict()
 
     def __init__(self):
         self.Dummy = Dummy
 
+    def getProviderByResourceProvider(self, providerId):
+        if providerId not in CloudBroker._resourceProviderId2StackId:
+            provider = cloudbroker.model_resourceprovider_get(providerId)
+            CloudBroker._resourceProviderId2StackId[providerId] =  provider['stackId']
+        return CloudProvider(CloudBroker._resourceProviderId2StackId[providerId])
 
-    def getProviderByCloudSpaceId(self, cloudspaceId):
-        if cloudspaceId not in CloudBroker._cloudspaceId2StackId:
-            cloudspace = cloudbroker.model_cloudspace_get(cloudspaceId)
-            CloudBroker._providerId2StackId[cloudspaceId] =  cloudspace['stackId']
-        return CloudProvider(CloudBroker._providerId2StackId[cloudspaceId])
+    def getProviderByStackId(self, stackId):
+        return CloudProvider(stackId)
 
     def addDiskToMachine(self, machine, disk):
         provider = self.getProvider(machine)
