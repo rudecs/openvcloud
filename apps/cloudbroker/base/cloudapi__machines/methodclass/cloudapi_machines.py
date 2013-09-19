@@ -36,10 +36,14 @@ class cloudapi_machines(cloudapi_machines_osis):
         result bool
 
         """
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        return self.cb.extensions.imp.machineAction(machine, actiontype)
-
+        provider, node = self._getProviderAndNode(machineId)
+        actionname = "%s_node" % actiontype.lower()
+        method = getattr(provider.client, actionname, None)
+        if not method:
+            method = getattr(provider.client, "ex_%s" % actiontype.lower(), None)
+            if not method:
+                raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
+        return method(node)
 
     @authenticator.auth(acl='C')
     def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
@@ -77,6 +81,11 @@ class cloudapi_machines(cloudapi_machines_osis):
         # put your code here to implement this method
         raise NotImplementedError("not implemented method backup")
 
+    def getProvider(self, machine):
+        if machine.referenceId:
+            return self.cb.extensions.imp.getProviderByCloudSpaceId(machine.cloudspaceId)
+        return None
+
     @authenticator.auth(acl='C')
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
@@ -102,7 +111,6 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
-
         disk = self.cb.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
@@ -112,11 +120,20 @@ class cloudapi_machines(cloudapi_machines_osis):
         machineid = self.cb.model_vmachine_set(machine)
         machine.id = machineid
         try:
-            self.cb.extensions.imp.createMachine(machine)
+            provider =  self.getProvider(machine)
+            brokersize = self.cb.model_size_get(machine.sizeId)
+            firstdisk = self.cb.model_disk_get(machine.disks[0])
+            psize = provider.getSize(brokersize, firstdisk)
+            print machine.imageId
+            image, pimage = provider.getImage(machine.imageId)
+            machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
+            name = 'vm-%s' % machine.id
         except:
-            if not machine.referenceId:
-                self.cb.model_vmachine_delete(machine.id)
+            self.cb.model_vmachine_delete(machine.id)
             raise
+        node = provider.client.create_node(name=name, image=pimage, size=psize)
+        machine.referenceId = node.id
+        machine.referenceSizeId = psize.id
         return self.cb.model_vmachine_set(machine.obj2dict())
 
     @authenticator.auth(acl='D')
@@ -144,9 +161,12 @@ class cloudapi_machines(cloudapi_machines_osis):
         result
 
         """
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        self.cb.extensions.imp.deleteMachine(machine)
+        provider, node = self._getProviderAndNode(machineId)
+        if provider:
+            for pnode in provider.client.list_nodes():
+                if node.id == pnode.id:
+                    provider.client.destroy_node(pnode)
+                    break
         return self.cb.model_vmachine_delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, **kwargs):
@@ -207,6 +227,13 @@ class cloudapi_machines(cloudapi_machines_osis):
         machines = [res['fields'] for res in results]
         return machines
 
+    def _getProviderAndNode(self, machineId):
+        machine = self.cb.model_vmachine_new()
+        machine.dict2obj(self.cb.model_vmachine_get(machineId))
+        provider = self.getProvider(machine)
+        node = self.cb.extensions.imp.Dummy(id=machine.referenceId)
+        return provider, node
+
     @authenticator.auth(acl='C')
     def snapshot(self, machineId, snapshotname, **kwargs):
         """
@@ -215,29 +242,23 @@ class cloudapi_machines(cloudapi_machines_osis):
         result int
 
         """
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        return self.cb.extensions.imp.snapshot(machine, snapshotname)
-
-
+        provider, node = self._getProviderAndNode(machineId)
+        return provider.client.ex_snapshot(node, snapshotname)
 
     @authenticator.auth(acl='C')
     def listSnapshots(self, machineId, **kwargs):
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        return self.cb.extensions.imp.listSnapshots(machine)
+        provider, node = self._getProviderAndNode(machineId)
+        return provider.client.ex_listsnapshosts(node)
 
     @authenticator.auth(acl='C')
     def deleteSnapshot(self, machineId, name, **kwargs):
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        return self.cb.extensions.imp.deleteSnapshot(machine, name)
+        provider, node = self._getProviderAndNode(machineId)
+        return provider.client.ex_snapshot_delete(node, name)
 
     @authenticator.auth(acl='C')
     def rollbackSnapshot(self, machineId, name, **kwargs):
-        machine = self.cb.model_vmachine_new()
-        machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        return self.cb.extensions.imp.rollbackSnapshot(machine, name)
+        provider, node = self._getProviderAndNode(machineId)
+        return provider.client.ex_snapshot_rollback(node, name)
 
     def update(self, machineId, name, description, size, **kwargs):
         """
