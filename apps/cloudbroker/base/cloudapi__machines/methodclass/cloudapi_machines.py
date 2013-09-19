@@ -1,6 +1,6 @@
 from JumpScale import j
 from cloudapi_machines_osis import cloudapi_machines_osis
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, enums
 import memcache
 ujson = j.db.serializers.ujson
 
@@ -27,8 +27,7 @@ class cloudapi_machines(cloudapi_machines_osis):
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
 
-    @authenticator.auth(acl='X')
-    def action(self, machineId, actiontype, **kwargs):
+    def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
         Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME, REBOOT
         param:machineId id of the machine
@@ -36,14 +35,39 @@ class cloudapi_machines(cloudapi_machines_osis):
         result bool
 
         """
-        provider, node = self._getProviderAndNode(machineId)
+        machine = self._getMachine(machineId)
+        node = self._getNode(machine.referenceId)
+        provider = self._getProvider(machine)
         actionname = "%s_node" % actiontype.lower()
         method = getattr(provider.client, actionname, None)
         if not method:
             method = getattr(provider.client, "ex_%s" % actiontype.lower(), None)
             if not method:
                 raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
+        if newstatus and newstatus != machine.status:
+            machine.status = newstatus
+            self.cb.model_vmachine_set(machine)
         return method(node)
+
+    @authenticator.auth(acl='X')
+    def start(self, machineId, **kwargs):
+        return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
+
+    @authenticator.auth(acl='X')
+    def stop(self, machineId, **kwargs):
+        return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
+
+    @authenticator.auth(acl='X')
+    def reboot(self, machineId, **kwargs):
+        return self._action(machineId, 'reboot', enums.MachineStatus.RUNNING)
+
+    @authenticator.auth(acl='X')
+    def pause(self, machineId, **kwargs):
+        return self._action(machineId, 'suspend', enums.MachineStatus.SUSPENDED)
+
+    @authenticator.auth(acl='X')
+    def resume(self, machineId, **kwargs):
+        return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='C')
     def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
@@ -81,7 +105,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         # put your code here to implement this method
         raise NotImplementedError("not implemented method backup")
 
-    def getProvider(self, machine):
+    def _getProvider(self, machine):
         if machine.referenceId and machine.resourceProviderId:
             return self.cb.extensions.imp.getProviderByResourceProvider(machine.resourceProviderId)
         return None
@@ -135,6 +159,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
         machine.resourceProviderId = resourceprovider['id']
+        machine.status = enums.MachineStatus.RUNNING
         self.cb.model_vmachine_set(machine.obj2dict())
 
         cloudspace = self.cb.model_cloudspace_new()
@@ -235,12 +260,18 @@ class cloudapi_machines(cloudapi_machines_osis):
         machines = [res['fields'] for res in results]
         return machines
 
-    def _getProviderAndNode(self, machineId):
+    def _getMachine(self, machineId):
         machine = self.cb.model_vmachine_new()
         machine.dict2obj(self.cb.model_vmachine_get(machineId))
-        provider = self.getProvider(machine)
-        node = self.cb.extensions.imp.Dummy(id=machine.referenceId)
-        return provider, node
+        return machine
+
+    def _getNode(self, referenceId):
+        return self.cb.extensions.imp.Dummy(id=referenceId)
+
+    def _getProviderAndNode(self, machineId):
+        machine = self._getMachine(machineId)
+        provider = self._getProvider(machine)
+        return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
     def snapshot(self, machineId, snapshotname, **kwargs):

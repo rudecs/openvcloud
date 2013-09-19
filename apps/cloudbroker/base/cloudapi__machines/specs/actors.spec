@@ -50,12 +50,39 @@
 	    var:description str,, description of the machine
 	    var:size int,,size of the machine in CU
 
-	method:action
+	method:start
 	    """
-	    Perform a action on a machine, supported types are STOP, START, SUSPEND, RESUME.
+	    start a machine.
 	    """
 	    var:machineId int,, id of the machine
-	    var:actiontype str,, type of the action(e.g stop, start, ...)
+	    result:bool
+
+	method:stop
+	    """
+	    stop a machine.
+	    """
+	    var:machineId int,, id of the machine
+	    result:bool
+
+	method:reboot
+	    """
+	    reboot a machine.
+	    """
+	    var:machineId int,, id of the machine
+	    result:bool
+
+	method:pause
+	    """
+	    pause a machine.
+	    """
+	    var:machineId int,, id of the machine
+	    result:bool
+
+	method:resume
+	    """
+	    resume a machine.
+	    """
+	    var:machineId int,, id of the machine
 	    result:bool
 
     method:addDisk
