@@ -56,6 +56,22 @@ class CloudBrokerConnection():
 
      def listImages(self):
          return self.libvirt_actor.listImages()
+
+     def listNodes(self):
+         return self.libvirt_actor.listNodes()
+
+     def getNode(self,id):
+         return self.libvirt_actor.model_node_get(id)
+
+     def getMacAddress(self):
+         return self.libvirt_actor.getFreeMacAddress()
+
+     def registerMachine(self, id):
+         return self.libvirt_actor.registerNode(id)
+
+
+     def unregisterMachine(self, id):
+         return self.libvirt_actor.unregisterNode(id)
      
 
 

@@ -129,6 +129,114 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
                     
     
 
+    def model_node_create(self, id, ipaddress, **kwargs):
+        """
+        Create a new model
+        param:id id of the node
+        param:ipaddress ipaddress of the node
+        result json 
+        
+        """
+        
+        node = self.models.node.new()
+        node.id = id
+        node.ipaddress = ipaddress
+        
+        return self.models.node.set(node)
+                
+    
+
+    def model_node_datatables(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.node.datatables() #@todo
+                    
+    
+
+    def model_node_delete(self, id, guid='', **kwargs):
+        """
+        remove the model node with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result bool 
+        
+        """
+        
+        return self.models.node.delete(guid=guid, id=id)
+                    
+    
+
+    def model_node_find(self, query='', **kwargs):
+        """
+        query to model node
+        @todo how to query
+        example: name=aname
+        secret key needs to be given
+        param:query unique identifier can be used as auth key default=
+        result list 
+        
+        """
+        
+        return self.models.node.find(query)            
+                    
+    
+
+    def model_node_get(self, id, guid='', **kwargs):
+        """
+        get model node with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result object 
+        
+        """
+        
+        obj = self.models.node.get(id=id,guid=guid).obj2dict()
+        obj.pop('_meta', None)
+        return obj
+                    
+    
+
+    def model_node_list(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.node.list()            
+                    
+    
+
+    def model_node_new(self, **kwargs):
+        """
+        Create a new modelobjectnode instance and return as empty.
+        A new object will be created and a new id & guid generated
+        result object 
+        
+        """
+        
+        return self.models.node.new()
+                    
+    
+
+    def model_node_set(self, data='', **kwargs):
+        """
+        Saves model node instance starting from an existing pymodel object (data is serialized as json dict if required e.g. over rest)
+        param:data data is object to save default=
+        result bool 
+        
+        """
+        
+        return self.models.node.set(data)            
+                    
+    
+
     def model_size_create(self, name, memory, vcpus, disk, **kwargs):
         """
         Create a new model

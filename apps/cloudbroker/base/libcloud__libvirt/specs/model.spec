@@ -21,3 +21,10 @@
     prop:memory int,, Memory in Mb
     prop:vcpus int,, Number of virtual cpus assigned to the machine
     prop:disk int,,disk size in GB
+
+[rootmodel:Node] @dbtype:osis
+    """
+    Small local node configuariton
+    """
+    prop:id str,,id of the node
+    prop:ipaddress str,,ipaddress of the node

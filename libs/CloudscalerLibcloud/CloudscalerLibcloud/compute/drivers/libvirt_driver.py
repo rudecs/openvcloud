@@ -3,7 +3,7 @@
 from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, PackageLoader, Template
 from xml.etree import ElementTree
 import uuid
 import libvirt
@@ -103,17 +103,27 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         diskname = str(uuid.uuid4())
         diskbasevolume = image.extra['path']
         disksize = size.disk
+        macaddress = self.backendconnection.getMacAddress();
 
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
             diskbasevolume, 'disksize':disksize})
 
         machinexml = machinetemplate.render({'machinename': name,'diskname':
-            diskname, 'memory': size.ram, 'nrcpu': 1})
+            diskname, 'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress})
 
         #0 means not to preallocate data
         storagepool.createXML(diskxml, 0)
+        #next we set the network configuration.
+
+        network = self.connection.networkLookupByName('default')
+
         #0 means default behaviour, e.g machine is auto started.
         domain = self.connection.defineXML(machinexml)
+        vmid = domain.UUIDString()
+        ipaddress = self.backendconnection.registerMachine(vmid)
+        extranettemplate = Template("<host mac='{{macaddress}}' name='{{name}}' ip='{{ipaddress}}'/>")
+        xmlstring = extranettemplate.render({'macaddress':macaddress, 'name':name, 'ipaddress':ipaddress})
+        network.update(3, 4, -1, xmlstring, flags=0)
         domain.create()
 
         node = self._to_node(domain)
@@ -155,6 +165,12 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     def destroy_node(self, node):
         domain = self._get_domain_for_node(node=node)
+        
+        domid = domain.UUIDString()
+        node = self.backendconnction.getNode(domid)
+          
+        self.backendconnection.unregisterMachine(domid)
+
         diskfiles = self._get_disk_file_names(domain)
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
             domain.destroy()
@@ -165,7 +181,15 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return True
 
     def list_nodes(self):
-        return [ self._to_node(x) for x in self.connection.listAllDomains(0) ]
+        noderesult= []
+        nodes = self.backendconnection.listNodes()
+        for x in self.connection.listAllDomains(0):
+            if x.UUIDString() in nodes: 
+                ipaddress = nodes[x.UUIDString()]['ipaddress']
+            else:
+                ipaddress=''
+            noderesult.append(self._to_node(x, ipaddress))
+        return noderesult
 
     def ex_stop(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -191,6 +215,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     def _set_persistent_xml(self, node, xml):
         self.backendconnection.db.set(key='domain_%s' % node.id, value=xml)
+       	
 
     def _remove_persistent_xml(self, node):
         try:
@@ -201,7 +226,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
     def _get_domain_for_node(self, node):
         return self.connection.lookupByUUIDString(node.id)
 
-    def _to_node(self, domain):
+    def _to_node(self, domain, publicipaddress=''):
          state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
          state = self.NODE_STATE_MAP.get(state, NodeState.UNKNOWN)
 
@@ -210,6 +235,6 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                      'used_memory': memory / 1024, 'vcpu_count': vcpu_count,
                      'used_cpu_time': used_cpu_time}
          node = Node(id=domain.UUIDString(), name=domain.name(), state=state,
-                        public_ips=[], private_ips=[], driver=self,
+                        public_ips=[publicipaddress], private_ips=[], driver=self,
                         extra=extra)
          return node

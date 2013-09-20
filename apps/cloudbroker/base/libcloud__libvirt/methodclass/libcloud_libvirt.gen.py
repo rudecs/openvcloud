@@ -18,6 +18,37 @@ class libcloud_libvirt(libcloud_libvirt_osis):
 
         pass
 
+    def addFreeSubnet(self, subnet, **kwargs):
+        """
+        Add a free subnet to the range
+        param:subnet subnet in CIDR notation
+        result bool 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method addFreeSubnet")
+    
+
+    def getFreeIpaddress(self, **kwargs):
+        """
+        Get a free Ipaddress from one of ipadress ranges
+        result  
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method getFreeIpaddress")
+    
+
+    def getFreeMacAddress(self, **kwargs):
+        """
+        Get a free macaddres in this libvirt environment
+        result  
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method getFreeMacAddress")
+    
+
     def listImages(self, **kwargs):
         """
         List the available images
@@ -28,6 +59,16 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method listImages")
     
 
+    def listNodes(self, **kwargs):
+        """
+        List all nodes
+        result  
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method listNodes")
+    
+
     def listSizes(self, **kwargs):
         """
         List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
@@ -36,4 +77,37 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listSizes")
+    
+
+    def registerNode(self, id, **kwargs):
+        """
+        Register some basic node information E.g ipaddress
+        param:id id of the node
+        result str 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method registerNode")
+    
+
+    def releaseIpaddress(self, ipaddress, **kwargs):
+        """
+        Release a ipaddress.
+        param:ipaddress string representing the ipaddres to release
+        result bool 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method releaseIpaddress")
+    
+
+    def unregisterNode(self, id, **kwargs):
+        """
+        Unregister a node.
+        param:id id of the node to unregister
+        result bool 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method unregisterNode")
     
