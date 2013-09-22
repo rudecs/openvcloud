@@ -140,17 +140,24 @@ Object.defineProperty(MachineBucket.prototype, 'locations', {
 
 ///////////////////////////////////////////////////// Services ///////////////////////////////////////////////////// 
 
-function HttpService(entityName, Constructor, $resource, additionalParams) {
+function HttpService(entityName, Constructor, $http, additionalParams) {
     this.additionalParams = additionalParams;
-    this.$resource = $resource('/restmachine/cloudapi/' + entityName + '/:action',
-                               additionalParams);
+    this.$http = $http;
 
-    this.getAll = function() {
-        return this.$resource.query({action: 'list'});
+    this.baseUrl = '/restmachine/cloudapi/' + entityName;
+
+    this.getAll = function(params) {
+        return this
+            .$http({method: 'GET', url: this.baseUrl + '/list', params: mergeObjects(additionalParams, params)})
+            .success(function(response) { 
+                return response.map(function(elt) {
+                    return new MachineBucket(elt); 
+                }); 
+            });
     };
 
     this.get = function(params) {
-        return this.$resource.get(mergeObjects({action: 'get'}, additionalParams, params));
+        return this.$http({method: 'GET', url: this.baseUrl + '/get', params: mergeObjects(additionalParams, params)});
     }
 }
 
@@ -212,12 +219,22 @@ function LocalStorageService(keyName, Constructor) {
 }
 
 angular.module('myApp.services', ['ngResource'])
-    .factory('Buckets', function($resource) {
+    .factory('Buckets', function($http) {
         //return new LocalStorageService('gcb-buckets', MachineBucket, $http);
-        var Buckets = new HttpService('machines', MachineBucket, $resource, {api_key: 'special-key', cloudspaceId: 1});
+        var Buckets = new HttpService('machines', MachineBucket, $http, {api_key: 'special-key', cloudspaceId: 1});
 
         Buckets.listSnapshots = function(params) {
-            return this.$resource.query(mergeObjects(this.additionalParams, {action: 'listSnapshots'}, params));
+            return this.$http({
+                                method: 'GET', 
+                                url: Buckets.baseUrl + '/listSnapshots',
+                                params: mergeObjects(this.additionalParams, params)});
+        };
+
+        Buckets.createSnapshot = function(params) {
+            return this.$http({
+                                method: 'GET', 
+                                url: Buckets.baseUrl + '/snapshot',
+                                params: mergeObjects(this.additionalParams, params)});
         };
         
         return Buckets;
@@ -231,7 +248,7 @@ angular.module('myApp.services', ['ngResource'])
     .factory('DNSService', function($http) {
         return new LocalStorageService('gcb-domains', undefined, $http);
     })
-    .factory('SizesService', function($resource) {
-        return new HttpService('sizes', undefined, $resource, {api_key: 'special-key'});
+    .factory('SizesService', function($http) {
+        return new HttpService('sizes', undefined, $http, {api_key: 'special-key'});
     });
 
