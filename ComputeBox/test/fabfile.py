@@ -19,27 +19,30 @@ def install_jumpscale_core():
     run('mkdir -p /opt/jumpscale/var/jpackages/metadata/jpackagesbase')
     run('hg clone https://hg@bitbucket.org/jumpscale/jpackages_base /opt/jumpscale/var/jpackages/metadata/jpackagesbase/')
     run('mv /opt/jumpscale/var/jpackages/metadata/jpackagesbase/unstable/* /opt/jumpscale/var/jpackages/metadata/jpackagesbase')
-    run('hg clone https://hg@bitbucket.org/jumpscale/jp_test /opt/jumpscale/var/jpackages/metadata/test/')
-    run('mv /opt/jumpscale/var/jpackages/metadata/test/unstable/* /opt/jumpscale/var/jpackages/metadata/test')
     
     #Update sources.cfg to contain needed domains
     run('mkdir -p /opt/jumpscale/cfg/jpackages/')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/')
 
-    run('jpackage_install --name compute_os_base')
-
-    reboot(wait=300)
-
-    run('jpackage_install --name test_os')
-
     run('mkdir -p /home/ISO')
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
 
-    run('jpackage_install --name test_compute')
-    # run('jpackage_install --name bootstrapper')
+    run('jpackage_install --name compute_os_base')
+    run('make-bcache -B /dev/sdb')
+    run('make-bcache -C /dev/sdc')
+
+    reboot(wait=300)
+
+    run('mkfs.ext4 /dev/bcache0')
+
+    run('jpackage_install --name compute_kvm_base')
+    # run('export IPADDRESS="%s"' % )
+
+    run('jpackage_install --name compute_configure')
     run('jpackage_install --name cloudbroker')
     run('jpackage_install --name cloudscalers_fe')
 
+    run('apt-get install screen byobu -y')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/startall.py'), '/tmp/')
     run('python /tmp/startall.py')
