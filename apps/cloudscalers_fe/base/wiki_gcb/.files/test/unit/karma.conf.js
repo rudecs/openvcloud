@@ -36,6 +36,15 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress'],
+    //reporters: ['coverage', 'progress'],
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
+    },
+
+    preprocessors: {
+      'js/services/machineServices.js': 'coverage',
+    },
 
 
     // web server port
@@ -63,7 +72,8 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
+    //browsers: ['PhantomJS'],
 
 
     // If browser does not capture in given timeout [ms], kill it

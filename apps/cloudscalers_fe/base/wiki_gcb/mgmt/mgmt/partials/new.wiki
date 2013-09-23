@@ -5,12 +5,18 @@ h2. Create Machine Bucket
     <div class="control-group">
         <label class="control-label" >Name:</label>
         <div class="controls">
-            <input ng-model="bucket.name" type="text" class="input-large" placeholder="Name"/>
+            <input ng-model="newMachine.name" type="text" class="input-large" placeholder="Name"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" style="display: none">Description:</label>
+        <div class="controls">
+            <textarea ng-model="newMachine.description" type="text" class="input-large" placeholder="Description" />
         </div>
     </div>
 	<hr>
     <div class="control-group">
-        <label class="control-label" >Plan *:</label>
+        <label class="control-label">Plan *:</label>
         <div class="controls " >
             {{include:plan_list}}
         </div>
@@ -24,7 +30,7 @@ h2. Create Machine Bucket
     </div>
     <hr>
     <div class="control-group">
-        <label class="control-label" >Region</label>
+        <label class="control-label" style="display: none">Region</label>
         <div class="controls ">{{include:region_list}}</div>
     </div>
 	<hr>
@@ -34,7 +40,7 @@ h2. Create Machine Bucket
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-info btn-large " ng-click="saveBucket()" ng-disabled="!bucket.isValid()">Create</button>
+        <button class="btn btn-info btn-large " ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
     </div>
     <hr>
 }}

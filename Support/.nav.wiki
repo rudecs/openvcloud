@@ -1,3 +1,3 @@
 Create Ticket
 Knowledge Base
-API:/lib/swagger/index.html
+API:ApiDocs

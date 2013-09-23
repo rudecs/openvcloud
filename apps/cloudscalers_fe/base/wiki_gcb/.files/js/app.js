@@ -2,13 +2,13 @@
 
 
 // Declare app level module which depends on filters, and services
-var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'machineServices', 'myApp.directives', 'myApp.controllers'])
+var cloudscalers = angular.module('cloudscalers', ['machineServices', 'cloudscalers.filters', 'cloudscalers.services', 'cloudscalers.directives', 'cloudscalers.controllers'])
 
-myApp
+cloudscalers
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'BucketListCtrl'});
-        $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'BucketNewCtrl'});
-        $routeProvider.when('/edit/:bucketId', {templateUrl: 'partials/edit', controller: 'BucketEditCtrl'});
+        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
+        $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'MachineCreationController'});
+        $routeProvider.when('/edit/:machineId', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
@@ -19,12 +19,12 @@ myApp
     }]);
 
 
-var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap', 'machineServices']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'machineServices']);
 
 if(cloudspaceconfig.apibaseurl == ''){
-    myAppControllers.config(function($provide) {
+	cloudscalersControllers.config(function($provide) {
        $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
-    myAppControllers.run(defineApiStub);
+	cloudscalersControllers.run(defineApiStub);
 
 
 };

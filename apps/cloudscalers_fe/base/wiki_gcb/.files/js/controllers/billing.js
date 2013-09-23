@@ -1,4 +1,4 @@
-myAppControllers
+cloudscalersControllers
     .controller('BillingController', ['$scope', 'SettingsService', function($scope, SettingsService) {
         var settings = SettingsService.getAll();
         if (settings.length == 0) {
