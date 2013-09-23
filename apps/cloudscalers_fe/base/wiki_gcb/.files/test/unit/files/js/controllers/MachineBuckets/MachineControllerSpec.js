@@ -24,7 +24,7 @@ describe("Machine bucket controller tests", function(){
 			expect(scope.buckets[1].hostname).toBe("cloudbroker.cloudscalers.com");
 		});
 
-		xit('view the number of data locations of each buckets', function() {
+		it('view the number of data locations of each buckets', function() {
 			expect(scope.numOfDataLocations).toBeDefined();
 			expect(scope.numOfDataLocations(scope.buckets[0])).toBeDefined();
 		});

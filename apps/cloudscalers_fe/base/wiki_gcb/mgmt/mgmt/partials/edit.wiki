@@ -36,50 +36,50 @@ h2. Manage Machine
                     <ul class="list">
                         <li>
                             <h5>Name</h5>
-                            {[bucket.name]}
+                            {[machine.name]}
                         </li>
                         <li>
                             <h5>IP Address</h5>
-                            {[bucket.ip]}
+                            {[machine.ip]}
                         </li>
                         <li>
                             <h5>Status</h5>
-                            {[bucket.status]}
+                            {[machine.status]}
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[bucket.cpu]} <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                            {[machine.cpu]} <ng-pluralize count="machine.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[bucket.memory]} GB
+                            {[machine.memory]} GB
                         </li>
                         <li>
                             <h5>Storage</h5>
-                            {[bucket.storage]} GB
+                            {[machine.storage]} GB
                         </li>
                         <li>
                             <h5>Data Locations</h5>
-                            {[bucket.locations]}
+                            {[machine.locations]}
                         </li>
                     </ul>
                 </div>
                 <div class="span3 actions">
                     <h4>Actions</h4>
                     <ul class="actions">
-                        <li ng-show="bucket.status != 'Running'"> 
+                        <li ng-show="machine.status != 'Running'"> 
                             <a ng-click="boot()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
-                        <li ng-show="bucket.status == 'Running'">
+                        <li ng-show="machine.status == 'Running'">
                             <a ng-click="powerOff()">
                                 <i class="icon-stop "></i>
                                 Stop
                             </a>
                         </li>
-                        <li ng-show="bucket.status == 'Running'">
+                        <li ng-show="machine.status == 'Running'">
                             <a ng-click="pause()">
                                 <i class=" icon-pause"></i>
                                 Pause
@@ -180,7 +180,7 @@ h2. Manage Machine
             <ul  class="list">
                 <li>
                     <h5>IP Address</h5>
-                    {[bucket.ip]}
+                    {[machine.ip]}
                 </li>
                 <li>
                     <h5>Gateway</h5>
@@ -223,7 +223,7 @@ h2. Manage Machine
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn btn-info btn-large " ng-click="resize()" ng-disabled="!bucket.isValid()">Change</button>
+                    <button class="btn btn-info btn-large " ng-click="resize()" ng-disabled="!machine.isValid()">Change</button>
                 </div>
             </div>
         </div>
@@ -239,7 +239,7 @@ h2. Manage Machine
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="snapshot in bucket.snapshots">
+                    <tr ng-repeat="snapshot in machine.snapshots">
                         <td width="89%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}

@@ -2,13 +2,13 @@
 
 
 // Declare app level module which depends on filters, and services
-var cloudscalers = angular.module('cloudscalers', ['cloudscalers.filters', 'cloudscalers.services', 'machineServices', 'cloudscalers.directives', 'cloudscalers.controllers'])
+var cloudscalers = angular.module('cloudscalers', ['machineServices', 'cloudscalers.filters', 'cloudscalers.services', 'cloudscalers.directives', 'cloudscalers.controllers'])
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
-        $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'BucketNewCtrl'});
-        $routeProvider.when('/edit/:bucketId', {templateUrl: 'partials/edit', controller: 'BucketEditCtrl'});
+        $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'MachineCreationController'});
+        $routeProvider.when('/edit/:machineId', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
