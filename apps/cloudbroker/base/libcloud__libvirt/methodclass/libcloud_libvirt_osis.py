@@ -129,11 +129,12 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
                     
     
 
-    def model_node_create(self, id, ipaddress, **kwargs):
+    def model_node_create(self, id, ipaddress, macaddress, **kwargs):
         """
         Create a new model
         param:id id of the node
         param:ipaddress ipaddress of the node
+        param:macaddress macaddress of the node
         result json 
         
         """
@@ -141,6 +142,7 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
         node = self.models.node.new()
         node.id = id
         node.ipaddress = ipaddress
+        node.macaddress = macaddress
         
         return self.models.node.set(node)
                 

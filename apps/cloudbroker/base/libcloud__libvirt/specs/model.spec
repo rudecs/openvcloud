@@ -28,3 +28,4 @@
     """
     prop:id str,,id of the node
     prop:ipaddress str,,ipaddress of the node
+    prop:macaddress str,,macaddress of the node

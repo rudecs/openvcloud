@@ -79,10 +79,11 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method listSizes")
     
 
-    def registerNode(self, id, **kwargs):
+    def registerNode(self, id, macaddress, **kwargs):
         """
         Register some basic node information E.g ipaddress
         param:id id of the node
+        param:macaddress macaddress of the node
         result str 
         
         """

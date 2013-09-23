@@ -121,10 +121,10 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         # 0 means default behaviour, e.g machine is auto started.
         domain = self.connection.defineXML(machinexml)
         vmid = domain.UUIDString()
-        ipaddress = self.backendconnection.registerMachine(vmid)
+        ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         extranettemplate = Template("<host mac='{{macaddress}}' name='{{name}}' ip='{{ipaddress}}'/>")
         xmlstring = extranettemplate.render({'macaddress': macaddress, 'name': name, 'ipaddress': ipaddress})
-        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=0)
+        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
         domain.create()
 
         node = self._to_node(domain)
@@ -167,7 +167,10 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
         domid = domain.UUIDString()
         node = self.backendconnection.getNode(domid)
-
+        network = self.connection.networkLookupByName('default')
+        extranettemplate = Template("<host mac='{{macaddress}}' ip='{{ipaddress}}'/>")
+        xmlstring = extranettemplate.render({'macaddress':node['macaddress'], 'ipaddress':node['ipaddress']})
+        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_DELETE, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
         self.backendconnection.unregisterMachine(domid)
 
         diskfiles = self._get_disk_file_names(domain)

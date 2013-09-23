@@ -46,6 +46,7 @@
     Register some basic node information E.g ipaddress 
     """ 
         var:id str,,id of the node
+        var:macaddress str,,macaddress of the node
         result:str
 
     method: unregisterNode
@@ -54,6 +55,7 @@
     """
         var:id str,,id of the node to unregister
         result:bool
+
 
     method: listNodes
     """

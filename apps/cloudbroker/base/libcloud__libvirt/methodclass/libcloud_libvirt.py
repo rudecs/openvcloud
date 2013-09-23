@@ -126,7 +126,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         return True
 
 
-    def registerNode(self, id, **kwargs):
+    def registerNode(self, id, macaddress, **kwargs):
        """
        Register some basic node information E.g ipaddress
        param:id id of the node
@@ -137,6 +137,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
        node = self.cb.models.node.new()
        node.id = id
        node.ipaddress = ipaddress
+       node.macaddress = macaddress
        self.cb.model_node_set(node)
        return ipaddress
     
@@ -160,7 +161,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         
         """
         term = dict()
-        query = {'fields': ['id', 'ipaddress']}
+        query = {'fields': ['id', 'ipaddress', 'macaddress']}
         results = self.cb.model_node_find(ujson.dumps(query))['result']
         nodes = {}
         for res in results:
