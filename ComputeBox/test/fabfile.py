@@ -29,12 +29,7 @@ def install_jumpscale_core():
     run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
 
     run('jpackage_install --name compute_os_base')
-    run('make-bcache -B /dev/sdb')
-    run('make-bcache -C /dev/sdc')
-
     reboot(wait=300)
-
-    run('mkfs.ext4 /dev/bcache0')
 
     run('jpackage_install --name compute_kvm_base')
     # run('export IPADDRESS="%s"' % )
