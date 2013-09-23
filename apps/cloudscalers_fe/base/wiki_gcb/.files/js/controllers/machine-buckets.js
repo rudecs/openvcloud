@@ -1,7 +1,4 @@
-
-
-
-myAppControllers
+cloudscalersControllers
     .controller('BucketNewCtrl', ['$scope', 'Buckets', function($scope, Buckets) {
         $scope.bucket = new MachineBucket(Buckets,
         {

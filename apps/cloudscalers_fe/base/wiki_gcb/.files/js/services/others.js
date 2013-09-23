@@ -218,7 +218,7 @@ function LocalStorageService(keyName, Constructor) {
     return this;
 }
 
-angular.module('myApp.services', ['ngResource'])
+angular.module('cloudscalers.services', ['ngResource'])
     .factory('Buckets', function($http) {
         //return new LocalStorageService('gcb-buckets', MachineBucket, $http);
         var Buckets = new HttpService('machines', MachineBucket, $http, {api_key: 'special-key', cloudspaceId: 1});

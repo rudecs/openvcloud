@@ -2,9 +2,9 @@
 
 
 // Declare app level module which depends on filters, and services
-var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'machineServices', 'myApp.directives', 'myApp.controllers'])
+var cloudscalers = angular.module('cloudscalers', ['cloudscalers.filters', 'cloudscalers.services', 'machineServices', 'cloudscalers.directives', 'cloudscalers.controllers'])
 
-myApp
+cloudscalers
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
         $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'BucketNewCtrl'});
@@ -19,12 +19,12 @@ myApp
     }]);
 
 
-var myAppControllers = angular.module('myApp.controllers', ['ui.bootstrap', 'machineServices']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'machineServices']);
 
 if(cloudspaceconfig.apibaseurl == ''){
-    myAppControllers.config(function($provide) {
+	cloudscalersControllers.config(function($provide) {
        $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
-    myAppControllers.run(defineApiStub);
+	cloudscalersControllers.run(defineApiStub);
 
 
 };

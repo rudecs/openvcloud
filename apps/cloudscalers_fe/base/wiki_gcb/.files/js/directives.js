@@ -2,7 +2,7 @@
 
 
 // Highchart directive, from https://github.com/rootux/angular-highcharts-directive/blob/master/src/directives/highchart.js
-angular.module('myApp.directives', [])
+angular.module('cloudscalers.directives', [])
 .directive('chart', function () {
   return {
     restrict: 'E',

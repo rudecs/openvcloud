@@ -1,7 +1,7 @@
 xdescribe("Machine buckets", function() {
     var $httpBackend, Buckets;
     
-    beforeEach(module('myApp.services'));
+    beforeEach(module('cloudscalers.services'));
 
     beforeEach(inject(function(_$httpBackend_, _Buckets_, _$rootScope_) {
         $httpBackend = _$httpBackend_;
@@ -156,7 +156,7 @@ xdescribe("Machine buckets", function() {
 
 xdescribe("Sizes", function() {
     var $httpBackend, Sizes;
-    beforeEach(module('myApp.services'));
+    beforeEach(module('cloudscalers.services'));
 
     beforeEach(inject(function(_$httpBackend_, SizesService) {
         $httpBackend = _$httpBackend_;
