@@ -251,8 +251,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         term = dict()
         if cloudspaceId:
             term["cloudspaceId"] = cloudspaceId
-        if type:
-            term["status"] = type
+        if status:
+            term["status"] = status
         query = {'fields': ['id', 'referenceId', 'cloudspaceid','hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
         if term:
             query['query'] = {'term': term }
