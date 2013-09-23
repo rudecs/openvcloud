@@ -160,6 +160,11 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.referenceSizeId = psize.id
         machine.resourceProviderId = resourceprovider['id']
         machine.status = enums.MachineStatus.RUNNING
+        machine.hostName = node.name
+        for ipaddress in node.public_ips:
+            nic = machine.new_nic()
+            nic.ipAddress = ipaddress
+            machine.nics.append(nic)  
         self.cb.model_vmachine_set(machine.obj2dict())
 
         cloudspace = self.cb.model_cloudspace_new()
@@ -223,7 +228,6 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         """
         machine = self.cb.model_vmachine_get(machineId)
-        print machine
         return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'], 
         'name': machine['name'], 'hostname':machine['hostName'],
          'status':machine['status'], 'imageid':machine['imageId'], 'sizeid':machine['sizeId'],

@@ -127,7 +127,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
         domain.create()
 
-        node = self._to_node(domain)
+        node = self._to_node(domain, ipaddress)
         self._set_persistent_xml(node, domain.XMLDesc(0))
         return node
 
