@@ -1,0 +1,7 @@
+cloudscalers.compute.oob_interface=eth0
+cloudscalers.compute.pub_interface=eth0
+cloudscalers.compute.pub_ip=10.101.190.1
+cloudscalers.compute.vmstor=/mnt/vmstor
+cloudscalers.compute.isostor=/mnt/isostor
+cloudscalers.compute.backenstoragedevice=/dev/sdb
+cloudscalers.compute.cachedevice=/dev/sd
