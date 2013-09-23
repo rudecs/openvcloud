@@ -164,7 +164,6 @@ class cloudapi_machines(cloudapi_machines_osis):
         for ipaddress in node.public_ips:
             nic = machine.new_nic()
             nic.ipAddress = ipaddress
-            machine.nics.append(nic)  
         self.cb.model_vmachine_set(machine.obj2dict())
 
         cloudspace = self.cb.model_cloudspace_new()
