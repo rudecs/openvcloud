@@ -8,7 +8,8 @@ from xml.etree import ElementTree
 import uuid
 import libvirt
 POOLNAME = 'VMStor'
-libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST  = 3
+POOLPATH = '/mnt/%s' % POOLNAME.lower()
+libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
 
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
@@ -108,10 +109,10 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         macaddress = self.backendconnection.getMacAddress();
 
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-            diskbasevolume, 'disksize':disksize})
+            diskbasevolume, 'disksize':disksize, 'poolpath': POOLPATH})
 
-        machinexml = machinetemplate.render({'machinename': name,'diskname':
-            diskname, 'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress})
+        machinexml = machinetemplate.render({'machinename': name,'diskname': diskname,
+            'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
         #0 means not to preallocate data
         storagepool.createXML(diskxml, 0)
