@@ -90,12 +90,24 @@ System:/System
 					</a>  									
 				</li>
 				
-				<li>					
+				<li class="dropdown-submenu">					
 					<a href="../$$space/Billing">
 						<i class="icon-money"></i>
 						<span>Billing</span>
+						
                     </a>	
+					<ul class="dropdown-menu">
+						<li><a href="../$$space/./charts.html">Charts</a></li>
+						<li><a href="../$$space/./account.html">User Account</a></li>
+						<li><a href="../$$space/./login.html">Login</a></li>
+						<li><a href="../$$space/./signup.html">Signup</a></li>
+						<li><a href="../$$space/./error.html">Error</a></li>
+					</ul>    				
                 </li>
+
+
+
+
 
 				<!--
 

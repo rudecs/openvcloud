@@ -111,8 +111,18 @@ border-radius: 5px;
  padding:5px 10px; padding-bottom:10px;
 }
 .fix-h {
- height:255px;
+    background: none repeat scroll 0 0 #FFFFFF !important;
+    border: 3px dotted #CCCCCC;
+    height: 255px;
+    margin-top: 20px;
+    padding:20px !important;
 }
+    .fix-h h3 {
+    margin-top:0px;
+    }
+    .fix-h p {
+    padding-left:35px;
+    }
 
 .price p {
  margin:0px;
@@ -308,7 +318,7 @@ float:right;
     background: -moz-linear-gradient(center top , #FAFAFA 0%, #E9E9E9 100%) repeat scroll 0 0 transparent;
 }
 .widget-content {
-padding:5px;  background: none repeat scroll 0 0 #EEEEEE !important;
+padding:5px;  /*background: none repeat scroll 0 0 #EEEEEE !important;*/
 }
 #big_stats .stat {
     border-left: 1px solid #FFFFFF;
@@ -796,4 +806,52 @@ display:none;
 
 .carousel .item > img {
     border-radius:5px;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    left: 0;
+    top: 50px;
+}
+.dropdown-submenu > a:after {
+content: none;
+}
+
+.dropdown-menu a {
+text-align: left;
+}
+
+
+.subnavbar .dropdown-menu:before {
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    content:none;
+
+}
+
+
+.subnavbar .dropdown-menu:after {
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    content:none;
+
+}
+
+.dropdown-submenu > .dropdown-menu {
+    border-radius: 0 0 6px 6px;
+    border:none;
+    border-top:2px solid #04BBFF;
+   transition:  opacity 1s ease-out;
+}
+.subnavbar .container > ul > li > a {
+background:#fff !important;
+}
+
+.marker {
+background:#eee;
+padding:15px;
+}
+.marker .span6 {
+    width: 555px;
 }

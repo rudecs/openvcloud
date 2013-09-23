@@ -1,20 +1,21 @@
 {{carousel:
 
-Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/4.png
+Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/4.jpg
 We uniquely combine Simplicity, Enterprise Features, Cost Efficiency & Privacy.
 ------
-Machine Buckets  | /$$space/.files/img/2.png
+Machine Buckets  | /$$space/.files/img/2.jpg
 Most capable IAAS cloud for all your custom or legacy applications.
 ------
-Desktop Buckets | /$$space/.files/img/1.png
+Desktop Buckets | /$$space/.files/img/1.jpg
 1 click deployment of unified multi device collaboration platform
 ------
-Application Buckets | /$$space/.files/img/3.png
+Application Buckets | /$$space/.files/img/3.jpg
 1 click deployment of server applications in your private cloud, all fully managed.
 ------
 }}
 
-@row
+{{div: class=row }}
+{{div2: class= marker span12}}
 
 @col 6
 h2. bla bla bla bla bla bla bla 
@@ -23,18 +24,18 @@ Desktop buckets bring an innovative new way to deliver end user IT. Create a col
 @colend
 
 @col 6
-h2. bla bla bla bla bla bla bla 
-Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage his applications and data across all his devices!
-[efqefwef]
+{{html: <iframe src="//player.vimeo.com/video/74202041?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> }}
 @colend
-
-@rowend
+{{div2}}
+{{div}}
 
 @row
+
+
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-h3. Application Buckets
+{{html: <h3> <i class="icon-tasks"></i> Application Buckets </h3>}}
 Don't waste time deploying apps in virtual machines over and over again. Answer a few questions and your favorite cloud application will be up and running in your *private* cloud.
 Our Cloud Management software will take care of automatic updates & monitoring of your chosen application.
 {{html: </div> </div> }}
@@ -43,7 +44,7 @@ Our Cloud Management software will take care of automatic updates & monitoring o
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-h3. Desktop Buckets
+{{html: <h3> <i class="icon-desktop"></i> Desktop Buckets  </h3>}}
 Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage his applications and data across all his devices!
 {{html: </div> </div> }}
 @colend
@@ -51,7 +52,7 @@ Desktop buckets bring an innovative new way to deliver end user IT. Create a col
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-h3. Machine Buckets
+{{html: <h3> <i class="icon-cogs"></i> Machine Buckets </h3>}}
 In case an application bucket does not exist yet or you want to deploy one of your legacy applications in the cloud use our easy to use vmachine buckets. Only 4 questions are required to create a new vmachine.
 Each vmachine has enterprise features like unbreakable storage, full livecycle management, private network, ...
 {{html: </div> </div> }}
