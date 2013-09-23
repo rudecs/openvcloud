@@ -8,6 +8,9 @@ from xml.etree import ElementTree
 import uuid
 import libvirt
 POOLNAME = 'VMStor'
+POOLPATH = '/mnt/%s' % POOLNAME.lower()
+libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
+
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
@@ -106,10 +109,10 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         macaddress = self.backendconnection.getMacAddress();
 
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-            diskbasevolume, 'disksize':disksize})
+            diskbasevolume, 'disksize':disksize, 'poolpath': POOLPATH})
 
-        machinexml = machinetemplate.render({'machinename': name,'diskname':
-            diskname, 'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress})
+        machinexml = machinetemplate.render({'machinename': name,'diskname': diskname,
+            'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
         #0 means not to preallocate data
         storagepool.createXML(diskxml, 0)
@@ -123,8 +126,8 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         ipaddress = self.backendconnection.registerMachine(vmid)
         extranettemplate = Template("<host mac='{{macaddress}}' name='{{name}}' ip='{{ipaddress}}'/>")
         xmlstring = extranettemplate.render({'macaddress':macaddress, 'name':name, 'ipaddress':ipaddress})
-        network.update(3, 4, -1, xmlstring, flags=0)
-        domain.create()
+        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=0)
+        domain.create() 
 
         node = self._to_node(domain)
         self._set_persistent_xml(node, domain.XMLDesc(0))
