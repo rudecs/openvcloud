@@ -1,7 +1,7 @@
  <domain type='qemu'>
         <name>{{machinename}}</name>
         <memory unit='MB'>{{memory}}</memory>
-        <currentMemory unit='KiB'>{{memory}}</currentMemory>
+        <currentMemory unit='MB'>{{memory}}</currentMemory>
         <vcpu placement='static'>{{nrcpu}}</vcpu>
         <os>
             <type arch='x86_64'>hvm</type>
