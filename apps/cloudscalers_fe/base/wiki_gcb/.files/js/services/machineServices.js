@@ -1,4 +1,20 @@
 angular.module('cloudscalers.machineServices', ['ng'])
+
+	.factory('authenticationInterceptor',['$q','$log',function($q, $log){
+	  return {
+	   'request': function(config) {
+		   $log.log("Request intercepted");
+		   return config || $q.when(config);
+	    },
+	    'response': function(response) {
+	    	$log.log("Response intercepted");
+	       return response || $q.when(response);
+	    }
+	  };
+	 }])
+	 .config(['$httpProvider',function($httpProvider) {
+		 $httpProvider.interceptors.push('authenticationInterceptor');
+	 }])
     .factory('User', function ($http) {
         var user = {};
         user.login = function (username, password) {

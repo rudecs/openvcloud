@@ -16,9 +16,10 @@ module.exports = function(config) {
     files: [
       'test/unit/files/lib/jquery/jquery-latest.js',
       'lib/underscore/underscore-min.js',
-      'lib/angular/angular.js',
-      'lib/angular/angular-resource.js',
-      'lib/angular/angular-mocks.js',
+      'lib/angular-1.2.0-rc.2/angular.js',
+      'lib/angular-1.2.0-rc.2/angular-route.js',
+      'lib/angular-1.2.0-rc.2/angular-resource.js',
+      'lib/angular-1.2.0-rc.2/angular-mocks.js',
       'lib/angular-ui/ui-bootstrap-tpls-0.5.0.js',
       'test/unit/config.js',
       'test/unit/apiStub.js',

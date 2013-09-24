@@ -2,7 +2,12 @@
 
 
 // Declare app level module which depends on filters, and services
-var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices', 'cloudscalers.filters', 'cloudscalers.directives', 'cloudscalers.controllers'])
+var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices', 
+                                                   'cloudscalers.filters', 
+                                                   'cloudscalers.services', 
+                                                   'cloudscalers.directives', 
+                                                   'cloudscalers.controllers',
+                                                   'ngRoute'])
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
