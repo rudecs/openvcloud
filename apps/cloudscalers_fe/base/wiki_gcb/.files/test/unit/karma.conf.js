@@ -35,8 +35,8 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
-    //reporters: ['coverage', 'progress'],
+    //reporters: ['progress'],
+    reporters: ['coverage', 'progress'],
     coverageReporter: {
       type : 'html',
       dir : 'coverage/'
@@ -72,8 +72,8 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
-    //browsers: ['PhantomJS'],
+    //browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // If browser does not capture in given timeout [ms], kill it

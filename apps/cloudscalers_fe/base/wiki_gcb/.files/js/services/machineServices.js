@@ -1,4 +1,4 @@
-angular.module('machineServices', ['ng'])
+angular.module('cloudscalers.machineServices', ['ng'])
     .factory('User', function ($http) {
         var user = {};
         user.login = function (username, password) {

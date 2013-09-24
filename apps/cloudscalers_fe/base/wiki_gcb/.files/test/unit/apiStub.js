@@ -61,7 +61,6 @@ defineUnitApiStub = function($httpBackend){
         return [200, snapshotName];
     });
 
-    var urlRegexpForFailure = new RegExp();
     $httpBackend.whenGET(new RegExp('testapi/machines/snapshot\\?authkey=null&machineId=2&snapshotName=.*?')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });

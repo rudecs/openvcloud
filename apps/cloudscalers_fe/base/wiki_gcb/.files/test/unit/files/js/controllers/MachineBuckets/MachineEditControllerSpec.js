@@ -1,60 +1,72 @@
-describe("Machine bucket creation controller tests", function(){
+describe("Machine bucket editing controller", function(){
 	var scope, ctrl, machine, $location, confirm;
 
 	beforeEach(module('cloudscalers'));
 	
-	beforeEach(inject(function($rootScope) {
+	beforeEach(inject(function($rootScope, $controller, _$location_) {
 		Machine = {
 			list : jasmine.createSpy('list'), 
 			create: jasmine.createSpy('create'), 
 			get: jasmine.createSpy('get'), 
 			delete: jasmine.createSpy('delete'), 
+			createSnapshot: jasmine.createSpy('delete'), 
+			listSnapshots: jasmine.createSpy('listSnapshots')
 		};
 		scope = $rootScope.$new();
 		confirm = jasmine.createSpy('confirm');
+		Machine.get.andReturn({id: 13, name: 'Machine 13'});
+		Machine.listSnapshots.andReturn([{id: 10, name: 'Snapshot 1'}]);
+		$location = _$location_;
+	 	ctrl = $controller('MachineEditController', {
+	 		$scope : scope, 
+	 		$routeParams: {machineId: 13},
+	 		$location: $location,
+	 		Machine : Machine, 
+	 		confirm: confirm 
+	 	});
 	}));
 
+ 	it("retrieve the given bucket", function() {
+		expect(Machine.get).toHaveBeenCalledWith(13);
+ 		expect(scope.machine.id).toBe(13);
+ 	});
 
-	describe("Edit machine bucket", function() {
-		beforeEach(inject(function($controller, _$location_) {
-			Machine.get.andReturn({id: 13, name: 'Machine 13'});
-			$location = _$location_;
-		 	ctrl = $controller('MachineEditController', {
-		 		$scope : scope, 
-		 		$routeParams: {machineId: 13},
-		 		$location: $location,
-		 		Machine : Machine, 
-		 		confirm: confirm 
-		 	});
-		}));
+ 	describe("deleting a machine", function() {
+ 	  	it('confirming the warning will delete the machine', inject(function($location) {
+ 	  		confirm.andReturn(true);
+ 	  		
+ 	  		scope.destroy();
+ 	  		
+ 	  		expect(confirm).toHaveBeenCalled();
+ 	  		expect(Machine.delete).toHaveBeenCalledWith(13);
+ 	  		expect($location.url()).toEqual('/list');
+ 	  	}));
 
-	 	it("retrieve the given bucket", function() {
-			expect(Machine.get).toHaveBeenCalledWith(13);
-	 		expect(scope.machine.id).toBe(13);
-	 	});
+ 	  	it('rejecting the warning will not delete the machine', inject(function($location) {
+ 	  		spyOn($location, 'path').andCallThrough();
+ 	  		confirm.andReturn(false);
+ 	  		
+ 	  		scope.destroy();
+ 	  		
+ 	  		expect(confirm).toHaveBeenCalled();
+ 	  		expect(Machine.delete).not.toHaveBeenCalled();
+ 	  		expect($location.path).not.toHaveBeenCalled();
+ 	  	}));
+ 	});
 
-	 	describe("deleting a machine", function() {
-	 	  	it('confirming the warning will delete the machine', inject(function($location) {
-	 	  		confirm.andReturn(true);
-	 	  		
-	 	  		scope.destroy();
-	 	  		
-	 	  		expect(confirm).toHaveBeenCalled();
-	 	  		expect(Machine.delete).toHaveBeenCalledWith(13);
-	 	  		expect($location.url()).toEqual('/list');
-	 	  	}));
+ 	it("can create snapshots", function() {
+ 	  	var newSnapshotName = '13_snapshot_' + Math.random();
+ 	  	scope.newSnapshotName = newSnapshotName;
+ 	  	scope.createSnapshot();
 
-	 	  	it('rejecting the warning will not delete the machine', inject(function($location) {
-	 	  		spyOn($location, 'path').andCallThrough();
-	 	  		confirm.andReturn(false);
-	 	  		
-	 	  		scope.destroy();
-	 	  		
-	 	  		expect(confirm).toHaveBeenCalled();
-	 	  		expect(Machine.delete).not.toHaveBeenCalled();
-	 	  		expect($location.path).not.toHaveBeenCalled();
-	 	  	}));
-	 	});
-	});
+ 	  	expect(Machine.createSnapshot).toHaveBeenCalledWith(13, newSnapshotName);
+ 	});
+
+ 	it('lists snapshots for this machine', function() {
+ 		expect(Machine.listSnapshots).toHaveBeenCalledWith(13);
+ 		expect(scope.snapshots).toBeDefined();
+ 		expect(scope.snapshots.length).toBeDefined();
+ 		expect(scope.snapshots.length).toBe(1);
+ 	});
 });
 

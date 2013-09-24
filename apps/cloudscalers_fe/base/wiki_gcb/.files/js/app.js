@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-var cloudscalers = angular.module('cloudscalers', ['machineServices', 'cloudscalers.filters', 'cloudscalers.services', 'cloudscalers.directives', 'cloudscalers.controllers'])
+var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices', 'cloudscalers.filters', 'cloudscalers.directives', 'cloudscalers.controllers'])
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
@@ -19,7 +19,7 @@ cloudscalers
     }]);
 
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'machineServices']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'cloudscalers.machineServices']);
 
 if(cloudspaceconfig.apibaseurl == ''){
 	cloudscalersControllers.config(function($provide) {

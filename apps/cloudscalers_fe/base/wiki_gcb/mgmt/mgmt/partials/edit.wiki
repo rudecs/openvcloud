@@ -97,7 +97,7 @@ h2. Manage Machine
                                 <div class="modal-body">
                                     <ul>
                                         Name:
-                                        <input ng-model="newSnapshot.name" type="text" class="input-large" placeholder="Name"/>
+                                        <input ng-model="newSnapshotName" type="text" class="input-large" placeholder="Name"/>
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
@@ -239,8 +239,8 @@ h2. Manage Machine
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="snapshot in machine.snapshots">
-                        <td width="89%">{[snapshot.name]}</td>
+                    <tr ng-repeat="snapshot in snapshots">
+                        <td width="89%">{[snapshot]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}
                         </td>

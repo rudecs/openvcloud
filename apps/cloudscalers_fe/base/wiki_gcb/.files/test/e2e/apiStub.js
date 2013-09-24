@@ -136,6 +136,24 @@ defineApiStub = function ($httpBackend) {
         return [200, true];
     });
 
+    // Snapshots
+    var snapshots = [
+        "snap1",
+        "snap2",
+        "snap3",
+        "snap4"
+    ];
 
+    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?authkey=(.*?)&machineId=(\\d+)')).respond(snapshots);
+    
+    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?authkey\=(.*?)\&machineId\=\\d+\&snapshotName\=(.*?)$');
+    $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
+        var snapshotName = urlRegexpForSuccess.exec(data)[1];
+        snapshots.push(snapshotName);
+        return [200, snapshotName];
+    });
 
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?authkey=(.*?)&machineId=2&snapshotName=.*?')).respond(function(status, data) {
+        return [500, "Can't create snapshot"];
+    });
 };

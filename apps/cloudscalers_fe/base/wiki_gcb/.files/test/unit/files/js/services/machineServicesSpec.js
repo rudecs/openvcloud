@@ -1,7 +1,7 @@
 describe('Cloudscalers machine services', function() {
 
 
-	beforeEach(module('machineServices'));
+	beforeEach(module('cloudscalers.machineServices'));
 	
 	describe('User service', function(){
 		var $httpBackend, User;
