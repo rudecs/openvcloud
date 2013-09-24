@@ -1,15 +1,15 @@
 {{carousel:
 
-Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/4.jpg
+Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/4.png
 We uniquely combine Simplicity, Enterprise Features, Cost Efficiency & Privacy.
 ------
-Machine Buckets  | /$$space/.files/img/2.jpg
+Machine Buckets  | /$$space/.files/img/2.png
 Most capable IAAS cloud for all your custom or legacy applications.
 ------
-Desktop Buckets | /$$space/.files/img/1.jpg
+Desktop Buckets | /$$space/.files/img/1.png
 1 click deployment of unified multi device collaboration platform
 ------
-Application Buckets | /$$space/.files/img/3.jpg
+Application Buckets | /$$space/.files/img/3.png
 1 click deployment of server applications in your private cloud, all fully managed.
 ------
 }}

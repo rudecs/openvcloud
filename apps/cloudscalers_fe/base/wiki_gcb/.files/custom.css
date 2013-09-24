@@ -858,3 +858,7 @@ padding:15px;
     .marker h2, .marker p {
     margin-left:-20px;
     }
+
+.carousel-inner {
+background: url(../.files/img/carousel.png)
+}
