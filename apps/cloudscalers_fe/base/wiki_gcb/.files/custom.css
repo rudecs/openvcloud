@@ -855,3 +855,6 @@ padding:15px;
 .marker .span6 {
     width: 555px;
 }
+    .marker h2, .marker p {
+    margin-left:-20px;
+    }
