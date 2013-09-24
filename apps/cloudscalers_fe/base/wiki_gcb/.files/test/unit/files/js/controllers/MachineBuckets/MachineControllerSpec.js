@@ -13,7 +13,7 @@ describe("Machine bucket controller tests", function(){
 
 	
 	describe("machine list", function() {
-		beforeEach(inject(function($controller){
+		beforeEach(inject(function($controller) {
 			machine.list.andReturn(machinelist);
 		 	ctrl = $controller('MachineController', {$scope : scope, Machine : machine});
 		}));
