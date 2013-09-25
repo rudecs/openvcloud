@@ -12,9 +12,11 @@ def install_jumpscale_core():
     
     run('mkdir -p /opt/jumpscale/cfg/jpackages')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jpackages/')
     
     run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/bitbucket.cfg'), '/usr/local/lib/python2.7/dist-packages/JumpScale/core/_defaultcontent/cfg/jsconfig/')
 
     run('jpackage_update')
 
