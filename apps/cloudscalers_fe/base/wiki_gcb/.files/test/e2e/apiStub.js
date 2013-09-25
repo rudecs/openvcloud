@@ -78,8 +78,8 @@ defineApiStub = function ($httpBackend) {
     };
 
 
-    $httpBackend.whenGET(/^\/machines\/get\?authkey=yep123456789&machineId=(.+)/).respond(function (method, url, data) {
-        var matches = /^\/machines\/get\?authkey=yep123456789&machineId=(.+)/.exec(url);
+    $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+)&api_key=yep123456789/).respond(function (method, url, data) {
+        var matches = /^\/machines\/get\?machineId=(.+)&api_key=yep123456789/.exec(url);
         var requestedId = matches[1];
         if (!_.has(machines, requestedId)) {
             return [500, 'Not found']
@@ -88,12 +88,12 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET('/machines/list?authkey=yep123456789' + '&cloudspaceId=' + 0 + '&type=').respond(function (method, url, data) {
+    $httpBackend.whenGET('/machines/list?cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
         return [200, _.values(machines)];
     });
-    $httpBackend.whenGET('/images/list?authkey=yep123456789').respond(images);
-    $httpBackend.whenGET('/sizes/list?authkey=yep123456789').respond(sizes);
-    $httpBackend.whenGET(/^\/machines\/create\?authkey\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET('/images/list?api_key=yep123456789').respond(images);
+    $httpBackend.whenGET('/sizes/list?api_key=yep123456789').respond(sizes);
+    $httpBackend.whenGET(/^\/machines\/create\?api_key\=yep1234567899/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = _.keys(machines).length;
         var machine = {
@@ -111,7 +111,7 @@ defineApiStub = function ($httpBackend) {
         return [200, id];
 
     });
-    $httpBackend.whenGET(/^\/machines\/action\?authkey\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/action\?api_key\=yep123456789/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
         var machineid = params.machineId;
@@ -144,16 +144,16 @@ defineApiStub = function ($httpBackend) {
         "snap4"
     ];
 
-    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?authkey=(.*?)&machineId=(\\d+)')).respond(snapshots);
+    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
     
-    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?authkey\=(.*?)\&machineId\=\\d+\&snapshotName\=(.*?)$');
+    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
     $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
-        var snapshotName = urlRegexpForSuccess.exec(data)[1];
+        var snapshotName = urlRegexpForSuccess.exec(data)[0];
         snapshots.push(snapshotName);
         return [200, snapshotName];
     });
 
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?authkey=(.*?)&machineId=2&snapshotName=.*?')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
 };
