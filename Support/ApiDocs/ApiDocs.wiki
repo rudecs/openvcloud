@@ -19,7 +19,7 @@ h2. APIs Documentation
     <script type="text/javascript">
 	$(function () {
 	    window.swaggerUi = new SwaggerUi({
-                discoveryUrl:"/wiki_gcb/.files/docsample/data/catalog",
+                discoveryUrl:"./.files/docsample/data/catalog",
                 apiKey:"special-key",
                 dom_id:"swagger-ui-container",
                 supportHeaderParams: false,
