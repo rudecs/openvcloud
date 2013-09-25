@@ -9,7 +9,11 @@ def install_jumpscale_core():
     
     #Update sources.cfg and bitbucket.cfg
     WORKSPACE = os.environ.get('WORKSPACE')
+    
+    run('mkdir -p /opt/jumpscale/cfg/jpackages')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
+    
+    run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
 
     run('jpackage_update')
