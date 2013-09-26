@@ -1,16 +1,24 @@
 {{carousel:
 
-Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/4.png
-We uniquely combine Simplicity, Enterprise Features, Cost Efficiency & Privacy.
+ Welcome | /$$space/.files/img/1.png
+Are you ready for the next step in IT infrastructure?  <br> 
+CloudScalers introduces Cloud Buckets <br> 
+Delivering securely virtual machines, cloud desktops and cloud storage
 ------
 Machine Buckets  | /$$space/.files/img/2.png
-Most capable IAAS cloud for all your custom or legacy applications.
+Create and manage buckets from a unified cloud brokerage platform  <br> 
+Simplicity and flexibility at sharp prices  <br> 
+With all the best of cloud and a lot more!
 ------
-Desktop Buckets | /$$space/.files/img/1.png
-1 click deployment of unified multi device collaboration platform
+Desktop Buckets | /$$space/.files/img/3.png
+Intelligent SSD caching bringing better performance  <br> 
+More flexibility in choosing the ideal resource configuration  <br> 
+No lock in thanks to built in import and export functions
 ------
-Application Buckets | /$$space/.files/img/3.png
-1 click deployment of server applications in your private cloud, all fully managed.
+Application Buckets | /$$space/.files/img/4.png
+Automated snapshotting, rollback and cloning  <br> 
+Next generation cloud desktops working on any device  <br> 
+A simple and straightforward API
 ------
 }}
 
@@ -18,9 +26,9 @@ Application Buckets | /$$space/.files/img/3.png
 {{div2: class= marker span12}}
 
 @col 6
-h2. bla bla bla bla bla bla bla 
-Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage his applications and data across all his devices!
-[efqefwef]
+h3. Application Buckets 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultricies dui vel dignissim rhoncus. Sed vestibulum turpis nec posuere ultrices. Donec pulvinar velit non dignissim ultrices. Aliquam porttitor facilisis nibh, sed sodales nisi ornare non. Aliquam tempor tellus in odio fringilla, et scelerisque nisl accumsan. Vestibulum dapibus quis risus sed iaculis. Fusce metus diam, elementum sit amet sodales ut, pharetra ac odio. 
+{{html: <a>Duis ultricies dui  <i class="icon-circle-arrow-right"></i></a> }}
 @colend
 
 @col 6

@@ -94,7 +94,8 @@ border-radius: 5px;
 
 
 .carousel-caption {
- background:#fff;
+  top: 45px;
+  background:none;
   opacity:0.7;
 }
 
@@ -113,7 +114,7 @@ border-radius: 5px;
 .fix-h {
     background: none repeat scroll 0 0 #FFFFFF !important;
     border: 3px dotted #CCCCCC;
-    height: 255px;
+    height: 245px;
     margin-top: 20px;
     padding:20px !important;
 }
@@ -849,16 +850,34 @@ background:#fff !important;
 }
 
 .marker {
-background:#eee;
+background:#e7f5f8;
 padding:15px;
 }
 .marker .span6 {
     width: 555px;
 }
-    .marker h2, .marker p {
+    .marker h3, .marker p, .marker a {
     margin-left:-20px;
     }
+    .marker a {
+    font-size:14px;
 
+    }
+        .marker a:hover {
+        text-decoration:none;
+        color:#00BAFF;
+        cursor:pointer;
+        }
 .carousel-inner {
-background: url(../.files/img/carousel.png)
+background: url(img/carouselbg.jpg) bottom center no-repeat ;
+border-bottom: 1px solid #EEEEEE;
+}
+.carousel-caption h1 {
+display:none;
+}
+.carousel-caption p {
+
+  font-size: 25px;
+    line-height: 30px;
+    text-align: center;
 }
