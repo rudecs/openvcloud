@@ -16,6 +16,7 @@ module.exports = function(config) {
     files: [
       'test/unit/files/lib/jquery/jquery-latest.js',
       'lib/underscore/underscore-min.js',
+      'lib/URI.js',
       'lib/angular-1.2.0-rc.2/angular.js',
       'lib/angular-1.2.0-rc.2/angular-route.js',
       'lib/angular-1.2.0-rc.2/angular-resource.js',
@@ -73,8 +74,8 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    //browsers: ['Chrome'],
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
+    //browsers: ['PhantomJS'],
 
 
     // If browser does not capture in given timeout [ms], kill it

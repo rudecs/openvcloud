@@ -1,9 +1,20 @@
 angular.module('cloudscalers.machineServices', ['ng'])
 
-	.factory('authenticationInterceptor',['$q','$log',function($q, $log){
+	.factory('authenticationInterceptor',['$q','$log','$window',function($q, $log, $window){
 	  return {
 	   'request': function(config) {
-		   $log.log("Request intercepted");
+		   if (config) {
+			  url = config.url;
+			  
+			  if(/\/machines\//i.test(url) || /\/sizes\//i.test(url) || /\/images\//i.test(url)) {
+				  
+				  var authkey = $window.sessionStorage.getItem('user.authKey')
+				  
+				   uri = new URI(url);
+				   uri.addSearch('api_key',authkey);
+				   config.url = uri.toString();
+				}
+		   }
 		   return config || $q.when(config);
 	    },
 	    'response': function(response) {
@@ -39,12 +50,11 @@ angular.module('cloudscalers.machineServices', ['ng'])
         };
         return user;
     })
-    .factory('Machine', function ($http, $window) {
-        var authkey = $window.sessionStorage.getItem('user.authKey')
+    .factory('Machine', function ($http) {
         return {
             action: function (machineid, action) {
                 var result = []
-                url = cloudspaceconfig.apibaseurl + '/machines/action?authkey=' + authkey + '&machineId=' + machineid + '&action=' + action;
+                url = cloudspaceconfig.apibaseurl + '/machines/action?machineId=' + machineid + '&action=' + action;
                 $http.get(url)
                     .success(function (data, status, headers, config) {
                         result.success = true;
@@ -55,7 +65,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             create: function (cloudspaceid, name, description, sizeId, imageId) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?authkey=' + authkey + '&cloudspaceId=' + cloudspaceid + '&name=' + name + '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId;
+                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + name + '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         machine.id = data;
@@ -66,7 +76,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             delete: function (machineid) {
                 var result = []
-                url = cloudspaceconfig.apibaseurl + '/machines/delete?authkey=' + authkey + '&machineId=' + machineid;
+                url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         result.success = true;
@@ -77,7 +87,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             list: function (cloudspaceid) {
                 var machines = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/list?authkey=' + authkey + '&cloudspaceId=' + cloudspaceid + '&type=';
+                url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (machine) {
@@ -93,7 +103,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 var machine = {
                     id: machineid
                 };
-                url = cloudspaceconfig.apibaseurl + '/machines/get?authkey=' + authkey + '&machineId=' + machineid;
+                url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         angular.copy(data, machine);
@@ -105,7 +115,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             listSnapshots: function (machineid) {
                 var snapshotsResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?authkey=' + authkey + '&machineId=' + machineid;
+                var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         snapshotsResult.snapshots = data;
@@ -117,7 +127,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             createSnapshot: function (machineId, snapshotName) {
                 var createSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?authkey=' + authkey + '&machineId=' + machineId + '&snapshotName=' + snapshotName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&snapshotName=' + snapshotName;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         createSnapshotResult.success = true;
@@ -129,12 +139,11 @@ angular.module('cloudscalers.machineServices', ['ng'])
             }
         }
     })
-    .factory('Image', function ($http, $window) {
-        var authkey = $window.sessionStorage.getItem('user.authKey')
+    .factory('Image', function ($http) {
         return {
             list: function () {
                 var images = [];
-                url = cloudspaceconfig.apibaseurl + '/images/list?authkey=' + authkey;
+                url = cloudspaceconfig.apibaseurl + '/images/list';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (img) {
@@ -148,12 +157,11 @@ angular.module('cloudscalers.machineServices', ['ng'])
             }
         }
     })
-    .factory('Size', function ($http, $window) {
-        var authkey = $window.sessionStorage.getItem('user.authKey')
+    .factory('Size', function ($http) {
         return {
             list: function () {
                 var sizes = [];
-                url = cloudspaceconfig.apibaseurl + '/sizes/list?authkey=' + authkey;
+                url = cloudspaceconfig.apibaseurl + '/sizes/list';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (size) {
