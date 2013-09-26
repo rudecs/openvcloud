@@ -6,3 +6,5 @@ cloudscalers.compute.isostor=/mnt/isostor
 cloudscalers.compute.backingdevice=/dev/sdb
 cloudscalers.compute.cachedevice=/dev/sdc
 cloudscalers.frontend.cloudbrokerurl=/restmachine/cloudapi
+cloudscalers.broker.ip=localhost
+grid.id = 1
