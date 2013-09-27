@@ -17,8 +17,8 @@ cloudscalers
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
-    // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax. Here I configure
-    // Angular to use {[]} instead.
+    // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax.
+    // Use {[]} instead.
     .config(['$interpolateProvider', function($interpolateProvider) {
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
     }]);
