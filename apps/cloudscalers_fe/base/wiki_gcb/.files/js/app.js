@@ -11,14 +11,14 @@ var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
+        $routeProvider.when('/list', {templateUrl: 'partials/list'});
         $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'MachineCreationController'});
         $routeProvider.when('/edit/:machineId', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
-    // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax. Here I configure
-    // Angular to use {[]} instead.
+    // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax.
+    // Use {[]} instead.
     .config(['$interpolateProvider', function($interpolateProvider) {
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
     }]);

@@ -1,6 +1,6 @@
 angular.module('cloudscalers.machineServices', ['ng'])
 
-	.factory('authenticationInterceptor',['$q','$log','$window',function($q, $log, $window){
+	.factory('authenticationInterceptor',['$q','$log','User',function($q, $log, User){
 	  return {
 	   'request': function(config) {
 		   if (config) {
@@ -8,10 +8,8 @@ angular.module('cloudscalers.machineServices', ['ng'])
 			  
 			  if(/\/machines\//i.test(url) || /\/sizes\//i.test(url) || /\/images\//i.test(url)) {
 				  
-				  var authkey = $window.sessionStorage.getItem('user.authKey')
-				  
 				   uri = new URI(url);
-				   uri.addSearch('api_key',authkey);
+				   uri.addSearch('api_key',User.get_api_key());
 				   config.url = uri.toString();
 				}
 		   }
@@ -26,28 +24,33 @@ angular.module('cloudscalers.machineServices', ['ng'])
 	 .config(['$httpProvider',function($httpProvider) {
 		 $httpProvider.interceptors.push('authenticationInterceptor');
 	 }])
-    .factory('User', function ($http) {
+    .factory('User', function ($window) {
         var user = {};
-        user.login = function (username, password) {
+        user.login = function () {
             var loginResult = {
-                username: username
             };
-            $http({
-                method: 'POST',
-                data: {
-                    username: username,
-                    password: password
-                },
-                url: cloudspaceconfig.apibaseurl + '/users/authenticate'
-            }).
-            success(function (data, status, headers, config) {
-                loginResult.authKey = data;
-            }).
-            error(function (data, status, headers, config) {
-                loginResult.error = status;
-            });
+//            $http({
+//                method: 'POST',
+//                data: {
+//                    username: username,
+//                    password: password
+//                },
+//                url: cloudspaceconfig.apibaseurl + '/users/authenticate'
+//            }).
+//            success(function (data, status, headers, config) {
+//                loginResult.api_key = data;
+//            }).
+//            error(function (data, status, headers, config) {
+//                loginResult.error = status;
+//            });
             return loginResult;
         };
+        
+        user.get_api_key = function(){
+        	return 'yep123456789';
+        }
+        
+        
         return user;
     })
     .factory('Machine', function ($http) {
