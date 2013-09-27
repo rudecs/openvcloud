@@ -26,13 +26,14 @@ A simple and straightforward API
 {{div2: class= marker span12}}
 
 @col 6
-h3. Application Buckets 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultricies dui vel dignissim rhoncus. Sed vestibulum turpis nec posuere ultrices. Donec pulvinar velit non dignissim ultrices. Aliquam porttitor facilisis nibh, sed sodales nisi ornare non. Aliquam tempor tellus in odio fringilla, et scelerisque nisl accumsan. Vestibulum dapibus quis risus sed iaculis. Fusce metus diam, elementum sit amet sodales ut, pharetra ac odio. 
-{{html: <a>Duis ultricies dui  <i class="icon-circle-arrow-right"></i></a> }}
+h3. Why CloudScalers 
+CloudScalers introduces the next generation in IT automation: Cloud Buckets deploy and manage your cloud more easily, saving in time and costs. Cloud Buckets introduce a unified cloud brokerage platform offering the user access to private resources in the form of virtual machines, cloud desktops or applications. CloudScalers learned based upon long experience in IT automation that a unified solution with a lot of flexibility provides a better and structured way of dealing with IT.
+
+{{html: <a href="../$$space/Features">Read more  <i class="icon-circle-arrow-right"></i></a> }}
 @colend
 
 @col 6
-{{html: <iframe src="//player.vimeo.com/video/74202041?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> }}
+{{html: <iframe src="//player.vimeo.com/video/75195289?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> }}
 @colend
 {{div2}}
 {{div}}
@@ -43,9 +44,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ultricies dui vel 
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-{{html: <h3> <i class="icon-tasks"></i> Application Buckets </h3>}}
-Don't waste time deploying apps in virtual machines over and over again. Answer a few questions and your favorite cloud application will be up and running in your *private* cloud.
-Our Cloud Management software will take care of automatic updates & monitoring of your chosen application.
+{{html: <h3> <i class="icon-tasks"></i> Storage Buckets </h3>}}
+Few truly distributed storage systems are available today. And the existing ones focus on 1 use case: small files versus big, data base records, volumes, ... . Storage Buckets bring a file system that fits all use cases and much more.
 {{html: </div> </div> }}
 @colend
 
@@ -61,8 +61,7 @@ Desktop buckets bring an innovative new way to deliver end user IT. Create a col
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
 {{html: <h3> <i class="icon-cogs"></i> Machine Buckets </h3>}}
-In case an application bucket does not exist yet or you want to deploy one of your legacy applications in the cloud use our easy to use vmachine buckets. Only 4 questions are required to create a new vmachine.
-Each vmachine has enterprise features like unbreakable storage, full livecycle management, private network, ...
+The machine buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines.
 {{html: </div> </div> }}
 @colend
 

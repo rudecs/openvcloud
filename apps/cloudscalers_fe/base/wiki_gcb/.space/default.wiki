@@ -56,16 +56,23 @@ System:/System
 					</a>	    				
 				</li> 
 
-				<li >
+				<li class="dropdown-submenu">
+					<a href="../$$space/Products">
+						<i class="icon-cloud"></i>
+						<span>Products</span>
+					</a>	
+                                   <ul class="dropdown-menu">
+						<li><a href="../$$space/Machine Buckets">Machine Buckets</a></li>
+						<li><a href="../$$space/Desktop Buckets">Desktop Buckets</a></li>
+						<li><a href="../$$space/Storage Buckets">Storage Buckets</a></li>
+					</ul>    				    				
+				</li>
+
+
+				<li>
 					<a href="../$$space/Pricing">
 						<i class="icon-shopping-cart"></i>
 						<span>Pricing</span>
-					</a>	    				
-				</li> 
-				<li >
-					<a href="../$$space/Features">
-						<i class="icon-cogs"></i>
-						<span>Features</span>
 					</a>	    				
 				</li> 
 
@@ -74,10 +81,9 @@ System:/System
 						<i class="icon-cloud"></i>
 						<span>My Buckets</span>
 					</a>	
-                    <ul class="dropdown-menu">
+                                   <ul class="dropdown-menu">
 						<li><a href="../$$space/MachineBuckets">Machine Buckets</a></li>
 						<li><a href="../$$space/DesktopBuckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/ApplicationBuckets">Application Buckets</a></li>
 						<li><a href="../$$space/StorageBuckets">Storage Buckets</a></li>
 					</ul>    				    				
 				</li>

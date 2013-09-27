@@ -1,7 +1,5 @@
 h2. Machine Buckets
 
-Machine buckets brings a powerful extension on top of popular IAAS stacks.
-
 The machine buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
 
 * Enhanced 1 click deployment, auto scale, auto maintenance
