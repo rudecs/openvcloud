@@ -881,3 +881,12 @@ display:none;
     line-height: 30px;
     text-align: center;
 }
+
+.fix-h:hover, fix-h:hover h3, fix-h:hover p {
+color:#23a6de;
+border-color:#23a6de;
+}
+
+.carousel .item {
+
+}
