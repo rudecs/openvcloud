@@ -3,7 +3,7 @@
 	API Actor api, this actor is the final api a enduser uses to manage his resources
 	"""    
 
-    method:create
+	method:create
 		"""
 		Create a machine based on the available sizes, in a certain space.
 		The user needs write access rights on the space.	
@@ -33,59 +33,59 @@
 		var:machineId int,, id of machine
 		result: bool
 
-    method:delete
-	    """
-	    Delete a machine
-	    """
-	    var:machineId int,, id of the machine
-	    result: bool
+	method:delete
+		"""
+		Delete a machine
+		"""
+		var:machineId int,, id of the machine
+		result: bool
 
 	method:update
-	    """
-	    Change basic properties of a machine.
-	    Name, description can be changed with this action.
-	    """
-	    var:machineId int,, id of the machine
-	    var:name str,, name of the machine
-	    var:description str,, description of the machine
-	    var:size int,,size of the machine in CU
+		"""
+		Change basic properties of a machine.
+		Name, description can be changed with this action.
+		"""
+		var:machineId int,, id of the machine
+		var:name str,, name of the machine
+		var:description str,, description of the machine
+		var:size int,,size of the machine in CU
 
 	method:start
-	    """
-	    start a machine.
-	    """
-	    var:machineId int,, id of the machine
-	    result:bool
+		"""
+		start a machine.
+		"""
+		var:machineId int,, id of the machine
+		result:bool
 
 	method:stop
-	    """
-	    stop a machine.
-	    """
-	    var:machineId int,, id of the machine
-	    result:bool
+		"""
+		stop a machine.
+		"""
+		var:machineId int,, id of the machine
+		result:bool
 
 	method:reboot
-	    """
-	    reboot a machine.
-	    """
-	    var:machineId int,, id of the machine
-	    result:bool
+		"""
+		reboot a machine.
+		"""
+		var:machineId int,, id of the machine
+		result:bool
 
 	method:pause
-	    """
-	    pause a machine.
-	    """
-	    var:machineId int,, id of the machine
-	    result:bool
+		"""
+		pause a machine.
+		"""
+		var:machineId int,, id of the machine
+		result:bool
 
 	method:resume
-	    """
-	    resume a machine.
-	    """
-	    var:machineId int,, id of the machine
-	    result:bool
+		"""
+		resume a machine.
+		"""
+		var:machineId int,, id of the machine
+		result:bool
 
-    method:addDisk
+	method:addDisk
 		"""
 		Add a disk to a machine
 		"""
@@ -96,9 +96,9 @@
 		var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
 		result:int
 
-    method:delDisk
+	method:delDisk
 		"""		
-        Delete a disk from machine
+		Delete a disk from machine
 		"""
 		var:machineId int,, id of machine		
 		var:diskId int,,id of disk to delete
@@ -123,32 +123,32 @@
 		"""
 		"""
 		var:machineId int,,id of machine to snapshot
-        var:snapshotname str,, Optional name to give snapshot
+		var:snapshotname str,, Optional name to give snapshot
 		result:int #returns id of new machine which gets created when snapshot was successfull
 
 	method:listSnapshots
 		"""
 		List the snapshot of a machine
-        """
-	    var:machineId int,, id of the machine
+		"""
+		var:machineId int,, id of the machine
 		result:list 
 
 
 	method:deleteSnapshot
 		"""
 		Delete a snapshot of a machine
-        """
-	    var:machineId int,, id of the machine
-	    var:name str,, name of the snapshot to delete
+		"""
+		var:machineId int,, id of the machine
+		var:name str,, name of the snapshot to delete
 		result:str
 
 
 	method:rollbackSnapshot
 		"""
 		Rollback a snapshot of a machine
-        """
-	    var:machineId int,, id of the machine
-	    var:name str,, name of the snapshot to rollback
+		"""
+		var:machineId int,, id of the machine
+		var:name str,, name of the snapshot to rollback
 		result:str
 
 	method:backup
@@ -158,4 +158,18 @@
 		var:machineId str,,id of machine to backup
 		var:backupName str,,name of backup
 		result:int  #returns id of new machine created
+
+	method:getConsoleUrl
+		"""
+		get url to connect to console
+		"""
+		var:machineId str,, id of machine to connect to console 
+		result:str #returns one time url used to connect ot console 
+
+	method:getConsoleInfo
+		"""
+		get connection info to connect to console
+		"""
+		var:token str,, session token
+		result:dict
 

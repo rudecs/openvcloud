@@ -2,6 +2,7 @@ from JumpScale import j
 from cloudapi_machines_osis import cloudapi_machines_osis
 from cloudbrokerlib import authenticator, enums
 import memcache
+import uuid
 ujson = j.db.serializers.ujson
 
 
@@ -227,10 +228,10 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         """
         machine = self.cb.model_vmachine_get(machineId)
-        return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'], 
-        'name': machine['name'], 'hostname':machine['hostName'],
-         'status':machine['status'], 'imageid':machine['imageId'], 'sizeid':machine['sizeId'],
-         'interfaces':machine['nics']}   
+        return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'],
+                'name': machine['name'], 'hostname': machine['hostName'],
+                'status': machine['status'], 'imageid': machine['imageId'], 'sizeid': machine['sizeId'],
+                'interfaces': machine['nics']}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """
@@ -256,9 +257,9 @@ class cloudapi_machines(cloudapi_machines_osis):
             term["cloudspaceId"] = cloudspaceId
         if status:
             term["status"] = status
-        query = {'fields': ['id', 'referenceId', 'cloudspaceid','hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
+        query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
         if term:
-            query['query'] = {'term': term }
+            query['query'] = {'term': term}
         results = self.cb.model_vmachine_find(ujson.dumps(query))['result']
         machines = [res['fields'] for res in results]
         return machines
@@ -320,3 +321,29 @@ class cloudapi_machines(cloudapi_machines_osis):
         if size is not None:
             machine['nrCU'] = size
         return self.cb.model_vmachine_set(machine)
+
+    def getConsoleInfo(self, token, **kwargs):
+        """
+        get connection info to connect to console
+        param:token session token
+        result dict
+
+        """
+        key = str('console.token.%s' % token)
+        machineId = self.cache.get(key)
+        provider, node = self._getProviderAndNode(machineId)
+        self.cache.delete(key)
+        return provider.client.ex_get_console_info(node)
+
+    def getConsoleUrl(self, machineId, **kwargs):
+        """
+        get url to connect to console
+        param:machineId id of machine to connect to console
+        result str
+
+        """
+
+        token =  uuid.uuid4()
+        key = 'console.token.%s' % token
+        self.cache.set(key, machineId, 300)
+        return "http://consoleapp:9090/vnc_auto.html?token=%s" % token

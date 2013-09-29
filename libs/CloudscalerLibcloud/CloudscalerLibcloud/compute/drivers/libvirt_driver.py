@@ -7,6 +7,7 @@ from jinja2 import Environment, PackageLoader, Template
 from xml.etree import ElementTree
 import uuid
 import libvirt
+import urlparse
 POOLNAME = 'VMStor'
 POOLPATH = '/mnt/%s' % POOLNAME.lower()
 libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
@@ -211,6 +212,20 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
             else:
                 raise
         return domain.create() == 0
+
+    def ex_get_console_info(self, node):
+        domain = self._get_domain_for_node(node=node)
+        xml = ElementTree.fromstring(domain.XMLDesc(0))
+        graphics = xml.find('devices/graphics')
+        info = dict()
+        info['port'] = int(graphics.attrib['port'])
+        info['type'] = graphics.attrib['type']
+        info['ipaddress'] = self._get_connection_ip()
+        return info
+
+    def _get_connection_ip(self):
+        uri = urlparse.urlparse(self.connection.getURI())
+        return uri.netloc
 
     def _get_persistent_xml(self, node):
         return self.backendconnection.db.get('domain_%s' % node.id)
