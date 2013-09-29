@@ -3,6 +3,8 @@ import JumpScale.portal
 
 cl = j.core.portal.getPortalClient('127.0.0.1', 80, '1234')
 cl.getActor('cloud','cloudbroker')
+cl.getActor('cloudapi','accounts')
+cl.getActor('cloudapi','cloudspaces')
 cl.getActor('libcloud', 'libvirt')
 
 #create a new stack:
@@ -13,6 +15,12 @@ stack.descr = 'libvirt node'
 stack.type = 'LIBVIRT'
 stack.name = 'Cloudscaler 02'
 j.apps.cloud.cloudbroker.model_stack_set(stack)
+
+# create account
+accountid = j.apps.cloudapi.accounts.create('myaccount', ['admin'])
+
+# create cloudspace
+j.apps.cloudapi.cloudspaces.create(accountid, 'myspace', ['admin'])
 
 #create resourceprovider
 rp = j.apps.cloud.cloudbroker.models.resourceprovider.new()

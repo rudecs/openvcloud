@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+from JumpScale import j
+from IPython import embed
+import JumpScale.portal
+cl = j.core.portal.getPortalClient('127.0.0.1', 80, '1234')
+cl.getActor('cloud','cloudbroker')
+cl.getActor('libcloud','libvirt')
+for type_ in ('sizes', 'images', 'accounts', 'cloudspaces', 'machines'):
+    cl.getActor('cloudapi', type_)
+
+embed()
+
