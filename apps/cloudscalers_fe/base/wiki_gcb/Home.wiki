@@ -1,6 +1,6 @@
 @usedefault
 
-{{carousel:
+{{carousel: interval = 500
 
 Welcome to CloudScalers, the next generation cloud | /$$space/.files/img/1.png
 We uniquely combine Simplicity, Enterprise Features, Cost Efficiency & Privacy.

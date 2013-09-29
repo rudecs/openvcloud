@@ -1,4 +1,4 @@
-{{carousel:
+{{carousel: interval = 500
 
  Welcome | /$$space/.files/img/1.png
 Are you ready for the next step in IT infrastructure?  <br> 

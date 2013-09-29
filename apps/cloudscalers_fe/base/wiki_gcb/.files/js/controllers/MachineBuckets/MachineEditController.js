@@ -14,7 +14,7 @@ cloudscalersControllers
         $scope.createSnapshot = function() {
             $scope.closeSnapshotModal();
             Machine.createSnapshot($scope.machine.id, $scope.newSnapshotName);
-            //$scope.newSnapshotName = '';
+            $scope.newSnapshotName = '';
             showLoading('Creating a snapshot');
         };
 
@@ -29,20 +29,25 @@ cloudscalersControllers
         // The existing jgauge macros uses jQuery. Because of the way AngularJS works, code executed using 
         // $document.ready will not work as expected. This is one way to do it.
         $timeout(function(){
-            myGauge1.init();
-            myGauge1.setValue(100)
-            setInterval('randVal1()', 3000);
+            try {
+                // Make tabs work
+                $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
 
-            myGauge2.init();
-            myGauge2.setValue(60)
-            setInterval('randVal2()', 3000);
-            
-            myGauge3.init();
-            myGauge3.setValue(60)
-            setInterval('randVal3()', 3000);
-            
-            myGauge4.init();
-            myGauge4.setValue(60)
-            setInterval('randVal4()', 3000);
+                myGauge1.init();
+                myGauge1.setValue(100)
+                setInterval('randVal1()', 3000);
+
+                myGauge2.init();
+                myGauge2.setValue(60)
+                setInterval('randVal2()', 3000);
+                
+                myGauge3.init();
+                myGauge3.setValue(60)
+                setInterval('randVal3()', 3000);
+                
+                myGauge4.init();
+                myGauge4.setValue(60)
+                setInterval('randVal4()', 3000);
+            } catch(e) {}
         }, 0);
     }]);

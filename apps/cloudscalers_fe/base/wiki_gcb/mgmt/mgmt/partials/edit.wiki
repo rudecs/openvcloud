@@ -1,3 +1,4 @@
+
 h2. Manage Machine
 {{html:
 <style>
@@ -275,4 +276,6 @@ h2. Manage Machine
         </div>
     </div>
 </div>
+<script  src='/lib/bootstrap/js/bootstrap.js' type='text/javascript'></script>
+
 }}

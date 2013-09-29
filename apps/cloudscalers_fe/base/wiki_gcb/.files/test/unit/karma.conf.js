@@ -46,6 +46,9 @@ module.exports = function(config) {
 
     preprocessors: {
       'js/services/machineServices.js': 'coverage',
+      'js/controllers/MachineBuckets/MachineController.js': 'coverage',
+      'js/controllers/MachineBuckets/MachineCreationController.js': 'coverage',
+      'js/controllers/MachineBuckets/MachineEditController.js': 'coverage',
     },
 
 

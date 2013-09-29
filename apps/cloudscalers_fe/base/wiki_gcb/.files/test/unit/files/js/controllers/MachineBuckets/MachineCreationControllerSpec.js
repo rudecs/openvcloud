@@ -30,6 +30,10 @@ describe("Machine bucket controller tests", function(){
 			scope.saveNewMachine();
 		}));
 
+		it('is valid machine definition & can be saved', function() {
+			expect(scope.isValid()).toBeTruthy();
+		});
+
 		it('retrieved list of sizes', function() {
 			expect(Size.list).toHaveBeenCalledWith();
 		});

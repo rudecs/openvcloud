@@ -8,8 +8,8 @@ h2. Create Machine Bucket
             <input ng-model="newMachine.name" type="text" class="input-large" placeholder="Name"/>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" style="display: none">Description:</label>
+    <div class="control-group" style="display: none">
+        <label class="control-label">Description:</label>
         <div class="controls">
             <textarea ng-model="newMachine.description" type="text" class="input-large" placeholder="Description" />
         </div>
