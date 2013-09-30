@@ -139,6 +139,20 @@ angular.module('cloudscalers.machineServices', ['ng'])
                         createSnapshotResult.error = status;
                     });
                 return createSnapshotResult;
+            },
+            getConsoleUrl: function(machineId) {
+                var getConsoleUrlResult = {};
+                var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl?machineId=' + machineId;
+                $http.get(url).success(function(data, status, headers, config) {
+                    if (data == 'None') {
+                        getConsoleUrlResult.error = status;
+                    } else {
+                        getConsoleUrlResult.url = data;
+                    }
+                }).error(function (data, status, headers, config) {
+                    getConsoleUrlResult.error = status;
+                });
+                return getConsoleUrlResult;
             }
         }
     })

@@ -2,6 +2,7 @@ cloudscalersControllers
     .controller('MachineEditController', ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', function($scope, $routeParams, $timeout, $location, Machine, confirm) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
+        $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.newSnapshotName = '';
 
         $scope.destroy = function() {

@@ -10,12 +10,14 @@ describe("Machine bucket editing controller", function(){
 			get: jasmine.createSpy('get'), 
 			delete: jasmine.createSpy('delete'), 
 			createSnapshot: jasmine.createSpy('delete'), 
-			listSnapshots: jasmine.createSpy('listSnapshots')
+			listSnapshots: jasmine.createSpy('listSnapshots'),
+			getConsoleUrl: jasmine.createSpy('getConsoleUrl')
 		};
 		scope = $rootScope.$new();
 		confirm = jasmine.createSpy('confirm');
 		Machine.get.andReturn({id: 13, name: 'Machine 13'});
 		Machine.listSnapshots.andReturn([{id: 10, name: 'Snapshot 1'}]);
+		Machine.getConsoleUrl.andReturn({url: 'http://www.yahoo.com'});
 		$location = _$location_;
 	 	ctrl = $controller('MachineEditController', {
 	 		$scope : scope, 
@@ -54,19 +56,31 @@ describe("Machine bucket editing controller", function(){
  	  	}));
  	});
 
- 	it("can create snapshots", function() {
- 	  	var newSnapshotName = '13_snapshot_' + Math.random();
- 	  	scope.newSnapshotName = newSnapshotName;
- 	  	scope.createSnapshot();
+ 	describe("Snapshots", function() {
+ 	  it("can create snapshots", function() {
+ 	    	var newSnapshotName = '13_snapshot_' + Math.random();
+ 	    	scope.newSnapshotName = newSnapshotName;
+ 	    	scope.createSnapshot();
 
- 	  	expect(Machine.createSnapshot).toHaveBeenCalledWith(13, newSnapshotName);
+ 	    	expect(Machine.createSnapshot).toHaveBeenCalledWith(13, newSnapshotName);
+ 	  });
+
+ 	  it('lists snapshots for this machine', function() {
+ 	  	expect(Machine.listSnapshots).toHaveBeenCalledWith(13);
+ 	  	expect(scope.snapshots).toBeDefined();
+ 	  	expect(scope.snapshots.length).toBeDefined();
+ 	  	expect(scope.snapshots.length).toBe(1);
+ 	  });
  	});
 
- 	it('lists snapshots for this machine', function() {
- 		expect(Machine.listSnapshots).toHaveBeenCalledWith(13);
- 		expect(scope.snapshots).toBeDefined();
- 		expect(scope.snapshots.length).toBeDefined();
- 		expect(scope.snapshots.length).toBe(1);
+ 	describe("get console url", function() {
+ 	 	it("successfully", function() {
+ 	 	 	expect(Machine.getConsoleUrl).toHaveBeenCalledWith(13);
+ 	 	 	expect(scope.machineConsoleUrlResult.error).toBeUndefined();
+ 	 	 	expect(scope.machineConsoleUrlResult.url).toBe('http://www.yahoo.com');
+ 	 	});
  	});
+
+ 	
 });
 
