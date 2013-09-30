@@ -342,7 +342,9 @@ class cloudapi_machines(cloudapi_machines_osis):
         result str
 
         """
-
+        machine = self._getMachine(machineId)
+        if machine.status != enums.MachineStatus.RUNNING:
+            return None
         token =  uuid.uuid4()
         key = 'console.token.%s' % token
         self.cache.set(key, machineId, 300)
