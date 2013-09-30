@@ -29,25 +29,13 @@ cloudscalersControllers
         // The existing jgauge macros uses jQuery. Because of the way AngularJS works, code executed using 
         // $document.ready will not work as expected. This is one way to do it.
         $timeout(function(){
+            // Make tabs work
+            $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
             try {
-                // Make tabs work
-                $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
-
-                myGauge1.init();
-                myGauge1.setValue(100)
-                setInterval('randVal1()', 3000);
-
-                myGauge2.init();
-                myGauge2.setValue(60)
-                setInterval('randVal2()', 3000);
-                
-                myGauge3.init();
-                myGauge3.setValue(60)
-                setInterval('randVal3()', 3000);
-                
-                myGauge4.init();
-                myGauge4.setValue(60)
-                setInterval('randVal4()', 3000);
+                createGauge('jGauge1', 50, 0, 100, 300);
+                createGauge('jGauge2', 1.6, 0, 12, 300);
+                createGauge('jGauge3', 1.6, 0, 12, 300);
+                createGauge('jGauge4', 1.6, 0, 12, 300);
             } catch(e) {}
         }, 0);
     }]);
