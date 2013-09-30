@@ -15,6 +15,7 @@ h2 { color:#00baff; }
     display: block;
     margin-right: 20px;
     width: 205px; float:left; overflow: hidden; height:125px;
+    margin-bottom:20px;
 }
 
     #gallery a:hover {
@@ -887,6 +888,39 @@ color:#23a6de;
 border-color:#23a6de;
 }
 
-.carousel .item {
+.Features {
+margin:0px;
+}
 
+.Features li {
+   list-style: none outside none;
+    margin-bottom: 20px;
+    padding-left: 30px;
+    line-height: 12px;
+    border-bottom: 1px dotted #EEEEEE;
+    padding-bottom: 10px;
+}
+
+.Features span {
+color: #00BAFF;
+    font-size: 17px;
+    margin-right: 10px;
+}
+.Features i {
+      color: #3ABEE7;
+    font-size: 25px;
+    margin-left: -30px;
+    }
+
+.multi li {
+    display: inline-block;
+    margin-bottom: 40px;
+    margin-left: 20px;
+    width: 27%;
+}
+
+.multi span {
+    color: #555555;
+    font-size: 14px;
+    margin-right: 10px;
 }

@@ -3,3 +3,4 @@ syntax: glob
 
 .files\coverage
 **.orig
+**/Thumbs.db
