@@ -1,0 +1,46 @@
+h2. CloudScalers' Products Features
+Within the CloudScalers portal, access is provided to several cloud products. As the products are fully private and secured, we call these buckets:
+Machine Buckets, Desktop Buckets, Application Buckets, Storage Buckets.
+
+h4. The CloudScalers value proposition:
+
+* Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
+* High performance thanks to intelligent SSD caching
+* Flexibility in choosing the ideal resource configuration: better match the IT package with your business
+* No lock in thanks to built in import and export functions
+* Extended management functions facilitating cloud management: snapshotting, cloning
+* Intuitive and easy to understand billing model
+* Straightforward API
+* Support for all Operating Systems including Windows
+* A far better TCO compared to major cloud providers
+
+h3. Concept of a complete cloud
+
+Looking at cloud computing, a lot of (dis)advantages are present in each of the currently available IaaS, PaaS, SaaS, Staas, DaaS,... solutions.
+In trying to be a complete cloud, providers keep adding features to their platform but being complete is hard and still, sticking to IaaS or PaaS or
+any of the others will never solve every problem. In the meantime their products get really complex while these added features don't even attract
+enough new customers to cover the costs of the development, let alone the TCO of them.
+People want SaaS, they need applications to be productive. Here is our entry point for end-users: the Desktop Bucket.
+It makes it easy for providing applications from a single cloud service.
+Not all applications are simple SaaS ones, sometimes you want an enterprise application like OpenERP for example to be configured especially
+for your organisation. The Application Buckets provide an application catalogue that with an easy to use wizard deploys these applications for
+you and connects them to the Desktop Buckets for users to start using them immediately. No hassle in deploying it yourself, integrating with user
+accounts, rights management and pointing users to a location where they can use it.
+What if you have custom applications or want to use an application that is not available in the application catalogue?
+This is where our Machine Buckets come in. Start a virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop
+Buckets.
+We do not even try to be complete in the available desktop applications or in the application catalogue. 5% of the applications are sufficient for
+95% of the users. The other ones can easily use the Machine Buckets to address their needs. It keeps the TCO low while still providing all
+possibilities to the customers. It also keeps the way one interacts with our platform simple, no overly bloated features that you get lost in. People
+choose the path of least resistance so we make it very easy and clear.
+Of course if you want to have data in your applications or if you want to store and share securely, Storage Buckets provide you with a secure,
+distributed storage solution that is unique in its kind.
+
+h4. The CloudScalers Portal delivers:
+
+* Secure cloud space per user
+* Unified billing credits
+* Automated billing rules
+* Constant metering
+* Easily create and manage
+* Cross solution interactions
