@@ -90,7 +90,10 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         
         """
         ipaddresses = ujson.loads(self.blobdb.get('freeipaddresses'))
-        ipaddress = ipaddresses.pop()
+        if ipaddresses:
+            ipaddress = ipaddresses.pop(0)
+        else:
+            ipaddress = None
         self.blobdb.set(key='freeipaddresses', value=ujson.dumps(ipaddresses))
         return ipaddress
     
