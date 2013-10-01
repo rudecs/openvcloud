@@ -46,34 +46,33 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
                  when="{'one': 'Core',
                      'other': 'Cores'}">
    </ng-pluralize>
-   - {[cpuList[cpu].price]} USD/month
+   - <span>{[cpuList[cpu].price]}</span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="7" step="1" ng-model="cpu"></div>
    <br>
 
-   {[memoryList[memory].memory]} Memory 
-   - {[memoryList[memory].price]} USD/month
+   <span>{[memoryList[memory].memory]}</span> Memory 
+   - <span>{[memoryList[memory].price]}</span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="memory"></div>
    <br>
 
-   {[storageList[storage].size]} SSD
-   - {[storageList[storage].price]} USD/month
+   <span>{[storageList[storage].size]}</span> SSD
+   - <span>{[storageList[storage].price]}</span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="storage"></div>
    <br>
 
-   {[locationsList[location].number]}
+   <span>{[locationsList[location].number]}</span>
    <ng-pluralize count="locationsList[location].number"
                  when="{'one': 'location',
                      'other': 'location'}">
    </ng-pluralize>
-   - {[locationsList[location].price]} USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="1" step="1" ng-model="location"></div>
    <br>
 
-   Total price: <input type="text" ng-model="totalPrice" readonly /> USD/month
+   Total price: <span>{[totalPrice]}</span> USD/month
 
 </div>
 
