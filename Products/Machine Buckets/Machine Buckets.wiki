@@ -78,25 +78,3 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
 </div>
 
 }}
-
-* 512MB Memory, 1 Core, Unlimited Transfer - 5 USD/month
-* 1GB Memory, 1 Core, Unlimited Transfer - 10 USD/month
-* 2GB Memory, 2 Cores, Unlimited Transfer - 20 USD/month
-* 4GB Memory, 2 Cores, Unlimited Transfer - 40 USD/month
-* 8GB Memory, 4 Cores, Unlimited Transfer - 80 USD/month
-* 16GB Memory, 8 Cores, Unlimited Transfer - 160 USD/month
-* 32GB Memory, 12 Cores, Unlimited Transfer - 320 USD/month
-* 48GB Memory, 16 Cores, Unlimited Transfer - 480 USD/month
-* 64GB Memory, 20 Cores, Unlimited Transfer - 640 USD/month
-* 96GB Memory, 24 Cores, Unlimited Transfer - 960 USD/month
-
-* 10GB SSD - 5 USD/month
-* 20GB SSD - 10 USD/month
-* 30GB SSD - 15 USD/month
-* 40GB SSD - 20 USD/month
-* 50GB SSD - 25 USD/month
-* 60GB SSD - 30 USD/month
-* 70GB SSD - 35 USD/month
-* 80GB SSD - 40 USD/month
-* 90GB SSD - 45 USD/month
-* 100GB SSD - 50 USD/month
