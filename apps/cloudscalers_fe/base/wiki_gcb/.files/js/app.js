@@ -21,7 +21,7 @@ cloudscalers
     }]);
 
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'cloudscalers.machineServices']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.machineServices']);
 
 if(cloudspaceconfig.apibaseurl == ''){
 	cloudscalersControllers.config(function($provide) {
