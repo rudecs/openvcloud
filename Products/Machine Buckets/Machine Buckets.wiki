@@ -58,7 +58,7 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
    <br>
    <input type=range min="0" max="9" step=1 ng-model="storage" />
    <br>
-   Total price: <input type="text" ng-model="totalPrice" readonly />
+   Total price: <input type="text" ng-model="totalPrice" readonly /> USD/month
 
 </div>
 
