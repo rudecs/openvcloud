@@ -27,6 +27,7 @@ def install_jumpscale_core():
 
     put(os.path.join(WORKSPACE, 'ComputeBox/test/cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/node.hrd'), '/opt/jumpscale/cfg/hrd/node.hrd')
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
 
     run('jpackage_install --name computenode')
     run('jpackage_install --name cloudbroker')
