@@ -42,11 +42,8 @@ defineUnitApiStub = function($httpBackend){
     $httpBackend.whenGET('testapi/machines/delete?machineId=2&api_key=yep123456789').respond(function() { return [500, 'error']; });
 
     // getConsoleUrl
-    $httpBackend.whenGET('testapi/machines/getConsoleUrl?machineId=13&api_key=yep123456789').respond('http://www.google.com');
+    $httpBackend.whenGET('testapi/machines/getConsoleUrl?machineId=13&api_key=yep123456789').respond('http://www.reddit.com/');
     $httpBackend.whenGET('testapi/machines/getConsoleUrl?machineId=3&api_key=yep123456789').respond('None');
-
-
-    
 
     // Snapshots
     var snapshots = [

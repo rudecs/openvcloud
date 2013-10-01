@@ -156,4 +156,9 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
+
+    // getConsoleUrl
+    $httpBackend.whenGET('/machines/getConsoleUrl?machineId=0&api_key=yep123456789').respond('http://www.reddit.com');
+    $httpBackend.whenGET('/machines/getConsoleUrl?machineId=1&api_key=yep123456789').respond('None');
+
 };

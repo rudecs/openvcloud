@@ -53,7 +53,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         
         return user;
     })
-    .factory('Machine', function ($http) {
+    .factory('Machine', function ($http, $sce) {
         return {
             action: function (machineid, action) {
                 var result = []
@@ -147,7 +147,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     if (data == 'None') {
                         getConsoleUrlResult.error = status;
                     } else {
-                        getConsoleUrlResult.url = data;
+                        getConsoleUrlResult.url = $sce.trustAsResourceUrl(data);
                     }
                 }).error(function (data, status, headers, config) {
                     getConsoleUrlResult.error = status;

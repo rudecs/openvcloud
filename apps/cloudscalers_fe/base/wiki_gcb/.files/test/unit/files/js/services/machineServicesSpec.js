@@ -42,11 +42,12 @@ describe('Cloudscalers machine services', function() {
 	});
 
 	describe('Machine Service', function(){
-		var $httpBackend, Machine;
+		var $httpBackend, $sce, Machine;
 
-		beforeEach(inject(function(_$httpBackend_, _Machine_) {
+		beforeEach(inject(function(_$httpBackend_, _$sce_, _Machine_) {
 			$httpBackend = _$httpBackend_;
 			Machine = _Machine_;
+            $sce = _$sce_;
 		}));
 
 		it('test machine list', function(){
@@ -161,7 +162,7 @@ describe('Cloudscalers machine services', function() {
             defineUnitApiStub($httpBackend);
             var consoleUrlResult = Machine.getConsoleUrl(13);
             $httpBackend.flush();
-            expect(consoleUrlResult.url).toBe('http://www.google.com');
+            expect($sce.getTrustedResourceUrl(consoleUrlResult.url)).toEqual('http://www.reddit.com/');
         });
 
         it("can handle error returning the console URL", function() {
@@ -216,9 +217,6 @@ describe('Cloudscalers machine services', function() {
                 expect(snapshots.snapshots).not.toContain(snapshotName);
             });
 		});
-
-			
-		
 	});
 
     describe('Sizes Service', function(){

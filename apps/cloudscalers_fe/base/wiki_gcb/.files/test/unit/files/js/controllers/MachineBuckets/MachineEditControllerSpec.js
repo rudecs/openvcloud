@@ -1,9 +1,15 @@
 describe("Machine bucket editing controller", function(){
-	var scope, ctrl, machine, $location, confirm;
+	var scope, ctrl, machine, $location, $sce, confirm;
 
 	beforeEach(module('cloudscalers'));
 	
-	beforeEach(inject(function($rootScope, $controller, _$location_) {
+	beforeEach(inject(function($rootScope, $controller, _$location_, _$sce_) {
+		scope = $rootScope.$new();
+		$sce = _$sce_;
+		$location = _$location_;
+
+		confirm = jasmine.createSpy('confirm');
+		
 		Machine = {
 			list : jasmine.createSpy('list'), 
 			create: jasmine.createSpy('create'), 
@@ -13,12 +19,10 @@ describe("Machine bucket editing controller", function(){
 			listSnapshots: jasmine.createSpy('listSnapshots'),
 			getConsoleUrl: jasmine.createSpy('getConsoleUrl')
 		};
-		scope = $rootScope.$new();
-		confirm = jasmine.createSpy('confirm');
 		Machine.get.andReturn({id: 13, name: 'Machine 13'});
 		Machine.listSnapshots.andReturn([{id: 10, name: 'Snapshot 1'}]);
-		Machine.getConsoleUrl.andReturn({url: 'http://www.yahoo.com'});
-		$location = _$location_;
+		Machine.getConsoleUrl.andReturn({url: $sce.trustAsResourceUrl('http://www.yahoo.com')});
+	 	
 	 	ctrl = $controller('MachineEditController', {
 	 		$scope : scope, 
 	 		$routeParams: {machineId: 13},
@@ -77,10 +81,8 @@ describe("Machine bucket editing controller", function(){
  	 	it("successfully", function() {
  	 	 	expect(Machine.getConsoleUrl).toHaveBeenCalledWith(13);
  	 	 	expect(scope.machineConsoleUrlResult.error).toBeUndefined();
- 	 	 	expect(scope.machineConsoleUrlResult.url).toBe('http://www.yahoo.com');
+ 	 	 	expect($sce.getTrustedResourceUrl(scope.machineConsoleUrlResult.url)).toBe('http://www.yahoo.com');
  	 	});
- 	});
-
- 	
+ 	}); 	
 });
 

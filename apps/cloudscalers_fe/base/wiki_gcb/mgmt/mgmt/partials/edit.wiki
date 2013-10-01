@@ -31,7 +31,7 @@ h2. Manage Machine
         </li>
     </ul>
     <div class="tab-content">
-        <div id="actions" class="tab-pane active">
+        <div id="actions" class="tab-pane">
             <div class="row">
                 <div class="span6">
                     <ul class="list">
@@ -172,7 +172,7 @@ h2. Manage Machine
             {{include:bucket_history}}
         </div>
 
-        <div id="console" class="tab-pane">
+        <div id="console" class="tab-pane active">
             <p class="note">
                 If you see a black screen just click on it and click any button to activate the console window.
             </p>
@@ -193,10 +193,13 @@ h2. Manage Machine
                 </li>
             </ul>
             <hr>
-            }}
-!console.png!
-
-{{html:
+            Error: {[!!machineConsoleUrlResult.error]}, URL: {[machineConsoleUrlResult.url]}
+            <div class="error" ng-show="!!{[machineConsoleUrlResult.error]}">
+                The machine is closed. Please start it to access it.
+            </div>
+            <iframe ng-hide="{[machineConsoleUrlResult.error]}" ng-src="{[machineConsoleUrlResult.url]}">
+            </iframe>
+            
         </div>
         <div id="logging" class="tab-pane">
             {{include:bucket_history}}

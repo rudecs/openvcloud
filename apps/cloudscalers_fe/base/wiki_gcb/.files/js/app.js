@@ -25,7 +25,8 @@ var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bo
 
 if(cloudspaceconfig.apibaseurl == ''){
 	cloudscalersControllers.config(function($provide) {
-       $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)});
+    $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)
+  });
 	cloudscalersControllers.run(defineApiStub);
 
 
