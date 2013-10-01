@@ -1,8 +1,5 @@
 h2. Machine Buckets Features
-
-Machine Buckets bring a powerful extension on top of popular IAAS stacks.
 h4. The Machine Buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
-
 * Enhanced 1 click deployment, auto scale, auto maintenance
 * Move a virtual machine between clouds
 * Console access from within your browser

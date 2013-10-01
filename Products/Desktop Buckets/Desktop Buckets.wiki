@@ -1,5 +1,4 @@
-h2. Desktop Buckets
-
+h2. Desktop Buckets Features
 h3. Description
 
 VDI (Virtual Disk Image) is the practice of hosting a desktop operating system within a virtual machine (VM) running on a hosted, centralized or remote server. Microsoft developed a technology called virtual desktop infrastructure in Windows Server 2008.
@@ -10,7 +9,8 @@ Desktop buckets bring an innovative new way to deliver end user IT. Create a col
 
 Desktop Buckets uses a single sign on portal that lists the users' applications and connects them transparently to the selected apps. Users can use any device with a browser that supports html5. That is the case for all modern browsers and most smart devices like smartphones and tablets.
 
-Desktop Buckets bring a significant change in:
+h4. Desktop Buckets bring a significant change in:
+
 * Desktop management: provisioning, updates, support is many more times easy and less costly
 * True device agnostic: it does not matter what device you use, even you can bring your own
 * Use of known native apps and not saas lookalike apps
@@ -18,48 +18,35 @@ Desktop Buckets bring a significant change in:
 * Collaboration with other workers
 * Support of legacy applications
 
+{{html: <hr> }}
+
 h3. Features
 
-* *One gateway for all*: Login to get access to your private cloud application portal, providing access to native office apps, server apps, web apps, private storage and advanced users can even create and manage virtual infrastructure.
-* *Cross Platform Apps Access*: Supports Microsoft Windows and Linux desktop and server applications and provides web-based documents preview and video streaming functionality.
-* *Instant Voice and Video Support*: Smart Global Office includes a voice and video collaboration service directly from the browser.
-* *Multi-browser support*: Compatible with the latest release of all major browsers.
-* *Client-less solution*: Smart Global Office does not require any local client to be installed and frees system administrators from maintenance and upgrades of software on end-user devices.
-* *OS Independent Interface*: Server and desktop applications are represented to the end-user in a uniform way.
-* *Printing support*: Smart Global Office allows printing from the cloud to your local network printer.
-* *REST API*: For integration into the existing enterprise IT environment for improved authentication, application and file server integration.
-* *File manager*: File manager with 2-pane file navigation that provides a unified view across different storage systems. Ability to upload/download files to/from your back-end storage and share files with other Smart Global Office users.
-* *Private Storage Drive*: Integrated application and storage experience that saves application files to cloud storage and opens applications from the file manager.
-* *Legacy Friendly*: 'Cloud enable' legacy desktop and server applications and deliver these from Smart Global Office. This lowers the threshold to adopt cloud and provides a solution when no native cloud alternative exists.
-* *Multi-device support*: Smart Global Office only requires a modern browser and can be deployed on a range of devices including Windows/Linux PCs, Macs, IOS and Android tablets.
+{{html:
+<ul class="Features">
+    <li><i class="icon-ok-sign"></i><span>One gateway for all:</span> Login to get access to your private cloud application portal, providing access to native office apps, server apps, web apps, private storage and advanced users can even create and manage virtual infrastructure.</li>
+    <li><i class="icon-ok-sign"></i><span>Cross Platform Apps Access:</span> Supports Microsoft Windows and Linux desktop and server applications and provides web-based documents preview and video streaming functionality.</li>
+    <li><i class="icon-ok-sign"></i><span>Instant Voice and Video Support:</span> Smart Global Office includes a voice and video collaboration service directly from the browser.</li>
+    <li><i class="icon-ok-sign"></i><span>Multi-browser support:</span> Compatible with the latest release of all major browsers.</li>
+    <li><i class="icon-ok-sign"></i><span>Client-less solution:</span> Smart Global Office does not require any local client to be installed and frees system administrators from maintenance and upgrades of software on end-user devices.</li>
+    <li><i class="icon-ok-sign"></i><span>OS Independent Interface:</span> Server and desktop applications are represented to the end-user in a uniform way.</li>
+    <li><i class="icon-ok-sign"></i><span>Printing support:</span> Smart Global Office allows printing from the cloud to your local network printer.</li>
+    <li><i class="icon-ok-sign"></i><span>REST API:</span> For integration into the existing enterprise IT environment for improved authentication, application and file server integration.</li>
+    <li><i class="icon-ok-sign"></i><span>File manager:</span> File manager with 2-pane file navigation that provides a unified view across different storage systems. Ability to upload/download files to/from your back-end storage and share files with other Smart Global Office users.</li>
+    <li><i class="icon-ok-sign"></i><span>Private Storage Drive:</span> Integrated application and storage experience that saves application files to cloud storage and opens applications from the file manager.</li>
+    <li><i class="icon-ok-sign"></i><span>Legacy Friendly:</span> 'Cloud enable' legacy desktop and server applications and deliver these from Smart Global Office. This lowers the threshold to adopt cloud and provides a solution when no native cloud alternative exists.</li>
+    <li><i class="icon-ok-sign"></i><span>Multi-device support:</span> Smart Global Office only requires a modern browser and can be deployed on a range of devices including Windows/Linux PCs, Macs, IOS and Android tablets.</li>
+</ul>
 
+}}
+
+{{html: <hr> }}
+h3. Screenshots
+{{gallery: picturedir:Desktopimgs | title:Screenshots | thumb_size:300x200}}
+
+{{html: <hr> }}
 h3. Pricing
 
 * 10 USD per month
 * Extra fee applies for client software licenses, ex MS Office
 
-h3. Screenshots
-
-Strong Authentication with Token:
-
-!SGO_StrongAuthentification.png|width=800!
-
-Intuitive overview of your applications:
-
-!SGO_DesktopApps.png|width=800!
-
-Each application opens in its own browser tab:
-
-!SGO_ApplicationTabs.png|width=800!
-
-Integrated Private Storage:
-
-!SGO_MyDrive.png|width=800!
-
-With sharing capabilities:
-
-!SGO_MyDriveShare.png|width=800!
-
-Manage apps in a marketplace:
-
-!SGO_Marketplace.png|width=800!
