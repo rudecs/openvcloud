@@ -6,10 +6,8 @@ cloudscalersControllers
         $scope.location = 0;
 
         $scope.cpuList = [
-            {cores: 1, price: 5},
             {cores: 1, price: 10},
             {cores: 2, price: 20},
-            {cores: 2, price: 40},
             {cores: 4, price: 80},
             {cores: 8, price: 160},
             {cores: 12, price: 320},
