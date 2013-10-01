@@ -1,0 +1,37 @@
+h2. Machine Buckets Features
+
+Machine Buckets bring a powerful extension on top of popular IAAS stacks.
+h4. The Machine Buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
+
+* Enhanced 1 click deployment, auto scale, auto maintenance
+* Move a virtual machine between clouds
+* Console access from within your browser
+* Simple user interface
+* Open, simple API
+
+{{html: <hr> }}
+
+h3. Features
+
+{{html:
+<ul class="Features multi">
+   <li><i class="icon-play-circle"></i><span>Start/Stop/Pause Machine</span></li>
+   <li><i class="icon-bolt"></i><span>Automated Snapshotting</span></li>
+   <li><i class="icon-camera"></i><span>Take manual snapshot</span></li>
+   <li><i class="icon-reply"></i><span>Self-rollback snapshots</span></li>
+   <li><i class="icon-copy"></i><span>Clone machine</span></li>
+   <li><i class="icon-download"></i><span>Export machine</span></li>
+   <li><i class="icon-upload"></i><span>Import custom image</span></li>
+   <li><i class="icon-wrench"></i><span>Full DNS management</span></li>
+   <li><i class="icon-th"></i><span>Multiple hypervisor support</span></li>
+   <li><i class="icon-sitemap"></i><span>Virtual networking</span></li>
+   <li><i class="icon-desktop"></i><span>Console access from browser</span></li>
+   <li><i class="icon-search"></i><span>Built-in server monitoring</span></li>
+   <li><i class="icon-fullscreen"></i><span>Scale machine package up/down</span></li>
+   <li><i class="icon-plus-sign"></i><span>Add storage</span></li>
+</ul>
+
+}}
+{{html: <hr> }}
+h3. Screenshots
+{{gallery: picturedir:machineimgs | title:Screenshots | thumb_size:300x200}}

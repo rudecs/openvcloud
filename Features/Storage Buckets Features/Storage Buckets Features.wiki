@@ -1,0 +1,21 @@
+h2. Storage Buckets
+
+Few truly distributed storage systems are available today. And the existing ones focus on 1 use case: small files versus big, data base records,
+volumes, ...
+Often, the distributed storage systems are slow, complex, don't have a unified namespace, are hard to use in a cloud context and have a TCO
+that remains quite high.
+h4. Storage Buckets bring a file system that fits all use cases and much more:
+
+* A distributed file system with unified namespace
+* Ultra ultra-scalable
+* Scalable for trillions of files
+* Ultra reliable & redundant
+* Improved Power & Disk Efficient (even when redundant configuration)
+* Dedupe, compression, erasure coding, ...
+* Performance good enough for 99% of use cases
+* +200 MB/Sec for large files
+* +20.000 IOPS for volume based access
+* Very good TCO
+* Hardware independent, its software doing the job
+
+The storage buckets are used with an intuitive REST API.
