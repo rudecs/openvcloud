@@ -38,6 +38,32 @@ h3. Pricing
 
 Customers will be able to buy a package with CPU and Memory and a storage package. Going forward, they can change the package.
 
+{{html:
+
+<div ng-app="cloudscalers" ng-controller="PricingController">
+   {[cpuMemList[cpuMem].mem]} Memory, 
+   {[cpuMemList[cpuMem].cores]}
+   <ng-pluralize count="cpuMemList[cpuMem].cores"
+                 when="{'one': 'Core',
+                     'other': 'Cores'}">
+   </ng-pluralize>, 
+   Unlimited Transfer - {[cpuMemList[cpuMem].price]} USD/month
+   <br>
+   <input type=range min="0" max="9" step=1 ng-model="cpuMem" />
+
+   <br>
+
+   {[storageList[storage].size]} SSD -
+   {[storageList[storage].price]} USD/month
+   <br>
+   <input type=range min="0" max="9" step=1 ng-model="storage" />
+   <br>
+   Total price: <input type="text" ng-model="totalPrice" readonly />
+
+</div>
+
+}}
+
 * 512MB Memory, 1 Core, Unlimited Transfer - 5 USD/month
 * 1GB Memory, 1 Core, Unlimited Transfer - 10 USD/month
 * 2GB Memory, 2 Cores, Unlimited Transfer - 20 USD/month
