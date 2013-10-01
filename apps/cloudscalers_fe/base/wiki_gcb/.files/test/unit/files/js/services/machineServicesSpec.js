@@ -157,6 +157,21 @@ describe('Cloudscalers machine services', function() {
 
 		});
 
+        it("retrieves the console URL", function() {
+            defineUnitApiStub($httpBackend);
+            var consoleUrlResult = Machine.getConsoleUrl(13);
+            $httpBackend.flush();
+            expect(consoleUrlResult.url).toBe('http://www.google.com');
+        });
+
+        it("can handle error returning the console URL", function() {
+            defineUnitApiStub($httpBackend);
+            var consoleUrlResult = Machine.getConsoleUrl(3);
+            $httpBackend.flush();
+            expect(consoleUrlResult.error).toBeDefined();
+            expect(consoleUrlResult.url).toBeUndefined();
+        });
+
 		describe("snapshots", function() {
 			it('can get list of snapshots for a certain machine', function() {
 				defineUnitApiStub($httpBackend);
