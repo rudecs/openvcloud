@@ -29,7 +29,7 @@ def install_jumpscale_core():
 
     put(os.path.join(WORKSPACE, 'ComputeBox/test/cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
 
-    run('jpackage_install --name compute_configure')
+    run('jpackage_install --name computenode')
     run('jpackage_install --name cloudbroker')
     run('jpackage_install --name cloudscalers_fe')
 
