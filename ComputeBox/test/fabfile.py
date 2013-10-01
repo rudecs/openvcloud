@@ -25,8 +25,6 @@ def install_jumpscale_core():
 
     reboot(wait=300)
 
-    run('jpackage_install --name compute_kvm_base')
-
     put(os.path.join(WORKSPACE, 'ComputeBox/test/cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
 
     run('jpackage_install --name computenode')
