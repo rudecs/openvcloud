@@ -45,6 +45,7 @@ cloudscalersControllers
         $scope.locationsList = [
             {number: 1, price: 5},
             {number: 2, price: 10},
+            {number: 3, price: 15},
         ];
 
         $scope.totalPrice = 0;
