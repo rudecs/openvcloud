@@ -7,4 +7,8 @@ cloudscalers.compute.backingdevice=/dev/sdb
 cloudscalers.compute.cachedevice=/dev/sdc
 cloudscalers.frontend.cloudbrokerurl=/restmachine/cloudapi
 cloudscalers.broker.ip=localhost
-grid.id = 1
+grid.id=1
+grid.useavahi=0
+system.superadmin.login=root
+system.superadmin.passwd=R00t3r
+
