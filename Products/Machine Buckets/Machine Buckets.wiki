@@ -1,30 +1,39 @@
-h2. Machine Buckets
-
-The Machine Buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
-
+h2. Machine Buckets Features
+h4. The Machine Buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
 * Enhanced 1 click deployment, auto scale, auto maintenance
 * Move a virtual machine between clouds
 * Console access from within your browser
 * Simple user interface
 * Open, simple API
 
+{{html: <hr> }}
+
 h3. Features
 
-* Start/Stop/Pause Machine
-* Automated Snapshotting
-* Take manual snapshot
-* Self-rollback snapshots 
-* Clone machine
-* Export machine
-* Import custom image
-* Full DNS management
-* Multiple hypervisor support
-* Virtual networking
-* Console access from browser
-* Built-in server monitoring
-* Scale machine package up/down
-* Add storage
+{{html:
+<ul class="Features multi">
+   <li><i class="icon-play-circle"></i><span>Start/Stop/Pause Machine</span></li>
+   <li><i class="icon-bolt"></i><span>Automated Snapshotting</span></li>
+   <li><i class="icon-camera"></i><span>Take manual snapshot</span></li>
+   <li><i class="icon-reply"></i><span>Self-rollback snapshots</span></li>
+   <li><i class="icon-copy"></i><span>Clone machine</span></li>
+   <li><i class="icon-download"></i><span>Export machine</span></li>
+   <li><i class="icon-upload"></i><span>Import custom image</span></li>
+   <li><i class="icon-wrench"></i><span>Full DNS management</span></li>
+   <li><i class="icon-th"></i><span>Multiple hypervisor support</span></li>
+   <li><i class="icon-sitemap"></i><span>Virtual networking</span></li>
+   <li><i class="icon-desktop"></i><span>Console access from browser</span></li>
+   <li><i class="icon-search"></i><span>Built-in server monitoring</span></li>
+   <li><i class="icon-fullscreen"></i><span>Scale machine package up/down</span></li>
+   <li><i class="icon-plus-sign"></i><span>Add storage</span></li>
+</ul>
 
+}}
+{{html: <hr> }}
+h3. Screenshots
+{{gallery: picturedir:machineimgs | title:Screenshots | thumb_size:300x200}}
+
+{{html: <hr> }}
 h3. Pricing
 
 Customers will be able to buy a package with CPU and Memory and a storage package. Going forward, they can change the package.
@@ -50,29 +59,3 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
 * 80GB SSD - 40 USD/month
 * 90GB SSD - 45 USD/month
 * 100GB SSD - 50 USD/month
-
-h3. Screenshots
-
-Intuitive Virtual Machine Management:
-
-!mymachines.png|width=900!
-
-Easy Machine Creation:
-
-!machine_create.png|width=900!
-
-Powerful Machine Actions:
-
-!machine_actions.png|width=800!
-
-Flexibility, use your own images:
-
-!customimages.png|width=800!
-
-Built-in DNS hosting:
-
-!dns.png|width=800!
-
-Intuitive billing interface:
-
-!billing.png|width=800!
