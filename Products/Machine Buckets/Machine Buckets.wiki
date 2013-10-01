@@ -70,7 +70,7 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
    </ng-pluralize>
    - {[locationsList[location].price]} USD/month
    <br>
-   <div ui-slider  min="0" max="2" step="1" ng-model="location"></div>
+   <div ui-slider  min="0" max="1" step="1" ng-model="location"></div>
    <br>
 
    Total price: <input type="text" ng-model="totalPrice" readonly /> USD/month
