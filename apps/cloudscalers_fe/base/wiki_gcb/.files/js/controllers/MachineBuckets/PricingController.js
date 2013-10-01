@@ -52,6 +52,8 @@ cloudscalersControllers
         $scope.totalPrice = 0;
 
         $scope.$watch('cpu + memory + storage + location', function() {
-            $scope.totalPrice = $scope.cpuList[$scope.cpu].price + $scope.memoryList[$scope.memory].price + $scope.storageList[$scope.storage].price + $scope.locationsList[$scope.location].price;
+            $scope.totalPrice = 
+                $scope.locationsList[$scope.location].price * (
+                    $scope.cpuList[$scope.cpu].price + $scope.memoryList[$scope.memory].price + $scope.storageList[$scope.storage].price);
         });
     }]);
