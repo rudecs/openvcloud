@@ -50,7 +50,10 @@ imagecb.UNCPath = 'ubuntu-base.img'
 imagecb.referenceId = str(imageid)
 imagecb.size = 10
 imagecb.type='ubuntu'
-j.apps.cloud.cloudbroker.model_image_set(imagecb)
+imagecbid = j.apps.cloud.cloudbroker.model_image_set(imagecb)
+
+rp.images = [imagecbid]
+j.apps.cloud.cloudbroker.model_resourceprovider_set(rp)
 
 
 #Create a libcloud_libvirt size

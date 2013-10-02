@@ -128,6 +128,7 @@
     prop:stackId int,,IAAS stack ID
     prop:cloudUnitType str,, (CU,VSU,SU,NU)
     prop:capacityAvailable int,, e.g. 10 CU available
+    prop:images list(int),,list of images ids supported by this resource
     prop:referenceId str,,Id of the resourceprovider on the stack
 
 [rootmodel:CloudSpace] @dbtype:osis

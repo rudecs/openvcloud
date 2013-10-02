@@ -3,12 +3,13 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
+import random
 
 
 cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
-ROUNDROBIN = -1
+
 
 class Dummy(object):
     def __init__(self, **kwargs):
@@ -85,21 +86,20 @@ class CloudBroker(object):
         return ids[0] if ids else None
 
 
-    def getBestProvider(self):
-        global ROUNDROBIN
-        ROUNDROBIN += 1
-        capacityinfo = self.getCapacityInfo()
+    def getBestProvider(self, imageId):
+        capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
             raise RuntimeError('No Providers available')
         #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
         l = len(capacityinfo)
-        provider = capacityinfo[ROUNDROBIN % l]
+        i = random.randint(0, l - 1)
+        provider = capacityinfo[i]
         return provider
 
 
-    def getCapacityInfo(self):
+    def getCapacityInfo(self, imageId):
         # group all units per type
-        resourceproviders = cloudbroker.model_resourceprovider_find(ujson.dumps({}))['result']
+        resourceproviders = cloudbroker.model_resourceprovider_find(ujson.dumps({"query":{"term": {"images": imageId}}}))
         resourcesdata = list()
         for resourceprovider in resourceproviders:
             resourceprovider = resourceprovider['_source']

@@ -145,7 +145,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.disks.append(diskid)
         machine.id = self.cb.model_vmachine_set(machine)
         try:
-            resourceprovider = self.cb.extensions.imp.getBestProvider()
+            resourceprovider = self.cb.extensions.imp.getBestProvider(imageId)
             provider = self.cb.extensions.imp.getProviderByStackId(resourceprovider['stackId'])
             brokersize = self.cb.model_size_get(machine.sizeId)
             firstdisk = self.cb.model_disk_get(machine.disks[0])
