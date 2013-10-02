@@ -47,6 +47,13 @@ h3. Screenshots
 {{html: <hr> }}
 h3. Pricing
 
-* 10 USD per month
+{{html:
+<div ng-app="cloudscalers" ng-controller="DesktopPricingController">
+    Number of users <input id="numOfUsers" name="numOfUsers" ng-model="numOfUsers" /><br>
+    Total price: <span class="total">{[totalPrice]}</span>
+</div>
+}}
+
+* 10 USD per user per month
 * Extra fee applies for client software licenses, ex MS Office
 

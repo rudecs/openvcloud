@@ -40,7 +40,7 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
 
 {{html:
 
-<div ng-app="cloudscalers" ng-controller="PricingController">
+<div ng-app="cloudscalers" ng-controller="MachinePricingController">
    <span>{[cpuList[cpu].cores]}</span>
    <ng-pluralize count="cpuList[cpu].cores"
                  when="{'one': 'Core',

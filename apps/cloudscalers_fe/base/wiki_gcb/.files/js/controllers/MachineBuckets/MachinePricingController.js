@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('PricingController', ['$scope', function($scope) {
+    .controller('MachinePricingController', ['$scope', function($scope) {
         $scope.cpu = 0;
         $scope.memory = 0;
         $scope.storage = 0;
