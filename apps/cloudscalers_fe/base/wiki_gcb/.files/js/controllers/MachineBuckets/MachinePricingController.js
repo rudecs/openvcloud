@@ -1,32 +1,20 @@
 cloudscalersControllers
     .controller('MachinePricingController', ['$scope', function($scope) {
-        $scope.cpu = 0;
-        $scope.memory = 0;
+        $scope.cpuMem = 0;
         $scope.storage = 0;
         $scope.location = 0;
 
-        $scope.cpuList = [
-            {cores: 1, price: 10},
-            {cores: 2, price: 20},
-            {cores: 4, price: 80},
-            {cores: 8, price: 160},
-            {cores: 12, price: 320},
-            {cores: 16, price: 480},
-            {cores: 20, price: 640},
-            {cores: 24, price: 960},
-        ];
-
-        $scope.memoryList = [
-            {memory: '512MB', price: 5},
-            {memory: '1GB', price: 10},
-            {memory: '2GB', price: 20},
-            {memory: '4GB', price: 40},
-            {memory: '8GB', price: 80},
-            {memory: '16GB', price: 160},
-            {memory: '32GB', price: 320},
-            {memory: '48GB', price: 480},
-            {memory: '64GB', price: 640},
-            {memory: '96GB', price: 960},
+        $scope.cpuMemList = [
+            {mem: '512MB', cores: 1, price: 5},
+            {mem: '1GB', cores: 1, price: 10},
+            {mem: '2GB', cores: 2, price: 20},
+            {mem: '4GB', cores: 2, price: 40},
+            {mem: '8GB', cores: 4, price: 80},
+            {mem: '16GB', cores: 8, price: 160},
+            {mem: '32GB', cores: 12, price: 320},
+            {mem: '48GB', cores: 16, price: 480},
+            {mem: '64GB', cores: 20, price: 640},
+            {mem: '96GB', cores: 24, price: 960},
         ];
 
         $scope.storageList = [
@@ -50,9 +38,9 @@ cloudscalersControllers
 
         $scope.totalPrice = 0;
 
-        $scope.$watch('cpu + memory + storage + location', function() {
+        $scope.$watch('cpuMem + storage + location', function() {
             $scope.totalPrice = 
                 $scope.locationsList[$scope.location].number * (
-                    $scope.cpuList[$scope.cpu].price + $scope.memoryList[$scope.memory].price + $scope.storageList[$scope.storage].price);
+                    $scope.cpuMemList[$scope.cpuMem].price + $scope.storageList[$scope.storage].price);
         });
     }]);

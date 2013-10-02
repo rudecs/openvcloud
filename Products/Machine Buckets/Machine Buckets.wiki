@@ -41,24 +41,19 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
 {{html:
 
 <div ng-app="cloudscalers" ng-controller="MachinePricingController">
-   <span>{[cpuList[cpu].cores]}</span>
-   <ng-pluralize count="cpuList[cpu].cores"
-                 when="{'one': 'Core',
-                     'other': 'Cores'}">
-   </ng-pluralize>
-   - <span>{[cpuList[cpu].price]}</span> USD/month
+   {[cpuMemList[cpuMem].mem]} Memory, 
+   {[cpuMemList[cpuMem].cores]}
+   <ng-pluralize count="cpuMemList[cpuMem].cores"
+                  when="{'one': 'Core',
+                      'other': 'Cores'}">
+   </ng-pluralize>, 
+   Unlimited Transfer - {[cpuMemList[cpuMem].price]} USD/month
    <br>
-   <div ui-slider="{range: 'min'}"  min="0" max="7" step="1" ng-model="cpu"></div>
+   <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="cpuMem"></div>
    <br>
-
-   <span>{[memoryList[memory].memory]}</span> Memory 
-   - <span>{[memoryList[memory].price]}</span> USD/month
-   <br>
-   <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="memory"></div>
-   <br>
-
-   <span>{[storageList[storage].size]}</span> SSD
-   - <span>{[storageList[storage].price]}</span> USD/month
+ 
+   {[storageList[storage].size]} SSD -
+   {[storageList[storage].price]} USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="storage"></div>
    <br>
