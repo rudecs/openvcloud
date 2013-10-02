@@ -18,15 +18,12 @@ def install_jumpscale_core():
 
     run('jpackage_update')
 
-    run('mkdir -p /home/ISO')
-    run('wget -P /home/ISO/ http://files.incubaid.com/iaas/ubuntu-13.04-server-amd64.iso')
-
     run('jpackage_install --name compute_os_base')
 
     reboot(wait=300)
 
-    put(os.path.join(WORKSPACE, 'ComputeBox/test/cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
-    put(os.path.join(WORKSPACE, 'ComputeBox/test/node.hrd'), '/opt/jumpscale/cfg/hrd/node.hrd')
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/configurations/cloudscale55/cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/configurations/cloudscale55/node.hrd'), '/opt/jumpscale/cfg/hrd/node.hrd')
 
     run('jpackage_install --name computenode')
     run('jpackage_install --name cloudbroker')
