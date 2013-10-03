@@ -31,7 +31,7 @@ h2. Manage Machine
         </li>
     </ul>
     <div class="tab-content">
-        <div id="actions" class="tab-pane">
+        <div id="actions" class="tab-pane active">
             <div class="row">
                 <div class="span6">
                     <ul class="list">
@@ -172,7 +172,7 @@ h2. Manage Machine
             {{include:bucket_history}}
         </div>
 
-        <div id="console" class="tab-pane active">
+        <div id="console" class="tab-pane">
             <p class="note">
                 If you see a black screen just click on it and click any button to activate the console window.
             </p>

@@ -54,6 +54,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         return user;
     })
     .factory('Machine', function ($http, $sce) {
+        $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
         return {
             action: function (machineid, action) {
                 var result = []
@@ -90,7 +91,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             list: function (cloudspaceid) {
                 var machines = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
+                url = cloudspaceconfig.apibaseurl + '/machines/list?format=jsonraw&cloudspaceId=' + cloudspaceid + '&type=';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (machine) {
