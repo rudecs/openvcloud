@@ -933,3 +933,51 @@ color: #00BAFF;
     .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default,  .ui-state-default:hover, .ui-state-default:focus {
         background: none repeat scroll 0 0 #3ABEE7;
     }
+
+.ng-scope {
+    color:#3ABEE7;
+    font-weight:bold;
+  
+}
+    .ng-scope span {
+    color:#555;
+    }
+    .ng-scope p {
+    background:#eee;
+     padding:20px;
+ 
+     color:#555;
+    }
+.ng-scope p span {
+    font-size:18px;
+        }
+.ui-widget-content {
+  border: 2px dotted #EEEEEE;
+}
+.total {
+border: 2px dotted #EEEEEE; 
+padding:5px 15px;
+background:#3ABEE7; 
+color:#fff !important;
+font-weight:bold;
+font-size:14px;
+}
+
+.sgin {
+padding: 9px 50px;
+position:relative;
+left:50%;
+margin-left:-95px;
+margin-top:30px;
+}
+.tab-content {
+    overflow: inherit;
+}
+
+.dbox{
+  padding:20px;  border: 3px dotted #CCCCCC; border-radius: 5px 5px 5px 5px;
+}
+
+.ng-scope h3 {
+ color:#666;
+}

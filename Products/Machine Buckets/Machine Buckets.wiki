@@ -66,8 +66,9 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="2" step="1" ng-model="location"></div>
    <br>
-
-   Total price: <span class="total">{[totalPrice]}</span> USD/month
+   <p>
+   <span>Total price:</span> <span class="total">{[totalPrice]}</span> USD/month
+   </p>
 
 </div>
 
