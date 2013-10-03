@@ -572,6 +572,7 @@ min-width:90px;
 #monitoring .span3 {
     background:#fff;
      border-radius: 4px;
+     margin-bottom:20px;
 }
     #monitoring .span3:hover {
  box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
@@ -939,16 +940,16 @@ color: #00BAFF;
     font-weight:bold;
   
 }
-    .ng-scope span {
+    .dbox span {
     color:#555;
     }
-    .ng-scope p {
+    .dbox  p {
     background:#eee;
      padding:20px;
  
      color:#555;
     }
-.ng-scope p span {
+.dbox  p span {
     font-size:18px;
         }
 .ui-widget-content {
@@ -980,4 +981,10 @@ margin-top:30px;
 
 .ng-scope h3 {
  color:#666;
+}
+
+.subnavbar-inner .btn {
+    float: right;
+    margin-left: 10px;
+    margin-top: 7px;
 }
