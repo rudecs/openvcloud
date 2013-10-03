@@ -1,6 +1,6 @@
 cloudscalersControllers
-    .controller('MachineCreationController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
-        $scope.newMachine = {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', 'Machine', 'Size', 'Image', function($scope, $timeout, $location, Machine, Size, Image) {
+        $scope.machine = {
             cloudspaceId: 1,
             name: '',
             description: '',
@@ -12,11 +12,16 @@ cloudscalersControllers
         $scope.images = Image.list();
 
         $scope.saveNewMachine = function() {
-            Machine.create($scope.newMachine.cloudspaceId, $scope.newMachine.name, $scope.newMachine.description, 
-                           $scope.newMachine.sizeId, $scope.newMachine.imageId)
+            Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
+                           $scope.machine.sizeId, $scope.machine.imageId);
+            $location.path('/list');
         };
 
         $scope.isValid = function() {
-            return $scope.newMachine.name && $scope.newMachine.sizeId && $scope.newMachine.imageId;
+            return $scope.machine.name !== '' && $scope.machine.sizeId !== '' && $scope.machine.imageId !== '';
         };
+
+        $timeout(function() {
+            $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
+        }, 0);
     }]);

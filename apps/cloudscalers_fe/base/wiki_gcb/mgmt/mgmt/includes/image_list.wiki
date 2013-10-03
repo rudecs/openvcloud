@@ -19,42 +19,42 @@
     <div class="tab-content">
         <div id="ubuntu" class="tab-pane active">
             <ul>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 13.04 x64'">Ubuntu 13.04 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 13.04 x32'">Ubuntu 13.04 x32</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 12.10 x64'">Ubuntu 12.10 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 12.10 x32'">Ubuntu 12.10 x32</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 12.04 x64'">Ubuntu 12.04 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 12.04 x32'">Ubuntu 12.04 x32</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 10.04 x64'">Ubuntu 10.04 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Ubuntu 10.04 x32'">Ubuntu 10.04 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 13.04 x64'">Ubuntu 13.04 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 13.04 x32'">Ubuntu 13.04 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 12.10 x64'">Ubuntu 12.10 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 12.10 x32'">Ubuntu 12.10 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 12.04 x64'">Ubuntu 12.04 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 12.04 x32'">Ubuntu 12.04 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 10.04 x64'">Ubuntu 10.04 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Ubuntu 10.04 x32'">Ubuntu 10.04 x32</button>
             </ul>
         </div>
         <div id="CentOS" class="tab-pane">
             <ul>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'CentOS 6.4 x64'">CentOS 6.4 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'CentOS 6.4 x32'">CentOS 6.4 x32</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'CentOS 5.8 x64'">CentOS 5.8 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'CentOS 5.8 x32'">CentOS 5.8 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'CentOS 6.4 x64'">CentOS 6.4 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'CentOS 6.4 x32'">CentOS 6.4 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'CentOS 5.8 x64'">CentOS 5.8 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'CentOS 5.8 x32'">CentOS 5.8 x32</button>
             </ul>
         </div>
         <div id="Debian" class="tab-pane">
             <ul>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Debian 7.0 x64'">Debian 7.0 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Debian 7.0 x32'">Debian 7.0 x32</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Debian 6.0 x64'">Debian 6.0 x64</button>
-                <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Debian 6.0 x32'">Debian 6.0 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Debian 7.0 x64'">Debian 7.0 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Debian 7.0 x32'">Debian 7.0 x32</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Debian 6.0 x64'">Debian 6.0 x64</button>
+                <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Debian 6.0 x32'">Debian 6.0 x32</button>
             </ul>
         </div>
         <div id="ArchLinux" class="tab-pane">
             <ul>
-              <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Arch Linux 2013.05 x64'">Arch Linux 2013.05 x64</button>
-              <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Arch Linux 2013.05 x32'">Arch Linux 2013.05 x32</button>
+              <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Arch Linux 2013.05 x64'">Arch Linux 2013.05 x64</button>
+              <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Arch Linux 2013.05 x32'">Arch Linux 2013.05 x32</button>
             </ul>
         </div>
         <div id="Fedora" class="tab-pane">
             <ul>
-              <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Fedora 17 x64'">Fedora 17 x64</button>
-              <button type="button" class="btn btn-selector" ng-model="newMachine.imageId" btn-radio="'Fedora 17 x32'">Fedora 17 x32</button>
+              <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Fedora 17 x64'">Fedora 17 x64</button>
+              <button type="button" class="btn btn-selector" ng-model="machine.imageId" btn-radio="'Fedora 17 x32'">Fedora 17 x32</button>
             </ul>
         </div>
     </div>

@@ -1,4 +1,4 @@
-<button ng-repeat="size in sizes" type="button" class="btn btn-selector" ng-model="newMachine.sizeId" btn-radio="size.id">
+<button ng-repeat="size in sizes" type="button" class="btn btn-selector" ng-model="machine.sizeId" btn-radio="size.id">
   {[ size.name ]}
 </button>
 

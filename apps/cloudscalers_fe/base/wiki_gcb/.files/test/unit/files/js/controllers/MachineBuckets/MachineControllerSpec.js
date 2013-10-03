@@ -19,14 +19,14 @@ describe("Machine bucket controller tests", function(){
 		}));
 
 	 	it("provides a list of machines on the service", function() {
-			expect(scope.buckets.length).toBe(2);
-			expect(scope.buckets[0].hostname).toBe("jenkins.cloudscalers.com");
-			expect(scope.buckets[1].hostname).toBe("cloudbroker.cloudscalers.com");
+			expect(scope.machines.length).toBe(2);
+			expect(scope.machines[0].hostname).toBe("jenkins.cloudscalers.com");
+			expect(scope.machines[1].hostname).toBe("cloudbroker.cloudscalers.com");
 		});
 
 		it('views the number of data locations of each buckets', function() {
 			expect(scope.numOfDataLocations).toBeDefined();
-			expect(scope.numOfDataLocations(scope.buckets[0])).toBeDefined();
+			expect(scope.numOfDataLocations(scope.machines[0])).toBeDefined();
 		});
 	});
 

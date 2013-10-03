@@ -19,7 +19,7 @@ describe("Machine bucket controller tests", function(){
 
 		 	ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine, Image: Image, Size: Size});
 		 	
-		 	scope.newMachine = {
+		 	scope.machine = {
 	            cloudspaceId: 10,
 	            name: 'Test machine 1',
 	            description: 'Test machine 1 description',

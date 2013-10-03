@@ -55,22 +55,18 @@ defineApiStub = function ($httpBackend) {
         "type": "Windows"
     }];
 
-    var sizes = [{
-        'id': 0,
-        'name': 'Small',
-        'CU': 1,
-        'disksize': 20
-    }, {
-        'id': 1,
-        'name': 'Medium',
-        'CU': 2,
-        'disksize': 40
-    }, {
-        'id': 2,
-        'name': 'Big',
-        'CU': 4,
-        'disksize': 100
-    }];
+    var sizes = [
+        {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, Unlimited Transfer - 5 USD/month'},
+        {id: 1, CU: 1, disksize: '1GB', 'name': '1GB Memory, 1 Core, Unlimited Transfer - 10 USD/month'},
+        {id: 2, CU: 2, disksize: '2GB', 'name': '2GB Memory, 2 Cores, Unlimited Transfer - 20 USD/month'},
+        {id: 3, CU: 2, disksize: '4GB', 'name': '4GB Memory, 2 Cores, Unlimited Transfer - 40 USD/month'},
+        {id: 4, CU: 4, disksize: '8GB', 'name': '8GB Memory, 4 Cores, Unlimited Transfer - 80 USD/month'},
+        {id: 5, CU: 8, disksize: '16GB', 'name': '16GB Memory, 8 Cores, Unlimited Transfer - 160 USD/month'},
+        {id: 6, CU: 12, disksize: '32GB', 'name': '32GB Memory, 12 Cores, Unlimited Transfer - 320 USD/month'},
+        {id: 7, CU: 16, disksize: '48GB', 'name': '48GB Memory, 16 Cores, Unlimited Transfer - 480 USD/month'},
+        {id: 8, CU: 20, disksize: '64GB', 'name': '64GB Memory, 20 Cores, Unlimited Transfer - 640 USD/month'},
+        {id: 9, CU: 24, disksize: '96GB', 'name': '96GB Memory, 24 Cores, Unlimited Transfer - 960 USD/month'},
+    ];
 
     var actionlist = {
         'stop': 'HALTED',
@@ -88,12 +84,12 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET('/machines/list?cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
+    $httpBackend.whenGET('/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
         return [200, _.values(machines)];
     });
     $httpBackend.whenGET('/images/list?api_key=yep123456789').respond(images);
     $httpBackend.whenGET('/sizes/list?api_key=yep123456789').respond(sizes);
-    $httpBackend.whenGET(/^\/machines\/create\?api_key\=yep1234567899/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = _.keys(machines).length;
         var machine = {

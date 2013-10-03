@@ -12,16 +12,16 @@
       <th>Number of Data Locations</th>
     </tr>
     <tbody>
-      <tr ng-repeat="bucket in buckets">
-        <td>{[bucket.status]}</td>
+      <tr ng-repeat="machine in machines">
+        <td>{[machine.status]}</td>
         <td>
-          <a ng-href="#/edit/{[bucket.id]}">{[bucket.name]}</a>
+          <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
         </td>
-        <td>{[bucket.ip]}</td>
-        <td>{[bucket.memory]} GB</td>
-        <td>{[bucket.cpu]} <ng-pluralize count="bucket.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
-        <td>{[bucket.storage]} GB</td>
-        <td>{[numOfDataLocations(bucket)]}</td>
+        <td>{[machine.ip]}</td>
+        <td>{[machine.memory]} GB</td>
+        <td>{[machine.cpu]} <ng-pluralize count="machine.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
+        <td>{[machine.storage]} GB</td>
+        <td>{[numOfDataLocations(machine)]}</td>
       </tr>
     </tbody>
   </table>

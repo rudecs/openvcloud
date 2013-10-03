@@ -8,7 +8,7 @@ var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/list', {templateUrl: 'partials/list'});
+        $routeProvider.when('/list', {templateUrl: 'partials/list', controller: 'MachineController'});
         $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'MachineCreationController'});
         $routeProvider.when('/edit/:machineId', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
         $routeProvider.otherwise({redirectTo: '/list'});

@@ -1,9 +1,9 @@
 
 cloudscalersControllers
     .controller('MachineController', ['$scope', 'Machine', function($scope, Machine) {
-        $scope.buckets = Machine.list(1);
+        $scope.machines = Machine.list(0);
         
-        $scope.numOfDataLocations = function(bucket) {
-            return _.filter(bucket.region, function(x) { return x; }).length;
+        $scope.numOfDataLocations = function(machine) {
+            return _.filter(machine.region, function(x) { return x; }).length;
         };
     }]);

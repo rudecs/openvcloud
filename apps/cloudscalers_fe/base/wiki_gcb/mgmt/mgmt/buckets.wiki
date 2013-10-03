@@ -4,7 +4,7 @@
 
 {{html:
 
-<div ng-app="cloudscalers" ng-controller="MachineController">
+<div ng-app="cloudscalers">
   <div ng-view></div>
 </div>
 }}
