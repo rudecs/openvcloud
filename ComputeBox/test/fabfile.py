@@ -26,6 +26,9 @@ def install_jumpscale_core():
     put(os.path.join(WORKSPACE, 'ComputeBox/test/configurations/cloudscale55/node.hrd'), '/opt/jumpscale/cfg/hrd/node.hrd')
     put(os.path.join(WORKSPACE, 'ComputeBox/test/configurations/cloudscale55/elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
 
+    #install core first since computenode configure is not run in seperate context
+    run('jpackage_install --name grid')
+
     run('jpackage_install --name computenode')
     run('jpackage_install --name cloudbroker')
 
