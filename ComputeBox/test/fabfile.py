@@ -28,6 +28,8 @@ def install_jumpscale_core():
 
     run('jpackage_install --name computenode')
     run('jpackage_install --name cloudbroker')
+
+    put(os.path.join(WORKSPACE, 'ComputeBox/test/configurations/cloudscale55/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
     run('jpackage_install --name cloudscalers_fe')
 
     run('apt-get install screen byobu -y')
