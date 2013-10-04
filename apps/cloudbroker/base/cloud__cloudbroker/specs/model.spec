@@ -18,7 +18,7 @@
     prop:cpus int,1,number of cpu assigned to the vm
     prop:boot bool,True,indicates if the virtual machine must automatically start upon boot of host machine
     prop:hypervisorType str,VMWARE,hypervisor running this vmachine (VMWARE;HYPERV;KVM)
-    prop:resourceProviderId int,,ID of the resourceprovider
+    prop:stackId int,,ID of the stack
     prop:acl list(ACE),,access control list
     prop:cloudspaceId int,,id of space which holds this vmachine
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
@@ -70,7 +70,9 @@
     prop:apiUrl str,,URL to communicate to the stack
     prop:type str,,Type of the stack, (OPENSTACK|CLOUDFRAMES|XEN SOURCE)
     prop:appId str,,application id if applicable
-    prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our model updated
+    prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
+    prop:images list(int),,list of images ids supported by this resource model updated
+    prop:referenceId str,,Optional reference id.
  
 
 [rootmodel:Disk] @dbtype:osis
@@ -86,7 +88,7 @@
     prop:realityDeviceNumber int,, Number a device gets after connect
     prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
     prop:type str,,(RAW,ISCSI)
-    prop:resourceProviderId int,,ID of the resourceprovider
+    prop:stackId int,,ID of the stack
     prop:acl dict(ACE),,access control list    
     prop:role str,,role of disk (BOOT; DATA; TEMP)
     prop:order int,,order of the disk (as will be shown in OS)
@@ -123,14 +125,6 @@
     prop:ipAddress str,,IP address of the vnic
     prop:params str,,pylabs tags to define optional params
 
-[rootmodel:ResourceProvider] @dbtype:osis
-    prop:id int,,
-    prop:stackId int,,IAAS stack ID
-    prop:cloudUnitType str,, (CU,VSU,SU,NU)
-    prop:capacityAvailable int,, e.g. 10 CU available
-    prop:images list(int),,list of images ids supported by this resource
-    prop:referenceId str,,Id of the resourceprovider on the stack
-
 [rootmodel:CloudSpace] @dbtype:osis
     """
     """
@@ -141,22 +135,7 @@
     prop:accountId int,, Id of account this cloudspace belongs to
     prop:resourceProviderStacks list(int),,list of stacks which provide resources; values are the ids of the stacks
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
-    prop:resourcesUsed dict(ResourceUtilization),,key is type of resource (CU;SU;VSU)
 
-[model:ResourceUtilization]
-    """
-    """
-    prop:diskID int,0,
-    prop:machineID int,0,
-    prop:type str,, (CU,SU,VSU)
-    prop:history dict(ResourceUtilizationHistory),,key is epochhour
-
-[model:ResourceUtilizationHistory]
-    """
-    """
-    prop:resourceProviderId int,,id of provider of this capacity
-    prop:epochHour int,,is unique int which represents an hour in history
-    prop:amount int,,capacity used e.g. 10 CU at that specific hour
 
 [rootmodel:Size] @dbtype:osis
     """

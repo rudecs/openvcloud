@@ -56,10 +56,10 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = self.backendconnection.listImages()
+        images = self.backendconnection.listImages(self._uri)
         return [self._to_image(image) for image in images]
 
-    def _to_image(self, image):
+    def _to_image(self, image): 
         return NodeImage(
             id=image['id'],
             name=image['name'],
