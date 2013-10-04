@@ -219,6 +219,9 @@ System:/System
 			
 			</ul> -->
 
+
+			<a class="btn"><i class="icon-lock"></i> Login</a> <a class="btn btn-warning">Sign Up</a>
+
 		</div> <!-- /container -->
 	
 	</div> <!-- /subnavbar-inner -->
