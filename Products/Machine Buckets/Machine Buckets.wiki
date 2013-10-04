@@ -1,10 +1,8 @@
-h2. Machine Buckets Features
-h4. The Machine Buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
-* Enhanced 1 click deployment, auto scale, auto maintenance
-* Move a virtual machine between clouds
-* Console access from within your browser
-* Simple user interface
-* Open, simple API
+h2. Machine Buckets
+
+Machine Buckets are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
+
+Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage. You can choose the datacenter location of your Machine Bucket and optionally replicate it to one or more datacenters for failover purposes.
 
 {{html: <hr> }}
 
@@ -19,8 +17,6 @@ h3. Features
    <li><i class="icon-copy"></i><span>Clone machine</span></li>
    <li><i class="icon-download"></i><span>Export machine</span></li>
    <li><i class="icon-upload"></i><span>Import custom image</span></li>
-   <li><i class="icon-wrench"></i><span>Full DNS management</span></li>
-   <li><i class="icon-th"></i><span>Multiple hypervisor support</span></li>
    <li><i class="icon-sitemap"></i><span>Virtual networking</span></li>
    <li><i class="icon-desktop"></i><span>Console access from browser</span></li>
    <li><i class="icon-search"></i><span>Built-in server monitoring</span></li>
@@ -34,34 +30,42 @@ h3. Screenshots
 {{gallery: picturedir:machineimgs | title:Screenshots | thumb_size:300x200}}
 
 {{html: <hr> }}
-h3. Pricing
-
-Customers will be able to buy a package with CPU and Memory and a storage package. Going forward, they can change the package.
+h3. Machine Buckets Pricing
 
 {{html:
+<div ng-app="cloudscalers">
+<div  ng-controller="MachinePricingController"     class="dbox">
+<span>Use the sliders to configure the requirements for your Virtual Machine</span>. <br><br>
 
-<div ng-app="cloudscalers" ng-controller="MachinePricingController">
-   {[cpuMemList[cpuMem].mem]} Memory, 
-   {[cpuMemList[cpuMem].cores]}
+   <span> {[cpuMemList[cpuMem].mem]} </span> Memory, 
+   <span> {[cpuMemList[cpuMem].cores]} </span>
    <ng-pluralize count="cpuMemList[cpuMem].cores"
                   when="{'one': 'Core',
                       'other': 'Cores'}">
    </ng-pluralize>, 
-   Unlimited Transfer - {[cpuMemList[cpuMem].price]} USD/month
+   <span> {[cpuMemList[cpuMem].primary]} </span> GB at SSD speed, 
+   Unlimited Transfer - <span> {[cpuMemList[cpuMem].price]} </span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="cpuMem"></div>
    <br>
  
-   {[storageList[storage].size]} SSD -
-   {[storageList[storage].price]} USD/month
+   <span> {[storageList[storage].size]} </span> SSD -
+   <span> {[storageList[storage].price]} </span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="storage"></div>
    <br>
 
+   <span> {[archiveList[archive].size]} </span> Archive/Backup -
+   <span> {[archiveList[archive].price]} </span> USD/month
+   <br>
+   <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="archive"></div>
+   <br>
+
+
    <span>{[locationsList[location].number]}</span>
    <ng-pluralize count="locationsList[location].number"
-                 when="{'one': 'location',
-                     'other': 'locations'}">
+                 when="{'one': 'replication location',
+                     'other': 'replication locations'}">
    </ng-pluralize>
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="2" step="1" ng-model="location"></div>
@@ -69,7 +73,6 @@ Customers will be able to buy a package with CPU and Memory and a storage packag
    <p>
    <span>Total price:</span> <span class="total">{[totalPrice]}</span> USD/month
    </p>
-
 </div>
-
+</div>
 }}

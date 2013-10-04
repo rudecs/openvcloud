@@ -56,6 +56,13 @@ System:/System
 					</a>	    				
 				</li> 
 
+				<li>
+					<a href="../$$space/UnifiedCloud">
+						<i class="icon-building"></i>
+						<span>CloudScalers</span>
+					</a>	    				
+				</li> 
+
 				<li class="dropdown-submenu">
 					<a href="../$$space/Products">
 						<i class="icon-cloud"></i>
@@ -220,7 +227,7 @@ System:/System
 			</ul> -->
 
 
-			<a class="btn"><i class="icon-lock"></i> Login</a> <a class="btn btn-warning">Sign Up</a>
+			<a class="btn"><i class="icon-lock"></i> Login</a> <a class="btn btn-primary">Sign Up</a>
 
 		</div> <!-- /container -->
 	

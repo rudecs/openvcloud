@@ -26,10 +26,12 @@ A simple and straightforward API
 {{div2: class= marker span12}}
 
 @col 6
-h3. Why CloudScalers 
-CloudScalers introduces the next generation in IT automation: Cloud Buckets deploy and manage your cloud more easily, saving in time and costs. Cloud Buckets introduce a unified cloud brokerage platform offering the user access to private resources in the form of virtual machines, cloud desktops or applications. CloudScalers learned based upon long experience in IT automation that a unified solution with a lot of flexibility provides a better and structured way of dealing with IT.
+h3. Revolutionary Cloud Computing!
+CloudScalers has not build yet another competitor for cloud infrastructure. CloudScalers offers a single unified portal to access different private instances: Cloud Buckets. CloudScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
 
-{{html: <a href="../$$space/Features">Read more  <i class="icon-circle-arrow-right"></i></a> }}
+CloudScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, CloudScalers delivers equal or better performance and relaibility compared to traditional clouds!
+
+{{html: <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a> }}
 @colend
 
 @col 6
@@ -44,8 +46,8 @@ CloudScalers introduces the next generation in IT automation: Cloud Buckets depl
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-{{html: <h3> <i class="icon-tasks"></i> Storage Buckets </h3>}}
-Few truly distributed storage systems are available today. And the existing ones focus on 1 use case: small files versus big, data base records, volumes, ... . Storage Buckets bring a file system that fits all use cases and much more.
+{{html: <h3> <i class="icon-tasks"></i> Machine Buckets </h3>}}
+Come and discover CloudScalers ultra fast virtual machines, running at enterprise level SSD speeds, delivering even more IO performance than other SSD providers. Virtual Machines are delivered with a toolset of powerful functions: start, stop, clone, snapshot, rollback, export and monitor machines.
 {{html: </div> </div> }}
 @colend
 
@@ -53,15 +55,15 @@ Few truly distributed storage systems are available today. And the existing ones
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
 {{html: <h3> <i class="icon-desktop"></i> Desktop Buckets  </h3>}}
-Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage his applications and data across all his devices!
+Create cloud desktops for your users, delivering them access to a web portal streaming any windows, web or legacy application to any device: laptop, tablet or smartphone. Applications are integrated with a private cloud storage drive including easy to use sharing features.
 {{html: </div> </div> }}
 @colend
 
 @col 4
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
-{{html: <h3> <i class="icon-cogs"></i> Machine Buckets </h3>}}
-The machine buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines.
+{{html: <h3> <i class="icon-cogs"></i> Storage Buckets </h3>}}
+Store your backup and archive files reliable with our S3 API at ultra competitive pricing. The Storage Buckets environment is protected with erasure coding completed with data maintance function to ensure data integrity!
 {{html: </div> </div> }}
 @colend
 

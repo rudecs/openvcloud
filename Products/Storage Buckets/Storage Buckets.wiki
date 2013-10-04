@@ -1,11 +1,9 @@
 h2. Storage Buckets
 h3. Description
 
-Few truly distributed storage systems are available today. And the existing ones focus on 1 use case: small files versus big, data base records, volumes, ...
+Few truly distributed storage systems are available today. Often, the distributed storage systems are slow, complex, don't have a unified namespace, are hard to use in a cloud context and have a TCO that remains quite high.
 
-Often, the distributed storage systems are slow, complex, don't have a unified namespace, are hard to use in a cloud context and have a TCO that remains quite high.
-
-The storage buckets are used with an intuitive REST API.
+CloudScalers presents Storage Buckets, providing you you with a secure, distributed storage solution that is unique in its kind. The storage buckets are used with an S3 API.
 
 {{html: <hr> }}
 
@@ -17,16 +15,27 @@ h4. Storage Buckets bring a file system that fits all use cases and much more:
 <ul class="Features">
  <li><i class="icon-ok-sign"></i>A distributed file system with unified namespace</li>
  <li><i class="icon-ok-sign"></i>Ultra ultra-scalable</li>
- <li><i class="icon-ok-sign"></i>Scalable for trillions of files</li>
  <li><i class="icon-ok-sign"></i>Ultra reliable & redundant</li>
- <li><i class="icon-ok-sign"></i>Improved Power & Disk Efficient (even when redundant configuration)</li>
  <li><i class="icon-ok-sign"></i>Dedupe, compression, erasure coding, ...</li>
  <li><i class="icon-ok-sign"></i>Performance good enough for 99% of use cases</li>
  <li><i class="icon-ok-sign"></i>+200 MB/Sec for large files</li>
- <li><i class="icon-ok-sign"></i>+20.000 IOPS for volume based access</li>
  <li><i class="icon-ok-sign"></i>Very good TCO</li>
- <li><i class="icon-ok-sign"></i>Hardware independent, its software doing the job</li>
-
     
 </ul>
+}}
+
+h3. Pricing
+
+{{html:
+<div ng-app="cloudscalers">
+<div ng-controller="DesktopPricingController" >
+<div class="dbox">
+<span>Be amazed by our protected storage pricing!</span>  <br><br>
+    Number of GB <input id="numOfTB" name="numOfTB" ng-model="numOfTB" /><br>
+	<br><p>  
+    <span>Total price:</span> <span class="total">{[totalPriceOfStorage]}</span> USD/month
+	</p>
+</div>
+</div>
+</div>
 }}

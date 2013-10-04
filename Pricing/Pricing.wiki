@@ -3,11 +3,10 @@ h2. Pricing
 Discover our very attractive pricing and freedom to finetune a package to your needs!
 
 {{html:
-<br>
 <div ng-app="cloudscalers">
 <h4> Machine Buckets </h4>
 <div  ng-controller="MachinePricingController"     class="dbox">
-<span>Use the sliders to configure the requirements for your Virtual Machine</span>  <br><br>
+<span>Use the sliders to configure the requirements for your Virtual Machine</span>. <br><br>
 
    <span> {[cpuMemList[cpuMem].mem]} </span> Memory, 
    <span> {[cpuMemList[cpuMem].cores]} </span>
@@ -58,7 +57,7 @@ Discover our very attractive pricing and freedom to finetune a package to your n
 <h4> Storage Buckets </h4>
 <div class="dbox">
 <span>Be amazed by our protected storage pricing!</span>  <br><br>
-    Number of TB <input id="numOfTB" name="numOfTB" ng-model="numOfTB" /><br>
+    Number of GB <input id="numOfTB" name="numOfTB" ng-model="numOfTB" /><br>
 	<br><p>  
     <span>Total price:</span> <span class="total">{[totalPriceOfStorage]}</span> USD/month
 	</p>
