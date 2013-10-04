@@ -1,6 +1,6 @@
 h2. Create Machine Bucket
 {{html:
-<hr>
+    <hr>
 <div class="form-horizontal">
     <div class="control-group">
         <label class="control-label" >Name:</label>
@@ -14,30 +14,41 @@ h2. Create Machine Bucket
             <textarea ng-model="machine.description" type="text" class="input-large" placeholder="Description" />
         </div>
     </div>
-	<hr>
     <div class="control-group">
-        <label class="control-label">Plan *:</label>
+        <label class="control-label">Choose Package *:</label>
         <div class="controls " >
             {{include:plan_list}}
         </div>
     </div>
+    <div class="control-group">
+        <label class="control-label" >Choose Image</label>
+        <div class="controls ">{{include:image_list}}</div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" >Choose Hosting Location:</label>
+        <div class="controls ">{{include:region_list}}</div>
+    </div>
+}}
+h2. Options
+{{html:
     <hr>
     <div class="control-group">
-        <label class="control-label" >Storage:</label>
+        <label class="control-label" >Additional Primary Storage:</label>
         <div class="controls " >
             {{include:storage_list}}
         </div>
     </div>
-    <hr>
     <div class="control-group">
-        <label class="control-label" style="display: none">Region</label>
+        <label class="control-label" >Archive/Backup Storage:</label>
+        <div class="controls " >
+            {{include:archive_list}}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" >Choose Replication Location:</label>
         <div class="controls ">{{include:region_list}}</div>
     </div>
-	<hr>
-    <div class="control-group">
-        <label class="control-label" >Image</label>
-        <div class="controls ">{{include:image_list}}</div>
-    </div>
+    <hr>
 
     <div class="form-actions">
         <button class="btn btn-info btn-large " ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>

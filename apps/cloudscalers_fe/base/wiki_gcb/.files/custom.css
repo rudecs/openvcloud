@@ -7,7 +7,7 @@ hr {
     border-top: medium none;
 }
 
-h2 { color:#00baff; }
+h2 { color:#269CDF; }
 
 
 #gallery a  {
@@ -64,7 +64,7 @@ border-radius: 5px;
 }
 
     .subnavbar .container > ul > li > a:hover {
-        color: #00baff;
+        color: #269CDF;
 
     }
 
@@ -373,7 +373,7 @@ display:inline-block; margin-right:20px;
 
 td.mark {
     background: none repeat scroll 0 0 #FFFFFF !important;
-    color: #00BAFF;
+    color: #269CDF;
     font-weight: bold;
     text-align: center;
 }
@@ -385,7 +385,7 @@ display:none;
 }
 
 .shortcuts li.selected  {
-    background:#00BAFF;
+    background:#269CDF;
 }
 
 .popup-background {
@@ -501,7 +501,7 @@ span.login-checkbox > input[type="checkbox"] + label {
       background: #ccc !important;
     } 
 .form-horizontal .form-actions {
-    padding-left: 180px;
+    padding-left: 240px;
     background:#eee;
 }
 
@@ -613,7 +613,7 @@ padding-top: 12px;
 
     }
 .sidebar-nav li a {
-     color: #00B0F0;
+     color: #269CDF;
     }
     .sidebar-nav li:hover a {
     text-decoration:none;
@@ -667,7 +667,7 @@ padding-top: 12px;
     .subnavbar .container > ul > li > a:hover {
 
     padding: 12px 15px 6px;
-    border-bottom: 2px solid #00BAFF;
+    border-bottom: 2px solid #269CDF;
     }
 .subnavbar .container > ul > li > a > i {
     display: inline;
@@ -691,7 +691,7 @@ padding-top: 12px;
 
 .subnavbar .container > ul > li.active > a {
     background: none repeat scroll 0 0 #FFFFFF;
-    color: #00BAFF !important;
+    color: #269CDF !important;
 }
     .subnavbar .container > ul > li.active > a {
     border:none !important;
@@ -867,7 +867,7 @@ padding:15px;
     }
         .marker a:hover {
         text-decoration:none;
-        color:#00BAFF;
+        color:#269CDF;
         cursor:pointer;
         }
 .carousel-inner {
@@ -903,12 +903,12 @@ margin:0px;
 }
 
 .Features span {
-color: #00BAFF;
+color: #269CDF;
     font-size: 17px;
     margin-right: 10px;
 }
 .Features i {
-      color: #3ABEE7;
+      color: #269CDF;
     font-size: 25px;
     margin-left: -30px;
     }
@@ -932,11 +932,11 @@ color: #00BAFF;
 }
 
     .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default,  .ui-state-default:hover, .ui-state-default:focus {
-        background: none repeat scroll 0 0 #3ABEE7;
+        background: none repeat scroll 0 0 #269CDF;
     }
 
 .ng-scope {
-    color:#3ABEE7;
+    color:#269CDF;
     font-weight:bold;
   
 }
@@ -958,7 +958,7 @@ color: #00BAFF;
 .total {
 border: 2px dotted #EEEEEE; 
 padding:5px 15px;
-background:#3ABEE7; 
+background:#269CDF; 
 color:#fff !important;
 font-weight:bold;
 font-size:14px;

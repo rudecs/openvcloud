@@ -1,14 +1,14 @@
 {{carousel: interval = 15000
-
- Welcome | /$$space/.files/img/1.png
+------
+Welcome | /$$space/.files/img/1.png
 Are you ready for the next step in IT infrastructure?  <br> 
 CloudScalers introduces Cloud Buckets <br> 
 Delivering securely virtual machines, cloud desktops and cloud storage
 ------
 Machine Buckets  | /$$space/.files/img/2.png
-Create and manage buckets from a unified cloud brokerage platform  <br> 
-Simplicity and flexibility at sharp prices  <br> 
-With all the best of cloud and a lot more!
+Create and manage Cloud Buckets from a unified platform  <br> 
+Offering more simplicity and flexibility than other clouds <br> 
+At ultra competitive prices!
 ------
 Desktop Buckets | /$$space/.files/img/3.png
 Intelligent SSD caching bringing better performance  <br> 

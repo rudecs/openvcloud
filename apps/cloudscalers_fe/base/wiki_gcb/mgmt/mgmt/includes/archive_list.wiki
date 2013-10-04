@@ -1,0 +1,28 @@
+
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="10">
+    10GB<br>0.76 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="20">
+    20GB<br>1.52 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="30">
+    30GB SSD<br>2.28 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="40">
+    40GB<br>3.04 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="50">
+    50GB<br>3.8 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="100">
+    100GB<br>7.6 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="250">
+    250GB<br>19 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="500">
+    500GB<br>38 USD/month
+  </button>
+  <button type="button" class="btn btn-selector" ng-model="machine.additionalArchive" btn-radio="1000">
+    1TB<br>76 USD/month
+  </button>

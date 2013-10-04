@@ -1,35 +1,43 @@
 h2. Pricing
 
-
+Discover our very attractive pricing and freedom to finetune a package to your needs!
 
 {{html:
-
+<br>
 <div ng-app="cloudscalers">
-<h3> Machine Buckets </h3>
+<h4> Machine Buckets </h4>
 <div  ng-controller="MachinePricingController"     class="dbox">
-<span>Customers will be able to buy a package with CPU and Memory and a storage package. Going forward, they can change the package.</span>  <br><br>
+<span>Use the sliders to configure the requirements for your Virtual Machine</span>  <br><br>
 
-<span> {[cpuMemList[cpuMem].mem]} </span> Memory, 
+   <span> {[cpuMemList[cpuMem].mem]} </span> Memory, 
    <span> {[cpuMemList[cpuMem].cores]} </span>
    <ng-pluralize count="cpuMemList[cpuMem].cores"
                   when="{'one': 'Core',
                       'other': 'Cores'}">
    </ng-pluralize>, 
+   <span> {[cpuMemList[cpuMem].primary]} </span> GB at SSD speed, 
    Unlimited Transfer - <span> {[cpuMemList[cpuMem].price]} </span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="cpuMem"></div>
    <br>
  
    <span> {[storageList[storage].size]} </span> SSD -
-  <span> {[storageList[storage].price]} </span> USD/month
+   <span> {[storageList[storage].price]} </span> USD/month
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="storage"></div>
    <br>
 
+   <span> {[archiveList[archive].size]} </span> Archive/Backup -
+   <span> {[archiveList[archive].price]} </span> USD/month
+   <br>
+   <div ui-slider="{range: 'min'}"  min="0" max="9" step="1" ng-model="archive"></div>
+   <br>
+
+
    <span>{[locationsList[location].number]}</span>
    <ng-pluralize count="locationsList[location].number"
-                 when="{'one': 'location',
-                     'other': 'locations'}">
+                 when="{'one': 'replication location',
+                     'other': 'replication locations'}">
    </ng-pluralize>
    <br>
    <div ui-slider="{range: 'min'}"  min="0" max="2" step="1" ng-model="location"></div>
@@ -39,15 +47,17 @@ h2. Pricing
    </p>
 </div>
 <div ng-controller="DesktopPricingController" >
-<h3> Desktop Buckets </h3>
+<h4> Desktop Buckets </h4>
 <div  class="dbox">
+<span>Creating a desktop is super easy, with a per user pricing!</span>  <br><br>
     Number of users <input id="numOfUsers" name="numOfUsers" ng-model="numOfUsers" /><br>
    <br><p>
     <span>Total price:</span> <span class="total">{[totalPrice]}</span> USD/month
 	</p>
 </div>
-<h3> Storage Buckets </h3>
+<h4> Storage Buckets </h4>
 <div class="dbox">
+<span>Be amazed by our protected storage pricing!</span>  <br><br>
     Number of TB <input id="numOfTB" name="numOfTB" ng-model="numOfTB" /><br>
 	<br><p>  
     <span>Total price:</span> <span class="total">{[totalPriceOfStorage]}</span> USD/month
