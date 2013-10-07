@@ -73,10 +73,11 @@ class CloudBrokerConnection():
      def registerMachine(self, id, macaddress):
          return self.libvirt_actor.registerNode(id, macaddress)
 
-
      def unregisterMachine(self, id):
          return self.libvirt_actor.unregisterNode(id)
-     
+
+     def registerVNC(self, url):
+         return self.libvirt_actor.registerVNC(url)
 
 
 
