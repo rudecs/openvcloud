@@ -49,9 +49,24 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method getFreeMacAddress")
     
 
-    def listImages(self, **kwargs):
+    def linkImage(self, imageid, resourceprovider, **kwargs):
         """
-        List the available images
+        Link a image to a resource provider
+        param:imageid unique id of the image
+        param:resourceprovider unique id of the resourceprovider
+        result bool 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method linkImage")
+    
+
+    def listImages(self, resourceid, **kwargs):
+        """
+        List the available images.
+        If no resourceid is provided, all the images are listed.
+        resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
+        param:resourceid optional resourceproviderid.
         result  
         
         """
@@ -62,11 +77,21 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def listNodes(self, **kwargs):
         """
         List all nodes
-        result  
+        result list 
         
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listNodes")
+    
+
+    def listResourceProviders(self, **kwargs):
+        """
+        List all registered resource providers
+        result list 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method listResourceProviders")
     
 
     def listSizes(self, **kwargs):
@@ -100,6 +125,18 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseIpaddress")
+    
+
+    def unLinkImage(self, imageid, resourceprovider, **kwargs):
+        """
+        Unlink a image from a resource provider
+        param:imageid unique id of the image
+        param:resourceprovider unique id of the resourceprovider
+        result bool 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method unLinkImage")
     
 
     def unregisterNode(self, id, **kwargs):

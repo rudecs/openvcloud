@@ -61,12 +61,6 @@ class CloudBroker(object):
     def __init__(self):
         self.Dummy = Dummy
 
-    def getProviderByResourceProvider(self, providerId):
-        if providerId not in CloudBroker._resourceProviderId2StackId:
-            provider = cloudbroker.model_resourceprovider_get(providerId)
-            CloudBroker._resourceProviderId2StackId[providerId] =  provider['stackId']
-        return CloudProvider(CloudBroker._resourceProviderId2StackId[providerId])
-
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)
 
@@ -81,11 +75,13 @@ class CloudBroker(object):
         queryapi = getattr(cloudbroker, 'model_%s_find' % objname)
         query = {}
         query = {'query': {'term': {'referenceId': referenceId}}, 'fields': ['id']}
-        results = queryapi(ujson.dumps(query))['result']
-        ids = [res['fields']['id'] for res in results]
-        return ids[0] if ids else None
-
-
+        queryresult = queryapi(ujson.dumps(query))
+        ids = [res['fields']['id'] for res in queryresult['result']]
+        if ids:
+            return ids[0]
+        else:
+            return None
+        
     def getBestProvider(self, imageId):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
@@ -99,25 +95,33 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, imageId):
         # group all units per type
-        resourceproviders = cloudbroker.model_resourceprovider_find(ujson.dumps({"query":{"term": {"images": imageId}}}))
+        stacks = cloudbroker.model_stack_find(ujson.dumps({"query":{"term": {"images": imageId}}}))
         resourcesdata = list()
-        for resourceprovider in resourceproviders:
-            resourceprovider = resourceprovider['_source']
-            resourcesdata.append(resourceprovider)
+        for stack in stacks['result']:
+            stack = stack['_source']
+            resourcesdata.append(stack)
         return resourcesdata
 
     def stackImportImages(self, stackId):
         provider = CloudProvider(stackId)
         count = 0
+        stack = cloudbroker.model_stack_get(stackId)
+        stack['images'] = []
         for pimage in provider.client.list_images():
-            imageid = self.getIdByReferenceId('image', pimage.name)
-            image = cloudbroker.models.image.new()
-            if imageid:
-                image.dict2obj(cloudbroker.model_image_get(imageid))
-            image.name = pimage.name
-            image.referenceId = pimage.name
+            imageid = self.getIdByReferenceId('image', pimage.id)
+            if not imageid:
+                image = cloudbroker.models.image.new()
+                image.name = pimage.name
+                image.referenceId = pimage.id
+            else:
+                image = cloudbroker.model_image_get(imageid)
+                image['name'] = pimage.name
+                image['referenceId'] = pimage.id
             count += 1
-            cloudbroker.model_image_set(image.obj2dict())
+            imageid = cloudbroker.model_image_set(image)
+            if not imageid in stack['images']:
+                stack['images'].append(imageid)
+                cloudbroker.model_stack_set(stack)
         return count
 
 

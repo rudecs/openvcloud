@@ -107,8 +107,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method backup")
 
     def _getProvider(self, machine):
-        if machine.referenceId and machine.resourceProviderId:
-            return self.cb.extensions.imp.getProviderByResourceProvider(machine.resourceProviderId)
+        if machine.referenceId and machine.stackId:
+            return self.cb.extensions.imp.getProviderByStackId(machine.stackId)
         return None
 
     @authenticator.auth(acl='C')
@@ -145,8 +145,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine.disks.append(diskid)
         machine.id = self.cb.model_vmachine_set(machine)
         try:
-            resourceprovider = self.cb.extensions.imp.getBestProvider(imageId)
-            provider = self.cb.extensions.imp.getProviderByStackId(resourceprovider['stackId'])
+            stack = self.cb.extensions.imp.getBestProvider(imageId)
+            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
             brokersize = self.cb.model_size_get(machine.sizeId)
             firstdisk = self.cb.model_disk_get(machine.disks[0])
             psize = provider.getSize(brokersize, firstdisk)
@@ -159,7 +159,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         node = provider.client.create_node(name=name, image=pimage, size=psize)
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
-        machine.resourceProviderId = resourceprovider['id']
+        machine.stackId = stack['id']
         machine.status = enums.MachineStatus.RUNNING
         machine.hostName = node.name
         for ipaddress in node.public_ips:
@@ -169,7 +169,7 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         cloudspace = self.cb.model_cloudspace_new()
         cloudspace.dict2obj(self.cb.model_cloudspace_get(cloudspaceId))
-        cloudspace.resourceProviderStacks.append(resourceprovider['stackId'])
+        cloudspace.resourceProviderStacks.append(stack['id'])
         self.cb.model_cloudspace_set(cloudspace)
 
         return machine.id
