@@ -21,7 +21,8 @@ def install_compute_node(hostname, workspace):
     reboot(wait=300)
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/',hostname,'cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
-    put(os.path.join(workspace, 'ComputeBox/test/configurations/node.hrd'), '/opt/jumpscale/cfg/hrd/node.hrd')
+    put(os.path.join(workspace, 'ComputeBox/test/configurations/grid.hrd'), '/opt/jumpscale/cfg/hrd/grid.hrd')
+    put(os.path.join(workspace, 'ComputeBox/test/configurations/system_root_credentials.hrd'), '/opt/jumpscale/cfg/hrd/system_root_credentials.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
 
     #install core first since computenode configure is not run in seperate context
