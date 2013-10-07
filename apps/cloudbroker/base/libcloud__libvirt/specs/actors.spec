@@ -11,9 +11,13 @@
 
     method: listImages
 	"""
-        List the available images
+    List the available images.
+    If no resourceid is provided, all the images are listed.
+    resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
 	"""
+        var:resourceid str,, optional resourceproviderid. @tags: optional 
         result: list of images supported by the stack(e.g libvirt)
+
   
     method: getFreeMacAddress
         """
@@ -61,7 +65,29 @@
     """
     List all nodes
     """
-        result: list of node information, sorted by id
+        result:list of node information, sorted by id
+
+    method: listResourceProviders
+    """
+    List all registered resource providers
+    """
+        result:list of all registered resource providers
+
+    method: linkImage
+    """
+    Link a image to a resource provider
+    """
+        var:imageid str,, unique id of the image
+        var:resourceprovider str,, unique id of the resourceprovider
+        result:bool
+
+    method: unLinkImage
+    """
+    Unlink a image from a resource provider
+    """
+        var:imageid str,, unique id of the image
+        var:resourceprovider str,, unique id of the resourceprovider
+        result:bool
 
 
 

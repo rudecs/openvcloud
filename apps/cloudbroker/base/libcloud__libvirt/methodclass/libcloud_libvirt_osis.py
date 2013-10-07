@@ -13,26 +13,26 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
 
         pass
 
-    def model_image_create(self, name, description, UNCPath, size, type, referenceId, **kwargs):
+    def model_image_create(self, id, name, description, UNCPath, size, type, **kwargs):
         """
         Create a new model
+        param:id unique id of the image
         param:name name of the image
         param:description extra description of the image
         param:UNCPath location of the image (uncpath like used in pylabs); includes the login/passwd info
         param:size size in MByte
         param:type dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas)
-        param:referenceId Name of the image on stack
         result json 
         
         """
         
         image = self.models.image.new()
+        image.id = id
         image.name = name
         image.description = description
         image.UNCPath = UNCPath
         image.size = size
         image.type = type
-        image.referenceId = referenceId
         
         return self.models.image.set(image)
                 
@@ -236,6 +236,116 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
         """
         
         return self.models.node.set(data)            
+                    
+    
+
+    def model_resourceprovider_create(self, id, cloudUnitType, images, **kwargs):
+        """
+        Create a new model
+        param:id resourceprovider id is the uri of the compute node
+        param:cloudUnitType (CU,VSU,SU,NU)
+        param:images list of images ids supported by this resource
+        result json 
+        
+        """
+        
+        resourceprovider = self.models.resourceprovider.new()
+        resourceprovider.id = id
+        resourceprovider.cloudUnitType = cloudUnitType
+        resourceprovider.images = images
+        
+        return self.models.resourceprovider.set(resourceprovider)
+                
+    
+
+    def model_resourceprovider_datatables(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.resourceprovider.datatables() #@todo
+                    
+    
+
+    def model_resourceprovider_delete(self, id, guid='', **kwargs):
+        """
+        remove the model resourceprovider with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result bool 
+        
+        """
+        
+        return self.models.resourceprovider.delete(guid=guid, id=id)
+                    
+    
+
+    def model_resourceprovider_find(self, query='', **kwargs):
+        """
+        query to model resourceprovider
+        @todo how to query
+        example: name=aname
+        secret key needs to be given
+        param:query unique identifier can be used as auth key default=
+        result list 
+        
+        """
+        
+        return self.models.resourceprovider.find(query)            
+                    
+    
+
+    def model_resourceprovider_get(self, id, guid='', **kwargs):
+        """
+        get model resourceprovider with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result object 
+        
+        """
+        
+        obj = self.models.resourceprovider.get(id=id,guid=guid).obj2dict()
+        obj.pop('_meta', None)
+        return obj
+                    
+    
+
+    def model_resourceprovider_list(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.resourceprovider.list()            
+                    
+    
+
+    def model_resourceprovider_new(self, **kwargs):
+        """
+        Create a new modelobjectresourceprovider instance and return as empty.
+        A new object will be created and a new id & guid generated
+        result object 
+        
+        """
+        
+        return self.models.resourceprovider.new()
+                    
+    
+
+    def model_resourceprovider_set(self, data='', **kwargs):
+        """
+        Saves model resourceprovider instance starting from an existing pymodel object (data is serialized as json dict if required e.g. over rest)
+        param:data data is object to save default=
+        result bool 
+        
+        """
+        
+        return self.models.resourceprovider.set(data)            
                     
     
 

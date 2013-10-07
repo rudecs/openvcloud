@@ -1,3 +1,5 @@
+import md5
+
 class DummyConnection():
     
     def listSizes(self):
@@ -54,7 +56,9 @@ class CloudBrokerConnection():
      def listSizes(self):
          return self.libvirt_actor.listSizes()
 
-     def listImages(self):
+     def listImages(self, uri=None):
+         if uri:
+            return self.libvirt_actor.listImages(md5.new(uri).hexdigest())
          return self.libvirt_actor.listImages()
 
      def listNodes(self):

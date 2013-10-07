@@ -1,0 +1,6 @@
+grid.id=1
+grid.useavahi=0
+system.superadmin.login=root
+system.superadmin.passwd=R00t3r
+grid.ismaster=True
+grid.master=
