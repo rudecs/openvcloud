@@ -348,4 +348,5 @@ class cloudapi_machines(cloudapi_machines_osis):
         token =  uuid.uuid4()
         key = 'console.token.%s' % token
         self.cache.set(key, machineId, 300)
-        return "http://consoleapp:9090/vnc_auto.html?token=%s" % token
+        provider, node = self._getProviderAndNode(machineId)
+        return provider.client.ex_get_console_url(node)

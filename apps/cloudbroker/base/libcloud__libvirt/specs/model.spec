@@ -32,3 +32,10 @@
     prop:id str,,id of the node
     prop:ipaddress str,,ipaddress of the node
     prop:macaddress str,,macaddress of the node
+
+[rootmodel:VNC] @dbtype:osis
+    """
+    Store vnc proxies
+    """
+    prop:id int, 0, id of vnc
+    prop:url str,,Url of vnc proxy

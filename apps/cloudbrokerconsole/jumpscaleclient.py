@@ -3,4 +3,4 @@ import JumpScale.portal
 
 def getClient(ip):
     cl = j.core.portal.getPortalClient(ip, 80, '1234')
-    return cl.getActor('cloudapi','machines')
+    return cl.getActor('libcloud','libvirt')
