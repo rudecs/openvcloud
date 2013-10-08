@@ -1,53 +1,56 @@
 describe('Cloudscalers machine services', function() {
-
-
 	beforeEach(module('cloudscalers.machineServices'));
 	
 	describe('User service', function(){
 		var $httpBackend, User;
-		beforeEach(inject(function(_$httpBackend_, _User_) {
+		beforeEach(inject(function(_$httpBackend_, _User_, _APIKey_) {
 			$httpBackend = _$httpBackend_;
 			User = _User_;
+            APIKey = _APIKey_;
+            APIKey.clear();
+            defineUnitApiStub($httpBackend);
 		}));
 		
-		xit('Login succeeds',function(){			
-			defineUnitApiStub($httpBackend);
+		it('handles successful login',function(){			
+            expect(APIKey.get()).toBeNull();
 
 			var loginResult = User.login();
-
 			$httpBackend.flush();
 			
-			expect(loginResult.username).toBe('testuser');
-			expect(loginResult.authKey).toBe('yep123456789');
-			expect(loginResult.error).toBeUndefined();
+            expect(loginResult).toBeDefined();
+            expect(loginResult.api_key).toBe('yep123456789');
+            expect(APIKey.get()).toBe('yep123456789');
+			expect(loginResult.error).toBeFalsy();
 		});
 		
-		xit('Login fails',function(){
-			defineUnitApiStub($httpBackend);
-						
+		it('handles failed login',function(){
+            expect(APIKey.get()).toBeNull();
+
 			var loginResult = User.login('error','testpass');
 
-			expect(loginResult).toBeDefined();
-			expect(loginResult.error).toBeUndefined();
-			expect(loginResult.username).toBe('error');
-			
 			$httpBackend.flush();
 			
-			expect(loginResult.username).toBe('error');
-			expect(loginResult.authKey).toBeUndefined();
+			expect(loginResult.api_key).toBeUndefined();
 			expect(loginResult.error).toBe(403);
 		});
-		
-		
+
+        it('can logout', function() {
+            APIKey.set('123');
+
+            User.logout();
+            expect(APIKey.get()).toBeNull();
+        });
 	});
 
 	describe('Machine Service', function(){
-		var $httpBackend, $sce, Machine;
+		var $httpBackend, $sce, Machine, APIKey;
 
-		beforeEach(inject(function(_$httpBackend_, _$sce_, _Machine_) {
+		beforeEach(inject(function(_$httpBackend_, _$sce_, _Machine_, _APIKey_) {
 			$httpBackend = _$httpBackend_;
 			Machine = _Machine_;
             $sce = _$sce_;
+            APIKey = _APIKey_;
+            APIKey.set('yep123456789');
 		}));
 
 		it('test machine list', function(){
@@ -222,12 +225,11 @@ describe('Cloudscalers machine services', function() {
     describe('Sizes Service', function(){
 		var $httpBackend, Sizes;
 
-		beforeEach(inject(function(_$httpBackend_) {
+		beforeEach(inject(function(_$httpBackend_, _APIKey_, _Size_) {
 			$httpBackend = _$httpBackend_;
-			
-			inject(function($injector) {
-			    Size = $injector.get('Size');
-			});
+            Size = _Size_;
+            APIKey = _APIKey_;
+            APIKey.set('yep123456789');
 		}));
 
 		it('test size list', function(){
@@ -243,16 +245,16 @@ describe('Cloudscalers machine services', function() {
 			expect(sizeListResult[0].name).toBe("small");
 			expect(sizeListResult[1].CU).toBe(2);
 		});
-
-		
 	});
 
 	describe("Images", function() {
-		var $httpBackend, Image;
+		var $httpBackend, Image, APIKey;
 
-		beforeEach(inject(function(_$httpBackend_, _Image_) {
+		beforeEach(inject(function(_$httpBackend_, _Image_, _APIKey_) {
 			$httpBackend = _$httpBackend_;
 			Image = _Image_;
+            APIKey = _APIKey_;
+            APIKey.set('yep123456789');
 		}));
 
 	  	it('list', function() {
