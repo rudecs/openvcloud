@@ -11,6 +11,7 @@ cloudscalersControllers
         $scope.logout = function() {
             User.logout();
             $scope.loggedIn = false;
+            location.href = '/test_gcb/';
         }
 
         $scope.$on('event:login-successful', function(loginResult) {
