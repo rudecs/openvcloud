@@ -11,8 +11,8 @@ defineUnitApiStub = function($httpBackend){
 	
 
     var openwizzycloudspaces = [ 
-    {'id': 0, 'name': 'Main cloudspace', 'description': 'Description'},
-    {'id': 1, 'name': 'Production cloudspace', 'description': 'Production Cloudspace'}
+        {'id': 0, 'name': 'Main cloudspace', 'description': 'Description'},
+        {'id': 1, 'name': 'Production cloudspace', 'description': 'Production Cloudspace'}
     ];
 
     var openwizzymachines = [{"status": "", "hostname": "", "description": "Webserver", "name": "test", "nics": [], "sizeId": 0, "imageId": 0, "id": 0},
@@ -24,9 +24,9 @@ defineUnitApiStub = function($httpBackend){
              ];
 
     var openwizzysizes = [
-    {'id':0, 'name':'small', 'CU':1, 'disksize': 20},
-    {'id':1, 'name':'medium', 'CU':2, 'disksize': 40},
-    {'id':2, 'name':'small', 'CU':4, 'disksize': 100}];
+        {'id':0, 'name':'small', 'CU':1, 'disksize': 20},
+        {'id':1, 'name':'medium', 'CU':2, 'disksize': 40},
+        {'id':2, 'name':'small', 'CU':4, 'disksize': 100}];
 
 
     $httpBackend.whenGET('testapi/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(openwizzymachines);
