@@ -22,12 +22,6 @@
 {{css:/$$space/.files/css/pages/dashboard.css}}
 {{css:/$$space/.files/custom.css}}
 
-{{html:
-    <style type="text/css">
-    .ng-hide { display: none !important;  }
-    </style>
-}}
-
 
 #{{find}}
 
@@ -43,118 +37,13 @@ System:/System
 
 
 
-{{html:
-
-<div ng-app="cloudscalers" ng-controller="LoginController">
-<div class="subnavbar">
-
-	<div class="subnavbar-inner">
-	
-		<div class="container">
-		<a class="brand" href="../$$space">CloudScalers</a>
-			
-			
-			<ul class="mainnav">
-			
-			 <li class="active">
-					<a href="../$$space">
-						<i class="icon-home"></i>
-						<span>Home</span>
-					</a>	    				
-				</li> 
-
-				<li>
-					<a href="../$$space/UnifiedCloud">
-						<i class="icon-building"></i>
-						<span>CloudScalers</span>
-					</a>	    				
-				</li> 
-
-				<li class="dropdown-submenu">
-					<a href="../$$space/Products">
-						<i class="icon-cloud"></i>
-						<span>Products</span>
-					</a>	
-                    <ul class="dropdown-menu">
-						<li><a href="../$$space/Machine Buckets">Machine Buckets</a></li>
-						<li><a href="../$$space/Desktop Buckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/Storage Buckets">Storage Buckets</a></li>
-					</ul>    				    				
-				</li>
-
-
-				<li>
-					<a href="../$$space/Pricing">
-						<i class="icon-shopping-cart"></i>
-						<span>Pricing</span>
-					</a>	    				
-				</li> 
-
-				<li class="dropdown-submenu ng-hide" ng-show="loggedIn">
-					<a href="../$$space/MachineBuckets">
-						<i class="icon-cloud"></i>
-						<span>My Buckets</span>
-					</a>	
-                    <ul class="dropdown-menu">
-						<li><a href="../$$space/MachineBuckets">Machine Buckets</a></li>
-						<li><a href="../$$space/DesktopBuckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/StorageBuckets">Storage Buckets</a></li>
-					</ul>    				    				
-				</li>
-
-				<li ng-show="loggedIn" class=" ng-hide">
-					<a href="../$$space/Settings">
-						<i class="icon-cog"></i>
-						<span>Settings</span>
-					</a>  									
-				</li>
-				
-				<li  ng-show="loggedIn" class=" ng-hide">					
-					<a href="../$$space/Billing">
-						<i class="icon-money"></i>
-						<span>Billing</span>
-						
-                    </a>	
-				
-                </li>
-
-
-				<li ng-show="loggedIn" class=" ng-hide">					
-					<a href="../$$space/Support">
-						<i class="icon-ambulance"></i>
-						<span>Support </span>
-					</a>  									
-				</li>
-
-            
-
-			
-			</ul>
-			 <a class="btn btn-warning ng-hide" ng-click="logout()" ng-show="loggedIn"  href >
-                        <i class="icon-lock"></i>
-                        <span>Logout </span>
-                    </a>
-
-			<a href="/$$space/login" class="btn ng-hide" ng-hide="loggedIn">
-                <i class="icon-lock"></i> Login</a> 
-            <a class="btn btn-primary ng-hide"  ng-hide="loggedIn">Sign Up</a>
-
-		</div> <!-- /container -->
-	
-	</div> <!-- /subnavbar-inner -->
-
-</div> <!-- /subnavbar -->
-}}
-
-
-
 
 
 
 
 {{html: 
 
-<div class="main">
+<div class="main topbg">
 	
 	<div class="main-inner">
 
@@ -163,11 +52,9 @@ System:/System
 		}}
 
 
-@col 3
-{{navigation}}
-@divend
 
-@col 9
+
+@col 12
 
 
 

@@ -1,5 +1,5 @@
+@template access
 
-@col 5
 {{html:
 <div class="account-container stacked">
     <div class="content clearfix padding">
@@ -22,8 +22,10 @@
             </div>
 
             <div class="login-actions">
-                <input type="submit" ng-click="login()" class="button btn btn-info btn-large" value="Sign In" />
+                <input type="submit" ng-click="login()" class="button btn  btn-primary btn-large" value="Login" />
             </div>
+			<p class="sp"><span>Or</span></p> <hr>
+			<a class="btn long-btn">Sign Up</a>
     </div>
 </div>
 }}

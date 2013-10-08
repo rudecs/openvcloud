@@ -2,6 +2,9 @@ body{
     color:#666;
     background:#fff;
 }
+.topbg { 
+     background: url("img/login-bg.png") no-repeat scroll center top / 49% auto rgba(0, 0, 0, 0);
+}
 hr {
  border-bottom: 3px dotted #CCCCCC;
     border-top: medium none;
@@ -210,7 +213,7 @@ border-radius: 5px;
 /*Copyright*/
 .copyright {
 	font-size:12px;
-	padding:5px 10px;
+	padding: 20px 10px 5px;
 	background:#3e4753;
 	border-top:solid 1px #777;	
 }
@@ -423,7 +426,7 @@ border-radius: 10px; /* future proofing */
     border: 1px solid #D5D5D5;
     border-radius: 5px 5px 5px 5px;
     display: block;
-    margin: 60px auto 0;
+    margin: 95px auto 0;
     width: 380px;
 }
 .padding {
@@ -477,7 +480,7 @@ span.login-checkbox > input[type="checkbox"] + label {
     border-radius: 3px 3px 3px 3px;
     display: inline-block;
     float: right;
-    margin-top: 18px;
+    margin-top: 5px;
 }
 
 .login-fields label {
@@ -501,7 +504,7 @@ span.login-checkbox > input[type="checkbox"] + label {
       background: #ccc !important;
     } 
 .form-horizontal .form-actions {
-    padding-left: 240px;
+    padding-left: 179px;
     background:#eee;
 }
 
@@ -661,12 +664,12 @@ padding-top: 12px;
     font-size: 12px;
     font-weight: bold;
     height: 57%;
-    padding: 12px 15px 7px;
+    padding: 12px 14px 7px;
     text-shadow: none;
 }
     .subnavbar .container > ul > li > a:hover {
 
-    padding: 12px 15px 6px;
+    
     border-bottom: 2px solid #269CDF;
     }
 .subnavbar .container > ul > li > a > i {
@@ -870,6 +873,9 @@ padding:15px;
         color:#269CDF;
         cursor:pointer;
         }
+
+
+
 .carousel-inner {
 background: url(img/carouselbg.jpg) bottom center no-repeat ;
 border-bottom: 1px solid #EEEEEE;
@@ -935,7 +941,7 @@ color: #269CDF;
         background: none repeat scroll 0 0 #269CDF;
     }
 
-.ng-scope {
+.dbox  {
     color:#269CDF;
     font-weight:bold;
   
@@ -987,4 +993,60 @@ margin-top:30px;
     float: right;
     margin-left: 10px;
     margin-top: 7px;
+}
+
+
+.control-group .tab-content ul {
+margin:0px;
+}
+
+.copyright ul.mainnav {
+   margin:0px; width:100%;
+}
+
+
+.copyright li {
+width:14%;
+list-style:none;
+
+float:left;
+font-size:14px; 
+}
+.copyright ul ul {
+margin-left:35px;
+}
+.copyright ul ul li {
+    width:100%;
+    font-size:12px; 
+    }
+.copyright .brand {
+padding:0px; margin:0px; float:right; font-size:18px;
+}
+.copyright a:hover {
+color:#0044CC; text-decoration:dotted;
+}
+.cr {
+float:right;
+}
+
+.sp {
+    clear: both;
+    padding-top: 25px;
+    text-align: center;
+    width: 100%;
+}
+
+.sp span{
+  background: none repeat scroll 0 0 #F9F9F9;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 5px 20px;
+}
+.account-container hr {
+    margin-top: -23px;
+     margin-bottom: 35px;
+}
+
+.account-container .long-btn {
+display: list-item; list-style:none; 
 }
