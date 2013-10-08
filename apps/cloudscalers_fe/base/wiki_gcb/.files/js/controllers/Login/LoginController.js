@@ -14,6 +14,6 @@ cloudscalersControllers
         }
 
         $scope.$on('event:login-successful', function(loginResult) {
-            location.href = '/gcb/buckets#/list';
+            location.href = '/test_gcb/buckets#/list';
         });
     }]);
