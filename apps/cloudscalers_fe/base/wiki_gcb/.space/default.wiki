@@ -84,7 +84,7 @@ System:/System
 					</a>	    				
 				</li> 
 
-				<li class="dropdown-submenu" ng-show="loggedIn">
+				<li class="dropdown-submenu" ng-show="loggedIn" ng-cloak>
 					<a href="../$$space/MachineBuckets">
 						<i class="icon-cloud"></i>
 						<span>My Buckets</span>
@@ -96,14 +96,14 @@ System:/System
 					</ul>    				    				
 				</li>
 
-				<li ng-show="loggedIn">
+				<li ng-show="loggedIn" ng-cloak>
 					<a href="../$$space/Settings">
 						<i class="icon-cog"></i>
 						<span>Settings</span>
 					</a>  									
 				</li>
 				
-				<li  ng-show="loggedIn">					
+				<li  ng-show="loggedIn" ng-cloak>					
 					<a href="../$$space/Billing">
 						<i class="icon-money"></i>
 						<span>Billing</span>
@@ -113,14 +113,14 @@ System:/System
                 </li>
 
 
-				<li ng-show="loggedIn">					
+				<li ng-show="loggedIn" ng-cloak>					
 					<a href="../$$space/Support">
 						<i class="icon-ambulance"></i>
 						<span>Support </span>
 					</a>  									
 				</li>
 
-                <li ng-show="loggedIn">
+                <li ng-show="loggedIn" ng-cloak>
                     <a ng-click="logout()" href>
                         <i class="icon-logout"></i>
                         <span>Logout </span>
@@ -131,7 +131,7 @@ System:/System
 			</ul>
 
 
-			<a href="/$$space/login" class="btn" ng-hide="loggedIn">
+			<a href="/$$space/login" class="btn" ng-hide="loggedIn" ng-cloak>
                 <i class="icon-lock"></i> Login</a> 
             <a class="btn btn-primary"  ng-hide="loggedIn">Sign Up</a>
 
