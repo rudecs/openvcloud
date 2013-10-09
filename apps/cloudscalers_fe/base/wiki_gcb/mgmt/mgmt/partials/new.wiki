@@ -16,9 +16,7 @@ h2. Create Machine Bucket
     </div>
     <div class="control-group">
         <label class="control-label">Choose Package *:</label>
-        <div class="controls " >
-            {{include:plan_list}}
-        </div>
+        <div class="controls " >{{include:plan_list}}</div>
     </div>
     <div class="control-group">
         <label class="control-label" >Choose Image</label>
@@ -46,7 +44,7 @@ h2. Options
     </div>
     <div class="control-group">
         <label class="control-label" >Choose Replication Location:</label>
-        <div class="controls ">{{include:region_list}}</div>
+        <div class="controls ">{{include:replication_list}}</div>
     </div>
     <hr>
 

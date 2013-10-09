@@ -63,7 +63,7 @@ System:/System
 					</a>	    				
 				</li> 
 
-				<li>
+				<li ng-hide="loggedIn">
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
 						<span>CloudScalers</span>
