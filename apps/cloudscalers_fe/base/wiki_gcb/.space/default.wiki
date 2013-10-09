@@ -56,8 +56,8 @@ System:/System
 			
 			<ul class="mainnav">
 			
-			 <li class="active">
-					<a href="../$$space">
+			 <li class="active" ng-hide="loggedIn" >
+					<a href="../$$space" >
 						<i class="icon-home"></i>
 						<span>Home</span>
 					</a>	    				
@@ -66,11 +66,11 @@ System:/System
 				<li ng-hide="loggedIn">
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
-						<span>CloudScalers</span>
+						<span>Why CloudScalers</span>
 					</a>	    				
 				</li> 
 
-				<li class="dropdown-submenu">
+				<li class="dropdown-submenu" ng-hide="loggedIn" >
 					<a href="../$$space/Products">
 						<i class="icon-cloud"></i>
 						<span>Products</span>
@@ -83,24 +83,33 @@ System:/System
 				</li>
 
 
-				<li>
+				<li ng-hide="loggedIn">
 					<a href="../$$space/Pricing">
 						<i class="icon-shopping-cart"></i>
 						<span>Pricing</span>
 					</a>	    				
 				</li> 
 
-				<li class="dropdown-submenu ng-hide" ng-show="loggedIn">
-					<a href="../$$space/MachineBuckets">
-						<i class="icon-cloud"></i>
-						<span>My Buckets</span>
-					</a>	
-                    <ul class="dropdown-menu">
-						<li><a href="../$$space/MachineBuckets">Machine Buckets</a></li>
-						<li><a href="../$$space/DesktopBuckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/StorageBuckets">Storage Buckets</a></li>
-					</ul>    				    				
+				<li ng-show="loggedIn">
+				<a href="../$$space/MachineBuckets">
+				<i class="icon-cloud"></i>
+				<span>My Machine Buckets</span>
+				</a></li>
+
+				<li ng-show="loggedIn">
+				<a href="../$$space/DesktopBuckets">
+				<i class="icon-desktop"></i>
+				<span>My Desktop Buckets</span>
+				</a>
 				</li>
+				<li ng-show="loggedIn">
+				<a href="../$$space/StorageBuckets">
+				<i class="icon-hdd"></i>
+				<span>My Storage Buckets</span>
+				</a>
+				</li> 
+					  				    				
+				
 
 				<li ng-show="loggedIn" class=" ng-hide">
 					<a href="../$$space/Settings">
@@ -130,7 +139,7 @@ System:/System
 
 			
 			</ul>
-			 <a class="btn btn-warning ng-hide" ng-click="logout()" ng-show="loggedIn"  href >
+			 <a class="btn  ng-hide" ng-click="logout()" ng-show="loggedIn"  href >
                         <i class="icon-lock"></i>
                         <span>Logout </span>
                     </a>
@@ -350,5 +359,7 @@ h2. loading
     <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/DesktopBuckets/DesktopPricingController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Login/LoginController.js" type="text/javascript"></script>
-
+  <script>
+      $('.tp').tooltip()
+  </script>
 }}

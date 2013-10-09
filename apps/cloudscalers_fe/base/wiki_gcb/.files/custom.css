@@ -1050,3 +1050,29 @@ float:right;
 .account-container .long-btn {
 display: list-item; list-style:none; 
 }
+.compare * {
+    text-align:center !important;
+}
+.compare tr td:first-child, .compare th  {
+    font-weight:bold;
+    font-size:14px;
+}
+
+.compare tr td:first-child {
+    border-top: 0px;
+    text-align:left !important;
+}
+.compare tr:hover td:first-child {
+  color:#35baf0;   
+}
+.compare i {
+ font-size: 30px;
+}
+
+.compare i.icon-ok-circle {
+/*color:#9cc300;*/    color:#35baf0;    
+    }
+.compare i.icon-remove-circle {
+color:#ddd;    
+}
+
