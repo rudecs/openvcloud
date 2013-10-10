@@ -13,7 +13,7 @@ cloudscalersControllers
 
         $scope.saveNewMachine = function() {
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
-                           $scope.machine.sizeId, $scope.machine.imageId);
+                           $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize);
             $location.path('/list');
         };
 
@@ -21,7 +21,7 @@ cloudscalersControllers
             return $scope.machine.name !== '' && $scope.machine.sizeId !== '' && $scope.machine.imageId !== '';
         };
 
-        $timeout(function() {
-            $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
-        }, 0);
+        $scope.$watch('images', function() {
+            console.log('images changed ' + $('.nav-tabs a').length);
+        });
     }]);

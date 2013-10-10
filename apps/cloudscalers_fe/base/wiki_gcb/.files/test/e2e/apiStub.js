@@ -3,6 +3,8 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^partials\//).passThrough();
 
+    var users = [];
+    localStorage.setItem('gcb:users', JSON.stringify(users));
 
     $httpBackend.whenPOST('/users/authenticate').
     respond(function (method, url, data) {
@@ -11,6 +13,14 @@ defineApiStub = function ($httpBackend) {
             return [403, 'Unauthorized'];
         }
         return [200, "yep123456789"];
+    });
+
+    $httpBackend.whenPOST('/users/signup').respond(function(method, url, data) {
+        var credentials = angular.fromJson(data);
+        if (credentials.username == 'again') {
+            return [441, 'This user is already registered'];
+        }
+        return [200, "Success"];
     });
 
     var cloudspaces = [{

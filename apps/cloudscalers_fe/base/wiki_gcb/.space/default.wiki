@@ -146,7 +146,7 @@ System:/System
 
 			<a href="/$$space/login" class="btn ng-hide" ng-hide="loggedIn">
                 <i class="icon-lock"></i> Login</a> 
-            <a class="btn btn-primary ng-hide"  ng-hide="loggedIn">Sign Up</a>
+            <a class="btn btn-primary ng-hide" href="/$$space/SignUp"  ng-hide="loggedIn">Sign Up</a>
 
 		</div> <!-- /container -->
 	
@@ -359,6 +359,7 @@ h2. loading
     <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/DesktopBuckets/DesktopPricingController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Login/LoginController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
   <script>
       $('.tp').tooltip()
   </script>

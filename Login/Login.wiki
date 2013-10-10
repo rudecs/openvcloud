@@ -1,7 +1,7 @@
 @template access
 
 {{html:
-<div class="account-container stacked">
+<div class="account-container stacked" ng-app="cloudscalers" ng-controller="LoginController">
     <div class="content clearfix padding">
 
             <h1>Sign In</h1>
@@ -25,7 +25,7 @@
                 <input type="submit" ng-click="login()" class="button btn  btn-primary btn-large" value="Login" />
             </div>
 			<p class="sp"><span>Or</span></p> <hr>
-			<a class="btn long-btn">Sign Up</a>
+			<a class="btn long-btn" href="/$$space/SignUp">Sign Up</a>
     </div>
 </div>
 }}
