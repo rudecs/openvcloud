@@ -460,3 +460,109 @@ class libcloud_libvirt_osis(j.code.classGetBase()):
         return self.models.size.set(data)            
                     
     
+
+    def model_vnc_create(self, url, **kwargs):
+        """
+        Create a new model
+        param:url Url of vnc proxy
+        result json 
+        
+        """
+        
+        vnc = self.models.vnc.new()
+        vnc.url = url
+        
+        return self.models.vnc.set(vnc)
+                
+    
+
+    def model_vnc_datatables(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.vnc.datatables() #@todo
+                    
+    
+
+    def model_vnc_delete(self, id, guid='', **kwargs):
+        """
+        remove the model vnc with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result bool 
+        
+        """
+        
+        return self.models.vnc.delete(guid=guid, id=id)
+                    
+    
+
+    def model_vnc_find(self, query='', **kwargs):
+        """
+        query to model vnc
+        @todo how to query
+        example: name=aname
+        secret key needs to be given
+        param:query unique identifier can be used as auth key default=
+        result list 
+        
+        """
+        
+        return self.models.vnc.find(query)            
+                    
+    
+
+    def model_vnc_get(self, id, guid='', **kwargs):
+        """
+        get model vnc with specified id and optionally guid
+        if secret key is given then guid is not needed, other guid is authentication key
+        param:id Object identifier
+        param:guid unique identifier can be used as auth key default=
+        result object 
+        
+        """
+        
+        obj = self.models.vnc.get(id=id,guid=guid).obj2dict()
+        obj.pop('_meta', None)
+        return obj
+                    
+    
+
+    def model_vnc_list(self, **kwargs):
+        """
+        list models, used by e.g. a datagrid
+        result json 
+        
+        """
+        
+        return self.models.vnc.list()            
+                    
+    
+
+    def model_vnc_new(self, **kwargs):
+        """
+        Create a new modelobjectvnc instance and return as empty.
+        A new object will be created and a new id & guid generated
+        result object 
+        
+        """
+        
+        return self.models.vnc.new()
+                    
+    
+
+    def model_vnc_set(self, data='', **kwargs):
+        """
+        Saves model vnc instance starting from an existing pymodel object (data is serialized as json dict if required e.g. over rest)
+        param:data data is object to save default=
+        result bool 
+        
+        """
+        
+        return self.models.vnc.set(data)            
+                    
+    

@@ -15,6 +15,10 @@ libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
 
 class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
+    def __init__(self, *args, **kwargs):
+        super(CSLibvirtNodeDriver, self).__init__(*args, **kwargs)
+        self._rndrbn_vnc = 0
+
     env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
     backendconnection = connection.DummyConnection()
 
@@ -182,6 +186,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
             vol.delete(0)
         domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
         return True
+
+    def ex_get_console_url(self, node):
+        urls = self.backendconnection.listVNC()
+        id_ = self._rndrbn_vnc % len(urls)
+        url = urls[id_]
+        self._rndrbn_vnc += 1
+        token = self.backendconnection.storeInfo(self.ex_get_console_info(node), 300)
+        return url + "/%s" % token
 
     def list_nodes(self):
         noderesult = []

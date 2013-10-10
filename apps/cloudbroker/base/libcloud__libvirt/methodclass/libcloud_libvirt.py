@@ -1,7 +1,9 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from libcloud_libvirt_osis import libcloud_libvirt_osis
-import ujson
+import uuid
+ujson = j.db.serializers.ujson
+import memcache
 import netaddr
 class libcloud_libvirt(libcloud_libvirt_osis):
     """
@@ -19,6 +21,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         self.appname="libcloud"
         libcloud_libvirt_osis.__init__(self)
         self._cb = None
+        self.cache = memcache.Client(['localhost:11211'])
         self.blobdb = self._getKeyValueStore()
 
     def _getKeyValueStore(self):
@@ -46,7 +49,6 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         param:resourceid optional resourceproviderid.
         result      
         """     
-        term = dict()
         if resourceid:
             images = []
             try:
@@ -69,7 +71,6 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         result  
         
         """
-        term = dict()
         query = {'fields': ['id', 'name', 'vcpus', 'memory', 'disk']}
         results = self.cb.model_size_find(ujson.dumps(query))['result']
         sizes = [res['fields'] for res in results]
@@ -154,27 +155,25 @@ class libcloud_libvirt(libcloud_libvirt_osis):
        node.macaddress = macaddress
        self.cb.model_node_set(node)
        return ipaddress
-    
+
     def unregisterNode(self, id, **kwargs):
         """
         Unregister a node.
         param:id id of the node to unregister
-        result bool 
-        
+        result bool
+
         """
         node = self.cb.model_node_get(id)
         self.releaseIpaddress(node['ipaddress'])
         self.cb.model_node_delete(id)
         return True
 
-
     def listNodes(self, **kwargs):
         """
         List all nodes
-        result  
-        
+        result
+
         """
-        term = dict()
         query = {'fields': ['id', 'ipaddress', 'macaddress']}
         results = self.cb.model_node_find(ujson.dumps(query))['result']
         nodes = {}
@@ -182,8 +181,6 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             node = {'ipaddress': res['fields']['ipaddress']}
             nodes[res['fields']['id']] = node
         return nodes
-
-
 
     def listResourceProviders(self, **kwargs):
         query = {'fields': ['id', 'cloudUnitType', 'images']}
@@ -195,15 +192,13 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             nodes[res['fields']['id']] = node
         return nodes
 
-     
-  
     def unLinkImage(self, imageid, resourceprovider, **kwargs):
         """
         Unlink a image from a resource provider
         param:imageid unique id of the image
         param:resourceprovider unique id of the resourceprovider
-        result bool 
-        
+        result bool
+
         """
         res = self.cb.model_resourceprovider_get(resourceprovider)
         try:
@@ -213,15 +208,13 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         self.cb.model_resourceprovider_set(res)
         return True
 
-    
-    
     def linkImage(self, imageid, resourceprovider, **kwargs):
         """
         Link a image to a resource provider
         param:imageid unique id of the image
         param:resourceprovider unique id of the resourceprovider
-        result bool 
-        
+        result bool
+
         """
         res = self.cb.model_resourceprovider_get(resourceprovider)
         if not res['images']:
@@ -231,12 +224,40 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         self.cb.model_resourceprovider_set(res)
         return True
 
+    def registerVNC(self, url, **kwargs):
+        vnc = self.cb.models.vnc.new()
+        vnc.url = url
+        return self.cb.model_vnc_set(vnc)
 
+    def retreiveInfo(self, key, reset=False, **kwargs):
+        """
+        get info
+        param:key key of data
+        result dict
 
+        """
+        info = self.cache.get(key)
+        if reset:
+            self.cache.delete(key)
+        return info
 
+    def storeInfo(self, data, timeout, **kwargs):
+        """
+        store info for period of time
+        param:data store data for period of time
+        param:timeout timeout for data
+        result str
+        """
+        key =  uuid.uuid4()
+        self.cache.set(key, data, timeout)
+        return key
 
-    
-
-
-    
-
+    def listVNC(self, **kwargs):
+        """
+        list vnc urls
+        result  
+        
+        """
+        query = {'fields': ['url']}
+        results = self.cb.model_vnc_find(ujson.dumps(query))['result']
+        return [res['fields']['url'] for res in results]

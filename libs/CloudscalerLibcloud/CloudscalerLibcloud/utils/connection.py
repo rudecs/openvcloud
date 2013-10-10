@@ -76,11 +76,8 @@ class CloudBrokerConnection():
      def unregisterMachine(self, id):
          return self.libvirt_actor.unregisterNode(id)
 
-     def registerVNC(self, url):
-         return self.libvirt_actor.registerVNC(url)
+     def retreiveInfo(self, key):
+         return self.libvirt_actor.retreiveInfo(key)
 
-
-
-
-
-
+     def storeInfo(self, data, timeout):
+         return self.libvirt_actor.storeInfo(data, timeout)

@@ -173,7 +173,7 @@ Traffic Legend:
             (self.target_host, self.target_port) = self.get_target(self.target_cfg, self.path)
         elif self.cloudbroker:
             token = self._get_token(self.path)
-            consoleinfo = self.cloudbroker.getConsoleInfo(token)
+            consoleinfo = self.cloudbroker.retreiveInfo(token, True)
             (self.target_host, self.target_port) = consoleinfo['ipaddress'], consoleinfo['port']
 
         # Connect to the target

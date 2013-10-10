@@ -90,5 +90,32 @@
         result:bool
 
 
+    method: registerVNC
+    """
+    register a vnc application
+    """
+        var:url str,, url of the application
+        result:int
 
+    method: listVNC
+    """
+    list vnc urls
+    """
+        result: list
+
+    method: storeInfo
+    """
+    store info for period of time
+    """
+        var:data dict,, store data for period of time
+        var:timeout int,, timeout for data
+        result:str key where data is stored
+
+    method: retreiveInfo
+    """
+    get info
+    """
+        var:key str,, key of data
+        var:reset bool,, reset info
+        result:dict if key valid otherwise None
 

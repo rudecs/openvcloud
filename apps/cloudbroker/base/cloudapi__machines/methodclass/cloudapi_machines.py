@@ -1,8 +1,6 @@
 from JumpScale import j
 from cloudapi_machines_osis import cloudapi_machines_osis
 from cloudbrokerlib import authenticator, enums
-import memcache
-import uuid
 ujson = j.db.serializers.ujson
 
 
@@ -19,7 +17,6 @@ class cloudapi_machines(cloudapi_machines_osis):
         self.actorname = "machines"
         self.appname = "cloudapi"
         cloudapi_machines_osis.__init__(self)
-        self.cache = memcache.Client(['localhost:11211'])
         self._cb = None
 
     @property
@@ -322,19 +319,6 @@ class cloudapi_machines(cloudapi_machines_osis):
             machine['nrCU'] = size
         return self.cb.model_vmachine_set(machine)
 
-    def getConsoleInfo(self, token, **kwargs):
-        """
-        get connection info to connect to console
-        param:token session token
-        result dict
-
-        """
-        key = str('console.token.%s' % token)
-        machineId = self.cache.get(key)
-        provider, node = self._getProviderAndNode(machineId)
-        self.cache.delete(key)
-        return provider.client.ex_get_console_info(node)
-
     def getConsoleUrl(self, machineId, **kwargs):
         """
         get url to connect to console
@@ -345,8 +329,5 @@ class cloudapi_machines(cloudapi_machines_osis):
         machine = self._getMachine(machineId)
         if machine.status != enums.MachineStatus.RUNNING:
             return None
-        token =  uuid.uuid4()
-        key = 'console.token.%s' % token
-        self.cache.set(key, machineId, 300)
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)

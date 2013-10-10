@@ -104,6 +104,16 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method listSizes")
     
 
+    def listVNC(self, **kwargs):
+        """
+        list vnc urls
+        result  
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method listVNC")
+    
+
     def registerNode(self, id, macaddress, **kwargs):
         """
         Register some basic node information E.g ipaddress
@@ -116,6 +126,17 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method registerNode")
     
 
+    def registerVNC(self, url, **kwargs):
+        """
+        register a vnc application
+        param:url url of the application
+        result int 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method registerVNC")
+    
+
     def releaseIpaddress(self, ipaddress, **kwargs):
         """
         Release a ipaddress.
@@ -125,6 +146,29 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseIpaddress")
+    
+
+    def retreiveInfo(self, key, **kwargs):
+        """
+        get info
+        param:key key of data
+        result dict 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method retreiveInfo")
+    
+
+    def storeInfo(self, data, timeout, **kwargs):
+        """
+        store info for period of time
+        param:data store data for period of time
+        param:timeout timeout for data
+        result str 
+        
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method storeInfo")
     
 
     def unLinkImage(self, imageid, resourceprovider, **kwargs):

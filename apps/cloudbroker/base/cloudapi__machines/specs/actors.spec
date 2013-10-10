@@ -165,11 +165,3 @@
 		"""
 		var:machineId str,, id of machine to connect to console 
 		result:str #returns one time url used to connect ot console 
-
-	method:getConsoleInfo
-		"""
-		get connection info to connect to console
-		"""
-		var:token str,, session token
-		result:dict
-
