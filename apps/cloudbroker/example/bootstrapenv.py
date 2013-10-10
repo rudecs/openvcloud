@@ -1,5 +1,6 @@
 from JumpScale import j
 import JumpScale.portal
+import uuid
 
 cl = j.core.portal.getPortalClient('127.0.0.1', 80, '1234')
 cl.getActor('cloud','cloudbroker')
@@ -23,18 +24,19 @@ accountid = j.apps.cloudapi.accounts.create('myaccount', ['admin'])
 j.apps.cloudapi.cloudspaces.create(accountid, 'myspace', ['admin'])
 
 #create resourceprovider
-rp = j.apps.cloud.cloudbroker.models.resourceprovider.new()
-rp.stackId = 1
+rp = j.apps.libcloud.libvirt.models.resourceprovider.new()
 rp.cloudUnitType = 'CU'
+rp.id = j.tools.hash.md5_string('qemu+ssh://%s/system' % computenodeip)
 rp.capacityAvailable = '500'
-j.apps.cloud.cloudbroker.model_resourceprovider_set(rp)
+j.apps.libcloud.libvirt.model_resourceprovider_set(rp)
 
 #You need to create a image
 
 #A image
 
 image = j.apps.libcloud.libvirt.models.image.new()
-image.name = 'ubuntu-2'
+image.name = 'testimage'
+image.id = str(uuid.uuid4())
 image.description = 'testimage'
 image.UNCPath = 'base-image.img'
 image.size = 10
@@ -44,7 +46,7 @@ imageid = j.apps.libcloud.libvirt.model_image_set(image)
 
 
 imagecb = j.apps.cloud.cloudbroker.models.image.new()
-imagecb.name = 'ubuntu-2'
+imagecb.name = 'testimage'
 #this should be the name of the image in the VMStor
 imagecb.UNCPath = 'ubuntu-base.img'
 imagecb.referenceId = str(imageid)
@@ -53,7 +55,7 @@ imagecb.type='ubuntu'
 imagecbid = j.apps.cloud.cloudbroker.model_image_set(imagecb)
 
 rp.images = [imagecbid]
-j.apps.cloud.cloudbroker.model_resourceprovider_set(rp)
+j.apps.libcloud.libvirt.model_resourceprovider_set(rp)
 
 
 #Create a libcloud_libvirt size
