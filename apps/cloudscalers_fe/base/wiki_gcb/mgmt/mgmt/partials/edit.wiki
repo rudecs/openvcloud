@@ -193,11 +193,16 @@ h2. Manage Machine
                 </li>
             </ul>
             <hr>
-            <div class="error" ng-show="!!machineConsoleUrlResult.error">
-                The machine is closed. Please start it to access it.
+            <div style="display: none">
+                <div class="error" ng-show="!!machineConsoleUrlResult.error">
+                    The machine is closed. Please start it to access it.
+                </div>
+                <iframe ng-hide="machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}">
+                </iframe>
             </div>
-            <iframe ng-hide="machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}">
-            </iframe>
+}}
+!console.png!
+{{html:
             
         </div>
         <div id="logging" class="tab-pane">

@@ -3,13 +3,34 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^partials\//).passThrough();
 
-    var users = [];
-    localStorage.setItem('gcb:users', JSON.stringify(users));
+    // Saves items in localStorage, under the given key. This allows us to persist items in the front-end.
+    function LocalStorageItem(key) {
+        return {
+            get: function() {
+                var items = localStorage.getItem(key)
+                if (items)
+                    return JSON.parse(items);
+                return undefined;
+            },
+            
+            set: function(items) {
+                localStorage.setItem(key, JSON.stringify(items));
+            },
+
+            add: function(item) {
+                var items = this.get();
+                items.push(item);
+                this.set(items);
+            }
+        };
+    }
+
+    var UsersList = LocalStorageItem('gcb:users');
 
     $httpBackend.whenPOST('/users/authenticate').
     respond(function (method, url, data) {
         var credentials = angular.fromJson(data);
-        if (credentials.username == 'error') {
+        if (!_.findWhere(UsersList.get(), credentials)) {
             return [403, 'Unauthorized'];
         }
         return [200, "yep123456789"];
@@ -17,9 +38,11 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenPOST('/users/signup').respond(function(method, url, data) {
         var credentials = angular.fromJson(data);
-        if (credentials.username == 'again') {
+        var users = UsersList.get();
+        if (_.findWhere(users, credentials)) {
             return [441, 'This user is already registered'];
         }
+        UsersList.add(credentials);
         return [200, "Success"];
     });
 
@@ -33,25 +56,28 @@ defineApiStub = function ($httpBackend) {
         'description': 'Production Cloudspace'
     }];
 
-    var machines = [{
-        "status": "RUNNING",
-        "hostname": "jenkins.cloudscalers.com",
-        "description": "JS Webserver",
-        "name": "CloudScalers Jenkins",
-        "nics": [],
-        "sizeId": 0,
-        "imageId": 0,
-        "id": 0
-    }, {
-        "status": "HALTED",
-        "hostname": "cloudbroker.cloudscalers.com",
-        "description": "CloudScalers CloudBroker",
-        "name": "CloudBroker",
-        "nics": [],
-        "sizeId": 0,
-        "imageId": 1,
-        "id": 1
-    }];
+    var MachinesList = LocalStorageItem('gcb:machines');
+    if (!MachinesList.get()) {
+        MachinesList.set([{
+            "status": "RUNNING",
+            "hostname": "jenkins.cloudscalers.com",
+            "description": "JS Webserver",
+            "name": "CloudScalers Jenkins",
+            "nics": [],
+            "sizeId": 0,
+            "imageId": 0,
+            "id": 0
+        }, {
+            "status": "HALTED",
+            "hostname": "cloudbroker.cloudscalers.com",
+            "description": "CloudScalers CloudBroker",
+            "name": "CloudBroker",
+            "nics": [],
+            "sizeId": 0,
+            "imageId": 1,
+            "id": 1
+        }]);
+    }
 
     var images = [{
         'id': 0,
@@ -84,24 +110,24 @@ defineApiStub = function ($httpBackend) {
     };
 
 
-    $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+)&api_key=yep123456789/).respond(function (method, url, data) {
-        var matches = /^\/machines\/get\?machineId=(.+)&api_key=yep123456789/.exec(url);
+    $httpBackend.whenGET(/^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/).respond(function (method, url, data) {
+        var matches = /^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/.exec(url);
         var requestedId = matches[1];
-        if (!_.has(machines, requestedId)) {
+        if (!_.has(MachinesList.get(), requestedId)) {
             return [500, 'Not found']
         }
-        var matchedMachine = machines[requestedId];
+        var matchedMachine = MachinesList.get()[requestedId];
         return [200, matchedMachine];
     });
 
     $httpBackend.whenGET('/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
-        return [200, _.values(machines)];
+        return [200, _.values(MachinesList.get())];
     });
-    $httpBackend.whenGET('/images/list?api_key=yep123456789').respond(images);
-    $httpBackend.whenGET('/sizes/list?api_key=yep123456789').respond(sizes);
+    $httpBackend.whenGET('/images/list?format=jsonraw&api_key=yep123456789').respond(images);
+    $httpBackend.whenGET('/sizes/list?format=jsonraw&api_key=yep123456789').respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var id = _.keys(machines).length;
+        var id = _.keys(MachinesList.get()).length;
         var machine = {
             "status": "RUNNING",
             "cloudspaceId": params.cloudspaceId,
@@ -113,32 +139,33 @@ defineApiStub = function ($httpBackend) {
             "imageId": params.imageId,
             "id": id
         };
-        machines[id] = machine;
+        MachinesList.add(machine);
         return [200, id];
-
     });
-    $httpBackend.whenGET(/^\/machines\/action\?api_key\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/action\?format=jsonraw&api_key\=yep123456789/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
         var machineid = params.machineId;
         if (!_.has(actionlist, action)) {
             return [500, 'Invallid action'];
         }
-        machine = machines[machineid];
-        machine.status = actionlist[action];
-        machines[machineid] = machine;
+        var machines = MachinesList.get();
+        machines[machineid].status = actionlist[action];
+        MachinesList.set(machines);
         return [200, true];
     });
 
-    $httpBackend.whenGET(/^\/machines\/delete\?authkey\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/delete\?format=jsonraw&authkey\=yep123456789/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         console.log('Stub Delete');
         console.log(machineid);
+        var machines = MachinesList.get();
         if (!_.has(machines, machineid)) {
             return [500, 'Machine not found'];
         }
         delete machines[machineid];
+        MachinesList.set(machines);
         return [200, true];
     });
 
