@@ -1,11 +1,8 @@
 h2. Machine Buckets
 
-The machine buckets tool is a portal that consolidates your resources on multiple private and public cloud stacks and offers unique actions to apply on your virtual machines:
+Machine Buckets are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
 
-* Enhanced 1 click deployment, auto scale, auto maintenance
-* Move a virtual machine between clouds
-* Work with different hypervisors and clouds
-* Use true cloud units consumption thanks to metering tools
+Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage. You can choose the datacenter location of your Machine Bucket and optionally replicate it to one or more datacenters for failover purposes.
 
 h3. Start now and create your Machine Bucket
 {{html:

@@ -1,11 +1,11 @@
 <div class="control-group">
-      <label class="control-label" for="textinput">Project Name</label>
+      <label class="control-label" for="textinput">Domain</label>
       <div class="controls">
         <input id="textinput" name="textinput" type="text" class="input-xlarge" ng-model="bucket.projectName"></div>
     </div>
     <hr>    
     <div class="control-group">
-      <label class="control-label" for="appendedtext">Add User</label>
+      <label class="control-label" for="appendedtext">Set User Login</label>
       <div class="controls">
         <div class="input-append">
           <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="E-mail" type="text" ng-model="bucket.newUser.email">    
@@ -15,7 +15,7 @@
     </div>
 
     <div class="control-group">
-      <label class="control-label" for="radios">Select User Type</label>
+      <label class="control-label" for="radios">Select User Privileges</label>
       <div class="controls">
         <label class="radio inline" for="radios-0">
           <input type="radio" name="radios" id="radios-0" value="User" ng-model="bucket.newUser.userType">User</label>
@@ -44,10 +44,10 @@
     </div>
     <hr>    
     <div class="control-group">
-      <label class="control-label" for="appendedtext">Choose Storage</label>
+      <label class="control-label" for="appendedtext">Choose Private Storage Drive Size</label>
       <div class="controls">
         <div class="input-append">
-          <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="140 GB" type="number" ng-model="bucket.storage">    
+          <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="2" type="number" ng-model="bucket.storage">    
           <span class="add-on">GB</span>
         </div>
 
@@ -55,7 +55,7 @@
     </div>
     <hr>    
     <div class="control-group">
-      <label class="control-label" for="checkboxes">Data Locations</label>
+      <label class="control-label" for="checkboxes">Choose Hosting Location</label>
       <div class="controls">
         <div class="btn-group">
           <button type="button" class="btn btn-selector" ng-model="bucket.locations[0]" btn-checkbox>Ghent, Belgium</button>

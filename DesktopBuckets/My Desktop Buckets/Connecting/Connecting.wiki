@@ -1,3 +1,5 @@
 h2. Connecting ...
 
-CloudScalers is connecting you to the admin panels of Smart Global Office ...
+Please wait till you are redirect or [click here|http://sgo.awingu.com].
+
+Your Login credentials for this service are: fossena/arvid1234
