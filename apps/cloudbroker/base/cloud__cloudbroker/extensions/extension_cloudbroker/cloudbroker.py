@@ -76,7 +76,10 @@ class CloudBroker(object):
         query = {}
         query = {'query': {'term': {'referenceId': referenceId}}, 'fields': ['id']}
         queryresult = queryapi(ujson.dumps(query))
-        ids = [res['fields']['id'] for res in queryresult['result']]
+        if 'result' in queryresult:
+            ids = [res['fields']['id'] for res in queryresult['result']]
+        else:
+            ids = [res['fields']['id'] for res in queryresult]
         if ids:
             return ids[0]
         else:
