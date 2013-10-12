@@ -5,7 +5,7 @@
     <tr>
       <th>Status</th>
       <th>Name</th>
-      <th>IP Address</th>
+      <th style="display: none">IP Address</th>
       <th>Memory</th>
       <th>CPU</th>
       <th>Storage</th>
@@ -17,11 +17,11 @@
         <td>
           <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
         </td>
-        <td>{[machine.ip]}</td>
-        <td>{[machine.memory]} GB</td>
-        <td>{[machine.cpu]} <ng-pluralize count="machine.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
-        <td>{[machine.storage]} GB</td>
-        <td>{[numOfDataLocations(machine)]}</td>
+        <td style="display: none">{[machine.ip]}</td>
+        <td>{[sizes[machine.sizeId].disksize]}</td>
+        <td>{[sizes[machine.sizeId].CU]} <ng-pluralize count="sizes[machine.sizeId].CU" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
+        <td>{[machine.disksize]} GB</td>
+        <td>2</td>
       </tr>
     </tbody>
   </table>
