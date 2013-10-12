@@ -105,9 +105,38 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
                 return result;
             },
-            create: function (cloudspaceid, name, description, sizeId, imageId, disksize) {
+            boot: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/boot?format=jsonraw&machineId=' + machine.id;
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                        machine.status = data;   
+                    })
+                    .error(function(data, status, headers, config) {
+                    });
+            },
+            powerOff: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/poweroff?format=jsonraw&machineId=' + machine.id;
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                        machine.status = data;   
+                    })
+                    .error(function(data, status, headers, config) {
+                    });
+            },
+            pause: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/pause?format=jsonraw&machineId=' + machine.id;
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                        machine.status = data;   
+                    })
+                    .error(function(data, status, headers, config) {
+                    });
+            },
+            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?format=jsonraw&cloudspaceId=' + cloudspaceid + '&name=' + name + '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize;
+                url = cloudspaceconfig.apibaseurl + '/machines/create?format=jsonraw&cloudspaceId=' + cloudspaceid + '&name=' + name + 
+                    '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
+                    '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         machine.id = data;
@@ -115,6 +144,10 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     machine.error = status;
                 });
                 return machine;
+            },
+            clone: function(machine, cloneName) {
+                // TODO: actual implementation
+                return this.create(machine.cloudspaceId, cloneName, "Clone of " + machine.name, machine.sizeId, machine.imageId, machine.disksize);
             },
             delete: function (machineid) {
                 var result = []
@@ -148,7 +181,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 url = cloudspaceconfig.apibaseurl + '/machines/get?format=jsonraw&machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
-                        angular.copy(data, machine);
+                        _.extend(machine, data);
                     }).error(
                     function (data, status, headers, config) {
                         machine.error = status;
@@ -198,7 +231,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
     .factory('Image', function ($http) {
         return {
             list: function () {
-                var images = {};
+                var images = [];
                 url = cloudspaceconfig.apibaseurl + '/images/list?format=jsonraw';
                 $http.get(url).success(
                     function (data, status, headers, config) {

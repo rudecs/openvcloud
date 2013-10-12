@@ -39,7 +39,7 @@ h2. Manage Machine
                             <h5>Name</h5>
                             {[machine.name]}
                         </li>
-                        <li>
+                        <li style="display: none">
                             <h5>IP Address</h5>
                             {[machine.ip]}
                         </li>
@@ -49,38 +49,40 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[machine.cpu]} <ng-pluralize count="machine.cpu" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                            {[ sizes[machine.sizeId].CU ]} <ng-pluralize count="sizes[machine.sizeId].CU" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[machine.memory]} GB
+                            {[sizes[machine.sizeId].disksize]} GB
                         </li>
                         <li>
                             <h5>Storage</h5>
-                            {[machine.storage]} GB
+                            <!--{[machine.storage]}--> {[machine.disksize]} GB
                         </li>
                         <li>
                             <h5>Data Locations</h5>
-                            {[machine.locations]}
+                            <!--{[machine.locations]}-->
+                            {[machine.region]}, {[machine.replication]}
+
                         </li>
                     </ul>
                 </div>
                 <div class="span3 actions">
                     <h4>Actions</h4>
                     <ul class="actions">
-                        <li ng-show="machine.status != 'Running'"> 
+                        <li ng-show="machine.status != 'RUNNING'"> 
                             <a ng-click="boot()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
-                        <li ng-show="machine.status == 'Running'">
+                        <li ng-show="machine.status == 'RUNNING'">
                             <a ng-click="powerOff()">
                                 <i class="icon-stop "></i>
                                 Stop
                             </a>
                         </li>
-                        <li ng-show="machine.status == 'Running'">
+                        <li ng-show="machine.status == 'RUNNING'">
                             <a ng-click="pause()">
                                 <i class=" icon-pause"></i>
                                 Pause
@@ -154,7 +156,7 @@ h2. Manage Machine
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="cloneBucket()">Clone</button>
+                                    <button class="btn btn-primary ok" ng-click="cloneMachine()">Clone</button>
                                     <button class="btn cancel" ng-click="closeCloneModal()">Cancel</button>
                                 </div>
                             </div>
@@ -247,7 +249,7 @@ h2. Manage Machine
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="snapshot in snapshots">
+                    <tr ng-repeat="snapshot in snapshots.snapshots">
                         <td width="89%">{[snapshot]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}

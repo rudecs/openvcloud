@@ -1,22 +1,45 @@
 cloudscalersControllers
-    .controller('MachineEditController', ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', function($scope, $routeParams, $timeout, $location, Machine, confirm) {
+    .controller('MachineEditController', 
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Image', 'Size', 'confirm', 
+                function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm) {
         $scope.machine = Machine.get($routeParams.machineId);
+        $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
         $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.newSnapshotName = '';
+        $scope.cloneName = '';
+
+        $scope.sizes = Size.list();
+        $scope.images = Image.list();
+        $scope.imagesList = [];
+
+        $scope.$watch('images', function() {
+            $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
+        })
+
+        $scope.renameModalOpen = false;
+        $scope.snapshotModalOpen = false;
+        $scope.cloneModalOpen = false;
 
         $scope.destroy = function() {
-            if (confirm('Are you sure you want to destroy this bucket?')) {
+            if (confirm('Are you sure you want to destroy this machine?')) {
                 Machine.delete($scope.machine.id);
                 $location.path("/list");
             }
         };
 
         $scope.createSnapshot = function() {
+            $scope.machine.history.push({event: 'Created snapshot', initiated: getFormattedDate(), user: 'Admin'});
             $scope.closeSnapshotModal();
             Machine.createSnapshot($scope.machine.id, $scope.newSnapshotName);
             $scope.newSnapshotName = '';
             showLoading('Creating a snapshot');
+        };
+
+        $scope.restoreSnapshot = function(snapshot) {
+            $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
+            $scope.machine.restoreSnapshot(snapshot);
+            location.reload();
         };
 
         $scope.showSnapshotModal = function() {
@@ -25,6 +48,39 @@ cloudscalersControllers
 
         $scope.closeSnapshotModal = function() {
             $scope.snapshotModalOpen = false;
+        };
+
+        $scope.showCloneModal = function() {
+            $scope.cloneModalOpen = true;
+        };
+
+        $scope.closeCloneModal = function() {
+            $scope.cloneModalOpen = false;
+        };
+
+        $scope.cloneMachine = function() {
+            Machine.clone($scope.machine, $scope.cloneName);
+            $scope.closeCloneModal();
+            $location.path("/list/");
+            showLoading('Cloning...');
+        };
+
+        $scope.boot = function() {
+            $scope.machine.history.push({event: 'Booted', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.boot($scope.machine);
+            showLoading('Booting...');
+        };
+
+         $scope.powerOff = function() {
+            $scope.machine.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.powerOff($scope.machine);
+            showLoading('Powering off...');
+        };
+
+         $scope.pause = function() {
+            $scope.machine.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.pause($scope.machine);
+            showLoading('Pausing...');
         };
 
         // The existing jgauge macros uses jQuery. Because of the way AngularJS works, code executed using 

@@ -13,7 +13,9 @@ cloudscalersControllers
 
         $scope.saveNewMachine = function() {
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
-                           $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize);
+                           $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
+                           $scope.machine.archive,
+                           $scope.machine.region, $scope.machine.replication);
             $location.path('/list');
         };
 

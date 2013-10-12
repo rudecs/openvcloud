@@ -137,6 +137,10 @@ defineApiStub = function ($httpBackend) {
             "nics": [],
             "sizeId": params.sizeId,
             "imageId": params.imageId,
+            disksize: params.disksize,
+            archive: params.archive,
+            region: params.region,
+            replication: params.replication,
             "id": id
         };
         MachinesList.add(machine);
@@ -177,21 +181,62 @@ defineApiStub = function ($httpBackend) {
         "snap4"
     ];
 
-    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
+    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?format=jsonraw&machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
     
-    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
+    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?format=jsonraw&machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
     $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
-        var snapshotName = urlRegexpForSuccess.exec(data)[0];
+        var params = new URI(url).search(true);
+        var snapshotName = params.snapshotName;
         snapshots.push(snapshotName);
         return [200, snapshotName];
     });
 
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?format=jsonraw&machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
 
     // getConsoleUrl
-    $httpBackend.whenGET('/machines/getConsoleUrl?machineId=0&api_key=yep123456789').respond('http://www.reddit.com');
-    $httpBackend.whenGET('/machines/getConsoleUrl?machineId=1&api_key=yep123456789').respond('None');
+    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=0&api_key=yep123456789').respond('http://www.reddit.com');
+    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=1&api_key=yep123456789').respond('None');
+    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=\d+&api_key=yep123456789').respond('http://yahoo.com');
 
+    // actions
+    $httpBackend.whenGET(/^\/machines\/boot\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.has(machines, machineid)) {
+            return [500, 'Machine not found'];
+        }
+        machines[machineid].status = 'RUNNING';
+        MachinesList.set(machines);
+        return [200, 'RUNNING'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/poweroff\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.has(machines, machineid)) {
+            return [500, 'Machine not found'];
+        }
+        machines[machineid].status = 'HALTED';
+        MachinesList.set(machines);
+        return [200, 'HALTED'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/pause\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.has(machines, machineid)) {
+            return [500, 'Machine not found'];
+        }
+        machines[machineid].status = 'PAUSED';
+        MachinesList.set(machines);
+        return [200, 'PAUSED'];
+    });
+
+    // clone
+    $httpBackend.whenGET(/^\/machines\/clone\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond('OK');
 };
