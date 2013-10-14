@@ -11,10 +11,10 @@ cloudscalersControllers
         $scope.logout = function() {
             User.logout();
             $scope.loggedIn = false;
-            location.href = '/test_gcb/';
+            location.href = '/gcb/';
         }
 
         $scope.$on('event:login-successful', function(loginResult) {
-            location.href = '/test_gcb/buckets#/list';
+            location.href = '/gcb/buckets#/list';
         });
     }]);
