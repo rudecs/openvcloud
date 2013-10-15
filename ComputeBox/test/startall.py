@@ -8,8 +8,6 @@ for item in ["byobu","screen"]:
     j.system.process.execute(cmd,dieOnNonZeroExitCode=False)
 
 j.system.platform.screen.createSession('JumpScale',screens)
-cmd="/etc/init.d/elasticsearch restart"
-j.system.process.execute(cmd)
 
 #start osis
 path=j.system.fs.joinPaths("/opt/jumpscale/apps","osis")
