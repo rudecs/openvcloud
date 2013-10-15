@@ -1,0 +1,4 @@
+Machine Buckets:MachineBuckets
+My Machine Buckets:Buckets#/list
+Create Machine Bucket:Buckets#/new
+Custom Machine Images:Custom Images

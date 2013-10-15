@@ -1,0 +1,12 @@
+{{html:
+      <div id="legend" class="">
+        <legend class="">Application management panel</legend>
+      </div>
+}}
+
+* [Open the management panel|$$managementurl]
+* Default login: $$defaultlogin
+* Default password: $$defaultpassword
+
+
+

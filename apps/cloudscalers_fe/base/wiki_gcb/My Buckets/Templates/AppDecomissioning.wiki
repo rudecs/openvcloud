@@ -1,0 +1,9 @@
+h2. Decomissioning $$appname
+
+The Decomissioning tasks of $$appname are tasks that will be executed just before $$appname is stopped.
+
+{{include:UserNotifications}}
+
+{{include:NetworkNotifications}}
+
+{{include:ShutdownBackup}}
