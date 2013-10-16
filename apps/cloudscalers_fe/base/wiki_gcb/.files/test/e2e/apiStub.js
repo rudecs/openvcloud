@@ -123,8 +123,8 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET('/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
         return [200, _.values(MachinesList.get())];
     });
-    $httpBackend.whenGET('/images/list?format=jsonraw&api_key=yep123456789').respond(images);
-    $httpBackend.whenGET('/sizes/list?format=jsonraw&api_key=yep123456789').respond(sizes);
+    $httpBackend.whenGET(/^\/images\/list?.*/).respond(images);
+    $httpBackend.whenGET(/^\/sizes\/list?.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = _.keys(MachinesList.get()).length;
