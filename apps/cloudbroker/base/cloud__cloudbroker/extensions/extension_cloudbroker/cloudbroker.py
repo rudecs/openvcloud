@@ -116,12 +116,12 @@ class CloudBroker(object):
                 image = cloudbroker.models.image.new()
                 image.name = pimage.name
                 image.referenceId = pimage.id
-                image.type = pimage.type
+                image.type = pimage.extra['imagetype']
             else:
                 image = cloudbroker.model_image_get(imageid)
                 image['name'] = pimage.name
                 image['referenceId'] = pimage.id
-                image['type'] = pimage.type
+                image['type'] = pimage.extra['imagetype']
             count += 1
             imageid = cloudbroker.model_image_set(image)
             if not imageid in stack['images']:
