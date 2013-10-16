@@ -1,3 +1,0 @@
-Machine Buckets:Machine Buckets
-Desktop Buckets:Desktop Buckets
-Storage Buckets:Storage Buckets
