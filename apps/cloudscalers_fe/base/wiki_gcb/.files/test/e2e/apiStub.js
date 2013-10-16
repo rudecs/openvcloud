@@ -110,8 +110,8 @@ defineApiStub = function ($httpBackend) {
     };
 
 
-    $httpBackend.whenGET(/^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/).respond(function (method, url, data) {
-        var matches = /^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/.exec(url);
+    $httpBackend.whenGET(/^\/machines\/get\?format=jsonraw&machineId=(.+).*/).respond(function (method, url, data) {
+        var matches = /^\/machines\/get\?format=jsonraw&machineId=(.+).*/.exec(url);
         var requestedId = matches[1];
         if (!_.has(MachinesList.get(), requestedId)) {
             return [500, 'Not found']
@@ -120,7 +120,7 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET('/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/list?.*/).respond(function (method, url, data) {
         return [200, _.values(MachinesList.get())];
     });
     $httpBackend.whenGET(/^\/images\/list?.*/).respond(images);
