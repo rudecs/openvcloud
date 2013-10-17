@@ -96,7 +96,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         return {
             action: function (machineid, action) {
                 var result = []
-                url = cloudspaceconfig.apibaseurl + '/machines/action?format=jsonraw&machineId=' + machineid + '&action=' + action;
+                url = cloudspaceconfig.apibaseurl + '/machines/action?machineId=' + machineid + '&action=' + action;
                 $http.get(url)
                     .success(function (data, status, headers, config) {
                         result.success = true;
@@ -106,7 +106,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 return result;
             },
             boot: function(machine) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/boot?format=jsonraw&machineId=' + machine.id;
+                var url = cloudspaceconfig.apibaseurl + '/machines/boot?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -115,7 +115,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
             },
             powerOff: function(machine) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/poweroff?format=jsonraw&machineId=' + machine.id;
+                var url = cloudspaceconfig.apibaseurl + '/machines/poweroff?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -124,7 +124,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
             },
             pause: function(machine) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/pause?format=jsonraw&machineId=' + machine.id;
+                var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -134,7 +134,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?format=jsonraw&cloudspaceId=' + cloudspaceid + '&name=' + name + 
+                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + name + 
                     '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 $http.get(url).success(
@@ -151,7 +151,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             delete: function (machineid) {
                 var result = []
-                url = cloudspaceconfig.apibaseurl + '/machines/delete?format=jsonraw&machineId=' + machineid;
+                url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         result.success = true;
@@ -162,7 +162,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             list: function (cloudspaceid) {
                 var machines = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/list?format=jsonraw&cloudspaceId=' + cloudspaceid + '&type=';
+                url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (machine) {
@@ -178,7 +178,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 var machine = {
                     id: machineid
                 };
-                url = cloudspaceconfig.apibaseurl + '/machines/get?format=jsonraw&machineId=' + machineid;
+                url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.extend(machine, data);
@@ -190,7 +190,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             listSnapshots: function (machineid) {
                 var snapshotsResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?format=jsonraw&machineId=' + machineid;
+                var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         snapshotsResult.snapshots = data;
@@ -202,7 +202,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             createSnapshot: function (machineId, snapshotName) {
                 var createSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?format=jsonraw&machineId=' + machineId + '&snapshotName=' + snapshotName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&snapshotName=' + snapshotName;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         createSnapshotResult.success = true;
@@ -214,7 +214,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             getConsoleUrl: function(machineId) {
                 var getConsoleUrlResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl?format=jsonraw&machineId=' + machineId;
+                var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl?machineId=' + machineId;
                 $http.get(url).success(function(data, status, headers, config) {
                     if (data == 'None') {
                         getConsoleUrlResult.error = status;
@@ -232,7 +232,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         return {
             list: function () {
                 var images = [];
-                url = cloudspaceconfig.apibaseurl + '/images/list?format=jsonraw';
+                url = cloudspaceconfig.apibaseurl + '/images/list';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.extend(images, _.pairs(_.groupBy(data, function(img) { return img.type; })));
@@ -248,7 +248,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         return {
             list: function () {
                 var sizes = [];
-                url = cloudspaceconfig.apibaseurl + '/sizes/list?format=jsonraw';
+                url = cloudspaceconfig.apibaseurl + '/sizes/list';
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (size) {

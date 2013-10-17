@@ -104,8 +104,10 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine create', function(){
 			defineUnitApiStub($httpBackend);
-			var machineCreateResult = Machine.create(0, 'test_create', 'Test Description', 0, 0);
-                            //expect(machineCreateResult.id).toBeUndefined();
+			
+			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create&description=Test\+Description&sizeId=1&imageId=2&disksize=3&archive=4&region=5&replication=6.*/).respond(200, 3);
+			
+			var machineCreateResult = Machine.create(0, 'test_create', 'Test Description', 1, 2, 3,4,5,6);
 			
 			$httpBackend.flush();
 
@@ -116,6 +118,8 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine create failure', function(){
 			defineUnitApiStub($httpBackend);
+			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create_fail&description=Test\+Description&sizeId=0&imageId=0.*/).respond(500, -10);
+		    
 			var machineCreateResult = Machine.create(0, 'test_create_fail', 'Test Description', 0, 0);
 			
 			$httpBackend.flush();
