@@ -111,7 +111,7 @@ defineApiStub = function ($httpBackend) {
 
 
     $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+).*/).respond(function (method, url, data) {
-        var matches = /^\/machines\/get\?machineId=(.+).*/.exec(url);
+        var matches = /^\/machines\/get\?machineId=(\d+).*/.exec(url);
         var requestedId = matches[1];
         if (!_.has(MachinesList.get(), requestedId)) {
             return [500, 'Not found']
