@@ -15,7 +15,7 @@ h2. Manage Machine
             <a data-toggle="tab" href="#actions">Machine actions</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#console">Console Access</a>
+            <a data-toggle="tab" href="#console">Console</a>
         </li>
         <li>
             <a data-toggle="tab" href="#snapshots">Snapshots</a>
@@ -39,7 +39,7 @@ h2. Manage Machine
                             <h5>Name</h5>
                             {[machine.name]}
                         </li>
-                        <li style="display: none">
+                        <li>
                             <h5>IP Address</h5>
                             {[machine.ip]}
                         </li>
