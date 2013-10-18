@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('LoginController', ['$scope', 'User', 'APIKey', function($scope, User, APIKey) {
+    .controller('LoginController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
         $scope.username = '';
         $scope.password = '';
         $scope.loggedIn = !!APIKey.get();
@@ -11,10 +11,15 @@ cloudscalersControllers
         $scope.logout = function() {
             User.logout();
             $scope.loggedIn = false;
-            location.href = '/gcb/';
+            
+			var uri = new URI($window.location);
+			uri.filename('');
+			$window.location = uri.toString();
         }
 
         $scope.$on('event:login-successful', function(loginResult) {
-            location.href = '/gcb/buckets#/list';
+        	var uri = new URI($window.location);
+			uri.filename('buckets#/list');
+			$window.location = uri.toString();
         });
     }]);
