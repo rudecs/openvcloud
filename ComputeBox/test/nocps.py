@@ -2,7 +2,7 @@ import xmlrpclib
 import time
 
 def installFreshComputeNode(nocps_url, macaddress, hostname):
-    print 'Installing Ubuntu 13.04 on the compute node'
+    print 'Installing Ubuntu 13.10 on the compute node'
     
     ps = xmlrpclib.ServerProxy(nocps_url)
     
@@ -10,7 +10,7 @@ def installFreshComputeNode(nocps_url, macaddress, hostname):
                      'adminuser': 'cs',
                      'hostname': hostname,
                      'mac': macaddress,    #Physical machine identifier
-                     'profile': 403,                #Ubuntu 13.04
+                     'profile': 646,                #Ubuntu 13.10
                      'rebootmethod': 'auto',
                      'rootpassword': 'R00t3r',
                      'rootpassword2': 'R00t3r',
