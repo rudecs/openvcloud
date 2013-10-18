@@ -19,7 +19,7 @@ cloudscalersControllers
 
         $scope.$on('event:login-successful', function(loginResult) {
         	var uri = new URI($window.location);
-			uri.filename('buckets#/list');
+			uri.filename('');
 			$window.location = uri.toString();
         });
     }]);
