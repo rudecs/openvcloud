@@ -32,16 +32,6 @@
 #{{find}}
 
 
-{{menu:
-System:/System
-}}
-
-{{menuadmin}}
-
-
-
-
-
 
 {{html:
 
