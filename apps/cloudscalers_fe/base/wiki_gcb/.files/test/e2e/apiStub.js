@@ -159,7 +159,7 @@ defineApiStub = function ($httpBackend) {
         return [200, true];
     });
 
-    $httpBackend.whenGET(/^\/machines\/delete\?format=jsonraw&authkey\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/delete\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         console.log('Stub Delete');
@@ -198,10 +198,10 @@ defineApiStub = function ($httpBackend) {
     // getConsoleUrl
     $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=0&api_key=yep123456789').respond('http://www.reddit.com');
     $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=1&api_key=yep123456789').respond('None');
-    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=\d+&api_key=yep123456789').respond('http://yahoo.com');
+    $httpBackend.whenGET(/\/machines\/getConsoleUrl\?format=jsonraw&machineId=\d+&api_key=yep123456789/).respond('http://reddit.com');
 
     // actions
-    $httpBackend.whenGET(/^\/machines\/boot\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/boot\?format=jsonraw\&machineId=\d+\&api_key\=yep123456789/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
