@@ -45,7 +45,7 @@ System:/System
 
 {{html:
 
-<div ng-app="cloudscalers" ng-controller="LoginController">
+<div ng-app="cloudscalers">
 <div class="subnavbar">
 
 	<div class="subnavbar-inner">
@@ -153,6 +153,10 @@ System:/System
 	</div> <!-- /subnavbar-inner -->
 
 </div> <!-- /subnavbar -->
+<script type="text/javascript">
+    $('[ng-show=loggedIn]').each(function(i, e) { $('[ng-show=loggedIn]').addClass('ng-show').removeClass('ng-hide') });
+    $('[ng-hide=loggedIn]').each(function(i, e) { $('[ng-show=loggedIn]').addClass('ng-hide').removeClass('ng-show') });
+</script>
 }}
 
 

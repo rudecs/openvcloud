@@ -58,6 +58,21 @@ cloudscalersControllers
             $scope.cloneModalOpen = false;
         };
 
+        $scope.showRenameModal = function() {
+            $scope.oldName = $scope.machine.name;
+            $scope.renameModalOpen = true;
+        };
+
+        $scope.closeRenameModal = function() {
+            $scope.renameModalOpen = false;
+        };
+
+        $scope.rename = function() {
+            Machine.rename($scope.machine, $scope.oldName);
+            $scope.closeRenameModal();
+            showLoading('Renaming machine...');
+        };
+
         $scope.cloneMachine = function() {
             Machine.clone($scope.machine, $scope.cloneName);
             $scope.closeCloneModal();

@@ -18,7 +18,7 @@ defineApiStub = function ($httpBackend) {
             },
 
             add: function(item) {
-                var items = this.get();
+                var items = this.get() || [];
                 items.push(item);
                 this.set(items);
             }
@@ -235,6 +235,19 @@ defineApiStub = function ($httpBackend) {
         machines[machineid].status = 'PAUSED';
         MachinesList.set(machines);
         return [200, 'PAUSED'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/rename\?format=jsonraw&machineId=\d+&newName=.*?&api_key\=yep123456789/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var newName = params.newName;
+        var machines = MachinesList.get();
+        if (!_.has(machines, machineid)) {
+            return [500, 'Machine not found'];
+        }
+        machines[machineid].name = newName;
+        MachinesList.set(machines);
+        return [200, 'OK'];
     });
 
     // clone
