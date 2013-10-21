@@ -108,17 +108,28 @@ defineApiStub = function ($httpBackend) {
         }]);
     }
 
-    var images = [{
-        'id': 0,
-        'name': 'Linux',
-        'description': 'An ubuntu 13.04 image',
-        "type": "Ubuntu"
-    }, {
-        'id': 1,
-        'name': 'Windows',
-        'description': 'A windows 2012 server',
-        "type": "Windows"
-    }];
+    var images = [
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x64', description: 'Ubuntu 13.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x32', description: 'Ubuntu 13.04 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x64', description: 'Ubuntu 12.10 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x32', description: 'Ubuntu 12.10 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x64', description: 'Ubuntu 12.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x32', description: 'Ubuntu 12.04 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x64', description: 'Ubuntu 10.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x32', description: 'Ubuntu 10.04 x32'},
+        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x64', description: 'CentOS 6.4 x64'},
+        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x32', description: 'CentOS 6.4 x32'},
+        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x64', description: 'CentOS 5.8 x64'},
+        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x32', description: 'CentOS 5.8 x32'},
+        {id: 0, type: 'Debian', name: 'Debian 7.0 x64', description: 'Debian 7.0 x64'},
+        {id: 0, type: 'Debian', name: 'Debian 7.0 x32', description: 'Debian 7.0 x32'},
+        {id: 0, type: 'Debian', name: 'Debian 6.0 x64', description: 'Debian 6.0 x64'},
+        {id: 0, type: 'Debian', name: 'Debian 6.0 x32', description: 'Debian 6.0 x32'},
+        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x64', description: 'Arch Linux 2013.05 x64'},
+        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x32', description: 'Arch Linux 2013.05 x32'},
+        {id: 0, type: 'Fedora', name: 'Fedora 17 x64', description: 'Fedora 17 x64'},
+        {id: 0, type: 'Fedora', name: 'Fedora 17 x32', description: 'Fedora 17 x32'},
+    ];
 
     var sizes = [
         {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 2.5 USD/month'},
