@@ -193,7 +193,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         url = urls[id_]
         self._rndrbn_vnc += 1
         token = self.backendconnection.storeInfo(self.ex_get_console_info(node), 300)
-        return url + "/%s" % token
+        return url + "%s" % token
 
     def list_nodes(self):
         noderesult = []

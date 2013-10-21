@@ -236,6 +236,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         result dict
 
         """
+        key = str(key)
         info = self.cache.get(key)
         if reset:
             self.cache.delete(key)
@@ -248,7 +249,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         param:timeout timeout for data
         result str
         """
-        key =  uuid.uuid4()
+        key = str(uuid.uuid4())
         self.cache.set(key, data, timeout)
         return key
 
