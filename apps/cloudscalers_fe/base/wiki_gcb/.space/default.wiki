@@ -35,7 +35,7 @@ function logout() {
     location.reload();
 }
 </script>
-
+<script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular.min.js"></script>
 <div ng-app="cloudscalers">
 <div class="subnavbar">
 
@@ -153,11 +153,11 @@ function showHideLogin() {
 
     var loggedIn = !!localStorage.getItem('gcb:api_key');
     if (loggedIn) {   
-        $('[loggedin-show]').show();
-        $('[loggedin-hide]').hide();
+        angular.element('[loggedin-show]').show();
+        angular.element('[loggedin-hide]').hide();
     } else {
-        $('[loggedin-show]').hide();
-        $('[loggedin-hide]').show();
+        angular.element('[loggedin-show]').hide();
+        angular.element('[loggedin-hide]').show();
     }
 }
 showHideLogin();
@@ -347,7 +347,7 @@ h2. loading
 });
     </script>
 
-    <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular.min.js"></script>
+    
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-mocks.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-route.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-resource.min.js"></script>
