@@ -81,3 +81,6 @@ class CloudBrokerConnection():
 
      def storeInfo(self, data, timeout):
          return self.libvirt_actor.storeInfo(data, timeout)
+
+     def listVNC(self):
+         return self.libvirt_actor.listVNC()
