@@ -70,12 +70,19 @@ h2. Manage Machine
                 <div class="span3 actions">
                     <h4>Actions</h4>
                     <ul class="actions">
-                        <li ng-show="machine.status != 'RUNNING'"> 
+                        <li ng-show="machine.status == 'HALTED'"> 
                             <a ng-click="start()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
+                        <li ng-show="machine.status == 'PAUSED'"> 
+                            <a ng-click="resume()">
+                                <i class="icon-play-circle"></i>
+                                Resume
+                            </a>
+                        </li>
+
                         <li ng-show="machine.status == 'RUNNING'">
                             <a ng-click="stop()">
                                 <i class="icon-stop "></i>

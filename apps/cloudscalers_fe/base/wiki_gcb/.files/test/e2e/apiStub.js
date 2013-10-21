@@ -92,7 +92,7 @@ defineApiStub = function ($httpBackend) {
             "hostname": "jenkins.cloudscalers.com",
             "description": "JS Webserver",
             "name": "CloudScalers Jenkins",
-            "nics": [],
+            "interfaces": [{'ipAddress': '192.168.100.123'}],
             "sizeId": 0,
             "imageId": 0,
             "id": 0
@@ -101,7 +101,7 @@ defineApiStub = function ($httpBackend) {
             "hostname": "cloudbroker.cloudscalers.com",
             "description": "CloudScalers CloudBroker",
             "name": "CloudBroker",
-            "nics": [],
+            "interfaces": [{'ipAddress': '192.168.100.66'}],
             "sizeId": 0,
             "imageId": 1,
             "id": 1
@@ -162,7 +162,7 @@ defineApiStub = function ($httpBackend) {
             "hostname": params.name,
             "description": params.description,
             "name": params.name,
-            "nics": [],
+            "interfaces": [{'ipAddress':'192.168.100.34'}],
             "sizeId": params.sizeId,
             "imageId": params.imageId,
             disksize: params.disksize,
