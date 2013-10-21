@@ -41,7 +41,7 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>IP Address</h5>
-                            {[machine.ip]}
+                            {[machine.interfaces[0].ipAddress]}
                         </li>
                         <li>
                             <h5>Status</h5>
