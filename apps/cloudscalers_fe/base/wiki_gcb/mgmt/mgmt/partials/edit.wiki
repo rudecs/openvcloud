@@ -239,7 +239,7 @@ h2. Manage Machine
                             {[snapshot.date]}
                         </td>
                         <td>
-                            <a ng-click="restoreSnapshot(snapshot)">Rollback</a>
+                            <a style="cursor: pointer" ng-click="restoreSnapshot(snapshot)">Rollback</a>
                         </td>
                     </tr>
                 </tbody>

@@ -151,7 +151,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             rename: function(machine, newName) {
                 machine.name = newName;
-                var url = cloudspaceconfig.apibaseurl + '/machines/rename?format=jsonraw&machineId=' + machine.id + '&newName=' + newName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/rename?machineId=' + machine.id + '&newName=' + newName;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                     })

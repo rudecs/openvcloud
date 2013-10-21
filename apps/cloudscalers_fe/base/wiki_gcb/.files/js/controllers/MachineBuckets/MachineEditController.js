@@ -38,7 +38,7 @@ cloudscalersControllers
 
         $scope.restoreSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            $scope.machine.restoreSnapshot(snapshot);
+            //$scope.machine.restoreSnapshot(snapshot);
             location.reload();
         };
 

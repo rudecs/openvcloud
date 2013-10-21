@@ -148,11 +148,11 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET(/^\/machines\/list?.*/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/list\?.*/).respond(function (method, url, data) {
         return [200, _.values(MachinesList.get())];
     });
-    $httpBackend.whenGET(/^\/images\/list?.*/).respond(images);
-    $httpBackend.whenGET(/^\/sizes\/list?.*/).respond(sizes);
+    $httpBackend.whenGET(/^\/images\/list\?.*/).respond(images);
+    $httpBackend.whenGET(/^\/sizes\/list\?.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = Math.random();
@@ -207,19 +207,19 @@ defineApiStub = function ($httpBackend) {
         "snap4"
     ];
 
-    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
+    $httpBackend.whenGET(/\/machines\/listSnapshots\?.*/).respond(snapshots);
     
-    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
-    $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
+        return [500, "Can't create snapshot"];
+    });
+    $httpBackend.whenGET(/\/machines\/snapshot\?.*/).respond(function(status, data) {
         var params = new URI(url).search(true);
         var snapshotName = params.snapshotName;
         snapshots.push(snapshotName);
         return [200, snapshotName];
     });
 
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
-        return [500, "Can't create snapshot"];
-    });
+    
 
     // getConsoleUrl
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('http://www.reddit.com');
@@ -229,7 +229,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -242,7 +242,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -255,7 +255,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -264,12 +264,12 @@ defineApiStub = function ($httpBackend) {
         return [200, 'PAUSED'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/rename\?format=jsonraw&machineId=\d+&newName=.*?&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/rename\?machineId=.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var newName = params.newName;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
