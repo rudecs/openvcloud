@@ -80,22 +80,28 @@ cloudscalersControllers
             showLoading('Cloning...');
         };
 
-        $scope.boot = function() {
-            $scope.machine.history.push({event: 'Booted', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.boot($scope.machine);
-            showLoading('Booting...');
+        $scope.start = function() {
+            $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.start($scope.machine);
+            showLoading('Starting...');
         };
 
-         $scope.powerOff = function() {
-            $scope.machine.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.powerOff($scope.machine);
-            showLoading('Powering off...');
+         $scope.stop = function() {
+            $scope.machine.history.push({event: 'Stopping machine', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.stop($scope.machine);
+            showLoading('Stopping ...');
         };
 
-         $scope.pause = function() {
-            $scope.machine.history.push({event: 'Powered off', initiated: getFormattedDate(), user: 'Admin'});
+        $scope.pause = function() {
+            $scope.machine.history.push({event: 'Pausing machine', initiated: getFormattedDate(), user: 'Admin'});
             Machine.pause($scope.machine);
             showLoading('Pausing...');
+        };
+
+        $scope.resume = function() {
+            $scope.machine.history.push({event: 'Resuming machine', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.resume($scope.machine);
+            showLoading('Resuming...');
         };
 
         // The existing jgauge macros uses jQuery. Because of the way AngularJS works, code executed using 

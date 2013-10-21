@@ -225,7 +225,7 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('http://www.reddit.com');
 
     // actions
-    $httpBackend.whenGET(/^\/machines\/boot\?machineId=\d+.*/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/start\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
@@ -238,7 +238,7 @@ defineApiStub = function ($httpBackend) {
         return [200, 'RUNNING'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/poweroff\?machineId=\d+.*/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/stop\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
@@ -262,6 +262,19 @@ defineApiStub = function ($httpBackend) {
         machine.status = 'PAUSED';
         MachinesList.save(machine);
         return [200, 'PAUSED'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/resume\?machineId=\d+.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
+            return [500, 'Machine not found'];
+        }
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'RUNNING';
+        MachinesList.save(machine);
+        return [200, 'RUNNING'];
     });
 
     $httpBackend.whenGET(/^\/machines\/rename\?machineId=.*/).respond(function(method, url, data) {

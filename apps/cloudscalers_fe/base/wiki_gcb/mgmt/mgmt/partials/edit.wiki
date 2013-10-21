@@ -71,13 +71,13 @@ h2. Manage Machine
                     <h4>Actions</h4>
                     <ul class="actions">
                         <li ng-show="machine.status != 'RUNNING'"> 
-                            <a ng-click="boot()">
+                            <a ng-click="start()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
                         <li ng-show="machine.status == 'RUNNING'">
-                            <a ng-click="powerOff()">
+                            <a ng-click="stop()">
                                 <i class="icon-stop "></i>
                                 Stop
                             </a>
