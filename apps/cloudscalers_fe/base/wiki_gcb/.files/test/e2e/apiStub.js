@@ -222,7 +222,7 @@ defineApiStub = function ($httpBackend) {
     });
 
     // getConsoleUrl
-    $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('http://www.reddit.com');
+    $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('img/console.png');
 
     // actions
     $httpBackend.whenGET(/^\/machines\/boot\?machineId=\d+.*/).respond(function(method, url, data) {
