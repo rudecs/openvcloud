@@ -32,16 +32,6 @@
 #{{find}}
 
 
-{{menu:
-System:/System
-}}
-
-{{menuadmin}}
-
-
-
-
-
 
 {{html:
 
@@ -93,22 +83,36 @@ System:/System
 				<li ng-show="loggedIn">
 				<a href="../$$space/MachineBuckets">
 				<i class="icon-cloud"></i>
-				<span>My Machine Buckets</span>
+				<span>Machine Buckets</span>
 				</a></li>
 
 				<li ng-show="loggedIn">
 				<a href="../$$space/DesktopBuckets">
 				<i class="icon-desktop"></i>
-				<span>My Desktop Buckets</span>
+				<span>Desktop Buckets</span>
 				</a>
 				</li>
+
 				<li ng-show="loggedIn">
 				<a href="../$$space/StorageBuckets">
 				<i class="icon-hdd"></i>
-				<span>My Storage Buckets</span>
+				<span>Storage Buckets</span>
+				</a>
+				</li> 
+
+				<li ng-show="loggedIn">
+				<a href="../$$space/ApplicationBuckets">
+				<i class="icon-bar-chart"></i>
+				<span>App Buckets</span>
 				</a>
 				</li> 
 					  				    				
+				<li ng-show="loggedIn">
+				<a href="../$$space/ComputeBuckets">
+				<i class="icon-cogs"></i>
+				<span>Compute Buckets</span>
+				</a>
+				</li> 
 				
 
 				<li ng-show="loggedIn" class=" ng-hide">
@@ -118,20 +122,10 @@ System:/System
 					</a>  									
 				</li>
 				
-				<li  ng-show="loggedIn" class=" ng-hide">					
-					<a href="../$$space/Billing">
-						<i class="icon-money"></i>
-						<span>Billing</span>
-						
-                    </a>	
-				
-                </li>
-
-
 				<li ng-show="loggedIn" class=" ng-hide">					
-					<a href="../$$space/Support">
+					<a href="../$$space/ApiDocs">
 						<i class="icon-ambulance"></i>
-						<span>Support </span>
+						<span>Docs</span>
 					</a>  									
 				</li>
 

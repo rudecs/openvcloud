@@ -12,7 +12,21 @@ defineApiStub = function ($httpBackend) {
                     return JSON.parse(items);
                 return undefined;
             },
-            
+
+            getById: function(id) {
+                return _.find(this.get(), function(m) { return m.id == id; }); // '==' here is intentional
+            },
+
+            save: function(item) {
+                var items = this.get();
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].id == item.id) {
+                        items[i] = item;
+                    }
+                }
+                this.set(items);
+            },
+
             set: function(items) {
                 localStorage.setItem(key, JSON.stringify(items));
             },
@@ -20,6 +34,21 @@ defineApiStub = function ($httpBackend) {
             add: function(item) {
                 var items = this.get() || [];
                 items.push(item);
+                this.set(items);
+            },
+
+            remove: function(id) {
+                var items = this.get();
+                var index = -1;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].id == id) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index == -1)
+                    return;
+                items.splice(index, 1);
                 this.set(items);
             }
         };
@@ -110,24 +139,23 @@ defineApiStub = function ($httpBackend) {
     };
 
 
-    $httpBackend.whenGET(/^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/).respond(function (method, url, data) {
-        var matches = /^\/machines\/get\?format=jsonraw&machineId=(.+)&api_key=yep123456789/.exec(url);
-        var requestedId = matches[1];
-        if (!_.has(MachinesList.get(), requestedId)) {
+    $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+).*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);
+        if (!_.find(MachinesList.get(), function(m) { return m.id == params.machineId; })) {
             return [500, 'Not found']
         }
-        var matchedMachine = MachinesList.get()[requestedId];
+        var matchedMachine = MachinesList.getById(params.machineId);
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET('/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/list?.*/).respond(function (method, url, data) {
         return [200, _.values(MachinesList.get())];
     });
-    $httpBackend.whenGET('/images/list?format=jsonraw&api_key=yep123456789').respond(images);
-    $httpBackend.whenGET('/sizes/list?format=jsonraw&api_key=yep123456789').respond(sizes);
+    $httpBackend.whenGET(/^\/images\/list?.*/).respond(images);
+    $httpBackend.whenGET(/^\/sizes\/list?.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var id = _.keys(MachinesList.get()).length;
+        var id = Math.random();
         var machine = {
             "status": "RUNNING",
             "cloudspaceId": params.cloudspaceId,
@@ -146,30 +174,28 @@ defineApiStub = function ($httpBackend) {
         MachinesList.add(machine);
         return [200, id];
     });
-    $httpBackend.whenGET(/^\/machines\/action\?format=jsonraw&api_key\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/action\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
         var machineid = params.machineId;
         if (!_.has(actionlist, action)) {
             return [500, 'Invallid action'];
         }
-        var machines = MachinesList.get();
-        machines[machineid].status = actionlist[action];
-        MachinesList.set(machines);
+        var machine = MachinesList.getById(machineid);
+        machine.status = actionlist[action];
+        MachinesList.save(machine);
         return [200, true];
     });
 
-    $httpBackend.whenGET(/^\/machines\/delete\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/delete\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
-        console.log('Stub Delete');
-        console.log(machineid);
+        console.log('Stub Delete ' + machineid);
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
-        delete machines[machineid];
-        MachinesList.set(machines);
+        MachinesList.remove(machineid);
         return [200, true];
     });
 
@@ -181,9 +207,9 @@ defineApiStub = function ($httpBackend) {
         "snap4"
     ];
 
-    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?format=jsonraw&machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
+    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
     
-    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?format=jsonraw&machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
+    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
     $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
         var params = new URI(url).search(true);
         var snapshotName = params.snapshotName;
@@ -191,49 +217,50 @@ defineApiStub = function ($httpBackend) {
         return [200, snapshotName];
     });
 
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?format=jsonraw&machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
 
     // getConsoleUrl
-    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=0&api_key=yep123456789').respond('http://www.reddit.com');
-    $httpBackend.whenGET('/machines/getConsoleUrl?format=jsonraw&machineId=1&api_key=yep123456789').respond('None');
-    $httpBackend.whenGET(/\/machines\/getConsoleUrl\?format=jsonraw&machineId=\d+&api_key=yep123456789/).respond('http://reddit.com');
+    $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('http://www.reddit.com');
 
     // actions
-    $httpBackend.whenGET(/^\/machines\/boot\?format=jsonraw\&machineId=\d+\&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/boot\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
         if (!_.has(machines, machineid)) {
             return [500, 'Machine not found'];
         }
-        machines[machineid].status = 'RUNNING';
-        MachinesList.set(machines);
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'RUNNING';
+        MachinesList.save(machine);
         return [200, 'RUNNING'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/poweroff\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/poweroff\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
         if (!_.has(machines, machineid)) {
             return [500, 'Machine not found'];
         }
-        machines[machineid].status = 'HALTED';
-        MachinesList.set(machines);
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'HALTED';
+        MachinesList.save(machine);
         return [200, 'HALTED'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/pause\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/pause\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
         if (!_.has(machines, machineid)) {
             return [500, 'Machine not found'];
         }
-        machines[machineid].status = 'PAUSED';
-        MachinesList.set(machines);
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'PAUSED';
+        MachinesList.save(machine);
         return [200, 'PAUSED'];
     });
 
@@ -245,11 +272,13 @@ defineApiStub = function ($httpBackend) {
         if (!_.has(machines, machineid)) {
             return [500, 'Machine not found'];
         }
-        machines[machineid].name = newName;
-        MachinesList.set(machines);
+        var machine = MachinesList.getById(machineid);
+        machine.name = newName;
+        MachinesList.save(machine);
         return [200, 'OK'];
     });
 
     // clone
-    $httpBackend.whenGET(/^\/machines\/clone\?format=jsonraw&machineId=\d+&api_key\=yep123456789/).respond('OK');
+    $httpBackend.whenGET(/^\/machines\/clone\?machineId=\d+.*/).respond('OK');
 };
+

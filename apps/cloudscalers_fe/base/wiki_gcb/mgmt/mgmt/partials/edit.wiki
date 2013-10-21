@@ -15,10 +15,10 @@ h2. Manage Machine
             <a data-toggle="tab" href="#actions">Machine actions</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#console">Console Access</a>
+            <a data-toggle="tab" href="#console">Console</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#snapshots">Manage Snapshots</a>
+            <a data-toggle="tab" href="#snapshots">Snapshots</a>
         </li>
         <li>
             <a data-toggle="tab" href="#monitoring">Monitoring</a>
@@ -39,7 +39,7 @@ h2. Manage Machine
                             <h5>Name</h5>
                             {[machine.name]}
                         </li>
-                        <li style="display: none">
+                        <li>
                             <h5>IP Address</h5>
                             {[machine.ip]}
                         </li>
@@ -178,22 +178,6 @@ h2. Manage Machine
             <p class="note">
                 If you see a black screen just click on it and click any button to activate the console window.
             </p>
-            <hr>
-            <h3>Public Network</h3>
-            <ul  class="list">
-                <li>
-                    <h5>IP Address</h5>
-                    {[machine.ip]}
-                </li>
-                <li>
-                    <h5>Gateway</h5>
-                    192.241.173.1
-                </li>
-                <li>
-                    <h5>Netmask</h5>
-                    255.255.255.0
-                </li>
-            </ul>
             <hr>
             <div style="display: none">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">

@@ -29,12 +29,10 @@ defineUnitApiStub = function($httpBackend){
         {'id':2, 'name':'small', 'CU':4, 'disksize': 100}];
 
 
-    $httpBackend.whenGET('testapi/machines/list?format=jsonraw&cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(openwizzymachines);
-    $httpBackend.whenGET('testapi/machines/list?format=jsonraw&cloudspaceId=' + 13 + '&type=&api_key=yep123456789').respond(function() { return [500, 'Unknown cloudspace']; });
+    $httpBackend.whenGET('testapi/machines/list?cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(openwizzymachines);
+    $httpBackend.whenGET('testapi/machines/list?cloudspaceId=' + 13 + '&type=&api_key=yep123456789').respond(function() { return [500, 'Unknown cloudspace']; });
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 0 + '&api_key=yep123456789').respond(openwizzymachines[0]);
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 44534 + '&api_key=yep123456789').respond(500, 'Not Found');
-    $httpBackend.whenGET('testapi/machines/create?cloudspaceId=0&name=test_create&description=Test+Description&sizeId=0&imageId=0&api_key=yep123456789').respond(200, 3);
-    $httpBackend.whenGET('testapi/machines/create?cloudspaceId=0&name=test_create_fail&description=Test+Description&sizeId=0&imageId=0&api_key=yep123456789').respond(500, -10);
     $httpBackend.whenGET('testapi/images/list?api_key=yep123456789').respond(openwizzyimages);
     $httpBackend.whenGET('testapi/sizes/list?api_key=yep123456789').respond(openwizzysizes);
 

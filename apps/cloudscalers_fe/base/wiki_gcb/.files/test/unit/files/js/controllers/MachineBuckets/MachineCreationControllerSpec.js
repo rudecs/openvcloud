@@ -24,7 +24,11 @@ describe("Machine bucket controller tests", function(){
 	            name: 'Test machine 1',
 	            description: 'Test machine 1 description',
 	            sizeId: 1,
-	            imageId: 2
+	            imageId: 2,
+	            disksize: 3,
+	            archive: 4,
+	            region: 5,
+	            replication: 6
 	        };
 			
 			scope.saveNewMachine();
@@ -43,7 +47,7 @@ describe("Machine bucket controller tests", function(){
 		});
 
 		it('called the service with correct parameters', function() {
-			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2);
+			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
 		});
 	});
 
