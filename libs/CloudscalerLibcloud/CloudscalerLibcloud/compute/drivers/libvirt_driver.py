@@ -235,10 +235,6 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         info['ipaddress'] = self._get_connection_ip()
         return info
 
-    def ex_get_console_url(self, node):
-        pass # should iteratore consoleapps from backendconnection and select one
-
-
     def _get_connection_ip(self):
         uri = urlparse.urlparse(self.connection.getURI())
         return uri.netloc
