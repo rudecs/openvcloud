@@ -1,0 +1,18 @@
+h2. Desktop Buckets Settings
+
+{{html:
+<hr>
+<form class="form-horizontal" ng-app="myApp" ng-controller="CreateDesktopBucketController">
+<fieldset>
+
+{{include:DesktopBucketsSettings}}
+<div class="form-actions">
+    <button class="btn btn-info btn-large " ng-disabled="!bucket.isValid()" ng-click="create()">Save Desktop Buckets Settings</button>
+
+</div>
+
+</fieldset>
+</form>
+
+}}
+

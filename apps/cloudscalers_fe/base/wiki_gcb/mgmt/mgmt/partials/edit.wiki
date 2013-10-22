@@ -183,7 +183,7 @@ h2. Manage Machine
 
         <div id="console" class="tab-pane">
             <p class="note">
-                If you see a black screen just click on it and click any button to activate the console window.
+                Make sure to click on the top of the console screen to take control.
             </p>
             <hr>
             <div ng-model="machineConsoleUrlResult">

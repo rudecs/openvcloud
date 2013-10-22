@@ -3,7 +3,7 @@
 Welcome | /$$space/.files/img/1.png
 Are you ready for the next step in IT infrastructure?  <br> 
 CloudScalers introduces Cloud Buckets <br> 
-Delivering securely virtual machines, cloud desktops and cloud storage
+Delivering virtual machines, cloud desktops and cloud storage
 ------
 Machine Buckets  | /$$space/.files/img/2.png
 Create and manage Cloud Buckets from a unified platform  <br> 
@@ -11,12 +11,12 @@ Offering more simplicity and flexibility than other clouds <br>
 At ultra competitive prices!
 ------
 Desktop Buckets | /$$space/.files/img/3.png
-Intelligent SSD caching bringing better performance  <br> 
+Intelligent SSD performance  <br> 
 More flexibility in choosing the ideal resource configuration  <br> 
 No lock in thanks to built in import and export functions
 ------
 Application Buckets | /$$space/.files/img/4.png
-Automated snapshotting, rollback and cloning  <br> 
+Automated snapshots and fast cloning  <br> 
 Next generation cloud desktops working on any device  <br> 
 A simple and straightforward API
 ------
@@ -47,7 +47,7 @@ CloudScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Tha
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
 {{html: <h3> <i class="icon-tasks"></i> Machine Buckets </h3>}}
-Come and discover CloudScalers ultra fast virtual machines, running at enterprise level SSD speeds, delivering even more IO performance than other SSD providers. Virtual Machines are delivered with a toolset of powerful functions: start, stop, clone, snapshot, rollback, export and monitor machines.
+CloudScalers delivers virtual machines in less than 10 seconds. The virtual machines run at enterprise level SSD speeds, delivering even more IO performance than other SSD providers. Virtual Machines can be managed with functions start, stop, clone, snapshot, rollback and export.
 {{html: </div> </div> }}
 @colend
 
@@ -55,7 +55,7 @@ Come and discover CloudScalers ultra fast virtual machines, running at enterpris
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
 {{html: <h3> <i class="icon-desktop"></i> Desktop Buckets  </h3>}}
-Create cloud desktops for your users, delivering them access to a web portal streaming any windows, web or legacy application to any device: laptop, tablet or smartphone. Applications are integrated with a private cloud storage drive including easy to use sharing features.
+CloudScalers delivers instant cloud desktops, delivering the desktop as a web portal streaming any windows, web or legacy application to any device: laptop, tablet or smartphone. Applications are integrated with a private cloud storage drive including sharing and collaboration features.
 {{html: </div> </div> }}
 @colend
 
@@ -63,7 +63,7 @@ Create cloud desktops for your users, delivering them access to a web portal str
 {{html: <div class="widget"> <div class="widget-content fix-h"> }}
 
 {{html: <h3> <i class="icon-cogs"></i> Storage Buckets </h3>}}
-Store your backup and archive files reliable with our S3 API at ultra competitive pricing. The Storage Buckets environment is protected with erasure coding completed with data maintance function to ensure data integrity!
+The Storage API delivers an S3 compatible API at ultra competitive pricing for archive and backup data. The Storage Buckets environment delivers 100% protected storage and protects the data integrity! The system can handle both small and very large files.
 {{html: </div> </div> }}
 @colend
 
