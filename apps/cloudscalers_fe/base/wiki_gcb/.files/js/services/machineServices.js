@@ -237,7 +237,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     if (data == 'None') {
                         getConsoleUrlResult.error = status;
                     } else {
-                        getConsoleUrlResult.url = $sce.trustAsResourceUrl(data);
+                        getConsoleUrlResult.url = $sce.trustAsResourceUrl(JSON.parse(data));
                     }
                 }).error(function (data, status, headers, config) {
                     getConsoleUrlResult.error = status;
