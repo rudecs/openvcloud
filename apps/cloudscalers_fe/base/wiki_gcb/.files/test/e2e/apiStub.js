@@ -110,25 +110,25 @@ defineApiStub = function ($httpBackend) {
 
     var images = [
         {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x64', description: 'Ubuntu 13.04 x64'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x32', description: 'Ubuntu 13.04 x32'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x64', description: 'Ubuntu 12.10 x64'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x32', description: 'Ubuntu 12.10 x32'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x64', description: 'Ubuntu 12.04 x64'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x32', description: 'Ubuntu 12.04 x32'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x64', description: 'Ubuntu 10.04 x64'},
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x32', description: 'Ubuntu 10.04 x32'},
-        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x64', description: 'CentOS 6.4 x64'},
-        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x32', description: 'CentOS 6.4 x32'},
-        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x64', description: 'CentOS 5.8 x64'},
-        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x32', description: 'CentOS 5.8 x32'},
-        {id: 0, type: 'Debian', name: 'Debian 7.0 x64', description: 'Debian 7.0 x64'},
-        {id: 0, type: 'Debian', name: 'Debian 7.0 x32', description: 'Debian 7.0 x32'},
-        {id: 0, type: 'Debian', name: 'Debian 6.0 x64', description: 'Debian 6.0 x64'},
-        {id: 0, type: 'Debian', name: 'Debian 6.0 x32', description: 'Debian 6.0 x32'},
-        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x64', description: 'Arch Linux 2013.05 x64'},
-        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x32', description: 'Arch Linux 2013.05 x32'},
-        {id: 0, type: 'Fedora', name: 'Fedora 17 x64', description: 'Fedora 17 x64'},
-        {id: 0, type: 'Fedora', name: 'Fedora 17 x32', description: 'Fedora 17 x32'},
+        {id: 1, type: 'Ubuntu', name: 'Ubuntu 13.04 x32', description: 'Ubuntu 13.04 x32'},
+        {id: 2, type: 'Ubuntu', name: 'Ubuntu 12.10 x64', description: 'Ubuntu 12.10 x64'},
+        {id: 3, type: 'Ubuntu', name: 'Ubuntu 12.10 x32', description: 'Ubuntu 12.10 x32'},
+        {id: 4, type: 'Ubuntu', name: 'Ubuntu 12.04 x64', description: 'Ubuntu 12.04 x64'},
+        {id: 5, type: 'Ubuntu', name: 'Ubuntu 12.04 x32', description: 'Ubuntu 12.04 x32'},
+        {id: 6, type: 'Ubuntu', name: 'Ubuntu 10.04 x64', description: 'Ubuntu 10.04 x64'},
+        {id: 7, type: 'Ubuntu', name: 'Ubuntu 10.04 x32', description: 'Ubuntu 10.04 x32'},
+        {id: 8, type: 'CentOS', name: 'CentOS 6.4 x64', description: 'CentOS 6.4 x64'},
+        {id: 9, type: 'CentOS', name: 'CentOS 6.4 x32', description: 'CentOS 6.4 x32'},
+        {id: 10, type: 'CentOS', name: 'CentOS 5.8 x64', description: 'CentOS 5.8 x64'},
+        {id: 11, type: 'CentOS', name: 'CentOS 5.8 x32', description: 'CentOS 5.8 x32'},
+        {id: 12, type: 'Debian', name: 'Debian 7.0 x64', description: 'Debian 7.0 x64'},
+        {id: 13, type: 'Debian', name: 'Debian 7.0 x32', description: 'Debian 7.0 x32'},
+        {id: 14, type: 'Debian', name: 'Debian 6.0 x64', description: 'Debian 6.0 x64'},
+        {id: 15, type: 'Debian', name: 'Debian 6.0 x32', description: 'Debian 6.0 x32'},
+        {id: 16, type: 'Arch Linux', name: 'Arch Linux 2013.05 x64', description: 'Arch Linux 2013.05 x64'},
+        {id: 17, type: 'Arch Linux', name: 'Arch Linux 2013.05 x32', description: 'Arch Linux 2013.05 x32'},
+        {id: 18, type: 'Fedora', name: 'Fedora 17 x64', description: 'Fedora 17 x64'},
+        {id: 19, type: 'Fedora', name: 'Fedora 17 x32', description: 'Fedora 17 x32'},
     ];
 
     var sizes = [
@@ -233,7 +233,7 @@ defineApiStub = function ($httpBackend) {
     
 
     // getConsoleUrl
-    $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('img/console.png');
+    $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('".files/img/console.png"');
 
     // actions
     $httpBackend.whenGET(/^\/machines\/start\?machineId=\d+.*/).respond(function(method, url, data) {

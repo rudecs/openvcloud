@@ -15,7 +15,7 @@ cloudscalersControllers
 
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
-        })
+        });
 
         $scope.renameModalOpen = false;
         $scope.snapshotModalOpen = false;
