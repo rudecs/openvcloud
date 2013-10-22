@@ -92,7 +92,7 @@ defineApiStub = function ($httpBackend) {
             "hostname": "jenkins.cloudscalers.com",
             "description": "JS Webserver",
             "name": "CloudScalers Jenkins",
-            "nics": [],
+            "interfaces": [{'ipAddress': '192.168.100.123'}],
             "sizeId": 0,
             "imageId": 0,
             "id": 0
@@ -101,24 +101,35 @@ defineApiStub = function ($httpBackend) {
             "hostname": "cloudbroker.cloudscalers.com",
             "description": "CloudScalers CloudBroker",
             "name": "CloudBroker",
-            "nics": [],
+            "interfaces": [{'ipAddress': '192.168.100.66'}],
             "sizeId": 0,
             "imageId": 1,
             "id": 1
         }]);
     }
 
-    var images = [{
-        'id': 0,
-        'name': 'Linux',
-        'description': 'An ubuntu 13.04 image',
-        "type": "Ubuntu"
-    }, {
-        'id': 1,
-        'name': 'Windows',
-        'description': 'A windows 2012 server',
-        "type": "Windows"
-    }];
+    var images = [
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x64', description: 'Ubuntu 13.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x32', description: 'Ubuntu 13.04 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x64', description: 'Ubuntu 12.10 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.10 x32', description: 'Ubuntu 12.10 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x64', description: 'Ubuntu 12.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 12.04 x32', description: 'Ubuntu 12.04 x32'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x64', description: 'Ubuntu 10.04 x64'},
+        {id: 0, type: 'Ubuntu', name: 'Ubuntu 10.04 x32', description: 'Ubuntu 10.04 x32'},
+        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x64', description: 'CentOS 6.4 x64'},
+        {id: 0, type: 'CentOS', name: 'CentOS 6.4 x32', description: 'CentOS 6.4 x32'},
+        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x64', description: 'CentOS 5.8 x64'},
+        {id: 0, type: 'CentOS', name: 'CentOS 5.8 x32', description: 'CentOS 5.8 x32'},
+        {id: 0, type: 'Debian', name: 'Debian 7.0 x64', description: 'Debian 7.0 x64'},
+        {id: 0, type: 'Debian', name: 'Debian 7.0 x32', description: 'Debian 7.0 x32'},
+        {id: 0, type: 'Debian', name: 'Debian 6.0 x64', description: 'Debian 6.0 x64'},
+        {id: 0, type: 'Debian', name: 'Debian 6.0 x32', description: 'Debian 6.0 x32'},
+        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x64', description: 'Arch Linux 2013.05 x64'},
+        {id: 0, type: 'Arch Linux', name: 'Arch Linux 2013.05 x32', description: 'Arch Linux 2013.05 x32'},
+        {id: 0, type: 'Fedora', name: 'Fedora 17 x64', description: 'Fedora 17 x64'},
+        {id: 0, type: 'Fedora', name: 'Fedora 17 x32', description: 'Fedora 17 x32'},
+    ];
 
     var sizes = [
         {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 2.5 USD/month'},
@@ -148,11 +159,11 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET(/^\/machines\/list?.*/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/list\?.*/).respond(function (method, url, data) {
         return [200, _.values(MachinesList.get())];
     });
-    $httpBackend.whenGET(/^\/images\/list?.*/).respond(images);
-    $httpBackend.whenGET(/^\/sizes\/list?.*/).respond(sizes);
+    $httpBackend.whenGET(/^\/images\/list\?.*/).respond(images);
+    $httpBackend.whenGET(/^\/sizes\/list\?.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = Math.random();
@@ -162,7 +173,7 @@ defineApiStub = function ($httpBackend) {
             "hostname": params.name,
             "description": params.description,
             "name": params.name,
-            "nics": [],
+            "interfaces": [{'ipAddress':'192.168.100.34'}],
             "sizeId": params.sizeId,
             "imageId": params.imageId,
             disksize: params.disksize,
@@ -207,29 +218,29 @@ defineApiStub = function ($httpBackend) {
         "snap4"
     ];
 
-    $httpBackend.whenGET(new RegExp('\/machines\/listSnapshots\\?machineId=(\\d+)\&api_key=(.*?)')).respond(snapshots);
+    $httpBackend.whenGET(/\/machines\/listSnapshots\?.*/).respond(snapshots);
     
-    var urlRegexpForSuccess = new RegExp('\/machines\/snapshot\\?machineId\=\\d+\&snapshotName\=(.*?)\&api_key\=(.*?)$');
-    $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
+        return [500, "Can't create snapshot"];
+    });
+    $httpBackend.whenGET(/\/machines\/snapshot\?.*/).respond(function(status, data) {
         var params = new URI(url).search(true);
         var snapshotName = params.snapshotName;
         snapshots.push(snapshotName);
         return [200, snapshotName];
     });
 
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
-        return [500, "Can't create snapshot"];
-    });
+    
 
     // getConsoleUrl
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('img/console.png');
 
     // actions
-    $httpBackend.whenGET(/^\/machines\/boot\?machineId=\d+.*/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/start\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -238,11 +249,11 @@ defineApiStub = function ($httpBackend) {
         return [200, 'RUNNING'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/poweroff\?machineId=\d+.*/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/stop\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -255,7 +266,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);
@@ -264,12 +275,25 @@ defineApiStub = function ($httpBackend) {
         return [200, 'PAUSED'];
     });
 
-    $httpBackend.whenGET(/^\/machines\/rename\?format=jsonraw&machineId=\d+&newName=.*?&api_key\=yep123456789/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/resume\?machineId=\d+.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
+            return [500, 'Machine not found'];
+        }
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'RUNNING';
+        MachinesList.save(machine);
+        return [200, 'RUNNING'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/rename\?machineId=.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
         var newName = params.newName;
         var machines = MachinesList.get();
-        if (!_.has(machines, machineid)) {
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
             return [500, 'Machine not found'];
         }
         var machine = MachinesList.getById(machineid);

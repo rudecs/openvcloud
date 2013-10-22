@@ -105,8 +105,8 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
                 return result;
             },
-            boot: function(machine) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/boot?machineId=' + machine.id;
+            start: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/start?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -114,8 +114,8 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     .error(function(data, status, headers, config) {
                     });
             },
-            powerOff: function(machine) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/poweroff?machineId=' + machine.id;
+            stop: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/stop?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -125,6 +125,15 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             pause: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                        machine.status = data;   
+                    })
+                    .error(function(data, status, headers, config) {
+                    });
+            },
+            resume: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/resume?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = data;   
@@ -151,7 +160,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             rename: function(machine, newName) {
                 machine.name = newName;
-                var url = cloudspaceconfig.apibaseurl + '/machines/rename?format=jsonraw&machineId=' + machine.id + '&newName=' + newName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/rename?machineId=' + machine.id + '&newName=' + newName;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                     })

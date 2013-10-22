@@ -22,12 +22,6 @@
 {{css:/$$space/.files/css/pages/dashboard.css}}
 {{css:/$$space/.files/custom.css}}
 
-{{html:
-    <style type="text/css">
-    .ng-hide { display: none !important;  }
-    </style>
-}}
-
 
 #{{find}}
 
@@ -35,6 +29,13 @@
 
 {{html:
 
+<script>
+function logout() {
+    localStorage.removeItem('gcb:api_key');
+    location.reload();
+}
+</script>
+<script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular.min.js"></script>
 <div ng-app="cloudscalers">
 <div class="subnavbar">
 
@@ -46,21 +47,21 @@
 			
 			<ul class="mainnav">
 			
-			 <li class="active" ng-hide="loggedIn" >
+			 <li class="active" loggedin-hide >
 					<a href="../$$space" >
 						<i class="icon-home"></i>
 						<span>Home</span>
 					</a>	    				
 				</li> 
 
-				<li ng-hide="loggedIn">
+				<li loggedin-hide>
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
 						<span>Why CloudScalers</span>
 					</a>	    				
 				</li> 
 
-				<li class="dropdown-submenu" ng-hide="loggedIn" >
+				<li class="dropdown-submenu" loggedin-hide >
 					<a href="../$$space/Products">
 						<i class="icon-cloud"></i>
 						<span>Products</span>
@@ -73,41 +74,41 @@
 				</li>
 
 
-				<li ng-hide="loggedIn">
+				<li loggedin-hide>
 					<a href="../$$space/Pricing">
 						<i class="icon-shopping-cart"></i>
 						<span>Pricing</span>
 					</a>	    				
 				</li> 
 
-				<li ng-show="loggedIn">
+				<li loggedin-show>
 				<a href="../$$space/MachineBuckets">
 				<i class="icon-cloud"></i>
 				<span>Machine Buckets</span>
 				</a></li>
 
-				<li ng-show="loggedIn">
+				<li loggedin-show>
 				<a href="../$$space/DesktopBuckets">
 				<i class="icon-desktop"></i>
 				<span>Desktop Buckets</span>
 				</a>
 				</li>
 
-				<li ng-show="loggedIn">
+				<li loggedin-show>
 				<a href="../$$space/StorageBuckets">
 				<i class="icon-hdd"></i>
 				<span>Storage Buckets</span>
 				</a>
 				</li> 
 
-				<li ng-show="loggedIn">
+				<li loggedin-show>
 				<a href="../$$space/ApplicationBuckets">
 				<i class="icon-bar-chart"></i>
 				<span>App Buckets</span>
 				</a>
 				</li> 
 					  				    				
-				<li ng-show="loggedIn">
+				<li loggedin-show>
 				<a href="../$$space/ComputeBuckets">
 				<i class="icon-cogs"></i>
 				<span>Compute Buckets</span>
@@ -115,14 +116,14 @@
 				</li> 
 				
 
-				<li ng-show="loggedIn" class=" ng-hide">
+				<li loggedin-show >
 					<a href="../$$space/Settings">
 						<i class="icon-cog"></i>
 						<span>Settings</span>
 					</a>  									
 				</li>
 				
-				<li ng-show="loggedIn" class=" ng-hide">					
+				<li loggedin-show >					
 					<a href="../$$space/ApiDocs">
 						<i class="icon-ambulance"></i>
 						<span>Docs</span>
@@ -133,14 +134,14 @@
 
 			
 			</ul>
-			 <a class="btn  ng-hide" ng-click="logout()" ng-show="loggedIn"  href >
+			 <a class="btn  " onclick="logout()" loggedin-show  href="." >
                         <i class="icon-lock"></i>
                         <span>Logout </span>
                     </a>
 
-			<a href="/$$space/login" class="btn ng-hide" ng-hide="loggedIn">
+			<a href="/$$space/login" class="btn" loggedin-hide>
                 <i class="icon-lock"></i> Login</a> 
-            <a class="btn btn-primary ng-hide" href="/$$space/SignUp"  ng-hide="loggedIn">Sign Up</a>
+            <a class="btn btn-primary " href="/$$space/SignUp"  loggedin-hide>Sign Up</a>
 
 		</div> <!-- /container -->
 	
@@ -148,8 +149,18 @@
 
 </div> <!-- /subnavbar -->
 <script type="text/javascript">
-    $('[ng-show=loggedIn]').each(function(i, e) { $('[ng-show=loggedIn]').addClass('ng-show').removeClass('ng-hide') });
-    $('[ng-hide=loggedIn]').each(function(i, e) { $('[ng-show=loggedIn]').addClass('ng-hide').removeClass('ng-show') });
+function showHideLogin() {
+
+    var loggedIn = !!localStorage.getItem('gcb:api_key');
+    if (loggedIn) {   
+        angular.element('[loggedin-show]').show();
+        angular.element('[loggedin-hide]').hide();
+    } else {
+        angular.element('[loggedin-show]').hide();
+        angular.element('[loggedin-hide]').show();
+    }
+}
+showHideLogin();
 </script>
 }}
 
@@ -336,7 +347,7 @@ h2. loading
 });
     </script>
 
-    <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular.min.js"></script>
+    
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-mocks.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-route.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-resource.min.js"></script>
