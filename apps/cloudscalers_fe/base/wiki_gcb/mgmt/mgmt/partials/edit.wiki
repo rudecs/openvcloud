@@ -186,7 +186,7 @@ h2. Manage Machine
                 If you see a black screen just click on it and click any button to activate the console window.
             </p>
             <hr>
-            <div style="display: none">
+            <div ng-model="machineConsoleUrlResult">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine bucket is not running.
                 </div>
