@@ -16,7 +16,7 @@
 <div class="control-group">
   <label class="control-label" for="textinput">SSH Key</label>
   <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="https://" class="input-xlarge">
+    <input id="textinput" name="textinput" type="text" placeholder="" class="input-xlarge">
     <p class="help-block">Copy paste your Bitbucket or Github key</p>
   </div>
 </div>

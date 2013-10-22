@@ -1,3 +1,4 @@
 Desktop Buckets:DesktopBuckets
 My Desktop Buckets:My Desktop Buckets
 Create Desktop Bucket:Create Desktop Bucket
+Desktop Buckets Settings:Desktop Buckets Settings
