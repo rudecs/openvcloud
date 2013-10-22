@@ -181,13 +181,12 @@ h2. Manage Machine
             <hr>
             <div style="display: none">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
-                    The machine is closed. Please start it to access it.
+                    The machine bucket is not running.
                 </div>
-                <iframe ng-hide="machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}">
+                <iframe ng-show="!machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}">
                 </iframe>
             </div>
 }}
-!console.png!
 {{html:
             
         </div>
