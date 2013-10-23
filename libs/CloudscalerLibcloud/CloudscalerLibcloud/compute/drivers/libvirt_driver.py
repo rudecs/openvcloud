@@ -106,7 +106,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         disktemplate = self.env.get_template("disk.xml")
         machinetemplate = self.env.get_template("machine.xml")
 
-        diskname = str(uuid.uuid4())
+        diskname = str(uuid.uuid4()) + '.qcow2'
         diskbasevolume = image.extra['path']
         disksize = size.disk
         macaddress = self.backendconnection.getMacAddress()

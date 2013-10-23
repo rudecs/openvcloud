@@ -288,7 +288,7 @@ class cloudapi_machines(cloudapi_machines_osis):
     @authenticator.auth(acl='C')
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        return provider.client.ex_listsnapshosts(node)
+        return provider.client.ex_listsnapshots(node)
 
     @authenticator.auth(acl='C')
     def deleteSnapshot(self, machineId, name, **kwargs):
