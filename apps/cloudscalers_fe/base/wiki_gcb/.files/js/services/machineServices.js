@@ -77,11 +77,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
             })
             .success(function(data, status, headers, config) {
                 signUpResult.success = true;
-                $rootScope.$broadcast('event:signUp-successful', signUpResult);
             })
             .error(function(data, status, headers, config) {
-                signUpResult.error = status;
-                $rootScope.$broadcast('event:signUp-error', signUpResult);
+                signUpResult.error = data;
             });
             return signUpResult;
         }

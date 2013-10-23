@@ -7,6 +7,7 @@ cloudscalersControllers
         $scope.isPasswordConfirmed = true;
         $scope.canSignUp = false;
         $scope.signUpError = '';
+        $scope.signUpResult = '';
 
         $scope.$watch('username + password + passwordConfirmation', function() {
             $scope.canSignUp = !!($scope.username && $scope.password && $scope.passwordConfirmation);
@@ -19,16 +20,13 @@ cloudscalersControllers
         };
 
         $scope.signUp = function() {
-            User.signUp($scope.username, $scope.password);
+            $scope.signUpResult = User.signUp($scope.username, $scope.password);
         };
 
-        $scope.$on('event:signUp-successful', function(loginResult) {
-            $scope.signUpSuccess = true;
-            $scope.signUpError = false;
-        });
-
-        $scope.$on('event:signUp-error', function(loginResult) {
-            $scope.signUpError = 'Error in signup';
-            $scope.signUpSuccess = false;
-        });
+        $scope.$watch('signUpResult', function() {
+            if ($scope.signUpResult) {
+                $scope.signUpSuccess = $scope.signUpResult.success;
+                $scope.signUpError = $scope.signUpResult.error;
+            }
+        }, true);
     }]);
