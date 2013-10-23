@@ -23,11 +23,6 @@ describe("Machine bucket controller tests", function(){
 			expect(scope.machines[0].hostname).toBe("jenkins.cloudscalers.com");
 			expect(scope.machines[1].hostname).toBe("cloudbroker.cloudscalers.com");
 		});
-
-		it('views the number of data locations of each buckets', function() {
-			expect(scope.numOfDataLocations).toBeDefined();
-			expect(scope.numOfDataLocations(scope.machines[0])).toBeDefined();
-		});
 	});
 
 });

@@ -91,20 +91,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
         
         return user;
     })
-    .factory('Machine', function ($http, $sce) {
+    .factory('Machine', function ($http, $sce, $rootScope) {
         $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
         return {
-            action: function (machineid, action) {
-                var result = []
-                url = cloudspaceconfig.apibaseurl + '/machines/action?machineId=' + machineid + '&action=' + action;
-                $http.get(url)
-                    .success(function (data, status, headers, config) {
-                        result.success = true;
-                    }).error(function (data, status, headers, config) {
-                        result.error = status;
-                    });
-                return result;
-            },
             start: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/start?machineId=' + machine.id;
                 $http.get(url)
@@ -200,6 +189,8 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.extend(machine, data);
+                        // Using events here, because Angular doesn't update watchers
+                        $rootScope.$broadcast('machine:loaded', machine);
                     }).error(
                     function (data, status, headers, config) {
                         machine.error = status;

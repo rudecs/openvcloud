@@ -22,8 +22,4 @@ cloudscalersControllers
         $scope.isValid = function() {
             return $scope.machine.name !== '' && $scope.machine.sizeId !== '' && $scope.machine.imageId !== '';
         };
-
-        $scope.$watch('images', function() {
-            console.log('images changed ' + $('.nav-tabs a').length);
-        });
     }]);

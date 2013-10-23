@@ -4,6 +4,7 @@ cloudscalersControllers
                 function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
+        $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
         $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.newSnapshotName = '';
@@ -15,6 +16,10 @@ cloudscalersControllers
 
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
+        });
+
+        $scope.$on('machine:loaded', function() {
+            angular.copy($scope.machine, $scope.oldMachine);
         });
 
         $scope.renameModalOpen = false;
