@@ -3,4 +3,10 @@
     {% if name %}
     <name>{{name}}</name>
     {% endif %}
+    <disks>
+    {% for file in diskfiles %}
+        <disk name='{{file}}' snapshot='internal'>
+        </disk>
+    {% endfor %}
+    </disks>
 </domainsnapshot>

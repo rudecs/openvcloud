@@ -140,7 +140,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domain = self._get_domain_for_node(node=node)
         diskfiles = self._get_disk_file_names(domain)
         snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles)
-        return domain.snapshotCreateXML(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY).getName()
+        return domain.snapshotCreateXML(snapshot, 0).getName()
 
     def ex_listsnapshots(self, node):
         domain = self._get_domain_for_node(node=node)
