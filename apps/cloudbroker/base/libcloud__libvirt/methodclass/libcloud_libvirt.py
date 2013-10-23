@@ -178,7 +178,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         results = self.cb.model_node_find(ujson.dumps(query))['result']
         nodes = {}
         for res in results:
-            node = {'ipaddress': res['fields']['ipaddress']}
+            node = {'ipaddress': res['fields'].get('ipaddress')}
             nodes[res['fields']['id']] = node
         return nodes
 

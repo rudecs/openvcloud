@@ -175,7 +175,13 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         network = self.connection.networkLookupByName('default')
         extranettemplate = Template("<host mac='{{macaddress}}' ip='{{ipaddress}}'/>")
         xmlstring = extranettemplate.render({'macaddress':node['macaddress'], 'ipaddress':node['ipaddress']})
-        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_DELETE, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
+        try:
+            network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_DELETE, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
+        except libvirt.libvirtError, e:
+            # allow operation error incase network is not registered in dhcp
+            if e.get_error_code() != libvirt.VIR_ERR_OPERATION_INVALID:
+                raise
+
         self.backendconnection.unregisterMachine(domid)
 
         diskfiles = self._get_disk_file_names(domain)
