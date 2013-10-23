@@ -18,9 +18,9 @@ cloudscalersControllers
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
         });
 
-        $scope.$on('machine:loaded', function() {
+        $scope.$watch('machine', function() {
             angular.copy($scope.machine, $scope.oldMachine);
-        });
+        }, true);
 
         $scope.renameModalOpen = false;
         $scope.snapshotModalOpen = false;

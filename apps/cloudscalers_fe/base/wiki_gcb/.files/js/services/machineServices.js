@@ -53,13 +53,10 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 loginResult.api_key = data;
                 APIKey.set(data);
                 loginResult.error = false;
-                $rootScope.$broadcast('event:login-successful', loginResult);
             }).
             error(function (data, status, headers, config) {
                 loginResult.api_key = undefined;
-                APIKey.set(undefined);
                 loginResult.error = status;
-                $rootScope.$broadcast('event:login-error', loginResult);
             });
             return loginResult;
         };
@@ -189,8 +186,6 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.extend(machine, data);
-                        // Using events here, because Angular doesn't update watchers
-                        $rootScope.$broadcast('machine:loaded', machine);
                     }).error(
                     function (data, status, headers, config) {
                         machine.error = status;

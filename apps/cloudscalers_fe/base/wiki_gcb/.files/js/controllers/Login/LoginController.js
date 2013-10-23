@@ -17,9 +17,11 @@ cloudscalersControllers
 			$window.location = uri.toString();
         }
 
-        $scope.$on('event:login-successful', function(loginResult) {
-        	var uri = new URI($window.location);
-			uri.filename('');
-			$window.location = uri.toString();
-        });
+        $scope.$watch('loginResult', function(loginResult) {
+            if (APIKey.get()) {
+                var uri = new URI($window.location);
+                uri.filename('');
+                $window.location = uri.toString();
+            }
+        }, true);
     }]);

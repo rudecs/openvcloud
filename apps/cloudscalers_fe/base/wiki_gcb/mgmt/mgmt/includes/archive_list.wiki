@@ -1,28 +1,18 @@
 
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="10">
-    10GB<br>0.76 USD/month
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'3'"> <b>No backup</b>
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="20">
-    20GB<br>1.52 USD/month
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'2'"> <b>Minimal backup schedule</b>
+    <br>Every day for the last week (7)</button>
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'1'">
+    <b>Light backup schedule</b>
+    <br>  
+    Every 4 hours for the last day (6), every day for the last week (7), every week for the last month (4)
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="30">
-    30GB SSD<br>2.28 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="40">
-    40GB<br>3.04 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="50">
-    50GB<br>3.8 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="100">
-    100GB<br>7.6 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="250">
-    250GB<br>19 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="500">
-    500GB<br>38 USD/month
-  </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="1000">
-    1TB<br>76 USD/month
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'0'">
+    <b>Classic backup schedule</b>
+    <br>  
+    Every 15 minutes for last hour (4), every hour for the last day (24), every day for the last week (7), every week for the last month (5), every month for the last year (12)
   </button>
