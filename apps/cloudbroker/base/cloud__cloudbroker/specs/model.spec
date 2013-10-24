@@ -54,7 +54,7 @@
     prop:name str,,name of the image
     prop:description str,,extra description of the image
     prop:UNCPath str,,location of the image (uncpath like used in pylabs); includes the login/passwd info
-    prop:size int,, size in MByte
+    prop:size int,, minimal disk size in Gigabyte
     prop:type str,, dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas)
     prop:referenceId str,,Name of the image on stack
 
