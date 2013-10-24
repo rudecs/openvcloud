@@ -331,3 +331,15 @@ class cloudapi_machines(cloudapi_machines_osis):
             return None
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)
+
+    def clone(self, machineId, name, **kwargs):
+        """
+        clone a machine
+        param:machineId id of machine to clone
+        param:name name of cloned machine
+        result str
+
+        """
+        machine = self._getMachine(machineId)
+        clone = machine.clone(name)
+        return clone.id
