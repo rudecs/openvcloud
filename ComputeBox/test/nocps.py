@@ -10,7 +10,7 @@ def installFreshComputeNode(nocps_url, macaddress, hostname):
                      'adminuser': 'cs',
                      'hostname': hostname,
                      'mac': macaddress,    #Physical machine identifier
-                     'profile': 646,                #Ubuntu 13.10
+                     'profile': 649,                #Ubuntu 13.10, cloudscalers apt-get server
                      'rebootmethod': 'auto',
                      'rootpassword': 'R00t3r',
                      'rootpassword2': 'R00t3r',
