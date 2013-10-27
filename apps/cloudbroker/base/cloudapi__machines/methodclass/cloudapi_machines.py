@@ -316,7 +316,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         """
         machine = self._getMachine(machineId)
         if name:
-            self._assertName(machine.cloudspaceid, name, **kwargs)
+            self._assertName(machine.cloudspaceId, name, **kwargs)
             machine.name = name
         if description:
             machine.description = description
