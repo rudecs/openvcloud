@@ -10,6 +10,23 @@ def install_compute_node(hostname, workspace):
     #Update sources.cfg and bitbucket.cfg
     run('mkdir -p /opt/jumpscale/cfg/jpackages')
     put(os.path.join(workspace, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
+
+    run('mkdir -p /opt/jumpscale/cfg/hrd/')
+    run('''
+        echo 'broker.id=1
+            broker.domain=mydomain' > /opt/jumpscale/cfg/hrd/broker.hrd
+            echo 'grid.useavahi=0
+            grid.id=1
+            grid.broker.ip=localhost
+            grid.broker.port=5554
+            grid.broker.id=
+            grid.ismaster=True
+            grid.master=
+            node.id=0
+            node.name=
+            node.roles=
+            node.machineguid=' > /opt/jumpscale/cfg/hrd/grid.hrd
+        ''')
     
     run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(workspace, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
