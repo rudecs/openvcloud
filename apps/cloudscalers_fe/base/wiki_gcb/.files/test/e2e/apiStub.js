@@ -220,14 +220,14 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/\/machines\/listSnapshots\?.*/).respond(snapshots);
     
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&snapshotName=.*?\&api_key=(.*?)')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&name=.*?\&api_key=(.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
     $httpBackend.whenGET(/\/machines\/snapshot\?.*/).respond(function(status, data) {
         var params = new URI(url).search(true);
-        var snapshotName = params.snapshotName;
-        snapshots.push(snapshotName);
-        return [200, snapshotName];
+        var name = params.name;
+        snapshots.push(name);
+        return [200, name];
     });
 
     

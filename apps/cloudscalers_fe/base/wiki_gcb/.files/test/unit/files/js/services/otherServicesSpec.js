@@ -122,14 +122,14 @@ xdescribe("Machine buckets", function() {
             });
             xit('can create snapshot', function() {
                 // Create a unique name so I don't create different snapshots with the same name
-                var snapshotName = '7_snap_' + Math.random();
+                var name = '7_snap_' + Math.random();
 
                 Buckets.listSnapshots({machineId: 7}).success(function(snapshotsBefore) {
-                    /*Buckets.createSnapshot({machineId: 7, snapshotName: snapshotName}).success(function(snapshotName) {
-                        console.log(snapshotName);
+                    /*Buckets.createSnapshot({machineId: 7, name: name}).success(function(name) {
+                        console.log(name);
                         Buckets.listSnapshots({machineId: 7}).success(function(snapshotsAfter) {
                             expect(snapshotsBefore.length - snapshotsAfter.length).toBe(1);
-                            expect(snapshotsAfter).toContain(snapshotName);
+                            expect(snapshotsAfter).toContain(name);
                         });
                         $httpBackend.flush();
                     });

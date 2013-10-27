@@ -123,7 +123,7 @@
         """
         """
         var:machineId int,,id of machine to snapshot
-        var:snapshotname str,, Optional name to give snapshot
+        var:name str,, Optional name to give snapshot
         result:int #returns id of new machine which gets created when snapshot was successfull
 
     method:listSnapshots

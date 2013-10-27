@@ -196,8 +196,8 @@ describe('Cloudscalers machine services', function() {
 				defineUnitApiStub($httpBackend);
 
                 // Create a unique name so I don't create different snapshots with the same name
-                var snapshotName = '7_snap_' + Math.random();
-                var createSnapshotName = Machine.createSnapshot(7, snapshotName);
+                var name = '7_snap_' + Math.random();
+                var createSnapshotName = Machine.createSnapshot(7, name);
                 $httpBackend.flush();
                 expect(createSnapshotName.success).toBeDefined();
                 expect(createSnapshotName.success).toBe(true);
@@ -205,15 +205,15 @@ describe('Cloudscalers machine services', function() {
                 var snapshots = Machine.listSnapshots(7);
                 $httpBackend.flush();
                 expect(snapshots.snapshots).toBeDefined();
-                expect(snapshots.snapshots).toContain(snapshotName);
+                expect(snapshots.snapshots).toContain(name);
             });
 
 			it('can handle snapshot creation failure', function() {
 				defineUnitApiStub($httpBackend);
 
                 // Create a unique name so I don't create different snapshots with the same name
-                var snapshotName = '2_snap_' + Math.random();
-                var createSnapshotName = Machine.createSnapshot(2, snapshotName);
+                var name = '2_snap_' + Math.random();
+                var createSnapshotName = Machine.createSnapshot(2, name);
                 $httpBackend.flush();
                 expect(createSnapshotName.error).toBeDefined();
                 expect(createSnapshotName.error).toBe(500);
@@ -221,7 +221,7 @@ describe('Cloudscalers machine services', function() {
                 var snapshots = Machine.listSnapshots(2);
                 $httpBackend.flush();
                 expect(snapshots.snapshots).toBeDefined();
-                expect(snapshots.snapshots).not.toContain(snapshotName);
+                expect(snapshots.snapshots).not.toContain(name);
             });
 		});
 	});

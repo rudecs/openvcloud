@@ -53,14 +53,14 @@ defineUnitApiStub = function($httpBackend){
 
     $httpBackend.whenGET('testapi/machines/listSnapshots?machineId=7&api_key=yep123456789').respond(snapshots);
     $httpBackend.whenGET('testapi/machines/listSnapshots?machineId=2&api_key=yep123456789').respond(snapshots);
-    var urlRegexpForSuccess = new RegExp('testapi\/machines\/snapshot\\?machineId\=7\&snapshotName\=(.*?)&api_key=yep123456789$');
+    var urlRegexpForSuccess = new RegExp('testapi\/machines\/snapshot\\?machineId\=7\&name\=(.*?)&api_key=yep123456789$');
     $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
-        var snapshotName = urlRegexpForSuccess.exec(data)[1];
-        snapshots.push(snapshotName);
-        return [200, snapshotName];
+        var name = urlRegexpForSuccess.exec(data)[1];
+        snapshots.push(name);
+        return [200, name];
     });
 
-    $httpBackend.whenGET(new RegExp('testapi/machines/snapshot\\?machineId=2&snapshotName=.*?&api_key=yep123456789')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('testapi/machines/snapshot\\?machineId=2&name=.*?&api_key=yep123456789')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
 

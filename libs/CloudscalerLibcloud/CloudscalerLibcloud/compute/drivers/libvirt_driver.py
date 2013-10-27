@@ -146,14 +146,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domain = self._get_domain_for_node(node=node)
         return domain.snapshotListNames(0)
 
-    def ex_snapshot_delete(self, node, snapshotname):
+    def ex_snapshot_delete(self, node, name):
         domain = self._get_domain_for_node(node=node)
-        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        snapshot = domain.snapshotLookupByName(name, 0)
         return snapshot.delete(0) == 0
 
-    def ex_snapshot_rollback(self, node, snapshotname):
+    def ex_snapshot_rollback(self, node, name):
         domain = self._get_domain_for_node(node=node)
-        snapshot = domain.snapshotLookupByName(snapshotname, 0)
+        snapshot = domain.snapshotLookupByName(name, 0)
         return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
 
     def _get_disk_file_names(self, domain):

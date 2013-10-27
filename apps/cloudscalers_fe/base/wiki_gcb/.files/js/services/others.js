@@ -49,9 +49,9 @@ MachineBucket.prototype.getSnapshot = function() {
     };
 }
 
-MachineBucket.prototype.createSnapshot = function(snapshotName) {
+MachineBucket.prototype.createSnapshot = function(name) {
     var snapshot = this.getSnapshot();
-    snapshot.name = snapshotName;
+    snapshot.name = name;
     this.snapshots.push(snapshot);
     this.save();
 }

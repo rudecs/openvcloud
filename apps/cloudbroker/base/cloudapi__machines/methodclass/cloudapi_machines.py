@@ -275,15 +275,15 @@ class cloudapi_machines(cloudapi_machines_osis):
         return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
-    def snapshot(self, machineId, snapshotname, **kwargs):
+    def snapshot(self, machineId, name, **kwargs):
         """
         param:machineId id of machine to snapshot
-        param:snapshotname Optional name to give snapshot
+        param:name Optional name to give snapshot
         result int
 
         """
         provider, node = self._getProviderAndNode(machineId)
-        return provider.client.ex_snapshot(node, snapshotname)
+        return provider.client.ex_snapshot(node, name)
 
     @authenticator.auth(acl='C')
     def listSnapshots(self, machineId, **kwargs):

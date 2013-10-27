@@ -202,9 +202,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
                 return snapshotsResult;
             },
-            createSnapshot: function (machineId, snapshotName) {
+            createSnapshot: function (machineId, name) {
                 var createSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&snapshotName=' + snapshotName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + name;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         createSnapshotResult.success = true;
