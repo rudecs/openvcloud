@@ -303,7 +303,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_snapshot_rollback(node, name)
 
-    def update(self, machineId, name, description, size, **kwargs):
+    @authenticator.auth(acl='W')
+    def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
         Name, description can be changed with this action.
@@ -313,13 +314,14 @@ class cloudapi_machines(cloudapi_machines_osis):
         param:size size of the machine in CU
 
         """
-        machine = self.get(machineId)
-        if name is not None:
-            machine['name'] = name
-        if description is not None:
-            machine['description'] = description
-        if size is not None:
-            machine['nrCU'] = size
+        machine = self._getMachine(machineId)
+        if name:
+            self._assertName(machine.cloudspaceid, name, **kwargs)
+            machine.name = name
+        if description:
+            machine.description = description
+        if size:
+            machine.nrCU = size
         return self.cb.model_vmachine_set(machine)
 
     def getConsoleUrl(self, machineId, **kwargs):
