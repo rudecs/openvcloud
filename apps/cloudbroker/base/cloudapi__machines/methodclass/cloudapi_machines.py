@@ -108,6 +108,11 @@ class cloudapi_machines(cloudapi_machines_osis):
             return self.cb.extensions.imp.getProviderByStackId(machine.stackId)
         return None
 
+    def _assertName(self, cloudspaceId, name, **kwargs):
+        for m in self.list(cloudspaceId, **kwargs):
+            if m['name'] == name:
+                raise ValueError("Machine with name %s already exists" % name)
+
     @authenticator.auth(acl='C')
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
@@ -121,9 +126,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         result bool
 
         """
-        for m in self.list(cloudspaceId, **kwargs):
-            if m['name'] == name:
-                raise ValueError("Machine with name %s already exists" % name)
+        self._assertName(cloudspaceId, name, **kwargs)
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
@@ -300,7 +303,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_snapshot_rollback(node, name)
 
-    def update(self, machineId, name, description, size, **kwargs):
+    @authenticator.auth(acl='W')
+    def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
         Name, description can be changed with this action.
@@ -310,13 +314,14 @@ class cloudapi_machines(cloudapi_machines_osis):
         param:size size of the machine in CU
 
         """
-        machine = self.get(machineId)
-        if name is not None:
-            machine['name'] = name
-        if description is not None:
-            machine['description'] = description
-        if size is not None:
-            machine['nrCU'] = size
+        machine = self._getMachine(machineId)
+        if name:
+            self._assertName(machine.cloudspaceId, name, **kwargs)
+            machine.name = name
+        if description:
+            machine.description = description
+        if size:
+            machine.nrCU = size
         return self.cb.model_vmachine_set(machine)
 
     def getConsoleUrl(self, machineId, **kwargs):
@@ -341,5 +346,23 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         """
         machine = self._getMachine(machineId)
-        clone = machine.clone(name)
+        self._assertName(machine.cloudspaceId, name, **kwargs)
+        clone = self.cb.models.vmachine.new()
+        clone.cloudspaceId = machine.cloudspaceId
+        clone.name = name
+        clone.descr = machine.descr
+        clone.sizeId = machine.sizeId
+        clone.imageId = machine.imageId
+
+        for diskId in machine.disks:
+            origdisk = self.cb.models.disk.new()
+            origdisk.dict2obj(self.cb.model_disk_get(diskId))
+            clonedisk = self.cb.models.disk.new()
+            clonedisk.name = origdisk.name
+            clonedisk.descr = origdisk.descr
+            clonedisk.sizeMax = origdisk.sizeMax
+            clonediskId = self.cb.model_disk_set(clonedisk)
+            machine.disks.append(clonediskId)
+        clone.id = self.cb.model_vmachine_set(machine)
+
         return clone.id
