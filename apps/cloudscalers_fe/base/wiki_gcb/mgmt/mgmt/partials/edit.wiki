@@ -1,0 +1,291 @@
+
+h2. Manage Machine
+{{html:
+<style>
+    .modal .modal-header, .modal .modal-footer {
+        display: block;
+    }
+    .modal .modal-body {
+        border: 0px;
+    }
+</style>
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a data-toggle="tab" href="#actions">Machine actions</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#console">Console</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#snapshots">Snapshots</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#monitoring">Monitoring</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#logging">Change Log</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#package">Change Package</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="actions" class="tab-pane active">
+            <div class="row">
+                <div class="span6">
+                    <ul class="list">
+                        <li>
+                            <h5>Name</h5>
+                            {[machine.name]}
+                        </li>
+                        <li>
+                            <h5>IP Address</h5>
+                            {[machine.interfaces[0].ipAddress]}
+                        </li>
+                        <li>
+                            <h5>Status</h5>
+                            {[machine.status]}
+                        </li>
+                        <li>
+                            <h5>CPU</h5>
+                            {[ sizes[machine.sizeId].CU ]} <ng-pluralize count="sizes[machine.sizeId].CU" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                        </li>
+                        <li>
+                            <h5>Memory</h5>
+                            {[sizes[machine.sizeId].disksize]} GB
+                        </li>
+                        <li>
+                            <h5>Storage</h5>
+                            <!--{[machine.storage]}--> {[machine.disksize]} GB
+                        </li>
+                        <li>
+                            <h5>Data Locations</h5>
+                            <!--{[machine.locations]}-->
+                            {[machine.region]}, {[machine.replication]}
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="span3 actions">
+                    <h4>Actions</h4>
+                    <ul class="actions">
+                        <li ng-show="machine.status == 'HALTED'"> 
+                            <a ng-click="start()">
+                                <i class="icon-play-circle"></i>
+                                Start
+                            </a>
+                        </li>
+                        <li ng-show="machine.status == 'PAUSED'"> 
+                            <a ng-click="resume()">
+                                <i class="icon-play-circle"></i>
+                                Resume
+                            </a>
+                        </li>
+
+                        <li ng-show="machine.status == 'RUNNING'">
+                            <a ng-click="stop()">
+                                <i class="icon-stop "></i>
+                                Stop
+                            </a>
+                        </li>
+                        <li ng-show="machine.status == 'RUNNING'">
+                            <a ng-click="pause()">
+                                <i class=" icon-pause"></i>
+                                Pause
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="showSnapshotModal()"> 
+                                <i class="icon-camera"></i>
+                                Take Snapshot
+                            </a>
+                            <div modal="snapshotModalOpen" close="closeSnapshotModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Take snapshot</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name:
+                                        <input ng-model="newSnapshotName" type="text" class="input-large" placeholder="Name"/>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="createSnapshot()">Save</button>
+                                    <button class="btn cancel" ng-click="closeSnapshotModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a ng-click="showRenameModal()">
+                                <i class="icon-edit"></i>
+                                Rename
+                            </a>
+                            <div modal="renameModalOpen" close="closeRenameModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Rename</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name: <input ng-model="oldName" type="text" class="input-large" placeholder="Name"/>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="rename()">Save</button>
+                                    <button class="btn cancel" ng-click="closeRenameModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a ng-click="destroy()">
+                                <i class=" icon-remove-circle"></i>
+                                Destroy
+                            </a>
+                        </li>
+                        <li>
+                            <a onclick="location.reload()">
+                                <i class="icon-undo"></i>
+                                Rebuild
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="showCloneModal()">
+                                <i class="icon-copy"></i>
+                                Clone
+                            </a>
+                            <div modal="cloneModalOpen" close="closeCloneModal()" options="modalOpts">
+                                <div class="modal-header">
+                                    <h3>Clone</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name: <input ng-model="cloneName" type="text" class="input-large" />
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="cloneMachine()">Clone</button>
+                                    <button class="btn cancel" ng-click="closeCloneModal()">Cancel</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a>
+                                <i class="icon-download"></i>
+                                Export
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            {{include:bucket_history}}
+        </div>
+
+        <div id="console" class="tab-pane">
+            <p class="note">
+                Make sure to click on the top of the console screen to take control.
+            </p>
+            <hr>
+            <div ng-model="machineConsoleUrlResult">
+                <div class="error" ng-show="!!machineConsoleUrlResult.error">
+                    The machine bucket is not running.
+                </div>
+                <iframe ng-show="!machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}" style="width:100%;height:100%">
+                </iframe>
+            </div>          
+        </div>
+        <div id="logging" class="tab-pane">
+            {{include:bucket_history}}
+        </div>
+        <div class="tab-pane" id="package">
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" >Choose Package *:</label>
+                    <div class="controls " >{{include:plan_list}}</div>
+                </div>
+                <hr>        
+                <div class="control-group">
+                    <label class="control-label" >Choose Image</label>
+                    <div class="controls ">{{include:image_list}}</div>
+                </div>
+                <hr>        
+                <div class="control-group">
+                    <label class="control-label" >Choose Hosting Location:</label>
+                    <div class="controls ">{{include:region_list}}</div>
+                </div>
+                <h2>Options</h2>
+                <hr>        
+                <div class="control-group">
+                    <label class="control-label" >Additional Primary Storage:</label>
+                    <div class="controls " >{{include:storage_list}}</div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" >Archive/Backup Storage:</label>
+                    <div class="controls " >{{include:archive_list}}</div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" >Choose Replication Location:</label>
+                    <div class="controls ">{{include:replication_list}}</div>
+                </div>
+                <hr>
+
+                <div class="form-actions">
+                    <button class="btn btn-info btn-large " ng-click="resize()" ng-disabled="!machine.isValid()">Change</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="snapshots" class="tab-pane">
+            <h3>Restore from Snapshot</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="snapshot in snapshots.snapshots">
+                        <td width="89%">{[snapshot]}</td>
+                        <td style="white-space:nowrap" >
+                            {[snapshot.date]}
+                        </td>
+                        <td>
+                            <a style="cursor: pointer" ng-click="restoreSnapshot(snapshot)">Rollback</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="monitoring" class="tab-pane">
+}}
+            {{div3: class=row}}
+                {{div4: class=span3}}
+                    h4. CPU Usage
+                    {{div5: id=jGauge1 | class=jgauge}}
+                    {{div5}}
+                {{div4}}
+                {{div4: class=span3}}
+                    h4. RAM Assigned
+                    {{div5: id=jGauge2 | class=jgauge}}
+                    {{div5}}
+                {{div4}}
+                {{div4: class=span3}}
+                    h4. Server Load
+                    {{div5: id=jGauge3 | class=jgauge}}
+                    {{div5}}
+                {{div4}}
+                {{div4: class=span3}}
+                    h4. I/O Waiting time
+                    {{div5: id=jGauge4 | class=jgauge}}
+                    {{div5}}
+                {{div4}}
+            {{div3}}
+{{html:
+        </div>
+    </div>
+</div>
+
+
+}}

@@ -1,0 +1,5 @@
+<div class="btn-group">
+    <button type="button" class="btn btn-selector" ng-model="machine.region" btn-radio="'Ghent, Belgium'">Ghent, Belgium</button>
+    <button type="button" class="btn btn-selector" ng-model="machine.region" btn-radio="'Bruges, Belgium'">Bruges, Belgium</button>
+    <button type="button" class="btn btn-selector" ng-model="machine.region" btn-radio="'Lenoir, NC, USA'">Lenoir, NC, USA</button>
+</div>

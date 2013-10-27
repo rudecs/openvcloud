@@ -1,0 +1,18 @@
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'3'"> <b>No backup</b>
+  </button>
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'2'"> <b>Minimal backup schedule</b>
+    <br>Every day for the last week (7)</button>
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'1'">
+    <b>Light backup schedule</b>
+    <br>  
+    Every 4 hours for the last day (6), every day for the last week (7), every week for the last month (4)
+  </button>
+
+  <button type="button" class="btn btn-selector" ng-model="machine.archive" btn-radio="'0'">
+    <b>Classic backup schedule</b>
+    <br>  
+    Every 15 minutes for last hour (4), every hour for the last day (24), every day for the last week (7), every week for the last month (5), every month for the last year (12)
+  </button>

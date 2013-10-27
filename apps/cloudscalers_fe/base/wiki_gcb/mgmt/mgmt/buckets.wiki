@@ -1,0 +1,51 @@
+@usedefault
+
+
+
+{{html:
+
+<div ng-app="cloudscalers">
+  <div ng-view></div>
+</div>
+}}
+
+
+{{css:/lib/jgauge/jgauge.css}}
+
+{{html:
+<script  src='/lib/jgauge/excanvas.min.js' type='text/javascript'></script>
+<script  src='/lib/jgauge/jQueryRotate.min.js' type='text/javascript'></script>
+<script  src='/lib/jgauge/jgauge-0.3.0.a3.min.js' type='text/javascript'></script>
+
+<script type="text/javascript">
+function createGauge(id, initialValue, start, end, changeInterval) {
+    var myGauge = window['myGauge' + id] = new jGauge();
+    myGauge.id = id;
+    myGauge.width = 200;
+    myGauge.height = 114;
+    myGauge.ticks.start = start;
+    myGauge.ticks.end = end;
+
+    myGauge.imagePath='/lib/jgauge/img/jgauge_face_default.png'
+    myGauge.needle.imagePath='/lib/jgauge/img/jgauge_needle_default.png';
+
+    myGauge.init();
+    myGauge.setValue(initialValue);
+    setInterval(function() {
+        var newValue; 
+        if (Math.random() > 0.8) // Allow needle to randomly pause.
+        {
+                rnd= (Math.random()-0.5) * 10 ;
+                newValue = initialValue + rnd;
+                
+                if (newValue >= myGauge.ticks.start && newValue <= myGauge.ticks.end)
+                {
+                        // newValue is within range, so update.
+                        myGauge.setValue(newValue);
+                }
+        }
+    }, changeInterval);
+}
+</script>
+
+}}

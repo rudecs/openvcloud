@@ -1,0 +1,6 @@
+<button ng-repeat="size in sizes" type="button" class="btn btn-selector" ng-model="machine.sizeId" btn-radio="'{[size.id]}'"
+    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+  {[ size.name ]}
+</button>
+
+

@@ -1,0 +1,37 @@
+@template access
+
+{{html:
+<div class="account-container stacked" ng-app="cloudscalers" ng-controller="SignUpController">
+    <div class="content clearfix padding">
+
+        <h1>Sign Up</h1>
+
+        <div class="login-fields">
+
+            <p>Sign in using your registered account:</p>
+            <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords didn't match.</div>
+            <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
+            <div class="alert alert-success ng-hide" ng-show="signUpSuccess">Sign Up successful. Now you can <a href="/$$space/Login">login</a></div>
+            <div class="field">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="" placeholder="Username" class="login username-field" ng-model="username" />
+            </div>
+
+            <div class="field">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field" ng-model="password"/>
+            </div>
+
+            <div class="field">
+                <label for="password">Password Confirmation:</label>
+                <input type="password" id="passwordConfirmation" name="passwordConfirmation" value="" placeholder="Password Confirmation" class="login password-field" 
+                    ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
+            </div>
+        </div>
+
+        <div class="login-actions">
+            <input type="submit" ng-disabled="!canSignUp" ng-click="signUp()" class="button btn  btn-primary btn-large" value="Sign Up" />
+        </div>
+    </div>
+</div>
+}}

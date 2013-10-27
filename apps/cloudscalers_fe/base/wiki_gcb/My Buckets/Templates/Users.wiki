@@ -1,0 +1,30 @@
+{{html:
+<form class="form-horizontal">
+  <fieldset>
+
+    <div id="legend" class="">
+      <legend class="">Users e-mail addresses</legend>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Owners</label>
+        <div class="controls">
+          <input type="text" placeholder="youremail@company.com" class="input-xlarge" value="$$owneremails">
+          <p class="help-block">Seperate e-mail addresses with a comma</p>
+        </div>
+    </div>
+  
+    <div class="control-group">
+      <label class="control-label" for="input01">Users</label>
+      <div class="controls">
+        <input type="text" placeholder="useremails@company.com" class="input-xlarge" value="$$useremails">
+        <p class="help-block">Seperate e-mail addresses with a comma</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-success">Update</button>
+    </div>
+  </fieldset>
+</form>
+}}

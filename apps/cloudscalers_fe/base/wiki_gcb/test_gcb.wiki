@@ -1,0 +1,78 @@
+{{carousel: interval = 15000
+------
+Welcome | /$$space/.files/img/1.png
+Are you ready for the next step in IT infrastructure?  <br> 
+CloudScalers introduces Cloud Buckets <br> 
+Delivering virtual machines, cloud desktops and cloud storage
+------
+Machine Buckets  | /$$space/.files/img/2.png
+Create and manage Cloud Buckets from a unified platform  <br> 
+Offering more simplicity and flexibility than other clouds <br> 
+At ultra competitive prices!
+------
+Desktop Buckets | /$$space/.files/img/3.png
+Intelligent SSD performance  <br> 
+More flexibility in choosing the ideal resource configuration  <br> 
+No lock in thanks to built in import and export functions
+------
+Application Buckets | /$$space/.files/img/4.png
+Automated snapshots and fast cloning  <br> 
+Next generation cloud desktops working on any device  <br> 
+A simple and straightforward API
+------
+}}
+
+{{div: class=row }}
+{{div2: class= marker span12}}
+
+@col 6
+h3. Revolutionary Cloud Computing!
+CloudScalers has not build yet another competitor for cloud infrastructure. CloudScalers offers a single unified portal to access different private instances: Cloud Buckets. CloudScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
+
+CloudScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, CloudScalers delivers equal or better performance and relaibility compared to traditional clouds!
+
+{{html: <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a> }}
+@colend
+
+@col 6
+{{html: <iframe src="//player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> }}
+@colend
+{{div2}}
+{{div}}
+
+@row
+
+
+@col 4
+{{html: <div class="widget"> <div class="widget-content fix-h"> }}
+
+{{html: <h3> <i class="icon-tasks"></i> Machine Buckets </h3>}}
+CloudScalers delivers virtual machines in less than 10 seconds. The virtual machines run at enterprise level SSD speeds, delivering even more IO performance than other SSD providers. Virtual Machines can be managed with functions start, stop, clone, snapshot, rollback and export.
+{{html: </div> </div> }}
+@colend
+
+@col 4
+{{html: <div class="widget"> <div class="widget-content fix-h"> }}
+
+{{html: <h3> <i class="icon-desktop"></i> Desktop Buckets  </h3>}}
+CloudScalers delivers instant cloud desktops, delivering the desktop as a web portal streaming any windows, web or legacy application to any device: laptop, tablet or smartphone. Applications are integrated with a private cloud storage drive including sharing and collaboration features.
+{{html: </div> </div> }}
+@colend
+
+@col 4
+{{html: <div class="widget"> <div class="widget-content fix-h"> }}
+
+{{html: <h3> <i class="icon-cogs"></i> Storage Buckets </h3>}}
+The Storage API delivers an S3 compatible API at ultra competitive pricing for archive and backup data. The Storage Buckets environment delivers 100% protected storage and protects the data integrity! The system can handle both small and very large files.
+{{html: </div> </div> }}
+@colend
+
+
+@rowend
+
+{{html:
+<style>
+.container .span3{ display:none;}
+.container .span9 { width:100%;}
+</style>
+}}

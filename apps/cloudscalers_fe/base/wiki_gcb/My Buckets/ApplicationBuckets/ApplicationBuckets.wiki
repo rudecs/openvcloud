@@ -1,0 +1,238 @@
+h2. Application Buckets
+
+Application buckets provide full automated management of applications running in multi cloud virtual and cloud environments.
+
+{{html: <div class="apps"> }}
+
+{{html: <div class="price"> <a href=""><a href="../$$space/Alfresco"> }}
+!Alfresco_logo.jpg!
+{{html: <div> }}
+h3. Alfresco
+
+Alfresco is the open platform for business critical document management and collaboration.
+
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Amanda">}}
+!Amanda_logo.jpg!
+{{html: <div> }}
+h3. Amanda
+
+Amanda is is a backup solution that allows to back up multiple hosts over the network.
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/Arakoon">}}
+!Arakoon_logo.jpg!
+{{html: <div> }}
+h3. Arakoon
+
+A key value store allows you to store values by key, as simple as that. The value can be files like text, images or other objects.
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/Asterisk">}}
+!Asterisk_logo.jpg!
+{{html: <div> }}
+h3. Asterisk
+
+Asterisk is a free and open source framework for building communications applications and is sponsored by Digium.
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/Cloud Desktop">}}
+!Cloud Desktop_logo.jpg!
+{{html: <div> }}
+h3. Cloud Desktop
+
+A private desktop within a web portal offering secure private cloud storage.
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/DotProject">}}
+!DotProject_logo.jpg!
+{{html: <div> }}
+h3. DotProject
+
+DotProject is a web-based project management application, designed to provide project layout and control functions. 
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/Gitserver">}}
+!Gitserver_logo.jpg!
+{{html: <div> }}
+h3. Gitserver
+
+Git is a distributed revision control and source code management (SCM) system with an emphasis on speed.
+
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Knowledge Tree">}}
+!Knowledge Tree_logo.jpg!
+{{html: <div> }}
+h3. Knowledge Tree
+
+KnowledgeTree helps companies use and improve their best collateral. Sales teams get collateral that closes deals.
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/MediaWiki">}}
+!MediaWiki_logo.jpg!
+{{html: <div> }}
+h3. Mediawiki
+
+MediaWiki is a free software open source wiki package written in PHP, originally for use on Wikipedia.
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/MemCached">}}
+!MemCached_logo.jpg!
+{{html: <div> }}
+h3. MemCached
+
+Free & open source, high-performance, distributed memory object caching system.
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Mercurial">}}
+!Mercurial_logo.jpg!
+{{html: <div> }}
+h3. Mercurial
+
+Mercurial is a free, distributed source control management tool.
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/MySql Cluster">}}
+!MySql Cluster_logo.jpg!
+{{html: <div> }}
+h3.  MySQL Cluster
+
+Technology providing shared-nothing clustering and auto-sharding for the MySQL database management system. 
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/Open ERP">}}
+!Open ERP_logo.jpg!
+{{html: <div> }}
+h3. Open ERP
+
+OpenERP is an open source integrated enterprise resource planning (ERP) software.
+
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Postgresql Cluster">}}
+!Postgresql Cluster_logo.jpg!
+{{html: <div> }}
+h3. Postgresql Cluster
+
+PostgreSQL is an object-relational database management system.
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/Private Storage Cloud">}}
+!Private Storage Cloud_logo.jpg!
+{{html: <div> }}
+h3. Private Storage Cloud
+
+Personal Virtual Machine for access to private storage
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Project Pier">}}
+!Project Pier_logo.jpg!
+{{html: <div> }}
+h3. Project Pier
+
+ProjectPier is a Free, Open-Source, PHP application for managing tasks, projects and teams through an intuitive web interface.
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Redis">}}
+!redis_logo.jpg!
+{{html: <div> }}
+h3. Redis
+
+Redis is an open source, BSD licensed, advanced key-value store.
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/RedMine">}}
+!RedMine_logo.jpg!
+{{html: <div> }}
+h3. RedMine
+
+Redmine is a free and open source, web-based project management and bug-tracking tool. 
+
+
+{{html: </div></a> </div> }}
+
+
+{{html: <div class="price"> <a href="../$$space/Seafile">}}
+!Seafile_logo.jpg!
+{{html: <div> }}
+h3. Seafile
+
+Seafile is a full private file synchronization and collaboration for teams.
+
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/Subversion">}}
+!Subversion_logo.jpg!
+{{html: <div> }}
+h3. Subversion
+
+Subversion is a Source Code Management (SCM), a tool for software developers.
+
+
+{{html: </div></a> </div> }}
+
+
+
+{{html: <div class="price"> <a href="../$$space/Sugar CRM">}}
+!Sugar CRM_logo.jpg!
+{{html: <div> }}
+h3. Sugar CRM
+
+Sugar CRM is an open source customer relationship management (CRM) system
+
+
+{{html: </div></a> </div> }}
+
+{{html: <div class="price"> <a href="../$$space/VTiger CRM">}}
+!VTiger CRM_logo.jpg!
+{{html: <div> }}
+h3. VTiger CRM
+
+Vtiger CRM On Demand is customer relationship management software.
+
+
+{{html: </div></a> </div> }}
+
+{{html: </div> }}

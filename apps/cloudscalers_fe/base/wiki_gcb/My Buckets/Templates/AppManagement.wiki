@@ -1,0 +1,13 @@
+h2. Management $$appname
+
+Welcome to the Management page for $$appname. On this page all actions for $$appname are contained that are not part of the default application management pages. It includes all system admin tasks around the application.
+
+{{include:ManagementPanel}}
+
+{{include:Users}}
+
+{{include:StartStop}}
+
+{{include:RollBack}}
+
+{{include:AppReplication}}

@@ -1,0 +1,55 @@
+h2. Desktop Buckets Features
+h3. Description
+
+VDI (Virtual Disk Image) is the practice of hosting a desktop operating system within a virtual machine (VM) running on a hosted, centralized or remote server. Microsoft developed a technology called virtual desktop infrastructure in Windows Server 2008. The issue when using a VDI is that only the desktop is moved into the cloud and no solution is provided for more optimal desktop management, desktop mobility and use on multiple devices. Also it lacks on cloud storage including collaboration features and sharing functions.
+
+Desktop buckets bring an innovative new way to deliver end user IT. Create a collaboration space where each user has a unified all in one cloud application portal to manage applications and data across all devices! Desktop Buckets uses a single sign on portal that lists the users' applications and connects them transparently to the selected apps. Users can use any device with a browser that supports html5. That is the case for all modern browsers and most smart devices like smartphones and tablets.
+
+Desktop Buckets bring a significant change in:
+
+* Desktop management: provisioning, updates, support is many more times easy and less costly
+* True device agnostic: it does not matter what device you use, even you can bring your own
+* Use of known native apps and not saas lookalike apps
+* Full private and secure storage cloud
+* Collaboration with other workers
+* Support of legacy applications
+
+{{html: <hr> }}
+
+h3. Features
+
+{{html:
+<ul class="Features">
+    <li><i class="icon-ok-sign"></i><span>One gateway for all:</span> Login to get access to your private cloud application portal, providing access to native office apps, server apps, web apps, private storage and advanced users can even create and manage virtual infrastructure.</li>
+    <li><i class="icon-ok-sign"></i><span>Cross Platform Apps Access:</span> Supports Microsoft Windows and Linux desktop and server applications and provides web-based documents preview and video streaming functionality.</li>
+    <li><i class="icon-ok-sign"></i><span>Instant Voice and Video Support:</span> Smart Global Office includes a voice and video collaboration service directly from the browser.</li>
+    <li><i class="icon-ok-sign"></i><span>Multi-browser support:</span> Compatible with the latest release of all major browsers.</li>
+    <li><i class="icon-ok-sign"></i><span>Client-less solution:</span> Smart Global Office does not require any local client to be installed and frees system administrators from maintenance and upgrades of software on end-user devices.</li>
+    <li><i class="icon-ok-sign"></i><span>Printing support:</span> Smart Global Office allows printing from the cloud to your local network printer.</li>
+    <li><i class="icon-ok-sign"></i><span>File manager:</span> File manager with 2-pane file navigation that provides a unified view across different storage systems. Ability to upload/download files to/from your back-end storage and share files with other Smart Global Office users.</li>
+    <li><i class="icon-ok-sign"></i><span>Private Storage Drive:</span> Integrated application and storage experience that saves application files to cloud storage and opens applications from the file manager.</li>
+    <li><i class="icon-ok-sign"></i><span>Legacy Friendly:</span> 'Cloud enable' legacy desktop and server applications and deliver these from Smart Global Office. This lowers the threshold to adopt cloud and provides a solution when no native cloud alternative exists.</li>
+    <li><i class="icon-ok-sign"></i><span>Multi-device support:</span> Smart Global Office only requires a modern browser and can be deployed on a range of devices including Windows/Linux PCs, Macs, IOS and Android tablets.</li>
+</ul>
+
+}}
+
+{{html: <hr> }}
+h3. Screenshots
+{{gallery: picturedir:Desktopimgs | title:Screenshots | thumb_size:300x200}}
+
+{{html: <hr> }}
+h3. Desktop Buckets Pricing
+
+{{html:
+<div ng-app="cloudscalers">
+<div ng-controller="DesktopPricingController" >
+<div  class="dbox">
+<span>Creating a desktop is super easy, with a per user pricing!</span>  <br><br>
+    Number of users <input id="numOfUsers" name="numOfUsers" ng-model="numOfUsers" /><br>
+   <br><p>
+    <span>Total price:</span> <span class="total">{[totalPrice]}</span> USD/month
+	</p>
+</div>
+</div>
+}}

@@ -1,6 +1,12 @@
-.pyc$
-.swp$
-.rej$
-.orig$
+\.pyc$
+\.swp$
+\.rej$
+\.orig$
 ~$
 
+# use glob syntax.
+syntax: glob
+
+apps/cloudscalers_fe/base/wiki_gcb/.files/coverage
+**.orig
+**/Thumbs.db

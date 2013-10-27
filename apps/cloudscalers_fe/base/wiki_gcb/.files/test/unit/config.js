@@ -1,0 +1,4 @@
+cloudspaceconfig = {
+	apibaseurl : 'testapi' 	
+};
+
