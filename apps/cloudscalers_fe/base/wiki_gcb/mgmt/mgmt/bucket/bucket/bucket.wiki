@@ -86,7 +86,7 @@
 	</tbody>
 	</table>
 
-    <input class="btn btn-info btn-large"  type="submit" value="Restore" data-bind="click: restoreSnapshot" />
+    <input class="btn btn-info btn-large"  type="submit" value="Restore" data-bind="click: rollbackSnapshot" />
   </div>
     <div id="Backups" class="tab-pane">
     <h3>Backups</h3>

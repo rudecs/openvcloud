@@ -107,7 +107,7 @@ MachineBucket.prototype.clone = function(cloneName) {
     });
 }
 
-MachineBucket.prototype.restoreSnapshot = function(snapshot) {
+MachineBucket.prototype.rollbackSnapshot = function(machineId, snapshot) {
     this.plan.cpu = snapshot.cpu;
     this.plan.memory = snapshot.memory;
     this.plan.storage = snapshot.storage;

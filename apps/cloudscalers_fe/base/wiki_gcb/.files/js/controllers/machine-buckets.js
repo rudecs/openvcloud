@@ -63,8 +63,8 @@ cloudscalersControllers
             $scope.cloneModalOpen = false;
         };
 
-        $scope.restoreSnapshot = function(snapshot) {
-            $scope.bucket.restoreSnapshot(snapshot);
+        $scope.rollbackSnapshot = function(snapshot) {
+            $scope.bucket.rollbackSnapshot($scope.machine.id, snapshot);
             location.reload();
         };
 

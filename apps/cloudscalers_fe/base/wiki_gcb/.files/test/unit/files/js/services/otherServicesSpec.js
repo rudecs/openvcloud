@@ -145,7 +145,7 @@ xdescribe("Machine buckets", function() {
 
                 bucket.createSnapshot("snapshot 2");
                 bucket.plan = {cpu: 2, memory: 8, storage: 15};
-                bucket.restoreSnapshot(bucket.snapshots[1]);
+                bucket.rollbackSnapshot(1, bucket.snapshots[1]);
                 expect(bucket.cpu).toBe(1);
                 expect(bucket.memory).toBe(1);
                 expect(bucket.storage).toBe(22);

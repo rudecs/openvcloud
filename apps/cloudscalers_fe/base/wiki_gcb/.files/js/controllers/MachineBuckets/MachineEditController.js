@@ -41,9 +41,9 @@ cloudscalersControllers
             showLoading('Creating a snapshot');
         };
 
-        $scope.restoreSnapshot = function(snapshot) {
+        $scope.rollbackSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            //$scope.machine.restoreSnapshot(snapshot);
+            $scope.machine.rollbackSnapshot($scope.machine.id, snapshot);
             location.reload();
         };
 
