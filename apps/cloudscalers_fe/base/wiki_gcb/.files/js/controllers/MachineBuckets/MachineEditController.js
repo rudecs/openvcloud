@@ -43,7 +43,13 @@ cloudscalersControllers
 
         $scope.rollbackSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            $scope.machine.rollbackSnapshot($scope.machine.id, snapshot);
+            Machine.rollbackSnapshot($scope.machine.id, snapshot);
+            location.reload();
+        };
+
+        $scope.deleteSnapshot = function(snapshot) {
+            $scope.machine.history.push({event: 'Delete snapshot', initiated: getFormattedDate(), user: 'Admin'});
+            Machine.deleteSnapshot($scope.machine.id, snapshot);
             location.reload();
         };
 

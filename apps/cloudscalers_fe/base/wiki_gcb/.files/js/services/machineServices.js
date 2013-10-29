@@ -226,6 +226,18 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     });
                 return rollbackSnapshotResult;
             },
+            deleteSnapshot: function (machineId, name) {
+                var deleteSnapshotResult = {};
+                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + name;
+                $http.get(url).success(
+                    function (data, status, headers, config) {
+                        deleteSnapshotResult.success = true;
+                    }).error(
+                    function (data, status, headers, config) {
+                        deleteSnapshotResult.error = status;
+                    });
+                return deleteSnapshotResult;
+            },
             getConsoleUrl: function(machineId) {
                 var getConsoleUrlResult = {};
                 var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl?machineId=' + machineId;

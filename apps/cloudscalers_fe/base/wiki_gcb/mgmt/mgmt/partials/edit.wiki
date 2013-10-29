@@ -253,6 +253,7 @@ h2. Manage Machine
                         </td>
                         <td>
                             <a style="cursor: pointer" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                            <a style="cursor: pointer" ng-click="deleteSnapshot(snapshot)">Delete</a>
                         </td>
                     </tr>
                 </tbody>
