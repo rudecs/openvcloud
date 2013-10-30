@@ -21,13 +21,7 @@ h2. Manage Machine
             <a data-toggle="tab" href="#snapshots">Snapshots</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#monitoring">Monitoring</a>
-        </li>
-        <li>
             <a data-toggle="tab" href="#logging">Change Log</a>
-        </li>
-        <li>
-            <a data-toggle="tab" href="#package">Change Package</a>
         </li>
     </ul>
     <div class="tab-content">

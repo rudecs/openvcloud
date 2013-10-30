@@ -22,10 +22,6 @@ h2. Create Machine Bucket
         <label class="control-label" >Image</label>
         <div class="controls ">{{include:image_list}}</div>
     </div>
-    <div class="control-group">
-        <label class="control-label" >Hosting Location:</label>
-        <div class="controls ">{{include:region_list}}</div>
-    </div>
 }}
 h2. Options
 {{html:
@@ -41,10 +37,6 @@ h2. Options
         <div class="controls " >
             {{include:archive_list}}
         </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" >Replication Location:</label>
-        <div class="controls ">{{include:replication_list}}</div>
     </div>
     <hr>
 
