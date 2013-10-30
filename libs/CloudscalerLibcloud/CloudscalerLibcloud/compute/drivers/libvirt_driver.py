@@ -4,6 +4,7 @@ from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader, Template
+from JumpScale.baselib.dnsmasq import DNSMasq
 from xml.etree import ElementTree
 import os
 import uuid
@@ -132,10 +133,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         # 0 means default behaviour, e.g machine is auto started.
         domain = self.connection.defineXML(machinexml)
         vmid = domain.UUIDString()
+        dnsmasq = DNSMasq()
+        namespace = 'ns-%s' % self.backendconnection.environmentid
+        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
+
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
-        extranettemplate = Template("<host mac='{{macaddress}}' name='{{name}}' ip='{{ipaddress}}'/>")
-        xmlstring = extranettemplate.render({'macaddress': macaddress, 'name': name, 'ipaddress': ipaddress})
-        network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
+        dnsmasq.addHost(macaddress, ipaddress,name)
+        dnsmasq.reload()
+
         domain.create()
 
         node = self._to_node(domain, ipaddress)
@@ -188,14 +193,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domid = domain.UUIDString()
         node = self.backendconnection.getNode(domid)
         network = self.connection.networkLookupByName('default')
-        extranettemplate = Template("<host mac='{{macaddress}}' ip='{{ipaddress}}'/>")
-        xmlstring = extranettemplate.render({'macaddress':node['macaddress'], 'ipaddress':node['ipaddress']})
-        try:
-            network.update(libvirt.VIR_NETWORK_UPDATE_COMMAND_DELETE, libvirt.VIR_NETWORK_SECTION_IP_DHCP_HOST, -1, xmlstring, flags=libvirt.VIR_NETWORK_UPDATE_AFFECT_CURRENT)
-        except libvirt.libvirtError, e:
-            # allow operation error incase network is not registered in dhcp
-            if e.get_error_code() != libvirt.VIR_ERR_OPERATION_INVALID:
-                raise
+        dnsmasq = DNSMasq()
+        namespace = 'ns-%s' % self.backendconnection.environmentid
+        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
+        dnsmasq.removeHost(node['macaddress'])
+        dnsmasq.reload()
 
         self.backendconnection.unregisterMachine(domid)
 
