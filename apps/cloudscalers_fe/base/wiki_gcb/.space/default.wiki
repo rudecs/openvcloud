@@ -101,20 +101,6 @@ function logout() {
 				</a>
 				</li> 
 
-				<li loggedin-show>
-				<a href="../$$space/ApplicationBuckets">
-				<i class="icon-bar-chart"></i>
-				<span>App Buckets</span>
-				</a>
-				</li> 
-					  				    				
-				<li loggedin-show>
-				<a href="../$$space/ComputeBuckets">
-				<i class="icon-cogs"></i>
-				<span>Compute Buckets</span>
-				</a>
-				</li> 
-				
 
 				<li loggedin-show >
 					<a href="../$$space/Settings">
