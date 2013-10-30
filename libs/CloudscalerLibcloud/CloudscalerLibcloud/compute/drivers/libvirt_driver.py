@@ -5,6 +5,7 @@ from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader, Template
 from xml.etree import ElementTree
+import os
 import uuid
 import libvirt
 import urlparse
@@ -73,6 +74,18 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                    'imagetype': image['type']}
         )
 
+    def _create_disk(self, size, image):
+        storagepool = self.connection.storagePoolLookupByName(POOLNAME)
+        disktemplate = self.env.get_template("disk.xml")
+        diskname = str(uuid.uuid4()) + '.qcow2'
+        diskbasevolume = image.extra['path']
+        disksize = size.disk
+        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
+                                       diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
+        # 0 means not to preallocate data
+        storagepool.createXML(diskxml, 0)
+        return diskname
+
     def create_node(self, name, size, image, location=None, auth=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
@@ -101,24 +114,17 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @return: The newly created node.
         @rtype: L{Node}
         """
-        storagepool = self.connection.storagePoolLookupByName(POOLNAME)
+        diskname = self._create_disk(size, image)
+        return self._create_node(name, diskname, size)
 
-        disktemplate = self.env.get_template("disk.xml")
+    def _create_node(self, name, diskname, size):
         machinetemplate = self.env.get_template("machine.xml")
 
-        diskname = str(uuid.uuid4()) + '.qcow2'
-        diskbasevolume = image.extra['path']
-        disksize = size.disk
         macaddress = self.backendconnection.getMacAddress()
-
-        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-                                       diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
 
         machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
-        # 0 means not to preallocate data
-        storagepool.createXML(diskxml, 0)
         # next we set the network configuration.
 
         network = self.connection.networkLookupByName('default')
@@ -136,11 +142,12 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         self._set_persistent_xml(node, domain.XMLDesc(0))
         return node
 
-    def ex_snapshot(self, node, name):
+    def ex_snapshot(self, node, name, snapshottype='internal'):
         domain = self._get_domain_for_node(node=node)
-        diskfiles = self._get_disk_file_names(domain)
-        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles)
-        return domain.snapshotCreateXML(snapshot, 0).getName()
+        diskfiles = self._get_domain_disk_file_names(domain)
+        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
+        flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
+        return domain.snapshotCreateXML(snapshot, flags).getName()
 
     def ex_listsnapshots(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -156,8 +163,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         snapshot = domain.snapshotLookupByName(name, 0)
         return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
 
-    def _get_disk_file_names(self, domain):
-        xml = ElementTree.fromstring(domain.XMLDesc(0))
+    def _get_domain_disk_file_names(self, dom):
+        if isinstance(dom, ElementTree.Element):
+            xml = dom
+        else:
+            xml = ElementTree.fromstring(dom.XMLDesc(0))
         disks = xml.findall('devices/disk')
         diskfiles = list()
         for disk in disks:
@@ -166,6 +176,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                 if source != None:
                     diskfiles.append(source.attrib['dev'])
         return diskfiles
+
+    def _get_snapshot_disk_file_names(self, snap):
+        xml = ElementTree.fromstring(snap.getXMLDesc(0))
+        domain = xml.findall('domain')[0]
+        return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -184,7 +199,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
         self.backendconnection.unregisterMachine(domid)
 
-        diskfiles = self._get_disk_file_names(domain)
+        diskfiles = self._get_domain_disk_file_names(domain)
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
             domain.destroy()
         for diskfile in diskfiles:
@@ -241,6 +256,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         info['ipaddress'] = self._get_connection_ip()
         return info
 
+    def ex_clone(self, node, size, name):
+        snapname = self.ex_snapshot(node, None, 'external')
+        origdomain = self._get_domain_for_node(node=node)
+        snap = origdomain.snapshotLookupByName(snapname)
+        diskname = self._get_snapshot_disk_file_names(snap)[0]
+        diskname = os.path.basename(diskname)
+        return self._create_node(name, diskname, size)
+
     def _get_connection_ip(self):
         uri = urlparse.urlparse(self.connection.getURI())
         return uri.netloc
@@ -272,3 +295,4 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+

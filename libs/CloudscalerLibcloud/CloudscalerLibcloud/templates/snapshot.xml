@@ -4,8 +4,8 @@
     <name>{{name}}</name>
     {% endif %}
     <disks>
-    {% for file in diskfiles %}
-        <disk name='{{file}}' snapshot='internal'>
+    {% for source in diskfiles %}
+    <disk name='{{source}}' snapshot='{{type}}'>
         </disk>
     {% endfor %}
     </disks>

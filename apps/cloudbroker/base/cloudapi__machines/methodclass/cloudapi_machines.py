@@ -113,6 +113,11 @@ class cloudapi_machines(cloudapi_machines_osis):
             if m['name'] == name:
                 raise ValueError("Machine with name %s already exists" % name)
 
+    def _getSize(self, provider, machine):
+        brokersize = self.cb.model_size_get(machine.sizeId)
+        firstdisk = self.cb.model_disk_get(machine.disks[0])
+        return provider.getSize(brokersize, firstdisk)
+
     @authenticator.auth(acl='C')
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
@@ -147,9 +152,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         try:
             stack = self.cb.extensions.imp.getBestProvider(imageId)
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
-            brokersize = self.cb.model_size_get(machine.sizeId)
-            firstdisk = self.cb.model_disk_get(machine.disks[0])
-            psize = provider.getSize(brokersize, firstdisk)
+            psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
@@ -157,9 +160,13 @@ class cloudapi_machines(cloudapi_machines_osis):
             self.cb.model_vmachine_delete(machine.id)
             raise
         node = provider.client.create_node(name=name, image=pimage, size=psize)
+        self._updateMachineFromNode(machine, node, stack['id'], psize)
+        return machine.id
+
+    def _updateMachineFromNode(self, machine, node, stackId, psize):
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
-        machine.stackId = stack['id']
+        machine.stackId = stackId
         machine.status = enums.MachineStatus.RUNNING
         machine.hostName = node.name
         for ipaddress in node.public_ips:
@@ -168,11 +175,9 @@ class cloudapi_machines(cloudapi_machines_osis):
         self.cb.model_vmachine_set(machine.obj2dict())
 
         cloudspace = self.cb.model_cloudspace_new()
-        cloudspace.dict2obj(self.cb.model_cloudspace_get(cloudspaceId))
-        cloudspace.resourceProviderStacks.append(stack['id'])
+        cloudspace.dict2obj(self.cb.model_cloudspace_get(machine.cloudspaceId))
+        cloudspace.resourceProviderStacks.append(stackId)
         self.cb.model_cloudspace_set(cloudspace)
-
-        return machine.id
 
     @authenticator.auth(acl='D')
     def delDisk(self, machineId, diskId, **kwargs):
@@ -362,7 +367,11 @@ class cloudapi_machines(cloudapi_machines_osis):
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.cb.model_disk_set(clonedisk)
-            machine.disks.append(clonediskId)
-        clone.id = self.cb.model_vmachine_set(machine)
-
+            clone.disks.append(clonediskId)
+        clone.id = self.cb.model_vmachine_set(clone)
+        provider, node = self._getProviderAndNode(machineId)
+        name = 'vm-%s' % clone.id
+        size = self._getSize(provider, clone)
+        node = provider.client.ex_clone(node, size, name)
+        self._updateMachineFromNode(clone, node, machine.stackId, size)
         return clone.id

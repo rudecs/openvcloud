@@ -148,10 +148,11 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         raise NotImplementedError ("not implemented method releaseIpaddress")
     
 
-    def retreiveInfo(self, key, **kwargs):
+    def retreiveInfo(self, key, reset, **kwargs):
         """
         get info
         param:key key of data
+        param:reset reset info
         result dict 
         
         """
