@@ -200,17 +200,17 @@ h2. Manage Machine
         <div class="tab-pane" id="package">
             <div class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" >Choose Package *:</label>
+                    <label class="control-label" >Package *:</label>
                     <div class="controls " >{{include:plan_list}}</div>
                 </div>
                 <hr>        
                 <div class="control-group">
-                    <label class="control-label" >Choose Image</label>
+                    <label class="control-label" >Image</label>
                     <div class="controls ">{{include:image_list}}</div>
                 </div>
                 <hr>        
                 <div class="control-group">
-                    <label class="control-label" >Choose Hosting Location:</label>
+                    <label class="control-label" >Hosting Location:</label>
                     <div class="controls ">{{include:region_list}}</div>
                 </div>
                 <h2>Options</h2>
@@ -224,7 +224,7 @@ h2. Manage Machine
                     <div class="controls " >{{include:archive_list}}</div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" >Choose Replication Location:</label>
+                    <label class="control-label" >Replication Location:</label>
                     <div class="controls ">{{include:replication_list}}</div>
                 </div>
                 <hr>
