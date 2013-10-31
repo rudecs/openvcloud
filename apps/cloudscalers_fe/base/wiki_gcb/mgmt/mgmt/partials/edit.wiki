@@ -175,7 +175,7 @@ h2. Manage Machine
             {{include:bucket_history}}
         </div>
 
-        <div id="console" class="tab-pane">
+        <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <p class="note">
                 Make sure to click on the top of the console screen to take control.
             </p>
@@ -184,8 +184,8 @@ h2. Manage Machine
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine bucket is not running.
                 </div>
-                <iframe ng-show="!machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}" style="width:100%;height:100%">
-                </iframe>
+		<div novncwindow connectioninfo="novnc-connectioninfo">
+		</div>
             </div>          
         </div>
         <div id="logging" class="tab-pane">

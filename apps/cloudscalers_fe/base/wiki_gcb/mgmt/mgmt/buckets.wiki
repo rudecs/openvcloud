@@ -3,8 +3,9 @@
 
 
 {{html:
-
-<div ng-app="cloudscalers">
+  <script src="/$$space/.files/js/controllers/MachineBuckets/ConsoleController.js" type="text/javascript"></script>
+  
+ <div ng-app="cloudscalers">
   <div ng-view></div>
 </div>
 }}
