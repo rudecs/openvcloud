@@ -90,7 +90,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             ipaddresses = []
             self.blobdb.set(key='freeipaddresses', value=ujson.dumps(ipaddresses))
         net = netaddr.IPNetwork(subnet)
-        netrange = net[2:]
+        netrange = net[2:-2]
         for i in netrange:
             if i != net.broadcast:
                 ipaddresses.append(str(i))

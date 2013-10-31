@@ -18,8 +18,8 @@
           <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
         </td>
         <td style="display: none">{[machine.ip]}</td>
-        <td>{[sizes[machine.sizeId].disksize]}</td>
-        <td>{[sizes[machine.sizeId].CU]} <ng-pluralize count="sizes[machine.sizeId].CU" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
+        <td>{[sizes[machine.sizeid].memory/1024]} GB</td>
+        <td>{[sizes[machine.sizeid].vcpus]} <ng-pluralize count="sizes[machine.sizeid].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
         <td>{[machine.disksize]} GB</td>
         <td>2</td>
       </tr>
