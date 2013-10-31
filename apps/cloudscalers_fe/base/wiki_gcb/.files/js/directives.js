@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('cloudscalers.directives', []).
+angular.module('cloudscalers.directives', [])
 	.directive('novncwindow', function(){
 	    return {
 	        restrict: 'A',
