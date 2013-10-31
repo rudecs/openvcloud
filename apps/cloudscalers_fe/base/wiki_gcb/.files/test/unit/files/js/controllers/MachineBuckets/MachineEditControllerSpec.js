@@ -76,6 +76,13 @@ describe("Machine bucket editing controller", function(){
  	  	expect(scope.snapshots.length).toBe(1);
  	  });
  	});
-	
+
+ 	describe("get console url", function() {
+ 	 	it("successfully", function() {
+ 	 	 	expect(Machine.getConsoleUrl).toHaveBeenCalledWith(13);
+ 	 	 	expect(scope.machineConsoleUrlResult.error).toBeUndefined();
+ 	 	 	expect($sce.getTrustedResourceUrl(scope.machineConsoleUrlResult.url)).toBe('http://www.yahoo.com');
+ 	 	});
+ 	}); 	
 });
 

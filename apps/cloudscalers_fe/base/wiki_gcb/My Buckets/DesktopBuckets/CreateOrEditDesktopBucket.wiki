@@ -1,38 +1,16 @@
-    <div class="control-group">
-      <label class="control-label" for="appendedtext">Set User Login</label>
-      <div class="controls">
-        <div class="input-append">
-          <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="E-mail" type="text" ng-model="bucket.newUser.email">    
-          <button class="btn " ng-click="bucket.addNewUser()">Add</button>
-        </div>
-      </div>
+<div class="control-group">
+    <label class="control-label" for="appendedtext">Set User Login</label>
+    <div class="controls">
+        <input id="appendedtext" name="appendedtext" class="input-xlarge" placeholder="E-mail" type="text" ng-model="bucket.newUser.email">
     </div>
+</div>
 
-    <div class="control-group">
-      <label class="control-label" for="radios">Select User Privileges</label>
-      <div class="controls">
+<div class="control-group">
+    <label class="control-label" for="radios">Select User Privileges</label>
+    <div class="controls">
         <label class="radio inline" for="radios-0">
-          <input type="radio" name="radios" id="radios-0" value="User" ng-model="bucket.newUser.userType">User</label>
+        <input type="radio" name="radios" id="radios-0" value="User" ng-model="bucket.newUser.userType">User</label>
         <label class="radio inline" for="radios-1">
-          <input type="radio" name="radios" id="radios-1" value="Administrator" ng-model="bucket.newUser.userType">Administrator</label>
-      </div>
+        <input type="radio" name="radios" id="radios-1" value="Administrator" ng-model="bucket.newUser.userType">Administrator</label>
     </div>
-
-    <div class="control-group" ng-show="bucket.users.length > 0">
-      <label class="control-label" for="radios">&nbsp;</label>
-      <table class="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>User type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="user in bucket.users">
-            <td>{[user.email]}</td>
-            <td>{[user.userType]}</td>
-          </tr>
-        </tbody>
-      </table>
-
-    </div>
+</div>
