@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('LoginController', ['$scope', 'User', 'APIKey','$window', '$timeout', function($scope, User, APIKey, $window, $timeout) {
+    .controller('LoginController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
         $scope.username = '';
         $scope.password = '';
         $scope.loggedIn = !!APIKey.get();
@@ -24,8 +24,4 @@ cloudscalersControllers
                 $window.location = uri.toString();
             }
         }, true);
-
-        $timeout(function() {
-            $('input').keypress(function(e) { if (e.which == 13) $('input[type=submit]').click(); });
-        }, 0);
     }]);

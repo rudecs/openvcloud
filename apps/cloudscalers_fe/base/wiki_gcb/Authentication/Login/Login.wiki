@@ -3,7 +3,7 @@
 {{html:
 <div class="account-container stacked" ng-app="cloudscalers" ng-controller="LoginController">
     <div class="content clearfix padding">
-
+        <form ng-submit="login()">
             <h1>Sign In</h1>
 
             <div class="login-fields">
@@ -26,6 +26,7 @@
             </div>
 			<p class="sp"><span>Or</span></p> <hr>
 			<a class="btn long-btn" href="/$$space/SignUp">Sign Up</a>
+        </form>
     </div>
 </div>
 }}
