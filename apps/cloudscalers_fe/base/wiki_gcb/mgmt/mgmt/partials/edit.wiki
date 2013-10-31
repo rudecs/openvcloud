@@ -184,7 +184,7 @@ h2. Manage Machine
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine bucket is not running.
                 </div>
-		<div novncwindow connectioninfo="novnc-connectioninfo">
+		<div novncwindow connectioninfo="novnc_connectioninfo">
 		</div>
             </div>          
         </div>

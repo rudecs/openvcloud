@@ -4,18 +4,24 @@ describe("Machine console controller tests", function(){
 	beforeEach(module('cloudscalers'));
 	
 	beforeEach(inject(function($rootScope) {
-		machine = {list : jasmine.createSpy('list'), create: jasmine.createSpy('create'), get: jasmine.createSpy('get') };
+		machine = {getConsoleUrl : jasmine.createSpy('getConsoleUrl') };
 		scope = $rootScope.$new();
 	}));
 
 	
 	describe("connectioninfo ", function() {
 		beforeEach(inject(function($controller) {
-			machine.list.andReturn({});
-		 	ctrl = $controller('ConsoleController', {$scope : scope, Machine : machine});
+			machine.getConsoleUrl.andReturn({});
+			var routeparams = {machineId: 7};
+		 	ctrl = $controller('ConsoleController', {$scope : scope, $routeparams : routeparams, Machine : machine});
 		}));
 
-	 	
+		it("connectioninfo correctly created from the consoleUrl", function() {
+		//	expect(machine.getConsoleUrl).toHaveBeenCalledWith(7);
+			
+			expect(scope.novnc_connectioninfo).not.toBe(null);
+			
+		});
 	});
 
 });
