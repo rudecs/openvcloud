@@ -43,11 +43,11 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[ sizes[machine.sizeId].vcpus ]} <ng-pluralize count="sizes[machine.sizeId].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                            {[ sizes[machine.sizeid].vcpus ]} <ng-pluralize count="sizes[machine.sizeid].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[sizes[machine.sizeId].memory/1024]} GB
+                            {[sizes[machine.sizeid].memory/1024]} GB
                         </li>
                         <li>
                             <h5>Storage</h5>
