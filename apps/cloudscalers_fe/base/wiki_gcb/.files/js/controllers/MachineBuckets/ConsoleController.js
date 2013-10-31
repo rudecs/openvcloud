@@ -30,6 +30,6 @@ cloudscalersControllers
             	$scope.novnc_connectioninfo = new_connection_info;
         	}
         	
-        });
+        }, true);
         
     }]);
