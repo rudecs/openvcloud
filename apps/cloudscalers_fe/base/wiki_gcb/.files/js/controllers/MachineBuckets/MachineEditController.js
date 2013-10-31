@@ -6,7 +6,6 @@ cloudscalersControllers
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
-        $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.newSnapshotName = '';
         $scope.cloneName = '';
 
