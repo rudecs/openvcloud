@@ -1,5 +1,15 @@
 @usedefault
 
+    <script src="/$$space/.files/lib/noVNC/include/util.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/webutil.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/base64.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/websock.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/des.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/input.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/display.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/jsunzip.js"></script>
+	<script src="/$$space/.files/lib/noVNC/include/rfb.js"></script>
+	
 
 
 {{html:
