@@ -147,5 +147,6 @@
     prop:name str,,Public name of the size
     prop:memory int,, Memory in Mb
     prop:vcpus int,, Number of vcpus assigned to the machine
+    prop:description str,,Description of the size
 
 

@@ -339,6 +339,7 @@ h2. loading
     <script src="/$$space/.files/lib/angular-1.2.0-rc.2/angular-resource.min.js"></script>
     <script src="/$$space/.files/lib/URI.js"></script>
     <script src="/$$space/.files/lib/underscore/underscore-min.js"></script>
+    <script src="/$$space/.files/lib/numeral/numeral.min.js"></script>
     <script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.5.0.min.js"></script>
     <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
 

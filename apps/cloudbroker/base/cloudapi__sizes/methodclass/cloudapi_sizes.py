@@ -34,7 +34,7 @@ class cloudapi_sizes(cloudapi_sizes_osis):
 
         """
         term = dict()
-        query = {'fields': ['id', 'name', 'CU', 'disks']}
+        query = {'fields': ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']}
         results  = self.cb.model_size_find(ujson.dumps(query))['result']
         sizes = [res['fields'] for res in results]
         return sizes
