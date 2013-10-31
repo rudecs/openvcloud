@@ -9,7 +9,6 @@
       <th>Memory</th>
       <th>CPU</th>
       <th>Storage</th>
-      <th>Number of Data Locations</th>
     </tr>
     <tbody>
       <tr ng-repeat="machine in machines">
@@ -21,7 +20,6 @@
         <td>{[sizes[machine.sizeId].memory/1024]} GB</td>
         <td>{[sizes[machine.sizeId].vcpus]} <ng-pluralize count="sizes[machine.sizeId].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
         <td>{[machine.disksize]} GB</td>
-        <td>2</td>
       </tr>
     </tbody>
   </table>
