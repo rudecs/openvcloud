@@ -178,8 +178,7 @@ h2. Manage Machine
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine bucket is not running.
                 </div>
-                <iframe ng-show="!machineConsoleUrlResult.error" ng-src="{[machineConsoleUrlResult.url]}" style="width:720px;height:430px">
-<!--		<div novncwindow connectioninfo="novnc_connectioninfo">   -->
+				<div novncwindow connectioninfo="novnc_connectioninfo">
 		</div>
             </div>          
         </div>

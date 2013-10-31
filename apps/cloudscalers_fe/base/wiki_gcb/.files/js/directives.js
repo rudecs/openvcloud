@@ -7,8 +7,8 @@ angular.module('cloudscalers.directives', [])
 	        link: function (scope, elem, attrs) {
 			var updateState = function(rfb, state, oldstate, msg) {
             			var s, sb, cad, level;
-            			s = $('#noVNC_status');
-            			cad = $('#sendCtrlAltDelButton');
+            			s = $D('noVNC_status');
+            			cad = $D('sendCtrlAltDelButton');
             			switch (state) {
                 			case 'failed':       level = "error";  break;
                 			case 'fatal':        level = "error";  break;
@@ -29,7 +29,7 @@ angular.module('cloudscalers.directives', [])
 
 
         		var connect = function(data){
-			rfb = new RFB({'target': $('#noVNC_canvas'),
+			var rfb = new RFB({'target': $D('noVNC_canvas'),
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
                            'true_color': true,
@@ -43,7 +43,7 @@ angular.module('cloudscalers.directives', [])
         
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
         		    connect(newValue);
-        		});
+        		}, true);
 
 	        },
 		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">\
