@@ -86,7 +86,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         
         return user;
     })
-    .factory('Machine', function ($http, $sce, $rootScope) {
+    .factory('Machine', function ($http, $rootScope) {
         $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
         var machineStates = {
             'start': 'RUNNING',
@@ -251,7 +251,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     if (data == 'None') {
                         getConsoleUrlResult.error = status;
                     } else {
-                        getConsoleUrlResult.url = $sce.trustAsResourceUrl(JSON.parse(data));
+                        getConsoleUrlResult.url = JSON.parse(data);
                     }
                 }).error(function (data, status, headers, config) {
                     getConsoleUrlResult.error = status;

@@ -169,7 +169,7 @@ describe('Cloudscalers machine services', function() {
             defineUnitApiStub($httpBackend);
             var consoleUrlResult = Machine.getConsoleUrl(13);
             $httpBackend.flush();
-            expect($sce.getTrustedResourceUrl(consoleUrlResult.url)).toEqual('http://www.reddit.com/');
+            expect(consoleUrlResult.url).toEqual('http://www.reddit.com/');
         });
 
         it("can handle error returning the console URL", function() {
