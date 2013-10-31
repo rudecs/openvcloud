@@ -189,7 +189,7 @@ function LocalStorageService(keyName, Constructor) {
     this.getById = function(id) {
         var elements = this.getAll();
         for(var i = 0; i < elements.length; i++) {
-            if (elements[i].id && elements[i].id === id)
+            if (elements[i].id && elements[i].id == id)
                 return elements[i];
         }
         return null;
@@ -202,7 +202,7 @@ function LocalStorageService(keyName, Constructor) {
             return;
         }
         for(var i = 0; i < elements.length; i++) {
-            if (elements[i].id && elements[i].id === element.id) {
+            if (elements[i].id && elements[i].id == element.id) {
                 elements[i] = element;
                 break;
             }

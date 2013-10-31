@@ -88,12 +88,18 @@ angular.module('cloudscalers.machineServices', ['ng'])
     })
     .factory('Machine', function ($http, $sce, $rootScope) {
         $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
+        var machineStates = {
+            'start': 'RUNNING',
+            'stop': 'HALTED',
+            'pause': 'PAUSED',
+            'resume': 'RUNNING'
+        };
         return {
             start: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/start?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
-                        machine.status = data;   
+                        machine.status = machineStates['start'];
                     })
                     .error(function(data, status, headers, config) {
                     });
@@ -102,7 +108,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 var url = cloudspaceconfig.apibaseurl + '/machines/stop?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
-                        machine.status = data;   
+                        machine.status = machineStates['stop'];
                     })
                     .error(function(data, status, headers, config) {
                     });
@@ -111,7 +117,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
-                        machine.status = data;   
+                        machine.status = machineStates['pause'];
                     })
                     .error(function(data, status, headers, config) {
                     });
@@ -120,7 +126,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 var url = cloudspaceconfig.apibaseurl + '/machines/resume?machineId=' + machine.id;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
-                        machine.status = data;   
+                        machine.status = machineStates['resume'];
                     })
                     .error(function(data, status, headers, config) {
                     });
@@ -134,8 +140,8 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     function (data, status, headers, config) {
                         machine.id = data;
                     }).error(function (data, status, headers, config) {
-                    machine.error = status;
-                });
+                        machine.error = status;
+                    });
                 return machine;
             },
             clone: function(machine, cloneName) {

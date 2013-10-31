@@ -1,5 +1,13 @@
 h2. Connecting ...
 
-Please wait till you are redirect or [click here|http://sgo.awingu.com].
+Please wait till you are redirected or [click here|http://sgo.awingu.com].
 
 Your Login credentials for this service are: fossena/arvid1234
+
+{{html:
+<script>
+    setTimeout(function() {
+        location.href = 'http://sgo.awingu.com';
+    }, 3000);
+</script>
+}}
