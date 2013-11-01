@@ -12,6 +12,9 @@ cloudscalersControllers
         $scope.images = Image.list();
         $scope.numeral = $window.numeral;
 
+        $scope.sizepredicate = 'vcpus'
+        
+
         $scope.saveNewMachine = function() {
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
