@@ -149,10 +149,12 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 return this.create(machine.cloudspaceId, cloneName, "Clone of " + machine.name, machine.sizeId, machine.imageId, machine.disksize);
             },
             rename: function(machine, newName) {
-                machine.name = newName;
-                var url = cloudspaceconfig.apibaseurl + '/machines/rename?machineId=' + machine.id + '&newName=' + newName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + machine.id + '&name=' + newName +
+                        '&size=' + machine.size +
+                        '&description=' + machine.description;
                 $http.get(url)
                     .success(function(data, status, headers, config) {
+                        machine.name = newName;
                     })
                     .error(function(data, status, headers, config) {
                     });
