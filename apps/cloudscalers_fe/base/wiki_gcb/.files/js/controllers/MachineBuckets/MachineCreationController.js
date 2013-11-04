@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'Size', 'Image', function($scope, $timeout, $location, $window, Machine, Size, Image) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'Size', 'Image', 'alert', function($scope, $timeout, $location, $window, Machine, Size, Image, alert) {
         $scope.machine = {
             cloudspaceId: 1,
             name: '',
@@ -24,13 +24,21 @@ cloudscalersControllers
             $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
         }, true);
 
+        $scope.createredirect = function(response) {
+            $location.path('/edit/' + response.data);
+        };
+
+        $scope.createError = function(response){
+            alert('A error has occured. <p><p>' + "    "
+                +response.data.backtrace)
+            console.log(response);
+        }
 
         $scope.saveNewMachine = function() {
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
-                           $scope.machine.region, $scope.machine.replication);
-            $location.path('/list');
+                           $scope.machine.region, $scope.machine.replication,true).then($scope.createredirect, $scope.createError);
         };
 
         $scope.showDiskSize = function(disksize) {

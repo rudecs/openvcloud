@@ -22,6 +22,7 @@ cloudscalersControllers
         $scope.destroy = function() {
             if (confirm('Are you sure you want to destroy this machine?')) {
                 Machine.delete($scope.machine.id);
+                $scope.machine.status = 'DESTROYED';
                 $location.path("/list");
             }
         };
