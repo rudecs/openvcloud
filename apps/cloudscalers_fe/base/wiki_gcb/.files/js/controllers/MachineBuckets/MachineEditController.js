@@ -1,12 +1,11 @@
 cloudscalersControllers
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Image', 'Size', 'confirm', 
-                function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Image', 'Size', 'confirm', '$modal', 
+                function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm, $modal) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
-        $scope.newSnapshotName = '';
         $scope.cloneName = '';
 
         $scope.sizes = Size.list();
@@ -21,10 +20,6 @@ cloudscalersControllers
             angular.copy($scope.machine, $scope.oldMachine);
         }, true);
 
-        $scope.renameModalOpen = false;
-        $scope.snapshotModalOpen = false;
-        $scope.cloneModalOpen = false;
-
         $scope.destroy = function() {
             if (confirm('Are you sure you want to destroy this machine?')) {
                 Machine.delete($scope.machine.id);
@@ -32,11 +27,32 @@ cloudscalersControllers
             }
         };
 
+	var CreateSnapshotController = function ($scope, $modalInstance) {
+
+		$scope.snapshotname= '';
+
+  		$scope.ok = function () {
+    			$modalInstance.close($scope.snapshotname);
+  		};
+
+  		$scope.cancel = function () {
+    			$modalInstance.dismiss('cancel');
+  		};
+	};
+
         $scope.createSnapshot = function() {
-            $scope.machine.history.push({event: 'Created snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            $scope.closeSnapshotModal();
-            Machine.createSnapshot($scope.machine.id, $scope.newSnapshotName);
-            $scope.newSnapshotName = '';
+
+		var modalInstance = $modal.open({
+      			templateUrl: 'createSnapshotDialog.html',
+      			controller: CreateSnapshotController,
+      			resolve: {
+      			}
+    		});
+
+    		modalInstance.result.then(function (snapshotname) {
+			Machine.createSnapshot($scope.machine.id, snapshotName);
+    		});
+
             showLoading('Creating a snapshot');
         };
 
