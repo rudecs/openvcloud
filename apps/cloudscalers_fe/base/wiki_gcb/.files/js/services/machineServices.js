@@ -269,7 +269,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 url = cloudspaceconfig.apibaseurl + '/images/list';
                 $http.get(url).success(
                     function (data, status, headers, config) {
-                        _.extend(images, _.pairs(_.groupBy(data, function(img) { return img.type; })));
+                        _.each(data, function(image) {
+                            images.push(image);
+                        });
                     }).error(
                     function (data, status, headers, config) {
                         images.error = status;

@@ -1,27 +1,27 @@
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="10">
+ <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(10) ng-model="machine.disksize" btn-radio="10">
     10GB at SSD speed<br>1.5 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="20">
+  <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
     20GB at SSD speed<br>3 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="30">
+  <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
     30GB SSD at SSD speed<br>4.5 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="40">
+  <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
     40GB at SSD speed<br>6 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="50">
+  <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(50) ng-model="machine.disksize" btn-radio="50">
     50GB at SSD speed<br>7.5 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="100">
+  <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(100) ng-model="machine.disksize" btn-radio="100">
     100GB at SSD speed<br>15 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="250">
+  <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(250) ng-model="machine.disksize" btn-radio="250">
     250GB at SSD speed<br>37.5 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="500">
+  <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(500) ng-model="machine.disksize" btn-radio="500">
     500GB at SSD speed<br>75 USD/month
   </button>
-  <button type="button" class="btn btn-selector" ng-model="machine.disksize" btn-radio="1000">
+  <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(1000) ng-model="machine.disksize" btn-radio="1000">
     1TB<br>150 USD/month
   </button>
