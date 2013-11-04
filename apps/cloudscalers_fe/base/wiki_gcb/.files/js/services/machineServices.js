@@ -180,6 +180,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (machine) {
+                            if(machine.status === 'SUSPENDED'){
+                                machine.status = 'PAUSED';
+                            }
                             machines.push(machine);
                         });
                     }).error(
@@ -195,6 +198,9 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
+                        if(data.status === 'SUSPENDED'){
+                                data.status = 'PAUSED';
+                            }
                         _.extend(machine, data);
                     }).error(
                     function (data, status, headers, config) {
