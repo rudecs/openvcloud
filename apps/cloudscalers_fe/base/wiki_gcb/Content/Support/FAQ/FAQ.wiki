@@ -1,0 +1,400 @@
+h2. FAQ
+
+{{html:
+                <div class="accordion" id="accordion2">
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed in" data-toggle="collapse" data-parent="#accordion" href="#1">
+                             <h5><i class="icon-plus"></i> Who is CloudScalers for?</h5>
+                           </a>
+                         </div>
+                         <div id="1" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers delivers Virtual Machines, Cloud Desktops and Storage hosted from one of its datacenters in a secure and transparant model.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#2">
+                             <h5><i class="icon-plus"></i> What are the buckets?</h5>
+                           </a>
+                         </div>
+                         <div id="2" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Buckets is a CloudScalers specific term to indicate a private offered service that is part of a secured 'space'.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#3">
+                             <h5><i class="icon-plus"></i> What are spaces?</h5>
+                           </a>
+                         </div>
+                         <div id="3" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>A space is a security realm where buckets live in. CloudScalers creates spaces in order to manage a set of services - the buckets - inside a secured area a space. Users will get access to one or more spaces. If the user is owner of a space, he can grant other users access. Users can get access to multiple spaces.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#4">
+                             <h5><i class="icon-plus"></i> How do user accounts work?</h5>
+                           </a>
+                         </div>
+                         <div id="4" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Whether you are working for one or more projects or companies, a single user account will do to get access to the space of a project or company. It is the space owner that will give a unique user id access to his space.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#5">
+                             <h5><i class="icon-plus"></i> Can I share a bucket?</h5>
+                           </a>
+                         </div>
+                         <div id="5" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Authentification is done at the level of a space, that groups buckets. It is always possible to grant a user access to the Bucket itself by providing the bucket login, for example Virtual Machine login or Cloud Desktop login.</p>
+                           </div>
+                         </div>
+                       </div>
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#6">
+                             <h5><i class="icon-plus"></i> Is there a portal for end users?</h5>
+                           </a>
+                         </div>
+                         <div id="6" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>The portal is designed for anyone that is entitled to manage IT infrastructure. End Users will be using a Desktop Bucket to access their desktop and server applications.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#7">
+                             <h5><i class="icon-plus"></i> What makes CloudScalers different?</h5>
+                           </a>
+                         </div>
+                         <div id="7" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers provides faster, cheaper and more flexible bucket creation and management, while complying at all latest technology standards. CloudScalers offers as well a set of multiple Buckets all from the same portal.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#8">
+                             <h5><i class="icon-plus"></i> What performance is CloudScalers providing?</h5>
+                           </a>
+                         </div>
+                         <div id="8" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers uses storage at SSD speed. We monitor machines loads and will move instances in the cloud to guarantee an optimal performance. </p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#9">
+                             <h5><i class="icon-plus"></i> What are the advantages of storage at SSD speeds?</h5>
+                           </a>
+                         </div>
+                         <div id="9" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>The input/output results are many times higher compared to traditional disks. This means that the Operating System will react faster. In many cases, there might be lesser need to RAM compared to a traditional system, ex 1GB RAM can deliver similar results than a 2GB old school system.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#10">
+                             <h5><i class="icon-plus"></i> What can I change to my package?</h5>
+                           </a>
+                         </div>
+                         <div id="10" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>When the Operating system remains the same, the package can upgrade disk space and upgrade or downgrade CPU/Memory. When the user decides to reload an OS, a downgrade of disk space will be possible as well. In all scenarios, changing a package will keep the same IP address. After the changes, a reboot is always needed. For disk upgrades, the user needs to upgrade his partitions manually to use the new available space.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#11">
+                             <h5><i class="icon-plus"></i> Is billing done per hour?</h5>
+                           </a>
+                         </div>
+                         <div id="11" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Yes, billing is done on a per hour started for Machine Buckets and Storage Buckets. Desktop Buckets are billed per month. There is no difference between monthly and hourly billing.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#12">
+                             <h5><i class="icon-plus"></i> How am I billed?</h5>
+                           </a>
+                         </div>
+                         <div id="12" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers requires a preload of credits to get started. Each time a user will perform an action, ex create a new machine or start a new machine, the system will verify that there is enough credit to operate that action for 2 weeks, before the command executes. The user will be asked to load his account with credits when his active consumption will bring the credit limit to 0 in 2 weeks. When the credits are 0, the machines networking is blocked untill the credits are reloaded. Meanwhile, the credits go negative and the negative amount needs to be setlled as well. After no actions for another week, the machines will be stopped. 3 weeks later the account and its machines will be deleted unless the credits have been loaded. After that, the account with all its services and storage will be deleted.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#13">
+                             <h5><i class="icon-plus"></i> Am I charged while my Machine Bucket is in a powered-off state?</h5>
+                           </a>
+                         </div>
+                         <div id="13" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Yes. Your diskspace, CPU, RAM, and IP address are all reserved while your Bucket is powered off. You can save a Machine Bucket by taking a snapshot of it and then destroy it and you will be only be charged for the archive storage. You can create later a new machine from the snapshot image. </p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#14">
+                             <h5><i class="icon-plus"></i> What form of payments do you accept?</h5>
+                           </a>
+                         </div>
+                         <div id="14" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>We accept PayPal and credit cards processed through paypal without the need for users for a paypal account.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#15">
+                             <h5><i class="icon-plus"></i> Am I charged when I enter a credit card?</h5>
+                           </a>
+                         </div>
+                         <div id="15" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Yes, a start credit of 50 USD is charged and that you can use for your services. A recharge will be requested to ensure all active services can remain running for 2 weeks. The recharge will be done automatically when the recharge is lower that the previous billed budget. If a higher budget is required, a validation by the account owner is requested.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#16">
+                             <h5><i class="icon-plus"></i> How is my credit account updated?</h5>
+                           </a>
+                         </div>
+                         <div id="16" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Balances are not updated in real time, but we do update them when you log in again or when you perform an action.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#17">
+                             <h5><i class="icon-plus"></i> How do I cancel my account?</h5>
+                           </a>
+                         </div>
+                         <div id="17" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Please send an e-mail to support@cloudscalers.com with your account id.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#18">
+                             <h5><i class="icon-plus"></i> How do backups work?</h5>
+                           </a>
+                         </div>
+                         <div id="18" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers offers snapshots: these will be done per quarter, hour or day depending on the backup policy you selected. You will pay for the storage used.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#19">
+                             <h5><i class="icon-plus"></i> Do you host DNS?</h5>
+                           </a>
+                         </div>
+                         <div id="19" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>DNS panels are under development.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#20">
+                             <h5><i class="icon-plus"></i> Do you have an API?</h5>
+                           </a>
+                         </div>
+                         <div id="20" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Yes — we have a RESTful API. The API allows you to create and manage your buckets.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#21">
+                             <h5><i class="icon-plus"></i> Do you provide console access?</h5>
+                           </a>
+                         </div>
+                         <div id="21" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Yes, console access is provided via the management tab of the portal for of Machine Buckets. The latest version of most browsers will support this. (Html5)</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#22">
+                             <h5><i class="icon-plus"></i> What kind of Virtualization do you use?</h5>
+                           </a>
+                         </div>
+                         <div id="22" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>We use KVM.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#23">
+                             <h5><i class="icon-plus"></i> What kind of CPUs do you use?</h5>
+                           </a>
+                         </div>
+                         <div id="23" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>Our CPUs are 2GHz. Higher is available on request.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#24">
+                             <h5><i class="icon-plus"></i> What kind of Network does CloudScalers run on?</h5>
+                           </a>
+                         </div>
+                         <div id="24" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>All CloudScalers nodes are connected via gigabit ethernet to 10 Gbit switches. Bandwidth to the internet is growing based on our customer`s needs.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#25">
+                             <h5><i class="icon-plus"></i> Do you charge for bandwidth?</h5>
+                           </a>
+                         </div>
+                         <div id="25" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>No. Bandwidth is unlimited taking into account a fair use policy. Small machines: <= 4 cores = 1 Mbit/s average usage per month, Large machines: >= 5 cores = 5 Mbit/s average usage per month. This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us!</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#26">
+                             <h5><i class="icon-plus"></i> Do you offer managed hosting?</h5>
+                           </a>
+                         </div>
+                         <div id="26" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>No. CloudScalers is completely unmanaged—if you experience issues with your server, you can reach to support via a ticket.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#27">
+                             <h5><i class="icon-plus"></i> What is your SLA?</h5>
+                           </a>
+                         </div>
+                         <div id="27" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>CloudScalers provides a 99.99% Uptime SLA. Lost time is refunded back to your account at the hourly rate incurred.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                       <div class="accordion-group">
+                         <div class="accordion-heading">
+                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#28">
+                             <h5><i class="icon-plus"></i> Where are your datacenters located?</h5>
+                           </a>
+                         </div>
+                         <div id="28" class="accordion-body collapse" style="height: 0px;">
+                           <div class="accordion-inner">
+                              <!-- Para -->
+                             <p>We have datacenters located in Lenoir, North Carolina (US) (operated by Centrilogic), Bruges (BE) (Operated by DCO), and in Ghent (BE) (Operated by ourselves). We have multiple uplink providers.</p>
+                           </div>
+                         </div>
+                       </div>
+
+                </div>
+
+}}
+
