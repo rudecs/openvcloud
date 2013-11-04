@@ -12,7 +12,7 @@ h2. FAQ
                          <div id="1" class="accordion-body collapse" style="height: 0px;">
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>CloudScalers delivers Virtual Machines, Cloud Desktops and Storage hosted from one of its datacenters in a secure and transparant model.</p>
+                             <p>CloudScalers delivers to anyone that is familiar with managing IT resources Virtual Machines, Cloud Desktops and Storage hosted from one of its datacenters in a secure and transparant model.</p>
                            </div>
                          </div>
                        </div>
