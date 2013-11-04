@@ -39,11 +39,13 @@ angular.module('cloudscalers.directives', [])
                            'updateState':  updateState,
                            });
             		rfb.connect(data.host, data.port, '', data.path);
+			scope.rfb = rfb;
     			}
         
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
         		    connect(newValue);
         		}, true);
+			
 
 	        },
 		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">\
@@ -52,7 +54,7 @@ angular.module('cloudscalers.directives', [])
                         Loading\
                     </div></td>\
                     <td width="1%"><div id="noVNC_buttons">\
-                        <input type=button value="Send CtrlAltDel"\
+                        <input type=button class="btn" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"\
                             id="sendCtrlAltDelButton">\
                             </div></td>\
                 </tr></table>\
