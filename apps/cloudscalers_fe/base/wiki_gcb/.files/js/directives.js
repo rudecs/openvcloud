@@ -21,9 +21,6 @@ angular.module('cloudscalers.directives', [])
             			if (state === "normal") { cad.disabled = false; }
             			else                    { cad.disabled = true; }
 
-            			if (typeof(msg) !== 'undefined') {
-                			s.innerHTML = msg;
-            			}
         		};
 
 
@@ -34,7 +31,7 @@ angular.module('cloudscalers.directives', [])
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
                            'true_color': true,
-                           'local_cursor': true,
+                           'local_cursor': false,
                            'shared':       true,
                            'view_only':    false,
                            'updateState':  updateState,
@@ -55,7 +52,6 @@ angular.module('cloudscalers.directives', [])
 <input type=button class="btn" value="Capture keyboard"></input>\
 </td>\
                     <td><div id="noVNC_status" style="position: relative; height: auto;">\
-                        Loading\
                     </div></td>\
                     <td width="1%"><div id="noVNC_buttons">\
                         <input type=button class="btn" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"\
