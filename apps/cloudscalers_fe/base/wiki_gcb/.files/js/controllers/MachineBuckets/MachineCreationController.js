@@ -19,6 +19,12 @@ cloudscalersControllers
         }, true);
 
 
+
+        $scope.$watch('sizes', function() {
+            $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
+        }, true);
+
+
         $scope.saveNewMachine = function() {
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
@@ -29,7 +35,6 @@ cloudscalersControllers
 
         $scope.showDiskSize = function(disksize) {
             machinedisksize = _.findWhere($scope.images, {id:parseInt($scope.machine.imageId)});
-            console.log('executing showDiskSize')
             if (machinedisksize === undefined){
                 return true;
             }
