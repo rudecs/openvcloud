@@ -30,6 +30,7 @@ angular.module('cloudscalers.directives', [])
 
         		var connect = function(data){
         			var rfb = new RFB({'target': $D('noVNC_canvas'),
+			   'focusContainer': elem[0], //$D('console'),
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
                            'true_color': true,
@@ -40,11 +41,6 @@ angular.module('cloudscalers.directives', [])
                            });
             		rfb.connect(data.host, data.port, '', data.path);
             		scope.rfb = rfb;
-            		$("#noVNC_screen").mouseout(function() {
-            			rfb.get_keyboard().set_focused(false);
-            		}).mouseover(function() {
-            			rfb.get_keyboard().set_focused(true);
-            		});
     			}
         
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
@@ -55,6 +51,9 @@ angular.module('cloudscalers.directives', [])
 	        },
 		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">\
                 <table border=0 width="100%"><tr>\
+<td width="20%">\
+<input type=button class="btn" value="Capture keyboard"></input>\
+</td>\
                     <td><div id="noVNC_status" style="position: relative; height: auto;">\
                         Loading\
                     </div></td>\
@@ -64,6 +63,7 @@ angular.module('cloudscalers.directives', [])
                             </div></td>\
                 </tr></table>\
             </div>\
+<hr/>\
             <canvas id="noVNC_canvas" width="640px" height="20px">\
                 Canvas not supported.\
             </canvas>',

@@ -161,10 +161,6 @@ h2. Manage Machine
       </tab>
       <tab heading="Console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
-            <p class="note">
-                Make sure to click on the top of the console screen to take control.
-            </p>
-            <hr>
             <div ng-model="machineConsoleUrlResult">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine bucket is not running.
