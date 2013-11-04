@@ -204,6 +204,9 @@ class cloudapi_machines(cloudapi_machines_osis):
         result
 
         """
+        vmachinemodel = self.cb.model_vmachine_get(machineId)
+        vmachinemodel['status'] = 'DESTROYED'
+        self.cb.model_vmachine_set(vmachinemodel)
         provider, node = self._getProviderAndNode(machineId)
         if provider:
             for pnode in provider.client.list_nodes():

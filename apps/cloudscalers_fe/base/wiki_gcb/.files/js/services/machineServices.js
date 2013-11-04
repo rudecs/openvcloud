@@ -131,18 +131,22 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     .error(function(data, status, headers, config) {
                     });
             },
-            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
+            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication,promise) {
                 var machine = [];
                 url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + name + 
                     '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
+                if (promise){
+                    return $http.get(url);
+                } 
+                else{            
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         machine.id = data;
                     }).error(function (data, status, headers, config) {
                         machine.error = status;
                     });
-                return machine;
+                return machine;}
             },
             clone: function(machine, cloneName) {
                 // TODO: actual implementation

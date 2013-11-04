@@ -35,3 +35,4 @@ if(cloudspaceconfig.apibaseurl == ''){
 
 // So we can inject our own functions instead of the builtin functions
 cloudscalers.value('confirm', window.confirm);
+cloudscalers.value('alert', window.alert);
