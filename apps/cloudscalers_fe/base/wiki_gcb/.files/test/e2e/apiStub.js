@@ -132,16 +132,16 @@ defineApiStub = function ($httpBackend) {
     ];
 
     var sizes = [
-        {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 2.5 USD/month'},
-        {id: 1, CU: 1, disksize: '1GB', 'name': '1GB Memory, 1 Core, 20GB at SSD Speed, Unlimited Transfer - 8.5 USD/month'},
-        {id: 2, CU: 2, disksize: '2GB', 'name': '2GB Memory, 2 Cores, 20GB at SSD Speed, Unlimited Transfer - 17 USD/month'},
-        {id: 3, CU: 2, disksize: '4GB', 'name': '4GB Memory, 2 Cores, 20GB at SSD Speed, Unlimited Transfer - 34 USD/month'},
-        {id: 4, CU: 4, disksize: '8GB', 'name': '8GB Memory, 4 Cores, 20GB at SSD Speed, Unlimited Transfer - 71 USD/month'},
-        {id: 5, CU: 8, disksize: '16GB', 'name': '16GB Memory, 8 Cores, 20GB at SSD Speed, Unlimited Transfer - 139 USD/month'},
-        {id: 6, CU: 12, disksize: '32GB', 'name': '32GB Memory, 12 Cores, 20GB at SSD Speed, Unlimited Transfer - 275 USD/month'},
-        {id: 7, CU: 16, disksize: '48GB', 'name': '48GB Memory, 16 Cores, 20GB at SSD Speed, Unlimited Transfer - 411 USD/month'},
-        {id: 8, CU: 20, disksize: '64GB', 'name': '64GB Memory, 20 Cores, 20GB at SSD Speed, Unlimited Transfer - 547 USD/month'},
-        {id: 9, CU: 24, disksize: '96GB', 'name': '96GB Memory, 24 Cores, 20GB at SSD Speed, Unlimited Transfer - 819 USD/month'},
+        {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 5 USD/month'},
+        {id: 1, CU: 1, disksize: '1GB', 'name': '1GB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 8 USD/month'},
+        {id: 2, CU: 2, disksize: '2GB', 'name': '2GB Memory, 2 Cores, 10GB at SSD Speed, Unlimited Transfer - 17 USD/month'},
+        {id: 3, CU: 2, disksize: '4GB', 'name': '4GB Memory, 2 Cores, 10GB at SSD Speed, Unlimited Transfer - 35 USD/month'},
+        {id: 4, CU: 4, disksize: '8GB', 'name': '8GB Memory, 4 Cores, 10GB at SSD Speed, Unlimited Transfer - 73 USD/month'},
+        {id: 5, CU: 8, disksize: '16GB', 'name': '16GB Memory, 8 Cores, 10GB at SSD Speed, Unlimited Transfer - 145 USD/month'},
+        {id: 6, CU: 12, disksize: '32GB', 'name': '32GB Memory, 12 Cores, 10GB at SSD Speed, Unlimited Transfer - 289 USD/month'},
+        {id: 7, CU: 16, disksize: '48GB', 'name': '48GB Memory, 16 Cores, 10GB at SSD Speed, Unlimited Transfer - 433 USD/month'},
+        {id: 8, CU: 20, disksize: '64GB', 'name': '64GB Memory, 20 Cores, 10GB at SSD Speed, Unlimited Transfer - 577 USD/month'},
+    //        {id: 9, CU: 24, disksize: '96GB', 'name': '96GB Memory, 24 Cores, 10GB at SSD Speed, Unlimited Transfer - 865 USD/month'},
     ];
 
     var actionlist = {

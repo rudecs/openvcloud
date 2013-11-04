@@ -5,13 +5,13 @@ h2. Create Machine Bucket
     <div class="control-group">
         <label class="control-label" >Name:</label>
         <div class="controls">
-            <input ng-model="machine.name" type="text" class="input-large" placeholder="Name"/>
+            <input ng-model="machine.name" type="text" class="input-xxlarge" placeholder="Name"/>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Description:</label>
         <div class="controls">
-            <textarea ng-model="machine.description" type="text" class="input-large" placeholder="Description" />
+            <textarea ng-model="machine.description" type="text" class="input-xxlarge" placeholder="Description" />
         </div>
     </div>
     <div class="control-group">
@@ -19,31 +19,32 @@ h2. Create Machine Bucket
         <div class="controls " >{{include:plan_list}}</div>
     </div>
     <div class="control-group">
-        <label class="control-label" >Choose Image</label>
+        <label class="control-label" >OS Image</label>
         <div class="controls ">{{include:image_list}}</div>
     </div>
     <div class="control-group">
-        <label class="control-label" >Choose Hosting Location:</label>
+        <label class="control-label" >Set your disk size to:</label>
+        <div class="controls " >
+            {{include:storage_list}}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" >Hosting Location:</label>
         <div class="controls ">{{include:region_list}}</div>
     </div>
 }}
 h2. Options
 {{html:
     <hr>
+
     <div class="control-group">
-        <label class="control-label" >Upgrade Primary Storage Drive:</label>
-        <div class="controls " >
-            {{include:storage_list}}
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" >Archive/Backup Storage:</label>
+        <label class="control-label" >Backup Schedule:</label>
         <div class="controls " >
             {{include:archive_list}}
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" >Choose Replication Location:</label>
+        <label class="control-label" >Replication Location:</label>
         <div class="controls ">{{include:replication_list}}</div>
     </div>
     <hr>
