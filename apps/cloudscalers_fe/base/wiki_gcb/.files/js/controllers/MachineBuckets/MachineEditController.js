@@ -6,7 +6,6 @@ cloudscalersControllers
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
-        $scope.cloneName = '';
 
         $scope.sizes = Size.list();
         $scope.images = Image.list();
@@ -42,7 +41,7 @@ cloudscalersControllers
 
         $scope.createSnapshot = function() {
 
-		var modalInstance = $modal.open({
+        	var modalInstance = $modal.open({
       			templateUrl: 'createSnapshotDialog.html',
       			controller: CreateSnapshotController,
       			resolve: {
@@ -68,42 +67,66 @@ cloudscalersControllers
             location.reload();
         };
 
-        $scope.showSnapshotModal = function() {
-            $scope.snapshotModalOpen = true;
+        
+        
+
+    	var RenameMachineController= function ($scope, $modalInstance) {
+
+    		$scope.machineName = '';
+
+      		$scope.ok = function () {
+        			$modalInstance.close($scope.machineName);
+      		};
+
+      		$scope.cancel = function () {
+        			$modalInstance.dismiss('cancel');
+      		};
+    	};
+        
+        
+        
+        
+        $scope.renameMachine = function() {
+
+    		var modalInstance = $modal.open({
+          			templateUrl: 'renameMachineDialog.html',
+          			controller: RenameMachineController,
+          			resolve: {
+          			}
+        		});
+
+        		modalInstance.result.then(function (newName) {
+                    Machine.rename($scope.machine, newName);
+        		});
+
         };
 
-        $scope.closeSnapshotModal = function() {
-            $scope.snapshotModalOpen = false;
-        };
+    	var CloneMachineController= function ($scope, $modalInstance) {
 
-        $scope.showCloneModal = function() {
-            $scope.cloneModalOpen = true;
-        };
+    		$scope.cloneName = '';
 
-        $scope.closeCloneModal = function() {
-            $scope.cloneModalOpen = false;
-        };
+      		$scope.ok = function () {
+        			$modalInstance.close($scope.cloneName);
+      		};
 
-        $scope.showRenameModal = function() {
-            $scope.oldName = $scope.machine.name;
-            $scope.renameModalOpen = true;
-        };
-
-        $scope.closeRenameModal = function() {
-            $scope.renameModalOpen = false;
-        };
-
-        $scope.rename = function() {
-            Machine.rename($scope.machine, $scope.oldName);
-            $scope.closeRenameModal();
-            showLoading('Renaming machine...');
-        };
-
+      		$scope.cancel = function () {
+        			$modalInstance.dismiss('cancel');
+      		};
+    	};
+    	
         $scope.cloneMachine = function() {
-            Machine.clone($scope.machine, $scope.cloneName);
-            $scope.closeCloneModal();
-            $location.path("/list/");
-            showLoading('Cloning...');
+
+    		var modalInstance = $modal.open({
+          			templateUrl: 'cloneMachineDialog.html',
+          			controller: ConeMachineController,
+          			resolve: {
+          			}
+        		});
+
+        		modalInstance.result.then(function (cloneName) {
+                    Machine.clone($scope.machine, cloneName);
+                    $location.path("/list/");
+        		});
         };
 
         $scope.start = function() {
@@ -130,16 +153,4 @@ cloudscalersControllers
             showLoading('Resuming...');
         };
 
-        // The existing jgauge macros uses jQuery. Because of the way AngularJS works, code executed using 
-        // $document.ready will not work as expected. This is one way to do it.
-        $timeout(function(){
-            // Make tabs work
-            $('.nav-tabs a').click(function(e) { $(this).tab('show'); e.preventDefault();})
-            try {
-                createGauge('jGauge1', 50, 0, 100, 300);
-                createGauge('jGauge2', 1.6, 0, 12, 300);
-                createGauge('jGauge3', 1.6, 0, 12, 300);
-                createGauge('jGauge4', 1.6, 0, 12, 300);
-            } catch(e) {}
-        }, 0);
     }]);

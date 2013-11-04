@@ -90,7 +90,6 @@ h2. Manage Machine
                             </a>
 
 			<script type="text/ng-template" id="createSnapshotDialog.html"> 
-                            <div modal="snapshotModalOpen" close="closeSnapshotModal()" options="modalOpts">
                                 <div class="modal-header">
                                     <h3>Take snapshot</h3>
                                 </div>
@@ -104,16 +103,16 @@ h2. Manage Machine
                                     <button class="btn btn-primary ok" ng-click="ok()">Ok</button>
                                     <button class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
-                            </div>
 			</script>
 
                         </li>
                         <li>
-                            <a ng-click="showRenameModal()">
+                            <a ng-click="renameMachine()">
                                 <i class="icon-edit"></i>
                                 Rename
                             </a>
-                            <div modal="renameModalOpen" close="closeRenameModal()" options="modalOpts">
+                            
+							<script type="text/ng-template" id="renameMachineDialog.html"> 
                                 <div class="modal-header">
                                     <h3>Rename</h3>
                                 </div>
@@ -123,10 +122,11 @@ h2. Manage Machine
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="rename()">Save</button>
-                                    <button class="btn cancel" ng-click="closeRenameModal()">Cancel</button>
+                                    <button class="btn btn-primary ok" ng-click="ok()">Ok</button>
+                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
-                            </div>
+                             </script>   
+                                
                         </li>
                         <li>
                             <a ng-click="destroy()">
@@ -141,11 +141,11 @@ h2. Manage Machine
                             </a>
                         </li>
                         <li>
-                            <a ng-click="showCloneModal()">
+                            <a ng-click="cloneMachine()">
                                 <i class="icon-copy"></i>
                                 Clone
                             </a>
-                            <div modal="cloneModalOpen" close="closeCloneModal()" options="modalOpts">
+							<script type="text/ng-template" id="cloneMachineDialog.html"> 
                                 <div class="modal-header">
                                     <h3>Clone</h3>
                                 </div>
@@ -155,10 +155,10 @@ h2. Manage Machine
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="cloneMachine()">Clone</button>
-                                    <button class="btn cancel" ng-click="closeCloneModal()">Cancel</button>
+                                    <button class="btn btn-primary ok" ng-click="ok()">Clone</button>
+                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
-                            </div>
+                            </script>
                         </li>
                         <li>
                             <a>

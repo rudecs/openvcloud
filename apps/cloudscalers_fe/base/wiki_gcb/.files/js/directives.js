@@ -29,7 +29,7 @@ angular.module('cloudscalers.directives', [])
 
 
         		var connect = function(data){
-			var rfb = new RFB({'target': $D('noVNC_canvas'),
+        			var rfb = new RFB({'target': $D('noVNC_canvas'),
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
                            'true_color': true,
@@ -39,7 +39,12 @@ angular.module('cloudscalers.directives', [])
                            'updateState':  updateState,
                            });
             		rfb.connect(data.host, data.port, '', data.path);
-			scope.rfb = rfb;
+            		scope.rfb = rfb;
+            		$("#noVNC_screen").mouseout(function() {
+            			rfb.get_keyboard().set_focused(false);
+            		}).mouseover(function() {
+            			rfb.get_keyboard().set_focused(true);
+            		});
     			}
         
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
