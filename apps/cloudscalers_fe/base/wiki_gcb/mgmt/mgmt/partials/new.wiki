@@ -29,7 +29,7 @@ h2. Options
 {{html:
     <hr>
     <div class="control-group">
-        <label class="control-label" >Increase disk size with:</label>
+        <label class="control-label" >Increase disk size to:</label>
         <div class="controls " >
             {{include:storage_list}}
         </div>
