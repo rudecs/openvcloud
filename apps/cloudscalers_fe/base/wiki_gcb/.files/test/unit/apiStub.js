@@ -34,8 +34,10 @@ defineUnitApiStub = function($httpBackend){
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 0 + '&api_key=yep123456789').respond(openwizzymachines[0]);
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 44534 + '&api_key=yep123456789').respond(500, 'Not Found');
     $httpBackend.whenGET('testapi/images/list?api_key=yep123456789').respond(openwizzyimages);
-    $httpBackend.whenGET('testapi/sizes/list?api_key=yep123456789').respond(openwizzysizes);
 
+    $httpBackend.whenGET(/^testapi\/sizes\/list\?.*/).respond(openwizzysizes);
+    
+    
     $httpBackend.whenGET('testapi/machines/delete?machineId=7&api_key=yep123456789').respond(function() { return [200, 'success']; });
     $httpBackend.whenGET('testapi/machines/delete?machineId=2&api_key=yep123456789').respond(function() { return [500, 'error']; });
 
