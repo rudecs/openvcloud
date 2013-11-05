@@ -12,7 +12,7 @@
     </tr>
     <tbody>
       <tr ng-repeat="machine in machines">
-        <td>{[machine.status]}</td>
+        <td>{[machine.status ? machine.status : 'N/A']}</td>
         <td>
           <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
         </td>
