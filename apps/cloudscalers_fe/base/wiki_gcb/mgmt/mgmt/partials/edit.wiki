@@ -29,11 +29,11 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[ getCPUs(machine) ]} <ng-pluralize count="getCPUs(machine)" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                            {[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[ getMemory(machine) ]}
+                            {[machineinfo.size.memory]} MB
                         </li>
                         <li>
                             <h5>Storage</h5>
@@ -155,8 +155,6 @@ h2. Manage Machine
                     </ul>
                 </div>
             </div>
-            <hr>
-            {{include:bucket_history}}
         </div>
       </tab>
       <tab heading="Console">
