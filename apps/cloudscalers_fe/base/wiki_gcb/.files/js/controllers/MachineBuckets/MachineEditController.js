@@ -50,7 +50,7 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			Machine.createSnapshot($scope.machine.id, snapshotname);
+    			Machine.createSnapshot($scope.machine.id, snapshotName);
     		});
 
             showLoading('Creating a snapshot');
@@ -104,10 +104,10 @@ cloudscalersControllers
 
     	var CloneMachineController= function ($scope, $modalInstance) {
 
-    		$scope.cloneName = '';
+    		$scope.clone ={name: ''};
 
       		$scope.ok = function () {
-        			$modalInstance.close($scope.cloneName);
+        			$modalInstance.close($scope.clone.name);
       		};
 
       		$scope.cancel = function () {
@@ -119,7 +119,7 @@ cloudscalersControllers
 
     		var modalInstance = $modal.open({
           			templateUrl: 'cloneMachineDialog.html',
-          			controller: ConeMachineController,
+          			controller: CloneMachineController,
           			resolve: {
           			}
         		});

@@ -137,7 +137,7 @@ h2. Manage Machine
                                 </div>
                                 <div class="modal-body">
                                     <ul>
-                                        Name: <input ng-model="cloneName" type="text" class="input-large" />
+                                        Name: <input ng-model="clone.name" type="text" class="input-large" />
                                     </ul>
                                 </div>
                                 <div class="modal-footer">

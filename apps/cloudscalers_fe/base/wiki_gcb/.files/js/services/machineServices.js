@@ -149,8 +149,12 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 return machine;}
             },
             clone: function(machine, cloneName) {
-                // TODO: actual implementation
-                return this.create(machine.cloudspaceId, cloneName, "Clone of " + machine.name, machine.sizeId, machine.imageId, machine.disksize);
+                var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + cloneName;
+                $http.get(url)
+                    .success(function(data, status, headers, config) {
+                    })
+                    .error(function(data, status, headers, config) {
+                    });
             },
             rename: function(machine, newName) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + machine.id + '&name=' + newName +
