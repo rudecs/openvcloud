@@ -17,9 +17,9 @@
           <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
         </td>
         <td style="display: none">{[machine.ip]}</td>
-        <td>{[getMemory(machine)]}</td>
-        <td>{[sizes[machine.sizeId].vcpus]} <ng-pluralize count="sizes[machine.sizeId].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
-        <td>{[machine.disksize]} GB</td>
+        <td>{[machineinfo[machine.id].size.memory]} MB</td>
+        <td>{[machineinfo[machine.id].size.vcpus]} <ng-pluralize count="machineinfo[machine.id].size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></td>
+        <td>{[getStorage(machine)]} GB</td>
       </tr>
     </tbody>
   </table>

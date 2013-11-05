@@ -10,6 +10,7 @@ cloudscalersControllers
         $scope.sizes = Size.list();
         $scope.images = Image.list();
         $scope.imagesList = [];
+        $scope.machineinfo = {};
 
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
@@ -18,6 +19,20 @@ cloudscalersControllers
         $scope.$watch('machine', function() {
             angular.copy($scope.machine, $scope.oldMachine);
         }, true);
+
+
+
+        var updateMachineSize = function(){
+            $scope.machineinfo = {};
+            size = _.findWhere($scope.sizes, { id: $scope.machine.sizeid });
+            $scope.machineinfo['size'] = size;
+            image = _.findWhere($scope.images, { id: $scope.machine.imageid });
+            $scope.machineinfo['image'] = image;
+        };
+
+        $scope.$watch('machine', updateMachineSize, true);
+        $scope.$watch('sizes', updateMachineSize, true);
+        $scope.$watch('images', updateMachineSize, true);
 
         $scope.destroy = function() {
             if (confirm('Are you sure you want to destroy this machine?')) {
@@ -153,20 +168,5 @@ cloudscalersControllers
             Machine.resume($scope.machine);
             showLoading('Resuming...');
         };
-
-        $scope.getMemory = function(machine) {
-                var size = _.findWhere($scope.sizes, { id: machine.sizeid });
-                return size ? numeral(size.memory * 1024 * 1024).format('0 b') : 'N/A';
-        }
-
-        $scope.getCPUs = function(machine) {
-                var cpus = _.findWhere($scope.sizes, { id: machine.sizeid });
-                return cpus ? cpus.vcpus : 'N/A';
-        }
-
-        $scope.getStorage = function(machine) {
-                var disk = _.findWhere($scope.images, { id: machine.imageid });
-                return disk ? numeral(disk.size * 1024 * 1024).format('0 b') : 'N/A';
-        }
 
     }]);
