@@ -18,8 +18,8 @@ angular.module('cloudscalers.directives', [])
                 			default:             level = "warn";   break;
             			}
 
-            			if (state === "normal") { cad.disabled = false; }
-            			else                    { cad.disabled = true; }
+            			if (state === "normal") { cad.disabled = false;$D('capturekeyboardbutton').disabled = false; }
+            			else                    { cad.disabled = true; $D('capturekeyboardbutton').disabled = true;}
 
         		};
 
@@ -49,7 +49,7 @@ angular.module('cloudscalers.directives', [])
 		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">\
                 <table border=0 width="100%"><tr>\
 <td width="20%">\
-<input type=button class="btn" value="Capture keyboard"></input>\
+<input id="capturekeyboardbutton" type=button class="btn" value="Capture keyboard"></input>\
 </td>\
                     <td><div id="noVNC_status" style="position: relative; height: auto;">\
                     </div></td>\
