@@ -4,7 +4,7 @@ cloudscalersControllers
         $scope.totalPrice = 10;
 
         $scope.numOfTB = 1;
-        $scope.totalPriceOfStorage = 0.76;
+        $scope.totalPriceOfStorage = 0.86;
 
         $scope.$watch('numOfUsers + numOfTB', function() {
             $scope.totalPrice = $scope.numOfUsers * 10;
