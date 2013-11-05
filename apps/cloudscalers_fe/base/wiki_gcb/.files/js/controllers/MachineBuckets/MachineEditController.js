@@ -50,7 +50,7 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			Machine.createSnapshot($scope.machine.id, snapshotName);
+    			Machine.createSnapshot($scope.machine.id, snapshotname);
     		});
 
             showLoading('Creating a snapshot');

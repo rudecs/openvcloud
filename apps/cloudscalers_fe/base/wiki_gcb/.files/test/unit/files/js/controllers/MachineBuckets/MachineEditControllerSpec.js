@@ -31,7 +31,8 @@ describe("Machine bucket editing controller", function(){
 	 		$routeParams: {machineId: 13},
 	 		$location: $location,
 	 		Machine : Machine, 
-	 		confirm: confirm 
+	 		confirm: confirm,
+	 		$modal:$modal
 	 	});
 	}));
 

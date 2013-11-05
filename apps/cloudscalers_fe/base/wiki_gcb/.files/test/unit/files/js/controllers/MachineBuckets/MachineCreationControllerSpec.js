@@ -47,7 +47,7 @@ describe("Machine bucket controller tests", function(){
 		});
 
 		it('called the service with correct parameters', function() {
-			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
+			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6, true);
 		});
 	});
 
