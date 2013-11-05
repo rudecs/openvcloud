@@ -155,8 +155,6 @@ h2. Manage Machine
                     </ul>
                 </div>
             </div>
-            <hr>
-            {{include:bucket_history}}
         </div>
       </tab>
       <tab heading="Console">
