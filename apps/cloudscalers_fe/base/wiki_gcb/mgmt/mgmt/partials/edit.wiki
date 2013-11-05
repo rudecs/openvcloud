@@ -29,15 +29,15 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>CPU</h5>
-                            {[ sizes[machine.sizeid].vcpus ]} <ng-pluralize count="sizes[machine.sizeid].vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                            {[ getCPUs(machine) ]} <ng-pluralize count="getCPUs(machine)" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[sizes[machine.sizeid].memory/1024]} GB
+                            {[ getMemory(machine) ]}
                         </li>
                         <li>
                             <h5>Storage</h5>
-                            <!--{[machine.storage]}--> {[machine.disksize]} GB
+                            <!--{[machine.storage]}--> {[ getStorage(machine) ]}
                         </li>
                     </ul>
                 </div>

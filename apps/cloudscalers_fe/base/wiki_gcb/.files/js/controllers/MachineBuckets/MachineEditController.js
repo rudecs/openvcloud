@@ -154,4 +154,19 @@ cloudscalersControllers
             showLoading('Resuming...');
         };
 
+        $scope.getMemory = function(machine) {
+                var size = _.findWhere($scope.sizes, { id: machine.sizeid });
+                return size ? numeral(size.memory * 1024 * 1024).format('0 b') : 'N/A';
+        }
+
+        $scope.getCPUs = function(machine) {
+                var cpus = _.findWhere($scope.sizes, { id: machine.sizeid });
+                return cpus ? cpus.vcpus : 'N/A';
+        }
+
+        $scope.getStorage = function(machine) {
+                var disk = _.findWhere($scope.images, { id: machine.imageid });
+                return disk ? numeral(disk.size * 1024 * 1024).format('0 b') : 'N/A';
+        }
+
     }]);
