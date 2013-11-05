@@ -9,7 +9,7 @@ h2. Create a Machine Bucket
  <label class="control-label" >Name: </label> 
 
 <div class="controls">
-   <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text" class="input-large" placeholder="Name"/>
+   <input data-bind='value: selectedBucket().name, valueUpdate: "afterkeydown"' type="text" class="input-xlarge" placeholder="Name"/>
    </div>
       </div>
  

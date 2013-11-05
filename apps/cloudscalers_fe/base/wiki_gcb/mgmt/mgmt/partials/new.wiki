@@ -5,17 +5,17 @@ h2. Create Machine Bucket
     <div class="control-group">
         <label class="control-label" >Name:</label>
         <div class="controls">
-            <input ng-model="machine.name" type="text" class="input-large" placeholder="Name"/>
+            <input ng-model="machine.name" type="text" class="input-xxlarge" placeholder="Name"/>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">Description:</label>
         <div class="controls">
-            <textarea ng-model="machine.description" type="text" class="input-large" placeholder="Description" />
+            <textarea ng-model="machine.description" type="text" class="input-xxlarge" placeholder="Description" />
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" >Image</label>
+        <label class="control-label" >OS Image</label>
         <div class="controls ">{{include:image_list}}</div>
     </div>
     
