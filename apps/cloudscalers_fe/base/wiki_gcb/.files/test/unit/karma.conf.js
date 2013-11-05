@@ -21,7 +21,7 @@ module.exports = function(config) {
       'lib/angular-1.2.0-rc.2/angular-route.js',
       'lib/angular-1.2.0-rc.2/angular-resource.js',
       'lib/angular-1.2.0-rc.2/angular-mocks.js',
-      'lib/angular-ui/ui-bootstrap-tpls-0.5.0.js',
+      'lib/angular-ui/ui-bootstrap-tpls-0.6.0.js',
       'lib/angular-ui/slider.min.js',
       'test/unit/config.js',
       'test/unit/apiStub.js',
