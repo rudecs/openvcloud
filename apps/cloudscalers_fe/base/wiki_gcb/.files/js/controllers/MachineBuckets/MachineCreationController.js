@@ -5,14 +5,16 @@ cloudscalersControllers
             name: '',
             description: '',
             sizeId: '',
-            imageId: ''
+            imageId: '',
+            disksize: ''
         };
 
         $scope.sizes = Size.list();
         $scope.images = Image.list();
         $scope.numeral = $window.numeral;
         $scope.sizepredicate = 'vcpus'
-        $scope.groupedImages = [];        
+        $scope.groupedImages = [];
+        $scope.availableDiskSizes = [10 ,20, 30, 40, 50, 100, 250, 500, 1000]        
 
         $scope.$watch('images', function() {
             _.extend($scope.groupedImages, _.pairs(_.groupBy($scope.images, function(img) { return img.type; })));
@@ -23,6 +25,17 @@ cloudscalersControllers
         $scope.$watch('sizes', function() {
             $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
         }, true);
+
+
+        $scope.$watch('machine.imageId', function() {
+            machinedisksize = _.findWhere($scope.images, {id:parseInt($scope.machine.imageId)});
+            if (machinedisksize != undefined){
+            size = _.find($scope.availableDiskSizes, function(size) { return  machinedisksize.size <= size;});
+            $scope.machine.disksize =  size;
+        }
+        }, true);
+
+
 
         $scope.createredirect = function(response) {
             $location.path('/edit/' + response.data);
