@@ -11,6 +11,7 @@ cloudscalersControllers
         $scope.images = Image.list();
         $scope.imagesList = [];
         $scope.machineinfo = {};
+        $scope.numeral = numeral;
 
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
@@ -28,6 +29,7 @@ cloudscalersControllers
             $scope.machineinfo['size'] = size;
             image = _.findWhere($scope.images, { id: $scope.machine.imageid });
             $scope.machineinfo['image'] = image;
+            $scope.machineinfo['storage'] = $scope.machine.storage;
         };
 
         $scope.$watch('machine', updateMachineSize, true);

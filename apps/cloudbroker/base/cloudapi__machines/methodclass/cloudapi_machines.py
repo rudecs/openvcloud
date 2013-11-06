@@ -236,10 +236,13 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         """
         machine = self.cb.model_vmachine_get(machineId)
+        provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
+        firstdisk = self.cb.model_disk_get(machine['disks'][0])
+        storage = provider.getSize(self.cb.model_size_get(machine['sizeId']), firstdisk)
         return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'],
                 'name': machine['name'], 'hostname': machine['hostName'],
                 'status': machine['status'], 'imageid': machine['imageId'], 'sizeid': machine['sizeId'],
-                'interfaces': machine['nics']}
+                'interfaces': machine['nics'], 'storage': storage.disk}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """
