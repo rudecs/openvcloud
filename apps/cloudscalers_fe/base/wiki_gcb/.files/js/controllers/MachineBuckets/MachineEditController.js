@@ -54,6 +54,11 @@ cloudscalersControllers
                 $modalInstance.dismiss('cancel');
         };
 	};
+        var updatesnapshots = function(){
+            $scope.snapshots = Machine.listSnapshots($routeParams.machineId)
+        }
+
+        $scope.$watch('snapshotcreated', updatesnapshots, true);
 
         $scope.createSnapshot = function() {
 
@@ -65,13 +70,10 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
+    			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
     		});
 
             showLoading('Creating a snapshot');
-            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
-
-
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
