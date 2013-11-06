@@ -52,7 +52,8 @@ cloudscalersControllers
         $scope.totalPrice = 0;
 
         $scope.$watch('cpuMem + storage + archive + location', function() {
-            $scope.totalPrice = ($scope.locationsList[$scope.location].price * $scope.storageList[$scope.storage].price) + $scope.cpuMemList[$scope.cpuMem].price + $scope.archiveList[$scope.archive].price;
+            // Below I added 2.5 USD because the base package has 10GB which costs 2.5 USD
+            $scope.totalPrice = (($scope.locationsList[$scope.location].price + 1) * ($scope.storageList[$scope.storage].price + 2.5)) + $scope.cpuMemList[$scope.cpuMem].price + $scope.archiveList[$scope.archive].price;
             $scope.totalPrice = Math.round($scope.totalPrice * 100) / 100
         });
     }]);
