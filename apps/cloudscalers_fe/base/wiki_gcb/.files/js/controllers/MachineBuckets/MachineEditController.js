@@ -69,17 +69,20 @@ cloudscalersControllers
     		});
 
             showLoading('Creating a snapshot');
+            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
+
+
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.rollbackSnapshot($scope.machine.id, snapshot);
+            Machine.rollbackSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
 
         $scope.deleteSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Delete snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.deleteSnapshot($scope.machine.id, snapshot);
+            Machine.deleteSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
 

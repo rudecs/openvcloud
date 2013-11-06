@@ -185,7 +185,7 @@ h2. Manage Machine
                 </thead>
                 <tbody>
                     <tr ng-repeat="snapshot in snapshots.snapshots">
-                        <td width="89%">{[snapshot]}</td>
+                        <td width="89%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}
                         </td>

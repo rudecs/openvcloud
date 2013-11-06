@@ -3,6 +3,7 @@
     {% if name %}
     <name>{{name}}</name>
     {% endif %}
+    <memory snapshot='no'/>
     <disks>
     {% for source in diskfiles %}
     <disk name='{{source}}' snapshot='{{type}}'>
