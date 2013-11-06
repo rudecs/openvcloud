@@ -46,14 +46,13 @@ cloudscalersControllers
 
 		$scope.snapshotname= '';
 
-  		 $scope.submit = function (result) {
-               $modalInstance.close(result.newSnapshotName);
-               $scope.snapshotname = result.newSnapshotName
+        $scope.submit = function (result) {
+                $modalInstance.close(result);
         };
 
-  		$scope.cancel = function () {
-    			$modalInstance.dismiss('cancel');
-  		};
+        $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+        };
 	};
 
         $scope.createSnapshot = function() {
@@ -66,7 +65,7 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			Machine.createSnapshot($scope.machine.id, snapshotname);
+    			Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
     		});
 
             showLoading('Creating a snapshot');
