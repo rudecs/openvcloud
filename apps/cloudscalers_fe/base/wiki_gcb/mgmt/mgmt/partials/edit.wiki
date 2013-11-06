@@ -76,19 +76,21 @@ h2. Manage Machine
                             </a>
 
 			<script type="text/ng-template" id="createSnapshotDialog.html"> 
+                           <form name="form" ng-submit="submit(form)">
                                 <div class="modal-header">
                                     <h3>Take snapshot</h3>
                                 </div>
                                 <div class="modal-body">
                                     <ul>
                                         Name:
-                                        <input ng-model="newSnapshotName" type="text" class="input-large" placeholder="Name"/>
+                                       <input ng-model="form.newSnapshotName" type="text" class="input-large" placeholder="Name"/>
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="ok()">Ok</button>
-                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
+                                   <button type="submit" class="btn btn-primary ok">Ok</ button>
+                                   <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
+                                </form>
 			</script>
 
                         </li>
