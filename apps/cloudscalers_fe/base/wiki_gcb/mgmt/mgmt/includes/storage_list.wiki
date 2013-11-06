@@ -2,26 +2,26 @@
     10GB at SSD speed<br>0 USD/month
   </button>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
-    20GB at SSD speed<br>1 USD/month
+    20GB at SSD speed<br>2.5 USD/month
   </button>
   <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
-    30GB SSD at SSD speed<br>2 USD/month
+    30GB at SSD speed<br>5 USD/month
   </button>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
-    40GB at SSD speed<br>3 USD/month
+    40GB at SSD speed<br>7.5 USD/month
   </button>
   <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(50) ng-model="machine.disksize" btn-radio="50">
-    50GB at SSD speed<br>4 USD/month
+    50GB at SSD speed<br>10 USD/month
   </button>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(100) ng-model="machine.disksize" btn-radio="100">
-    100GB at SSD speed<br>9 USD/month
+    100GB at SSD speed<br>22.5 USD/month
   </button>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(250) ng-model="machine.disksize" btn-radio="250">
-    250GB at SSD speed<br>24 USD/month
+    250GB at SSD speed<br>60 USD/month
   </button>
   <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(500) ng-model="machine.disksize" btn-radio="500">
-    500GB at SSD speed<br>49 USD/month
+    500GB at SSD speed<br>122.5 USD/month
   </button>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(1000) ng-model="machine.disksize" btn-radio="1000">
-    1TB<br>99 USD/month
+    1TB at SSD speed<br>247.5 USD/month
   </button>
