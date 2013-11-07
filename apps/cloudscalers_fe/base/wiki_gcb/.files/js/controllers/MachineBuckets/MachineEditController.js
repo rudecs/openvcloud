@@ -12,7 +12,7 @@ cloudscalersControllers
         $scope.imagesList = [];
         $scope.machineinfo = {};
         $scope.numeral = numeral;
-
+        
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
         });
@@ -156,6 +156,7 @@ cloudscalersControllers
             $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
             Machine.start($scope.machine);
             showLoading('Starting...');
+            $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
         };
 
          $scope.stop = function() {

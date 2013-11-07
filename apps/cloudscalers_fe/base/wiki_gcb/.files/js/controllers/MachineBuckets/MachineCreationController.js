@@ -39,6 +39,10 @@ cloudscalersControllers
 
         $scope.createredirect = function(response) {
             $location.path('/edit/' + response.data);
+            setTimeout(function(){
+                    $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
+            });
+
         };
 
         $scope.createError = function(response){

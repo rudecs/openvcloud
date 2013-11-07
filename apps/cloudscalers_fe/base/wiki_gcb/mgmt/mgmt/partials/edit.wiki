@@ -10,7 +10,7 @@ h2. Manage Machine
     }
 </style>
 <tabset>
-      <tab heading="Machine actions">
+      <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
             <div class="row">
                 <div class="span6">
@@ -159,7 +159,7 @@ h2. Manage Machine
             </div>
         </div>
       </tab>
-      <tab heading="Console">
+      <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
