@@ -103,6 +103,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 $http.get(url)
                     .success(function(data, status, headers, config) {
                         machine.status = machineStates['start'];
+                        $rootScope.$broadcast('machine:started');
                     })
                     .error(function(data, status, headers, config) {
                     });
