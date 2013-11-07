@@ -5,6 +5,7 @@ cloudscalersControllers
         $scope.sizes = Size.list();
         $scope.images = Image.list();
         $scope.machineinfo = {};
+        $scope.numeral = numeral;
 
         var updateMachineSizes = function(){
         	$scope.machineinfo = {};
@@ -14,6 +15,7 @@ cloudscalersControllers
         		$scope.machineinfo[element.id]['size'] = size;
                 image = _.findWhere($scope.images, { id: element.imageId });
                 $scope.machineinfo[element.id]['image'] = image;
+                $scope.machineinfo[element.id]['storage'] = element.storage;
         		}
         	)
 
