@@ -4,9 +4,10 @@ cloudscalersControllers
         $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.novnc_connectioninfo = {}
         
-        $scope.$on('machine:started', function() {
-            $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
-        });
+        $scope.$watch('$parent.machine', function(newvalue, oldvalue) {
+            if (newvalue.status == 'RUNNING')
+                $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
+        }, true);
         
         $scope.$watch('machineConsoleUrlResult',function(newvalue, oldvalue){
         	if (newvalue.url){
