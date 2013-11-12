@@ -11,7 +11,8 @@ cloudscalersControllers
         $scope.images = Image.list();
         $scope.imagesList = [];
         $scope.machineinfo = {};
-
+        $scope.numeral = numeral;
+        
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
         });
@@ -28,6 +29,7 @@ cloudscalersControllers
             $scope.machineinfo['size'] = size;
             image = _.findWhere($scope.images, { id: $scope.machine.imageid });
             $scope.machineinfo['image'] = image;
+            $scope.machineinfo['storage'] = $scope.machine.storage;
         };
 
         $scope.$watch('machine', updateMachineSize, true);
@@ -54,6 +56,11 @@ cloudscalersControllers
                 $modalInstance.dismiss('cancel');
         };
 	};
+        var updatesnapshots = function(){
+            $scope.snapshots = Machine.listSnapshots($routeParams.machineId)
+        }
+
+        $scope.$watch('snapshotcreated', updatesnapshots, true);
 
         $scope.createSnapshot = function() {
 
@@ -65,7 +72,7 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
+    			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
     		});
 
             showLoading('Creating a snapshot');
@@ -73,13 +80,13 @@ cloudscalersControllers
 
         $scope.rollbackSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.rollbackSnapshot($scope.machine.id, snapshot);
+            Machine.rollbackSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
 
         $scope.deleteSnapshot = function(snapshot) {
             $scope.machine.history.push({event: 'Delete snapshot', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.deleteSnapshot($scope.machine.id, snapshot);
+            Machine.deleteSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
 
@@ -149,6 +156,7 @@ cloudscalersControllers
             $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
             Machine.start($scope.machine);
             showLoading('Starting...');
+            $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
         };
 
          $scope.stop = function() {

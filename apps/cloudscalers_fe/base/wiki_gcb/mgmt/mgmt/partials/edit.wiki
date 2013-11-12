@@ -10,7 +10,7 @@ h2. Manage Machine
     }
 </style>
 <tabset>
-      <tab heading="Machine actions">
+      <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
             <div class="row">
                 <div class="span6">
@@ -33,11 +33,11 @@ h2. Manage Machine
                         </li>
                         <li>
                             <h5>Memory</h5>
-                            {[machineinfo.size.memory]} MB
+                            {[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}
                         </li>
                         <li>
                             <h5>Storage</h5>
-                            <!--{[machine.storage]}--> {[ getStorage(machine) ]}
+                            <!--{[machine.storage]}--> {[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}
                         </li>
                     </ul>
                 </div>
@@ -159,7 +159,7 @@ h2. Manage Machine
             </div>
         </div>
       </tab>
-      <tab heading="Console">
+      <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
@@ -185,7 +185,7 @@ h2. Manage Machine
                 </thead>
                 <tbody>
                     <tr ng-repeat="snapshot in snapshots.snapshots">
-                        <td width="89%">{[snapshot]}</td>
+                        <td width="89%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.date]}
                         </td>

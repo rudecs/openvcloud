@@ -226,6 +226,12 @@ class cloudapi_machines(cloudapi_machines_osis):
         # put your code here to implement this method
         raise NotImplementedError("not implemented method exporttoremote")
 
+    def _getStorage(self, machine):
+        provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
+        firstdisk = self.cb.model_disk_get(machine['disks'][0])
+        storage = provider.getSize(self.cb.model_size_get(machine['sizeId']), firstdisk)
+        return storage
+
     @authenticator.auth(acl='R')
     def get(self, machineId, **kwargs):
         """
@@ -236,10 +242,11 @@ class cloudapi_machines(cloudapi_machines_osis):
 
         """
         machine = self.cb.model_vmachine_get(machineId)
+        storage = self._getStorage(machine)
         return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'],
                 'name': machine['name'], 'hostname': machine['hostName'],
                 'status': machine['status'], 'imageid': machine['imageId'], 'sizeid': machine['sizeId'],
-                'interfaces': machine['nics']}
+                'interfaces': machine['nics'], 'storage': storage.disk}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """
@@ -265,11 +272,14 @@ class cloudapi_machines(cloudapi_machines_osis):
             term["cloudspaceId"] = cloudspaceId
         if status:
             term["status"] = status
-        query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status']}
+        query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
         if term:
             query['query'] = {'term': term}
         results = self.cb.model_vmachine_find(ujson.dumps(query))['result']
-        machines = [res['fields'] for res in results]
+        for res in results:
+            storage = self._getStorage(res['fields'])
+            res['fields']['storage'] = storage.disk
+            machines = [res['fields']]
         return machines
 
     def _getMachine(self, machineId):
