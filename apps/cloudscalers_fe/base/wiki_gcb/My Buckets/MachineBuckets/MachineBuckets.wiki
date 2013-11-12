@@ -15,7 +15,7 @@
 {{html:
   <div ng-app="cloudscalers" ng-controller="MachineController">
   
-  <div>
+  <div ng-hide="machines.length > 0">
   }}
   h2. Machine Buckets
 
@@ -38,7 +38,7 @@ h3. Start now and create your Machine Bucket
 </fieldset>
 </form> 
 	</div>
-  <div ng-view></div>
+  <div ng-view ng-show="machines.length > 0"></div>
 </div>
 }}
 
