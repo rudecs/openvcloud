@@ -184,13 +184,13 @@ angular.module('cloudscalers.machineServices', ['ng'])
             list: function (cloudspaceid) {
                 url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
                 
-                return $http.get(url).then(function(data) {
-                	_.each(data, function (machine) {
+                return $http.get(url).then(function(result) {
+                	_.each(result.data, function (machine) {
                         if(machine.status === 'SUSPENDED'){
                             machine.status = 'PAUSED';
                         }
                     });
-                    return data;
+                    return result.data;
                     
                 }, function(reason) {
                 	return $q.reject(reason);
