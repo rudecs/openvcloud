@@ -89,7 +89,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
         
         return user;
     })
-    .factory('Machine', function ($http, $rootScope) {
+    .factory('Machine', function ($http, $rootScope, $q) {
         $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
         var machineStates = {
             'start': 'RUNNING',
@@ -182,21 +182,19 @@ angular.module('cloudscalers.machineServices', ['ng'])
                 return result;
             },
             list: function (cloudspaceid) {
-                var machines = [];
                 url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        _.each(data, function (machine) {
-                            if(machine.status === 'SUSPENDED'){
-                                machine.status = 'PAUSED';
-                            }
-                            machines.push(machine);
-                        });
-                    }).error(
-                    function (data, status, headers, config) {
-                        machines.error = status;
+                
+                return $http.get(url).then(function(data) {
+                	_.each(data, function (machine) {
+                        if(machine.status === 'SUSPENDED'){
+                            machine.status = 'PAUSED';
+                        }
                     });
-                return machines;
+                    return data;
+                    
+                }, function(reason) {
+                	return $q.reject(reason);
+                });
             },
             get: function (machineid) {
                 var machine = {
