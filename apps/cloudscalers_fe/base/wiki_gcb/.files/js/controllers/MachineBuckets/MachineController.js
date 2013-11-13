@@ -1,7 +1,11 @@
 
 cloudscalersControllers
     .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
-        $scope.machines = Machine.list(1);
+        	
+        Machine.list(1).then(function(machines){
+        	$scope.machines = machines;
+        });
+        
         $scope.sizes = Size.list();
         $scope.images = Image.list();
         $scope.machineinfo = {};
@@ -21,7 +25,7 @@ cloudscalersControllers
 
         };
 
-        $scope.$watch('machines', updateMachineSizes, true);
+        $scope.$watch('machines', updateMachineSizes);
         $scope.$watch('sizes', updateMachineSizes, true);
         $scope.$watch('images', updateMachineSizes, true);
 
