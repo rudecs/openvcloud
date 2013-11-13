@@ -15,7 +15,7 @@
 {{html:
   <div ng-app="cloudscalers" ng-controller="MachineController">
   
-  <div ng-hide="machines.length > 0">
+  <div ng-show="!(machines.length > 0)">
   }}
   h2. Machine Buckets
 
