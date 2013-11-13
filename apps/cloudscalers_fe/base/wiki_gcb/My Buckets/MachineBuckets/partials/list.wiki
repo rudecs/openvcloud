@@ -1,6 +1,20 @@
 {{html:
 <div id="tabbable">
-  <h2>My Machine Buckets</h2>
+  <h2>Machine Buckets</h2>
+  <form class="form-horizontal" method="get" action="MachineBuckets#/new">
+    <fieldset>
+
+    <!-- Button -->
+    <div class="control-group">
+      <div class="">
+        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Create Machine Bucket</button>
+      </div>
+    </div>
+
+    </fieldset>
+  </form> 
+
+
   <table id="machine_buckets_list"  class="table table-striped table-bordered">
     <tr>
       <th>Status</th>
