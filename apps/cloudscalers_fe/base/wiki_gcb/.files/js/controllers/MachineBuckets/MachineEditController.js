@@ -156,7 +156,7 @@ cloudscalersControllers
             $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
             Machine.start($scope.machine);
             showLoading('Starting...');
-            $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
+            $scope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
         };
 
          $scope.stop = function() {
