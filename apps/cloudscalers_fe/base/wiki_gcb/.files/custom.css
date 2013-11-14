@@ -1076,3 +1076,9 @@ display: list-item; list-style:none;
 color:#ddd;    
 }
 
+.subnavbar .dropdown .caret {
+    display: inline-block !important;
+    border-bottom-color: black;
+    border-top-color: black;
+}
+

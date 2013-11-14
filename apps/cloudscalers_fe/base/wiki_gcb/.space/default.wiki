@@ -105,30 +105,35 @@ function logout() {
 				<span>Storage Buckets</span>
 				</a>
 				</li> 
-
-
-				<li loggedin-show >
-					<a href="../$$space/Settings">
-						<i class="icon-cog"></i>
-						<span>Settings</span>
-					</a>  									
-				</li>
-				
-				<li loggedin-show >					
-					<a href="../$$space/FAQ">
-						<i class="icon-ambulance"></i>
-						<span>Docs</span>
-					</a>  									
-				</li>
-
-            
-
-			
 			</ul>
-			 <a class="btn  " onclick="logout()" loggedin-show  href="." >
-                        <i class="icon-lock"></i>
-                        <span>Logout </span>
+            <ul class="pull-right">
+                <li class="dropdown" loggedin-show>
+                    <a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown">
+                        User <b class="caret"></b>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li loggedin-show >
+                            <a href="../$$space/Settings"> <i class="icon-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+
+                        <li loggedin-show >
+                            <a href="../$$space/FAQ"> <i class="icon-ambulance"></i>
+                                <span>Docs</span>
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li>
+                            <a onclick="logout()" loggedin-show  href="." >
+                                <i class="icon-lock"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 
 			<a href="/$$space/login" class="btn" loggedin-hide>
                 <i class="icon-lock"></i> Login</a> 
