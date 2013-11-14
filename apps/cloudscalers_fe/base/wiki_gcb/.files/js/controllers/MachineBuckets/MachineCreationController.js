@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'Size', 'Image', 'alert', function($scope, $timeout, $location, $window, Machine, Size, Image, alert) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, alert) {
         $scope.machine = {
             cloudspaceId: 1,
             name: '',
@@ -9,9 +9,6 @@ cloudscalersControllers
             disksize: ''
         };
 
-        $scope.sizes = Size.list();
-        $scope.images = Image.list();
-        $scope.numeral = $window.numeral;
         $scope.sizepredicate = 'vcpus'
         $scope.groupedImages = [];
         $scope.availableDiskSizes = [10 ,20, 30, 40, 50, 100, 250, 500, 1000]        
@@ -19,8 +16,6 @@ cloudscalersControllers
         $scope.$watch('images', function() {
             _.extend($scope.groupedImages, _.pairs(_.groupBy($scope.images, function(img) { return img.type; })));
         }, true);
-
-
 
         $scope.$watch('sizes', function() {
             $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
@@ -37,8 +32,8 @@ cloudscalersControllers
 
 
 
-        $scope.createredirect = function(response) {
-            $location.path('/edit/' + response.data);
+        $scope.createredirect = function(id) {
+            $location.path('/edit/' + id);
             setTimeout(function(){
                     $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
             });
@@ -55,7 +50,7 @@ cloudscalersControllers
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
-                           $scope.machine.region, $scope.machine.replication,true).then($scope.createredirect, $scope.createError);
+                           $scope.machine.region, $scope.machine.replication).then($scope.createredirect, $scope.createError);
         };
 
         $scope.showDiskSize = function(disksize) {

@@ -1,17 +1,14 @@
 cloudscalersControllers
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Image', 'Size', 'confirm', '$modal', 
-                function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm, $modal) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
-        $scope.sizes = Size.list();
-        $scope.images = Image.list();
         $scope.imagesList = [];
         $scope.machineinfo = {};
-        $scope.numeral = numeral;
         
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
@@ -49,11 +46,11 @@ cloudscalersControllers
 		$scope.snapshotname= '';
 
         $scope.submit = function (result) {
-                $modalInstance.close(result);
+        	$modalInstance.close(result);
         };
 
         $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
+        	$modalInstance.dismiss('cancel');
         };
 	};
         var updatesnapshots = function(){
@@ -72,7 +69,7 @@ cloudscalersControllers
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname.newSnapshotName);
+    			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname);
     		});
 
             showLoading('Creating a snapshot');
