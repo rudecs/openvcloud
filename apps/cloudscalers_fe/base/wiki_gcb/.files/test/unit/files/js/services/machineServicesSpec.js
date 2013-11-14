@@ -55,9 +55,12 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine list', function(){
 			defineUnitApiStub($httpBackend);
-			                
-			machineListResult = Machine.list(0);
+			
+			var machineListResult
+			
+			Machine.list(0).then(function(result){machineListResult = result;},function(reason){})
 			$httpBackend.flush();
+			
 
 			expect(machineListResult).toBeDefined();
 			expect(machineListResult.error).toBeUndefined();
@@ -68,17 +71,6 @@ describe('Cloudscalers machine services', function() {
 		});
 
 		
-		it('test machine list', function(){
-			defineUnitApiStub($httpBackend);
-			                
-			machineListResult = Machine.list(13);
-			$httpBackend.flush();
-
-			expect(machineListResult).toBeDefined();
-			expect(machineListResult.error).toBeDefined();
-			expect(machineListResult.error).toBe(500);
-		});
-
 		it('test machine get', function(){
 			defineUnitApiStub($httpBackend);
 			machineGetResult = Machine.get(0);
@@ -106,25 +98,37 @@ describe('Cloudscalers machine services', function() {
 			defineUnitApiStub($httpBackend);
 			
 			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create&description=Test\+Description&sizeId=1&imageId=2&disksize=3&archive=4&region=5&replication=6.*/).respond(200, 3);
+		
+			var machineCreateResult;
 			
-			var machineCreateResult = Machine.create(0, 'test_create', 'Test Description', 1, 2, 3,4,5,6);
+			Machine.create(0, 'test_create', 'Test Description', 1, 2, 3,4,5,6).then(
+					function(result){
+						machineCreateResult = result;
+					},
+					function(reason){}
+			);
 			
 			$httpBackend.flush();
 
-			expect(machineCreateResult).toBeDefined();
-			expect(machineCreateResult.error).toBeUndefined();
-			expect(machineCreateResult.id).toBe(3);
+			expect(machineCreateResult).toBe(3);
 		});
 
-		it('test machine create failure', function(){
+		it('test machine create failure propagates the error', function(){
 			defineUnitApiStub($httpBackend);
 			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create_fail&description=Test\+Description&sizeId=0&imageId=0.*/).respond(500, -10);
 		    
-			var machineCreateResult = Machine.create(0, 'test_create_fail', 'Test Description', 0, 0);
+			var machineCreateResult = {};
+			
+			Machine.create(0, 'test_create_fail', 'Test Description', 0, 0).then(
+					function(result){
+					},
+					function(reason){
+						machineCreateResult.error = 500;
+					}
+			);
 			
 			$httpBackend.flush();
 
-			expect(machineCreateResult).toBeDefined();
 			expect(machineCreateResult.error).toBe(500);
 		});
 
@@ -136,12 +140,6 @@ describe('Cloudscalers machine services', function() {
             expect(machineDeleteResult.success).toBeDefined();
             expect(machineDeleteResult.success).toBe(true);
 
-            var machines = Machine.list(0);
-            $httpBackend.flush();
-
-            expect(machines.error).toBeUndefined();
-            expect(machines.length).toBeDefined();
-            expect(_.where(machines, {id: 7})).toEqual([]);
         });
 
 		it('test machine delete failure', function() {
@@ -153,12 +151,6 @@ describe('Cloudscalers machine services', function() {
             expect(machineDeleteResult.error).toBeDefined();
             expect(machineDeleteResult.error).toBe(500);
 
-            var machines = Machine.list(0);
-            $httpBackend.flush();
-
-            expect(machines.error).toBeUndefined();
-            expect(machines.length).toBeDefined();
-            expect(_.where(machines, {id: 2})).toEqual([]);
         });
 
 		xit('test machine actions', function() {

@@ -134,22 +134,19 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     .error(function(data, status, headers, config) {
                     });
             },
-            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication,promise) {
+            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
                 url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + name + 
                     '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
-                if (promise){
-                    return $http.get(url);
-                } 
-                else{            
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        machine.id = data;
-                    }).error(function (data, status, headers, config) {
-                        machine.error = status;
-                    });
-                return machine;}
+                return $http.get(url).then(
+                		function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                        	return $q.reject(reason);
+                        }
+                );
             },
             clone: function(machine, cloneName) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + cloneName;
@@ -215,20 +212,19 @@ angular.module('cloudscalers.machineServices', ['ng'])
             },
             listSnapshots: function (machineid) {
                 var snapshotsResult = {};
-                /*var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
-                #$http.get(url).success(
+                var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
+                $http.get(url).success(
                     function (data, status, headers, config) {
                         snapshotsResult.snapshots = data;
                     }).error(
                     function (data, status, headers, config) {
                         snapshotsResult.error = status;
-                    });*/
-                snapshotsResult.snapshots = angular.fromJson(localStorage.getItem('local_snapshots_'+machineid))
+                    });
                 return snapshotsResult;
             },
             createSnapshot: function (machineId, name) {
                 var createSnapshotResult = {};
-                /*var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + name;
+                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + name;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         createSnapshotResult.success = true;
@@ -236,18 +232,11 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     function (data, status, headers, config) {
                         createSnapshotResult.error = status;
                     });
-                */
-                var snapshots = angular.fromJson(localStorage.getItem('local_snapshots_'+machineId))
-                if (snapshots === null) {snapshots = [];}
-                var time  = new Date()
-                snapshots.push({'name':name, 'date': time})
-                localStorage.setItem('local_snapshots_'+machineId, angular.toJson(snapshots))
-                createSnapshotResult.success = true
                 return createSnapshotResult;
             },
             rollbackSnapshot: function (machineId, name) {
                 var rollbackSnapshotResult = {};
-                /*var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + name;
+                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + name;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         rollbackSnapshotResult.success = true;
@@ -255,16 +244,11 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     function (data, status, headers, config) {
                         rollbackSnapshotResult.error = status;
                     });
-                */
-                snapshotlist = angular.fromJson(localStorage.getItem('local_snapshots_'+machineId))
-                snapshotlist = _.reject(snapshotlist, function(snap){return snap.name === name})
-                localStorage.setItem('local_snapshots_'+machineId, angular.toJson(snapshotlist))
-                rollbackSnapshotResult.success = true
                 return rollbackSnapshotResult;
             },
             deleteSnapshot: function (machineId, name) {
                 var deleteSnapshotResult = {};
-                /*var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + name;
+                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + name;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         deleteSnapshotResult.success = true;
@@ -272,12 +256,6 @@ angular.module('cloudscalers.machineServices', ['ng'])
                     function (data, status, headers, config) {
                         deleteSnapshotResult.error = status;
                     });
-                */
-                snapshotlist= angular.fromJson(localStorage.getItem('local_snapshots_'+machineId))
-                snapshotlist = _.reject(snapshotlist, function(snap){return snap.name === name})
-                localStorage.setItem('local_snapshots_'+machineId, angular.toJson(snapshotlist))
-                deleteSnapshotResult.success = true
-
                 return deleteSnapshotResult;
             },
             getConsoleUrl: function(machineId) {

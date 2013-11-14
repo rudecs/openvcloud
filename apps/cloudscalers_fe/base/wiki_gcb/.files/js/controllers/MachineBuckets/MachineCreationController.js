@@ -11,7 +11,6 @@ cloudscalersControllers
 
         $scope.sizes = Size.list();
         $scope.images = Image.list();
-        $scope.numeral = $window.numeral;
         $scope.sizepredicate = 'vcpus'
         $scope.groupedImages = [];
         $scope.availableDiskSizes = [10 ,20, 30, 40, 50, 100, 250, 500, 1000]        
@@ -37,8 +36,8 @@ cloudscalersControllers
 
 
 
-        $scope.createredirect = function(response) {
-            $location.path('/edit/' + response.data);
+        $scope.createredirect = function(id) {
+            $location.path('/edit/' + id);
             setTimeout(function(){
                     $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
             });
@@ -55,7 +54,7 @@ cloudscalersControllers
             Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
-                           $scope.machine.region, $scope.machine.replication,true).then($scope.createredirect, $scope.createError);
+                           $scope.machine.region, $scope.machine.replication).then($scope.createredirect, $scope.createError);
         };
 
         $scope.showDiskSize = function(disksize) {
