@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, Size, Image, alert) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, alert) {
         $scope.machine = {
             cloudspaceId: 1,
             name: '',

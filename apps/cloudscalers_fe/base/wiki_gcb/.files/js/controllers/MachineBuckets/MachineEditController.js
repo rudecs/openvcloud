@@ -1,14 +1,12 @@
 cloudscalersControllers
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Image', 'Size', 'confirm', '$modal', 
-                function($scope, $routeParams, $timeout, $location, Machine, Image, Size, confirm, $modal) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
-        $scope.sizes = Size.list();
-        $scope.images = Image.list();
         $scope.imagesList = [];
         $scope.machineinfo = {};
         
