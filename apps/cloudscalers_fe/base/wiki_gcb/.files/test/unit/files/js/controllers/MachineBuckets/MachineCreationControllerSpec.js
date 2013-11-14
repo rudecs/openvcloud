@@ -1,5 +1,5 @@
-describe("Machine bucket controller tests", function(){
-	var scope, ctrl, Machine, q;
+describe("Create Machine bucket controller tests", function(){
+	var machinescope, scope, ctrl, Machine, q;
 
 	beforeEach(module('cloudscalers'));
 	
@@ -7,7 +7,8 @@ describe("Machine bucket controller tests", function(){
 		Machine = {list : jasmine.createSpy('list'), create: jasmine.createSpy('create'), get: jasmine.createSpy('get') };
 		Image = {list: jasmine.createSpy('list')};
 		Size = {list: jasmine.createSpy('list')};
-		scope = $rootScope.$new();
+		machinescope = $rootScope.$new();
+		scope = machinescope.$new();
 		q = $q;
 	}));
 
@@ -15,10 +16,10 @@ describe("Machine bucket controller tests", function(){
 	describe("New machine bucket", function() {
  		beforeEach(inject(function($controller){
 		 	Machine.create.andReturn(q.defer().promise);
-		 	Size.list.andReturn([{id: 1, name: 'Size 1'}, {id: 2, name: 'Size 2'}]);
-		 	Image.list.andReturn([{id: 1, name: 'Image 1'}, {id: 2, name: 'Image 2'}, {id: 3, name: 'Image 3'}]);
-
-		 	ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine, Image: Image, Size: Size});
+		 	machinescope.sizes = [{id: 1, name: 'Size 1'}, {id: 2, name: 'Size 2'}];
+		 	machinescope.images = [{id: 1, name: 'Image 1'}, {id: 2, name: 'Image 2'}, {id: 3, name: 'Image 3'}];
+		 	
+		 	ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine });
 		 	
 		 	scope.machine = {
 	            cloudspaceId: 10,
@@ -35,14 +36,26 @@ describe("Machine bucket controller tests", function(){
 			scope.saveNewMachine();
 		}));
 
-		it('is valid machine definition & can be saved', function() {
+		it('valid machine definition & can be saved', function() {
 			expect(scope.isValid()).toBeTruthy();
 		});
 
-		it('called the service with correct parameters', function() {
+		it('save calls the service with correct parameters', function() {
 			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
 		});
 	});
+	
+	describe("default selection", function(){
+		it('minimal size', function(){
+				machinescope.sizes = [{id:3,vcpus:3}, {id:1,vcpus:1}];
+				inject(function($controller){
+					ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine});
+				});
+				scope.$digest();
+				expect(scope.machine.sizeId).toBe(1);
+		});
+	});
+			
 
 });
 

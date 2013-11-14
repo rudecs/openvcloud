@@ -1,5 +1,5 @@
 cloudscalersControllers
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'Size', 'Image', 'alert', function($scope, $timeout, $location, $window, Machine, Size, Image, alert) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, Size, Image, alert) {
         $scope.machine = {
             cloudspaceId: 1,
             name: '',
@@ -9,8 +9,6 @@ cloudscalersControllers
             disksize: ''
         };
 
-        $scope.sizes = Size.list();
-        $scope.images = Image.list();
         $scope.sizepredicate = 'vcpus'
         $scope.groupedImages = [];
         $scope.availableDiskSizes = [10 ,20, 30, 40, 50, 100, 250, 500, 1000]        
@@ -18,8 +16,6 @@ cloudscalersControllers
         $scope.$watch('images', function() {
             _.extend($scope.groupedImages, _.pairs(_.groupBy($scope.images, function(img) { return img.type; })));
         }, true);
-
-
 
         $scope.$watch('sizes', function() {
             $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
