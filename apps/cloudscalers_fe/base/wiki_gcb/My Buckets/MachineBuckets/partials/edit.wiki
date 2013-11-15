@@ -1,5 +1,5 @@
 
-h2. Manage Machine
+h2. Manage Machine Bucket
 {{html:
 <style>
     .modal .modal-header, .modal .modal-footer {
