@@ -29,7 +29,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         print self.CATEGORY
         client = j.core.osis.getClient()
         if self.NAMESPACE not in client.listNamespaces():
-            client.createNamespace(self.NAMESPACE, 'blob')
+            client.createNamespace(self.NAMESPACE, template='blob')
         if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
            client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
         return j.core.osis.getClientForCategory(self.NAMESPACE, self.CATEGORY)
