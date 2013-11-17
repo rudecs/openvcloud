@@ -12,9 +12,6 @@ def install_compute_node(hostname, workspace):
     put(os.path.join(workspace, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
 
     run('mkdir -p /opt/jumpscale/cfg/hrd/')
-    run('''
-            echo 'node.roles=' > /opt/jumpscale/cfg/hrd/TODO.hrd
-        ''')
     
     run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(workspace, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
