@@ -52,54 +52,20 @@ function logout() {
 			
 			<ul class="mainnav">
 			
-			 <li class="active" loggedin-hide >
-					<a href="../$$space" >
-						<i class="icon-home"></i>
-						<span>Home</span>
-					</a>	    				
-				</li> 
-
-				<li loggedin-hide>
-					<a href="../$$space/UnifiedCloud">
-						<i class="icon-building"></i>
-						<span>Why CloudScalers</span>
-					</a>	    				
-				</li> 
-
-				<li class="dropdown-submenu" loggedin-hide >
-					<a href="../$$space/Products">
-						<i class="icon-cloud"></i>
-						<span>Products</span>
-					</a>	
-                    <ul class="dropdown-menu">
-						<li><a href="../$$space/Machine Buckets">Machine Buckets</a></li>
-						<li><a href="../$$space/Desktop Buckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/Storage Buckets">Storage Buckets</a></li>
-					</ul>    				    				
-				</li>
-
-
-				<li loggedin-hide>
-					<a href="../$$space/Pricing">
-						<i class="icon-shopping-cart"></i>
-						<span>Pricing</span>
-					</a>	    				
-				</li> 
-
-				<li loggedin-show>
+				<li>
 				<a href="../$$space/MachineBuckets">
 				<i class="icon-cloud"></i>
 				<span>Machine Buckets</span>
 				</a></li>
 
-				<li loggedin-show>
+				<li>
 				<a href="../$$space/DesktopBuckets">
 				<i class="icon-desktop"></i>
 				<span>Desktop Buckets</span>
 				</a>
 				</li>
 
-				<li loggedin-show>
+				<li>
 				<a href="../$$space/StorageBuckets">
 				<i class="icon-hdd"></i>
 				<span>Storage Buckets</span>
@@ -107,18 +73,18 @@ function logout() {
 				</li> 
 			</ul>
             <ul class="pull-right">
-                <li class="dropdown" loggedin-show>
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown">
                         User <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li loggedin-show >
+                        <li>
                             <a href="../$$space/Settings"> <i class="icon-cog"></i>
                                 <span>Settings</span>
                             </a>
                         </li>
 
-                        <li loggedin-show >
+                        <li>
                             <a href="../$$space/FAQ"> <i class="icon-ambulance"></i>
                                 <span>Docs</span>
                             </a>
@@ -126,7 +92,7 @@ function logout() {
 
                         <li class="divider"></li>
                         <li>
-                            <a onclick="logout()" loggedin-show  href="." >
+                            <a onclick="logout()" href="." >
                                 <i class="icon-lock"></i>
                                 <span>Logout</span>
                             </a>
@@ -135,29 +101,11 @@ function logout() {
                 </li>
             </ul>
 
-			<a href="/$$space/login" class="btn" loggedin-hide>
-                <i class="icon-lock"></i> Login</a> 
-            <a class="btn btn-primary " href="/$$space/SignUp"  loggedin-hide>Sign Up</a>
-
 		</div> <!-- /container -->
 	
 	</div> <!-- /subnavbar-inner -->
 
 </div> <!-- /subnavbar -->
-<script type="text/javascript">
-function showHideLogin() {
-
-    var loggedIn = !!localStorage.getItem('gcb:api_key');
-    if (loggedIn) {   
-        angular.element('[loggedin-show]').show();
-        angular.element('[loggedin-hide]').hide();
-    } else {
-        angular.element('[loggedin-show]').hide();
-        angular.element('[loggedin-hide]').show();
-    }
-}
-showHideLogin();
-</script>
 }}
 
 
