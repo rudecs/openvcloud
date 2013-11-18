@@ -9,11 +9,6 @@ cloudscalersControllers
                 credit: 50,
                 creditHistory: [],
                 addedAmount: 0,
-                // password: '', // Passwords must not be saved locally
-                //ccType: '',
-                //ccNum: '',
-                //ccExpiration: '',
-                //ccv: ''
             };
         } else {
             settings = settings[0];

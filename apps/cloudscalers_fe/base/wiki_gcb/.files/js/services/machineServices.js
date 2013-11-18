@@ -40,7 +40,7 @@ angular.module('cloudscalers.machineServices', ['ng'])
             }
         };
     })
-    .factory('User', function ($window, $http, $rootScope, APIKey) {
+    .factory('User', function ($http, APIKey) {
         var user = {};
         user.login = function (username, password) {
             var loginResult = {api_key: undefined, error: false};
