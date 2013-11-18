@@ -602,13 +602,18 @@ padding: 10px;
 
 .sidebar-nav {
     border:none; 
-border-right: 3px dotted #CCCCCC;
-box-shadow:none;
-border-radius:0px;
-background:none;
-padding-top: 12px;
+    border-right: 3px dotted #CCCCCC;
+    box-shadow:none;
+    border-radius:0px;
+    background:none;
+    padding-top: 12px;
 
+    position: fixed;
+    top: 80px;
+    left: 119px;
+    width: 200px;
 }
+
 .sidebar-nav li {
   text-align:right; list-style:none;
   padding:5px ; 
