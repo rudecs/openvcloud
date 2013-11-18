@@ -68,7 +68,7 @@ function logout() {
     <div class="subnavbar-inner">
         <div class="container">
             <a class="brand" href="../$$space"><i class="icon-home"></i></a>
-            <ul class="pull-right">
+            <ul>
                 <li>
                     <a href="../$$space/MachineBuckets"> <i class="icon-cloud"></i>
                         <span>Machine Buckets</span>
