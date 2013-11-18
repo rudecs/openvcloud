@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal) {

@@ -1,12 +1,12 @@
 
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('ConsoleController', ['$scope','$routeParams', 'Machine', function($scope, $routeParams, Machine) {
         $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         $scope.novnc_connectioninfo = {}
         
         $scope.$watch('$parent.machine.status', function(newvalue, oldvalue) {
             if (newvalue == 'RUNNING')
-                $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
+            	$scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
         }, true);
         
         $scope.$watch('machineConsoleUrlResult',function(newvalue, oldvalue){

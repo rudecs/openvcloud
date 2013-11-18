@@ -333,7 +333,7 @@ h2. loading
     <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
     <script src="/$$space/.files/js/app_anonymous.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/Login/LoginController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
 
   <script>

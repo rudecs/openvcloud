@@ -1,4 +1,4 @@
-describe("LoginController tests", function(){
+describe("SessionController tests", function(){
     var scope, ctrl, $controller, User = 123;
     
     beforeEach(module('cloudscalers'));
@@ -11,7 +11,7 @@ describe("LoginController tests", function(){
 
     it("handles failure", function() {
         User.login.andReturn({error: 403});
-        ctrl = $controller('LoginController', {$scope : scope, User : User});
+        ctrl = $controller('SessionController', {$scope : scope, User : User});
 
         scope.username = 'error';
         scope.password = 'pa$$w0rd';
@@ -23,7 +23,7 @@ describe("LoginController tests", function(){
 
     it('handles success', function() {
         User.login.andReturn({});
-        ctrl = $controller('LoginController', {$scope : scope, User : User});
+        ctrl = $controller('SessionController', {$scope : scope, User : User});
 
         scope.username = 'user1';
         scope.password = 'pa$$w0rd';
