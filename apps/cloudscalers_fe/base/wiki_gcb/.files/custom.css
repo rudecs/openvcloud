@@ -1086,3 +1086,14 @@ color:#ddd;
     border-top-color: black;
 }
 
+div[collapse=isCollapsed] {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    z-index: 10;
+    top: 92px;
+    left: 142px;
+}
+
+.subnavbar-inner .cloudspaceCollapse {
+    float: left;
+}
