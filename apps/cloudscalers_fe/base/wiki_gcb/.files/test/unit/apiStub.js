@@ -33,7 +33,7 @@ defineUnitApiStub = function($httpBackend){
     $httpBackend.whenGET('testapi/machines/list?cloudspaceId=' + 13 + '&type=&api_key=yep123456789').respond(function() { return [500, 'Unknown cloudspace']; });
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 0 + '&api_key=yep123456789').respond(openwizzymachines[0]);
     $httpBackend.whenGET('testapi/machines/get?machineId=' + 44534 + '&api_key=yep123456789').respond(500, 'Not Found');
-    $httpBackend.whenGET('testapi/images/list?api_key=yep123456789').respond(openwizzyimages);
+    $httpBackend.whenGET(/^testapi\/images\/list.*/).respond(openwizzyimages);
 
     $httpBackend.whenGET(/^testapi\/sizes\/list\?.*/).respond(openwizzysizes);
     
