@@ -44,77 +44,66 @@ function logout() {
 <div ng-app="cloudscalers">
 <div class="subnavbar">
 
-	<div class="subnavbar-inner">
-	
-		<div class="container">
-		<a class="brand" href="../$$space">CloudScalers</a>
-			
-			
-			<ul class="mainnav">
-			
-				<li>
-				<a href="../$$space/MachineBuckets">
-				<i class="icon-cloud"></i>
-				<span>Machine Buckets</span>
-				</a></li>
-
-				<li>
-				<a href="../$$space/DesktopBuckets">
-				<i class="icon-desktop"></i>
-				<span>Desktop Buckets</span>
-				</a>
-				</li>
-
-				<li>
-				<a href="../$$space/StorageBuckets">
-				<i class="icon-hdd"></i>
-				<span>Storage Buckets</span>
-				</a>
-				</li> 
-			</ul>
+    <div class="subnavbar-inner">
+        <div class="container">
+            <a class="brand" href="../$$space">CloudScalers</a>
             <ul class="pull-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown">
-                        User <b class="caret"></b>
+                <li><a href="#">user@user.com</a> </li>
+                <li>
+                    <a href="../$$space/Settings">
+                        <i class="icon-cog"></i>
+                        <span>Settings</span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="../$$space/Settings"> <i class="icon-cog"></i>
-                                <span>Settings</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="../$$space/FAQ"> <i class="icon-ambulance"></i>
-                                <span>Docs</span>
-                            </a>
-                        </li>
-
-                        <li class="divider"></li>
-                        <li>
-                            <a onclick="logout()" href="." >
-                                <i class="icon-lock"></i>
-                                <span>Logout</span>
-                            </a>
-                        </li>
-                    </ul>
+                </li>
+                <li>
+                    <a onclick="logout()" href="." >
+                        <i class="icon-lock"></i>
+                        <span>Logout</span>
+                    </a>
                 </li>
             </ul>
+        </div>
+    </div>
 
-		</div> <!-- /container -->
-	
-	</div> <!-- /subnavbar-inner -->
+    <div class="subnavbar-inner">
+        <div class="container">
+            <a class="brand" href="../$$space"><i class="icon-home"></i></a>
+            <ul class="pull-right">
+                <li>
+                    <a href="../$$space/MachineBuckets"> <i class="icon-cloud"></i>
+                        <span>Machine Buckets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../$$space/DesktopBuckets"> <i class="icon-desktop"></i>
+                        <span>Desktop Buckets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../$$space/StorageBuckets">
+                        <i class="icon-hdd"></i>
+                        <span>Storage Buckets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../$$space/Settings">
+                        <i class="icon-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
 
-</div> <!-- /subnavbar -->
-}}
+                <li>
+                    <a href="../$$space/FAQ">
+                        <i class="icon-ambulance"></i>
+                        <span>Docs</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
 
-
-
-
-
-
-
-{{html: 
+</div>
 
 <div class="main">
 	
