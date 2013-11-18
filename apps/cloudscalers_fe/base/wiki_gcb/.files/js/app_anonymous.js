@@ -1,7 +1,8 @@
 'use strict';
 
 
-var cloudscalers = angular.module('anonymous_cloudscalers', ['cloudscalers.services',
+var cloudscalers = angular.module('anonymous_cloudscalers', ['cloudscalers.SessionServices',
+                                                             'cloudscalers.services',
                                                    'cloudscalers.controllers'])
 
 cloudscalers
