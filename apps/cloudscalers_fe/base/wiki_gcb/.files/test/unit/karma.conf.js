@@ -26,6 +26,7 @@ module.exports = function(config) {
       'lib/angular-ui/slider.min.js',
       'test/unit/config.js',
       'test/unit/apiStub.js',
+      'test/unit/cloudscalersmodules.js',
       'js/**/*.js',
       'test/unit/**/*.js',
     ],
@@ -33,7 +34,9 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-      'js/config.js'
+      'js/config.js',
+      'js/app.js',
+      'js/app_anonymous.js'
     ],
 
 

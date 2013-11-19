@@ -54,8 +54,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             		},
             		function (reason) {
                         APIKey.set(undefined);
-                        return $q.reject(reason);
-                    }
+                        return $q.reject(reason); }
             );
         };
 

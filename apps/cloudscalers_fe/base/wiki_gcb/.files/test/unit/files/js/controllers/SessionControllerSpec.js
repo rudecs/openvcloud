@@ -1,36 +1,45 @@
 describe("SessionController tests", function(){
-    var scope, ctrl, $controller, User = 123;
+    var $scope, ctrl, $controller, User, $q, $window = {};
     
     beforeEach(module('cloudscalers'));
     
-    beforeEach(inject(function($rootScope, _$controller_) {
-        scope = $rootScope.$new();
+    beforeEach(inject(function($rootScope, _$controller_, _$q_) {
+        $scope = $rootScope.$new();
         User = {login : jasmine.createSpy('login')};
         $controller = _$controller_;
+        $q = _$q_;
     }));
 
     it("handles failure", function() {
-        User.login.andReturn({error: 403});
-        ctrl = $controller('SessionController', {$scope : scope, User : User});
+    	var defer = $q.defer();
+        User.login.andReturn(defer.promise);
+        ctrl = $controller('SessionController', {$scope : $scope, User : User, $window : $window});
 
-        scope.username = 'error';
-        scope.password = 'pa$$w0rd';
-        scope.login();
+        $scope.username = 'error';
+        $scope.password = 'pa$$w0rd';
+        $scope.login();
 
+        defer.reject(403);
+        $scope.$digest();
+        
         expect(User.login).toHaveBeenCalledWith('error', 'pa$$w0rd');
-        expect(scope.loginResult.error).toBe(403);
+        expect($scope.login_error).toBe(403);
     });
 
     it('handles success', function() {
-        User.login.andReturn({});
-        ctrl = $controller('SessionController', {$scope : scope, User : User});
+    	var defer = $q.defer();
+        User.login.andReturn(defer.promise);
+        ctrl = $controller('SessionController', {$scope : $scope, User : User, $window: $window});
 
-        scope.username = 'user1';
-        scope.password = 'pa$$w0rd';
-        scope.login();
+        $scope.username = 'user1';
+        $scope.password = 'pa$$w0rd';
+        $scope.login();
 
+        defer.resolve('myapikey');
+        $scope.$digest();
+        
         expect(User.login).toHaveBeenCalledWith('user1', 'pa$$w0rd');
-        expect(scope.loginResult.error).toBeUndefined();
+        expect($scope.login_error).toBeUndefined();
     });
 });
 

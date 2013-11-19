@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('EditDesktopBucketController', ['$scope', '$routeParams', 'DesktopBucketService', function($scope, $routeParams, DesktopBucketService) {
         if (DesktopBucketService.getAll() && DesktopBucketService.getAll().length == 1)
             $scope.bucket = DesktopBucketService.getAll()[0];

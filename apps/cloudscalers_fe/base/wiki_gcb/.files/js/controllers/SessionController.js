@@ -15,7 +15,7 @@ angular.module('cloudscalers.controllers')
             			$window.location = uri.toString();
             		},
             		function(reason) {
-            			$scope.login_error = reason;
+            			$scope.login_error = reason.status;
             		}
             );
         };
