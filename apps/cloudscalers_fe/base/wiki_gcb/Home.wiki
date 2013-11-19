@@ -115,32 +115,60 @@
 
 @col 9
 
+{{html:
+<!-- Carousel
+    ================================================== -->
+    <carousel interval="15000">
+        <slide>
+            <img ng-src="/$$space/.files/img/1.png" style="margin:auto;">
+            <div class="carousel-caption">
+                <h4>Welcome</h4>
+                <p class="lead">
+                    Are you ready for the next step in IT infrastructure?  <br> 
+                    CloudScalers introduces Cloud Buckets <br> 
+                    Delivering virtual machines, cloud desktops and cloud storage
+                </p>
+            </div>
+        </slide>
+
+        <slide>
+            <img ng-src="/$$space/.files/img/2.png" style="margin:auto;">
+            <div class="carousel-caption">
+                <h4>Machine Buckets</h4>
+                <p class="lead">
+                    Create and manage Cloud Buckets from a unified platform  <br> 
+                    Offering more simplicity and flexibility than other clouds <br> 
+                    At ultra competitive prices!
+                </p>
+            </div>
+        </slide>
 
 
-{{carousel: interval = 15000
-------
-Welcome | /$$space/.files/img/1.png
-Are you ready for the next step in IT infrastructure?  <br> 
-CloudScalers introduces Cloud Buckets <br> 
-Delivering virtual machines, cloud desktops and cloud storage
-------
-Machine Buckets  | /$$space/.files/img/2.png
-Create and manage Cloud Buckets from a unified platform  <br> 
-Offering more simplicity and flexibility than other clouds <br> 
-At ultra competitive prices!
-------
-Desktop Buckets | /$$space/.files/img/3.png
-Intelligent SSD performance  <br> 
-More flexibility in choosing the ideal resource configuration  <br> 
-No lock in thanks to built in import and export functions
-------
-Application Buckets | /$$space/.files/img/4.png
-Automated snapshots and fast cloning  <br> 
-Next generation cloud desktops working on any device  <br> 
-A simple and straightforward API
-------
+        <slide>
+            <img ng-src="/$$space/.files/img/3.png" style="margin:auto;">
+            <div class="carousel-caption">
+                <h4>Desktop Buckets</h4>
+                <p class="lead">
+                    Intelligent SSD performance  <br> 
+                    More flexibility in choosing the ideal resource configuration  <br> 
+                    No lock in thanks to built in import and export functions
+                </p>
+            </div>
+        </slide>
+
+        <slide>
+            <img ng-src="/$$space/.files/img/4.png" style="margin:auto;">
+            <div class="carousel-caption">
+                <h4>Application Buckets</h4>
+                <p class="lead">
+                    Automated snapshots and fast cloning  <br> 
+                    Next generation cloud desktops working on any device  <br> 
+                    A simple and straightforward API
+                </p>
+            </div>
+        </slide>
+    </carousel>
 }}
-
 {{div: class=row }}
 {{div2: class= marker span12}}
 
@@ -333,6 +361,7 @@ h2. loading
     <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
     <script src="/$$space/.files/js/app_anonymous.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
 
