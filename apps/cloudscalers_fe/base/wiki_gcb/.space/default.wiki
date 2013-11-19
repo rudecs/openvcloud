@@ -129,7 +129,9 @@ function logout() {
 
 
 @col 3
+{{div: class=affix}}
 {{navigation}}
+{{div}}
 @divend
 
 @col 9

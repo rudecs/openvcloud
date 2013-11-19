@@ -607,13 +607,29 @@ padding: 10px;
     border-radius:0px;
     background:none;
     padding-top: 12px;
-
-    position: fixed;
-    top: 125px;
-    left: 119px;
-    width: 200px;
 }
 
+.affix {
+    width: 220px;
+}
+
+@media (max-width: 767px) {
+    .affix {
+        width: 736px;
+        display: block;
+    }
+}
+
+@media(min-width:768px) and (max-width:979px) {
+    .affix {
+        width: 166px;
+    }
+}
+@media (min-width: 1200px) {
+    .affix {
+        width: 270px;
+    }
+}
 .sidebar-nav li {
   text-align:right; list-style:none;
   padding:5px ; 
@@ -1084,14 +1100,6 @@ color:#ddd;
     display: inline-block !important;
     border-bottom-color: black;
     border-top-color: black;
-}
-
-div[collapse=isCollapsed] {
-    background-color: rgb(255, 255, 255);
-    position: absolute;
-    z-index: 10;
-    top: 92px;
-    left: 142px;
 }
 
 .subnavbar-inner .cloudspaceCollapse {
