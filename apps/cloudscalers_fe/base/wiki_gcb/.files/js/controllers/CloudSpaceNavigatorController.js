@@ -11,5 +11,4 @@ cloudscalersControllers
         $scope.setCurrentCloudspace = function(accountName, spaceName) {
             $scope.currentSpace = accountName + '/' + spaceName;
         };
-
     }]);

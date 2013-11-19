@@ -68,17 +68,19 @@ function logout() {
     <div class="subnavbar-inner">
         <div class="container">
             <a class="brand" href="../$$space"> <i class="icon-home"></i></a>
-            <button class="btn btn-large cloudspaceCollapse" ng-click="isCollapsed = !isCollapsed">{[currentSpace]} <span class="caret"></span></button>
-            <div collapse="isCollapsed">
-                <accordion close-others="false">
-                    <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
-                        <ul>
-                            <li ng-repeat="space in account.cloudspaces">
-                                <a href="#" ng-click="setCurrentCloudspace(account.name, space.name)">{[space.name]}</a>
-                            </li>
-                        </ul>
-                    </accordion-group>
-                </accordion>
+            <div class="btn-group">
+                <button class="btn btn-large cloudspaceCollapse  dropdown-toggle" ng-click="isCollapsed = !isCollapsed">{[currentSpace]} <span class="caret"></span></button>
+                <div persistent-dropdown>
+                    <accordion close-others="false">
+                        <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
+                            <ul>
+                                <li ng-repeat="space in account.cloudspaces">
+                                    <a href="#" ng-click="setCurrentCloudspace(account.name, space.name)">{[space.name]}</a>
+                                </li>
+                            </ul>
+                        </accordion-group>
+                    </accordion>
+                </div>
             </div>
             <ul>
                 <li>
@@ -268,6 +270,7 @@ h2. loading
     <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/MachineBuckets/MachineController.js" type="text/javascript"></script>
