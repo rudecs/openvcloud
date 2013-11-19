@@ -37,28 +37,26 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             }
         };
     })
-    .factory('User', function ($http, APIKey) {
+    .factory('User', function ($http, APIKey, $q) {
         var user = {};
         user.login = function (username, password) {
-            var loginResult = {api_key: undefined, error: false};
-            $http({
+            return $http({
                 method: 'POST',
                 data: {
                     username: username,
                     password: password
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/authenticate'
-            }).
-            success(function (data, status, headers, config) {
-                loginResult.api_key = data;
-                APIKey.set(data);
-                loginResult.error = false;
-            }).
-            error(function (data, status, headers, config) {
-                loginResult.api_key = undefined;
-                loginResult.error = status;
-            });
-            return loginResult;
+            }).then(
+            		function (result) {
+            			APIKey.set(result.data);
+            			return result.data;
+            		},
+            		function (reason) {
+                        APIKey.set(undefined);
+                        return $q.reject(reason);
+                    }
+            );
         };
 
         user.logout = function() {

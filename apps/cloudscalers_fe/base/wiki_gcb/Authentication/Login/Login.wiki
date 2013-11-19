@@ -9,7 +9,7 @@
             <div class="login-fields">
 
                 <p>Sign in using your registered account:</p>
-                <div class="alert alert-error ng-hide" ng-show="loginResult.error">Please enter the correct username & password.</div>
+                <div class="alert alert-error ng-hide" ng-show="login_error">Please enter the correct username & password.</div>
                 <div class="field">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" value="" placeholder="Username" class="login username-field" ng-model="username" />
