@@ -19,7 +19,7 @@ describe("SessionController tests", function(){
         $scope.password = 'pa$$w0rd';
         $scope.login();
 
-        defer.reject(403);
+        defer.reject({status: 403});
         $scope.$digest();
         
         expect(User.login).toHaveBeenCalledWith('error', 'pa$$w0rd');
