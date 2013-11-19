@@ -11,7 +11,7 @@ cloudscalers
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
     }]);
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap','cloudscalers.SessionServices']);
 
 
 if(cloudspaceconfig.apibaseurl == ''){
