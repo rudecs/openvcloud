@@ -1098,3 +1098,21 @@ div[collapse=isCollapsed] {
     float: left;
     margin-top: 0;
 }
+
+.subnavbar .cloudspaceCollapse .caret {
+    border-top-color: black;
+    border-bottom-color: black;
+}
+
+.btn-group {
+    position: absolute;
+    display: inline-block;
+}
+
+.dropdown-menu .accordion {
+    margin: 0;
+}
+
+[persistent-dropdown].dropdown-menu {
+    padding: 0;
+}

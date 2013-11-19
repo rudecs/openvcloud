@@ -65,4 +65,13 @@ angular.module('cloudscalers.directives', [])
             </canvas>',
 	     }
 	})
+
+    .directive('persistentDropdown', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.addClass('dropdown-menu').on('click', '.accordion-heading', function(e) {e.preventDefault(); e.stopPropagation();});
+            }
+        };
+    })
 ;
