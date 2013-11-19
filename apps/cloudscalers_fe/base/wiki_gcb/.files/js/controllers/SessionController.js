@@ -2,26 +2,30 @@ angular.module('cloudscalers.controllers')
     .controller('SessionController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
         $scope.username = '';
         $scope.password = '';
-        $scope.loggedIn = !!APIKey.get();
 
+        $scope.login_error = undefined;
+        
         $scope.login = function() {            
-            $scope.loginResult = User.login($scope.username, $scope.password);
+            User.login($scope.username, $scope.password).
+            then(
+            		function(result) {
+            			$scope.login_error = undefined;
+            			var uri = new URI($window.location);
+            			uri.filename('MachineBuckets');
+            			$window.location = uri.toString();
+            		},
+            		function(reason) {
+            			$scope.login_error = reason.status;
+            		}
+            );
         };
 
         $scope.logout = function() {
             User.logout();
-            $scope.loggedIn = false;
             
 			var uri = new URI($window.location);
 			uri.filename('');
 			$window.location = uri.toString();
         }
 
-        $scope.$watch('loginResult', function(loginResult) {
-            if (APIKey.get()) {
-                var uri = new URI($window.location);
-                uri.filename('');
-                $window.location = uri.toString();
-            }
-        }, true);
     }]);

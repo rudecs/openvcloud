@@ -14,12 +14,12 @@
                 <div class="alert alert-success ng-hide" ng-show="signUpSuccess">Sign Up successful. Now you can <a href="/$$space/Login">login</a></div>
                 <div class="field">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" value="" placeholder="Username" class="login username-field" ng-model="username" />
+                    <input type="text" value="" placeholder="Username" class="login username-field" ng-model="username" />
                 </div>
 
                 <div class="field">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field" ng-model="password"/>
+                    <input type="password" value="" placeholder="Password" class="login password-field" ng-model="password"/>
                 </div>
 
                 <div class="field">

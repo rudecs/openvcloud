@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('DesktopPricingController', ['$scope', '$timeout', function($scope, $timeout) {
         $scope.numOfUsers = 1;
         $scope.totalPrice = 10;

@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('CreateDesktopBucketController', ['$scope', 'DesktopBucketService', function($scope, DesktopBucketService) {
         $scope.bucket = {
             id: Math.random() * 1000000000,

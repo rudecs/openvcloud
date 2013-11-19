@@ -14,24 +14,28 @@ describe('Cloudscalers SessionServices', function() {
 		it('handles successful login',function(){			
             expect(APIKey.get()).toBeNull();
 
-			var loginResult = User.login();
+			var loginResult = {};
+			User.login().then(function(result){loginResult.key = result;},function(reason){});
 			$httpBackend.flush();
 			
-            expect(loginResult).toBeDefined();
-            expect(loginResult.api_key).toBe('yep123456789');
+            expect(loginResult.key).toBe('yep123456789');
             expect(APIKey.get()).toBe('yep123456789');
-			expect(loginResult.error).toBeFalsy();
 		});
 		
 		it('handles failed login',function(){
             expect(APIKey.get()).toBeNull();
 
-			var loginResult = User.login('error','testpass');
+			var loginResult = {};
+			User.login('error','testpass').
+			then(
+					function(result){},
+					function(reason){
+						loginResult.reason = reason.status;
+			});
 
 			$httpBackend.flush();
 			
-			expect(loginResult.api_key).toBeUndefined();
-			expect(loginResult.error).toBe(403);
+			expect(loginResult.reason).toBe(403);
 		});
 
         it('can logout', function() {
