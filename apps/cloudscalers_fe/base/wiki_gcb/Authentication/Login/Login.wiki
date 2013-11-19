@@ -1,7 +1,7 @@
 @template access
 
 {{html:
-<div class="account-container stacked" ng-app="cloudscalers" ng-controller="LoginController">
+<div class="account-container stacked" ng-app="cloudscalers" ng-controller="SessionController">
     <div class="content clearfix padding">
         <form ng-submit="login()">
             <h1>Sign In</h1>
