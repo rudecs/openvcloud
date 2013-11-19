@@ -1116,3 +1116,5 @@ div[collapse=isCollapsed] {
 [persistent-dropdown].dropdown-menu {
     padding: 0;
 }
+
+.carousel-indicators { display: none; }
