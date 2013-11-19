@@ -68,19 +68,15 @@ function logout() {
     <div class="subnavbar-inner">
         <div class="container">
             <a class="brand" href="../$$space"> <i class="icon-home"></i></a>
-            <button class="btn cloudspaceCollapse" ng-click="isCollapsed = !isCollapsed">Toggle collapse <span class="caret"></span></button>
+            <button class="btn btn-large cloudspaceCollapse" ng-click="isCollapsed = !isCollapsed">{[currentSpace]} <span class="caret"></span></button>
             <div collapse="isCollapsed">
                 <accordion close-others="false">
-                    <accordion-group heading="Static Header">This content is straight in the template.</accordion-group>
-                    <accordion-group heading="{{group.title}}" ng-repeat="group in groups">{{group.content}}</accordion-group>
-                    <accordion-group heading="Dynamic Body Content">
-                        <p>The body of the accordion group grows to fit the contents</p>
-                        <button class="btn btn-small" ng-click="addItem()">Add Item</button>
-                        <div ng-repeat="item in items">{{item}}</div>
-                    </accordion-group>
-                    <accordion-group>
-                        <accordion-heading>I can have markup, too!</accordion-heading>
-                        This is just some content to illustrate fancy headings.
+                    <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
+                        <ul>
+                            <li ng-repeat="space in account.cloudspaces">
+                                <a href="#" ng-click="setCurrentCloudspace(account.name, space.name)">{[space.name]}</a>
+                            </li>
+                        </ul>
                     </accordion-group>
                 </accordion>
             </div>

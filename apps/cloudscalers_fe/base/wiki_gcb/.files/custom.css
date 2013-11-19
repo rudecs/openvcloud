@@ -1096,4 +1096,5 @@ div[collapse=isCollapsed] {
 
 .subnavbar-inner .cloudspaceCollapse {
     float: left;
+    margin-top: 0;
 }
