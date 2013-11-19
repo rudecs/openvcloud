@@ -304,5 +304,22 @@ defineApiStub = function ($httpBackend) {
 
     // clone
     $httpBackend.whenGET(/^\/machines\/clone\?machineId=\d+.*/).respond('OK');
+
+    $httpBackend.whenGET(/^\/accounts\/list.*/).respond([
+        {id: '1', name: 'Account 1'},
+        {id: '2', name: 'Account 2'},
+        {id: '4', name: 'Account 4'},
+    ]);
+
+    $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond([
+       {id: '1', name: 'Cloudspace 1', account: '1'},
+       {id: '2', name: 'Cloudspace 2', account: '1'},
+       {id: '3', name: 'Cloudspace 3', account: '2'},
+       {id: '4', name: 'Cloudspace 4', account: '2'},
+       {id: '4', name: 'Cloudspace 5', account: '2'},
+       {id: '4', name: 'Cloudspace 6', account: '4'},
+       {id: '4', name: 'Cloudspace 7', account: '4'},
+       {id: '4', name: 'Cloudspace 8', account: '4'},
+   ]);
 };
 
