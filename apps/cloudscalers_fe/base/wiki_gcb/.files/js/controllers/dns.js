@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('DNSController', ['$scope', 'DNSService', 'Buckets', function($scope, DNSService, Buckets) {
         $scope.domains = DNSService.getAll();
         $scope.buckets = Buckets.getAll();

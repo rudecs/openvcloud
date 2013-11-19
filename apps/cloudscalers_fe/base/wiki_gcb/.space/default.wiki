@@ -278,7 +278,7 @@ h2. loading
     <script src="/$$space/.files/js/controllers/DesktopBuckets/ListDesktopBucketsController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/DesktopBuckets/CreateDesktopBucketController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/DesktopBuckets/EditDesktopBucketController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/Login/LoginController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
 
     <script src="/$$space/.files/js/controllers/MachineBuckets/ConsoleController.js" type="text/javascript"></script>

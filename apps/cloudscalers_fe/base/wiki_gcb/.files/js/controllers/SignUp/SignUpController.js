@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('SignUpController', ['$scope', 'User', function($scope, User) {
         $scope.username = '';
         $scope.password = '';

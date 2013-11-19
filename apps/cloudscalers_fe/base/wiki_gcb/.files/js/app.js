@@ -2,7 +2,8 @@
 
 
 // Declare app level module which depends on filters, and services
-var cloudscalers = angular.module('cloudscalers', ['cloudscalers.machineServices', 
+var cloudscalers = angular.module('cloudscalers', ['cloudscalers.SessionServices',
+                                                   'cloudscalers.machineServices', 
                                                    'cloudscalers.services',
                                                    'cloudscalers.controllers',
                                                    'ngRoute'])

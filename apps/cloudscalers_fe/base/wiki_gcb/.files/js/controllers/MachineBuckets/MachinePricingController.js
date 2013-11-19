@@ -1,4 +1,4 @@
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('MachinePricingController', ['$scope', function($scope) {
         $scope.cpuMem = 0;
         $scope.storage = 0;

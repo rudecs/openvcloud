@@ -1,5 +1,5 @@
 
-cloudscalersControllers
+angular.module('cloudscalers.controllers')
     .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
         	
         Machine.list(1).then(function(machines){

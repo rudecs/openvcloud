@@ -331,24 +331,10 @@ h2. loading
     <script src="/$$space/.files/js/ui.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/config.js" type="text/javascript"></script>
     <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
-    <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/app_anonymous.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineEditController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineCreationController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/DesktopPricingController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/ListDesktopBucketsController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/CreateDesktopBucketController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/EditDesktopBucketController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/Login/LoginController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
-
-    <script src="/$$space/.files/js/controllers/MachineBuckets/ConsoleController.js" type="text/javascript"></script>
-  
-
 
   <script>
       $('.tp').tooltip()

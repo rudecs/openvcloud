@@ -1,5 +1,5 @@
-cloudscalersControllers
-    .controller('LoginController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
+angular.module('cloudscalers.controllers')
+    .controller('SessionController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
         $scope.username = '';
         $scope.password = '';
         $scope.loggedIn = !!APIKey.get();

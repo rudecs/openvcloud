@@ -1,7 +1,7 @@
 'use strict';
 
 
-var cloudscalers = angular.module('anonymous_cloudscalers', ['cloudscalers.services',
+var cloudscalers = angular.module('cloudscalers', ['cloudscalers.SessionServices',
                                                    'cloudscalers.controllers'])
 
 cloudscalers
@@ -11,7 +11,7 @@ cloudscalers
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
     }]);
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.machineServices', 'cloudscalers.directives']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap']);
 
 
 if(cloudspaceconfig.apibaseurl == ''){
