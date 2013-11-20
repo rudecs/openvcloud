@@ -1098,3 +1098,5 @@ color:#ddd;
 }
 
 .carousel-indicators { display: none; }
+
+#swagger-ui-container .container { width: auto; }
