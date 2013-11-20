@@ -7,25 +7,40 @@
         <h1>Sign Up</h1>
 
         <div class="login-fields">
-            <form ng-submit="signUp()">
-                <p>Sign in using your registered account:</p>
-                <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords didn't match.</div>
+            <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
+                <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
                 <div class="alert alert-success ng-hide" ng-show="signUpSuccess">Sign Up successful. Now you can <a href="/$$space/Login">login</a></div>
                 <div class="field">
                     <label for="username">Username:</label>
-                    <input type="text" value="" placeholder="Username" class="login username-field" ng-model="username" />
+                    <div class="input-prepend">
+  						<span class="add-on"><i class="icon-user"></i></span>
+                    	<input type="text" id="username" value="" placeholder="Username" ng-model="username" />
+					</div>
+                </div>
+                <div class="field">
+                    <label for="username">Email address:</label>
+                     <div class="input-prepend">
+  						<span class="add-on"><i class="icon-envelope"></i></span>
+                    	<input type="text" id="email" value="" placeholder="Email address" ng-model="email" />
+ 					</div>
                 </div>
 
                 <div class="field">
                     <label for="password">Password:</label>
-                    <input type="password" value="" placeholder="Password" class="login password-field" ng-model="password"/>
+                    <div class="input-prepend">
+  						<span class="add-on"><i class="icon-lock"></i></span>
+                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="password"/>
+                   	</div>
                 </div>
 
                 <div class="field">
                     <label for="password">Password Confirmation:</label>
-                    <input type="password" id="passwordConfirmation" name="passwordConfirmation" value="" placeholder="Password Confirmation" class="login password-field" 
-                        ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
+                    <div class="input-prepend">
+  						<span class="add-on"><i class="icon-lock"></i></span>
+                    	<input type="password" id="password_field_confirmation" name="password_confirmation" value="" placeholder="Password" 
+                        	ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
+                   	</div>
                 </div>
             </div>
 

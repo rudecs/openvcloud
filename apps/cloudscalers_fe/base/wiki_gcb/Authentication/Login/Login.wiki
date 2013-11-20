@@ -12,12 +12,17 @@
                 <div class="alert alert-error ng-hide" ng-show="login_error">Please enter the correct username & password.</div>
                 <div class="field">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" value="" placeholder="Username" class="login username-field" ng-model="username" />
+                    <div class="input-prepend">
+  						<span class="add-on"><i class="icon-user"></i></span>
+                    	<input type="text" id="username" value="" placeholder="Username" ng-model="username" />
+					</div>
                 </div>
-
                 <div class="field">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field" ng-model="password"/>
+                    <div class="input-prepend">
+  						<span class="add-on"><i class="icon-lock"></i></span>
+                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="password"/>
+                   	</div>
                 </div>
             </div>
 
