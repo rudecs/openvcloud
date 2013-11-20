@@ -438,42 +438,14 @@ border-radius: 10px; /* future proofing */
     background-color: #FDFDFD;
     box-shadow: 2px 2px 4px #F1F1F1 inset;
     color: #8E8D8D;
-    display: block;
     font-family: 'Open Sans';
     font-size: 13px;
     margin: 0;
-    padding: 8px 15px 10px 50px;
+    padding: 8px 15px 10px 10px;
     width: 255px;
 }
-
-.login-fields input.username-field {
-    background: url("img/signin/user.png") no-repeat scroll 0 0 #fff;
-}
-
-.login-fields input.password-field {
-    background: url("img/signin/password.png") no-repeat scroll 0 0 #fff;
-}
-
-span.login-checkbox {
-    float: left;
-    margin-top: 31px;
-}
-span.login-checkbox > input[type="checkbox"] {
-    float: left;
-    opacity: 0;
-    width: 15px;
-}
-
-span.login-checkbox > input[type="checkbox"] + label {
-    background: url("img/signin/check.png") no-repeat scroll 0 0 transparent;
-    clear: none;
-    cursor: pointer;
-    display: block;
-    font-size: 12px;
-    height: 15px;
-    line-height: 1.2em;
-    margin: 0;
-    padding: 0 0 0 22px;
+.login-fields .add-on {
+    padding: 8px 15px 10px 10px;
 }
 
 .button {
