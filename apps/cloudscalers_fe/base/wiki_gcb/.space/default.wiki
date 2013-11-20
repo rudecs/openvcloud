@@ -67,22 +67,24 @@ function logout() {
 
     <div class="subnavbar-inner">
         <div class="container">
-            <a class="brand" href="../$$space"> <i class="icon-home"></i></a>
-            <div class="btn-group">
-                <button class="btn btn-large cloudspaceCollapse  dropdown-toggle" ng-click="isCollapsed = !isCollapsed">{[currentSpace]} <span class="caret"></span></button>
-                <div persistent-dropdown>
-                    <accordion close-others="false">
-                        <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
-                            <ul>
-                                <li ng-repeat="space in account.cloudspaces">
-                                    <a href="#" ng-click="setCurrentCloudspace(account.name, space.name)">{[space.name]}</a>
-                                </li>
-                            </ul>
-                        </accordion-group>
-                    </accordion>
-                </div>
-            </div>
             <ul>
+                <li><a href="../$$space"> <i class="icon-home"></i></a></li>
+                <li class="dropdown">
+                    
+                    <a href="#" class="cloudspaceCollapse dropdown-toggle" ng-click="isCollapsed = !isCollapsed"><span>{[currentSpace]}</span> <b class="caret"></b></a>
+                    <div persistent-dropdown>
+                        <accordion close-others="false">
+                            <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
+                                <ul>
+                                    <li ng-repeat="space in account.cloudspaces">
+                                        <a href="#" ng-click="setCurrentCloudspace(account.name, space.name)">{[space.name]}</a>
+                                    </li>
+                                </ul>
+                            </accordion-group>
+                        </accordion>
+                    </div>
+                    
+                </li>
                 <li>
                     <a href="../$$space/MachineBuckets"> <i class="icon-cloud"></i>
                         <span>Machine Buckets</span>

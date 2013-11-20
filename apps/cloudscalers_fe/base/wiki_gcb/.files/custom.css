@@ -1105,11 +1105,26 @@ color:#ddd;
 .subnavbar-inner .cloudspaceCollapse {
     float: left;
     margin-top: 0;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+}
+
+.cloudspaceCollapse span {
+    width: 180px;
+    text-overflow: ellipsis;
 }
 
 .subnavbar .cloudspaceCollapse .caret {
     border-top-color: black;
     border-bottom-color: black;
+    margin-right: 10px;
+    float: right;
+}
+
+.cloudspaceCollapse .caret {
+    margin-top: 8px;
 }
 
 .btn-group {
@@ -1123,6 +1138,44 @@ color:#ddd;
 
 [persistent-dropdown].dropdown-menu {
     padding: 0;
+    margin-left: -180px;
+    width: 406px;
+}
+
+.accordion-heading { 
+    background-color: #f2f2f2; 
+    padding-left: 5px;
+}
+
+.accordion-heading > a:before { 
+    content: " ";
+    float: left;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-left-color: black;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    margin-left: -10px;
+    margin-top: 4px;
+}
+
+.accordion-heading > a:hover {
+    text-decoration: none;
+}
+
+.accordion-heading.open > a:before {
+    border-color: transparent;
+    border-top-color: black;
+    border-width: 5px 5px 5px 5px;
+    margin-top: 7px;
+    margin-left: -15px;
+}
+
+.accordion-body ul {
+    list-style-type: none;
+    margin: 0;
 }
 
 .carousel-indicators { display: none; }

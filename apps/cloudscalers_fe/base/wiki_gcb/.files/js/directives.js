@@ -70,7 +70,21 @@ angular.module('cloudscalers.directives', [])
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
-                element.addClass('dropdown-menu').on('click', '.accordion-heading', function(e) {e.preventDefault(); e.stopPropagation();});
+                element.addClass('dropdown-menu').on('click', '.accordion-heading', function(e) {
+                    // Prevent the click event from propagation to the dropdown & closing it
+                    e.preventDefault(); 
+                    e.stopPropagation();
+
+                    // If the body will be expanded, then add .open to the header
+                    var header = angular.element(this);
+                    var body = header.siblings('.accordion-body');
+                    if (body.height() === 0) // body is collapsed & will be expanded
+                        header.addClass('open');
+                    else
+                        header.removeClass('open');
+
+                });
+                element.find('div.accordion-heading').filter(function() { return $(this).siblings('.accordion-body').height() > 0; }).addClass('open')
             }
         };
     })
