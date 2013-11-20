@@ -15,11 +15,6 @@
 
 {{projectname:CloudScalers}}
 
-{{css:/$$space/.files/lib/jquery-ui/jquery-ui-1.10.3.custom.min.css}}
-{{css:/$$space/.files/css/font-awesome.css}}
-{{css:/$$space/.files/css/base-admin.css}}
-{{css:/$$space/.files/css/base-admin-responsive.css}}
-{{css:/$$space/.files/css/pages/dashboard.css}}
 {{css:/$$space/.files/custom.css}}
 
 {{html:
