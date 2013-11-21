@@ -48,13 +48,7 @@ function logout() {
         <div class="container">
             <a class="brand" href="../$$space">CloudScalers</a>
             <ul class="pull-right">
-                <li><a href="#">user@user.com</a> </li>
-                <li>
-                    <a href="../$$space/Settings">
-                        <i class="icon-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
+                <li><a href="../$$space/Settings">user@user.com</a> </li>
                 <li>
                     <a onclick="logout()" href="." >
                         <i class="icon-lock"></i>
