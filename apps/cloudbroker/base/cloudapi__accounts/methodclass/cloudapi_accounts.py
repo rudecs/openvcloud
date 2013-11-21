@@ -34,7 +34,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.cb.models.cloudspace.new()
+        account = self.cb.models.account.new()
         account.dict2obj(self.cb.model_account_get(accountId))
         acl = account.new_acl()
         acl.userGroupId = userId
@@ -104,6 +104,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         result [],
 
         """
+      
 #TODO implement dynamic filter here based on user access
         return self.cb.model_account_list()
 
