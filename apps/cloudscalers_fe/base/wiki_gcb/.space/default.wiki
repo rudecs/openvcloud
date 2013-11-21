@@ -71,8 +71,8 @@ function logout() {
                 <li><a href="../$$space"> <i class="icon-home"></i></a></li>
                 <li class="dropdown">
                     
-                    <a href="#" class="cloudspaceCollapse dropdown-toggle" ng-click="isCollapsed = !isCollapsed"><span>{[currentSpace]}</span> <b class="caret"></b></a>
-                    <div persistent-dropdown>
+                    <a href="#" class="cloudspaceCollapse dropdown-toggle" ng-click="isCollapsed = !isCollapsed"><span ng-cloak>{[currentSpace]}</span> <b class="caret"></b></a>
+                    <div persistent-dropdown ng-cloak>
                         <accordion close-others="false">
                             <accordion-group heading="{[account.name]}" ng-repeat="account in accounts">
                                 <ul>

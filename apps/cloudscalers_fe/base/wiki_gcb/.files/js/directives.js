@@ -82,9 +82,13 @@ angular.module('cloudscalers.directives', [])
                         header.addClass('open');
                     else
                         header.removeClass('open');
-
                 });
-                element.find('div.accordion-heading').filter(function() { return $(this).siblings('.accordion-body').height() > 0; }).addClass('open')
+
+                // Keep the left border aligned with the border of the window.
+                // Because 'position: absolute' doesn't work inside <ul>, I need to do it with JS.
+                setInterval(function() {
+                    element.css('margin-left', -element.parent('li').offset().left);
+                }, 50);
             }
         };
     })
