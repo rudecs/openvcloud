@@ -276,10 +276,11 @@ class cloudapi_machines(cloudapi_machines_osis):
         if term:
             query['query'] = {'term': term}
         results = self.cb.model_vmachine_find(ujson.dumps(query))['result']
+        machines = []
         for res in results:
             storage = self._getStorage(res['fields'])
             res['fields']['storage'] = storage.disk
-            machines = [res['fields']]
+            machines.append(res['fields'])
         return machines
 
     def _getMachine(self, machineId):
