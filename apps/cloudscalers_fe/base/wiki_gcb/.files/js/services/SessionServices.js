@@ -27,13 +27,13 @@ angular.module('cloudscalers.SessionServices', ['ng'])
         var clientApiKey;
         return {
             get: function() { 
-                return $window.sessionStorage.getItem('gcb:api_key');
+                return $window.localStorage.getItem('gcb:api_key');
             },
             set: function(apiKey) {
-                $window.sessionStorage.setItem('gcb:api_key', apiKey);
+                $window.localStorage.setItem('gcb:api_key', apiKey);
             },
             clear: function() {
-                $window.sessionStorage.removeItem('gcb:api_key');
+                $window.localStorage.removeItem('gcb:api_key');
             }
         };
     })
@@ -62,12 +62,13 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             APIKey.clear();
         };
 
-        user.signUp = function(username, password) {
+        user.signUp = function(username, email, password) {
             var signUpResult = {};
             $http({
                 method: 'POST',
                 data: {
                     username: username,
+                    email: email,
                     password: password
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/signup'

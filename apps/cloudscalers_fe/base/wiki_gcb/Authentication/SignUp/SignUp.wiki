@@ -1,8 +1,8 @@
 @template access
 
 {{html:
-<div class="account-container stacked" ng-app="cloudscalers" ng-controller="SignUpController">
-    <div class="content clearfix padding">
+<div class="account-container stacked" ng-app="cloudscalers" ng-controller="SessionController">
+    <div class="content clearfix padding"  ng-controller="SignUpController">
 
         <h1>Sign Up</h1>
 
@@ -10,12 +10,11 @@
             <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
-                <div class="alert alert-success ng-hide" ng-show="signUpSuccess">Sign Up successful. Now you can <a href="/$$space/Login">login</a></div>
                 <div class="field">
                     <label for="username">Username:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-user"></i></span>
-                    	<input type="text" id="username" value="" placeholder="Username" ng-model="username" />
+                    	<input type="text" id="username" value="" placeholder="Username" ng-model="user.username" />
 					</div>
                 </div>
                 <div class="field">
@@ -30,7 +29,7 @@
                     <label for="password">Password:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>
-                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="password"/>
+                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="user.password"/>
                    	</div>
                 </div>
 

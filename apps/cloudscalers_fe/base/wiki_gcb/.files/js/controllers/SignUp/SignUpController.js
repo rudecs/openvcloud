@@ -1,7 +1,5 @@
 angular.module('cloudscalers.controllers')
     .controller('SignUpController', ['$scope', 'User', function($scope, User) {
-        $scope.username = '';
-        $scope.password = '';
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
@@ -9,25 +7,27 @@ angular.module('cloudscalers.controllers')
         $scope.signUpError = '';
         $scope.signUpResult = '';
 
-        $scope.$watch('username + password + passwordConfirmation', function() {
-            $scope.canSignUp = !!($scope.username && $scope.password && $scope.passwordConfirmation);
+        $scope.$watch('user.username + user.password + email + passwordConfirmation', function() {
+            $scope.canSignUp = $scope.user.username && $scope.email && $scope.user.password && $scope.passwordConfirmation;
         });
 
         $scope.signUp = function() {
             $scope.signUpResult = {};
 
-            $scope.isPasswordConfirmed = $scope.password == $scope.passwordConfirmation && 
-                $scope.password && 
+            $scope.isPasswordConfirmed = $scope.user.password == $scope.passwordConfirmation && 
+                $scope.user.password && 
                 $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed)
-                $scope.signUpResult = User.signUp($scope.username, $scope.password);
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, $scope.user.password);
         };
 
         $scope.$watch('signUpResult', function() {
             if ($scope.signUpResult) {
-                $scope.signUpSuccess = $scope.signUpResult.success;
                 $scope.signUpError = $scope.signUpResult.error;
+                
+                if ($scope.signUpResult.success)
+                    $scope.login();
             }
         }, true);
     }]);
