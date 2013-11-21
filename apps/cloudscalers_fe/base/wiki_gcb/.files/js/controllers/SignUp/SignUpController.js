@@ -13,14 +13,15 @@ angular.module('cloudscalers.controllers')
             $scope.canSignUp = !!($scope.username && $scope.password && $scope.passwordConfirmation);
         });
 
-        $scope.validatePasswordConfirmation = function() {
+        $scope.signUp = function() {
+            $scope.signUpResult = {};
+
             $scope.isPasswordConfirmed = $scope.password == $scope.passwordConfirmation && 
                 $scope.password && 
                 $scope.passwordConfirmation;
-        };
 
-        $scope.signUp = function() {
-            $scope.signUpResult = User.signUp($scope.username, $scope.password);
+            if ($scope.isPasswordConfirmed)
+                $scope.signUpResult = User.signUp($scope.username, $scope.password);
         };
 
         $scope.$watch('signUpResult', function() {
