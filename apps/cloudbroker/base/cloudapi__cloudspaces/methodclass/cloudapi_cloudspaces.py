@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudapi_cloudspaces_osis import cloudapi_cloudspaces_osis
 from cloudbrokerlib import authenticator
+import ujson
 
 
 class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
@@ -108,11 +109,15 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
     def list(self, **kwargs):
         """
         List cloudspaces.
-        result [],
-
+        result []
         """
-#TODO implement dynamic filter here based on user access
-        return self.cb.model_cloudspace_list()
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        query = {'fields': ['id', 'name', 'descr', 'accountId','acl']}
+        query['query'] = {'term': {"userGroupId": user}}
+        results = j.apps.cloud.cloudbroker.model_cloudspace_find(ujson.dumps(query))['result']
+        cloudspaces = [res['fields'] for res in results]
+        return cloudspaces
 
     @authenticator.auth(acl='A')
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxDiskCapacity, **kwargs):

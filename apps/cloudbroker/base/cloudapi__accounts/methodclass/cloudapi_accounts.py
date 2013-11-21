@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudapi_accounts_osis import cloudapi_accounts_osis
 from cloudbrokerlib import authenticator
+import ujson
 
 
 class cloudapi_accounts(cloudapi_accounts_osis):
@@ -104,9 +105,13 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         result [],
 
         """
-      
-#TODO implement dynamic filter here based on user access
-        return self.cb.model_account_list()
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        query = {'fields': ['id', 'name', 'acl']}
+        query['query'] = {'term': {"userGroupId": user}}
+        results = j.apps.cloud.cloudbroker.model_account_find(ujson.dumps(query))['result']
+        accounts = [res['fields'] for res in results]
+        return accounts
 
     @authenticator.auth(acl='A')
     def update(self, accountId, name, **kwargs):
