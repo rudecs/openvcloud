@@ -88,13 +88,13 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         except:
             #no list yet
             ipaddresses = []
-            self.blobdb.set(key='freeipaddresses', value=ujson.dumps(ipaddresses))
+            self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
         net = netaddr.IPNetwork(subnet)
         netrange = net[2:-2]
         for i in netrange:
             if i != net.broadcast:
                 ipaddresses.append(str(i))
-        self.blobdb.set(key='freeipaddresses', value = ujson.dumps(ipaddresses))
+        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
         return True
 
     def getFreeIpaddress(self, **kwargs):
@@ -108,7 +108,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             ipaddress = ipaddresses.pop(0)
         else:
             ipaddress = None
-        self.blobdb.set(key='freeipaddresses', value=ujson.dumps(ipaddresses))
+        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
         return ipaddress
     
 
@@ -122,12 +122,12 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             lastMac = self.blobdb.get('lastmacaddress')
         except:
             newmacaddr = netaddr.EUI('52:54:00:00:00:00')
-            self.blobdb.set(key='lastmacaddress', value=int(newmacaddr))
+            self.blobdb.set(key='lastmacaddress', obj=int(newmacaddr))
             lastMac = int(newmacaddr)
         newmacaddr = lastMac + 1 
         macaddr = netaddr.EUI(newmacaddr)
         macaddr.dialect = netaddr.mac_unix 
-        self.blobdb.set(key='lastmacaddress', value=newmacaddr)
+        self.blobdb.set(key='lastmacaddress', obj=newmacaddr)
         return str(macaddr)
     
     
@@ -139,7 +139,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         ipaddresses = ujson.loads(self.blobdb.get('freeipaddresses'))
         ipaddresses.append(ipaddress)
-        self.blobdb.set(key='freeipaddresses', value=ujson.dumps(ipaddresses))
+        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
         return True
 
 
