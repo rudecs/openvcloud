@@ -1,6 +1,21 @@
 {{html:
+
+   <div ng-cloak ng-show="machines && (machines.length == 0)">
+  }}
+  h2. Machine Buckets
+
+Machine Buckets are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
+
+Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage. You can choose the datacenter location of your Machine Bucket and optionally replicate it to one or more datacenters for failover purposes.
+
+h3. Start now and create your Machine Bucket
+  </div>
+
+
+{{html:
+  
 <div id="tabbable">
-  <h2>Machine Buckets</h2>
+  <h2 ng-cloak ng-show="machines.length > 0">Machine Buckets</h2>
   <form class="form-horizontal" method="get" action="MachineBuckets#/new">
     <fieldset>
 
@@ -15,7 +30,7 @@
   </form> 
 
 
-  <table id="machine_buckets_list"  class="table table-striped table-bordered">
+  <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="machines.length > 0">
     <tr>
       <th>Status</th>
       <th>Name</th>
