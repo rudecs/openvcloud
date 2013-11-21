@@ -8,7 +8,7 @@ angular.module('cloudscalers.controllers')
             User.login($scope.user.username, $scope.user.password).
             then(
             		function(result) {
-            			$scope.user.login_error = undefined;
+            			$scope.login_error = undefined;
             			var uri = new URI($window.location);
             			uri.filename('MachineBuckets');
             			$window.location = uri.toString();

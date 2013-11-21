@@ -15,8 +15,7 @@ describe("SessionController tests", function(){
         User.login.andReturn(defer.promise);
         ctrl = $controller('SessionController', {$scope : $scope, User : User, $window : $window});
 
-        $scope.username = 'error';
-        $scope.password = 'pa$$w0rd';
+        $scope.user = {username : 'error',password : 'pa$$w0rd'};
         $scope.login();
 
         defer.reject({status: 403});
@@ -31,8 +30,7 @@ describe("SessionController tests", function(){
         User.login.andReturn(defer.promise);
         ctrl = $controller('SessionController', {$scope : $scope, User : User, $window: $window});
 
-        $scope.username = 'user1';
-        $scope.password = 'pa$$w0rd';
+        $scope.user = {username : 'user1',password : 'pa$$w0rd'};
         $scope.login();
 
         defer.resolve('myapikey');
