@@ -19,12 +19,5 @@ angular.module('cloudscalers.controllers')
             );
         };
 
-        $scope.logout = function() {
-            User.logout();
-            
-			var uri = new URI($window.location);
-			uri.filename('');
-			$window.location = uri.toString();
-        }
 
     }]);
