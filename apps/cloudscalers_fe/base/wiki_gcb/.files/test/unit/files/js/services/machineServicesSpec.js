@@ -44,7 +44,7 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine get failure', function(){
 			defineUnitApiStub($httpBackend);
-		    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=44534&api_ke.*/).respond(500, 'Not Found');
+		    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=44534(&api_ke.*)?/).respond(500, 'Not Found');
 			
 		    machineGetErrorResult = Machine.get(44534);
 			$httpBackend.flush();
@@ -56,7 +56,7 @@ describe('Cloudscalers machine services', function() {
 		it('test machine create', function(){
 			defineUnitApiStub($httpBackend);
 			
-			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create&description=Test\+Description&sizeId=1&imageId=2&disksize=3&archive=4&region=5&replication=6.*/).respond(200, 3);
+			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create&description=Test.Description&sizeId=1&imageId=2&disksize=3&archive=4&region=5&replication=6.*/).respond(200, 3);
 		
 			var machineCreateResult;
 			
@@ -74,7 +74,7 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine create failure propagates the error', function(){
 			defineUnitApiStub($httpBackend);
-			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create_fail&description=Test\+Description&sizeId=0&imageId=0.*/).respond(500, -10);
+			$httpBackend.whenGET(/^testapi\/machines\/create\?cloudspaceId=0&name=test_create_fail&description=Test.Description&sizeId=0&imageId=0(.*)?/).respond(500, -10);
 		    
 			var machineCreateResult = {};
 			
@@ -112,10 +112,6 @@ describe('Cloudscalers machine services', function() {
 
         });
 
-		xit('test machine actions', function() {
-
-		});
-
         it("retrieves the console URL", function() {
             defineUnitApiStub($httpBackend);
             var consoleUrlResult = Machine.getConsoleUrl(13);
@@ -152,11 +148,6 @@ describe('Cloudscalers machine services', function() {
                 $httpBackend.flush();
                 expect(createSnapshotName.success).toBeDefined();
                 expect(createSnapshotName.success).toBe(true);
-
-                var snapshots = Machine.listSnapshots(7);
-                $httpBackend.flush();
-                expect(snapshots.snapshots).toBeDefined();
-                expect(snapshots.snapshots).toContain(name);
             });
 
 			it('can handle snapshot creation failure', function() {
@@ -168,11 +159,6 @@ describe('Cloudscalers machine services', function() {
                 $httpBackend.flush();
                 expect(createSnapshotName.error).toBeDefined();
                 expect(createSnapshotName.error).toBe(500);
-
-                var snapshots = Machine.listSnapshots(2);
-                $httpBackend.flush();
-                expect(snapshots.snapshots).toBeDefined();
-                expect(snapshots.snapshots).not.toContain(name);
             });
 		});
 	});

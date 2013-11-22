@@ -7,23 +7,20 @@ describe('Cloudscalers SessionServices', function() {
 			$httpBackend = _$httpBackend_;
 			User = _User_;
             SessionData = _SessionData_;
-            SessionData.clear();
+            SessionData.setUser(null);
             defineUnitApiStub($httpBackend);
 		}));
 		
 		it('handles successful login',function(){			
-            expect(SessionData.get()).toBeNull();
-
 			var loginResult = {};
 			User.login().then(function(result){loginResult.key = result;},function(reason){});
 			$httpBackend.flush();
 			
             expect(loginResult.key).toBe('yep123456789');
-            expect(SessionData.get()).toBe('yep123456789');
+            expect(SessionData.getUser().api_key).toBe('yep123456789');
 		});
 		
 		it('handles failed login',function(){
-            expect(SessionData.get()).toBeNull();
 
 			var loginResult = {};
 			User.login('error','testpass').
@@ -39,10 +36,10 @@ describe('Cloudscalers SessionServices', function() {
 		});
 
         it('can logout', function() {
-        	SessionData.set('123');
+        	SessionData.setUser({username:'123'});
 
             User.logout();
-            expect(SessionData.get()).toBeNull();
+            expect(SessionData.getUser()).toBeUndefined();
         });
 	});
 });
