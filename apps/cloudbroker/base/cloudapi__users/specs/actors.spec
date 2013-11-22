@@ -14,3 +14,12 @@
 	    var:password str,,password to validate
 	    result:str,,session key.
 
+	method:register @noauth
+	    """
+	    Register a new user, a user is registered with a login, password and a new account is created.
+	    """
+	    var:username str,,unique username for the account
+	    var:emailaddress str,,unique emailaddress for the account
+	    var:password str,,unique password for the account
+	    result:bool
+
