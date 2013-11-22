@@ -9,13 +9,12 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 if (config) {
                     url = config.url;
 
-                    if(/\/machines\//i.test(url) || /\/sizes\//i.test(url) || /\/images\//i.test(url)) {
-                        var currentUser = SessionData.getUser();
-                    	if (currentUser){
-                    		uri = new URI(url);
-                        	uri.addSearch('api_key', currentUser.api_key);
-                        	config.url = uri.toString();
-                    	}
+                    
+                    var currentUser = SessionData.getUser();
+                    if (currentUser){
+                    	uri = new URI(url);
+                       	uri.addSearch('authkey', currentUser.api_key);
+                       	config.url = uri.toString();
     				}
                 }
                 return config || $q.when(config);
@@ -61,7 +60,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 url: cloudspaceconfig.apibaseurl + '/users/authenticate'
             }).then(
             		function (result) {
-            			SessionData.setUser({username: username, api_key: result.data});
+            			SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
             			return result.data;
             		},
             		function (reason) {
