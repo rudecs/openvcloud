@@ -27,13 +27,13 @@ angular.module('cloudscalers.SessionServices', ['ng'])
         var clientApiKey;
         return {
             get: function() { 
-                return $window.localStorage.getItem('gcb:api_key');
+                return $window.sessionStorage.getItem('gcb:api_key');
             },
             set: function(apiKey) {
-                $window.localStorage.setItem('gcb:api_key', apiKey);
+                $window.sessionStorage.setItem('gcb:api_key', apiKey);
             },
             clear: function() {
-                $window.localStorage.removeItem('gcb:api_key');
+                $window.sessionStorage.removeItem('gcb:api_key');
             }
         };
     })
@@ -100,4 +100,5 @@ angular.module('cloudscalers.SessionServices', ['ng'])
         };
         
         return user;
+        
     });
