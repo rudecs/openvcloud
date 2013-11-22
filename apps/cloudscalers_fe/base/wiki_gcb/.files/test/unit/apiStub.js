@@ -6,7 +6,7 @@ defineUnitApiStub = function($httpBackend){
 			if (credentials.username == 'error'){
 				return [403,'Unauthorized'];
 			}
-			return [200,"yep123456789"];
+			return [200,'"yep123456789"'];
 		});
 	
 
@@ -29,20 +29,20 @@ defineUnitApiStub = function($httpBackend){
         {'id':2, 'name':'small', 'CU':4, 'disksize': 100}];
 
 
-    $httpBackend.whenGET(/^testapi\/machines\/list\?cloudspaceId=0&type=(&api_ke.*)?$/).respond(openwizzymachines);
+    $httpBackend.whenGET(/^testapi\/machines\/list\?cloudspaceId=0&type=(&authke.*)?$/).respond(openwizzymachines);
     
-    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=0(&api_ke.*)?/).respond(openwizzymachines[0]);
+    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=0(&authke.*)?/).respond(openwizzymachines[0]);
     $httpBackend.whenGET(/^testapi\/images\/list.*/).respond(openwizzyimages);
 
     $httpBackend.whenGET(/^testapi\/sizes\/list(\?.*)?/).respond(openwizzysizes);
     
     
     $httpBackend.whenGET(/^testapi\/machines\/delete\?machineId=7.*/).respond(function() { return [200, 'success']; });
-    $httpBackend.whenGET(/^testapi\/machines\/delete\?machineId=2(&api_ke.*)?/).respond(function() { return [500, 'error']; });
+    $httpBackend.whenGET(/^testapi\/machines\/delete\?machineId=2(&authke.*)?/).respond(function() { return [500, 'error']; });
 
     // getConsoleUrl
-    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=13(&api_ke.*)?/).respond('"http://www.reddit.com/"');
-    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=3(&api_ke.*)?/).respond('None');
+    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=13(&authke.*)?/).respond('"http://www.reddit.com/"');
+    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=3(&authke.*)?/).respond('None');
 
     // Snapshots
     var snapshots = [

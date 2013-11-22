@@ -16,7 +16,6 @@ describe('Cloudscalers SessionServices', function() {
 			User.login().then(function(result){loginResult.key = result;},function(reason){});
 			$httpBackend.flush();
 			
-            expect(loginResult.key).toBe('yep123456789');
             expect(SessionData.getUser().api_key).toBe('yep123456789');
 		});
 		

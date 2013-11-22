@@ -7,7 +7,15 @@ angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionSer
     .factory('CloudSpace',function ($http, $q) {
     	return {
             list: function() {
-                return [];
+            	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(
+            			 function(result){
+            				 return JSON.parse(result.data);
+            			 },
+            			 function(reason){
+            				 $q.defer(reason);
+            			 }
+            			 );
+
             }
         };
     });
