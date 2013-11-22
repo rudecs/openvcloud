@@ -42,7 +42,7 @@
         <div class="container">
             <a class="brand" href="../$$space">CloudScalers</a>
             <ul class="pull-right">
-                <li><a href="../$$space/Settings">user@user.com</a> </li>
+                <li><a href="../$$space/Settings" ng-cloak>{[currentUser.username]}</a> </li>
                 <li>
                     <a ng-click="logout()" href="" >
                         <i class="icon-lock"></i>

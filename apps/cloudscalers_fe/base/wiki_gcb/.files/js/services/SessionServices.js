@@ -37,8 +37,21 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             }
         };
     })
-    .factory('User', function ($http, APIKey, $q) {
+    .factory('User', function ($http, $q, $window, APIKey) {
         var user = {};
+        
+        user.current = function() {
+            // If method is called with no parameters, then retrieve the current user & return it
+            if (arguments.length == 0)
+                return JSON.parse($window.localStorage.getItem('gcb:currentUser'));
+
+            // If method is called with `null` or `undefined`, clear the current user
+            if (arguments.length == 1 && !arguments[0])
+                $window.localStorage.clear('gcb:currentUser');
+
+            $window.localStorage.setItem('gcb:currentUser', JSON.stringify(arguments[0]));
+        };
+
         user.login = function (username, password) {
             return $http({
                 method: 'POST',
@@ -50,16 +63,20 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             }).then(
             		function (result) {
             			APIKey.set(result.data);
+                        user.current({'username': username});
             			return result.data;
             		},
             		function (reason) {
-                        APIKey.set(undefined);
-                        return $q.reject(reason); }
+                        APIKey.clear();
+                        user.current(undefined);
+                        return $q.reject(reason); 
+                    }
             );
         };
 
         user.logout = function() {
             APIKey.clear();
+            user.current(undefined);
         };
 
         user.signUp = function(username, email, password) {
@@ -80,7 +97,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 signUpResult.error = data;
             });
             return signUpResult;
-        }
+        };
         
         return user;
     });

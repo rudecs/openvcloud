@@ -59,7 +59,8 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenPOST('/users/authenticate').
     respond(function (method, url, data) {
         var credentials = angular.fromJson(data);
-        if (!_.findWhere(UsersList.get(), credentials)) {
+        var user = _.findWhere(UsersList.get(), credentials);
+        if (!user) {
             return [403, 'Unauthorized'];
         }
         return [200, "yep123456789"];
