@@ -15,8 +15,16 @@ class cloudapi_users(cloudapi_users_osis):
         self.actorname = "users"
         self.appname = "cloudapi"
         cloudapi_users_osis.__init__(self)
+        self._cb = None
 
         pass
+
+
+    @property
+    def cb(self):
+        if not self._cb:
+            self._cb = j.apps.cloud.cloudbroker
+        return self._cb
 
     def authenticate(self, username, password, **kwargs):
         """
@@ -36,4 +44,41 @@ class cloudapi_users(cloudapi_users_osis):
         else:
             ctx.start_response('401 Unauthorized', [])
             return
+
+    def register(self, username, emailaddress, password, **kwargs):
+        """
+        Register a new user, a user is registered with a login, password and a new account is created.
+        param:username unique username for the account
+        param:emailaddress unique emailaddress for the account
+        param:password unique password for the account
+        result bool 
+        
+        """
+        ctx = kwargs['ctx']
+        if j.apps.system.usermanager.userexists(username):
+            ctx.start_response('409 Conflict', [])
+        else:
+            j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
+            account = self.cb.models.account.new()
+            account.name = username
+            ace = account.new_acl()
+            ace.userGroupId = username
+            ace.type = 'U'
+            ace.right = 'CXDRAU'
+            accountid = self.cb.models.account.set(account.obj2dict())
+            cs = self.cb.models.cloudspace.new()
+            cs.name = 'default'
+            cs.accountId = accountid
+            ace = cs.new_acl()
+            ace.userGroupId = username
+            ace.type = 'U'
+            ace.right = 'CXDRAU'
+            self.cb.models.cloudspace.set(cs.obj2dict())
+            return True
+
+
+
+
+
+
 

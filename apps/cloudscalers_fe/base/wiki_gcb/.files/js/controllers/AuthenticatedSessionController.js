@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('AuthenticatedSessionController', ['$scope', 'User', 'APIKey', 'Account', 'CloudSpace', '$window', function($scope, User, APIKey, Account, CloudSpace, $window) {
+    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', '$window', function($scope, User, Account, CloudSpace, $window) {
         $scope.currentUser = User.current();
         
 
@@ -19,4 +19,10 @@ angular.module('cloudscalers.controllers')
 			uri.fragment('');
 			$window.location = uri.toString();
         };
+        
+        
+        
+
+        
+
     }]);

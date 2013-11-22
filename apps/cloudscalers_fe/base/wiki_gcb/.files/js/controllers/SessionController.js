@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SessionController', ['$scope', 'User', 'APIKey','$window', function($scope, User, APIKey, $window) {
+    .controller('SessionController', ['$scope', 'User', '$window', function($scope, User, $window) {
         $scope.user = {username : '', password:''};
        
         $scope.login_error = undefined;
