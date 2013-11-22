@@ -63,7 +63,7 @@ defineApiStub = function ($httpBackend) {
         if (!user) {
             return [403, 'Unauthorized'];
         }
-        return [200, "yep123456789"];
+        return [200, '"yep123456789"'];
     });
 
     $httpBackend.whenPOST('/users/signup').respond(function(method, url, data) {
@@ -221,7 +221,7 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/\/machines\/listSnapshots\?.*/).respond(snapshots);
     
-    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&name=.*?\&api_key=(.*?)')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&name=.*?(&api_key=.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
     $httpBackend.whenGET(/\/machines\/snapshot\?.*/).respond(function(status, data) {

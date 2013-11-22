@@ -2,8 +2,7 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceNavigatorController', ['$scope', function($scope) {
         $scope.isCollapsed = true;
-        $scope.currentSpace = undefined;
-
+        
         $scope.AccountCloudSpaceHierarchy = undefined;
         
         var buildAccountCloudSpaceHierarchy = function(){
@@ -16,11 +15,11 @@ angular.module('cloudscalers.controllers')
         }
         
         $scope.$watch('accounts',function(){
-        	
+        	buildAccountCloudSpaceHierarchy();
         });
         
         $scope.$watch('cloudspaces', function(){
-        	
+        	buildAccountCloudSpaceHierarchy();
         });
         
         
