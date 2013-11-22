@@ -29,21 +29,20 @@ defineUnitApiStub = function($httpBackend){
         {'id':2, 'name':'small', 'CU':4, 'disksize': 100}];
 
 
-    $httpBackend.whenGET('testapi/machines/list?cloudspaceId=' + 0 + '&type=&api_key=yep123456789').respond(openwizzymachines);
-    $httpBackend.whenGET('testapi/machines/list?cloudspaceId=' + 13 + '&type=&api_key=yep123456789').respond(function() { return [500, 'Unknown cloudspace']; });
-    $httpBackend.whenGET('testapi/machines/get?machineId=' + 0 + '&api_key=yep123456789').respond(openwizzymachines[0]);
-    $httpBackend.whenGET('testapi/machines/get?machineId=' + 44534 + '&api_key=yep123456789').respond(500, 'Not Found');
+    $httpBackend.whenGET(/^testapi\/machines\/list\?cloudspaceId=0&type=&api_ke.*$/).respond(openwizzymachines);
+    
+    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=0&api_ke.*/).respond(openwizzymachines[0]);
     $httpBackend.whenGET(/^testapi\/images\/list.*/).respond(openwizzyimages);
 
     $httpBackend.whenGET(/^testapi\/sizes\/list\?.*/).respond(openwizzysizes);
     
     
-    $httpBackend.whenGET('testapi/machines/delete?machineId=7&api_key=yep123456789').respond(function() { return [200, 'success']; });
-    $httpBackend.whenGET('testapi/machines/delete?machineId=2&api_key=yep123456789').respond(function() { return [500, 'error']; });
+    $httpBackend.whenGET(/^testapi\/machines\/delete\?machineId=7.*/).respond(function() { return [200, 'success']; });
+    $httpBackend.whenGET(/^testapi\/machines\/delete\?machineId=2&api_ke.*/).respond(function() { return [500, 'error']; });
 
     // getConsoleUrl
-    $httpBackend.whenGET('testapi/machines/getConsoleUrl?machineId=13&api_key=yep123456789').respond('"http://www.reddit.com/"');
-    $httpBackend.whenGET('testapi/machines/getConsoleUrl?machineId=3&api_key=yep123456789').respond('None');
+    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=13&api_ke.*/).respond('"http://www.reddit.com/"');
+    $httpBackend.whenGET(/^testapi\/machines\/getConsoleUrl\?machineId=3&api_ke.*/).respond('None');
 
     // Snapshots
     var snapshots = [
@@ -53,16 +52,16 @@ defineUnitApiStub = function($httpBackend){
         "snap4"
     ];
 
-    $httpBackend.whenGET('testapi/machines/listSnapshots?machineId=7&api_key=yep123456789').respond(snapshots);
-    $httpBackend.whenGET('testapi/machines/listSnapshots?machineId=2&api_key=yep123456789').respond(snapshots);
-    var urlRegexpForSuccess = new RegExp('testapi\/machines\/snapshot\\?machineId\=7\&name\=(.*?)&api_key=yep123456789$');
+    $httpBackend.whenGET(/^testapi\/machines\/listSnapshots\?machineId=7.*/).respond(snapshots);
+    $httpBackend.whenGET(/^testapi\/machines\/listSnapshots\?machineId=2.*/).respond(snapshots);
+    var urlRegexpForSuccess = /^testapi\/machines\/snapshot\?machineId=7\&name=(.*?)&api_key.*/;
     $httpBackend.whenGET(urlRegexpForSuccess).respond(function(status, data) {
         var name = urlRegexpForSuccess.exec(data)[1];
         snapshots.push(name);
         return [200, name];
     });
 
-    $httpBackend.whenGET(new RegExp('testapi/machines/snapshot\\?machineId=2&name=.*?&api_key=yep123456789')).respond(function(status, data) {
+    $httpBackend.whenGET(new RegExp('testapi/machines/snapshot\\?machineId=2&name=.*?&api_ke.*')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
 

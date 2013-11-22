@@ -2,14 +2,12 @@ describe('Cloudscalers machine services', function() {
 	beforeEach(module('cloudscalers.machineServices'));
 	
 	describe('Machine Service', function(){
-		var $httpBackend, $sce, Machine, APIKey;
+		var $httpBackend, $sce, Machine;
 
-		beforeEach(inject(function(_$httpBackend_, _$sce_, _Machine_, _APIKey_) {
+		beforeEach(inject(function(_$httpBackend_, _$sce_, _Machine_) {
 			$httpBackend = _$httpBackend_;
 			Machine = _Machine_;
             $sce = _$sce_;
-            APIKey = _APIKey_;
-            APIKey.set('yep123456789');
 		}));
 
 		it('test machine list', function(){
@@ -46,7 +44,9 @@ describe('Cloudscalers machine services', function() {
 
 		it('test machine get failure', function(){
 			defineUnitApiStub($httpBackend);
-			machineGetErrorResult = Machine.get(44534);
+		    $httpBackend.whenGET(/^testapi\/machines\/get\?machineId=44534&api_ke.*/).respond(500, 'Not Found');
+			
+		    machineGetErrorResult = Machine.get(44534);
 			$httpBackend.flush();
 
 			expect(machineGetErrorResult).toBeDefined();
@@ -180,11 +180,9 @@ describe('Cloudscalers machine services', function() {
     describe('Sizes Service', function(){
 		var $httpBackend, Sizes;
 
-		beforeEach(inject(function(_$httpBackend_, _APIKey_, _Size_) {
+		beforeEach(inject(function(_$httpBackend_, _Size_) {
 			$httpBackend = _$httpBackend_;
             Size = _Size_;
-            APIKey = _APIKey_;
-            APIKey.set('yep123456789');
 		}));
 
 		it('test size list', function(){
@@ -205,11 +203,9 @@ describe('Cloudscalers machine services', function() {
 	describe("Images", function() {
 		var $httpBackend, Image, APIKey;
 
-		beforeEach(inject(function(_$httpBackend_, _Image_, _APIKey_) {
+		beforeEach(inject(function(_$httpBackend_, _Image_) {
 			$httpBackend = _$httpBackend_;
 			Image = _Image_;
-            APIKey = _APIKey_;
-            APIKey.set('yep123456789');
 		}));
 
 	  	it('list', function() {

@@ -3,7 +3,7 @@
 
 angular.module('cloudscalers.SessionServices', ['ng'])
 
-	.factory('authenticationInterceptor',['$q','$log', 'APIKey', function($q, $log, APIKey){
+	.factory('authenticationInterceptor',['$q','$log', 'SessionData', function($q, $log, SessionData){
         return {
             'request': function(config) {
                 if (config) {
@@ -11,7 +11,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
 
                     if(/\/machines\//i.test(url) || /\/sizes\//i.test(url) || /\/images\//i.test(url)) {
                         uri = new URI(url);
-                        uri.addSearch('api_key', APIKey.get());
+                        uri.addSearch('api_key', SessionData.get());
                         config.url = uri.toString();
     				}
                 }
@@ -23,8 +23,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             }
         };
 	}])
-    .factory('APIKey', function($window) {
-        var clientApiKey;
+    .factory('SessionData', function($window) {
         return {
             get: function() { 
                 return $window.sessionStorage.getItem('gcb:api_key');
@@ -37,21 +36,8 @@ angular.module('cloudscalers.SessionServices', ['ng'])
             }
         };
     })
-    .factory('User', function ($http, $q, $window, APIKey) {
+    .factory('User', function ($http, SessionData, $q) {
         var user = {};
-        
-        user.current = function() {
-            // If method is called with no parameters, then retrieve the current user & return it
-            if (arguments.length == 0)
-                return JSON.parse($window.localStorage.getItem('gcb:currentUser'));
-
-            // If method is called with `null` or `undefined`, clear the current user
-            if (arguments.length == 1 && !arguments[0])
-                $window.localStorage.clear('gcb:currentUser');
-
-            $window.localStorage.setItem('gcb:currentUser', JSON.stringify(arguments[0]));
-        };
-
         user.login = function (username, password) {
             return $http({
                 method: 'POST',
@@ -62,21 +48,17 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 url: cloudspaceconfig.apibaseurl + '/users/authenticate'
             }).then(
             		function (result) {
-            			APIKey.set(result.data);
-                        user.current({'username': username});
+            			SessionData.set(result.data);
             			return result.data;
             		},
             		function (reason) {
-                        APIKey.clear();
-                        user.current(undefined);
-                        return $q.reject(reason); 
-                    }
+            			SessionData.set(undefined);
+                        return $q.reject(reason); }
             );
         };
 
         user.logout = function() {
-            APIKey.clear();
-            user.current(undefined);
+        	SessionData.clear();
         };
 
         user.signUp = function(username, email, password) {
@@ -97,7 +79,7 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 signUpResult.error = data;
             });
             return signUpResult;
-        };
+        }
         
         return user;
         
