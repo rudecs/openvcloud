@@ -28,7 +28,9 @@ module.exports = function(config) {
       'test/unit/apiStub.js',
       'test/unit/cloudscalersmodules.js',
       'js/**/*.js',
-      'test/unit/**/*.js',
+      'test/unit/files/js/lib/**/*.js',
+      'test/unit/files/js/controllers/**/*.js',
+      'test/unit/files/js/services/**/*.js',
     ],
 
 

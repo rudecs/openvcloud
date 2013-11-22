@@ -16,6 +16,7 @@ angular.module('cloudscalers.controllers')
             
 			var uri = new URI($window.location);
 			uri.filename('');
+			uri.fragment('');
 			$window.location = uri.toString();
         };
         
