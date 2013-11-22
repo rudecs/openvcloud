@@ -1,10 +1,15 @@
 angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'APIKey', 'Account', 'CloudSpace', function($scope, User, APIKey, Account, CloudSpace) {
-        $scope.user = User.current();
+        //$scope.user = User.current();
+        
 
         Account.list().then(function(accounts) {
             $scope.accounts = accounts;
         });
+        
+//        CloudSpace.list().then(function(cloudspaces){
+//        	$scope.cloudspaces = cloudspaces;
+//        });
         
         $scope.logout = function() {
             User.logout();
