@@ -1152,3 +1152,12 @@ color:#ddd;
 .carousel-indicators { display: none; }
 
 #swagger-ui-container .container { width: auto; }
+
+.pull-right .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+.subnavbar-inner + .subnavbar-inner {
+    margin-top: 1px;
+}
