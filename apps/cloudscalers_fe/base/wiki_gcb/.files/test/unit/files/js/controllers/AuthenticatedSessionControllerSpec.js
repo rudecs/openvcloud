@@ -8,7 +8,7 @@ describe("AuthenticatedSessionController tests", function(){
 		defineUnitApiStub($httpBackend);
 		
         $scope = $rootScope.$new();
-        User = {logout : jasmine.createSpy('logout')};
+        User = {logout : jasmine.createSpy('logout'), current: function() {}};
         //$controller = _$controller_;
         $q = _$q_;
     }));
