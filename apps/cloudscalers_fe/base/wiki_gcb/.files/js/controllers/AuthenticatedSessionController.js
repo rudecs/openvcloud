@@ -14,7 +14,7 @@ angular.module('cloudscalers.controllers')
         });
         
         $scope.$watch('cloudspaces', function(){
-        	$scope.currentSpace _.first($scope.cloudspaces);
+        	$scope.currentSpace = _.first($scope.cloudspaces);
         })
         
         $scope.logout = function() {

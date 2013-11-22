@@ -9,7 +9,7 @@ angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionSer
             list: function() {
             	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(
             			 function(result){
-            				 return JSON.parse(result.data);
+            				 return result.data;
             			 },
             			 function(reason){
             				 $q.defer(reason);
