@@ -3,7 +3,7 @@ angular.module('cloudscalers.controllers')
         $scope.currentUser = User.current();
 
         $scope.currentSpace = undefined;
-
+        $scope.currentAccount = undefined;
 
         Account.list().then(function(accounts) {
             $scope.accounts = accounts;
@@ -19,7 +19,18 @@ angular.module('cloudscalers.controllers')
         
         $scope.setCurrentCloudspace = function(space) {
             $scope.currentSpace = space;
+            $scope.setCurrentAccount();
         };
+        
+        $scope.$watch('accounts', function(){
+        	$scope.setCurrentAccount();
+        });
+        
+        $scope.setCurrentAccount = function(){
+        	if ($scope.currentSpace && $scope.accounts){
+        		$scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.account});
+        	}
+        }
     
         
         $scope.logout = function() {
