@@ -5,55 +5,58 @@ h3. Balance & Usage
 
 <form class="form-horizontal" ng-app="myApp" ng-controller="BillingController">
 
-<div class="control-group">
-  <label class="control-label" for="radios">Credit Card Type</label>
-  <div class="controls">
-    <label class="radio inline" for="radios-3">
-      <input type="radio" name="radios" id="radios-3" value="Paypal" ng-model="ccType">
-      Diners
-    </label>
-    <label class="radio inline" for="radios-0">
-      <input type="radio" name="radios" id="radios-0" value="Visa (Coming Soon)"  ng-model="ccType">
-      Visa
-    </label>
-    <label class="radio inline" for="radios-1">
-      <input type="radio" name="radios" id="radios-1" value="Mastercard (Coming Soon)" ng-model="ccType">
-      Mastercard
-    </label>
-    <label class="radio inline" for="radios-2">
-      <input type="radio" name="radios" id="radios-2" value="American Express (Coming Soon)" ng-model="ccType">
-      American Express
-    </label>
+<div  style="display: none">
+  
+
+  <div class="control-group">
+    <label class="control-label" for="radios">Credit Card Type</label>
+    <div class="controls">
+      <label class="radio inline" for="radios-3">
+        <input type="radio" name="radios" id="radios-3" value="Paypal" ng-model="ccType">
+        Diners
+      </label>
+      <label class="radio inline" for="radios-0">
+        <input type="radio" name="radios" id="radios-0" value="Visa (Coming Soon)"  ng-model="ccType">
+        Visa
+      </label>
+      <label class="radio inline" for="radios-1">
+        <input type="radio" name="radios" id="radios-1" value="Mastercard (Coming Soon)" ng-model="ccType">
+        Mastercard
+      </label>
+      <label class="radio inline" for="radios-2">
+        <input type="radio" name="radios" id="radios-2" value="American Express (Coming Soon)" ng-model="ccType">
+        American Express
+      </label>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="textinput">Credit Card Number</label>
+    <div class="controls">
+      <!-- Pattern taken from http://www.regular-expressions.info/creditcard.html -->
+      <input id="textinput" name="textinput" type="text" placeholder="xxxx-xxxx-xxxx-x765" class="input-xlarge" ng-model="ccNum"
+        pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$">
+      
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="textinput">Expiration date</label>
+    <div class="controls">
+      <input id="textinput" name="textinput" type="text" placeholder="dd/mm" class="input-mini" ng-model="ccExpiration"
+        pattern="^\d{2}/\d{2}">
+      
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="textinput">CCV</label>
+    <div class="controls">
+      <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini" ng-model="ccv" pattern="\d{3,4}"> <span class="note"> 3 or 4 digits on the backside </span>
+
+    </div>
   </div>
 </div>
-
-<div class="control-group">
-  <label class="control-label" for="textinput">Credit Card Number</label>
-  <div class="controls">
-    <!-- Pattern taken from http://www.regular-expressions.info/creditcard.html -->
-    <input id="textinput" name="textinput" type="text" placeholder="xxxx-xxxx-xxxx-x765" class="input-xlarge" ng-model="ccNum"
-      pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$">
-    
-  </div>
-</div>
-
-<div class="control-group">
-  <label class="control-label" for="textinput">Expiration date</label>
-  <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="dd/mm" class="input-mini" ng-model="ccExpiration"
-      pattern="^\d{2}/\d{2}">
-    
-  </div>
-</div>
-
-<div class="control-group">
-  <label class="control-label" for="textinput">CCV</label>
-  <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini" ng-model="ccv" pattern="\d{3,4}"> <span class="note"> 3 or 4 digits on the backside </span>
-
-  </div>
-</div>
-
 <table class="table table-striped table-bordered"> 
 <thead>
 <tr><th>Available credit </th><th>Usage this month </th> </tr>
@@ -84,7 +87,7 @@ h3. Balance & Usage
 h3. History
 {{html:
 <div ng-show="settings.creditHistory.length == 0">
-  You didn't do anything yet.
+  There is no history yet.
 </div>
 <table class="table table-striped table-bordered" ng-cloak ng-show="settings.creditHistory.length > 0">
     <thead>

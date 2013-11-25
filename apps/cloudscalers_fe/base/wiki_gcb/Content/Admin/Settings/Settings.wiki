@@ -1,4 +1,4 @@
-h2. My Info
+h2. Profile
 
 {{html:
 <hr>
