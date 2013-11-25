@@ -28,7 +28,7 @@ angular.module('cloudscalers.controllers')
         
         $scope.setCurrentAccount = function(){
         	if ($scope.currentSpace && $scope.accounts){
-        		$scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.account});
+        		$scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
         	}
         }
     
