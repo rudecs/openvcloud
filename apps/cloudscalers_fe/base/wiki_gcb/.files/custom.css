@@ -1159,6 +1159,6 @@ color:#ddd;
     margin-top: 1px;
 }
 
-[ng-view] {
-    min-height: 80px;
+.span9 {
+    min-height: 100px;
 }
