@@ -1089,13 +1089,10 @@ color:#ddd;
 }
 
 .subnavbar .cloudspaceCollapse .caret {
-    border-top-color: black;
-    border-bottom-color: black;
-    margin-right: 10px;
     float: right;
 }
 
-.cloudspaceCollapse .caret {
+.subnavbar .caret {
     margin-top: 8px;
 }
 
@@ -1160,4 +1157,8 @@ color:#ddd;
 
 .subnavbar-inner + .subnavbar-inner {
     margin-top: 1px;
+}
+
+[ng-view] {
+    min-height: 80px;
 }
