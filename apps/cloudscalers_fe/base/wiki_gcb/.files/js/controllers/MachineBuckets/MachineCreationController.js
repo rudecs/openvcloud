@@ -1,7 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, alert) {
         $scope.machine = {
-            cloudspaceId: $scope.currentspace.id,
             name: '',
             description: '',
             sizeId: '',
@@ -47,7 +46,7 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.saveNewMachine = function() {
-            Machine.create($scope.machine.cloudspaceId, $scope.machine.name, $scope.machine.description, 
+            Machine.create($scope.currentspace.id, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
                            $scope.machine.region, $scope.machine.replication).then($scope.createredirect, $scope.createError);

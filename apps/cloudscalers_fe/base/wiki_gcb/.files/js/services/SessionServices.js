@@ -9,13 +9,15 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 if (config) {
                     url = config.url;
 
-                    
-                    var currentUser = SessionData.getUser();
-                    if (currentUser){
-                    	uri = new URI(url);
-                       	uri.addSearch('authkey', currentUser.api_key);
-                       	config.url = uri.toString();
-    				}
+                    if(! /(partials)|(template)\//i.test(url)){
+
+                    	var currentUser = SessionData.getUser();
+                    	if (currentUser){
+                    		uri = new URI(url);
+                       		uri.addSearch('authkey', currentUser.api_key);
+                       		config.url = uri.toString();
+    					}
+                    }
                 }
                 return config || $q.when(config);
     	    },
