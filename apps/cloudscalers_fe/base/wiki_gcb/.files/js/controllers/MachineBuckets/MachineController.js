@@ -3,9 +3,9 @@ angular.module('cloudscalers.controllers')
     .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
         	
     	
-    	$scope.$watch('currentspace.id',function(){
-    		if ($scope.currentspace){
-    			Machine.list($scope.currentspace.id).then(function(machines){
+    	$scope.$watch('currentSpace.id',function(){
+    		if ($scope.currentSpace){
+    			Machine.list($scope.currentSpace.id).then(function(machines){
     				$scope.machines = machines;
     			});
     		}

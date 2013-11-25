@@ -24,6 +24,8 @@ describe("Machine bucket controller tests", function(){
 		}));
 
 	 	it("provides a list of machines on the scope", function() {
+			scope.currentSpace = {id:1,name:'teset'};
+	 		scope.$digest();
 	 		listdefer.resolve(machinelist);
 	 		scope.$digest();
 			expect(scope.machines.length).toBe(2);

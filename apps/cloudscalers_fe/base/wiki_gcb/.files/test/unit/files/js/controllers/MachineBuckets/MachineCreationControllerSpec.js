@@ -18,11 +18,11 @@ describe("Create Machine bucket controller tests", function(){
 		 	Machine.create.andReturn(q.defer().promise);
 		 	machinescope.sizes = [{id: 1, name: 'Size 1'}, {id: 2, name: 'Size 2'}];
 		 	machinescope.images = [{id: 1, name: 'Image 1'}, {id: 2, name: 'Image 2'}, {id: 3, name: 'Image 3'}];
-		 	
+			machinescope.currentSpace = {id:1,name:'teset'};
+			
 		 	ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine });
 		 	
 		 	scope.machine = {
-	            cloudspaceId: 10,
 	            name: 'Test machine 1',
 	            description: 'Test machine 1 description',
 	            sizeId: 1,
@@ -41,7 +41,7 @@ describe("Create Machine bucket controller tests", function(){
 		});
 
 		it('save calls the service with correct parameters', function() {
-			expect(Machine.create).toHaveBeenCalledWith(10, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
+			expect(Machine.create).toHaveBeenCalledWith(1, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
 		});
 	});
 	
