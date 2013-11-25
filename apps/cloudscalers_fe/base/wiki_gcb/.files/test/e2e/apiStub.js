@@ -89,6 +89,7 @@ defineApiStub = function ($httpBackend) {
     var MachinesList = LocalStorageItem('gcb:machines');
     if (!MachinesList.get()) {
         MachinesList.set([{
+        	"cloudspaceId":1, 
             "status": "RUNNING",
             "hostname": "jenkins.cloudscalers.com",
             "description": "JS Webserver",
@@ -98,6 +99,7 @@ defineApiStub = function ($httpBackend) {
             "imageId": 0,
             "id": 0
         }, {
+        	"cloudspaceId":1, 
             "status": "HALTED",
             "hostname": "cloudbroker.cloudscalers.com",
             "description": "CloudScalers CloudBroker",
@@ -160,8 +162,12 @@ defineApiStub = function ($httpBackend) {
         return [200, matchedMachine];
     });
 
-    $httpBackend.whenGET(/^\/machines\/list\?.*/).respond(function (method, url, data) {
-        return [200, _.values(MachinesList.get())];
+    $httpBackend.whenGET(/^\/machines\/list\?cloudspaceId=(\d+).*/).respond(function (method, url, data) {
+    	var params = new URI(url).search(true);
+        var cloudspaceId = params.cloudspaceId;
+    	return [200, _.values(_.filter(MachinesList.get(), function(machine){
+    		return machine.cloudspaceId == cloudspaceId;
+    	}))];
     });
     $httpBackend.whenGET(/^\/images\/list\?.*/).respond(images);
     $httpBackend.whenGET(/^\/sizes\/list\?.*/).respond(sizes);
@@ -313,14 +319,14 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond([
-       {id: '1', name: 'Cloudspace 1', account: '1'},
-       {id: '2', name: 'Cloudspace 2', account: '1'},
-       {id: '3', name: 'Cloudspace 3', account: '2'},
-       {id: '4', name: 'Cloudspace 4', account: '2'},
-       {id: '4', name: 'Cloudspace 5', account: '2'},
-       {id: '4', name: 'Cloudspace 6', account: '4'},
-       {id: '4', name: 'Cloudspace 7', account: '4'},
-       {id: '4', name: 'Cloudspace 8', account: '4'},
+       {id: '1', name: 'Cloudspace 1', accountId: '1'},
+       {id: '2', name: 'Cloudspace 2', accountId: '1'},
+       {id: '3', name: 'Cloudspace 3', accountId: '2'},
+       {id: '4', name: 'Cloudspace 4', accountId: '2'},
+       {id: '4', name: 'Cloudspace 5', accountId: '2'},
+       {id: '4', name: 'Cloudspace 6', accountId: '4'},
+       {id: '4', name: 'Cloudspace 7', accountId: '4'},
+       {id: '4', name: 'Cloudspace 8', accountId: '4'},
    ]);
 };
 
