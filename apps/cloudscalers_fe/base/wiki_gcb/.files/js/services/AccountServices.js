@@ -4,7 +4,7 @@ angular.module('cloudscalers.AccountServices', ['ng','cloudscalers.SessionServic
 	.config(['$httpProvider',function($httpProvider) {
         $httpProvider.interceptors.push('authenticationInterceptor');
 	}])
-    .factory('Account',function ($http, $q) {
+    .factory('Account', function ($http, $q, SessionData) {
     	return {
             list: function() {
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/list').then(
@@ -12,6 +12,12 @@ angular.module('cloudscalers.AccountServices', ['ng','cloudscalers.SessionServic
                             return result.data;
                             var cloudspaces = promises[1].data;
                     });
+            },
+            current: function() {
+                return SessionData.getAccount();
+            },
+            setCurrent: function(account) {
+                SessionData.setAccount(account);
             }
         };
     });

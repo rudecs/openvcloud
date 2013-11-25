@@ -42,8 +42,24 @@ angular.module('cloudscalers.SessionServices', ['ng'])
         			else{
         				$window.sessionStorage.removeItem('gcb:currentUser');
         			}
-        		}
-        }
+        		},
+            getSpace : function() {
+                var space = $window.sessionStorage.getItem('gcb:currentSpace');
+                if (space) {
+                    return JSON.parse(space);
+                } else {
+                    return undefined;
+                }
+            },
+            setSpace : function(space){
+                    if (space){
+                        $window.sessionStorage.setItem('gcb:currentSpace', JSON.stringify(space));
+                    }
+                    else{
+                        $window.sessionStorage.removeItem('gcb:currentSpace');
+                    }
+                },
+            };
     })
     .factory('User', function ($http, SessionData, $q) {
         var user = {};

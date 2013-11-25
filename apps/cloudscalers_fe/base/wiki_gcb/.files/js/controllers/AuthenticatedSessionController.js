@@ -1,9 +1,20 @@
 angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', '$window', function($scope, User, Account, CloudSpace, $window) {
         $scope.currentUser = User.current();
-
-        $scope.currentSpace = undefined;
-        $scope.currentAccount = undefined;
+        $scope.currentSpace = CloudSpace.current();    
+        $scope.currentAccount = undefined;    
+        
+        $scope.setCurrentCloudspace = function(space) {
+            CloudSpace.setCurrent(space);
+            $scope.currentSpace = space;
+            $scope.setCurrentAccount();
+        };
+        
+        $scope.setCurrentAccount = function(){
+            if ($scope.currentSpace && $scope.accounts){
+                $scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
+            }
+        };
 
         Account.list().then(function(accounts) {
             $scope.accounts = accounts;
@@ -14,24 +25,13 @@ angular.module('cloudscalers.controllers')
         });
         
         $scope.$watch('cloudspaces', function(){
-        	$scope.setCurrentCloudspace(_.first($scope.cloudspaces));
-        })
-        
-        $scope.setCurrentCloudspace = function(space) {
-            $scope.currentSpace = space;
-            $scope.setCurrentAccount();
-        };
+            if (!$scope.currentSpace && $scope.cloudspaces)
+            	$scope.setCurrentCloudspace(_.first($scope.cloudspaces));
+        });
         
         $scope.$watch('accounts', function(){
         	$scope.setCurrentAccount();
         });
-        
-        $scope.setCurrentAccount = function(){
-        	if ($scope.currentSpace && $scope.accounts){
-        		$scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
-        	}
-        }
-    
         
         $scope.logout = function() {
             User.logout();
@@ -41,10 +41,4 @@ angular.module('cloudscalers.controllers')
 			uri.fragment('');
 			$window.location = uri.toString();
         };
-        
-        
-        
-
-        
-
     }]);

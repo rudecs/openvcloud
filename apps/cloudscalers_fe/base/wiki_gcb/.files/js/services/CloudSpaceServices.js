@@ -4,7 +4,7 @@ angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionSer
 	.config(['$httpProvider',function($httpProvider) {
         $httpProvider.interceptors.push('authenticationInterceptor');
 	}])
-    .factory('CloudSpace',function ($http, $q) {
+    .factory('CloudSpace',function ($http, $q, SessionData) {
     	return {
             list: function() {
             	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(
@@ -16,6 +16,12 @@ angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionSer
             			 }
             			 );
 
+            },
+            current: function() {
+                return SessionData.getSpace();
+            },
+            setCurrent: function(space) {
+                SessionData.setSpace(space);
             }
         };
     });
