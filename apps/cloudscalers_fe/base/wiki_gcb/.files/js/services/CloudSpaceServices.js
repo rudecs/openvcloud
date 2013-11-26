@@ -1,10 +1,7 @@
 
-angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionServices'])
+angular.module('cloudscalers.services')
 
-	.config(['$httpProvider',function($httpProvider) {
-        $httpProvider.interceptors.push('authenticationInterceptor');
-	}])
-    .factory('CloudSpace',function ($http, $q, SessionData) {
+	 .factory('CloudSpace',function ($http, $q, SessionData) {
     	return {
             list: function() {
             	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(

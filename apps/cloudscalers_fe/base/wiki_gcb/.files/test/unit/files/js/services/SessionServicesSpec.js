@@ -1,5 +1,5 @@
 describe('Cloudscalers SessionServices', function() {
-	beforeEach(module('cloudscalers.SessionServices'));
+	beforeEach(module('cloudscalers.services'));
 	
 	describe('User service', function(){
 		var $httpBackend, User, SessionData;

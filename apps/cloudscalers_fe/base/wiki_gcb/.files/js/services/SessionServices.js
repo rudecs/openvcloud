@@ -1,9 +1,6 @@
+angular.module('cloudscalers.services')
 
-
-
-angular.module('cloudscalers.SessionServices', ['ng'])
-
-	.factory('authenticationInterceptor',['$q','$log', 'SessionData', function($q, $log, SessionData){
+	.factory('authenticationInterceptor',['$q', 'SessionData', function($q, SessionData){
         return {
             'request': function(config) {
                 if (config) {
@@ -22,7 +19,6 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 return config || $q.when(config);
     	    },
     	    'response': function(response) {
-                $log.log("Response intercepted");
                 return response || $q.when(response);
             }
         };
