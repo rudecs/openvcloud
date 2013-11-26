@@ -1,6 +1,32 @@
 describe('Cloudscalers SessionServices', function() {
 	beforeEach(module('cloudscalers.services'));
 	
+	describe('Authentication Interceptor',function(){
+		var $httpBackend, $http, SessionData, $window = {};
+		
+		beforeEach(function(){
+			SessionData = {getUser:function(){return {api_key:'test'}}};
+			module(function($provide) {
+		      $provide.value('SessionData', SessionData);
+		      $provide.value('$window', $window)
+		    });
+		 
+		    inject(function(_$httpBackend_, _$http_) {
+		      $http = _$http_;
+		      $httpBackend = _$httpBackend_;
+		    });
+		});
+		
+		it('Redirects to login page when not authorized', function(){
+			$httpBackend.whenGET(/^tes.*/).respond(function() { return [401, 'success']; });
+			$window.location = "http://test.com/wiki_gcb/mypage#list?jdkjfjf"
+			$http.get("test");
+			$httpBackend.flush();
+			expect($window.location).toBe("http://test.com/wiki_gcb/Login");
+		});
+	});
+	
+	
 	describe('User service', function(){
 		var $httpBackend, User, SessionData;
 		beforeEach(inject(function(_$httpBackend_, _User_, _SessionData_) {
