@@ -1,5 +1,5 @@
 describe("AuthenticatedSessionController tests", function(){
-    var $scope, ctrl, User, $q, $window = {}, $httpBackend, CloudSpace, cloudListDefer, accountListDefer;
+    var $scope, ctrl, User, $q, $window = {}, $httpBackend, CloudSpace, Account, cloudListDefer, accountListDefer;
     
     beforeEach(module('cloudscalers'));
     
@@ -45,14 +45,13 @@ describe("AuthenticatedSessionController tests", function(){
 
             ctrl = $controller('AuthenticatedSessionController', {
                 $scope : $scope, 
-                User : User, 
-                $window: $window, 
                 CloudSpace: CloudSpace,
                 Account: Account});
+
             cloudListDefer.resolve([
-                              {cloudSpaceId: 2, accountId: 1},
-                              {cloudSpaceId: 3, accountId: 2},
-                              ]);
+                                   {cloudSpaceId: 2, accountId: 1},
+                                   {cloudSpaceId: 3, accountId: 2},
+                                   ]);
             accountListDefer.resolve([
                                      {id: 1, name: 'Account 1'},
                                      {id: 2, name: 'Account 2'}
@@ -76,7 +75,7 @@ describe("AuthenticatedSessionController tests", function(){
         it('account is updated when the current space is selected', function() {
             $scope.setCurrentCloudspace($scope.cloudspaces[1]);
             
-            expect($scope.currentSpace).toBe($scope.cloudspaces[1]);
+            expect($scope.currentSpace).toEqual($scope.cloudspaces[1]);
             expect($scope.currentAccount).toBeDefined();
             expect($scope.currentAccount.id).toEqual(2);
         });

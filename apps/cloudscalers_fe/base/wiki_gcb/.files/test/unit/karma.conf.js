@@ -67,6 +67,7 @@ module.exports = function(config) {
       'js/controllers/MachineBuckets/MachinePricingController.js': 'coverage',
       'js/controllers/SignUp/SignUpController.js': 'coverage',
       'js/controllers/AuthenticatedSessionController.js': 'coverage',
+      'js/controllers/CloudSpaceNavigatorController.js': 'coverage',
       'js/controllers/SessionController.js': 'coverage',
     },
 
