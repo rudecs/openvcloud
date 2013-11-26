@@ -1,62 +1,18 @@
 h2. Billing
-{{html:  <hr> }}
+{{html:  <hr>
+
+
+<div ng-app="myApp" ng-controller="BillingController">
+ }}
 h3. Balance & Usage
 {{html:
 
-<form class="form-horizontal" ng-app="myApp" ng-controller="BillingController">
 
-<div  style="display: none">
+
+<form class="form-horizontal">
+
   
 
-  <div class="control-group">
-    <label class="control-label" for="radios">Credit Card Type</label>
-    <div class="controls">
-      <label class="radio inline" for="radios-3">
-        <input type="radio" name="radios" id="radios-3" value="Paypal" ng-model="ccType">
-        Diners
-      </label>
-      <label class="radio inline" for="radios-0">
-        <input type="radio" name="radios" id="radios-0" value="Visa (Coming Soon)"  ng-model="ccType">
-        Visa
-      </label>
-      <label class="radio inline" for="radios-1">
-        <input type="radio" name="radios" id="radios-1" value="Mastercard (Coming Soon)" ng-model="ccType">
-        Mastercard
-      </label>
-      <label class="radio inline" for="radios-2">
-        <input type="radio" name="radios" id="radios-2" value="American Express (Coming Soon)" ng-model="ccType">
-        American Express
-      </label>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <label class="control-label" for="textinput">Credit Card Number</label>
-    <div class="controls">
-      <!-- Pattern taken from http://www.regular-expressions.info/creditcard.html -->
-      <input id="textinput" name="textinput" type="text" placeholder="xxxx-xxxx-xxxx-x765" class="input-xlarge" ng-model="ccNum"
-        pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$">
-      
-    </div>
-  </div>
-
-  <div class="control-group">
-    <label class="control-label" for="textinput">Expiration date</label>
-    <div class="controls">
-      <input id="textinput" name="textinput" type="text" placeholder="dd/mm" class="input-mini" ng-model="ccExpiration"
-        pattern="^\d{2}/\d{2}">
-      
-    </div>
-  </div>
-
-  <div class="control-group">
-    <label class="control-label" for="textinput">CCV</label>
-    <div class="controls">
-      <input id="textinput" name="textinput" type="text" placeholder="" class="input-mini" ng-model="ccv" pattern="\d{3,4}"> <span class="note"> 3 or 4 digits on the backside </span>
-
-    </div>
-  </div>
-</div>
 <table class="table table-striped table-bordered"> 
 <thead>
 <tr><th>Available credit </th><th>Usage this month </th> </tr>
@@ -68,19 +24,44 @@ h3. Balance & Usage
 <hr>
 <fieldset>
 
+
+</fieldset>
+</form>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <div class="control-group">
   <label class="control-label" for="appendedtext">Add credit to your account</label>
   <div class="controls">
-    <div class="input-append">
-      <input type="number" class="input-mini" ng-model="addedAmount" min=1> 
-      <span class="add-on">USD</span>
-      <button class="btn" ng-click="add()">Add</button>
-    </div>
     
-  </div>
-</div>
 
-</fieldset>
+
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="CAGUC8N3FH3DY">
+<input type="hidden" name="lc" value="BE">
+<input type="hidden" name="item_name" value="CloudScalers Credits">
+<input type="hidden" name="button_subtype" value="services">
+<input type="hidden" name="currency_code" value="EUR">
+<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
+<table>
+<tr><td><input type="hidden" name="on0" value="amount"></td><td><select name="os0">
+	<option value="10 credits">&euro;10,00 EUR</option>
+	<option value="50 credits">&euro;50,00 EUR</option>
+	<option value="100 credits">&euro;100,00 EUR</option>
+</select> </td></tr>
+</table>
+<input type="hidden" name="currency_code" value="EUR">
+<input type="hidden" name="option_select0" value="10 credits">
+<input type="hidden" name="option_amount0" value="10.00">
+<input type="hidden" name="option_select1" value="50 credits">
+<input type="hidden" name="option_amount1" value="50.00">
+<input type="hidden" name="option_select2" value="100 credits">
+<input type="hidden" name="option_amount2" value="100.00">
+<input type="hidden" name="option_index" value="0">
+<input type="image" src="https://www.paypalobjects.com/en_US/BE/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</div>
+</div>
+</form>
+
 <hr>
 }}
 
@@ -105,5 +86,5 @@ h3. History
         </tr>
     </tbody>
 </table>
-</form>
+</div>
 }}
