@@ -97,10 +97,10 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 method: 'POST',
                 data: {
                     username: username,
-                    email: email,
+                    emailaddress: email,
                     password: password
                 },
-                url: cloudspaceconfig.apibaseurl + '/users/signup'
+                url: cloudspaceconfig.apibaseurl + '/users/register'
             })
             .success(function(data, status, headers, config) {
                 signUpResult.success = true;
