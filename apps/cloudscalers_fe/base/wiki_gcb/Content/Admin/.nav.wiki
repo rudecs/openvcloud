@@ -1,3 +1,0 @@
-Billing:Billing
-Account:AccountSettings
-CloudSpace:CloudSpaceSettings
