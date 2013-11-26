@@ -1,0 +1,2 @@
+Basic:CloudSpaceSettings
+Access Management:CloudSpaceAccessManagement
