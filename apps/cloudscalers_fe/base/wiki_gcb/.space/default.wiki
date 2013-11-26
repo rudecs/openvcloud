@@ -107,10 +107,10 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="AccountSettings">Account</a>
+                            <a href="Billing">{[currentAccount.name]}</a>
                         </li>
                         <li>
-                            <a href="CloudSpaceSettings">CloudSpace</a>
+                            <a href="CloudSpaceSettings">{[currentSpace.name]}</a>
                         </li>
                     </ul>
                 </li>

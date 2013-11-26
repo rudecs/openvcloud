@@ -1,1 +1,1 @@
- h1. Account
+h1. Account Details
