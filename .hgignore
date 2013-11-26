@@ -12,3 +12,4 @@ apps/cloudscalers_fe/base/wiki_gcb/.files/coverage
 **/Thumbs.db
 **.DS_Store
 **sftp-config.json
+CloudScalers.sublime*

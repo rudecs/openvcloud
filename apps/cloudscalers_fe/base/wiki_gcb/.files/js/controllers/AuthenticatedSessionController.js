@@ -1,9 +1,9 @@
 angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', '$window', function($scope, User, Account, CloudSpace, $window) {
         $scope.currentUser = User.current();
-        $scope.currentSpace = CloudSpace.current();    
-        $scope.currentAccount = undefined;    
-        
+        $scope.currentSpace = CloudSpace.current();
+        $scope.currentAccount = undefined;
+
         $scope.setCurrentCloudspace = function(space) {
             CloudSpace.setCurrent(space);
             $scope.currentSpace = space;
@@ -19,9 +19,9 @@ angular.module('cloudscalers.controllers')
         Account.list().then(function(accounts) {
             $scope.accounts = accounts;
         });
-        
+
         CloudSpace.list().then(function(cloudspaces){
-        	$scope.cloudspaces = cloudspaces;
+            $scope.cloudspaces = cloudspaces;
         });
         
         $scope.$watch('cloudspaces', function(){

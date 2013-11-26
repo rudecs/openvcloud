@@ -65,6 +65,12 @@ defineUnitApiStub = function($httpBackend){
         return [500, "Can't create snapshot"];
     });
 
+    $httpBackend.whenGET(/^testapi\/accounts\/list.*/).respond([
+        {id: '1', name: 'Account 1'},
+        {id: '2', name: 'Account 2'},
+        {id: '4', name: 'Account 4'},
+    ]);
+
     
 };
 

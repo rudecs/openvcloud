@@ -52,10 +52,22 @@ module.exports = function(config) {
     },
 
     preprocessors: {
+      'js/directives.js': 'coverage',
+      
       'js/services/machineServices.js': 'coverage',
+      'js/services/AccountServices.js': 'coverage',
+      'js/services/SessionServices.js': 'coverage',
+      'js/services/CloudSpaceServices.js': 'coverage',
+      'js/services/machineServices.js': 'coverage',
+
+      'js/controllers/MachineBuckets/ConsoleController.js': 'coverage',
       'js/controllers/MachineBuckets/MachineController.js': 'coverage',
       'js/controllers/MachineBuckets/MachineCreationController.js': 'coverage',
       'js/controllers/MachineBuckets/MachineEditController.js': 'coverage',
+      'js/controllers/MachineBuckets/MachinePricingController.js': 'coverage',
+      'js/controllers/SignUp/SignUpController.js': 'coverage',
+      'js/controllers/AuthenticatedSessionController.js': 'coverage',
+      'js/controllers/SessionController.js': 'coverage',
     },
 
 
