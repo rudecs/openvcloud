@@ -41,9 +41,7 @@ angular.module('cloudscalers.controllers')
         	var modalInstance = $modal.open({
       			templateUrl: 'createNewCloudSpaceDialog.html',
       			controller: CreateCloudSpaceController,
-      			resolve: {
-      				
-      			},
+      			resolve: {},
       			scope: $scope
     		});
 
