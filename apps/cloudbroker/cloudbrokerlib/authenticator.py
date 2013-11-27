@@ -36,7 +36,7 @@ class auth(object):
                     cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(kwargs['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
-                    machine = j.apps.cloud.cloudbroker.mode_vmachine_get(kwargs['machineId'])
+                    machine = j.apps.cloud.cloudbroker.model_vmachine_get(kwargs['machineId'])
                     cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(machine['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 # if admin allow all other ACL as well
