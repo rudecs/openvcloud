@@ -42,7 +42,9 @@ angular.module('cloudscalers.controllers')
       			templateUrl: 'createNewCloudSpaceDialog.html',
       			controller: CreateCloudSpaceController,
       			resolve: {
-      			}
+      				
+      			},
+      			scope: $scope
     		});
 
     		modalInstance.result.then(function (result) {
