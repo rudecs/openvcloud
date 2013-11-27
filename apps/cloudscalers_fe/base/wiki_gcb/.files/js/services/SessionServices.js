@@ -6,7 +6,7 @@ angular.module('cloudscalers.services')
                 if (config) {
                     var url = config.url;
 
-                    if(! /(partials)|(template)\//i.test(url)){
+                    if(! /((partials)|(template)\/)|(\.html)/i.test(url)){
 
                     	var currentUser = SessionData.getUser();
                     	if (currentUser){
