@@ -274,7 +274,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return self.backendconnection.db.get('domain_%s' % node.id)
 
     def _set_persistent_xml(self, node, xml):
-        self.backendconnection.db.set(key='domain_%s' % node.id, key=xml)
+        self.backendconnection.db.set(key='domain_%s' % node.id, obj=xml)
 
     def _remove_persistent_xml(self, node):
         try:
