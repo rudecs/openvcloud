@@ -77,15 +77,23 @@
                             </ul>
                         	
 			<script type="text/ng-template" id="createNewCloudSpaceDialog.html"> 
-                            <form name="form" ng-submit="submit(form)">
+                            <form name="form" class="form-horizontal" ng-submit="submit()">
                                 <div class="modal-header">
                                     <h3>New CloudSpace</h3>
                                 </div>
                                 <div class="modal-body">
-                                    <ul>
-                                        Name:
-                                        <input ng-model="newCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
-                                    </ul>
+                   					<div class="control-group">
+    									<label class="control-label" for="inputAccount">Account</label>
+    									<div class="controls">
+      										<input type="text" id="inputAccount" class="input-large" placeholder="Account">
+    									</div>
+  									</div>
+                   					<div class="control-group">
+    									<label class="control-label" for="inputNewCloudSpaceName">Name</label>
+    									<div class="controls">
+      							         	<input ng-model="newCloudSpaceName" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                               			</div>
+  									</div>
                                 </div>
                                  <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary ok">Ok</button>
