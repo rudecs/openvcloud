@@ -69,6 +69,34 @@
                                 </ul>
                             </accordion-group>
                         </accordion>
+                        <div>
+                        	<ul>
+                               <li>
+                                  <a href="" ng-click="createNewCloudSpace()">New CloudSpace...</a>
+                               </li>
+                            </ul>
+                        	
+			<script type="text/ng-template" id="createNewCloudSpaceDialog.html"> 
+                            <form name="form" ng-submit="submit(form)">
+                                <div class="modal-header">
+                                    <h3>New CloudSpace</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name:
+                                        <input ng-model="newCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                                    </ul>
+                                </div>
+                                 <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary ok">Ok</button>
+                                    <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
+                                </div>
+                                </form>
+			</script>
+                        	
+                        	
+                        	
+                        </div>
                     </div>
                     
                 </li>

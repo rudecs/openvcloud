@@ -19,6 +19,16 @@ angular.module('cloudscalers.services')
             },
             setCurrent: function(space) {
                 SessionData.setSpace(space);
+            },
+            create: function(name, accountId) {
+            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspace/create').then(
+            			function(result){
+            				return result.data;
+            			},
+            			function(reason){
+            				$q.defer(reason);
+            			}
+            			);
             }
         };
     });
