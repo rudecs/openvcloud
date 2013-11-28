@@ -1141,7 +1141,7 @@ color:#ddd;
     margin-left: -15px;
 }
 
-.accordion-body ul {
+[persistent-dropdown] ul {
     list-style-type: none;
     margin: 0;
 }
