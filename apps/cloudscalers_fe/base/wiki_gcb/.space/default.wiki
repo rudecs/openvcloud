@@ -72,7 +72,8 @@
                         <div>
                         	<ul>
                                <li>
-                                  <a href="" ng-click="createNewCloudSpace()">New CloudSpace...</a>
+                                  <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New CloudSpace...</a>
+                                  <a href="/$$space/FAQ#/3" class="icon-faq"></a>
                                </li>
                             </ul>
                         	

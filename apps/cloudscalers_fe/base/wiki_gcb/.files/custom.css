@@ -1189,3 +1189,18 @@ a.icon-remove-sign {
 .users-table input {
     margin-bottom: 0;
 }
+
+[persistent-dropdown].dropdown-menu a.icon-faq {
+    background: url(img/icons/account_verifications-a06a9fd1fc7a5d7edbd5c0bf6c9d87db.png);
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    padding: 0;
+    float: right;
+    margin: 2px;
+}
+
+[persistent-dropdown].dropdown-menu a.create-cloudspace {
+    clear: none;
+    display: inline;
+}
