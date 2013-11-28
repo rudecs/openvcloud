@@ -1163,6 +1163,14 @@ color:#ddd;
     min-height: 100px;
 }
 
+.modal .modal-header, .modal .modal-footer {
+    display: block;
+}
+    
+.modal .modal-body {
+	border: 0px;
+}
+
 .users-table .username-text, .users-table .username-text-container {
     width: 100%;
 }

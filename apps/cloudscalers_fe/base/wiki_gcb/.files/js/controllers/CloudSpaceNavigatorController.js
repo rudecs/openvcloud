@@ -26,10 +26,10 @@ angular.module('cloudscalers.controllers')
     	var CreateCloudSpaceController = function ($scope, $modalInstance) {
 
     		$scope.newCloudSpaceName= '';
-    		$scope.accountId = $scope.currentAccount.id;
-
-            $scope.submit = function () {
-            	$modalInstance.close({name:$scope.newCloudSpaceName, accountId: $scope.accountId});
+    		$scope.accountForNewCloudSpace = $scope.currentAccount;
+            
+    		$scope.submit = function () {
+            	$modalInstance.close({name:$scope.newCloudSpaceName, accountId: $scope.accountForNewCloudSpace.id});
             };
 
             $scope.cancel = function () {
@@ -46,7 +46,14 @@ angular.module('cloudscalers.controllers')
     		});
 
     		modalInstance.result.then(function (result) {
-    			CloudSpace.create(result.name, result.accountId);
+    			CloudSpace.create(result.name, result.accountId).then(
+    					function(result){
+    						//TODO: switch to new cloudspace
+    					},
+    					function(result){
+    						//TODO: show error
+    					}
+    			);
     		});
         }
         

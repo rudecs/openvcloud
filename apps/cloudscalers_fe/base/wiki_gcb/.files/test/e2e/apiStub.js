@@ -312,38 +312,25 @@ defineApiStub = function ($httpBackend) {
     // clone
     $httpBackend.whenGET(/^\/machines\/clone\?machineId=\d+.*/).respond('OK');
 
-    $httpBackend.whenGET(/^\/accounts\/list\b.*/).respond([
-        {id: '1', name: 'Account 1'},
-        {id: '2', name: 'Account 2'},
-        {id: '4', name: 'Account 4'},
+    $httpBackend.whenGET(/^\/accounts\/list.*/).respond([
+        {id: '1', name: 'Lenny Miller'},
+        {id: '2', name: 'Awingu'},
+        {id: '4', name: 'Incubaid'},
     ]);
 
-    $httpBackend.whenGET(/^\/cloudspaces\/list\b.*/).respond([
-       {cloudSpaceId: '1', name: 'Cloudspace 1', accountId: '1'},
-       {cloudSpaceId: '2', name: 'Cloudspace 2', accountId: '1'},
-       {cloudSpaceId: '3', name: 'Cloudspace 3', accountId: '2'},
-       {cloudSpaceId: '4', name: 'Cloudspace 4', accountId: '2'},
-       {cloudSpaceId: '4', name: 'Cloudspace 5', accountId: '2'},
-       {cloudSpaceId: '4', name: 'Cloudspace 6', accountId: '4'},
-       {cloudSpaceId: '4', name: 'Cloudspace 7', accountId: '4'},
-       {cloudSpaceId: '4', name: 'Cloudspace 8', accountId: '4'},
+    $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond([
+       {id: '1', name: 'Default', accountId: '1'},
+       {id: '2', name: 'Development', accountId: '2'},
+       {id: '3', name: 'Training', accountId: '2'},
+       {id: '4', name: 'Production', accountId: '2'},
+       {id: '4', name: 'Development', accountId: '4'},
+       {id: '4', name: 'Acceptance', accountId: '4'},
+       {id: '4', name: 'Production', accountId: '4'},
    ]);
 
-    $httpBackend.whenGET(/^\/accounts\/listUsers.*/).respond([
-        {id: 1, name: 'User 1', email: 'user1@mysite.com'},
-        {id: 2, name: 'User 2', email: 'user2@mysite.com'},
-        {id: 3, name: 'User 3', email: 'arvid@mysite.com'},
-        {id: 4, name: 'User 4', email: 'marco@mysite.com'},
-        {id: 5, name: 'User 5', email: 'user5@mysite.com'},
-        {id: 6, name: 'User 6', email: 'user6@mysite.com'},
-    ]);
-
-    $httpBackend.whenGET(/^\/cloudspaces\/listUsers\?.*/).respond([
-        {id: 1, name: 'User 1', email: 'user1@mysite.com', access: 'RXC'},
-        {id: 2, name: 'User 2', email: 'user2@mysite.com', access: 'RXC'}
-    ]);
 
     $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(200, "Success");
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(200, "Success");
+    
 };
 
