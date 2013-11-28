@@ -10,7 +10,12 @@ angular.module('cloudscalers.AccountServices', ['ng','cloudscalers.SessionServic
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/list').then(
                 		function(result) {
                             return result.data;
-                            var cloudspaces = promises[1].data;
+                    });
+            },
+            listUsers: function() {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/listUsers').then(
+                        function(result) {
+                            return result.data;
                     });
             },
             current: function() {

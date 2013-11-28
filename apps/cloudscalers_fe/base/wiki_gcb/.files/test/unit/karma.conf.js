@@ -69,6 +69,7 @@ module.exports = function(config) {
       'js/controllers/AuthenticatedSessionController.js': 'coverage',
       'js/controllers/CloudSpaceNavigatorController.js': 'coverage',
       'js/controllers/SessionController.js': 'coverage',
+      'js/controllers/AccountAccessManagementController.js': 'coverage',
     },
 
 
