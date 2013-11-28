@@ -71,6 +71,34 @@ defineUnitApiStub = function($httpBackend){
         {id: '4', name: 'Account 4'},
     ]);
 
-    
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/list\b.*/).respond([
+       {id: '1', name: 'Cloudspace 1', accountId: '1'},
+       {id: '2', name: 'Cloudspace 2', accountId: '1'},
+       {id: '3', name: 'Cloudspace 3', accountId: '2'},
+       {id: '4', name: 'Cloudspace 4', accountId: '2'},
+       {id: '4', name: 'Cloudspace 5', accountId: '2'},
+       {id: '4', name: 'Cloudspace 6', accountId: '4'},
+       {id: '4', name: 'Cloudspace 7', accountId: '4'},
+       {id: '4', name: 'Cloudspace 8', accountId: '4'},
+   ]);
+
+    $httpBackend.whenGET(/^\/accounts\/listUsers.*/).respond([
+        {id: 1, name: 'User 1', email: 'user1@mysite.com'},
+        {id: 2, name: 'User 2', email: 'user2@mysite.com'},
+        {id: 3, name: 'User 3', email: 'arvid@mysite.com'},
+        {id: 4, name: 'User 4', email: 'marco@mysite.com'},
+        {id: 5, name: 'User 5', email: 'user5@mysite.com'},
+        {id: 6, name: 'User 6', email: 'user6@mysite.com'},
+    ]);
+
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/listUsers\?.*/).respond([
+        {id: 1, name: 'User 1', email: 'user1@mysite.com', access: 'RXC'},
+        {id: 2, name: 'User 2', email: 'user2@mysite.com', access: 'RXC'}
+    ]);
+
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=10/).respond(200, "Success");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=20/).respond(500, "Failed");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=10/).respond(200, "Success");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=20/).respond(500, "Failed");
 };
 

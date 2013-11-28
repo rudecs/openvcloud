@@ -1162,3 +1162,19 @@ color:#ddd;
 .span9 {
     min-height: 100px;
 }
+
+.users-table .username-text, .users-table .username-text-container {
+    width: 100%;
+}
+a.icon-remove-sign:hover {
+    text-decoration: none;
+}
+a.icon-remove-sign {
+    color: gray;
+}
+.users-table .header {
+    background-color: #f5f5f5;
+}
+.users-table input {
+    margin-bottom: 0;
+}
