@@ -46,7 +46,7 @@ angular.module('cloudscalers.controllers')
     		});
 
     		modalInstance.result.then(function (result) {
-    			CloudSpace.create(result.name, result.accountId).then(
+    			CloudSpace.create(result.name, result.accountId, $scope.currentUser.id).then(
     					function(result){
     						//TODO: switch to new cloudspace
     					},
