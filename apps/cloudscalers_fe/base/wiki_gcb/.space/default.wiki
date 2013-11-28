@@ -61,7 +61,7 @@
                     <a href="#" class="cloudspaceCollapse dropdown-toggle" ng-click="isCollapsed = !isCollapsed"><span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
                     <div persistent-dropdown ng-cloak>
                         <accordion close-others="false">
-                            <accordion-group heading="{[account.name]}" ng-repeat="account in AccountCloudSpaceHierarchy">
+                            <accordion-group heading="{[account.name]}" ng-repeat="account in AccountCloudSpaceHierarchy" is-open="{[ account.id == currentAccount.id ]}">
                                 <ul>
                                     <li ng-repeat="space in account.cloudspaces">
                                         <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
