@@ -16,8 +16,8 @@ angular.module('cloudscalers.services')
             setCurrent: function(space) {
                 SessionData.setSpace(space);
             },
-            create: function(name, accountId) {
-            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspace/create').then(
+            create: function(name, accountId, userId) {
+            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspace/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=['+ userId +']').then(
             			function(result){
             				return result.data;
             			},

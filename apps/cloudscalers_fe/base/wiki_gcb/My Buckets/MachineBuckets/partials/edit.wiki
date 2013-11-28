@@ -1,14 +1,7 @@
 
 h2. Manage Machine Bucket
 {{html:
-<style>
-    .modal .modal-header, .modal .modal-footer {
-        display: block;
-    }
-    .modal .modal-body {
-        border: 0px;
-    }
-</style>
+
 <tabset>
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
