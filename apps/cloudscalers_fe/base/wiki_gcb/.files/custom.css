@@ -1170,6 +1170,9 @@ color:#ddd;
 .modal .modal-body {
 	border: 0px;
 }
+.modal form {
+    margin: 0;
+}
 
 .users-table .username-text, .users-table .username-text-container {
     width: 100%;
