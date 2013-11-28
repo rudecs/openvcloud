@@ -69,6 +69,42 @@
                                 </ul>
                             </accordion-group>
                         </accordion>
+                        <div>
+                        	<ul>
+                               <li>
+                                  <a href="" ng-click="createNewCloudSpace()">New CloudSpace...</a>
+                               </li>
+                            </ul>
+                        	
+			<script type="text/ng-template" id="createNewCloudSpaceDialog.html"> 
+                            <form name="form" class="form-horizontal" ng-submit="submit()">
+                                <div class="modal-header">
+                                    <h3>New CloudSpace</h3>
+                                </div>
+                                <div class="modal-body">
+                   					<div class="control-group">
+    									<label class="control-label" for="inputAccount">Account</label>
+    									<div class="controls">
+      										<input type="text" id="inputAccount" class="input-large" placeholder="Account">
+    									</div>
+  									</div>
+                   					<div class="control-group">
+    									<label class="control-label" for="inputNewCloudSpaceName">Name</label>
+    									<div class="controls">
+      							         	<input ng-model="newCloudSpaceName" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                               			</div>
+  									</div>
+                                </div>
+                                 <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary ok">Ok</button>
+                                    <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
+                                </div>
+                                </form>
+			</script>
+                        	
+                        	
+                        	
+                        </div>
                     </div>
                     
                 </li>
@@ -139,8 +175,31 @@
 @col 9
 
 
+    <script src="/$$space/.files/lib/angular-1.2.0/angular-mocks.min.js"></script>
+    <script src="/$$space/.files/lib/angular-1.2.0/angular-route.min.js"></script>
+    <script src="/$$space/.files/lib/angular-1.2.0/angular-resource.min.js"></script>
+    <script src="/$$space/.files/lib/URI.js"></script>
+    <script src="/$$space/.files/lib/underscore/underscore-min.js"></script>
+    <script src="/$$space/.files/lib/numeral/numeral.min.js"></script>
+    <script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
+    <script src="/$$space/.files/lib/angular-ui/angular-ui-router-0.2.0.js"></script>
+
+    <script src="/$$space/.files/js/ui.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/config.js" type="text/javascript"></script>
+    <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
+    <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
+   
 
 {content}
+
+
+
+
+
+
+
 
 {{div2:class=loader | style=display: none }} 
 h2. loading
@@ -255,42 +314,15 @@ h2. loading
 {{div}}
 
 {{html:
-
-    <script src="/$$space/.files/lib/angular-1.2.0/angular-mocks.min.js"></script>
-    <script src="/$$space/.files/lib/angular-1.2.0/angular-route.min.js"></script>
-    <script src="/$$space/.files/lib/angular-1.2.0/angular-resource.min.js"></script>
-    <script src="/$$space/.files/lib/URI.js"></script>
-    <script src="/$$space/.files/lib/underscore/underscore-min.js"></script>
-    <script src="/$$space/.files/lib/numeral/numeral.min.js"></script>
-    <script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.6.0.js"></script>
-    <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
-    <script src="/$$space/.files/lib/angular-ui/angular-ui-router-0.2.0.js"></script>
-
-    <script src="/$$space/.files/js/ui.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/config.js" type="text/javascript"></script>
-    <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
-    <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
+  
+  	<script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/settings.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/billing.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineEditController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachineCreationController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/DesktopPricingController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/ListDesktopBucketsController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/CreateDesktopBucketController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/DesktopBuckets/EditDesktopBucketController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
+  	<script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
+  
+     <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/AccountAccessManagementController.js" type="text/javascript"></script>
-   
-    <script src="/$$space/.files/js/controllers/MachineBuckets/ConsoleController.js" type="text/javascript"></script>
+  
+     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>
   
 
 

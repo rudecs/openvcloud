@@ -1,7 +1,7 @@
 describe('AccountServices', function() {
     var $httpBackend, Account;
 
-    beforeEach(module('cloudscalers.AccountServices'));
+    beforeEach(module('cloudscalers.services'));
 
     beforeEach(inject(function(_$httpBackend_, _Account_) {
         $httpBackend = _$httpBackend_;

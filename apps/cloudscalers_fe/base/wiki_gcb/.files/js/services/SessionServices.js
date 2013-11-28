@@ -1,19 +1,16 @@
+angular.module('cloudscalers.services')
 
-
-
-angular.module('cloudscalers.SessionServices', ['ng'])
-
-	.factory('authenticationInterceptor',['$q','$log', 'SessionData', function($q, $log, SessionData){
+	.factory('authenticationInterceptor',['$q', 'SessionData', '$window', function($q, SessionData, $window){
         return {
             'request': function(config) {
                 if (config) {
-                    url = config.url;
+                    var url = config.url;
 
-                    if(! /(partials)|(template)\//i.test(url)){
+                    if(! /((partials)|(template)\/)|(\.html)/i.test(url)){
 
                     	var currentUser = SessionData.getUser();
                     	if (currentUser){
-                    		uri = new URI(url);
+                    		var uri = new URI(url);
                        		uri.addSearch('authkey', currentUser.api_key);
                        		config.url = uri.toString();
     					}
@@ -22,8 +19,18 @@ angular.module('cloudscalers.SessionServices', ['ng'])
                 return config || $q.when(config);
     	    },
     	    'response': function(response) {
-                $log.log("Response intercepted");
                 return response || $q.when(response);
+            },
+            
+           'responseError': function(rejection) {
+        	   if (rejection.status == 401){
+        		   var uri = new URI($window.location);
+
+       				uri.filename('Login');
+       				uri.fragment('');
+       				$window.location = uri.toString();
+        	   }
+               return $q.reject(rejection);
             }
         };
 	}])

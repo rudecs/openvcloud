@@ -1,10 +1,7 @@
 
-angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionServices'])
+angular.module('cloudscalers.services')
 
-	.config(['$httpProvider',function($httpProvider) {
-        $httpProvider.interceptors.push('authenticationInterceptor');
-	}])
-    .factory('CloudSpace',function ($http, $q, SessionData) {
+	 .factory('CloudSpace',function ($http, $q, SessionData) {
     	return {
             list: function() {
             	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(
@@ -18,6 +15,16 @@ angular.module('cloudscalers.CloudSpaceServices', ['ng','cloudscalers.SessionSer
             },
             setCurrent: function(space) {
                 SessionData.setSpace(space);
+            },
+            create: function(name, accountId) {
+            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspace/create').then(
+            			function(result){
+            				return result.data;
+            			},
+            			function(reason){
+            				$q.defer(reason);
+            			}
+            		);
             },
             addUser: function(space, user, accessType) {
                 var accessString = '';

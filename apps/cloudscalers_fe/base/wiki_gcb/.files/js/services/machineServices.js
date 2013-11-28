@@ -1,11 +1,5 @@
+angular.module('cloudscalers.services')
 
-
-
-angular.module('cloudscalers.machineServices', ['ng','cloudscalers.SessionServices'])
-
-	.config(['$httpProvider',function($httpProvider) {
-        $httpProvider.interceptors.push('authenticationInterceptor');
-	}])
     .factory('Machine', function ($http, $q) {
         $http.defaults.get = {'Content-Type': 'application/json', 'Accept': 'Content-Type: application/json'};
         var machineStates = {

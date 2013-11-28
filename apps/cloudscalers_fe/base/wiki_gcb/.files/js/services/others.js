@@ -57,7 +57,7 @@ function LocalStorageService(keyName, Constructor) {
     return this;
 }
 
-angular.module('cloudscalers.services', ['ngResource'])
+angular.module('cloudscalers.services')
     .factory('SettingsService', function($http) {
         return new LocalStorageService('gcb-settings', undefined, $http);
     })

@@ -9,8 +9,8 @@
         var:accountId str,, Id of acount this cloudspace belongs to
 		var:name str,,name of space to create
 		var:access list,,list of ids of users which have full access to this space
-		var:maxMemoryCapacity int,,max size of memory in space (in GB)
-		var:maxDiskCapacity int,,max size of aggregated disks (in GB)
+		var:maxMemoryCapacity int,,max size of memory in space (in GB) @tags: optional 
+		var:maxDiskCapacity int,,max size of aggregated disks (in GB) @tags: optional 
 		result:int  #returns id of space created
 
 	method:delete

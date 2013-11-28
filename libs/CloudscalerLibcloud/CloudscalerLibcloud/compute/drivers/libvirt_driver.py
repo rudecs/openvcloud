@@ -139,7 +139,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         dnsmasq.addHost(macaddress, ipaddress,name)
-        dnsmasq.reload()
+        dnsmasq.restart()
 
         domain.create()
 
@@ -197,7 +197,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         namespace = 'ns-%s' % self.backendconnection.environmentid
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
         dnsmasq.removeHost(node['macaddress'])
-        dnsmasq.reload()
+        dnsmasq.restart()
 
         self.backendconnection.unregisterMachine(domid)
 
@@ -274,7 +274,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return self.backendconnection.db.get('domain_%s' % node.id)
 
     def _set_persistent_xml(self, node, xml):
-        self.backendconnection.db.set(key='domain_%s' % node.id, value=xml)
+        self.backendconnection.db.set(key='domain_%s' % node.id, obj=xml)
 
     def _remove_persistent_xml(self, node):
         try:
