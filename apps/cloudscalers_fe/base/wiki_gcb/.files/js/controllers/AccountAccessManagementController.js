@@ -16,7 +16,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.loadSpaceAcl = function() {
-            return CloudSpace.get($scope.currentSpace.cloudSpaceId).then(function(space) {
+            return CloudSpace.get($scope.currentSpace.id).then(function(space) {
                 $scope.currentSpace.acl = space.acl;
             });
         };
