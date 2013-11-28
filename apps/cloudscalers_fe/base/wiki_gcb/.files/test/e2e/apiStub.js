@@ -329,8 +329,8 @@ defineApiStub = function ($httpBackend) {
    ]);
 
     var cloudSpace = {
-        name: 'Cloudspace 1',
-        descr: 'Cloudspace 1 descr',
+        name: 'Development',
+        descr: 'Development machine',
         acl: [{
                 "type": "U",
                 "guid": "",
@@ -360,6 +360,45 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var userId = params.userId;
         cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});
+        return [200, 'Success'];
+    });
+
+
+
+
+    /////////////////////////
+    var account = {
+        name: 'Linny Miller',
+        descr: 'Mr. Linny Miller',
+        acl: [{
+                "type": "U",
+                "guid": "",
+                "right": "CXDRAU",
+                "userGroupId": "linny"
+            }, {
+                "type": "U",
+                "guid": "",
+                "right": "CXDRAU",
+                "userGroupId": "harvey"
+            }
+        ]
+    };
+    $httpBackend.whenGET(/^\/accounts\/get\?.*/).respond(account);
+
+    $httpBackend.whenGET(/^\/accounts\/addUser\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var userId = params.userId;
+        if (userId.toLowerCase().indexOf('user') >= 0) {
+            account.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
+            return [200, "Success"];
+        } else {
+            return [500, 'Failed'];
+        }
+    });
+    $httpBackend.whenGET(/^\/accounts\/deleteUser\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var userId = params.userId;
+        account.acl = _.reject(account.acl, function(acl) { return acl.userGroupId == userId});
         return [200, 'Success'];
     });
     

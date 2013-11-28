@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Account', function($scope, CloudSpace, Account) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', function($scope, CloudSpace) {
         $scope.resetUser = function() {
             // For now, we will grant the new user all permissions. See http://<server>/specifications/Security
             $scope.newUser = {
@@ -37,7 +37,6 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.deleteUser = function(space, user) {
-            // TODO: ==================================
             CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).then(function() {
                 $scope.loadSpaceAcl();
             });
