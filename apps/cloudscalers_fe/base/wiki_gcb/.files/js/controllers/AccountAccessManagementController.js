@@ -38,8 +38,8 @@ angular.module('cloudscalers.controllers')
 
         $scope.deleteUser = function(space, user) {
             // TODO: ==================================
-            $scope.cloudSpaceUsers.splice($scope.cloudSpaceUsers.indexOf(user), 1);
-            $scope.unauthorizedUsers.push(user);
-            CloudSpace.deleteUser($scope.currentSpace, user);
+            CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).then(function() {
+                $scope.loadSpaceAcl();
+            });
         };
     }]);
