@@ -22,10 +22,9 @@ describe('CloudSpaceServices', function() {
         expect(CloudSpaceList[2]).toEqual({id: '3', name: 'Cloudspace 3', accountId: '2'});
     });
 
-    // TODO: This will be changed when I 
     it('can add user', function() {
         var addUserResult;
-        CloudSpace.addUser({cloudSpaceId: 1}, {id: 10}, {'R': true}).then(function(result) {
+        CloudSpace.addUser({id: 1}, 'user 10', {'R': true}).then(function(result) {
             addUserResult = result;
         });
         expect(addUserResult).toBeUndefined();
@@ -35,7 +34,7 @@ describe('CloudSpaceServices', function() {
 
     it('can handle user addition failure', function() {
         var addUserResult;
-        CloudSpace.addUser({cloudSpaceId: 1}, {id: 20}, {'R': true}).then(function(result) {
+        CloudSpace.addUser({id: 1}, 'user 20', {'R': true}).then(function(result) {
             addUserResult = result;
         });
         expect(addUserResult).toBeUndefined();
@@ -45,7 +44,7 @@ describe('CloudSpaceServices', function() {
 
     it('can delete user', function() {
         var deleteUserResult;
-        CloudSpace.deleteUser({cloudSpaceId: 1}, {id: 10}).then(function(result) {
+        CloudSpace.deleteUser({id: 1}, 'user 10').then(function(result) {
             deleteUserResult = result;
         });
         expect(deleteUserResult).toBeUndefined();
@@ -55,7 +54,7 @@ describe('CloudSpaceServices', function() {
 
     it('can handle user deletion failure', function() {
         var deleteUserResult;
-        CloudSpace.deleteUser({cloudSpaceId: 1}, {id: 20}).then(function(result) {
+        CloudSpace.deleteUser({id: 1}, 'user 20').then(function(result) {
             deleteUserResult = result;
         });
         expect(deleteUserResult).toBeUndefined();

@@ -1,5 +1,5 @@
-describe("AccountAccessManagementController tests", function(){
-    var $scope, ctrl, $q, $window = {}, $httpBackend, Account, getAccountDefer, addUserDefer;
+describe("CloudSpaceAccessManagementController tests", function(){
+    var $scope, ctrl, $q, $window = {}, $httpBackend, CloudSpace, getCloudSpaceDefer, addUserDefer;
     
     beforeEach(module('cloudscalers'));
     
@@ -9,37 +9,35 @@ describe("AccountAccessManagementController tests", function(){
 		defineUnitApiStub($httpBackend);
 		
         $q = _$q_;
-        getAccountDefer = $q.defer();
+        getCloudSpaceDefer = $q.defer();
         addUserDefer = $q.defer();
-        Account = {
-            get: jasmine.createSpy('get').andReturn(getAccountDefer.promise),
-            addUser: jasmine.createSpy('addUser').andReturn(addUserDefer.promise),
+        CloudSpace = {
+            get: jasmine.createSpy('get').andReturn(getCloudSpaceDefer.promise),
+            addUser: jasmine.createSpy('addUser').andReturn(addUserDefer.promise)
         };
 
         $scope = $rootScope.$new();
         $scope.currentSpace = {
-            cloudSpaceId: 15,
-            accountId: 1
+            cloudSpaceId: 15
         };
-        $scope.currentAccount = {};
-        ctrl = $controller('AccountAccessManagementController', {
+        ctrl = $controller('CloudSpaceAccessManagementController', {
             $scope: $scope,
-            Account: Account
+            CloudSpace: CloudSpace
         });
 
-        getAccountDefer.resolve({
-            name: 'Linny Miller',
-            descr: 'Mr. Linny Miller',
+        getCloudSpaceDefer.resolve({
+            name: 'Development',
+            descr: 'Development machine',
             acl: [{
                     "type": "U",
                     "guid": "",
                     "right": "CXDRAU",
-                    "userGroupId": "linny"
+                    "userGroupId": "user 1"
                 }, {
                     "type": "U",
                     "guid": "",
                     "right": "CXDRAU",
-                    "userGroupId": "harvey"
+                    "userGroupId": "user 2"
                 }
             ]
         });
@@ -53,7 +51,7 @@ describe("AccountAccessManagementController tests", function(){
         addUserDefer.resolve("Success");
         $scope.$digest();
         
-        expect(Account.addUser).toHaveBeenCalled();
+        expect(CloudSpace.addUser).toHaveBeenCalled();
         expect($scope.userError).toEqual(false);
     });
 
@@ -63,7 +61,7 @@ describe("AccountAccessManagementController tests", function(){
         addUserDefer.reject("Failed");
         $scope.$digest();
         
-        expect(Account.addUser).toHaveBeenCalled();
+        expect(CloudSpace.addUser).toHaveBeenCalled();
         expect($scope.userError).toEqual(true);
     });
 

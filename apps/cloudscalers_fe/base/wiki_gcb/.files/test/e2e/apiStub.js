@@ -363,10 +363,6 @@ defineApiStub = function ($httpBackend) {
         return [200, 'Success'];
     });
 
-
-
-
-    /////////////////////////
     var account = {
         name: 'Linny Miller',
         descr: 'Mr. Linny Miller',

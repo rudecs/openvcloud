@@ -96,9 +96,9 @@ defineUnitApiStub = function($httpBackend){
         {id: 2, name: 'User 2', email: 'user2@mysite.com', access: 'RXC'}
     ]);
 
-    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=10/).respond(200, "Success");
-    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=20/).respond(500, "Failed");
-    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=10/).respond(200, "Success");
-    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=20/).respond(500, "Failed");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=user 10/).respond(200, "Success");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/addUser\?cloudSpaceId=1&accesstype=R&userId=user 20/).respond(500, "Failed");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=user 10/).respond(200, "Success");
+    $httpBackend.whenGET(/^testapi\/cloudspaces\/deleteUser\?cloudSpaceId=1&userId=user 20/).respond(500, "Failed");
 };
 
