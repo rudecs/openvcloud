@@ -6,14 +6,19 @@ h1. Access Management
     <table class="table users-table">
         <tr class="header">
             <th class="username-text-container">
-                <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.name"
-                    typeahead="user.name for user in unauthorizedUsers | filter:$viewValue | limitTo:8"
-                    typeahead-editable="false">
+                <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail">
             </th>
             <th><input type="submit" class="btn" value="Add"></input></th>
         </tr>
-        <tr ng-cloak ng-repeat="user in cloudSpaceUsers">
-            <td>{[user.name]}</td>
+        <tr>
+            <td colspan=2 ng-cloak ng-show="userError">
+                <div class="alert alert-error">
+                    This user cannot be added
+                </div>
+            </td>
+        </tr>
+        <tr ng-cloak ng-repeat="user in currentSpace.acl">
+            <td>{[user.userGroupId]}</td>
             <td><a href="#" ng-click="deleteUser(currentSpace, user)" class="icon-remove-sign"></a></td>
         </tr>
     </table>

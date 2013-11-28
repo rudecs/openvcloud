@@ -169,8 +169,8 @@ defineApiStub = function ($httpBackend) {
     		return machine.cloudspaceId == cloudspaceId;
     	}))];
     });
-    $httpBackend.whenGET(/^\/images\/list\?.*/).respond(images);
-    $httpBackend.whenGET(/^\/sizes\/list\?.*/).respond(sizes);
+    $httpBackend.whenGET(/^\/images\/list\b.*/).respond(images);
+    $httpBackend.whenGET(/^\/sizes\/list\b.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var id = Math.random();
@@ -338,12 +338,34 @@ defineApiStub = function ($httpBackend) {
         {id: 6, name: 'User 6', email: 'user6@mysite.com'},
     ]);
 
-    $httpBackend.whenGET(/^\/cloudspaces\/listUsers\?.*/).respond([
-        {id: 1, name: 'User 1', email: 'user1@mysite.com', access: 'RXC'},
-        {id: 2, name: 'User 2', email: 'user2@mysite.com', access: 'RXC'}
-    ]);
+    var acls = [{
+            "type": "U",
+            "guid": "",
+            "right": "CXDRAU",
+            "userGroupId": "user 1"
+        }, {
+            "type": "U",
+            "guid": "",
+            "right": "CXDRAU",
+            "userGroupId": "user 2"
+        }
+    ];
+    $httpBackend.whenGET(/^\/cloudspaces\/get\?.*/).respond({
+        name: 'Cloudspace 1',
+        descr: 'Cloudspace 1 descr',
+        acl: acls
+    });
 
-    $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(200, "Success");
+    $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var userId = params.userId;
+        if (userId.toLowerCase().indexOf('user') >= 0) {
+            acls.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
+            return [200, "Success"];
+        } else {
+            return [500, 'Failed'];
+        }
+    });
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(200, "Success");
 };
 

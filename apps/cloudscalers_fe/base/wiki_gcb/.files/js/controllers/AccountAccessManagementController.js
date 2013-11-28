@@ -3,7 +3,7 @@ angular.module('cloudscalers.controllers')
         $scope.resetUser = function() {
             // For now, we will grant the new user all permissions. See http://<server>/specifications/Security
             $scope.newUser = {
-                name: '', 
+                nameOrEmail: '', 
                 access: {
                     R: true,
                     X: true,
@@ -15,41 +15,29 @@ angular.module('cloudscalers.controllers')
             };
         };
 
+        $scope.loadSpaceAcl = function() {
+            return CloudSpace.get($scope.currentSpace.cloudSpaceId).then(function(space) {
+                $scope.currentSpace.acl = space.acl;
+            });
+        };
+
         $scope.resetUser();
-        CloudSpace.listUsers($scope.currentSpace).then(function(result) {
-            $scope.cloudSpaceUsers = result;
-        });
-
-        Account.listUsers().then(function(result) {
-            $scope.accountUsers = result;
-        });
-
-        $scope.$watch('cloudSpaceUsers + accountUsers', function() {
-            if ($scope.accountUsers && $scope.cloudSpaceUsers) {
-                // This should've been _.difference, but it doesn't support predicates   
-                $scope.unauthorizedUsers = _.filter($scope.accountUsers, function(user) {
-                    return !_.findWhere($scope.cloudSpaceUsers, {id: user.id})
-                });
-            }
-        }, true);
-
-        $scope.userCanBeAdded = function(nameOrEmail) {
-            return _.findWhere($scope.unauthorizedUsers, {'name': $scope.newUser.name});
-        }
+        $scope.loadSpaceAcl();
+        $scope.userError = false;
 
         $scope.addUser = function() {
-            if (!$scope.userCanBeAdded($scope.newUser.name))
-                return false;
-
-            var newUser = _.findWhere($scope.unauthorizedUsers, {name: $scope.newUser.name});
-
-            $scope.cloudSpaceUsers.push(newUser);
-            CloudSpace.addUser($scope.currentSpace, newUser, $scope.newUser.access);
-            $scope.resetUser();
-            return true;
+            return CloudSpace.addUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
+                $scope.loadSpaceAcl().then(function() {
+                    $scope.resetUser();
+                });
+                $scope.userError = false;
+            }, function(result) {
+                $scope.userError = true;
+            });
         };
 
         $scope.deleteUser = function(space, user) {
+            // TODO: ==================================
             $scope.cloudSpaceUsers.splice($scope.cloudSpaceUsers.indexOf(user), 1);
             $scope.unauthorizedUsers.push(user);
             CloudSpace.deleteUser($scope.currentSpace, user);

@@ -26,6 +26,16 @@ angular.module('cloudscalers.services')
             			}
             		);
             },
+            get: function(cloudSpaceId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/get?cloudspaceId=' + cloudSpaceId).then(
+                        function(result){
+                            return result.data;
+                        },
+                        function(reason){
+                            $q.defer(reason);
+                        }
+                    );
+            },
             addUser: function(space, user, accessType) {
                 var accessString = '';
                 for (var x in accessType) {
@@ -34,9 +44,10 @@ angular.module('cloudscalers.services')
                 }
 
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser?cloudSpaceId=' + space.cloudSpaceId +
-                          '&accesstype=' + accessString + '&userId=' + user.id)
-                    .then(function(reason) { return reason.data; },
-                          function(reason) { return reason.data; });
+                          '&accesstype=' + accessString + '&userId=' + user)
+                    .then(function(reason) { 
+                        return reason.data; 
+                    });
             },
             deleteUser: function(space, user) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudSpaceId=' + space.cloudSpaceId + 
