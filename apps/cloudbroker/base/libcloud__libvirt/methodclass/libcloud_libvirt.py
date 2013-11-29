@@ -84,7 +84,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         
         """
         try:
-            ipaddresses = ujson.loads(self.blobdb.get('freeipaddresses'))
+            ipaddresses = self.blobdb.get('freeipaddresses')
         except:
             #no list yet
             ipaddresses = []
@@ -122,12 +122,12 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             lastMac = self.blobdb.get('lastmacaddress')
         except:
             newmacaddr = netaddr.EUI('52:54:00:00:00:00')
-            self.blobdb.set(key='lastmacaddress', obj=int(newmacaddr))
+            self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(int(newmacaddr)))
             lastMac = int(newmacaddr)
         newmacaddr = lastMac + 1 
         macaddr = netaddr.EUI(newmacaddr)
         macaddr.dialect = netaddr.mac_unix 
-        self.blobdb.set(key='lastmacaddress', obj=newmacaddr)
+        self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(newmacaddr))
         return str(macaddr)
     
     
@@ -137,7 +137,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         param:ipaddress string representing the ipaddres to release
         result bool 
         """
-        ipaddresses = ujson.loads(self.blobdb.get('freeipaddresses'))
+        ipaddresses = self.blobdb.get('freeipaddresses')
         ipaddresses.append(ipaddress)
         self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
         return True
