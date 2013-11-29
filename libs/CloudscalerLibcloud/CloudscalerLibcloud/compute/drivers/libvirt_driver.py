@@ -140,7 +140,6 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         dnsmasq.addHost(macaddress, ipaddress,name)
-        dnsmasq.restart()
 
         domain.create()
 
@@ -198,8 +197,6 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         namespace = 'ns-%s' % self.backendconnection.environmentid
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
         dnsmasq.removeHost(node['macaddress'])
-        dnsmasq.restart()
-
         self.backendconnection.unregisterMachine(domid)
 
         diskfiles = self._get_domain_disk_file_names(domain)
