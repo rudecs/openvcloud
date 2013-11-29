@@ -1,6 +1,7 @@
-body{
+html body{
     color:#666;
     background:#fff;
+    font-family: 'Open Sans';
 }
 .topbg { 
      background: url("img/login-bg.png") no-repeat scroll center top / 49% auto rgba(0, 0, 0, 0);
