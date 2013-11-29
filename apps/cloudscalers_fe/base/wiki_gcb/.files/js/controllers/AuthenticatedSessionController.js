@@ -31,7 +31,7 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('cloudspaces', function(){
             if (!$scope.cloudspaces)
                 return;
-            if ($scope.currentSpace && _.findWhere($scope.cloudspaces, {name: $scope.currentSpace.name}))
+            if ($scope.currentSpace && _.findWhere($scope.cloudspaces, {id: $scope.currentSpace.id}))
                 return;
 
             $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
