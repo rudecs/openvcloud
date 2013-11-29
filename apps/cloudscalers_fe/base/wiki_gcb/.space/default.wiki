@@ -87,7 +87,7 @@
     									<label class="control-label" for="inputAccount">Account</label>
     									<div class="controls">
     									
-    										<select ng-model="accountForNewCloudSpace" required ng-options="account.name for account in accounts">
+    										<select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
     										</select>
     									
     									
@@ -96,7 +96,7 @@
                    					<div class="control-group">
     									<label class="control-label" for="inputNewCloudSpaceName">Name</label>
     									<div class="controls">
-      							         	<input ng-model="newCloudSpaceName" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+      							         	<input ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
                                			</div>
   									</div>
                                 </div>

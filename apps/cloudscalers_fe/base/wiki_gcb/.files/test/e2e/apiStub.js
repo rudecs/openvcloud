@@ -318,7 +318,7 @@ defineApiStub = function ($httpBackend) {
         {id: '4', name: 'Incubaid'},
     ]);
 
-    $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond([
+    var cloudspaces = [
        {id: '1', name: 'Default', accountId: '1'},
        {id: '2', name: 'Development', accountId: '2'},
        {id: '3', name: 'Training', accountId: '2'},
@@ -326,7 +326,7 @@ defineApiStub = function ($httpBackend) {
        {id: '4', name: 'Development', accountId: '4'},
        {id: '4', name: 'Acceptance', accountId: '4'},
        {id: '4', name: 'Production', accountId: '4'},
-   ]);
+    ];
 
     var cloudSpace = {
         name: 'Development',
@@ -344,6 +344,8 @@ defineApiStub = function ($httpBackend) {
             }
         ]
     };
+
+    $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond(cloudspaces);
     $httpBackend.whenGET(/^\/cloudspaces\/get\?.*/).respond(cloudSpace);
 
     $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(function(method, url, data) {
@@ -360,6 +362,31 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var userId = params.userId;
         cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});
+        return [200, 'Success'];
+    });
+
+    $httpBackend.whenGET(/^\/cloudspaces\/create.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        if (_.findWhere(cloudspaces, {name: params.name}))
+            return [500, 'Cloudspace already exists'];
+        cloudspaces.push({
+            id: 15,
+            name: params.name, 
+            accountId: params.accountId, 
+            acl: [
+                {
+                    "type": "U",
+                    "guid": "",
+                    "right": "CXDRAU",
+                    "userGroupId": "linny"
+                }, {
+                    "type": "U",
+                    "guid": "",
+                    "right": "CXDRAU",
+                    "userGroupId": "harvey"
+                }
+            ],
+        });
         return [200, 'Success'];
     });
 

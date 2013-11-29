@@ -20,14 +20,18 @@ angular.module('cloudscalers.controllers')
             $scope.accounts = accounts;
         });
 
-        CloudSpace.list().then(function(cloudspaces){
-            $scope.cloudspaces = cloudspaces;
-        });
+        $scope.loadSpaces = function() {
+            return CloudSpace.list().then(function(cloudspaces){
+                $scope.cloudspaces = cloudspaces;
+            });
+        };
+
+        $scope.loadSpaces();
         
         $scope.$watch('cloudspaces', function(){
             if (!$scope.currentSpace && $scope.cloudspaces)
             	$scope.setCurrentCloudspace(_.first($scope.cloudspaces));
-        });
+        }, true);
         
         $scope.$watch('accounts', function(){
         	$scope.setCurrentAccount();
