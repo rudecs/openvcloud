@@ -92,4 +92,18 @@ angular.module('cloudscalers.directives', [])
             }
         };
     })
+    .directive('expandBasedOnHash', function($window, $timeout) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var selection = $window.location.hash.replace('#', '').replace('/', '');
+                if (element.attr('id') == selection) {
+                    // Expand it
+                    element.addClass('in').css('height', 'auto');
+                    // Scroll to show it
+                    element.parents('body').animate({scrollTop: element.siblings('.accordion-heading').offset().top});
+                }
+            }
+        };
+    })
 ;

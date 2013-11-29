@@ -20,7 +20,6 @@ var Application = function () {
 		enableEnhancedAccordion ();
 		enableNavigationHighlight();
 		enablePopups();
-		expandAccordionTab();
 	}
 
 	function enableCirque () {
@@ -119,13 +118,6 @@ var Application = function () {
 	        e.stopPropagation();
 	    });
 	}
-
-	function expandAccordionTab() {
-		var elt = $('.accordion-toggle[href=' + location.hash.replace('/', '') + ']').click();
-		$('body').animate({
-			scrollTop: elt.offset().top
-		});
-	};
 	
 }();
 
