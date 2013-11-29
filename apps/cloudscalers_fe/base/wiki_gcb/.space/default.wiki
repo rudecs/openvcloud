@@ -325,8 +325,4 @@ h2. loading
   	<script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>
-
-    <script>
-      $('.tp').tooltip()
-    </script>
 }}

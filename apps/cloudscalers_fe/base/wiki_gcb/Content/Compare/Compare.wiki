@@ -3,11 +3,11 @@
 <table class="table compare"> 
     <thead><tr><th></th><th>CloudScalers</th><th>amazone</th><th>digital ocean</th></tr></thead>
     <tbody>
-        <tr><td><span class="tp" data-placement="right" data-toggle="tooltip" href="#" data-original-title="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
-		<tr><td><span class="tp" data-placement="right" data-toggle="tooltip" href="#" data-original-title="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-remove-circle"></i></td> </tr>
-		<tr><td><span class="tp" data-placement="right" data-toggle="tooltip" href="#" data-original-title="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> </tr>
-		<tr><td><span class="tp" data-placement="right" data-toggle="tooltip" href="#" data-original-title="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
-		<tr><td><span class="tp" data-placement="right" data-toggle="tooltip" href="#" data-original-title="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
+        <tr><td><span href="#" tooltip="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
+		<tr><td><span href="#" tooltip="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-remove-circle"></i></td> </tr>
+		<tr><td><span href="#" tooltip="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> </tr>
+		<tr><td><span href="#" tooltip="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
+		<tr><td><span href="#" tooltip="text goes here">fast</span></td> <td><i class="icon-ok-circle"></i></td> <td><i class="icon-remove-circle"></i></td> <td><i class="icon-ok-circle"></i></td> </tr>
 
     </tbody>
 </table>
