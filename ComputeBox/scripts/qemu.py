@@ -12,7 +12,6 @@ from string import Template
 from xml.etree import ElementTree
 
 # Some defaults
- command_name = sys.argv[0]
 command_name = sys.argv[0]
 vsctl = "/usr/bin/ovs-vsctl"
 ofctl = "/usr/bin/ovs-ofctl"
