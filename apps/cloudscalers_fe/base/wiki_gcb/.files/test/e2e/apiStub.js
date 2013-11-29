@@ -369,8 +369,9 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         if (_.findWhere(cloudspaces, {name: params.name}))
             return [500, 'Cloudspace already exists'];
+        
         cloudspaces.push({
-            id: 15,
+            id: '15',
             name: params.name, 
             accountId: params.accountId, 
             acl: [
@@ -387,7 +388,7 @@ defineApiStub = function ($httpBackend) {
                 }
             ],
         });
-        return [200, 'Success'];
+        return [200, '15']; // ID = 15
     });
 
     var account = {
