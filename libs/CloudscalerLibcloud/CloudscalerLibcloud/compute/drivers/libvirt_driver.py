@@ -65,7 +65,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         images = self.backendconnection.listImages(self._uri)
         return [self._to_image(image) for image in images]
 
-    def _to_image(self, image): 
+    def _to_image(self, image):
         return NodeImage(
             id=image['id'],
             name=image['name'],
@@ -120,10 +120,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
 
     def _create_node(self, name, diskname, size):
         machinetemplate = self.env.get_template("machine.xml")
+        vxlan = self.backendconnection.environmentid
 
         macaddress = self.backendconnection.getMacAddress()
 
-        machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname,
+        machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
         # next we set the network configuration.
@@ -134,12 +135,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         domain = self.connection.defineXML(machinexml)
         vmid = domain.UUIDString()
         dnsmasq = DNSMasq()
-        namespace = 'ns-%s' % self.backendconnection.environmentid
+        namespace = 'ns-%s' % vxlan
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
 
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         dnsmasq.addHost(macaddress, ipaddress,name)
-        dnsmasq.restart()
 
         domain.create()
 
@@ -197,8 +197,6 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         namespace = 'ns-%s' % self.backendconnection.environmentid
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
         dnsmasq.removeHost(node['macaddress'])
-        dnsmasq.restart()
-
         self.backendconnection.unregisterMachine(domid)
 
         diskfiles = self._get_domain_disk_file_names(domain)
