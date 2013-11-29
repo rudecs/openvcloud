@@ -29,8 +29,12 @@ angular.module('cloudscalers.controllers')
         $scope.loadSpaces();
         
         $scope.$watch('cloudspaces', function(){
-            if (!$scope.currentSpace && $scope.cloudspaces)
-            	$scope.setCurrentCloudspace(_.first($scope.cloudspaces));
+            if (!$scope.cloudspaces)
+                return;
+            if ($scope.currentSpace && _.findWhere($scope.cloudspaces, {name: $scope.currentSpace.name}))
+                return;
+
+            $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
         }, true);
         
         $scope.$watch('accounts', function(){
