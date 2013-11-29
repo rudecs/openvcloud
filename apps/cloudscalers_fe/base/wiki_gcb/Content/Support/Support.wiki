@@ -27,3 +27,6 @@ h2. Support
 
 {{ contact_form }}
 {{div3}}
+{{html:
+    <script src="/$$space/.files/js/controllers/support.js" type="text/javascript"></script>
+}}
