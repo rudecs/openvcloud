@@ -19,6 +19,6 @@ in_port=${port},priority=6000,icmp6,icmp_type=152,action=drop
 # Multicast router termination.
 in_port=${port},priority=6000,icmp6,icmp_type=153,action=drop
 # Fsck all the rest
-in_port=${port},priority=100,action=drop
+in_port=${port},priority=100,action=normal
 
 
