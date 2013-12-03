@@ -1205,3 +1205,6 @@ a.icon-remove-sign {
     clear: none;
     display: inline;
 }
+[role=spinbutton] {
+    outline: none;
+}
