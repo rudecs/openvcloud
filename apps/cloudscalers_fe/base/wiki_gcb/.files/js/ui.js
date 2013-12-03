@@ -20,6 +20,10 @@ var Application = function () {
 		enableEnhancedAccordion ();
 		enableNavigationHighlight();
 		enablePopups();
+
+		setInterval(function() {
+			angular.element('a:has(.icon-camera), a:has(.icon-edit), a:has(.icon-undo), a:has(.icon-copy),a:has(.icon-download)').css('pointer-events', 'none').css('cursor', 'default').css('color', 'gray')
+		}, 100);
 	}
 
 	function enableCirque () {
