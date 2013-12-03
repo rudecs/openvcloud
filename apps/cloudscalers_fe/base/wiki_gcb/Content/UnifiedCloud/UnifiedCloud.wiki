@@ -1,4 +1,13 @@
 @template public
+@col 3
+
+{{div: class=affix}}
+{{navigation}}
+{{div}}
+
+@divend
+
+@col 9
 h2. CloudScalers' Revolutionary Cloud
 
 h3. Unified Cloud
@@ -32,3 +41,7 @@ CloudScalers includes a team with a proven track record in datacentres and cloud
 What makes us so different is that we bring scale, reliability and cost advantages to customers without pushing them in a specific technology direction.
 
 The team offers a counterpoint to the hype surrounding cloud computing by advocating that organisations need to challenge the existing best of breed technologies. Together, this tight knit group has spent the last decade focusing on datacentre and utility computing with the aim of bringing customers truly green, highly available and agile IT platforms. To reach this goal, the team has set about redesigning many of the vital parts of the IT ecosystem for the cloud capable datacentre environment.
+
+
+
+@divend

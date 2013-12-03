@@ -1,5 +1,9 @@
 @template public
 
+
+@col 12
+
+
 {{html:
 
     <carousel interval="15000" ng-cloak>

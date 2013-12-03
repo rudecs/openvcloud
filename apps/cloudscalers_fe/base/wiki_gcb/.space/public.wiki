@@ -31,8 +31,9 @@
 
 
 {{html:
+
 <div ng-app="cloudscalers">
-<div class="subnavbar" >
+<div class="subnavbar">
 
 	<div class="subnavbar-inner">
 	
@@ -102,7 +103,7 @@
 
 	    <div class="container">
 		<div class="row">
-		
+		}}
 
 
   <script src="/$$space/.files/lib/angular-1.2.0/angular.min.js"></script>
@@ -123,19 +124,10 @@
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
-}}
-@col 3
 
-{{div: class=affix}}
-{{navigation}}
-{{div}}
-
-@divend
-
-@col 9
 {content}
 
-@divend
+
 @divend
 
 
@@ -238,7 +230,4 @@
 
 	{{div2}}
 {{div}}
-{{html:
-</div>
-}}
 
