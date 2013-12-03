@@ -52,11 +52,13 @@ angular.module('cloudscalers.services')
         		},
             getSpace : function() {
                 var space = $window.sessionStorage.getItem('gcb:currentSpace');
-                if (!space)
+                if (!space) {   
                     space = $window.localStorage.getItem('gcb:currentSpace');
                 }
-                if (space)
+
+                if (space) {   
                     return JSON.parse(space);
+                }
             },
             setSpace : function(space){
                     if (space){
