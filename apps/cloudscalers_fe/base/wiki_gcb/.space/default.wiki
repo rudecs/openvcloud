@@ -119,7 +119,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../$$space/DesktopBuckets"> <i class="icon-desktop"></i>
+                    <a href="../$$space/My Desktop Buckets"> <i class="icon-desktop"></i>
                         <span>Desktop Buckets</span>
                     </a>
                 </li>

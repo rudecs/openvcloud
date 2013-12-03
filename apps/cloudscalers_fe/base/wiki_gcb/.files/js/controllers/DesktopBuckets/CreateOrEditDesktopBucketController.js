@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('CreateDesktopBucketController', ['$scope', '$window', 'DesktopBucketService', function($scope, $window, DesktopBucketService) {
+    .controller('CreateOrEditDesktopBucketController', ['$scope', '$window', 'DesktopBucketService', function($scope, $window, DesktopBucketService) {
         var bucketId = $window.location.hash.replace('#', '').replace('/', '');
         $scope.bucket = DesktopBucketService.getById(bucketId);
         if (!$scope.bucket) {

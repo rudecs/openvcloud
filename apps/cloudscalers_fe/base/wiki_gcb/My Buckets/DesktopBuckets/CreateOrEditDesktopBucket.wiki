@@ -2,7 +2,7 @@
 
 {{html:
 
-<form class="form-horizontal" ng-app="myApp" ng-controller="CreateDesktopBucketController">
+<form class="form-horizontal" ng-app="myApp" ng-controller="CreateOrEditDesktopBucketController">
 <fieldset>
 <div class="control-group">
     <label class="control-label" for="appendedtext">Set User Login</label>
@@ -30,7 +30,7 @@
 
 </fieldset>
 </form>
-<script src="/$$space/.files/js/controllers/DesktopBuckets/CreateDesktopBucketController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/controllers/DesktopBuckets/CreateOrEditDesktopBucketController.js" type="text/javascript"></script>
 <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
 
 }}
