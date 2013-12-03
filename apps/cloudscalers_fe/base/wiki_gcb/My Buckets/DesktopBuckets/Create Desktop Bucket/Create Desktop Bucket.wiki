@@ -7,12 +7,14 @@ h2. Create Desktop Bucket
 
 {{include:CreateOrEditDesktopBucket}}
 <div class="form-actions">
-    <button class="btn btn-info btn-large " ng-disabled="!bucket.isValid()" ng-click="create()">Create Desktop Bucket</button>
-
+    <button class="btn btn-info btn-large " ng-disabled="!isValid()" ng-click="create()">Create Desktop Bucket</button>
 </div>
 
 </fieldset>
 </form>
+<script src="/$$space/.files/js/controllers/DesktopBuckets/CreateDesktopBucketController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
+
 
 }}
 

@@ -7,7 +7,7 @@ h2. Desktop Buckets Settings
     <div class="control-group">
         <label class="control-label" for="textinput">Domain</label>
         <div class="controls">
-            <input id="textinput" name="textinput" type="text" class="input-xlarge" ng-model="bucket.projectName">
+            <input id="textinput" name="textinput" type="text" class="input-xlarge" ng-model="settings.domain">
         </div>
     </div>
     <hr>    
@@ -15,7 +15,7 @@ h2. Desktop Buckets Settings
         <label class="control-label" for="appendedtext">Choose Private Storage Drive Size</label>
         <div class="controls">
             <div class="input-append">
-                <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="2" type="number" ng-model="bucket.storage">    
+                <input id="appendedtext" name="appendedtext" class="input-mini" placeholder="2" type="number" ng-model="settings.storage">    
                 <span class="add-on">GB</span>
             </div>
 
@@ -25,18 +25,18 @@ h2. Desktop Buckets Settings
     <div class="control-group">
         <label class="control-label" for="checkboxes">Choose Hosting Location</label>
         <div class="controls">
-            <div class="btn-group">
-                <button type="button" class="btn btn-selector" ng-model="bucket.locations[0]" btn-checkbox>Ghent, Belgium</button>
-                <button type="button" class="btn btn-selector" ng-model="bucket.locations[1]" btn-checkbox>Bruges, Belgium</button>
-                <button type="button" class="btn btn-selector" ng-model="bucket.locations[2]" btn-checkbox>Lenoir, NC, USA</button>
-            </div>
+            <button type="button" class="btn btn-selector" ng-model="settings.locations[0]" btn-checkbox>Ghent, Belgium</button>
+            <button type="button" class="btn btn-selector" ng-model="settings.locations[1]" btn-checkbox>Bruges, Belgium</button>
+            <button type="button" class="btn btn-selector" ng-model="settings.locations[2]" btn-checkbox>Lenoir, NC, USA</button>
         </div>
     </div>
     <div class="form-actions">
-        <button class="btn btn-info btn-large " ng-disabled="!bucket.isValid()" ng-click="save()">Save Desktop Buckets Settings</button>
+        <button class="btn btn-info btn-large " ng-disabled="!isValid()" ng-click="save()">Save Desktop Buckets Settings</button>
     </div>
 </fieldset>
 </form>
+<script src="/$$space/.files/js/controllers/DesktopBuckets/EditDesktopBucketController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
 
 }}
 

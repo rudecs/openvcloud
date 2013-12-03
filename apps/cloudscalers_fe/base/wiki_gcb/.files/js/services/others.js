@@ -62,7 +62,16 @@ angular.module('cloudscalers.services')
         return new LocalStorageService('gcb-settings', undefined, $http);
     })
     .factory('DesktopBucketService', function($http) {
-        return new LocalStorageService('gcb-desktop-buckets', undefined, $http);
+        var DesktopBucketService = new LocalStorageService('gcb-desktop-buckets', undefined, $http);
+
+        DesktopBucketService.loadSettings = function() {
+            if (localStorage.getItem('gcb-desktop-buckets-settings'))
+                return JSON.parse(localStorage.getItem('gcb-desktop-buckets-settings'));
+        };
+        DesktopBucketService.saveSettings = function(settings) {
+            localStorage.setItem('gcb-desktop-buckets-settings', JSON.stringify(settings));
+        };
+        return DesktopBucketService;
     })
     .factory('DNSService', function($http) {
         return new LocalStorageService('gcb-domains', undefined, $http);
