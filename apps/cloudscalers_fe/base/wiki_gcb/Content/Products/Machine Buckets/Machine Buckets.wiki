@@ -34,6 +34,8 @@ h3. Screenshots
 {{html: <hr> }}
 h3. Machine Buckets Pricing
 
+{{css:/$$space/.files/lib/jquery-ui/jquery-ui.min.css}}
+
 {{html:
 <div ng-app="cloudscalers">
 <div  ng-controller="MachinePricingController"     class="dbox">
@@ -78,6 +80,7 @@ h3. Machine Buckets Pricing
 </div>
 </div>
 
+   <script src="/$$space/.files/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
    <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
    <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
  
