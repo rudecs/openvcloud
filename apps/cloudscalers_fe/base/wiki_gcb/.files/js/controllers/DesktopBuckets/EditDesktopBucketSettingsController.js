@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('EditDesktopBucketController', ['$scope', '$routeParams', 'DesktopBucketService', function($scope, $routeParams, DesktopBucketService) {
+    .controller('EditDesktopBucketSettingsController', ['$scope', '$routeParams', 'DesktopBucketService', function($scope, $routeParams, DesktopBucketService) {
         if (DesktopBucketService.loadSettings())
             $scope.settings = DesktopBucketService.loadSettings();
         else 
