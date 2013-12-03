@@ -1,9 +1,12 @@
+@template public
+
+
 h2. Pricing
 
 Discover our very attractive pricing and freedom to finetune a package to your needs!
 
 {{html:
-<div ng-app="cloudscalers">
+<div>
 <h4> Machine Buckets </h4>
 <div  ng-controller="MachinePricingController"     class="dbox">
 <span>Use the sliders to configure the requirements for your Virtual Machine</span>. <br><br>
@@ -64,4 +67,9 @@ Discover our very attractive pricing and freedom to finetune a package to your n
 </div>
 </div>
 </div>
+
+
+    <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
+    <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/DesktopBuckets/DesktopPricingController.js" type="text/javascript"></script>
 }}

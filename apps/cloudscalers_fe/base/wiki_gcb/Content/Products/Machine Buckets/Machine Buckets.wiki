@@ -1,3 +1,5 @@
+@template public
+
 h2. Machine Buckets
 
 Machine Buckets are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
@@ -75,4 +77,8 @@ h3. Machine Buckets Pricing
    </p>
 </div>
 </div>
+
+   <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
+   <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
+ 
 }}

@@ -1,3 +1,4 @@
+@template public
 h2. CloudScalers' Revolutionary Cloud
 
 h3. Unified Cloud
