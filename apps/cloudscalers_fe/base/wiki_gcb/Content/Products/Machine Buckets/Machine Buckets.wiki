@@ -81,7 +81,6 @@ h3. Machine Buckets Pricing
 </div>
 
    <script src="/$$space/.files/lib/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
-   <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
    <script src="/$$space/.files/js/controllers/MachineBuckets/MachinePricingController.js" type="text/javascript"></script>
  
 }}

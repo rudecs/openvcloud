@@ -59,11 +59,10 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         cs = self.cb.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
-        for userid in access:
-            ace = cs.new_acl()
-            ace.userGroupId = userid
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
+        ace = cs.new_acl()
+        ace.userGroupId = access
+        ace.type = 'U'
+        ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         return self.cb.models.cloudspace.set(cs.obj2dict())
