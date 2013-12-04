@@ -1,7 +1,7 @@
 import md5
 
 class DummyConnection():
-    
+
     def listSizes(self):
         sizes = [{'memory': '1750', 'vcpus': 1, 'disk': 40, 'guid':
             '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 1, 'name': u'BIG',
