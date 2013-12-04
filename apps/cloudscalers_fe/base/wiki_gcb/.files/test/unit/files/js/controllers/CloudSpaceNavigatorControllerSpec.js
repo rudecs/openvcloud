@@ -55,7 +55,7 @@ describe("CloudSpaceNavigatorController", function(){
     	
     	it('calls CloudSpace service with correct parameters', function(){
     		var newCloudSpaceName = 'myawesome new cloudspace number ' + Math.random();
- 	    	$scope.currentUser = {id:45}
+ 	    	$scope.currentUser = {username:'Lenny'}
     		var dialogresult = $q.defer();
  	    	
  	    	$modal.open.andReturn({result:dialogresult.promise});
@@ -68,7 +68,7 @@ describe("CloudSpaceNavigatorController", function(){
  	    		dialogresult.resolve({name:newCloudSpaceName, accountId:78 });
  	    	});
  	    	
- 	    	expect(CloudSpace.create).toHaveBeenCalledWith(newCloudSpaceName, 78, 45);	
+ 	    	expect(CloudSpace.create).toHaveBeenCalledWith(newCloudSpaceName, 78, 'Lenny');	
     	});
     	
     });

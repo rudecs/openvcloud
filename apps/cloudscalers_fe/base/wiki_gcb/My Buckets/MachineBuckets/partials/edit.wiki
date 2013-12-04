@@ -88,28 +88,6 @@ h2. Manage Machine Bucket
 
                         </li>
                         <li>
-                            <a ng-click="renameMachine()">
-                                <i class="icon-edit"></i>
-                                Rename
-                            </a>
-                            
-							<script type="text/ng-template" id="renameMachineDialog.html"> 
-                                <div class="modal-header">
-                                    <h3>Rename</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <ul>
-                                        Name: <input ng-model="oldName" type="text" class="input-large" placeholder="Name"/>
-                                    </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="ok()">Ok</button>
-                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
-                                </div>
-                             </script>   
-                                
-                        </li>
-                        <li>
                             <a ng-click="destroy()">
                                 <i class=" icon-remove-circle"></i>
                                 Destroy

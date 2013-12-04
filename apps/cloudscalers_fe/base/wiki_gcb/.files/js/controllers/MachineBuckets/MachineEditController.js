@@ -88,39 +88,6 @@ angular.module('cloudscalers.controllers')
         };
 
         
-        
-
-    	var RenameMachineController= function ($scope, $modalInstance) {
-
-    		$scope.machineName = '';
-
-      		$scope.ok = function () {
-        			$modalInstance.close($scope.machineName);
-      		};
-
-      		$scope.cancel = function () {
-        			$modalInstance.dismiss('cancel');
-      		};
-    	};
-        
-        
-        
-        
-        $scope.renameMachine = function() {
-
-    		var modalInstance = $modal.open({
-          			templateUrl: 'renameMachineDialog.html',
-          			controller: RenameMachineController,
-          			resolve: {
-          			}
-        		});
-
-        		modalInstance.result.then(function (newName) {
-                    Machine.rename($scope.machine, newName);
-        		});
-
-        };
-
     	var CloneMachineController= function ($scope, $modalInstance) {
 
     		$scope.clone ={name: ''};

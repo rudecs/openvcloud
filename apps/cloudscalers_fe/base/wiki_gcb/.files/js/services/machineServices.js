@@ -67,17 +67,6 @@ angular.module('cloudscalers.services')
                     .error(function(data, status, headers, config) {
                     });
             },
-            rename: function(machine, newName) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + machine.id + '&name=' + newName +
-                        '&size=' + machine.size +
-                        '&description=' + machine.description;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
-                        machine.name = newName;
-                    })
-                    .error(function(data, status, headers, config) {
-                    });
-            },
             delete: function (machineid) {
                 var result = []
                 url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
