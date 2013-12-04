@@ -49,10 +49,8 @@ angular.module('cloudscalers.controllers')
                 modalInstance.result.then(function (space) {
                     CloudSpace.create(space.name, space.accountId, $scope.currentUser.username).then(
                         function (cloudspaceId) {
-                            $scope.loadSpaces().then(function() {
-                                buildAccountCloudSpaceHierarchy();
-                                $scope.setCurrentCloudspace(_.findWhere($scope.cloudspaces, {id: cloudspaceId}));
-                            });
+                        	$scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
+                            $scope.loadSpaces();
                         },
                         function (result) {
                             //TODO: show error

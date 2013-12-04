@@ -23,6 +23,7 @@ angular.module('cloudscalers.controllers')
         $scope.loadSpaces = function() {
             return CloudSpace.list().then(function(cloudspaces){
                 $scope.cloudspaces = cloudspaces;
+                return cloudspaces;
             });
         };
 
