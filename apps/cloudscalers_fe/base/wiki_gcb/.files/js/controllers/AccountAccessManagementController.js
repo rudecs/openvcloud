@@ -33,7 +33,10 @@ angular.module('cloudscalers.controllers')
                 });
                 $scope.userError = false;
             }, function(result) {
-                $scope.userError = true;
+                if (result.status == 404)
+                    $scope.userError = 'User not found';
+                else if (result.status == 500)
+                    $scope.userError = 'Internal server error';
             });
         };
 

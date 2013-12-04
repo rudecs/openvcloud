@@ -350,12 +350,14 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        var userId = params.userId;
-        if (userId.toLowerCase().indexOf('user') >= 0) {
+        var userId = params.userId.toLowerCase();
+        if (userId.indexOf('user') >= 0) {
             cloudSpace.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
             return [200, "Success"];
+        } else if (userId.indexOf('not found') >= 0) {
+            return [404, 'User not found'];
         } else {
-            return [500, 'Failed'];
+            return [500, 'Server error'];
         }
     });
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(function(method, url, data) {
@@ -411,12 +413,14 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/accounts\/addUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        var userId = params.userId;
-        if (userId.toLowerCase().indexOf('user') >= 0) {
+        var userId = params.userId.toLowerCase();
+        if (userId.indexOf('user') >= 0) {
             account.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
             return [200, "Success"];
+        } else if (userId.indexOf('not found') >= 0) {
+            return [404, 'User not found'];
         } else {
-            return [500, 'Failed'];
+            return [500, 'Server error'];
         }
     });
     $httpBackend.whenGET(/^\/accounts\/deleteUser\?.*/).respond(function(method, url, data) {

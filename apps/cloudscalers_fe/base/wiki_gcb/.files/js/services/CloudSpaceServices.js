@@ -46,7 +46,7 @@ angular.module('cloudscalers.services')
                           '&accesstype=' + accessString + '&userId=' + user)
                     .then(function(reason) { 
                         return reason.data; 
-                    }, function(result) { return result.data; });
+                    });
             },
             deleteUser: function(space, userId) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id + 
