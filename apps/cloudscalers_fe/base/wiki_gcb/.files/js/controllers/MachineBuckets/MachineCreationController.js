@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', function($scope, $timeout, $location, $window, Machine, alert) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', '$rootScope', function($scope, $timeout, $location, $window, Machine, alert, $rootScope) {
         $scope.machine = {
             name: '',
             description: '',
