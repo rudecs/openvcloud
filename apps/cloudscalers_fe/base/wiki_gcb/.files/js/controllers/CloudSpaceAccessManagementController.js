@@ -36,6 +36,8 @@ angular.module('cloudscalers.controllers')
                     $scope.userError = 'User not found';
                 else if (result.status == 500)
                     $scope.userError = 'Internal server error';
+                else
+                    $scope.userError = 'An error has occurred';
             });
         };
 

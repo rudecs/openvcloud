@@ -356,6 +356,8 @@ defineApiStub = function ($httpBackend) {
             return [200, "Success"];
         } else if (userId.indexOf('not found') >= 0) {
             return [404, 'User not found'];
+        } else if (userId.indexOf('eee') >= 0) {
+            return [3000, 'Unspecified error'];
         } else {
             return [500, 'Server error'];
         }
@@ -419,6 +421,8 @@ defineApiStub = function ($httpBackend) {
             return [200, "Success"];
         } else if (userId.indexOf('not found') >= 0) {
             return [404, 'User not found'];
+        } else if (userId.indexOf('eee') >= 0) {
+            return [3000, 'Unspecified error'];
         } else {
             return [500, 'Server error'];
         }
