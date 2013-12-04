@@ -18,7 +18,7 @@ angular.module('cloudscalers.services')
             create: function(name, accountId, userId) {
             	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId)).then(
             			function(result){
-            				return result.data;
+            				return JSON.parse(result.data);
             			},
             			function(reason){
             				$q.defer(reason);
