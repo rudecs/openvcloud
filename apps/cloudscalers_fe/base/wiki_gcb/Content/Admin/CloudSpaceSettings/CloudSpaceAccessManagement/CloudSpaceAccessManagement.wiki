@@ -13,7 +13,7 @@ h1. Access Management
         <tr>
             <td colspan=2 ng-cloak ng-show="userError">
                 <div class="alert alert-error">
-                    This user cannot be added
+                    {[ userError ]}
                 </div>
             </td>
         </tr>
