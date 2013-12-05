@@ -40,7 +40,7 @@ h3. Start now and create your Machine Bucket
       <th>Storage</th>
     </tr>
     <tbody>
-      <tr ng-repeat="machine in machines">
+      <tr ng-repeat="machine in machines | filter:machineIsManageable">
         <td>{[machine.status]}</td>
         <td>
           <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
