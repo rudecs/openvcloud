@@ -112,39 +112,88 @@ defineApiStub = function ($httpBackend) {
     }
 
     var images = [
-        {id: 0, type: 'Ubuntu', name: 'Ubuntu 13.04 x64', description: 'Ubuntu 13.04 x64'},
-        {id: 1, type: 'Ubuntu', name: 'Ubuntu 13.04 x32', description: 'Ubuntu 13.04 x32'},
-        {id: 2, type: 'Ubuntu', name: 'Ubuntu 12.10 x64', description: 'Ubuntu 12.10 x64'},
-        {id: 3, type: 'Ubuntu', name: 'Ubuntu 12.10 x32', description: 'Ubuntu 12.10 x32'},
-        {id: 4, type: 'Ubuntu', name: 'Ubuntu 12.04 x64', description: 'Ubuntu 12.04 x64'},
-        {id: 5, type: 'Ubuntu', name: 'Ubuntu 12.04 x32', description: 'Ubuntu 12.04 x32'},
-        {id: 6, type: 'Ubuntu', name: 'Ubuntu 10.04 x64', description: 'Ubuntu 10.04 x64'},
-        {id: 7, type: 'Ubuntu', name: 'Ubuntu 10.04 x32', description: 'Ubuntu 10.04 x32'},
-        {id: 8, type: 'CentOS', name: 'CentOS 6.4 x64', description: 'CentOS 6.4 x64'},
-        {id: 9, type: 'CentOS', name: 'CentOS 6.4 x32', description: 'CentOS 6.4 x32'},
-        {id: 10, type: 'CentOS', name: 'CentOS 5.8 x64', description: 'CentOS 5.8 x64'},
-        {id: 11, type: 'CentOS', name: 'CentOS 5.8 x32', description: 'CentOS 5.8 x32'},
-        {id: 12, type: 'Debian', name: 'Debian 7.0 x64', description: 'Debian 7.0 x64'},
-        {id: 13, type: 'Debian', name: 'Debian 7.0 x32', description: 'Debian 7.0 x32'},
-        {id: 14, type: 'Debian', name: 'Debian 6.0 x64', description: 'Debian 6.0 x64'},
-        {id: 15, type: 'Debian', name: 'Debian 6.0 x32', description: 'Debian 6.0 x32'},
-        {id: 16, type: 'Arch Linux', name: 'Arch Linux 2013.05 x64', description: 'Arch Linux 2013.05 x64'},
-        {id: 17, type: 'Arch Linux', name: 'Arch Linux 2013.05 x32', description: 'Arch Linux 2013.05 x32'},
-        {id: 18, type: 'Fedora', name: 'Fedora 17 x64', description: 'Fedora 17 x64'},
-        {id: 19, type: 'Fedora', name: 'Fedora 17 x32', description: 'Fedora 17 x32'},
+        {
+            "name": "Windows 2008 Server",
+            "UNCPath": "",
+            "description": "",
+            "type": "Windows",
+            "id": 2,
+            "size": 50
+        },
+        {
+            "name": "Linux 13.04 image",
+            "UNCPath": "",
+            "description": "",
+            "type": "Ubuntu",
+            "id": 1,
+            "size": 50
+        }
     ];
 
     var sizes = [
-        {id: 0, CU: 1, disksize: '512MB', 'name': '512MB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 7.5 USD/month'},
-        {id: 1, CU: 1, disksize: '1GB', 'name': '1GB Memory, 1 Core, 10GB at SSD Speed, Unlimited Transfer - 15 USD/month'},
-        {id: 2, CU: 2, disksize: '2GB', 'name': '2GB Memory, 2 Cores, 10GB at SSD Speed, Unlimited Transfer - 18 USD/month'},
-        {id: 3, CU: 2, disksize: '4GB', 'name': '4GB Memory, 2 Cores, 10GB at SSD Speed, Unlimited Transfer - 36 USD/month'},
-        {id: 4, CU: 4, disksize: '8GB', 'name': '8GB Memory, 4 Cores, 10GB at SSD Speed, Unlimited Transfer - 70 USD/month'},
-        {id: 5, CU: 8, disksize: '16GB', 'name': '16GB Memory, 8 Cores, 10GB at SSD Speed, Unlimited Transfer - 140 USD/month'},
-        {id: 6, CU: 12, disksize: '32GB', 'name': '32GB Memory, 12 Cores, 10GB at SSD Speed, Unlimited Transfer - 250 USD/month'},
-        {id: 7, CU: 16, disksize: '48GB', 'name': '48GB Memory, 16 Cores, 10GB at SSD Speed, Unlimited Transfer - 350 USD/month'},
-        {id: 8, CU: 20, disksize: '64GB', 'name': '64GB Memory, 20 Cores, 10GB at SSD Speed, Unlimited Transfer - 465 USD/month'},
-    //        {id: 9, CU: 24, disksize: '96GB', 'name': '96GB Memory, 24 Cores, 10GB at SSD Speed, Unlimited Transfer - 700 USD/month'},
+        {
+        "vcpus": 4,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 70 USD/month",
+        "id": 4,
+        "name": "",
+        "memory": 8192
+        },
+        {
+        "vcpus": 8,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 140 USD/month",
+        "id": 5,
+        "name": "",
+        "memory": 16384
+        },
+        {
+        "vcpus": 1,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 7.5 USD/month",
+        "id": 1,
+        "name": "",
+        "memory": 512
+        },
+        {
+        "vcpus": 12,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 250 USD/month",
+        "id": 6,
+        "name": "",
+        "memory": 32768
+        },
+        {
+        "vcpus": 1,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 15 USD/month",
+        "id": 2,
+        "name": "",
+        "memory": 1024
+        },
+        {
+        "vcpus": 16,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 350 USD/month",
+        "id": 7,
+        "name": "",
+        "memory": 49152
+        },
+        {
+        "vcpus": 2,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 18 USD/month",
+        "id": 3,
+        "name": "",
+        "memory": 2048
+        },
+        {
+        "vcpus": 20,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 465 USD/month",
+        "id": 8,
+        "name": "",
+        "memory": 65536
+        },
+        {
+        "vcpus": 2,
+        "description": "10GB at SSD Speed, Unlimited Transfer - 36 USD/month",
+        "id": 10,
+        "name": "",
+        "memory": 4096
+        }
     ];
 
     var actionlist = {
@@ -175,19 +224,19 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var id = Math.random();
         var machine = {
-            "status": "RUNNING",
-            "cloudspaceId": params.cloudspaceId,
-            "hostname": params.name,
-            "description": params.description,
-            "name": params.name,
-            "interfaces": [{'ipAddress':'192.168.100.34'}],
-            "sizeId": params.sizeId,
-            "imageId": params.imageId,
-            disksize: params.disksize,
+            status: "RUNNING",
+            cloudspaceId: parseInt(params.cloudspaceId),
+            hostname: params.name,
+            description: params.description,
+            name: params.name,
+            interfaces: [{'ipAddress':'192.168.100.34'}],
+            sizeId: parseInt(params.sizeId),
+            imageId: parseInt(params.imageId),
+            disksize: parseInt(params.disksize),
             archive: params.archive,
             region: params.region,
             replication: params.replication,
-            "id": id
+            id: id
         };
         MachinesList.add(machine);
         return [200, id];

@@ -9,7 +9,20 @@ angular.module('cloudscalers.controllers')
 
         $scope.imagesList = [];
         $scope.machineinfo = {};
-        
+
+        var updateMachineSize = function(){
+            if ($scope.oldMachine) {
+                $scope.machineinfo = {};
+                if ($scope.sizes && $scope.machine.sizeId)
+                    $scope.machineinfo['size'] = _.findWhere($scope.sizes, { id: parseInt($scope.machine.sizeId) });
+
+                if ($scope.images && $scope.machine.imageId)
+                    $scope.machineinfo['image'] = _.findWhere($scope.images, { id: parseInt($scope.machine.imageId) });
+                
+                $scope.machineinfo['storage'] = $scope.machine.disksize;
+            }
+        };
+
         $scope.$watch('images', function() {
             $scope.imagesList = _.flatten(_.values(_.object($scope.images)));
         });
@@ -17,17 +30,6 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('machine', function() {
             angular.copy($scope.machine, $scope.oldMachine);
         }, true);
-
-
-
-        var updateMachineSize = function(){
-            $scope.machineinfo = {};
-            size = _.findWhere($scope.sizes, { id: $scope.machine.sizeid });
-            $scope.machineinfo['size'] = size;
-            image = _.findWhere($scope.images, { id: $scope.machine.imageid });
-            $scope.machineinfo['image'] = image;
-            $scope.machineinfo['storage'] = $scope.machine.storage;
-        };
 
         $scope.$watch('machine', updateMachineSize, true);
         $scope.$watch('sizes', updateMachineSize, true);
