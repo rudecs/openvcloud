@@ -68,15 +68,15 @@ angular.module('cloudscalers.services')
                     });
             },
             delete: function (machineid) {
-                var result = []
                 url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        result.success = true;
-                    }).error(function (data, status, heades, config) {
-                    result.error = status;
-                });
-                return result;
+                return $http.get(url).then(
+                    function (result) {
+                        return;
+                    },
+                    function(reason){
+                    	return $q.reject(reason);
+                    }
+                    );
             },
             list: function (cloudspaceid) {
                 url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';

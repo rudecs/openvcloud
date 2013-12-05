@@ -36,14 +36,19 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result bool
 
         """
-        cs = self.cb.models.cloudspace.new()
-        cloudspace = self.cb.model_cloudspace_get(cloudspaceId)
-        cs.dict2obj(cloudspace)
-        acl = cs.new_acl()
-        acl.userGroupId = userId
-        acl.type = 'U'
-        acl.right = accesstype
-        return self.cb.models.cloudspace.set(cs.obj2dict())
+        
+        ctx = kwargs['ctx']
+        if not j.apps.system.usermanager.userexists(userId):
+            ctx.start_response('404 Not Found', [])
+        else:
+            cs = self.cb.models.cloudspace.new()
+            cloudspace = self.cb.model_cloudspace_get(cloudspaceId)
+            cs.dict2obj(cloudspace)
+            acl = cs.new_acl()
+            acl.userGroupId = userId
+            acl.type = 'U'
+            acl.right = accesstype
+            return self.cb.models.cloudspace.set(cs.obj2dict())
 
     @authenticator.auth(acl='A')
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
