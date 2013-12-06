@@ -10,6 +10,7 @@ import os
 import uuid
 import libvirt
 import urlparse
+import json
 POOLNAME = 'VMStor'
 POOLPATH = '/mnt/%s' % POOLNAME.lower()
 libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
@@ -74,9 +75,12 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                    'size': image['size'],
                    'imagetype': image['type']}
         )
+    def _execute_agent_job(self, name, params):
+        job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name, 'node', args=params, timeout=60, wait=True)
+        result = json.loads(job['result'])
+        return result
 
     def _create_disk(self, size, image):
-        storagepool = self.connection.storagePoolLookupByName(POOLNAME)
         disktemplate = self.env.get_template("disk.xml")
         diskname = str(uuid.uuid4()) + '.qcow2'
         diskbasevolume = image.extra['path']
@@ -84,7 +88,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
         # 0 means not to preallocate data
-        storagepool.createXML(diskxml, 0)
+        self._execute_agent_job('createdisk', {'diskxml': diskxml, 'poolname': POOLNAME})
         return diskname
 
     def create_node(self, name, size, image, location=None, auth=None):
@@ -127,13 +131,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
-        # next we set the network configuration.
-
-        network = self.connection.networkLookupByName('default')
 
         # 0 means default behaviour, e.g machine is auto started.
-        domain = self.connection.defineXML(machinexml)
-        vmid = domain.UUIDString()
+
+        result = self._execute_agent_job('createmachine', {'machinexml': machinexml})
+        vmid = result['id']
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % vxlan
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
@@ -141,10 +143,9 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         dnsmasq.addHost(macaddress, ipaddress,name)
 
-        domain.create()
-
-        node = self._to_node(domain, ipaddress)
-        self._set_persistent_xml(node, domain.XMLDesc(0))
+        node = self._from_agent_to_node(result, ipaddress)
+        print result
+        self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
     def ex_snapshot(self, node, name, snapshottype='internal'):
@@ -219,33 +220,28 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
     def list_nodes(self):
         noderesult = []
         nodes = self.backendconnection.listNodes()
-        for x in self.connection.listAllDomains(0):
-            if x.UUIDString() in nodes:
-                ipaddress = nodes[x.UUIDString()]['ipaddress']
+        result = self._execute_agent_job('listmachines', {})
+        for x in result:
+            if x['id'] in nodes:
+                ipaddress = nodes['id']['ipaddress']
             else:
                 ipaddress = ''
-            noderesult.append(self._to_node(x, ipaddress))
+            noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
     def ex_stop(self, node):
-        domain = self._get_domain_for_node(node=node)
-        return domain.destroy() == 0
+        machineid = node.id
+        return self._execute_agent_job('stopmachine', {'machineid': machineid})
 
     def ex_reboot(self, node):
-        domain = self._get_domain_for_node(node=node)
-        return domain.reset() == 0
+        machineid = node.id
+        return self._execute_agent_job('rebootmachine', {'machineid': machineid})
 
     def ex_start(self, node):
-        try:
-            domain = self._get_domain_for_node(node=node)
-        except libvirt.libvirtError, e:
-            if e.get_error_code() == libvirt.VIR_ERR_NO_DOMAIN:
-                xml = self._get_persistent_xml(node)
-                domain = self.connection.defineXML(xml)
-            else:
-                raise
-        return domain.create() == 0
-
+        xml = ''
+        machineid = node.id 
+        return self._execute_agent_job('startmachine', {'machineid': machineid, 'xml':xml})
+ 
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain.XMLDesc(0))
@@ -295,4 +291,15 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+
+    def _from_agent_to_node(self, domain, publicipaddress=''):
+        print domain
+        state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
+
+        extra = domain['extra']
+        node = Node(id=domain['id'], name=domain['name'], state=domain['state'],
+                    public_ips=[publicipaddress], private_ips=[], driver=self,
+                    extra=extra)
+        return node
+
 
