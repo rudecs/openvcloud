@@ -10,7 +10,11 @@ angular.module('cloudscalers.controllers')
     			});
     		}
     	});
-        
+       
+    	$scope.machineIsManageable = function(machine){
+    		return machine.status != 'DESTROYED';
+    	}
+    	
         $scope.sizes = Size.list();
         $scope.images = Image.list();
         $scope.machineinfo = {};
