@@ -5,7 +5,8 @@ angular.module('cloudscalers.directives', [])
 	    return {
 	        restrict: 'A',
 	        link: function (scope, elem, attrs) {
-			var updateState = function(rfb, state, oldstate, msg) {
+                scope.showPlaceholder = false;
+                var updateState = function(rfb, state, oldstate, msg) {
             			var s, sb, cad, level;
             			s = $D('noVNC_status');
             			cad = $D('sendCtrlAltDelButton');
@@ -41,12 +42,17 @@ angular.module('cloudscalers.directives', [])
     			}
         
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
-        		    connect(newValue);
+                    if (newValue && newValue.host) {
+                        connect(newValue);
+                        scope.showPlaceholder = false;
+                    }
+                    else
+                        scope.showPlaceholder = true;
         		}, true);
 			
 
 	        },
-		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;">\
+		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;" ng-show="!showPlaceholder">\
                 <table border=0 width="100%"><tr>\
 <td width="20%">\
 <input id="capturekeyboardbutton" type=button class="btn" value="Capture keyboard"></input>\
@@ -62,7 +68,9 @@ angular.module('cloudscalers.directives', [])
 <hr/>\
             <canvas id="noVNC_canvas" width="640px" height="20px">\
                 Canvas not supported.\
-            </canvas>',
+            </canvas>\
+            <img src=".files/img/console.png" ng-show="showPlaceholder" />\
+            ',
 	     }
 	})
 
