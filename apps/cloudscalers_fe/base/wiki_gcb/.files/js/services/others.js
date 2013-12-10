@@ -84,7 +84,7 @@ angular.module('cloudscalers.services')
                 angular.element('.loader, .loading').fadeIn('fast');
                 return $timeout(function() {
                     angular.element('.loader, .loading').fadeOut('fast');
-                }, 3000);
+                }, 1000);
             }
         }
     });
