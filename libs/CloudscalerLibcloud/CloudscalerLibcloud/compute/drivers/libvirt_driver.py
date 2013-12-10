@@ -189,24 +189,13 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        domain = self._get_domain_for_node(node=node)
-
-        domid = domain.UUIDString()
-        node = self.backendconnection.getNode(domid)
-        network = self.connection.networkLookupByName('default')
+        backendnode = self.backendconnection.getNode(node.id)
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % self.backendconnection.environmentid
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
-        dnsmasq.removeHost(node['macaddress'])
-        self.backendconnection.unregisterMachine(domid)
-
-        diskfiles = self._get_domain_disk_file_names(domain)
-        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            domain.destroy()
-        for diskfile in diskfiles:
-            vol = self.connection.storageVolLookupByPath(diskfile)
-            vol.delete(0)
-        domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        dnsmasq.removeHost(backendnode['macaddress'])
+        self.backendconnection.unregisterMachine(node.id)
+        job = self._execute_agent_job('deletemachine', {'machineid': node.id})
         return True
 
     def ex_get_console_url(self, node):
@@ -223,7 +212,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         result = self._execute_agent_job('listmachines', {})
         for x in result:
             if x['id'] in nodes:
-                ipaddress = nodes['id']['ipaddress']
+                ipaddress = nodes[x['id']]['ipaddress']
             else:
                 ipaddress = ''
             noderesult.append(self._from_agent_to_node(x, ipaddress))
@@ -244,7 +233,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
  
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
-        xml = ElementTree.fromstring(domain.XMLDesc(0))
+        xml = ElementTree.fromstring(domain['XMLDesc'])
         graphics = xml.find('devices/graphics')
         info = dict()
         info['port'] = int(graphics.attrib['port'])
@@ -277,7 +266,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
             pass
 
     def _get_domain_for_node(self, node):
-        return self.connection.lookupByUUIDString(node.id)
+        return self._execute_agent_job('getmachine', {'machineid': node.id})
 
     def _to_node(self, domain, publicipaddress=''):
         state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
@@ -293,9 +282,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return node
 
     def _from_agent_to_node(self, domain, publicipaddress=''):
-        print domain
         state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
-
         extra = domain['extra']
         node = Node(id=domain['id'], name=domain['name'], state=domain['state'],
                     public_ips=[publicipaddress], private_ips=[], driver=self,
