@@ -61,9 +61,9 @@ class CloudBrokerConnection():
      def listSizes(self):
          return self.libvirt_actor.listSizes()
 
-     def listImages(self, uri=None):
-         if uri:
-            return self.libvirt_actor.listImages(md5.new(uri).hexdigest())
+     def listImages(self, id=None):
+         if id:
+            return self.libvirt_actor.listImages(id)
          return self.libvirt_actor.listImages()
 
      def listNodes(self):
