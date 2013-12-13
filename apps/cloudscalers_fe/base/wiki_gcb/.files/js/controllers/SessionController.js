@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SessionController', ['$scope', 'User', '$window', function($scope, User, $window) {
+    .controller('SessionController', ['$scope', 'User', '$window', '$timeout', function($scope, User, $window, $timeout) {
         $scope.user = {username : '', password:''};
        
         $scope.login_error = undefined;
@@ -18,6 +18,9 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
-
-
+        $timeout(function() {
+            // Read the value set by browser autofill
+            $scope.user.username = angular.element('[ng-model="user.username"]').val();
+            $scope.user.password =angular.element('[ng-model="user.password"]').val();
+        }, 0);
     }]);

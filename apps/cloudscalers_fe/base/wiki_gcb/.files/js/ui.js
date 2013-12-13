@@ -130,12 +130,3 @@ function getFormattedDate() {
     var d = new Date();
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay() + " " + d.getHours() + ":" + d.getMinutes();
 }
-
-function showLoading(msg) {
-	$('.loader h2').text(msg || '');
-
-    $('.loader, .loading').fadeIn('fast');
-    setTimeout(function() {
-        $('.loader, .loading').fadeOut('fast');
-    }, 3000);
-}

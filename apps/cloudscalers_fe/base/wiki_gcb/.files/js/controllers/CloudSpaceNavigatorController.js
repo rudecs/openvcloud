@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'CloudSpace',
-        function ($scope, $modal, CloudSpace) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'CloudSpace', 'LoadingDialog',
+        function ($scope, $modal, CloudSpace, LoadingDialog) {
             $scope.isCollapsed = true;
 
             $scope.AccountCloudSpaceHierarchy = undefined;
@@ -47,6 +47,7 @@ angular.module('cloudscalers.controllers')
                 });
 
                 modalInstance.result.then(function (space) {
+                    LoadingDialog.show('Creating cloudspace...');
                     CloudSpace.create(space.name, space.accountId, $scope.currentUser.username).then(
                         function (cloudspaceId) {
                         	$scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});

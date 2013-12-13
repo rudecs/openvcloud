@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', function($scope, User) {
+    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog', function($scope, User, LoadingDialog) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
@@ -18,16 +18,20 @@ angular.module('cloudscalers.controllers')
                 $scope.user.password && 
                 $scope.passwordConfirmation;
 
-            if ($scope.isPasswordConfirmed)
+            if ($scope.isPasswordConfirmed) {
                 $scope.signUpResult = User.signUp($scope.user.username, $scope.email, $scope.user.password);
+            }
         };
 
         $scope.$watch('signUpResult', function() {
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
                 
-                if ($scope.signUpResult.success)
-                    $scope.login();
+                if ($scope.signUpResult.success) {
+                    LoadingDialog.show('Creating account...').then(function() {
+                        $scope.login();
+                    });
+                }
             }
         }, true);
     }]);

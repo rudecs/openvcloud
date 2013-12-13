@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('DNSController', ['$scope', 'DNSService', 'Buckets', function($scope, DNSService, Buckets) {
+    .controller('DNSController', ['$scope', 'DNSService', 'Buckets', 'LoadingDialog', function($scope, DNSService, Buckets, LoadingDialog) {
         $scope.domains = DNSService.getAll();
         $scope.buckets = Buckets.getAll();
         
@@ -29,26 +29,26 @@ angular.module('cloudscalers.controllers')
             domain.records.push(domain.newRecord);
             domain.newRecord = {};
             DNSService.save(domain);
-            showLoading('Adding DNS record');
+            LoadingDialog.show('Adding DNS record');
         }
 
         $scope.addDomain = function() {
             $scope.domains.push($scope.newDomain);
             DNSService.add($scope.newDomain);
             $scope.resetNewDomain();
-            showLoading('Creating domain');
+            LoadingDialog.show('Creating domain');
         };
 
         $scope.removeDomain = function(domainIndex) {
             $scope.domains.splice(domainIndex, 1);
             DNSService.saveAll($scope.domains);
-            showLoading('Removing domain');
+            LoadingDialog.show('Removing domain');
         };
 
         $scope.removeRecord = function(domain, recordIndex) {
             domain.records.splice(recordIndex, 1);
             DNSService.saveAll($scope.domains);
-            showLoading('Removing DNS record');
+            LoadingDialog.show('Removing DNS record');
         };
 
 

@@ -75,5 +75,17 @@ angular.module('cloudscalers.services')
     })
     .factory('DNSService', function($http) {
         return new LocalStorageService('gcb-domains', undefined, $http);
+    })
+    .factory('LoadingDialog', function($q, $timeout) {
+        return {
+            show: function(msg) {
+                angular.element('.loader h2').text(msg || '');
+
+                angular.element('.loader, .loading').fadeIn('fast');
+                return $timeout(function() {
+                    angular.element('.loader, .loading').fadeOut('fast');
+                }, 1000);
+            }
+        }
     });
 
