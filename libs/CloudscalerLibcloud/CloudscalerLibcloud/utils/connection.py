@@ -1,7 +1,7 @@
 import md5
 
 class DummyConnection():
-
+    
     def listSizes(self):
         sizes = [{'memory': '1750', 'vcpus': 1, 'disk': 40, 'guid':
             '4da91a0d-18f5-47a5-ad97-7cf3b97cbc59', 'id': 1, 'name': u'BIG',
@@ -46,6 +46,8 @@ class CloudBrokerConnection():
          self.environmentid = hrd.get('cloudscalers.environmentid')
          self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
+         self.agentcontroller_client = j.servers.geventws.getClient("127.0.0.1", 4444, org="myorg", user="admin", passwd="1234", roles=["system.1", "hypervisor.1"],category="agent")
+
 
      def _getKeyValueStore(self):
          import JumpScale.grid.osis
@@ -59,9 +61,9 @@ class CloudBrokerConnection():
      def listSizes(self):
          return self.libvirt_actor.listSizes()
 
-     def listImages(self, uri=None):
-         if uri:
-            return self.libvirt_actor.listImages(md5.new(uri).hexdigest())
+     def listImages(self, id=None):
+         if id:
+            return self.libvirt_actor.listImages(id)
          return self.libvirt_actor.listImages()
 
      def listNodes(self):

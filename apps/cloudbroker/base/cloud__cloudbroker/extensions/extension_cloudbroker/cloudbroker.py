@@ -35,6 +35,7 @@ class CloudProvider(object):
                 args = [1,]
                 CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
             if stack['type'] == 'LIBVIRT':
+                kwargs['id'] = stack['referenceId']
                 kwargs['uri'] = stack['apiUrl']
                 CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
                 cb = CloudBrokerConnection()

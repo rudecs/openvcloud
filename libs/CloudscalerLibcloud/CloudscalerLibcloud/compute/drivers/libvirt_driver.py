@@ -1,6 +1,5 @@
 # Add extra specific cloudscaler functions for libvirt libcloud driver
 
-from libcloud.compute.drivers.libvirt_driver import LibvirtNodeDriver
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader, Template
@@ -10,16 +9,31 @@ import os
 import uuid
 import libvirt
 import urlparse
+import json
 POOLNAME = 'VMStor'
 POOLPATH = '/mnt/%s' % POOLNAME.lower()
 libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
 
 
-class CSLibvirtNodeDriver(LibvirtNodeDriver):
+class CSLibvirtNodeDriver():
 
-    def __init__(self, *args, **kwargs):
-        super(CSLibvirtNodeDriver, self).__init__(*args, **kwargs)
+    NODE_STATE_MAP = {
+        0: NodeState.TERMINATED,
+        1: NodeState.RUNNING,
+        2: NodeState.PENDING,
+        3: NodeState.TERMINATED,  # paused
+        4: NodeState.TERMINATED,  # shutting down
+        5: NodeState.TERMINATED,
+        6: NodeState.UNKNOWN,  # crashed
+        7: NodeState.UNKNOWN,  # last
+    }
+
+    def __init__(self, id, uri):
         self._rndrbn_vnc = 0
+        self.id = id
+        self.name = id
+        self.uri = uri
+
 
     env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
     backendconnection = connection.DummyConnection()
@@ -62,7 +76,7 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = self.backendconnection.listImages(self._uri)
+        images = self.backendconnection.listImages(self.id)
         return [self._to_image(image) for image in images]
 
     def _to_image(self, image):
@@ -74,17 +88,21 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
                    'size': image['size'],
                    'imagetype': image['type']}
         )
+    def _execute_agent_job(self, name, params, id=None):
+        if not id:
+            role = self.id
+        job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name, role, args=params, timeout=60, wait=True)
+        result = json.loads(job['result'])['result']
+        return result
 
     def _create_disk(self, size, image):
-        storagepool = self.connection.storagePoolLookupByName(POOLNAME)
         disktemplate = self.env.get_template("disk.xml")
         diskname = str(uuid.uuid4()) + '.qcow2'
         diskbasevolume = image.extra['path']
         disksize = size.disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
-        # 0 means not to preallocate data
-        storagepool.createXML(diskxml, 0)
+        self._execute_agent_job('createdisk', {'diskxml': diskxml, 'poolname': POOLNAME})
         return diskname
 
     def create_node(self, name, size, image, location=None, auth=None):
@@ -127,13 +145,11 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
-        # next we set the network configuration.
-
-        network = self.connection.networkLookupByName('default')
 
         # 0 means default behaviour, e.g machine is auto started.
-        domain = self.connection.defineXML(machinexml)
-        vmid = domain.UUIDString()
+
+        result = self._execute_agent_job('createmachine', {'machinexml': machinexml})
+        vmid = result['id']
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % vxlan
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
@@ -141,32 +157,31 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
         dnsmasq.addHost(macaddress, ipaddress,name)
 
-        domain.create()
-
-        node = self._to_node(domain, ipaddress)
-        self._set_persistent_xml(node, domain.XMLDesc(0))
+        node = self._from_agent_to_node(result, ipaddress)
+        print result
+        self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-    def ex_snapshot(self, node, name, snapshottype='internal'):
-        domain = self._get_domain_for_node(node=node)
-        diskfiles = self._get_domain_disk_file_names(domain)
-        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
-        flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
-        return domain.snapshotCreateXML(snapshot, flags).getName()
+    #def ex_snapshot(self, node, name, snapshottype='internal'):
+    #    domain = self._get_domain_for_node(node=node)
+    #    diskfiles = self._get_domain_disk_file_names(domain)
+    #    snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
+    #    flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
+    #    return domain.snapshotCreateXML(snapshot, flags).getName()
 
-    def ex_listsnapshots(self, node):
-        domain = self._get_domain_for_node(node=node)
-        return domain.snapshotListNames(0)
+    #def ex_listsnapshots(self, node):
+    #    domain = self._get_domain_for_node(node=node)
+    #    return domain.snapshotListNames(0)
 
-    def ex_snapshot_delete(self, node, name):
-        domain = self._get_domain_for_node(node=node)
-        snapshot = domain.snapshotLookupByName(name, 0)
-        return snapshot.delete(0) == 0
+    #def ex_snapshot_delete(self, node, name):
+    #    domain = self._get_domain_for_node(node=node)
+    #    snapshot = domain.snapshotLookupByName(name, 0)
+    #    return snapshot.delete(0) == 0
 
-    def ex_snapshot_rollback(self, node, name):
-        domain = self._get_domain_for_node(node=node)
-        snapshot = domain.snapshotLookupByName(name, 0)
-        return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
+    #def ex_snapshot_rollback(self, node, name):
+    #    domain = self._get_domain_for_node(node=node)
+    #    snapshot = domain.snapshotLookupByName(name, 0)
+    #    return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
@@ -188,24 +203,13 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        domain = self._get_domain_for_node(node=node)
-
-        domid = domain.UUIDString()
-        node = self.backendconnection.getNode(domid)
-        network = self.connection.networkLookupByName('default')
+        backendnode = self.backendconnection.getNode(node.id)
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % self.backendconnection.environmentid
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
-        dnsmasq.removeHost(node['macaddress'])
-        self.backendconnection.unregisterMachine(domid)
-
-        diskfiles = self._get_domain_disk_file_names(domain)
-        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            domain.destroy()
-        for diskfile in diskfiles:
-            vol = self.connection.storageVolLookupByPath(diskfile)
-            vol.delete(0)
-        domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        dnsmasq.removeHost(backendnode['macaddress'])
+        self.backendconnection.unregisterMachine(node.id)
+        job = self._execute_agent_job('deletemachine', {'machineid': node.id})
         return True
 
     def ex_get_console_url(self, node):
@@ -219,36 +223,31 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
     def list_nodes(self):
         noderesult = []
         nodes = self.backendconnection.listNodes()
-        for x in self.connection.listAllDomains(0):
-            if x.UUIDString() in nodes:
-                ipaddress = nodes[x.UUIDString()]['ipaddress']
+        result = self._execute_agent_job('listmachines', {})
+        for x in result:
+            if x['id'] in nodes:
+                ipaddress = nodes[x['id']]['ipaddress']
             else:
                 ipaddress = ''
-            noderesult.append(self._to_node(x, ipaddress))
+            noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
     def ex_stop(self, node):
-        domain = self._get_domain_for_node(node=node)
-        return domain.destroy() == 0
+        machineid = node.id
+        return self._execute_agent_job('stopmachine', {'machineid': machineid})
 
     def ex_reboot(self, node):
-        domain = self._get_domain_for_node(node=node)
-        return domain.reset() == 0
+        machineid = node.id
+        return self._execute_agent_job('rebootmachine', {'machineid': machineid})
 
     def ex_start(self, node):
-        try:
-            domain = self._get_domain_for_node(node=node)
-        except libvirt.libvirtError, e:
-            if e.get_error_code() == libvirt.VIR_ERR_NO_DOMAIN:
-                xml = self._get_persistent_xml(node)
-                domain = self.connection.defineXML(xml)
-            else:
-                raise
-        return domain.create() == 0
-
+        xml = ''
+        machineid = node.id 
+        return self._execute_agent_job('startmachine', {'machineid': machineid, 'xml':xml})
+ 
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
-        xml = ElementTree.fromstring(domain.XMLDesc(0))
+        xml = ElementTree.fromstring(domain['XMLDesc'])
         graphics = xml.find('devices/graphics')
         info = dict()
         info['port'] = int(graphics.attrib['port'])
@@ -256,16 +255,16 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
         info['ipaddress'] = self._get_connection_ip()
         return info
 
-    def ex_clone(self, node, size, name):
-        snapname = self.ex_snapshot(node, None, 'external')
-        origdomain = self._get_domain_for_node(node=node)
-        snap = origdomain.snapshotLookupByName(snapname)
-        diskname = self._get_snapshot_disk_file_names(snap)[0]
-        diskname = os.path.basename(diskname)
-        return self._create_node(name, diskname, size)
+    #def ex_clone(self, node, size, name):
+    #    snapname = self.ex_snapshot(node, None, 'external')
+    #    origdomain = self._get_domain_for_node(node=node)
+    #    snap = origdomain.snapshotLookupByName(snapname)
+    #    diskname = self._get_snapshot_disk_file_names(snap)[0]
+    #    diskname = os.path.basename(diskname)
+    #    return self._create_node(name, diskname, size)
 
     def _get_connection_ip(self):
-        uri = urlparse.urlparse(self.connection.getURI())
+        uri = urlparse.urlparse(self.uri)
         return uri.netloc
 
     def _get_persistent_xml(self, node):
@@ -281,18 +280,14 @@ class CSLibvirtNodeDriver(LibvirtNodeDriver):
             pass
 
     def _get_domain_for_node(self, node):
-        return self.connection.lookupByUUIDString(node.id)
+        return self._execute_agent_job('getmachine', {'machineid': node.id})
 
-    def _to_node(self, domain, publicipaddress=''):
-        state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
-        state = self.NODE_STATE_MAP.get(state, NodeState.UNKNOWN)
-
-        extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(),
-                 'types': self.connection.getType(),
-                 'used_memory': memory / 1024, 'vcpu_count': vcpu_count,
-                 'used_cpu_time': used_cpu_time}
-        node = Node(id=domain.UUIDString(), name=domain.name(), state=state,
+    def _from_agent_to_node(self, domain, publicipaddress=''):
+        state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
+        extra = domain['extra']
+        node = Node(id=domain['id'], name=domain['name'], state=domain['state'],
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+
 

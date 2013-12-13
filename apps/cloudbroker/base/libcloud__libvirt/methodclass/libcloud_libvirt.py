@@ -45,7 +45,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         List the available images.
         If no resourceid is provided, all the images are listed.
-        resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
+        resourceid is the id of the resourceprovider.
         param:resourceid optional resourceproviderid.
         result      
         """     
