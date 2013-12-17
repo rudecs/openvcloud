@@ -9,6 +9,7 @@ import random
 cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
+models = CloudBroker().getModle('cloud', 'cloudbroker')
 
 
 class Dummy(object):
@@ -20,7 +21,7 @@ class CloudProvider(object):
     _providers = dict()
     def __init__(self, stackId):
         if stackId not in CloudProvider._providers:
-            stack = cloudbroker.model_stack_get(stackId)
+            stack = models.stack.get(stackId)
             providertype = getattr(Provider, stack['type'])
             kwargs = dict()
             if stack['type'] == 'OPENSTACK':
@@ -56,6 +57,10 @@ class CloudProvider(object):
             if image.id == iimage['referenceId']:
                 return image, image
 
+class Class():
+    pass
+
+
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
 
@@ -73,7 +78,8 @@ class CloudBroker(object):
         return True
 
     def getIdByReferenceId(self, objname, referenceId):
-        queryapi = getattr(cloudbroker, 'model_%s_find' % objname)
+        model = getattr(models, '%s' % objname)
+        queryapi = getattr(model, 'find')
         query = {}
         query = {'query': {'term': {'referenceId': referenceId}}, 'fields': ['id']}
         queryresult = queryapi(ujson.dumps(query))
@@ -99,7 +105,7 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, imageId):
         # group all units per type
-        stacks = cloudbroker.model_stack_find(ujson.dumps({"query":{"term": {"images": imageId}}}))
+        stacks = models.stack.find(ujson.dumps({"query":{"term": {"images": imageId}}}))
         resourcesdata = list()
         for stack in stacks['result']:
             stack = stack['_source']
@@ -109,27 +115,27 @@ class CloudBroker(object):
     def stackImportImages(self, stackId):
         provider = CloudProvider(stackId)
         count = 0
-        stack = cloudbroker.model_stack_get(stackId)
+        stack = models.stack.get(stackId)
         stack['images'] = []
         for pimage in provider.client.list_images():
             imageid = self.getIdByReferenceId('image', pimage.id)
             if not imageid:
-                image = cloudbroker.models.image.new()
+                image = models.image.new()
                 image.name = pimage.name
                 image.referenceId = pimage.id
                 image.type = pimage.extra['imagetype']
                 image.size = pimage.extra['size']
             else:
-                image = cloudbroker.model_image_get(imageid)
+                image = models.image.get(imageid)
                 image['name'] = pimage.name
                 image['referenceId'] = pimage.id
                 image['type'] = pimage.extra['imagetype']
                 image['size'] = pimage.extra['size']
             count += 1
-            imageid = cloudbroker.model_image_set(image)
+            imageid = models.image.set(image)
             if not imageid in stack['images']:
                 stack['images'].append(imageid)
-                cloudbroker.model_stack_set(stack)
+                models.stack.set(stack)
         return count
 
 
@@ -148,4 +154,14 @@ class CloudBroker(object):
             count += 1
             cloudbroker.model_size_set(size.obj2dict())
         return count
+
+    def getModel(self, appname, actorname):
+        codepath = j.system.fs.joinPaths(j.dirs.varDir, "code4appclient", appname, actorname)
+        modelNames = j.core.specparser.getModelNames(appname, actorname)
+        models = Class()
+        if len(modelNames) > 0:
+            for modelName in modelNames:
+                classs = j.core.codegenerator.getClassPymodel(appname, actorname, modelName)
+                models.__dict__[modelName] = (j.core.osismodel.getRemoteOsisDB(appname, actorname, modelName, classs))
+        return models
 

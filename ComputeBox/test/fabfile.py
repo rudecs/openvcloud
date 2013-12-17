@@ -21,7 +21,7 @@ def install_compute_node(hostname, workspace):
     run('jpackage_install --name compute_os_base')
 
     reboot(wait=300)
-
+    run('apt-get update')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/',hostname,'cloudscalers_compute_1.0.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/',hostname, 'grid_master.hrd'), '/opt/jumpscale/cfg/hrd/grid.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/system_root_credentials.hrd'), '/opt/jumpscale/cfg/hrd/system_root_credentials.hrd')
@@ -32,7 +32,7 @@ def install_compute_node(hostname, workspace):
 
     run('jpackage_install --name computenode')
     print 'Installed the compute node! Start installing cloudbroker'
-    run('jpackage_install --name cloudbroker')
+    run('jpackage_install -r --name cloudbroker')
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
     run('jpackage_install --name cloudscalers_fe')

@@ -4,10 +4,17 @@ from JumpScale import j
 class auth(object):
     def __init__(self, acl):
         self.acl = set(acl)
+        self._models = None
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+        return self._models
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):
         fullacl = self.expandAcl(users, groups, cloudspace['acl'])
-        account = j.apps.cloud.cloudbroker.model_account_get(cloudspace['accountId'])
+        account = self.models.account.get(cloudspace['accountId'])
         fullacl.update(self.expandAcl(users, groups, account['acl']))
         return fullacl
 
@@ -33,11 +40,11 @@ class auth(object):
                     return func(*args, **kwargs)
                 cloudspace = None
                 if 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
-                    cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(kwargs['cloudspaceId'])
+                    cloudspace = self.models.cloudspace.get(kwargs['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
-                    machine = j.apps.cloud.cloudbroker.model_vmachine_get(kwargs['machineId'])
-                    cloudspace = j.apps.cloud.cloudbroker.model_cloudspace_get(machine['cloudspaceId'])
+                    machine = self.models.vmachine.get(kwargs['machineId'])
+                    cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:
