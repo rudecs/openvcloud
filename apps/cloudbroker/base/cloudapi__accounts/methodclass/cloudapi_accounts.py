@@ -44,13 +44,13 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.models.account.new()
-        account.dict2obj(self.model.account.get(accountId))
+        account = self.cb.models.account.new()
+        account.dict2obj(self.models.account.get(accountId))
         acl = account.new_acl()
         acl.userGroupId = userId
         acl.type = 'U'
         acl.right = accesstype
-        return self.models.account.set(account.obj2dict())
+        return self.models.account.set(account)
 
     @authenticator.auth(acl='S')
     def create(self, name, access, **kwargs):
@@ -60,14 +60,14 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:access list of ids of users which have full access to this space
         result int
         """
-        account = self.models.account.new()
+        account = self.cb.models.account.new()
         account.name = name
         for userid in access:
             ace = account.new_acl()
             ace.userGroupId = userid
             ace.type = 'U'
             ace.right = 'CXDRAU'
-        return self.models.account.set(account.obj2dict())
+        return self.models.account.set(account)
 
 
     @authenticator.auth(acl='S')

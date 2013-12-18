@@ -65,14 +65,14 @@ class cloudapi_users(cloudapi_users_osis):
             ctx.start_response('409 Conflict', [])
         else:
             j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
-            account = self.models.account.new()
+            account = self.cb.models.account.new()
             account.name = username
             ace = account.new_acl()
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account.obj2dict())
-            cs = self.models.cloudspace.new()
+            cs = self.cb.models.cloudspace.new()
             cs.name = 'default'
             cs.accountId = accountid
             ace = cs.new_acl()

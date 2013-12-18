@@ -70,7 +70,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result int
 
         """
-        cs = self.models.cloudspace.new()
+        cs = self.cb.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
         ace = cs.new_acl()

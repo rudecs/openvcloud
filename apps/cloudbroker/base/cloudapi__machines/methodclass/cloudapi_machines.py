@@ -87,8 +87,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         result int
 
         """
-        machine = self.models.vmachine.set(machineId)
-        disk = self.models.disk.new()
+        machine = self.models.vmachine.get(machineId)
+        disk = self.cb.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
@@ -143,14 +143,14 @@ class cloudapi_machines(cloudapi_machines_osis):
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
-        machine = self.models.vmachine.new()
+        machine = self.cb.models.vmachine.new()
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
 
-        disk = self.models.disk.new()
+        disk = self.cb.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
@@ -182,7 +182,7 @@ class cloudapi_machines(cloudapi_machines_osis):
             nic.ipAddress = ipaddress
         self.models.vmachine.set(machine.obj2dict())
 
-        cloudspace = self.models.cloudspace.new()
+        cloudspace = self.cb.models.cloudspace.new()
         cloudspace.dict2obj(self.models.cloudspace.get(machine.cloudspaceId))
         cloudspace.resourceProviderStacks.append(stackId)
         self.models.cloudspace.get(cloudspace)
@@ -292,7 +292,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         return machines
 
     def _getMachine(self, machineId):
-        machine = self.models.vmachine_new()
+        machine = self.cb.models.vmachine_new()
         machine.dict2obj(self.models.vmachine.get(machineId))
         return machine
 
@@ -382,9 +382,9 @@ class cloudapi_machines(cloudapi_machines_osis):
         clone.imageId = machine.imageId
 
         for diskId in machine.disks:
-            origdisk = self.models.disk.new()
+            origdisk = self.cb.models.disk.new()
             origdisk.dict2obj(self.models.disk.get(diskId))
-            clonedisk = self.models.disk.new()
+            clonedisk = self.cb.models.disk.new()
             clonedisk.name = origdisk.name
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
