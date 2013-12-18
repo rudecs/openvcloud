@@ -30,7 +30,7 @@ class cloud_cloudbroker(cloud_cloudbroker_osis):
         This is a internal function to update the local images of the cloudbroker
         result 
         """
-        stacks = self.cb.model_stack_list()
+        stacks = self.models.stack.list()
         for stack in stacks:
             self.cb.extensions.imp.stackImportImages(stack)
 
