@@ -37,6 +37,7 @@ class CloudBrokerConnection():
          from JumpScale import j
          self._j = j
          import JumpScale.portal
+         import JumpScale.grid.geventws
          if ipaddress:
              self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
