@@ -141,7 +141,7 @@ class CloudBroker(object):
                 image['type'] = pimage.extra['imagetype']
                 image['size'] = pimage.extra['size']
             count += 1
-            imageid = cloudbroker.models.image.set(image)
+            imageid = models.image.set(image)
             if not imageid in stack['images']:
                 stack['images'].append(imageid)
                 models.stack.set(stack)
