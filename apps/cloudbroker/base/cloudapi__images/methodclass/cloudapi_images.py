@@ -16,6 +16,13 @@ class cloudapi_images(cloudapi_images_osis):
         self.appname = "cloudapi"
         cloudapi_images_osis.__init__(self)
         self._cb = None
+        self._models = None
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+        return self._models
 
     @property
     def cb(self):
@@ -31,6 +38,6 @@ class cloudapi_images(cloudapi_images_osis):
         """
         term = dict()
         query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size']}
-        results = self.cb.model_image_find(ujson.dumps(query))['result']
+        results = self.cb.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         return images

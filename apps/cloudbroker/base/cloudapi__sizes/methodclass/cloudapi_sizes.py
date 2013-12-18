@@ -18,8 +18,15 @@ class cloudapi_sizes(cloudapi_sizes_osis):
         self.appname = "cloudapi"
         cloudapi_sizes_osis.__init__(self)
         self._cb = None
+        self._models = None
 
         pass
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+        return self._models
 
     @property
     def cb(self):
@@ -35,6 +42,6 @@ class cloudapi_sizes(cloudapi_sizes_osis):
         """
         term = dict()
         query = {'fields': ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']}
-        results  = self.cb.model_size_find(ujson.dumps(query))['result']
+        results  = self.models.size.find(ujson.dumps(query))['result']
         sizes = [res['fields'] for res in results]
         return sizes

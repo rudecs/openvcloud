@@ -18,12 +18,20 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         self.appname = "cloudapi"
         cloudapi_cloudspaces_osis.__init__(self)
         self._cb = None
+        self._models = None
 
     @property
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+        return self._models
+
 
     @authenticator.auth(acl='U')
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
@@ -41,14 +49,14 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         if not j.apps.system.usermanager.userexists(userId):
             ctx.start_response('404 Not Found', [])
         else:
-            cs = self.cb.models.cloudspace.new()
-            cloudspace = self.cb.model_cloudspace_get(cloudspaceId)
+            cs = self.models.cloudspace.new()
+            cloudspace = self.models.cloudspace.get(cloudspaceId)
             cs.dict2obj(cloudspace)
             acl = cs.new_acl()
             acl.userGroupId = userId
             acl.type = 'U'
             acl.right = accesstype
-            return self.cb.models.cloudspace.set(cs.obj2dict())
+            return self.models.cloudspace.set(cs.obj2dict())
 
     @authenticator.auth(acl='A')
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
@@ -61,7 +69,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result int
 
         """
-        cs = self.cb.models.cloudspace.new()
+        cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
         ace = cs.new_acl()
@@ -70,7 +78,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
-        return self.cb.models.cloudspace.set(cs.obj2dict())
+        return self.models.cloudspace.set(cs.obj2dict())
 
     @authenticator.auth(acl='A')
     def delete(self, cloudspaceId, **kwargs):
@@ -80,7 +88,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result bool,
 
         """
-        return self.cb.model_cloudspace_delete(cloudspaceId)
+        return self.models.cloudspace.delete(cloudspaceId)
 
     def get(self, cloudspaceId, **kwargs):
         """
@@ -89,7 +97,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result dict
         """
         #put your code here to implement this method
-        return self.cb.model_cloudspace_get(cloudspaceId)
+        return self.models.cloudspace.get(cloudspaceId)
 
     @authenticator.auth(acl='U')
     def deleteUser(self, cloudspaceId, userId, **kwargs):
@@ -100,14 +108,14 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         result
 
         """
-        cloudspace = self.cb.model_cloudspace_get(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
         change = False
         for ace in cloudspace['acl'][:]:
             if ace['userGroupId'] == userId:
                 cloudspace['acl'].remove(ace)
                 change = True
         if change:
-            self.cb.models.cloudspace.set(cloudspace)
+            self.models.cloudspace.set(cloudspace)
         return change
 
     def list(self, **kwargs):
@@ -119,7 +127,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name', 'descr', 'accountId','acl']}
         query['query'] = {'term': {"userGroupId": user}}
-        results = j.apps.cloud.cloudbroker.model_cloudspace_find(ujson.dumps(query))['result']
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         return cloudspaces
 

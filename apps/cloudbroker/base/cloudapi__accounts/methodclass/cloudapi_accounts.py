@@ -18,12 +18,19 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         self.appname = "cloudapi"
         cloudapi_accounts_osis.__init__(self)
         self._cb = None
+        self._models = None
 
     @property
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+        return self._models
 
     @authenticator.auth(acl='A')
     def addUser(self, accountId, userId, accesstype, **kwargs):
@@ -35,13 +42,13 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.cb.models.account.new()
-        account.dict2obj(self.cb.model_account_get(accountId))
+        account = self.models.account.new()
+        account.dict2obj(self.model.account.get(accountId))
         acl = account.new_acl()
         acl.userGroupId = userId
         acl.type = 'U'
         acl.right = accesstype
-        return self.cb.models.account.set(account.obj2dict())
+        return self.models.account.set(account.obj2dict())
 
     @authenticator.auth(acl='S')
     def create(self, name, access, **kwargs):
@@ -51,14 +58,14 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:access list of ids of users which have full access to this space
         result int
         """
-        account = self.cb.models.account.new()
+        account = self.models.account.new()
         account.name = name
         for userid in access:
             ace = account.new_acl()
             ace.userGroupId = userid
             ace.type = 'U'
             ace.right = 'CXDRAU'
-        return self.cb.models.account.set(account.obj2dict())
+        return self.models.account.set(account.obj2dict())
 
 
     @authenticator.auth(acl='S')
@@ -68,7 +75,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         param:accountId id of the account
         result bool,
         """
-        return self.cb.model_account_delete(accountId)
+        return self.models.account.delete(accountId)
 
     @authenticator.auth(acl='R')
     def get(self, accountId, **kwargs):
@@ -78,7 +85,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         result dict
         """
         #put your code here to implement this method
-        return self.cb.model_account_get(accountId)
+        return self.models.account.get(accountId)
 
     @authenticator.auth(acl='A')
     def deleteUser(self, accountId, userId, **kwargs):
@@ -89,14 +96,14 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         result
 
         """
-        account = self.cb.model_account_get(accountId)
+        account = self.models.account.get(accountId)
         change = False
         for ace in account['acl'][:]:
             if ace['userGroupId'] == userId:
                 account['acl'].remove(ace)
                 change = True
         if change:
-            self.cb.models.account.set(account)
+            self.models.account.set(account)
         return change
 
     def list(self, **kwargs):
@@ -109,7 +116,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name', 'acl']}
         query['query'] = {'term': {"userGroupId": user}}
-        results = j.apps.cloud.cloudbroker.model_account_find(ujson.dumps(query))['result']
+        results = self.models.account.find(ujson.dumps(query))['result']
         accounts = [res['fields'] for res in results]
         return accounts
 

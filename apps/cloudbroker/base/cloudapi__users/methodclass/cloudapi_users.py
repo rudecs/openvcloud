@@ -25,6 +25,12 @@ class cloudapi_users(cloudapi_users_osis):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
+    
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel('system', 'usermanager')
+        return self._models
 
     def authenticate(self, username, password, **kwargs):
         """
@@ -59,21 +65,21 @@ class cloudapi_users(cloudapi_users_osis):
             ctx.start_response('409 Conflict', [])
         else:
             j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
-            account = self.cb.models.account.new()
+            account = self.models.account.new()
             account.name = username
             ace = account.new_acl()
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
-            accountid = self.cb.models.account.set(account.obj2dict())
-            cs = self.cb.models.cloudspace.new()
+            accountid = self.models.account.set(account.obj2dict())
+            cs = self.models.cloudspace.new()
             cs.name = 'default'
             cs.accountId = accountid
             ace = cs.new_acl()
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
-            self.cb.models.cloudspace.set(cs.obj2dict())
+            self.models.cloudspace.set(cs.obj2dict())
             return True
 
 
