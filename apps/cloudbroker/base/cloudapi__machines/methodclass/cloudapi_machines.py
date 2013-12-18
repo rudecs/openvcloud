@@ -234,6 +234,8 @@ class cloudapi_machines(cloudapi_machines_osis):
         raise NotImplementedError("not implemented method exporttoremote")
 
     def _getStorage(self, machine):
+        if not machine['stackId'] or machine['stackId'] == 0:
+            return None
         provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
         firstdisk = self.models.disk.get(machine['disks'][0])
         storage = provider.getSize(self.models.size.get(machine['sizeId']), firstdisk)
@@ -286,12 +288,15 @@ class cloudapi_machines(cloudapi_machines_osis):
         machines = []
         for res in results:
             storage = self._getStorage(res['fields'])
-            res['fields']['storage'] = storage.disk
+            if storage:
+                res['fields']['storage'] = storage.disk
+            else:
+                res['fields']['storage'] = 0
             machines.append(res['fields'])
         return machines
 
     def _getMachine(self, machineId):
-        machine = self.cb.models.vmachine_new()
+        machine = self.cb.models.vmachine.new()
         machine.dict2obj(self.models.vmachine.get(machineId))
         return machine
 

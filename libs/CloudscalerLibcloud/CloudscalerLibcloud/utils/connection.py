@@ -47,7 +47,9 @@ class CloudBrokerConnection():
          self.environmentid = hrd.get('cloudscalers.environmentid')
          self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
-         self.agentcontroller_client = j.servers.geventws.getClient("127.0.0.1", 4444, org="myorg", user="admin", passwd="1234", roles=["system.1", "hypervisor.1"],category="agent")
+         login = j.application.config.get('system.superadmin.login')
+         passwd = j.application.config.get('system.superadmin.passwd')
+         self.agentcontroller_client = j.servers.geventws.getClient("127.0.0.1", 4444, org="myorg", user=login, passwd=passwd, roles=["system.1", "hypervisor.1"],category="agent")
 
 
      def _getKeyValueStore(self):

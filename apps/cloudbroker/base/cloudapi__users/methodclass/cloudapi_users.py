@@ -16,6 +16,7 @@ class cloudapi_users(cloudapi_users_osis):
         self.appname = "cloudapi"
         cloudapi_users_osis.__init__(self)
         self._cb = None
+        self._models = None
 
         pass
 

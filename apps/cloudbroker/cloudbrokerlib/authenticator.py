@@ -9,7 +9,7 @@ class auth(object):
     @property
     def models(self):
         if not self._models:
-            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+            self._models = j.apps.cloud.cloudbroker.extensions.imp.getModel()
         return self._models
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):

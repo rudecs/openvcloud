@@ -49,7 +49,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         if not j.apps.system.usermanager.userexists(userId):
             ctx.start_response('404 Not Found', [])
         else:
-            cs = self.models.cloudspace.new()
+            cs = self.cb.models.cloudspace.new()
             cloudspace = self.models.cloudspace.get(cloudspaceId)
             cs.dict2obj(cloudspace)
             acl = cs.new_acl()
