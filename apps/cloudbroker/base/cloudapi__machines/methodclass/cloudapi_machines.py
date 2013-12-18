@@ -24,7 +24,6 @@ class cloudapi_machines(cloudapi_machines_osis):
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
-            self.models = 
         return self._cb
 
     @property
