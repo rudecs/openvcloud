@@ -17,7 +17,6 @@ class cloudapi_machines(cloudapi_machines_osis):
         self.actorname = "machines"
         self.appname = "cloudapi"
         cloudapi_machines_osis.__init__(self)
-        j.core.portal.runningPortal.actorsloader.getActor('cloud', 'cloudbroker')
         self._cb = None
         self._models = None
 

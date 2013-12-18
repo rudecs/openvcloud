@@ -9,6 +9,7 @@ class Class():
     pass
 
 cloudbroker = j.apps.cloud.cloudbroker
+
 ujson = j.db.serializers.ujson
 
 
@@ -18,6 +19,7 @@ models = Class()
 for ns in osiscl.listNamespaceCategories('cloudbroker'):
     models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
     models.__dict__[ns].find = models.__dict__[ns].search
+
 
 
 class Dummy(object):
