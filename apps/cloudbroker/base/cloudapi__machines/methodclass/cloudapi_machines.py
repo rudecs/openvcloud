@@ -184,7 +184,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         cloudspace = self.cb.models.cloudspace.new()
         cloudspace.dict2obj(self.models.cloudspace.get(machine.cloudspaceId))
         cloudspace.resourceProviderStacks.append(stackId)
-        self.models.cloudspace.get(cloudspace)
+        self.models.cloudspace.set(cloudspace)
 
     @authenticator.auth(acl='D')
     def delDisk(self, machineId, diskId, **kwargs):
