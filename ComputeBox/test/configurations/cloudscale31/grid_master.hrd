@@ -1,7 +1,6 @@
-grid.id=1
-grid.node.id=1
-grid.useavahi=1
-grid.ismaster=True
-grid.master=
-grid.master.ip=localhost
-grid.node.roles=node,cloudscale31
+gridmaster.useavahi=1
+gridmaster.grid.id=1
+gridmaster.mainbroker.port.clients=5651
+gridmaster.mainbroker.port.workers=5650
+gridmaster.mainbroker.id=1
+
