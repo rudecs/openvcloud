@@ -9,7 +9,7 @@ import random
 cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
-models = CloudBroker().getModle('cloud', 'cloudbroker')
+models = CloudBroker().getModel('cloud', 'cloudbroker')
 
 
 class Dummy(object):
