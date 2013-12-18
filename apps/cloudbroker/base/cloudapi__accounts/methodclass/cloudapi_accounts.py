@@ -66,7 +66,7 @@ class cloudapi_accounts(cloudapi_accounts_osis):
             ace.userGroupId = userid
             ace.type = 'U'
             ace.right = 'CXDRAU'
-        return self.models.account.set(account)
+        return self.models.account.set(account)[0]
 
 
     @authenticator.auth(acl='S')

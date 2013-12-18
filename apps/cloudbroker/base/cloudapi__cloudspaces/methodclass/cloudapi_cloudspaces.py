@@ -56,7 +56,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
             acl.userGroupId = userId
             acl.type = 'U'
             acl.right = accesstype
-            return self.models.cloudspace.set(cs.obj2dict())
+            return self.models.cloudspace.set(cs.obj2dict())[0]
 
     @authenticator.auth(acl='A')
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
@@ -78,7 +78,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
-        return self.models.cloudspace.set(cs.obj2dict())
+        return self.models.cloudspace.set(cs.obj2dict())[0]
 
     @authenticator.auth(acl='A')
     def delete(self, cloudspaceId, **kwargs):

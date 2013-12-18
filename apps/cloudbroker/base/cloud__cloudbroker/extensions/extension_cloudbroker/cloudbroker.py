@@ -141,7 +141,7 @@ class CloudBroker(object):
                 image['type'] = pimage.extra['imagetype']
                 image['size'] = pimage.extra['size']
             count += 1
-            imageid = models.image.set(image)
+            imageid = models.image.set(image)[0]
             if not imageid in stack['images']:
                 stack['images'].append(imageid)
                 models.stack.set(stack)
@@ -161,7 +161,7 @@ class CloudBroker(object):
             size.referenceId = psize.name
             size.disk = psize.disk * 1024 #we store in MB
             count += 1
-            cloudbroker.model_size_set(size.obj2dict())
+            models.size.set(size.obj2dict())
         return count
 
     def getModel(self):

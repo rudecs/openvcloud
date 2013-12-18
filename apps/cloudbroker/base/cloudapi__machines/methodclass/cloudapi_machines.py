@@ -93,7 +93,7 @@ class cloudapi_machines(cloudapi_machines_osis):
         disk.sizeMax = size
         disk.type = type
         self.cb.extensions.imp.addDiskToMachine(machine, disk)
-        diskid = self.models.disk.set(disk)
+        diskid = self.models.disk.set(disk)[0]
         machine['disks'].append(diskid)
         self.models.vmachine.set(machine)
         return diskid
@@ -153,9 +153,9 @@ class cloudapi_machines(cloudapi_machines_osis):
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
-        diskid = self.models.disk.set(disk)
+        diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
-        machine.id = self.models.vmachine.set(machine)
+        machine.id = self.models.vmachine.set(machine)[0]
         try:
             stack = self.cb.extensions.imp.getBestProvider(imageId)
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
@@ -348,7 +348,7 @@ class cloudapi_machines(cloudapi_machines_osis):
             machine.description = description
         if size:
             machine.nrCU = size
-        return self.models.vmachine.set(machine)
+        return self.models.vmachine.set(machine)[0]
 
     def getConsoleUrl(self, machineId, **kwargs):
         """
@@ -387,9 +387,9 @@ class cloudapi_machines(cloudapi_machines_osis):
             clonedisk.name = origdisk.name
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
-            clonediskId = self.models.disk.set(clonedisk)
+            clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
-        clone.id = self.models.vmachine.set(clone)
+        clone.id = self.models.vmachine.set(clone)[0]
         provider, node = self._getProviderAndNode(machineId)
         name = 'vm-%s' % clone.id
         size = self._getSize(provider, clone)
