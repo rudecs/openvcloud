@@ -17,6 +17,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
         self.actorname = "cloudspaces"
         self.appname = "cloudapi"
         cloudapi_cloudspaces_osis.__init__(self)
+        j.core.portal.runningPortal.actorsloader.getActor('cloud', 'cloudbroker')
         self._cb = None
         self._models = None
 

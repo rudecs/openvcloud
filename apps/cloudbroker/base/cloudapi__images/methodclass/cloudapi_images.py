@@ -15,6 +15,7 @@ class cloudapi_images(cloudapi_images_osis):
         self.actorname = "images"
         self.appname = "cloudapi"
         cloudapi_images_osis.__init__(self)
+        j.core.portal.runningPortal.actorsloader.getActor('cloud', 'cloudbroker')
         self._cb = None
         self._models = None
 

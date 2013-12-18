@@ -19,6 +19,8 @@ class cloudapi_sizes(cloudapi_sizes_osis):
         cloudapi_sizes_osis.__init__(self)
         self._cb = None
         self._models = None
+        j.core.portal.runningPortal.actorsloader.getActor('cloud', 'cloudbroker')
+
 
         pass
 

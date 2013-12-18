@@ -19,6 +19,8 @@ class cloudapi_accounts(cloudapi_accounts_osis):
         cloudapi_accounts_osis.__init__(self)
         self._cb = None
         self._models = None
+        j.core.portal.runningPortal.actorsloader.getActor('cloud', 'cloudbroker')
+
 
     @property
     def cb(self):
