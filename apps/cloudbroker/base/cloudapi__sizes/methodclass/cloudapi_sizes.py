@@ -25,7 +25,7 @@ class cloudapi_sizes(cloudapi_sizes_osis):
     @property
     def models(self):
         if not self._models:
-            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+            self._models = self.cb.extensions.imp.getModel()
         return self._models
 
     @property

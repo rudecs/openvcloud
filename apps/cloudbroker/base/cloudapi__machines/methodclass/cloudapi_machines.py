@@ -24,13 +24,12 @@ class cloudapi_machines(cloudapi_machines_osis):
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
-            self.models = 
         return self._cb
 
     @property
     def models(self):
         if not self._models:
-            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+            self._models = self.cb.extensions.imp.getModel()
         return self._models
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):

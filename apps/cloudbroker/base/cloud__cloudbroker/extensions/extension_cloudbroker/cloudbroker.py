@@ -5,11 +5,19 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
+class Class():
+    pass
 
 cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
-models = CloudBroker().getModel('cloud', 'cloudbroker')
+
+osiscl = j.core.osis.getClient()
+
+models = Class()
+for ns in osiscl.listNamespaceCategories('cloudbroker'):
+    models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
+    models.__dict__[ns].find = models.__dict__[ns].search
 
 
 class Dummy(object):
@@ -57,8 +65,7 @@ class CloudProvider(object):
             if image.id == iimage['referenceId']:
                 return image, image
 
-class Class():
-    pass
+
 
 
 class CloudBroker(object):
@@ -155,13 +162,6 @@ class CloudBroker(object):
             cloudbroker.model_size_set(size.obj2dict())
         return count
 
-    def getModel(self, appname, actorname):
-        codepath = j.system.fs.joinPaths(j.dirs.varDir, "code4appclient", appname, actorname)
-        modelNames = j.core.specparser.getModelNames(appname, actorname)
-        models = Class()
-        if len(modelNames) > 0:
-            for modelName in modelNames:
-                classs = j.core.codegenerator.getClassPymodel(appname, actorname, modelName)
-                models.__dict__[modelName] = (j.core.osismodel.getRemoteOsisDB(appname, actorname, modelName, classs))
+    def getModel(self):
         return models
 

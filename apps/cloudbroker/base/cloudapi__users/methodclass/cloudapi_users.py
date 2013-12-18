@@ -29,7 +29,7 @@ class cloudapi_users(cloudapi_users_osis):
     @property
     def models(self):
         if not self._models:
-            self._models = self.cb.extensions.imp.getModel('system', 'usermanager')
+            self._models = self.cb.extensions.imp.getModel()
         return self._models
 
     def authenticate(self, username, password, **kwargs):

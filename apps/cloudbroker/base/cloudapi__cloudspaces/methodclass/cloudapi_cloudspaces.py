@@ -29,7 +29,7 @@ class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
     @property
     def models(self):
         if not self._models:
-            self._models = self.cb.extensions.imp.getModel('cloud', 'cloudbroker')
+            self._models = self.cb.extensions.imp.getModel()
         return self._models
 
 
