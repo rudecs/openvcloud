@@ -1,21 +1,16 @@
 from JumpScale import j
-from cloud_cloudbroker_osis import cloud_cloudbroker_osis
 json = j.db.serializers.ujson
 
-
-class cloud_cloudbroker(cloud_cloudbroker_osis):
-
+class cloud_cloudbroker(object):
     """
     iaas manager
 
     """
-
     def __init__(self):
 
         self._te = {}
         self.actorname = "cloudbroker"
         self.appname = "cloud"
-        cloud_cloudbroker_osis.__init__(self)
         self._cb = None
 
     @property
@@ -23,7 +18,6 @@ class cloud_cloudbroker(cloud_cloudbroker_osis):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
- 
 
     def updateImages(self, **kwargs):
         """
@@ -35,4 +29,3 @@ class cloud_cloudbroker(cloud_cloudbroker_osis):
             self.cb.extensions.imp.stackImportImages(stack)
 
 
-       

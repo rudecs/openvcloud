@@ -1,25 +1,20 @@
 from JumpScale import j
-from cloudapi_accounts_osis import cloudapi_accounts_osis
 from cloudbrokerlib import authenticator
 import ujson
 
 
-class cloudapi_accounts(cloudapi_accounts_osis):
-
+class cloudapi_accounts(object):
     """
     API Actor api for managing account
 
     """
-
     def __init__(self):
 
         self._te = {}
         self.actorname = "accounts"
         self.appname = "cloudapi"
-        cloudapi_accounts_osis.__init__(self)
         self._cb = None
         self._models = None
-
 
     @property
     def cb(self):

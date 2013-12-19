@@ -1,22 +1,18 @@
 from JumpScale import j
-from cloudapi_machines_osis import cloudapi_machines_osis
 from cloudbrokerlib import authenticator, enums
 ujson = j.db.serializers.ujson
 
 
-class cloudapi_machines(cloudapi_machines_osis):
-
+class cloudapi_machines(object):
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
 
     """
-
     def __init__(self):
 
         self._te = {}
         self.actorname = "machines"
         self.appname = "cloudapi"
-        cloudapi_machines_osis.__init__(self)
         self._cb = None
         self._models = None
 

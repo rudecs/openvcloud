@@ -1,27 +1,20 @@
 from JumpScale import j
-from cloudapi_sizes_osis import cloudapi_sizes_osis
 import ujson
 
 
-class cloudapi_sizes(cloudapi_sizes_osis):
-
+class cloudapi_sizes(object):
     """
     Lists all the configured flavors available.
     A flavor is a combination of amount of compute capacity(CU) and disk capacity(GB).
 
     """
-
     def __init__(self):
 
         self._te = {}
         self.actorname = "sizes"
         self.appname = "cloudapi"
-        cloudapi_sizes_osis.__init__(self)
         self._cb = None
         self._models = None
-
-
-        pass
 
     @property
     def models(self):

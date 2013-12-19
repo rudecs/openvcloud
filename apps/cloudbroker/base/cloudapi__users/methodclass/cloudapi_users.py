@@ -1,32 +1,24 @@
 from JumpScale import j
-from cloudapi_users_osis import cloudapi_users_osis
 
-
-class cloudapi_users(cloudapi_users_osis):
-
+class cloudapi_users(object):
     """
     User management
 
     """
-
     def __init__(self):
 
         self._te = {}
         self.actorname = "users"
         self.appname = "cloudapi"
-        cloudapi_users_osis.__init__(self)
         self._cb = None
         self._models = None
-
-        pass
-
 
     @property
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
-    
+
     @property
     def models(self):
         if not self._models:
@@ -58,8 +50,7 @@ class cloudapi_users(cloudapi_users_osis):
         param:username unique username for the account
         param:emailaddress unique emailaddress for the account
         param:password unique password for the account
-        result bool 
-        
+        result bool
         """
         ctx = kwargs['ctx']
         if j.apps.system.usermanager.userexists(username):
@@ -82,10 +73,3 @@ class cloudapi_users(cloudapi_users_osis):
             ace.right = 'CXDRAU'
             self.models.cloudspace.set(cs.obj2dict())[0]
             return True
-
-
-
-
-
-
-

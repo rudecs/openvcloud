@@ -1,22 +1,17 @@
 from JumpScale import j
-from cloudapi_cloudspaces_osis import cloudapi_cloudspaces_osis
 from cloudbrokerlib import authenticator
 import ujson
 
 
-class cloudapi_cloudspaces(cloudapi_cloudspaces_osis):
-
+class cloudapi_cloudspaces(object):
     """
     API Actor api for managing cloudspaces, this actor is the final api a enduser uses to manage cloudspaces
 
     """
-
     def __init__(self):
-
         self._te = {}
         self.actorname = "cloudspaces"
         self.appname = "cloudapi"
-        cloudapi_cloudspaces_osis.__init__(self)
         self._cb = None
         self._models = None
 
