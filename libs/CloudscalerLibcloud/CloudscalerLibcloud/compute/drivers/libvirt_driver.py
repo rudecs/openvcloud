@@ -88,11 +88,10 @@ class CSLibvirtNodeDriver():
                    'size': image['size'],
                    'imagetype': image['type']}
         )
-    def _execute_agent_job(self, name, params, id=None):
+    def _execute_agent_job(self, name, id=None, **kwargs):
         if not id:
             role = self.id
-        job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name, role, args=params, timeout=60, wait=True)
-        result = json.loads(job['result'])['result']
+        result = self.backendconnection.agentcontroller_client.execute('cloudscalers', name, role, **kwargs)
         return result
 
     def _create_disk(self, size, image):
@@ -102,7 +101,7 @@ class CSLibvirtNodeDriver():
         disksize = size.disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
-        self._execute_agent_job('createdisk', {'diskxml': diskxml, 'poolname': POOLNAME})
+        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
         return diskname
 
     def create_node(self, name, size, image, location=None, auth=None):
@@ -148,7 +147,7 @@ class CSLibvirtNodeDriver():
 
         # 0 means default behaviour, e.g machine is auto started.
 
-        result = self._execute_agent_job('createmachine', {'machinexml': machinexml})
+        result = self._execute_agent_job('createmachine', machinexml=machinexml)
         vmid = result['id']
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % vxlan
@@ -209,7 +208,7 @@ class CSLibvirtNodeDriver():
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
         dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
-        job = self._execute_agent_job('deletemachine', {'machineid': node.id})
+        job = self._execute_agent_job('deletemachine', machineid = node.id)
         return True
 
     def ex_get_console_url(self, node):
@@ -223,7 +222,7 @@ class CSLibvirtNodeDriver():
     def list_nodes(self):
         noderesult = []
         nodes = self.backendconnection.listNodes()
-        result = self._execute_agent_job('listmachines', {})
+        result = self._execute_agent_job('listmachines')
         for x in result:
             if x['id'] in nodes:
                 ipaddress = nodes[x['id']]['ipaddress']
@@ -234,16 +233,16 @@ class CSLibvirtNodeDriver():
 
     def ex_stop(self, node):
         machineid = node.id
-        return self._execute_agent_job('stopmachine', {'machineid': machineid})
+        return self._execute_agent_job('stopmachine', machineid = machineid)
 
     def ex_reboot(self, node):
         machineid = node.id
-        return self._execute_agent_job('rebootmachine', {'machineid': machineid})
+        return self._execute_agent_job('rebootmachine', machineid = machineid)
 
     def ex_start(self, node):
         xml = ''
         machineid = node.id 
-        return self._execute_agent_job('startmachine', {'machineid': machineid, 'xml':xml})
+        return self._execute_agent_job('startmachine', machineid = machineid, xml = xml)
  
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -270,6 +269,7 @@ class CSLibvirtNodeDriver():
     def _get_persistent_xml(self, node):
         return self.backendconnection.db.get('domain_%s' % node.id)
 
+
     def _set_persistent_xml(self, node, xml):
         self.backendconnection.db.set(key='domain_%s' % node.id, obj=xml)
 
@@ -280,7 +280,7 @@ class CSLibvirtNodeDriver():
             pass
 
     def _get_domain_for_node(self, node):
-        return self._execute_agent_job('getmachine', {'machineid': node.id})
+        return self._execute_agent_job('getmachine', machineid = node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress=''):
         state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)

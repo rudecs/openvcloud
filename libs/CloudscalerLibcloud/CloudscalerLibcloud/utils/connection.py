@@ -38,6 +38,7 @@ class CloudBrokerConnection():
          self._j = j
          import JumpScale.portal
          import JumpScale.grid.geventws
+         from JumpScale.grid import agentcontroller
          if ipaddress:
              self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
@@ -47,9 +48,7 @@ class CloudBrokerConnection():
          self.environmentid = hrd.get('cloudscalers.environmentid')
          self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
-         login = j.application.config.get('system.superadmin.login')
-         passwd = j.application.config.get('system.superadmin.passwd')
-         self.agentcontroller_client = j.servers.geventws.getClient("127.0.0.1", 4444, org="myorg", user=login, passwd=passwd, roles=["system.1", "hypervisor.1"],category="agent")
+         self.agentcontroller_client = j.clients.agentcontroller
 
 
      def _getKeyValueStore(self):

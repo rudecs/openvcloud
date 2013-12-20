@@ -29,6 +29,7 @@ def action(diskxml, poolname):
             return storagepool
 
     connection = libvirtconn()
-    return connection.create_disk(diskxml, poolname)
+    connection.create_disk(diskxml, poolname)
+    return True 
 
 
