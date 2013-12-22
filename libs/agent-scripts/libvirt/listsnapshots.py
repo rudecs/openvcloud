@@ -1,13 +1,13 @@
 from JumpScale import j
 
 descr = """
-Libvirt script to delete a virtual machine
+List snapshot of specific machine
 """
 
-name = "deletemachine"
+name = "listsnapshots"
 category = "libvirt"
 organization = "cloudscalers"
-author = "hendrik@awingu.com"
+author = "deboeckj@incubaid.com"
 license = "bsd"
 version = "1.0"
 roles = ["*"]
@@ -16,6 +16,4 @@ roles = ["*"]
 def action(machineid):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    return connection.delete_machine(machineid)
-
-
+    return connection.listSnapshots(machineid)

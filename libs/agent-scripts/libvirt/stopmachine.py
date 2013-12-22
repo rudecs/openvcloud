@@ -14,26 +14,8 @@ roles = ["*"]
 
 
 def action(machineid):
-    import libvirt
-
-    class libvirtconn():
-        def __init__(self):
-            self.connection = libvirt.open()
-
-        def shutdown(self, id):
-            domain = self._get_domain(id)
-            return domain.shutdown() == 0
-
-        def _get_domain(self, id):
-            try:
-                domain = self.connection.lookupByUUIDString(id)
-            except libvirt.libvirtError, e:
-                if e.get_error_code() == libvirt.VIR_ERR_NO_DOMAIN:
-                    return None
-            return domain
-
-
-    connection = libvirtconn()
+    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    connection = LibvirtUtil()
     return connection.shutdown(machineid)
 
 

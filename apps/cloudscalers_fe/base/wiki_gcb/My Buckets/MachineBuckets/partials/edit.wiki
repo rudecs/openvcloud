@@ -158,7 +158,7 @@ h2. Manage Machine Bucket
                     <tr ng-repeat="snapshot in snapshots.snapshots">
                         <td width="89%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
-                            {[snapshot.date]}
+                            {[snapshot.epoch * 1000 | date:'medium']}
                         </td>
                         <td>
                             <a style="cursor: pointer" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
