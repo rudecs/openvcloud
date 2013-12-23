@@ -73,7 +73,7 @@ angular.module('cloudscalers.controllers')
     			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname);
     		});
 
-            LoadingDialog.show('Creating a snapshot');
+            LoadingDialog.show('Creating a snapshot', 1000);
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
@@ -119,27 +119,56 @@ angular.module('cloudscalers.controllers')
 
         $scope.start = function() {
             $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.start($scope.machine);
-            LoadingDialog.show('Starting...');
+            LoadingDialog.show('Starting');
+            Machine.start($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                },
+                function(reason){
+                    //TODO show error
+                }
+            );
+
             $scope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
         };
 
          $scope.stop = function() {
             $scope.machine.history.push({event: 'Stopping machine', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.stop($scope.machine);
-            LoadingDialog.show('Stopping ...');
+            LoadingDialog.show('Stopping');
+             Machine.stop($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                },
+                function(reason){
+                    //TODO show error
+                }
+            );
         };
 
         $scope.pause = function() {
             $scope.machine.history.push({event: 'Pausing machine', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.pause($scope.machine);
-            LoadingDialog.show('Pausing...');
+            LoadingDialog.show('Pausing');
+            Machine.pause($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                },
+                function(reason){
+                    //TODO show error
+                }
+            );
         };
 
         $scope.resume = function() {
             $scope.machine.history.push({event: 'Resuming machine', initiated: getFormattedDate(), user: 'Admin'});
-            Machine.resume($scope.machine);
-            LoadingDialog.show('Resuming...');
+            LoadingDialog.show('Resuming');
+            Machine.resume($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                },
+                function(reason){
+                    //TODO show error
+                }
+            );
         };
 
     }]);

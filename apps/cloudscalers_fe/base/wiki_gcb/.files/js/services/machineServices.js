@@ -11,38 +11,46 @@ angular.module('cloudscalers.services')
         return {
             start: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/start?machineId=' + machine.id;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
+                return $http.get(url).then(
+                    function(result) {
                         machine.status = machineStates['start'];
-                    })
-                    .error(function(data, status, headers, config) {
+                        return result.data;
+                    }, 
+                    function(reason){
+                        return $q.reject(reason);
                     });
             },
             stop: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/stop?machineId=' + machine.id;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
+                return $http.get(url).then(
+                    function(result) {
                         machine.status = machineStates['stop'];
-                    })
-                    .error(function(data, status, headers, config) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
             },
             pause: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
+                return $http.get(url).then(
+                    function(result) {
                         machine.status = machineStates['pause'];
-                    })
-                    .error(function(data, status, headers, config) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
             },
             resume: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/resume?machineId=' + machine.id;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
+                return $http.get(url).then(
+                    function(result) {
                         machine.status = machineStates['resume'];
-                    })
-                    .error(function(data, status, headers, config) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
             },
             create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
@@ -61,10 +69,12 @@ angular.module('cloudscalers.services')
             },
             clone: function(machine, cloneName) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + cloneName;
-                $http.get(url)
-                    .success(function(data, status, headers, config) {
-                    })
-                    .error(function(data, status, headers, config) {
+                return $http.get(url).then(
+                    function(result) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
             },
             delete: function (machineid) {

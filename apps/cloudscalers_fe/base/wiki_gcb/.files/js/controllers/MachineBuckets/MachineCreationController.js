@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', '$rootScope', function($scope, $timeout, $location, $window, Machine, alert, $rootScope) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', '$rootScope', 'LoadingDialog', function($scope, $timeout, $location, $window, Machine, alert, $rootScope, LoadingDialog) {
         $scope.machine = {
             name: '',
             description: '',
@@ -24,19 +24,15 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('machine.imageId', function() {
             machinedisksize = _.findWhere($scope.images, {id:parseInt($scope.machine.imageId)});
             if (machinedisksize != undefined){
-            size = _.find($scope.availableDiskSizes, function(size) { return  machinedisksize.size <= size;});
-            $scope.machine.disksize =  size;
-        }
+                size = _.find($scope.availableDiskSizes, function(size) { return  machinedisksize.size <= size;});
+                $scope.machine.disksize =  size;
+            }
         }, true);
 
 
 
         $scope.createredirect = function(id) {
-            $location.path('/edit/' + id);
-            setTimeout(function(){
-                    $rootScope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
-            });
-
+            $location.path('/edit/' + id + '/console');
         };
 
         $scope.createError = function(response){
@@ -46,10 +42,21 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.saveNewMachine = function() {
+            LoadingDialog.show('Creating')
             Machine.create($scope.currentSpace.id, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
-                           $scope.machine.region, $scope.machine.replication).then($scope.createredirect, $scope.createError);
+                           $scope.machine.region, $scope.machine.replication)
+            .then(
+                function(result){
+                    LoadingDialog.hide();
+                    $scope.createredirect(result);
+                },
+                function(reason){
+                    LoadingDialog.hide();
+                    $scope.createError(reason);
+                }
+            );
         };
 
         $scope.showDiskSize = function(disksize) {
