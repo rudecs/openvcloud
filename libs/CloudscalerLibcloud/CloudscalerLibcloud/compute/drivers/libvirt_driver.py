@@ -2,10 +2,9 @@
 
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
-from jinja2 import Environment, PackageLoader, Template
+from jinja2 import Environment, PackageLoader
 from JumpScale.baselib.dnsmasq import DNSMasq
 from xml.etree import ElementTree
-import os
 import uuid
 import libvirt
 import urlparse
@@ -88,11 +87,10 @@ class CSLibvirtNodeDriver():
                    'size': image['size'],
                    'imagetype': image['type']}
         )
-    def _execute_agent_job(self, name, id=None, **kwargs):
+    def _execute_agent_job(self, name, id=None, wait=True, **kwargs):
         if not id:
             role = self.id
-        result = self.backendconnection.agentcontroller_client.execute('cloudscalers', name, role, **kwargs)
-        return result
+        return self.backendconnection.agentcontroller_client.execute('cloudscalers', name, role, wait=wait, **kwargs)
 
     def _create_disk(self, size, image):
         disktemplate = self.env.get_template("disk.xml")
@@ -161,32 +159,29 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-    #def ex_snapshot(self, node, name, snapshottype='internal'):
-    #    domain = self._get_domain_for_node(node=node)
-    #    diskfiles = self._get_domain_disk_file_names(domain)
-    #    snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
-    #    flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
-    #    return domain.snapshotCreateXML(snapshot, flags).getName()
+    def ex_snapshot(self, node, name, snapshottype='internal'):
+        domain = self._get_domain_for_node(node=node)
+        xml = ElementTree.fromstring(domain['XMLDesc'])
+        diskfiles = self._get_domain_disk_file_names(xml)
+        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
+        return self._execute_agent_job('snapshot', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
 
-    #def ex_listsnapshots(self, node):
-    #    domain = self._get_domain_for_node(node=node)
-    #    return domain.snapshotListNames(0)
+    def ex_listsnapshots(self, node):
+        return self._execute_agent_job('listsnapshots', machineid=node.id)
 
-    #def ex_snapshot_delete(self, node, name):
-    #    domain = self._get_domain_for_node(node=node)
-    #    snapshot = domain.snapshotLookupByName(name, 0)
-    #    return snapshot.delete(0) == 0
+    def ex_snapshot_delete(self, node, name):
+        return self._execute_agent_job('deletesnapshot', machineid=node.id, name=name)
 
-    #def ex_snapshot_rollback(self, node, name):
-    #    domain = self._get_domain_for_node(node=node)
-    #    snapshot = domain.snapshotLookupByName(name, 0)
-    #    return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
+    def ex_snapshot_rollback(self, node, name):
+        return self._execute_agent_job('rollbacksnapshot', machineid=node.id, name=name)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
             xml = dom
+        elif isinstance(dom, basestring):
+            xml = ElementTree.fromstring(dom)
         else:
-            xml = ElementTree.fromstring(dom.XMLDesc(0))
+            raise RuntimeError('Invalid type %s for parameter dom' % type(dom))
         disks = xml.findall('devices/disk')
         diskfiles = list()
         for disk in disks:
