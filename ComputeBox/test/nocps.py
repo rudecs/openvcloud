@@ -21,8 +21,17 @@ def installFreshComputeNode(nocps_url, macaddress, hostname):
     if not provisioning_result['success']:
         print provisioning_result
     
-    while ps.PXE_API.getProvisioningStatusByServer(macaddress):
-        print '.',
+    laststatus = ""
+    while True:
+        status = ps.PXE_API.getProvisioningStatusByServer(macaddress)
+        if status:
+            line = "%(statusmsg)s: %(statusprogress)s " % (status)
+            if line != laststatus:
+                print line
+                laststatus = line
+        else:
+            print 'Done'
+            break
         time.sleep(5)
     
 if __name__ == '__main__':
