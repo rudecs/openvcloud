@@ -47,7 +47,7 @@ angular.module('cloudscalers.controllers')
 		$scope.snapshotname= '';
 
         $scope.submit = function (result) {
-        	$modalInstance.close(result);
+        	$modalInstance.close(result.newSnapshotName);
         };
 
         $scope.cancel = function () {
