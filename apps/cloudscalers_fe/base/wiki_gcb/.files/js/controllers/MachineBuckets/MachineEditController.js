@@ -5,8 +5,12 @@ angular.module('cloudscalers.controllers')
         $scope.machine = Machine.get($routeParams.machineId);
 
         var changeSelectedTab = function(tab){
-            $scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots'};
+        	if (tab){
+        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots'};
+        	}
         }
+        
+        changeSelectedTab($routeParams.activeTab);
         
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
