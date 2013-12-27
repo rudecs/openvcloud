@@ -10,7 +10,7 @@ cloudscalers
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/list', {templateUrl: 'partials/list'});
         $routeProvider.when('/new', {templateUrl: 'partials/new', controller: 'MachineCreationController'});
-        $routeProvider.when('/edit/:machineId', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
+        $routeProvider.when('/edit/:machineId/:activeTab?', {templateUrl: 'partials/edit', controller: 'MachineEditController'});
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
