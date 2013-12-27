@@ -3,6 +3,11 @@ angular.module('cloudscalers.controllers')
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 'LoadingDialog',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal, LoadingDialog) {
         $scope.machine = Machine.get($routeParams.machineId);
+
+        var changeSelectedTab = function(tab){
+            $scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots'};
+        }
+        
         $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
@@ -116,20 +121,20 @@ angular.module('cloudscalers.controllers')
                     $location.path("/list/");
         		});
         };
-
+        
         $scope.start = function() {
             $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
             LoadingDialog.show('Starting');
             Machine.start($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    changeSelectedTab(console);
                 },
                 function(reason){
                     //TODO show error
                 }
             );
 
-            $scope.tabactive = {'actions': false, 'console': true, 'snapshots': false, 'changelog': false};
         };
 
          $scope.stop = function() {
