@@ -13,4 +13,6 @@ class NewMachine(PageObject):
         #And click the Create button
         self.driver.find_element_by_xpath('//button[text()="Create"]').click()
         
+        self.waitXpath('//*[@id="actions"]/div/div[1]/ul/li[1]')
+        
         return MachineDetails(self.driver)

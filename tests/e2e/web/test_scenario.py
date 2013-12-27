@@ -12,7 +12,7 @@ class TestSignup(unittest.TestCase):
 
     def setUp(self):
         self.env_url = os.environ.get('env_url', "http://10.101.190.25/wiki_gcb/")
-        self.driver = self.getDriver(os.environ.get('browser', 'Firefox'))
+        self.driver = self.getDriver(os.environ.get('browser', 'Chrome'))
         self.driver.get(self.env_url)
         self.driver.maximize_window()
                 
@@ -26,6 +26,7 @@ class TestSignup(unittest.TestCase):
         machinedetails = machinebuckets.create_machine().create('testmachine',
                                                'This is a machine generated during an automated e2e test.',
                                                'Ubuntu', 'Linux 13.04 image')
+        self.assertEqual("testmachine", machinedetails.getMachineName())
         
         pass
     
