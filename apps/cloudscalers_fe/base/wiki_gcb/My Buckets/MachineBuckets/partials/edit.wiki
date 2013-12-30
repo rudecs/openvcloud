@@ -92,6 +92,25 @@ h2. Manage Machine Bucket
                                 <i class=" icon-remove-circle"></i>
                                 Destroy
                             </a>
+
+            <script type="text/ng-template" id="destroyMachineDialog.html"> 
+                            <form name="destroyform" ng-submit="cancelDestroy()">
+                                <div class="modal-header">
+                                    <h3>Destroy machine bucket?</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+                                    After destroying a machine bucket, <br/>
+                                    all data and will be lost and the ip is released.
+                                </div>
+                                 <div class="modal-footer">
+                                    <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+                                    <button type="submit" id="submitdestroyform" class="btn btn-primary">Cancel</button>
+                                </div>
+                            </form>
+            </script>
+
+
                         </li>
                         <li>
                             <a onclick="location.reload()">

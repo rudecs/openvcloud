@@ -41,14 +41,30 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('images', updateMachineSize, true);
 
         $scope.destroy = function() {
-            if (confirm('Are you sure you want to destroy this machine?')) {
+            var modalInstance = $modal.open({
+                templateUrl: 'destroyMachineDialog.html',
+                controller: function($scope, $modalInstance){
+
+                        $scope.ok = function () {
+                            $modalInstance.close('ok');
+                        };
+
+                        $scope.cancelDestroy = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
                 Machine.delete($scope.machine.id);
                 var machine = _.findWhere($scope.machines, {id: $scope.machine.id});
                 if (machine){
-                	machine.status = 'DESTROYED';
+                    machine.status = 'DESTROYED';
                 }
                 $location.path("/list");
-            }
+            });
         };
 
 	var CreateSnapshotController = function ($scope, $modalInstance) {
