@@ -1,9 +1,7 @@
 @template public
 @col 3
 
-{{div: class=affix}}
 {{navigation}}
-{{div}}
 
 @divend
 

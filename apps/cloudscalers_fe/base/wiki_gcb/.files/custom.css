@@ -582,27 +582,6 @@ padding: 10px;
     padding-top: 12px;
 }
 
-.affix {
-    width: 220px;
-}
-
-@media (max-width: 767px) {
-    .affix {
-        width: 736px;
-        display: block;
-    }
-}
-
-@media(min-width:768px) and (max-width:979px) {
-    .affix {
-        width: 166px;
-    }
-}
-@media (min-width: 1200px) {
-    .affix {
-        width: 270px;
-    }
-}
 .sidebar-nav li {
   text-align:right; list-style:none;
   padding:5px ; 
