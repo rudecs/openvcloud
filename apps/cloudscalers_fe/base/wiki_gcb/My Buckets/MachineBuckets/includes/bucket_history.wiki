@@ -4,14 +4,12 @@
         <tr>
             <th>Event</th>
             <th>Initiated</th>
-            <th>User</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="history in machine.history">
-            <td>{[history.event]}</td>
-            <td>{[history.initiated]}</td>
-            <td>{[history.user]}</td>
+        <tr ng-repeat="history in machineHistory.history">
+            <td>{[history._source.message]}</td>
+            <td>{[history._source.epoch * 1000 | date:'medium']}</td>
         </tr>
     </tbody>
 </table>

@@ -12,7 +12,11 @@ angular.module('cloudscalers.controllers')
         
         changeSelectedTab($routeParams.activeTab);
         
-        $scope.machine.history = [{event: 'Created', initiated: getFormattedDate(), user: 'Admin'}];
+        var retrieveMachineHistory = function() {
+            $scope.machineHistory = Machine.getHistory($routeParams.machineId);
+        };
+        retrieveMachineHistory();
+        $scope.$watch('machine', retrieveMachineHistory, true);
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
@@ -102,13 +106,11 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
-            $scope.machine.history.push({event: 'Restored from snapshot', initiated: getFormattedDate(), user: 'Admin'});
             Machine.rollbackSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
 
         $scope.deleteSnapshot = function(snapshot) {
-            $scope.machine.history.push({event: 'Delete snapshot', initiated: getFormattedDate(), user: 'Admin'});
             Machine.deleteSnapshot($scope.machine.id, snapshot.name);
             location.reload();
         };
@@ -143,7 +145,6 @@ angular.module('cloudscalers.controllers')
         };
         
         $scope.start = function() {
-            $scope.machine.history.push({event: 'Started', initiated: getFormattedDate(), user: 'Admin'});
             LoadingDialog.show('Starting');
             Machine.start($scope.machine).then(
                 function(result){
@@ -158,7 +159,6 @@ angular.module('cloudscalers.controllers')
         };
 
          $scope.stop = function() {
-            $scope.machine.history.push({event: 'Stopping machine', initiated: getFormattedDate(), user: 'Admin'});
             LoadingDialog.show('Stopping');
              Machine.stop($scope.machine).then(
                 function(result){
@@ -171,7 +171,6 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.pause = function() {
-            $scope.machine.history.push({event: 'Pausing machine', initiated: getFormattedDate(), user: 'Admin'});
             LoadingDialog.show('Pausing');
             Machine.pause($scope.machine).then(
                 function(result){
@@ -184,7 +183,6 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.resume = function() {
-            $scope.machine.history.push({event: 'Resuming machine', initiated: getFormattedDate(), user: 'Admin'});
             LoadingDialog.show('Resuming');
             Machine.resume($scope.machine).then(
                 function(result){
