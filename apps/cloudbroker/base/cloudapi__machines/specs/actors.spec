@@ -173,3 +173,13 @@
         var:machineId str,,id of machine to clone
         var:name str,, name of cloned machine 
         result:int #returns id of new machine cloned
+
+    method:getHistory
+        """
+        Gets machine history
+        """
+        var:machineId str,,id of machine to clone
+        var:size int,, result size
+        result:list
+
+    
