@@ -290,6 +290,23 @@ defineApiStub = function ($httpBackend) {
 
     // getConsoleUrl
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('null');
+    $httpBackend.whenGET(/^\/machines\/getHistory\?size=100&machineId=(\d+).*/).respond([
+        {
+            _source: {
+                message: "Created",                
+                epoch: 1388056939,
+            }
+        },
+        {
+            _source: {
+                message: "Snapshot created",
+                epoch: 1388057939,
+            }
+        },
+        
+    ]);
+
+
 
     // actions
     $httpBackend.whenGET(/^\/machines\/start\?machineId=\d+.*/).respond(function(method, url, data) {
