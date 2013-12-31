@@ -423,5 +423,5 @@ class cloudapi_machines(object):
         """
         size = int(size)
         tags = {'machineid': machineId}
-        query = {"query": {"bool": {"must": [{"term": {"category": "machine.history.ui", "tags": ujson.dumps(tags)}}]}}, "size": size}
+        query = {"query": {"bool": {"must": [{"term": {"category": "machine.history.ui"}}, {"term": {"tags": ujson.dumps(tags)}}]}}, "size": size}
         return self.osis_logs.search(query)['hits']['hits']
