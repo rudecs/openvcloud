@@ -53,8 +53,8 @@ class cloudapi_machines(object):
         if newstatus and newstatus != machine.status:
             machine.status = newstatus
             self.models.vmachine.set(machine)
-        tags = {'machineid': machineId}
-        j.logger.log(actiontype, category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log(actiontype, category='machine.history.ui', tags=tags)
         return method(node)
 
     @authenticator.auth(acl='X')
@@ -171,8 +171,8 @@ class cloudapi_machines(object):
             raise
         node = provider.client.create_node(name=name, image=pimage, size=psize)
         self._updateMachineFromNode(machine, node, stack['id'], psize)
-        tags = {'machineid': machine.id}
-        j.logger.log('Created', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machine.id)
+        j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
 
     def _updateMachineFromNode(self, machine, node, stackId, psize):
@@ -225,8 +225,8 @@ class cloudapi_machines(object):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
-        tags = {'machineid': machineId}
-        j.logger.log('Deleted', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         return self.models.vmachine.delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, **kwargs):
@@ -324,8 +324,8 @@ class cloudapi_machines(object):
 
         """
         provider, node = self._getProviderAndNode(machineId)
-        tags = {'machineid': machineId}
-        j.logger.log('Snapshot created', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot(node, name)
 
     @authenticator.auth(acl='C')
@@ -336,15 +336,15 @@ class cloudapi_machines(object):
     @authenticator.auth(acl='C')
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        tags = {'machineid': machineId}
-        j.logger.log('Snapshot deleted', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_delete(node, name)
 
     @authenticator.auth(acl='C')
     def rollbackSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        tags = {'machineid': machineId}
-        j.logger.log('Sanpshot rolled-back', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log('Sanpshot rolled-back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
     @authenticator.auth(acl='W')
@@ -413,15 +413,14 @@ class cloudapi_machines(object):
         size = self._getSize(provider, clone)
         node = provider.client.ex_clone(node, size, name)
         self._updateMachineFromNode(clone, node, machine.stackId, size)
-        tags = {'machineid': machineId}
-        j.logger.log('Cloned', category='machine.history.ui', tags=ujson.dumps(tags))
+        tags = str(machineId)
+        j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
 
     def getHistory(self, machineId, size, **kwargs):
         """
         Gets the machine actions history
         """
-        size = int(size)
-        tags = {'machineid': machineId}
-        query = {"query": {"bool": {"must": [{"term": {"category": "machine.history.ui"}}, {"term": {"tags": ujson.dumps(tags)}}]}}, "size": size}
+        tags = str(machineId)
+        query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
         return self.osis_logs.search(query)['hits']['hits']
