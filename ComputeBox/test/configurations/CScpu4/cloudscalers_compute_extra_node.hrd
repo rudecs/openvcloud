@@ -1,5 +1,6 @@
 cloudscalers.environmentid = fff1
 cloudscalers.publicvxlanid = 65521
+cloudscalers.multicastaddress = 239.0.255.241
 cloudscalers.ipv6prefix = 2a02:578:f33:fff1:7fff:a551
 cloudscalers.dnsmasqipaddress = 10.224.0.1/16
 cloudscalers.publicrouter = 10.224.254.254
