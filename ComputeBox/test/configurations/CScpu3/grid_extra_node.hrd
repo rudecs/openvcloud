@@ -3,5 +3,5 @@ grid.node.id=3
 grid.useavahi=1
 grid.ismaster=False
 grid.master=
-grid.master.ip=localhost
+grid.master.ip=
 grid.node.roles=node,CScpu3
