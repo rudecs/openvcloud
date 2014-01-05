@@ -3,20 +3,30 @@ angular.module('cloudscalers.controllers')
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 'LoadingDialog',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal, LoadingDialog) {
         $scope.machine = Machine.get($routeParams.machineId);
+        $scope.tabactive = {};
 
         var changeSelectedTab = function(tab){
         	if (tab){
-        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots'};
+        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots', 'history': tab =='history'};
         	}
         }
         
         changeSelectedTab($routeParams.activeTab);
         
         var retrieveMachineHistory = function() {
-            $scope.machineHistory = Machine.getHistory($routeParams.machineId);
+            $scope.machineHistory = Machine.getHistory($routeParams.machineId, $scope.machineHistory);
+
+            // Because ElasticSearch has a delay of maximum 1 second, the retrieved data may not be updated, so I retrieve it again after 1 second
+            $timeout(function() {
+                $scope.machineHistory = Machine.getHistory($routeParams.machineId, $scope.machineHistory);
+            }, 2000)
         };
         retrieveMachineHistory();
-        $scope.$watch('machine', retrieveMachineHistory, true);
+        $scope.$watch('tabactive.history', function() {
+            if (!$scope.tabactive.history)
+                return;
+            retrieveMachineHistory();
+        }, true);
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
@@ -149,7 +159,7 @@ angular.module('cloudscalers.controllers')
             Machine.start($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
-                    changeSelectedTab(console);
+                    changeSelectedTab('console');
                 },
                 function(reason){
                     //TODO show error

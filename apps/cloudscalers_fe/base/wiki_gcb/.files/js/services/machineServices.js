@@ -182,17 +182,20 @@ angular.module('cloudscalers.services')
                 });
                 return getConsoleUrlResult;
             },
-            getHistory: function(machineId) {
-                var historyResult = {};
+            getHistory: function(machineId, oldHistoryResult) {
+                var historyResult = oldHistoryResult || {};
                 var url = cloudspaceconfig.apibaseurl + '/machines/getHistory?size=100&machineId=' + machineId;
                 $http.get(url).success(function(data, status, headers, config) {
                     if (data == 'None') {
                         historyResult.error = status;
+                        historyResult.history = [];
                     } else {
                         historyResult.history = _.sortBy(data, function(h) { return -h._source.epoch; });
+                        historyResult.error = undefined;
                     }
                 }).error(function (data, status, headers, config) {
                     historyResult.error = status;
+                    historyResult.history = [];    
                 });
                 return historyResult;
             }
