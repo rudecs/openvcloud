@@ -88,7 +88,7 @@ defineApiStub = function ($httpBackend) {
 
     var MachinesList = LocalStorageItem('gcb:machines');
     if (!MachinesList.get()) {
-        MachinesList.set([{
+        /*MachinesList.set([{
         	"cloudspaceId":1, 
             "status": "RUNNING",
             "hostname": "jenkins.cloudscalers.com",
@@ -103,12 +103,13 @@ defineApiStub = function ($httpBackend) {
             "status": "HALTED",
             "hostname": "cloudbroker.cloudscalers.com",
             "description": "CloudScalers CloudBroker",
-            "name": "CloudBroker",
-            "interfaces": [{'ipAddress': '192.168.100.66'}],
-            "sizeId": 0,
-            "imageId": 1,
-            "id": 1
-        }]);
+            "name": "CloudBroker",[
+                        "interfaces": [{'ipAddress': '192.168.100.66'}],
+                        "sizeId": 0,
+                        "imageId": 1,
+                        "id": 1
+                    }]);*/
+        MachinesList.set([]);
     }
 
     var images = [
@@ -290,22 +291,6 @@ defineApiStub = function ($httpBackend) {
 
     // getConsoleUrl
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('null');
-    $httpBackend.whenGET(/^\/machines\/getHistory\?size=100&machineId=(\d+).*/).respond([
-        {
-            _source: {
-                message: "Created",                
-                epoch: 1388056939,
-            }
-        },
-        {
-            _source: {
-                message: "Snapshot created",
-                epoch: 1388057939,
-            }
-        },
-        
-    ]);
-
 
 
     // actions
@@ -499,6 +484,22 @@ defineApiStub = function ($httpBackend) {
         account.acl = _.reject(account.acl, function(acl) { return acl.userGroupId == userId});
         return [200, 'Success'];
     });
+
+
+    $httpBackend.whenGET(/^\/machines\/getHistory\?.*/).respond([
+        {
+            _source: {
+                message: "stop",
+                epoch: 1389016668
+            }
+        },
+        {
+            _source: {
+                message: "start",
+                epoch: 1389015668
+            }
+        },
+    ]);
     
 };
 

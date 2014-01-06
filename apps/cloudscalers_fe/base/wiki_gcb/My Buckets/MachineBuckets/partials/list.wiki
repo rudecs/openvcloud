@@ -1,6 +1,6 @@
 {{html:
 
-   <div ng-cloak ng-show="machines && (machines.length == 0)">
+   <div ng-cloak ng-show="(machines | filter:machineIsManageable).length == 0">
   }}
   h2. Machine Buckets
 
@@ -15,7 +15,7 @@ h3. Start now and create your Machine Bucket
 {{html:
   
 <div id="tabbable">
-  <h2 ng-cloak ng-show="machines.length > 0">Machine Buckets</h2>
+  <h2 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Buckets</h2>
   <form class="form-horizontal" method="get" action="MachineBuckets#/new">
     <fieldset>
 
@@ -30,7 +30,7 @@ h3. Start now and create your Machine Bucket
   </form> 
 
 
-  <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="machines.length > 0">
+  <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">
     <tr>
       <th>Status</th>
       <th>Name</th>
