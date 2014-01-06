@@ -1,6 +1,11 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator, enums
 import JumpScale.grid.osis
+import string
+from random import sample, choice
+from libcloud.compute.base import NodeAuthPassword
+
+
 ujson = j.db.serializers.ujson
 
 
@@ -158,18 +163,28 @@ class cloudapi_machines(object):
         disk.sizeMax = disksize
         diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
+
+        account = machine.new_account()
+        account.login = 'cloudscaler'
+        length = 8
+        chars = string.letters + string.digits
+        passwd = ''.join(choice(chars) for _ in xrange(length))
+        account.password = passwd
+        auth = NodeAuthPassword(passwd)
         machine.id = self.models.vmachine.set(machine)[0]
+
         try:
             stack = self.cb.extensions.imp.getBestProvider(imageId)
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = 'vm-%s' % machine.id
+            name = '%s.vm-%s' % (machine.name, machine.id)
         except:
             self.models.vmachine.delete(machine.id)
             raise
-        node = provider.client.create_node(name=name, image=pimage, size=psize)
+
+        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth)
         self._updateMachineFromNode(machine, node, stack['id'], psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
@@ -262,7 +277,7 @@ class cloudapi_machines(object):
         return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'],
                 'name': machine['name'], 'hostname': machine['hostName'],
                 'status': machine['status'], 'imageid': machine['imageId'], 'sizeid': machine['sizeId'],
-                'interfaces': machine['nics'], 'storage': storage.disk}
+                'interfaces': machine['nics'], 'storage': storage.disk, 'accounts': machine['accounts']}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """

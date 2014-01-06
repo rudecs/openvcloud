@@ -1,4 +1,4 @@
-
+    
 [rootmodel:VMachine] @dbtype:osis
     """
     """
@@ -24,12 +24,12 @@
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
     prop:referenceSizeId str,, reference to the size used on the stack
 
-[model:VMAccount]
+[model:VMAccount] @dbtype:osis
     """
     Machine account on the virtual machine
     """
-    prop:login string,,login name of the machine account
-    prop:password string,,password of the machine account
+    prop:login str,,login name of the machine account
+    prop:password str,,password of the machine account
 
 [rootmodel:Account] @dbtype:osis
     """

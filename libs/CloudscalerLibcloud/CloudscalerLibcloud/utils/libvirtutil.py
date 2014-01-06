@@ -59,10 +59,13 @@ class LibvirtUtil(object):
             disks = xml.findall('devices/disk')
             diskfiles = list()
         for disk in disks:
-            if disk.attrib['device'] == 'disk':
+            if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
                 source = disk.find('source')
                 if source != None:
-                    diskfiles.append(source.attrib['dev'])
+                    if disk.attrib['device'] == 'disk':
+                        diskfiles.append(source.attrib['dev'])
+                    if disk.attrib['device'] == 'cdrom':
+                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def snapshot(self, id, xml, snapshottype):

@@ -1,7 +1,7 @@
 # Add extra specific cloudscaler functions for libvirt libcloud driver
 
 from CloudscalerLibcloud.utils import connection
-from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
+from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, NodeAuthPassword
 from jinja2 import Environment, PackageLoader
 from JumpScale.baselib.dnsmasq import DNSMasq
 from xml.etree import ElementTree
@@ -9,6 +9,7 @@ import uuid
 import libvirt
 import urlparse
 import json
+import crypt, random
 POOLNAME = 'VMStor'
 POOLPATH = '/mnt/%s' % POOLNAME.lower()
 libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
@@ -102,6 +103,20 @@ class CSLibvirtNodeDriver():
         self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
         return diskname
 
+    def _create_metadata_iso(self, name, userdata, metadata):
+        return self._execute_agent_job('createmetaiso', name=name, poolname=POOLNAME, metadata=metadata, userdata=userdata)
+
+    def generate_password_hash(self, password):
+        def generate_salt():
+            salt_set = ('abcdefghijklmnopqrstuvwxyz'
+                        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                        '0123456789./')
+            salt = 16 * ' '
+            return ''.join([random.choice(salt_set) for c in salt])
+        salt = generate_salt()
+        return crypt.crypt(password, '$6$' + salt)
+
+
     def create_node(self, name, size, image, location=None, auth=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
@@ -130,16 +145,32 @@ class CSLibvirtNodeDriver():
         @return: The newly created node.
         @rtype: L{Node}
         """
-        diskname = self._create_disk(size, image)
-        return self._create_node(name, diskname, size)
+        metadata_iso = None
 
-    def _create_node(self, name, diskname, size):
+        if auth:
+            #At this moment we handle only NodeAuthPassword
+            password = auth.password
+            #userdata = {'password': password, 'chpasswd': { 'expire': False }, 'ssh_pwauth': True}
+            hash_pass = self.generate_password_hash(password)
+            userdata = {'users': [{'name':'cloudscaler', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
+            metadata = {'local-hostname': name}
+            metadata_iso = self._create_metadata_iso(name, userdata, metadata)
+        diskname = self._create_disk(size, image)
+        #Internally only vm-x is used as name to indenfify the machine on the local nodes.
+        name = name.split('.')[-1]
+        return self._create_node(name, diskname, size, metadata_iso)
+
+    def _create_node(self, name, diskname, size, metadata_iso=None):
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = self.backendconnection.environmentid
 
         macaddress = self.backendconnection.getMacAddress()
-
-        machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
+        if not metadata_iso:
+            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
+                                             'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
+        else:
+            machinetemplate = self.env.get_template("machine_iso.xml")
+            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
 
 
@@ -155,7 +186,6 @@ class CSLibvirtNodeDriver():
         dnsmasq.addHost(macaddress, ipaddress,name)
 
         node = self._from_agent_to_node(result, ipaddress)
-        print result
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
