@@ -17,13 +17,27 @@ class LibvirtUtil(object):
         domain = self._get_domain(id)
         if not domain and xml:
             domain = self.connection.defineXML(xml)
+        if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
+            return True
         return domain.create() == 0
-
 
     def shutdown(self, id):
         domain = self._get_domain(id)
+        if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+            return True
         return domain.shutdown() == 0
 
+    def suspend(self, id):
+        domain = self._get_domain(id)
+        if domain.state(0)[0] == libvirt.VIR_DOMAIN_PAUSED:
+            return True
+        return domain.suspend() == 0
+
+    def resume(self, id):
+        domain = self._get_domain(id)
+        if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
+            return True
+        return domain.resume() == 0
 
     def delete_machine(self, machineid):
         domain = self.connection.lookupByUUIDString(machineid)
