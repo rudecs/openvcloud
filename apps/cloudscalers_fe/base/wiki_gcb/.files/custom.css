@@ -1187,3 +1187,8 @@ a.icon-remove-sign {
 [role=spinbutton] {
     outline: none;
 }
+
+.nav, .pagination, .carousel a {
+    cursor: pointer;
+}
+
