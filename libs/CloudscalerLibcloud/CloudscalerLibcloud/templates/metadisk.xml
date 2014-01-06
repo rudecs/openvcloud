@@ -1,0 +1,9 @@
+ <volume>
+                <name>{{diskname}}</name>
+                <capacity unit='GB'>{{disksize}}</capacity>
+                <allocation unit='GB'>{{disksize}}</allocation>
+                <target>
+                    <format type='raw'/>
+                </target>
+ </volume> 
+
