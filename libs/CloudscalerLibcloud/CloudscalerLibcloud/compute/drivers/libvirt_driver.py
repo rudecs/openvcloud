@@ -230,6 +230,14 @@ class CSLibvirtNodeDriver():
         machineid = node.id
         return self._execute_agent_job('stopmachine', machineid = machineid)
 
+    def ex_suspend(self, node):
+        machineid = node.id
+        return self._execute_agent_job('suspendmachine', machineid = machineid)
+
+    def ex_resume(self, node):
+        machineid = node.id
+        return self._execute_agent_job('resumemachine', machineid = machineid)
+
     def ex_reboot(self, node):
         machineid = node.id
         return self._execute_agent_job('rebootmachine', machineid = machineid)
