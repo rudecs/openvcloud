@@ -188,7 +188,7 @@ h2. Manage Machine Bucket
             </table>
         </div>
       </tab>
-      <tab heading="Change Log" active="tabactive.history">
+      <tab heading="Change Log" active="tabactive.changelog">
         <div id="logging" class="tab-pane">
             {{include:bucket_history}}
         </div>

@@ -14,11 +14,26 @@ angular.module('cloudscalers.controllers')
         changeSelectedTab($routeParams.activeTab);
         
         var retrieveMachineHistory = function() {
-            $scope.machineHistory = Machine.getHistory($routeParams.machineId, $scope.machineHistory);
+            if (!$scope.machineHistory)
+                $scope.machineHistory = {};
+            
+            Machine.getHistory($routeParams.machineId)
+                .success(function(data, status, headers, config) {
+                    if (data == 'None') {
+                        $scope.machineHistory.error = status;
+                        $scope.machineHistory.history = [];
+                    } else {
+                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h._source.epoch; });
+                        $scope.machineHistory.error = undefined;
+                    }
+                }).error(function (data, status, headers, config) {
+                    $scope.machineHistory.error = status;
+                    $scope.machineHistory.history = [];    
+                });
         };
         
-        $scope.$watch('tabactive.history', function() {
-            if (!$scope.tabactive.history)
+        $scope.$watch('tabactive.changelog', function() {
+            if (!$scope.tabactive.changelog)
                 return;
             retrieveMachineHistory();
         }, true);

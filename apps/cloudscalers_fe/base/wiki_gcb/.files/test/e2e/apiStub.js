@@ -88,7 +88,7 @@ defineApiStub = function ($httpBackend) {
 
     var MachinesList = LocalStorageItem('gcb:machines');
     if (!MachinesList.get()) {
-        /*MachinesList.set([{
+        MachinesList.set([{
         	"cloudspaceId":1, 
             "status": "RUNNING",
             "hostname": "jenkins.cloudscalers.com",
@@ -103,13 +103,12 @@ defineApiStub = function ($httpBackend) {
             "status": "HALTED",
             "hostname": "cloudbroker.cloudscalers.com",
             "description": "CloudScalers CloudBroker",
-            "name": "CloudBroker",[
-                        "interfaces": [{'ipAddress': '192.168.100.66'}],
-                        "sizeId": 0,
-                        "imageId": 1,
-                        "id": 1
-                    }]);*/
-        MachinesList.set([]);
+            "name": "CloudBroker",
+            "interfaces": [{'ipAddress': '192.168.100.66'}],
+            "sizeId": 0,
+            "imageId": 1,
+            "id": 1
+        }]);
     }
 
     var images = [
