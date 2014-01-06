@@ -7,7 +7,7 @@ angular.module('cloudscalers.controllers')
 
         var changeSelectedTab = function(tab){
         	if (tab){
-        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'snapshots': tab=='snapshots', 'history': tab =='history'};
+        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'changelog': tab=='changelog', 'history': tab =='history'};
         	}
         }
         
@@ -15,18 +15,14 @@ angular.module('cloudscalers.controllers')
         
         var retrieveMachineHistory = function() {
             $scope.machineHistory = Machine.getHistory($routeParams.machineId, $scope.machineHistory);
-
-            // Because ElasticSearch has a delay of maximum 1 second, the retrieved data may not be updated, so I retrieve it again after 1 second
-            $timeout(function() {
-                $scope.machineHistory = Machine.getHistory($routeParams.machineId, $scope.machineHistory);
-            }, 2000)
         };
-        retrieveMachineHistory();
+        
         $scope.$watch('tabactive.history', function() {
             if (!$scope.tabactive.history)
                 return;
             retrieveMachineHistory();
         }, true);
+        
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
