@@ -179,7 +179,7 @@ class cloudapi_machines(object):
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = '%s.vm-%s' % (machine.name, machine.id)
+            name = 'vm-%s' % machine.id
         except:
             self.models.vmachine.delete(machine.id)
             raise

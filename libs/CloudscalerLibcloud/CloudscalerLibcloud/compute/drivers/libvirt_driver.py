@@ -152,12 +152,10 @@ class CSLibvirtNodeDriver():
             password = auth.password
             #userdata = {'password': password, 'chpasswd': { 'expire': False }, 'ssh_pwauth': True}
             hash_pass = self.generate_password_hash(password)
-            userdata = {'users': [{'name':'cloudscaler', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
+            userdata = {'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
             metadata = {'local-hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata)
         diskname = self._create_disk(size, image)
-        #Internally only vm-x is used as name to indenfify the machine on the local nodes.
-        name = name.split('.')[-1]
         return self._create_node(name, diskname, size, metadata_iso)
 
     def _create_node(self, name, diskname, size, metadata_iso=None):
