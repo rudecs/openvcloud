@@ -35,6 +35,8 @@ def install_compute_node(hostname, workspace):
     print 'Installed the compute node! Start installing cloudbroker'
     run('jpackage_install -r --name cloudbroker')
 
+    run('jpackage_install --name logger')
+
     put(os.path.join(workspace, 'ComputeBox/test/configurations/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
     run('jpackage_install --name cloudscalers_fe')
     run('jsprocess_startAllReset')
