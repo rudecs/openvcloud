@@ -13,13 +13,13 @@ version = "1.0"
 roles = ["*"]
 
 
-def action(name, poolname, 	metadata, userdata):
+def action(name, poolname, 	metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     pool =  connection._get_pool(poolname)
     iso = ISO()
-    vol = iso.create_meta_iso(pool, name, metadata, userdata)
+    vol = iso.create_meta_iso(pool, name, metadata, userdata, type)
     return vol.name()
 
     

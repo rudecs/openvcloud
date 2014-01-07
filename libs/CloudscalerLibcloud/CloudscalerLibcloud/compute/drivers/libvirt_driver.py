@@ -103,8 +103,8 @@ class CSLibvirtNodeDriver():
         self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
         return diskname
 
-    def _create_metadata_iso(self, name, userdata, metadata):
-        return self._execute_agent_job('createmetaiso', name=name, poolname=POOLNAME, metadata=metadata, userdata=userdata)
+    def _create_metadata_iso(self, name, userdata, metadata, type):
+        return self._execute_agent_job('createmetaiso', name=name, poolname=POOLNAME, metadata=metadata, userdata=userdata, type=type)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -152,9 +152,13 @@ class CSLibvirtNodeDriver():
             password = auth.password
             #userdata = {'password': password, 'chpasswd': { 'expire': False }, 'ssh_pwauth': True}
             hash_pass = self.generate_password_hash(password)
-            userdata = {'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
-            metadata = {'local-hostname': name}
-            metadata_iso = self._create_metadata_iso(name, userdata, metadata)
+            if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
+                userdata = {'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
+                metadata = {'local-hostname': name}
+            else:
+                userdata = {}   
+                metadata = {'admin_pass': password, 'hostname': name}
+            metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
         diskname = self._create_disk(size, image)
         return self._create_node(name, diskname, size, metadata_iso)
 

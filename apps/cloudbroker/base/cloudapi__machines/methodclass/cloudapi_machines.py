@@ -165,7 +165,7 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        account.login = 'cloudscaler'
+        account.login = 'cloudscalers'
         length = 8
         chars = string.letters + string.digits
         passwd = ''.join(choice(chars) for _ in xrange(length))
