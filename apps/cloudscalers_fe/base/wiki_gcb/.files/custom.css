@@ -505,9 +505,6 @@ ul.list li {
      list-style:none;
      border-bottom:1px solid #ddd;
 }
-ul.list li  h5 {
-    width: 40%;display: inline-block; 
-}
 
 ul.actions {
 margin:0px;
