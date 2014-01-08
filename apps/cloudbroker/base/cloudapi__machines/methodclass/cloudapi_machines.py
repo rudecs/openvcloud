@@ -339,6 +339,11 @@ class cloudapi_machines(object):
 
         """
         provider, node = self._getProviderAndNode(machineId)
+        modelmachine = self._getMachine(machineId)
+        if not modelmachine.status == enums.MachineStatus.HALTED:
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot(node, name)
@@ -358,6 +363,11 @@ class cloudapi_machines(object):
     @authenticator.auth(acl='C')
     def rollbackSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
+        modelmachine = self._getMachine(machineId)
+        if not modelmachine.status == enums.MachineStatus.HALTED:
+           ctx = kwargs['ctx']
+           ctx.start_response('409 Conflict', [])
+           return
         tags = str(machineId)
         j.logger.log('Sanpshot rolled-back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
