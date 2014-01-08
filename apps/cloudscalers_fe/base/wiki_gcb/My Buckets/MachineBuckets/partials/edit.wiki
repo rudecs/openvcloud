@@ -178,7 +178,7 @@ h2. Manage Machine Bucket
             </div>          
         </div>
       </tab>
-      <tab id="snapshots" heading="Snapshots" active="tabactive.snapshots">
+      <tab heading="Snapshots" active="tabactive.snapshots">
 
 
         <div id="snapshots" class="tab-pane">
