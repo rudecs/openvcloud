@@ -114,7 +114,7 @@ angular.module('cloudscalers.controllers')
         
         $scope.createSnapshot = function() {
 
-        	if ($scope.machine.state != "STOPPED"){
+        	if ($scope.machine.state != "HALTED"){
         		alert("A snapshot can only be taken from a stopped Machine bucket.");
         		return;
         	}

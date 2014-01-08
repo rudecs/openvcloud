@@ -28,6 +28,11 @@ class TestSignup(unittest.TestCase):
                                                'Ubuntu', 'Linux 13.04 image')
         self.assertEqual("testmachine", machinedetails.getMachineName())
         
+        machineIp = machinedetails.getIP()
+        
+        machinedetails.clone('myclone')
+        
+        
         pass
     
 
