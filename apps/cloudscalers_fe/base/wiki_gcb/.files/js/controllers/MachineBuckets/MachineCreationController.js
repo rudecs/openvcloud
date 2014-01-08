@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', 'alert', '$rootScope', 'LoadingDialog', function($scope, $timeout, $location, $window, Machine, alert, $rootScope, LoadingDialog) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', '$alert', '$rootScope', 'LoadingDialog', function($scope, $timeout, $location, $window, Machine, $alert, $rootScope, LoadingDialog) {
         $scope.machine = {
             name: '',
             description: '',
@@ -36,7 +36,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.createError = function(response){
-            alert('A error has occured. <p><p>' + "    "
+            $alert('A error has occured. <p><p>' + "    "
                 +response.data.backtrace)
             console.log(response);
         }
