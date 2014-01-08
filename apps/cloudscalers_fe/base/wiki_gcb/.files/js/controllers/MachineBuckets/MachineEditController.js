@@ -153,7 +153,7 @@ angular.module('cloudscalers.controllers')
 			            location.reload();
 					}, function(reason){
 						LoadingDialog.hide();
-						alert(reason.data);}
+						alert(reason.data);
 					}
             	) ;
         };
