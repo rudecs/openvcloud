@@ -305,6 +305,20 @@ h2. loading
 {{div}}
 
 {{html:
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3>Alert</h3>
+    </div>
+    <div class="modal-body">
+        <pre>{[ message ]}</pre>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+}}
+
+{{html:
   
   	<script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>

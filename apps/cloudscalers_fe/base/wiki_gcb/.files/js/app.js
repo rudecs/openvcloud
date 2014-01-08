@@ -39,4 +39,22 @@ if(cloudspaceconfig.apibaseurl == ''){
 
 // So we can inject our own functions instead of the builtin functions
 cloudscalers.value('confirm', window.confirm);
-cloudscalers.value('alert', window.alert);
+cloudscalers.factory('$alert', function($modal) {
+    return function(message) {
+        var ModalInstanceCtrl = function ($scope, $modalInstance) {
+            $scope.message = message.replace('\n', '<br>');
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+
+        var modalInstance = $modal.open({
+            templateUrl: 'myModalContent.html',
+            controller: ModalInstanceCtrl,
+            resolve: {}
+        });
+    };
+});

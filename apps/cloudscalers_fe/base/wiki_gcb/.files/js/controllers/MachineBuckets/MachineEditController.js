@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$modal', 'LoadingDialog',
-                function($scope, $routeParams, $timeout, $location, Machine, confirm, $modal, LoadingDialog) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog',
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
 
@@ -115,7 +115,7 @@ angular.module('cloudscalers.controllers')
         $scope.createSnapshot = function() {
 
         	if ($scope.machine.status != "HALTED"){
-        		alert("A snapshot can only be taken from a stopped Machine bucket.");
+        		$alert("A snapshot can only be taken from a stopped Machine bucket.");
         		return;
         	}
         	
@@ -134,7 +134,7 @@ angular.module('cloudscalers.controllers')
 					},
 					function(reason){
 						LoadingDialog.hide();
-						alert(reason.data);
+						$alert(reason.data);
                     }
 				);
     		});
@@ -143,7 +143,7 @@ angular.module('cloudscalers.controllers')
         $scope.rollbackSnapshot = function(snapshot) {
 
         	if ($scope.machine.status != "HALTED"){
-        		alert("A snapshot can only be rolled back to a stopped Machine bucket.");
+        		$alert("A snapshot can only be rolled back to a stopped Machine bucket.");
         		return;
         	}
 
@@ -154,7 +154,7 @@ angular.module('cloudscalers.controllers')
 			            location.reload();
 					}, function(reason){
 						LoadingDialog.hide();
-						alert(reason.data);
+						$alert(reason.data);
                     }
             	) ;
         };
@@ -202,7 +202,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    alert('A error has occured. <p><p>' + "    "
+                    $alert('A error has occured. <p><p>' + "    "
                         +reason.data.backtrace)
                     console.log(reason);
                 }
@@ -218,7 +218,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    alert('A error has occured. <p><p>' + "    "
+                    $alert('A error has occured. <p><p>' + "    "
                         +reason.data.backtrace)
                     console.log(reason);
                 }
@@ -233,7 +233,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    alert('A error has occured. <p><p>' + "    "
+                    $alert('A error has occured. <p><p>' + "    "
                         +reason.data.backtrace)
                     console.log(reason);
                 }
@@ -248,7 +248,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    alert('A error has occured. <p><p>' + "    "
+                    $alert('A error has occured. <p><p>' + "    "
                         +reason.data.backtrace)
                     console.log(reason);
                 }
