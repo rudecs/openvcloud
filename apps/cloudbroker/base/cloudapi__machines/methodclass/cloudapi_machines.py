@@ -343,7 +343,7 @@ class cloudapi_machines(object):
         if not modelmachine.status == enums.MachineStatus.HALTED:
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
-            return
+            return 'A snapshot can only be taken from a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot(node, name)
@@ -367,9 +367,9 @@ class cloudapi_machines(object):
         if not modelmachine.status == enums.MachineStatus.HALTED:
            ctx = kwargs['ctx']
            ctx.start_response('409 Conflict', [])
-           return
+           return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
-        j.logger.log('Sanpshot rolled-back', category='machine.history.ui', tags=tags)
+        j.logger.log('Sanpshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
     @authenticator.auth(acl='W')
