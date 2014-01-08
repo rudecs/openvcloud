@@ -69,13 +69,13 @@ angular.module('cloudscalers.controllers')
             var modalInstance = $modal.open({
                 templateUrl: 'destroyMachineDialog.html',
                 controller: function($scope, $modalInstance){
-                        $scope.ok = function () {
-                            $modalInstance.close('ok');
-                        };
-                        $scope.cancelDestroy = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    },
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
                 resolve: {
                 }
             });
@@ -90,20 +90,20 @@ angular.module('cloudscalers.controllers')
             });
         };
 
-	var CreateSnapshotController = function ($scope, $modalInstance) {
+    	var CreateSnapshotController = function ($scope, $modalInstance) {
 
-		$scope.snapshotname= '';
+    		$scope.snapshotname= '';
 
-        $scope.submit = function (result) {
-        	$modalInstance.close(result.newSnapshotName);
-        };
+            $scope.submit = function (result) {
+            	$modalInstance.close(result.newSnapshotName);
+            };
 
-        $scope.cancel = function () {
-        	$modalInstance.dismiss('cancel');
-        };
-	};
+            $scope.cancel = function () {
+            	$modalInstance.dismiss('cancel');
+            };
+    	};
         var updatesnapshots = function(){
-            $scope.snapshots = Machine.listSnapshots($routeParams.machineId)
+            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
         }
 
         $scope.$watch('tabactive.snapshots', function() {
@@ -129,13 +129,14 @@ angular.module('cloudscalers.controllers')
     		modalInstance.result.then(function (snapshotname) {
                 LoadingDialog.show('Creating a snapshot');
     			Machine.createSnapshot($scope.machine.id, snapshotname).then(
-    					function(result){
-    						LoadingDialog.hide();
-    					},
-    					function(reason){
-    						LoadingDialog.hide();
-    						alert(reason.data);}
-    					);
+					function(result){
+						LoadingDialog.hide();
+					},
+					function(reason){
+						LoadingDialog.hide();
+						alert(reason.data);
+                    }
+				);
     		});
         };
 
@@ -153,8 +154,8 @@ angular.module('cloudscalers.controllers')
 			            location.reload();
 					}, function(reason){
 						LoadingDialog.hide();
-						alert(reason.data);}
-					}
+						alert(reason.data);
+                    }
             	) ;
         };
 
