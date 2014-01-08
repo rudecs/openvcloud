@@ -9,6 +9,7 @@ import uuid
 import libvirt
 import urlparse
 import json
+import os
 import crypt, random
 POOLNAME = 'VMStor'
 POOLPATH = '/mnt/%s' % POOLNAME.lower()
@@ -100,6 +101,15 @@ class CSLibvirtNodeDriver():
         disksize = size.disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
+        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
+        return diskname
+
+    def _create_clone_disk(self, size, clone_disk):
+        disktemplate = self.env.get_template("disk.xml")
+        diskname = str(uuid.uuid4()) + '.qcow2'
+        diskbasevolume = clone_disk
+        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
+                                       diskbasevolume, 'disksize': size.disk, 'poolpath': POOLPATH})
         self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
         return diskname
 
@@ -223,8 +233,8 @@ class CSLibvirtNodeDriver():
                     diskfiles.append(source.attrib['dev'])
         return diskfiles
 
-    def _get_snapshot_disk_file_names(self, snap):
-        xml = ElementTree.fromstring(snap.getXMLDesc(0))
+    def _get_snapshot_disk_file_names(self, xml):
+        xml = ElementTree.fromstring(xml)
         domain = xml.findall('domain')[0]
         return self._get_domain_disk_file_names(domain)
 
@@ -289,13 +299,14 @@ class CSLibvirtNodeDriver():
         info['ipaddress'] = self._get_connection_ip()
         return info
 
-    #def ex_clone(self, node, size, name):
-    #    snapname = self.ex_snapshot(node, None, 'external')
-    #    origdomain = self._get_domain_for_node(node=node)
-    #    snap = origdomain.snapshotLookupByName(snapname)
-    #    diskname = self._get_snapshot_disk_file_names(snap)[0]
-    #    diskname = os.path.basename(diskname)
-    #    return self._create_node(name, diskname, size)
+    def ex_clone(self, node, size, name):
+        snap = self.ex_snapshot(node, None, 'external')
+        snapname = snap['name']
+        snapxml = snap['xml']
+        diskname = self._get_snapshot_disk_file_names(snapxml)[0]
+        diskname = os.path.basename(diskname)
+        clone_diskname = self._create_clone_disk(size, diskname)
+        return self._create_node(name, clone_diskname, size)
 
     def _get_connection_ip(self):
         uri = urlparse.urlparse(self.uri)

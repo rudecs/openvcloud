@@ -346,7 +346,8 @@ class cloudapi_machines(object):
             return 'A snapshot can only be taken from a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
-        return provider.client.ex_snapshot(node, name)
+        snapshot = provider.client.ex_snapshot(node, name)
+        return snapshot['name']
 
     @authenticator.auth(acl='C')
     def listSnapshots(self, machineId, **kwargs):
