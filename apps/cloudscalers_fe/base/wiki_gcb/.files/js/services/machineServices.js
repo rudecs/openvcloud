@@ -55,8 +55,8 @@ angular.module('cloudscalers.services')
             },
             create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + name + 
-                    '&description=' + description + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
+                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + encodeURIComponent(name) + 
+                    '&description=' + encodeURIComponent(description) + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 return $http.get(url).then(
                 		function (result) {
@@ -68,7 +68,7 @@ angular.module('cloudscalers.services')
                 );
             },
             clone: function(machine, cloneName) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + cloneName;
+                var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + encodeURIComponent(cloneName);
                 return $http.get(url).then(
                     function(result) {
                         return result.data;
@@ -133,40 +133,34 @@ angular.module('cloudscalers.services')
                 return snapshotsResult;
             },
             createSnapshot: function (machineId, name) {
-                var createSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + name;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        createSnapshotResult.success = true;
-                    }).error(
-                    function (data, status, headers, config) {
-                        createSnapshotResult.error = status;
-                    });
-                return createSnapshotResult;
+            	var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+            	return $http.get(url).then(
+                        function(result) {
+                            return result.data;
+                        },
+                        function(reason) {
+                            return $q.reject(reason);
+                        });
             },
             rollbackSnapshot: function (machineId, name) {
-                var rollbackSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + name;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        rollbackSnapshotResult.success = true;
-                    }).error(
-                    function (data, status, headers, config) {
-                        rollbackSnapshotResult.error = status;
-                    });
-                return rollbackSnapshotResult;
+                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+                return $http.get(url).then(
+                        function(result) {
+                            return result.data;
+                        },
+                        function(reason) {
+                            return $q.reject(reason);
+                        });
             },
             deleteSnapshot: function (machineId, name) {
-                var deleteSnapshotResult = {};
-                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + name;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        deleteSnapshotResult.success = true;
-                    }).error(
-                    function (data, status, headers, config) {
-                        deleteSnapshotResult.error = status;
-                    });
-                return deleteSnapshotResult;
+                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+                return $http.get(url).then(
+                        function(result) {
+                            return result.data;
+                        },
+                        function(reason) {
+                            return $q.reject(reason);
+                        });
             },
             getConsoleUrl: function(machineId) {
                 var getConsoleUrlResult = {};

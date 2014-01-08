@@ -69,11 +69,9 @@ angular.module('cloudscalers.controllers')
             var modalInstance = $modal.open({
                 templateUrl: 'destroyMachineDialog.html',
                 controller: function($scope, $modalInstance){
-
                         $scope.ok = function () {
                             $modalInstance.close('ok');
                         };
-
                         $scope.cancelDestroy = function () {
                             $modalInstance.dismiss('cancel');
                         };
@@ -108,10 +106,19 @@ angular.module('cloudscalers.controllers')
             $scope.snapshots = Machine.listSnapshots($routeParams.machineId)
         }
 
-        $scope.$watch('snapshotcreated', updatesnapshots, true);
-
+        $scope.$watch('tabactive.snapshots', function() {
+            if (!$scope.tabactive.snapshots)
+                return;
+            updatesnapshots();
+        }, true);
+        
         $scope.createSnapshot = function() {
 
+        	if ($scope.machine.state != "RUNNING"){
+        		alert("A snapshot can only be taken from a stopped Machine bucket.");
+        		return;
+        	}
+        	
         	var modalInstance = $modal.open({
       			templateUrl: 'createSnapshotDialog.html',
       			controller: CreateSnapshotController,
@@ -120,10 +127,16 @@ angular.module('cloudscalers.controllers')
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-    			$scope.snapshotcreated = Machine.createSnapshot($scope.machine.id, snapshotname);
+                LoadingDialog.show('Creating a snapshot');
+    			Machine.createSnapshot($scope.machine.id, snapshotname).then(
+    					function(result){
+    						LoadingDialog.hide();
+    					},
+    					function(reason){
+    						LoadingDialog.hide();
+    						alert(reason.data);}
+    					);
     		});
-
-            LoadingDialog.show('Creating a snapshot', 1000);
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
