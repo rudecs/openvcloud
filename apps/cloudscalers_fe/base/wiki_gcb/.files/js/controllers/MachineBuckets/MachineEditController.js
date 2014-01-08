@@ -114,7 +114,7 @@ angular.module('cloudscalers.controllers')
         
         $scope.createSnapshot = function() {
 
-        	if ($scope.machine.state != "HALTED"){
+        	if ($scope.machine.status != "HALTED"){
         		alert("A snapshot can only be taken from a stopped Machine bucket.");
         		return;
         	}
@@ -140,8 +140,22 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
-            Machine.rollbackSnapshot($scope.machine.id, snapshot.name);
-            location.reload();
+
+        	if ($scope.machine.status != "HALTED"){
+        		alert("A snapshot can only be rolled back to a stopped Machine bucket.");
+        		return;
+        	}
+
+            LoadingDialog.show('Rolling back snapshot');
+            Machine.rollbackSnapshot($scope.machine.id, snapshot.name).then(
+            		function(result){
+						LoadingDialog.hide();
+			            location.reload();
+					}, function(reason){
+						LoadingDialog.hide();
+						alert(reason.data);}
+					}
+            	) ;
         };
 
         $scope.deleteSnapshot = function(snapshot) {
