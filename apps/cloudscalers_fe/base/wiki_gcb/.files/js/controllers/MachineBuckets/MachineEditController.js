@@ -173,7 +173,10 @@ angular.module('cloudscalers.controllers')
                     changeSelectedTab('console');
                 },
                 function(reason){
-                    //TODO show error
+                    LoadingDialog.hide();
+                    alert('A error has occured. <p><p>' + "    "
+                        +reason.data.backtrace)
+                    console.log(reason);
                 }
             );
 
@@ -186,7 +189,10 @@ angular.module('cloudscalers.controllers')
                     LoadingDialog.hide();
                 },
                 function(reason){
-                    //TODO show error
+                    LoadingDialog.hide();
+                    alert('A error has occured. <p><p>' + "    "
+                        +reason.data.backtrace)
+                    console.log(reason);
                 }
             );
         };
@@ -198,7 +204,10 @@ angular.module('cloudscalers.controllers')
                     LoadingDialog.hide();
                 },
                 function(reason){
-                    //TODO show error
+                    LoadingDialog.hide();
+                    alert('A error has occured. <p><p>' + "    "
+                        +reason.data.backtrace)
+                    console.log(reason);
                 }
             );
         };
@@ -210,7 +219,10 @@ angular.module('cloudscalers.controllers')
                     LoadingDialog.hide();
                 },
                 function(reason){
-                    //TODO show error
+                    LoadingDialog.hide();
+                    alert('A error has occured. <p><p>' + "    "
+                        +reason.data.backtrace)
+                    console.log(reason);
                 }
             );
         };
