@@ -101,7 +101,7 @@ h2. loading
 				
 
 				<li>					
-					<a href="../$$space/Settings">
+					<a href="../$$space/Profile">
 						<span>Settings </span>
 					</a>  									
 				</li>

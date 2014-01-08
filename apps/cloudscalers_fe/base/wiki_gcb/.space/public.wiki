@@ -162,23 +162,6 @@
 					</a>	    				
 				</li> 
 
-				
-
-				<li>					
-					<a href="../$$space/Settings">
-						<span>Settings </span>
-					</a>  									
-				</li>
-				
-				<li >					
-					<a href="../$$space/Billing">
-						<span>Billing</span>
-						
-                    </a>	
-				
-                </li>
-
-
 				<li>					
 					<a href="../$$space/Support">
 						<span>Support </span>

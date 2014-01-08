@@ -118,18 +118,6 @@
                         <span>Machine Buckets</span>
                     </a>
                 </li>
-                <li>
-                    <a href="../$$space/My Desktop Buckets"> <i class="icon-desktop"></i>
-                        <span>Desktop Buckets</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../$$space/StorageBuckets">
-                        <i class="icon-hdd"></i>
-                        <span>Storage Buckets</span>
-                    </a>
-                </li>
-
             </ul>
             <ul class="pull-right">
                 <li>
@@ -148,7 +136,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="Billing">{[currentAccount.name]}</a>
+                            <a href="AccountSettings">{[currentAccount.name]}</a>
                         </li>
                         <li>
                             <a href="CloudSpaceSettings">{[currentSpace.name]}</a>
@@ -256,7 +244,7 @@ h2. loading
 				
 
 				<li>					
-					<a href="../$$space/Settings">
+					<a href="../$$space/Profile">
 						<span>Settings </span>
 					</a>  									
 				</li>

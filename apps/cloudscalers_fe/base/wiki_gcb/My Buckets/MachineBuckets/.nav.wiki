@@ -1,2 +1,1 @@
 Machine Buckets:MachineBuckets
-Custom Machine Images:Custom Images

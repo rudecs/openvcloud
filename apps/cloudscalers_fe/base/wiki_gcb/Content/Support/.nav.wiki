@@ -1,5 +1,4 @@
 FAQ:FAQ
 API:ApiDocs
-Knowledge Base:Knowledge Base
 Create Ticket:Support
 
