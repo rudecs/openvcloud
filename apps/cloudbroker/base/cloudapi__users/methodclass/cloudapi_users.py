@@ -55,6 +55,7 @@ class cloudapi_users(object):
         ctx = kwargs['ctx']
         if j.apps.system.usermanager.userexists(username):
             ctx.start_response('409 Conflict', [])
+            return
         else:
             j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
             account = self.cb.models.account.new()
