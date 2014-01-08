@@ -7,7 +7,7 @@ angular.module('cloudscalers.controllers')
 
         var changeSelectedTab = function(tab){
         	if (tab){
-        		$scope.tabactive = {'actions': tab=='actions', 'console': tab == 'console', 'snapshots': tab=='snapshots', 'changelog': tab=='changelog', 'history': tab =='history'};
+        		$scope.tabactive = {actions: tab=='actions', console: tab == 'console', snapshots: tab=='snapshots', changelog: tab=='changelog'};
         	}
         }
         
@@ -127,7 +127,7 @@ angular.module('cloudscalers.controllers')
     		});
 
     		modalInstance.result.then(function (snapshotname) {
-                LoadingDialog.show('Creating a snapshot');
+                LoadingDialog.show('Creating snapshot');
     			Machine.createSnapshot($scope.machine.id, snapshotname).then(
     					function(result){
     						LoadingDialog.hide();
