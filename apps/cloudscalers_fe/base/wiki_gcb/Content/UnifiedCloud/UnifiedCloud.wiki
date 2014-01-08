@@ -12,11 +12,7 @@ h3. Unified Cloud
 
 Looking at cloud computing, a lot of (dis)advantages are present in each of the currently available IaaS, PaaS, SaaS, Staas, DaaS,... solutions. In trying to be a complete cloud, providers keep adding features to their platform but being complete is hard and still, sticking to IaaS or PaaS or any of the others will never solve every problem. In the meantime their products get really complex while these added features don't even attract enough new customers to cover the costs of the development, let alone the TCO of them.
 
-CloudScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation:
-
-* The Desktop Bucket makes it easy for providing any application on any device using a single web portal.
-* Our Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
-* Storage Buckets provide you with a secure, distributed storage solution that is unique in its kind.
+CloudScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation: the CloudScalers' Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
 
 h3. Why CloudScalers?
 

@@ -71,7 +71,8 @@ class LibvirtUtil(object):
     def snapshot(self, id, xml, snapshottype):
         domain = self._get_domain(id)
         flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
-        return domain.snapshotCreateXML(xml, flags).getName()
+        snap = domain.snapshotCreateXML(xml, flags)
+        return {'name':snap.getName(), 'xml':snap.getXMLDesc()}
 
     def listSnapshots(self, id):
         domain = self._get_domain(id)
@@ -83,6 +84,11 @@ class LibvirtUtil(object):
             results.append(snap)
 
         return results
+
+    def getSnapshot(self, domain, name):
+        domain = self._get_domain(domain)
+        snap = domain.snapshotLookupByName('name')
+        return {'name': snap.getName(), 'epoch': snap.getXMLDesc()}
 
     def deleteSnapshot(self, id, name):
         domain = self._get_domain(id)

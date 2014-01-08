@@ -1,6 +1,0 @@
-@template public
-
-h2. Products
-
-{{children}}
-
