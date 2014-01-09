@@ -222,47 +222,37 @@ h2. loading
 			
 
 {{html:
-			<ul class="mainnav">
+		<ul class="mainnav">
 			
-			 <li >
-					<a href="../$$space">
-						<i class="icon-home"></i>
-						<span>Home</span>
-					</a>	    
-					<ul >
-						<li>
-					<a href="../$$space/Pricing">
-						<span>Pricing</span>
-					</a>	    				
-				</li> 
-
-				<li>					
-					<a href="../$$space/Support">
-						<span>Support </span>
-					</a>  									
-				</li>
-					</ul>				
-				</li> 
-
-				
-
-				<li >
-					<a href="../$$space/Products">
-						<i class="icon-cloud"></i>
-						<span>Product Info</span>
-					</a>	
-				</li>
-
-
+			<li>
+				<a href="../$$space">
+					<i class="icon-home"></i>
+					<span>Home</span>
+				</a>	    
+			</li>
+			<li>
+				<a href="../$$space/Pricing">
+					<span>Pricing</span>
+				</a>	    				
+			</li> 
+			<li>					
+				<a href="../$$space/Support">
+					<span>Support </span>
+				</a>  									
+			</li>
+			<li>
+				<a href="../$$space/Products">
+				<i class="icon-cloud"></i>
+				<span>Product Info</span>
+				</a>	
+			</li>
 			<li>
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
 						<span>CloudScalers</span>
 					</a>	    				
-				</li> 
-
-			
-			</ul>
+			</li>
+		</ul>
 				
 	            <p class="cr">2013 &copy; CloudScalers. All Rights Reserved. <br>
 				<a class="brand" href="../$$space">CloudScalers</a>
