@@ -16,8 +16,9 @@ def getJPackage(name, description):
 def downloadImage(jp, url):
     destination = j.system.fs.joinPaths(jp.getPathFilesPlatform('generic'), 'root', 'mnt', 'vmstor')
     j.system.fs.createDir(destination)
-    j.system.net.download(url, destination)
-    return j.system.fs.listFilesInDir(destination)[0]
+    destinationfile = j.system.fs.joinPaths(destination, '%s.qcow2' % jp.name)
+    j.system.net.download(url, destinationfile)
+    return destinationfile
 
 def cleanup(jp):
     j.system.fs.removeDirTree(jp.getPathFiles())

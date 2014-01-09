@@ -34,12 +34,6 @@ h2. Options
             {{include:storage_list}}
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" >Archive/Backup Storage:</label>
-        <div class="controls " >
-            {{include:archive_list}}
-        </div>
-    </div>
     <hr>
 
     <div class="form-actions">

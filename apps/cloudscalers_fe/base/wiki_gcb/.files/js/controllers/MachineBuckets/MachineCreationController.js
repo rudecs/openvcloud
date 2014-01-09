@@ -36,9 +36,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.createError = function(response){
-            $alert('A error has occured. <p><p>' + "    "
-                +response.data.backtrace)
-            console.log(response);
+            $alert(response.data);
         }
 
         $scope.saveNewMachine = function() {
