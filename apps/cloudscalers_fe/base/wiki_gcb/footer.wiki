@@ -8,14 +8,10 @@
 				</a>	    
 			</li>
 			<li>
-				<a href="../$$space/Pricing">
-					<span>Pricing</span>
-				</a>	    				
-			</li> 
-			<li>					
-				<a href="../$$space/Support">
-					<span>Support </span>
-				</a>  									
+					<a href="../$$space/UnifiedCloud">
+						<i class="icon-building"></i>
+						<span>CloudScalers</span>
+					</a>	    				
 			</li>
 			<li>
 				<a href="../$$space/Products">
@@ -24,10 +20,14 @@
 				</a>	
 			</li>
 			<li>
-					<a href="../$$space/UnifiedCloud">
-						<i class="icon-building"></i>
-						<span>CloudScalers</span>
-					</a>	    				
+				<a href="../$$space/Pricing">
+					<span>Pricing</span>
+				</a>	    				
+			</li> 
+			<li>					
+				<a href="../$$space/Support">
+					<span>Support</span>
+				</a>  									
 			</li>
 		</ul>
 }}
