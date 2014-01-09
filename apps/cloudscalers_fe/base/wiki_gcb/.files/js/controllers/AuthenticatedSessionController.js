@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', '$window','$timeout', function($scope, User, Account, CloudSpace, $window, $timeout) {
+    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
         $scope.currentAccount = undefined;
@@ -49,5 +49,19 @@ angular.module('cloudscalers.controllers')
 			uri.filename('');
 			uri.fragment('');
 			$window.location = uri.toString();
+        };
+
+        $scope.deleteCloudspace = function(space) {
+            LoadingDialog.show('Deleting cloudspace');
+            CloudSpace.delete(space)
+                .then(function() {
+                    $scope.loadSpaces();
+                    LoadingDialog.hide();
+                    $route.reload();
+                }, function(data) {
+                    LoadingDialog.hide();
+                    alert(data);
+                });
+
         };
     }]);

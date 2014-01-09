@@ -65,7 +65,6 @@
                                 <ul>
                                     <li ng-repeat="space in account.cloudspaces">
                                         <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
-                                        <a href="" class="icon-trash" ng-click="deleteCloudspace(space)"></a>
                                     </li>
                                 </ul>
                             </accordion-group>

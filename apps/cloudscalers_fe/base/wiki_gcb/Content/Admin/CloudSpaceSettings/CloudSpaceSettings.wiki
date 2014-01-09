@@ -1,1 +1,5 @@
 h1. CloudSpace Details
+
+{{html:
+<button class="btn btn-danger" ng-click="deleteCloudspace(currentSpace)"><i class="icon-trash"></i> Delete</button>
+}}
