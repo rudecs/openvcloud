@@ -151,6 +151,7 @@ class cloudapi_machines(object):
             raise ValueError("Invalid disksize %s" % disksize)
 
         machine = self.cb.models.vmachine.new()
+        image = self.models.image.get(imageId)
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
@@ -165,7 +166,10 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        account.login = 'cloudscalers'
+        if 'username' in image and image['username']:
+            account.login = image['username']
+        else:
+            account.login = 'cloudscalers'
         length = 8
         chars = string.letters + string.digits
         passwd = ''.join(choice(chars) for _ in xrange(length))

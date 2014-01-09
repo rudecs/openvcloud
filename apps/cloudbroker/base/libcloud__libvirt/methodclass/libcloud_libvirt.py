@@ -58,7 +58,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
             for i in rp['images']:
                 images.append(self.cb.model_image_get(i))
             return images
-        query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size']}
+        query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'extra']}
         results = self.cb.model_image_find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         return images

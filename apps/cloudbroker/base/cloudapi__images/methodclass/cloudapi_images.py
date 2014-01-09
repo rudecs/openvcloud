@@ -32,7 +32,7 @@ class cloudapi_images(object):
         List the availabe images, filtering can be based on the user which is doing the request
 
         """
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size']}
+        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username']}
         results = self.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         return images

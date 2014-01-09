@@ -81,13 +81,19 @@ class CSLibvirtNodeDriver():
         return [self._to_image(image) for image in images]
 
     def _to_image(self, image):
+        username = None
+        if image['extra']:
+            extra = json.loads(image['extra'])
+            if 'username' in extra:
+                username = extra['username']
         return NodeImage(
             id=image['id'],
             name=image['name'],
             driver=self,
             extra={'path': image['UNCPath'],
                    'size': image['size'],
-                   'imagetype': image['type']}
+                   'imagetype': image['type'],
+                   'username': username}
         )
     def _execute_agent_job(self, name_, id=None, wait=True, **kwargs):
         if not id:
@@ -163,7 +169,7 @@ class CSLibvirtNodeDriver():
             #userdata = {'password': password, 'chpasswd': { 'expire': False }, 'ssh_pwauth': True}
             hash_pass = self.generate_password_hash(password)
             if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
-                userdata = {'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True}  
+                userdata = {'password': password, 'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True, 'chpasswd': {'expire': False }}               
                 metadata = {'local-hostname': name}
             else:
                 userdata = {}   
