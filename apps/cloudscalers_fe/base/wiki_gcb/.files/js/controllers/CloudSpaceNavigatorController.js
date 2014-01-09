@@ -63,6 +63,18 @@ angular.module('cloudscalers.controllers')
                         }
                     );
                 });
-            }
+            };
+
+            $scope.deleteCloudspace = function(space) {
+                LoadingDialog.show('Deleting cloudspace');
+                CloudSpace.delete(space)
+                    .then(function() {
+                        $scope.loadSpaces();
+                        LoadingDialog.hide();
+                    }, function(data) {
+                        LoadingDialog.hide();
+                        alert(data);
+                    });
+            };
         }
     ]);

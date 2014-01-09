@@ -793,6 +793,10 @@ content: none;
 
 .dropdown-menu a {
 text-align: left;
+display: inline;
+}
+.dropdown-menu [class^="icon-"] {
+    float: right;
 }
 
 
