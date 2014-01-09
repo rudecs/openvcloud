@@ -202,9 +202,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert('A error has occured. <p><p>' + "    "
-                        +reason.data.backtrace)
-                    console.log(reason);
+                    $alert(reason.data.backtrace);
                 }
             );
 
@@ -218,9 +216,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert('A error has occured. <p><p>' + "    "
-                        +reason.data.backtrace)
-                    console.log(reason);
+                    $alert(reason.data);
                 }
             );
         };
@@ -233,9 +229,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert('A error has occured. <p><p>' + "    "
-                        +reason.data.backtrace)
-                    console.log(reason);
+                    $alert(reason.data);
                 }
             );
         };
@@ -248,9 +242,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert('A error has occured. <p><p>' + "    "
-                        +reason.data.backtrace)
-                    console.log(reason);
+                    $alert(reason.data);
                 }
             );
         };
