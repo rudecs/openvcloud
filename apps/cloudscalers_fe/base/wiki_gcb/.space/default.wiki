@@ -222,11 +222,6 @@ h2. loading
 			
 
 {{html:
-
-	
-	
-			
-			
 			<ul class="mainnav">
 			
 			 <li >
@@ -241,23 +236,6 @@ h2. loading
 					</a>	    				
 				</li> 
 
-				
-
-				<li>					
-					<a href="../$$space/Profile">
-						<span>Settings </span>
-					</a>  									
-				</li>
-				
-				<li >					
-					<a href="../$$space/Billing">
-						<span>Billing</span>
-						
-                    </a>	
-				
-                </li>
-
-
 				<li>					
 					<a href="../$$space/Support">
 						<span>Support </span>
@@ -271,13 +249,8 @@ h2. loading
 				<li >
 					<a href="../$$space/Products">
 						<i class="icon-cloud"></i>
-						<span>Products</span>
+						<span>Product Info</span>
 					</a>	
-                                   <ul >
-						<li><a href="../$$space/Machine Buckets">Machine Buckets</a></li>
-						<li><a href="../$$space/Desktop Buckets">Desktop Buckets</a></li>
-						<li><a href="../$$space/Storage Buckets">Storage Buckets</a></li>
-					</ul>    				    				
 				</li>
 
 
