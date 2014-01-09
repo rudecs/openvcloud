@@ -221,40 +221,10 @@ h2. loading
 		{{div3: class=row-fluid}}
 			{{div4: class=span12}}
 			
+{{include:footer}}
 
-{{html:
-		<ul class="mainnav">
-			
-			<li>
-				<a href="../$$space">
-					<i class="icon-home"></i>
-					<span>Home</span>
-				</a>	    
-			</li>
-			<li>
-				<a href="../$$space/Pricing">
-					<span>Pricing</span>
-				</a>	    				
-			</li> 
-			<li>					
-				<a href="../$$space/Support">
-					<span>Support </span>
-				</a>  									
-			</li>
-			<li>
-				<a href="../$$space/Products">
-				<i class="icon-cloud"></i>
-				<span>Product Info</span>
-				</a>	
-			</li>
-			<li>
-					<a href="../$$space/UnifiedCloud">
-						<i class="icon-building"></i>
-						<span>CloudScalers</span>
-					</a>	    				
-			</li>
-		</ul>
-				
+
+{{html:				
 	            <p class="cr">2013 &copy; CloudScalers. All Rights Reserved. <br>
 				<a class="brand" href="../$$space">CloudScalers</a>
 				</p>
