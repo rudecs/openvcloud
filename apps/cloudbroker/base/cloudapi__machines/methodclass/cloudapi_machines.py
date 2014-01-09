@@ -416,6 +416,10 @@ class cloudapi_machines(object):
 
         """
         machine = self._getMachine(machineId)
+        if not machine.status == enums.MachineStatus.HALTED:
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'A clone can only be taken from a stopped machine bucket'
         self._assertName(machine.cloudspaceId, name, **kwargs)
         clone = self.cb.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
