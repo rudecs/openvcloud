@@ -52,12 +52,12 @@ angular.module('cloudscalers.services')
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id + 
                                  '&userId=' + userId)
                     .then(function(result) { return result.data; },
-                          function(result) { return result.data; });
+                          function(result) { return $q.reject(reason); });
             },
             delete: function(cloudspace) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspace.id)
                     .then(function(result) { return result.data; },
-                          function(result) { return result.data; });
+                          function(result) { return $q.reject(reason); });
             }
         };
     });
