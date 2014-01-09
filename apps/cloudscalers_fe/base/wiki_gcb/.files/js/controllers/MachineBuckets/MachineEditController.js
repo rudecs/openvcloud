@@ -115,7 +115,7 @@ angular.module('cloudscalers.controllers')
         $scope.createSnapshot = function() {
 
         	if ($scope.machine.status != "HALTED"){
-        		$alert("A snapshot can only be taken from a stopped Machine bucket.");
+        		$alert("A snapshot can only be taken from a stopped machine bucket.");
         		return;
         	}
         	
@@ -143,7 +143,7 @@ angular.module('cloudscalers.controllers')
         $scope.rollbackSnapshot = function(snapshot) {
 
         	if ($scope.machine.status != "HALTED"){
-        		$alert("A snapshot can only be rolled back to a stopped Machine bucket.");
+        		$alert("A snapshot can only be rolled back to a stopped machine bucket.");
         		return;
         	}
 
@@ -166,7 +166,7 @@ angular.module('cloudscalers.controllers')
 
         
     	var CloneMachineController= function ($scope, $modalInstance) {
-
+        	
     		$scope.clone ={name: ''};
 
       		$scope.ok = function () {
@@ -180,6 +180,10 @@ angular.module('cloudscalers.controllers')
     	
         $scope.cloneMachine = function() {
 
+        	if ($scope.machine.status != "HALTED"){
+        		$alert("A clone can only be taken from a stopped machine bucket.");
+        		return;
+        	}
     		var modalInstance = $modal.open({
           			templateUrl: 'cloneMachineDialog.html',
           			controller: CloneMachineController,
@@ -188,8 +192,17 @@ angular.module('cloudscalers.controllers')
         		});
 
         		modalInstance.result.then(function (cloneName) {
-                    Machine.clone($scope.machine, cloneName);
-                    $location.path("/list/");
+                    LoadingDialog.show('Creating clone');
+                    Machine.clone($scope.machine, cloneName).then(
+    					function(result){
+    						LoadingDialog.hide();
+    	                    $location.path("/list/");
+    					},
+    					function(reason){
+    						LoadingDialog.hide();
+    						$alert(reason.data);
+                        }
+    				);
         		});
         };
         
