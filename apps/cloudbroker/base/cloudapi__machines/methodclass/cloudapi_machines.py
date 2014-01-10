@@ -170,10 +170,11 @@ class cloudapi_machines(object):
             account.login = image['username']
         else:
             account.login = 'cloudscalers'
-        length = 8
+        length = 6
         chars = string.letters + string.digits
+        letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
         passwd = ''.join(choice(chars) for _ in xrange(length))
-        passwd = passwd + choice(string.digits)
+        passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
         account.password = passwd
         auth = NodeAuthPassword(passwd)
         machine.id = self.models.vmachine.set(machine)[0]
