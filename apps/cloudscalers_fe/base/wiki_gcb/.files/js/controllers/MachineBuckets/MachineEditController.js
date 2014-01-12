@@ -196,7 +196,7 @@ angular.module('cloudscalers.controllers')
                     Machine.clone($scope.machine, cloneName).then(
     					function(result){
     						LoadingDialog.hide();
-    	                    $location.path("/list/");
+    	                    $location.path("/edit/" + result);
     					},
     					function(reason){
     						LoadingDialog.hide();
