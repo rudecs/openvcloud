@@ -16,7 +16,7 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
     run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(workspace, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
 
-    run('jpackage updateall')
+    run('jpackage mdupdate')
 
     run('jpackage install --name compute_os_base')
 
