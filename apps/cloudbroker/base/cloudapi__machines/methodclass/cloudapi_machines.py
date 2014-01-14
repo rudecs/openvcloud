@@ -189,8 +189,21 @@ class cloudapi_machines(object):
         except:
             self.models.vmachine.delete(machine.id)
             raise
-
         node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth)
+        excludelist = [stack['id']]
+        while(node == -1):
+            #problem during creation of the machine on the node, we should create the node on a other machine
+            stack = self.cb.extensions.imp.getBestProvider(imageId, excludelist)
+            if stack == -1:
+                  self.models.vmachine.delete(machine.id)
+                  ctx = kwargs['ctx']
+                  ctx.start_response('503 Service Unavailable', [])
+                  return 'Not enough resource available to provision the requested machine'
+            excludelist.append(stack['id'])
+            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
+            psize = self._getSize(provider, machine)
+            image, pimage = provider.getImage(machine.imageId)
+            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth)
         self._updateMachineFromNode(machine, node, stack['id'], psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)

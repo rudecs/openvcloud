@@ -101,10 +101,13 @@ class CloudBroker(object):
         else:
             return None
         
-    def getBestProvider(self, imageId):
+    def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
             raise RuntimeError('No Providers available')
+        capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
+        if not capacityinfo: 
+            return -1
         #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
         l = len(capacityinfo)
         i = random.randint(0, l - 1)

@@ -176,6 +176,9 @@ class CSLibvirtNodeDriver():
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
         diskname = self._create_disk(size, image)
+        if not diskname or diskname == -1:
+            #not enough free capcity to create a disk on this node
+            return -1
         return self._create_node(name, diskname, size, metadata_iso)
 
     def _create_node(self, name, diskname, size, metadata_iso=None):
@@ -195,6 +198,12 @@ class CSLibvirtNodeDriver():
         # 0 means default behaviour, e.g machine is auto started.
 
         result = self._execute_agent_job('createmachine', machinexml=machinexml)
+        if not result or result == -1:
+            #Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
+            if result == -1:
+                self._execute_agent_job('deletevolume', path=os.path.join(POOLPATH, diskname))
+            return -1
+
         vmid = result['id']
         dnsmasq = DNSMasq()
         namespace = 'ns-%s' % vxlan

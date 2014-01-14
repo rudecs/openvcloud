@@ -1,9 +1,11 @@
 import libvirt
 from xml.etree import ElementTree
 
+
 class LibvirtUtil(object):
     def __init__(self):
         self.connection = libvirt.open()
+        self.readonly = libvirt.openReadOnly()
 
     def _get_domain(self, id):
         try:
@@ -68,6 +70,32 @@ class LibvirtUtil(object):
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 
+    def check_disk(self, diskxml):
+        return True
+
+    def memory_usage(self):
+        ids = self.readonly.listDomainsID()
+        hostmem = self.readonly.getInfo()[1]
+        totalmax = 0
+        totalrunningmax = 0
+        for id in ids:
+            dom = self.readonly.lookupByID(id)
+            machinestate, maxmem, mem = dom.info()[0:3]
+            totalmax += maxmem/1000
+            if machinestate == libvirt.VIR_DOMAIN_RUNNING:
+                totalrunningmax += maxmem/1000
+        return (hostmem, totalmax, totalrunningmax)
+
+
+
+    def check_machine(self, machinexml):
+        xml = ElementTree.fromstring(machinexml)
+        memory = int(xml.find('memory').text)
+        hostmem, totalmax, totalrunningmax = self.memory_usage()
+        if (totalrunningmax + memory) > (hostmem - 1024):
+            return False
+        return True
+
     def snapshot(self, id, xml, snapshottype):
         domain = self._get_domain(id)
         flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
@@ -82,8 +110,11 @@ class LibvirtUtil(object):
             snap = {'name': xml.find('name').text,
                     'epoch': int(xml.find('creationTime').text) }
             results.append(snap)
-
         return results
+
+    def deleteVolume(self, path):
+        vol = self.connection.storageVolLookupByPath(path)
+        return vol.delete(0)
 
     def getSnapshot(self, domain, name):
         domain = self._get_domain(domain)

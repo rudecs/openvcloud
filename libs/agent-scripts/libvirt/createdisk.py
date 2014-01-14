@@ -16,6 +16,8 @@ roles = ["*"]
 def action(diskxml, poolname):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
+    if not connection.check_disk(diskxml):
+    	return -1
     return connection.create_disk(diskxml, poolname)
 
 
