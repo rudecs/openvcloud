@@ -83,7 +83,17 @@ class cloudapi_cloudspaces(object):
         result bool,
 
         """
+        ctx = kwargs['ctx']
+        term = {"cloudspaceId": cloudspaceId}
+        query = {'fields': ['id', 'name']}
+        if term:
+            query['query'] = {'term': term}
+        results = self.models.vmachine.find(ujson.dumps(query))['result']
+        if len(results) > 0:
+            ctx.start_response('409 Conflict', [])
+            return 'There are still provisioned machines in the cloudspace, delete them first'
         return self.models.cloudspace.delete(cloudspaceId)
+
 
     def get(self, cloudspaceId, **kwargs):
         """
