@@ -18,6 +18,8 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
 
     run('jpackage mdupdate')
 
+    run('jpackage install --name core')
+    run('jpackage install --name grid_master')
     run('jpackage install --name compute_os_base')
 
     reboot(wait=300)
