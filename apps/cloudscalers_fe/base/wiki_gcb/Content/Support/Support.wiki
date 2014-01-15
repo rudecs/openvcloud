@@ -6,7 +6,7 @@ Please use the form below or mail to [support@cloudscalers.com|mailto:support@cl
 {{ contact_form: receiver_email:support@cloudscalers.com | custom | subject: CloudScalers.com support}}
     {{html: <!-- Angular doesn't bind hidden input. This is a workaround to make it work -->}}
     {{html: <input type="hidden" style="display: none" name="sender_name" value="{[currentUser.username]}">}}
-    {{html: <input type="hidden" style="display: none" name="sender_email" value="{[currentUser.username + '@cloudscalers.com']}">}}
+    {{html: <input type="hidden" style="display: none" name="sender_email" value="{[currentUser.emailaddresses[0] ]}">}}
 
     {{div: class=control-group}}
         {{html: <label class="control-label" for="topic">Topic</label>}}
