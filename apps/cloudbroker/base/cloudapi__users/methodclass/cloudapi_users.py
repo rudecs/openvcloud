@@ -50,8 +50,8 @@ class cloudapi_users(object):
         result:
         """
         user = j.core.portal.active.auth.getUserInfo(username)
-        if user:    
-            return {'username':user.username, 'emailaddresses':user.emails}
+        if user:
+            return {'username':user.id, 'emailaddresses':user.emails}
         else:
             ctx = kwargs['ctx']
             ctx.start_response('404 Not Found', [])
