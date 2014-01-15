@@ -2,9 +2,5 @@ from JumpScale import j
 j.application.start('cloudbroker')
 import JumpScale.portal
 
-
-
-j.manage.portal.startprocess()
-    
-
+j.core.portal.getServer().start()
 j.application.stop()
