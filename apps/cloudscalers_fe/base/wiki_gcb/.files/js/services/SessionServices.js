@@ -96,6 +96,32 @@ angular.module('cloudscalers.services')
             );
         };
 
+        user.get = function(username){
+        	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
+        	var currentUser = SessionData.getUser();
+        	if (currentUser){
+        		var uri = new URI(url);
+           		uri.addSearch('authkey', currentUser.api_key);
+           		url = uri.toString();
+			}
+        	return $http.get(url);
+        }
+        
+        user.updateUserDetails= function(username){
+        	return user.get(username).then(
+        			function(result){
+        				storedUser = SessionData.getUser();
+        				storedUser.emailaddresses = result.data.emailaddresses;
+        				SessionData.setUser(storedUser);
+        				return storedUser;
+        			},
+        			function(reason){
+                        return $q.reject(reason); 
+                    }
+        			);
+            
+        }
+        
         user.logout = function() {
         	SessionData.setUser(undefined);
         };
