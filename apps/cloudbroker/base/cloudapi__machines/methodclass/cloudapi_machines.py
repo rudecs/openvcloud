@@ -127,6 +127,7 @@ class cloudapi_machines(object):
         for m in self.list(cloudspaceId, **kwargs):
             if m['name'] == name:
                 return False
+        return True
                 
 
 
