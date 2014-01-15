@@ -35,7 +35,7 @@ class cloudapi_users(object):
         result str,,session
         """
         ctx = kwargs['ctx']
-        if j.apps.system.usermanager.authenticate(username, password):
+        if j.core.portal.active.auth.authenticate(username, password):
             session = ctx.env['beaker.get_session']() #create new session
             session['user'] = username
             session.save()

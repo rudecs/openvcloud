@@ -27,7 +27,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def _getKeyValueStore(self):
         print self.NAMESPACE
         print self.CATEGORY
-        client = j.core.osis.getClient()
+        client = j.core.osis.getClient(user='root')
         if self.NAMESPACE not in client.listNamespaces():
             client.createNamespace(self.NAMESPACE, template='blob')
         if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):

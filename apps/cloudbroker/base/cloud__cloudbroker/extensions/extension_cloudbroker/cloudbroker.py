@@ -13,7 +13,7 @@ cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
 
-osiscl = j.core.osis.getClient()
+osiscl = j.core.osis.getClient(user='root')
 
 models = Class()
 for ns in osiscl.listNamespaceCategories('cloudbroker'):

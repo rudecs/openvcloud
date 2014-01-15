@@ -19,7 +19,6 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
     run('jpackage mdupdate')
 
     run('jpackage install --name core')
-    run('jpackage install --name grid_master')
     run('jpackage install --name compute_os_base')
 
     reboot(wait=300)
@@ -30,13 +29,14 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
     put(os.path.join(workspace, 'ComputeBox/test/configurations/system_root_credentials.hrd'), '/opt/jumpscale/cfg/hrd/system_root_credentials.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/', hostname, 'elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/agent.hrd'), '/opt/jumpscale/cfg/hrd/agent.hrd')
+    put(os.path.join(workspace, 'ComputeBox/test/configurations/osis.hrd'), '/opt/jumpscale/cfg/hrd/osis.hrd')
 
-    run('jpackage install --name grid')
+    run('jpackage install --name grid_master')
+    run('jpackage install --name grid_node')
 
     run('jpackage install --name computenode')
     print 'Installed the compute node! Start installing cloudbroker'
-    run('jpackage install -r --name cloudbroker')
-    
+    run('jpackage install --name cloudbroker')
 
     run('jpackage install --name logger')
 
