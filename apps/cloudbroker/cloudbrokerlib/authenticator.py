@@ -34,7 +34,8 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             fullacl = set()
             if self.acl:
-                groups = j.apps.system.usermanager.getusergroups(user)
+                user = j.core.portal.active.auth.getUserInfo(user)
+                groups = user.groups
                 # add brokeradmin access
                 if 'admin' in groups:
                     return func(*args, **kwargs)

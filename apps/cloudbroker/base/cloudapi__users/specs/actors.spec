@@ -23,3 +23,8 @@
 	    var:password str,,unique password for the account
 	    result:bool
 
+    method:getUserInfo
+        """
+        Get userinfo from current logged in user
+        """
+        result: dict,,info about the user

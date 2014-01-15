@@ -44,6 +44,11 @@ class cloudapi_users(object):
             ctx.start_response('401 Unauthorized', [])
             return
 
+    def getUserInfo(self, **kwargs):
+        ctx = kwargs['ctx']
+        username = ctx.env['beaker.session']['user']
+        return j.core.portal.active.auth.getUserInfo(username)
+
     def register(self, username, emailaddress, password, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
@@ -53,11 +58,11 @@ class cloudapi_users(object):
         result bool
         """
         ctx = kwargs['ctx']
-        if j.apps.system.usermanager.userexists(username):
+        if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
             return
         else:
-            j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
+            j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.cb.models.account.new()
             account.name = username
             ace = account.new_acl()
