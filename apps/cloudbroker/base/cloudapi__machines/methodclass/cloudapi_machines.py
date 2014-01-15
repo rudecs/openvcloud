@@ -126,7 +126,10 @@ class cloudapi_machines(object):
     def _assertName(self, cloudspaceId, name, **kwargs):
         for m in self.list(cloudspaceId, **kwargs):
             if m['name'] == name:
-                raise ValueError("Machine with name %s already exists" % name)
+                return False
+        return True
+                
+
 
     def _getSize(self, provider, machine):
         brokersize = self.models.size.get(machine.sizeId)
@@ -146,7 +149,10 @@ class cloudapi_machines(object):
         result bool
 
         """
-        self._assertName(cloudspaceId, name, **kwargs)
+        if not self._assertName(cloudspaceId, name, **kwargs):
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'Selected name already exists'
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
@@ -405,7 +411,10 @@ class cloudapi_machines(object):
         """
         machine = self._getMachine(machineId)
         if name:
-            self._assertName(machine.cloudspaceId, name, **kwargs)
+            if not self._assertName(cloudspaceId, name, **kwargs):
+                ctx = kwargs['ctx']
+                ctx.start_response('409 Conflict', [])
+                return 'Selected name already exists'
             machine.name = name
         if description:
             machine.description = description
@@ -439,13 +448,22 @@ class cloudapi_machines(object):
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A clone can only be taken from a stopped machine bucket'
-        self._assertName(machine.cloudspaceId, name, **kwargs)
+        if machine.clone or machine.cloneReference:
+            ctx = kwargs['ctx']
+            ctx.start_response('405 Method not Allowed', [])
+            return 'This machine has already a clone or is a clone or has been cloned in the past'
+
+        if not self._assertName(cloudspaceId, name, **kwargs):
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'Selected name already exists'
         clone = self.cb.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
         clone.name = name
         clone.descr = machine.descr
         clone.sizeId = machine.sizeId
         clone.imageId = machine.imageId
+        clone.cloneReference = machine.id
 
         for diskId in machine.disks:
             origdisk = self.cb.models.disk.new()
@@ -461,6 +479,8 @@ class cloudapi_machines(object):
         name = 'vm-%s' % clone.id
         size = self._getSize(provider, clone)
         node = provider.client.ex_clone(node, size, name)
+        machine.clone = clone.id
+        self.models.vmachine.set(machine)
         self._updateMachineFromNode(clone, node, machine.stackId, size)
         tags = str(machineId)
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)

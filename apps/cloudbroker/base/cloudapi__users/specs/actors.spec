@@ -23,8 +23,9 @@
 	    var:password str,,unique password for the account
 	    result:bool
 
-    method:getUserInfo
-        """
-        Get userinfo from current logged in user
-        """
-        result: dict,,info about the user
+	method:get
+	    """
+	    Get information of a existing username based on username id
+	    """
+        var:username str,,username of the user
+        result:dict,,user information.

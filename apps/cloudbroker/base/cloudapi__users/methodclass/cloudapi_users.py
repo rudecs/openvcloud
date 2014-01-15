@@ -43,11 +43,19 @@ class cloudapi_users(object):
         else:
             ctx.start_response('401 Unauthorized', [])
             return
-
-    def getUserInfo(self, **kwargs):
-        ctx = kwargs['ctx']
-        username = ctx.env['beaker.session']['user']
-        return j.core.portal.active.auth.getUserInfo(username)
+    def get(self, username, **kwargs):
+        """
+        Get information of a existing username based on username id
+        param:username username of the user
+        result:
+        """
+        user = j.core.portal.active.auth.getUserInfo(username)
+        if user:    
+            return {'username':user.username, 'emailaddresses':user.emails}
+        else:
+            ctx = kwargs['ctx']
+            ctx.start_response('404 Not Found', [])
+            return 'User not found'
 
     def register(self, username, emailaddress, password, **kwargs):
         """
