@@ -25,9 +25,9 @@ angular.module('cloudscalers.controllers')
                         var uri = new URI($window.location);
             			uri.filename('MachineBuckets');
             			$window.location = uri.toString();
-                    }, function(data) {
+                    }, function(reason) {
                         LoadingDialog.hide();
-                        $alert(data);
+                        $alert(reason.data);
                     });
             });
         }

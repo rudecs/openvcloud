@@ -91,7 +91,7 @@ class cloudapi_cloudspaces(object):
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
-            return 'There are still provisioned machines in the cloudspace, delete them first'
+            return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
         return self.models.cloudspace.delete(cloudspaceId)
 
 
