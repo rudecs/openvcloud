@@ -4,14 +4,6 @@ angular.module('cloudscalers.controllers')
         $scope.currentSpace = CloudSpace.current();
         $scope.currentAccount = undefined;
 
-        // Get the user's email
-        User.get($scope.currentUser.username)
-            .then(function(result) { 
-                    $scope.currentUser.email = result.data.emailaddresses.length > 0 ? result.data.emailaddresses[0] : "";
-                }, function(result) { 
-                    $scope.emailError = result;
-                });
-
         $scope.setCurrentCloudspace = function(space) {
             CloudSpace.setCurrent(space);
             $scope.currentSpace = space;

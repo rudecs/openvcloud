@@ -145,10 +145,6 @@ angular.module('cloudscalers.services')
             });
             return signUpResult;
         };
-
-        user.get = function(userId) {
-            return $http.get(cloudspaceconfig.apibaseurl + '/users/get?username=' + userId);
-        };
         
         return user;
         
