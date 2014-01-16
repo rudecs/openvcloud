@@ -36,6 +36,7 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         if j.apps.system.usermanager.authenticate(username, password):
+
             session = ctx.env['beaker.get_session']() #create new session
             session['user'] = username
             session.save()
@@ -43,7 +44,21 @@ class cloudapi_users(object):
         else:
             ctx.start_response('401 Unauthorized', [])
             return
+    def get(self, username, **kwargs):
+        """
+        Get information of a existing username based on username id
+        param:username username of the user
+        result:
+        """
+        user = j.apps.system.usermanager.userget(username)
+        if user:    
+            return {'username':user['username'], 'emailaddresses':user['emails']}
+        else:
+            ctx = kwargs['ctx']
+            ctx.start_response('404 Not Found', [])
+            return 'User not found'
 
+        
     def register(self, username, emailaddress, password, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
@@ -55,7 +70,7 @@ class cloudapi_users(object):
         ctx = kwargs['ctx']
         if j.apps.system.usermanager.userexists(username):
             ctx.start_response('409 Conflict', [])
-            return
+            return 'User already exists'
         else:
             j.apps.system.usermanager.usercreate(username, password,key=None, groups=username, emails=emailaddress, userid=None, reference="", remarks='', config=None)
             account = self.cb.models.account.new()

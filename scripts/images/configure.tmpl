@@ -26,14 +26,14 @@ def main(j,jp):
     catresourceclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'resourceprovider')
 
 
-    imagename = '{{image_name}}'
+    imagepath = '{{imagepath}}'
     requests.post(listimagesurl, auth).json()
     installed_images = catimageclient.list()
     if image_id not in installed_images:
         image = dict()
         image['name'] = name
         image['id'] = image_id
-        image['UNCPath'] = imagename
+        image['UNCPath'] = imagepath
         image['type'] = '{{type}}'
         image['size'] = {{size}}
         catimageclient.set(image)

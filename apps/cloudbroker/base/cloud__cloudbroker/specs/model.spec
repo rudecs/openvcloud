@@ -23,6 +23,8 @@
     prop:cloudspaceId int,,id of space which holds this vmachine
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
     prop:referenceSizeId str,, reference to the size used on the stack
+    prop:cloneReference int,, id to the machine on which this machine is based
+    prop:clone int,, id of the clone
 
 [model:VMAccount] @dbtype:osis
     """

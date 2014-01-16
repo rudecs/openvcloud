@@ -4,14 +4,21 @@ angular.module('cloudscalers.controllers')
        
         $scope.login_error = undefined;
         
-        $scope.login = function() {            
-            User.login($scope.user.username, $scope.user.password).
+        $scope.login = function() {
+        	var usertologin = $scope.user.username;
+            User.login(usertologin, $scope.user.password).
             then(
             		function(result) {
             			$scope.login_error = undefined;
-            			var uri = new URI($window.location);
-            			uri.filename('MachineBuckets');
-            			$window.location = uri.toString();
+            			User.updateUserDetails(usertologin).then(
+                                function(result) {
+                        			var uri = new URI($window.location);
+                        			uri.filename('MachineBuckets');
+                        			$window.location = uri.toString();
+                                }, 
+                                function(reason){
+                                	$scope.login_error = reason.status
+                                });
             		},
             		function(reason) {
             			$scope.login_error = reason.status;

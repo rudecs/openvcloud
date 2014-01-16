@@ -83,7 +83,17 @@ class cloudapi_cloudspaces(object):
         result bool,
 
         """
+        ctx = kwargs['ctx']
+        term = {"cloudspaceId": cloudspaceId}
+        query = {'fields': ['id', 'name']}
+        if term:
+            query['query'] = {'term': term}
+        results = self.models.vmachine.find(ujson.dumps(query))['result']
+        if len(results) > 0:
+            ctx.start_response('409 Conflict', [])
+            return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
         return self.models.cloudspace.delete(cloudspaceId)
+
 
     def get(self, cloudspaceId, **kwargs):
         """
