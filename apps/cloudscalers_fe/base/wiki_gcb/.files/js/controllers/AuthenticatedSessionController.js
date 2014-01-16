@@ -51,17 +51,4 @@ angular.module('cloudscalers.controllers')
 			$window.location = uri.toString();
         };
 
-        $scope.deleteCloudspace = function(space) {
-            LoadingDialog.show('Deleting cloudspace');
-            CloudSpace.delete(space)
-                .then(function() {
-                    $scope.loadSpaces();
-                    LoadingDialog.hide();
-                    $route.reload();
-                }, function(data) {
-                    LoadingDialog.hide();
-                    alert(data);
-                });
-
-        };
     }]);
