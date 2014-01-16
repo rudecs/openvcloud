@@ -5,8 +5,8 @@ import time
 #Create a single machine
 
 #Change those values!
-username = 'hendrik'
-password = 'test'
+username = 'enteryourusername'
+password = 'enteryourpassword'
 cloudspaceId = 10
 sizeId = 1
 imageId = 19
