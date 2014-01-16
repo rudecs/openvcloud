@@ -23,5 +23,3 @@ cloudscalers.cloudbroker.port=80
 cloudscalers.cloudbroker.secret=1234
 cloudscalers.compute.nodeid=cloudscale55
 
-
-

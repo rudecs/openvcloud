@@ -4,7 +4,7 @@ def bootstrap():
     # write vncproxy hrd
     vncproxyhrd = """
 vncproxy.libcloud.actor.host=127.0.0.1
-vncproxy.libcloud.actor.port=80
+vncproxy.libcloud.actor.port=9999
 vncproxy.libcloud.actor.secret=1234
 vncproxy.publicurl=http://%s:8091/vnc_auto.html?token=
     """ % env['host']
