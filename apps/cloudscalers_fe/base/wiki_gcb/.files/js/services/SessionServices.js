@@ -118,7 +118,11 @@ angular.module('cloudscalers.services')
                 signUpResult.error = data;
             });
             return signUpResult;
-        }
+        };
+
+        user.get = function(userId) {
+            return $http.get(cloudspaceconfig.apibaseurl + '/users/get?username=' + userId);
+        };
         
         return user;
         
