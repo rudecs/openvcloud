@@ -9,5 +9,5 @@ vncproxy.libcloud.actor.secret=1234
 vncproxy.publicurl=http://%s:8091/vnc_auto.html?token=
     """ % env['host']
     put(StringIO(vncproxyhrd), '/opt/jumpscale/cfg/hrd/vncproxy.hrd')
-    run('jpackage_update')
-    run('jpackage_install --name cloudbroker_minimal_install --domain cloudscalers --version 1.0')
+    run('jpackage mdupdate')
+    run('jpackage install --name cloudbroker_minimal_install --domain cloudscalers --version 1.0')
