@@ -4,7 +4,7 @@ import JumpScale.grid.osis
 import string
 from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
-
+import urlparse
 
 ujson = j.db.serializers.ujson
 
@@ -274,11 +274,15 @@ class cloudapi_machines(object):
         param:machineId id of machine to export
         param:exportName give name to export action
         param:uncpath unique path where to export machine to ()
-        result int
-
+        result boolean if export is successfully started
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method exporttoremote")
+        provider, node = self._getProviderAndNode(machineId)
+        elements = urlparse.urlparse(uncpath)
+        if not elements.scheme in ['cifs','smb','ftp','file','sftp','http']:
+            ctx = kwargs['ctx']
+            ctx.start_response('400 Bad Request', [])
+            return 'Incorrect uncpath format, only cifs, smb, ftp, file, sftp and http is supported'
+        return provider.client.ex_export(node, exportName, uncpath)
 
     def _getStorage(self, machine):
         if not machine['stackId'] or machine['stackId'] == 0:
