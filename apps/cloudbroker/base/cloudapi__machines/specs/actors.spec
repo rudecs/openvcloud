@@ -110,6 +110,7 @@
         var:machineId str,,id of machine to export
         var:exportName str,,give name to export action
         var:uncpath str,,unique path where to export machine to () #@todo give example ftp
+        var:emailaddress str,,to this address the result of the export is send.
         result:int  #returns id of new machine create in system which remembers where export happened to
 
     method:importtoremote

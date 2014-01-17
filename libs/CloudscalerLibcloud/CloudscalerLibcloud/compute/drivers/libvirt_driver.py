@@ -323,6 +323,10 @@ class CSLibvirtNodeDriver():
         clone_diskname = self._create_clone_disk(size, diskname)
         return self._create_node(name, clone_diskname, size)
 
+    def ex_export(self, node, exportname, uncpath, emailaddress):
+        machineid = node.id
+        return self._execute_agent_job('backupmachine', wait=False, machineid=machineid, backupname=exportname, location=uncpath, emailaddress=emailaddress)
+
     def _get_connection_ip(self):
         uri = urlparse.urlparse(self.uri)
         return uri.netloc

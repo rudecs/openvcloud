@@ -269,11 +269,12 @@ class cloudapi_machines(object):
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         return self.models.vmachine.delete(machineId)
 
-    def exporttoremote(self, machineId, exportName, uncpath, **kwargs):
+    def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
         param:machineId id of machine to export
         param:exportName give name to export action
         param:uncpath unique path where to export machine to ()
+        param:emailaddress to this address the result of the export is send.
         result boolean if export is successfully started
         """
         provider, node = self._getProviderAndNode(machineId)
@@ -282,7 +283,11 @@ class cloudapi_machines(object):
             ctx = kwargs['ctx']
             ctx.start_response('400 Bad Request', [])
             return 'Incorrect uncpath format, only cifs, smb, ftp, file, sftp and http is supported'
-        return provider.client.ex_export(node, exportName, uncpath)
+        started = provider.client.ex_export(node, exportName, uncpath, emailaddress)
+        if started:
+            return True
+        else:
+            return False
 
     def _getStorage(self, machine):
         if not machine['stackId'] or machine['stackId'] == 0:
