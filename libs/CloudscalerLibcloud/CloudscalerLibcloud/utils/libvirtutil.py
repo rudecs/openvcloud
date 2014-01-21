@@ -1,11 +1,15 @@
 import libvirt
 from xml.etree import ElementTree
-
+from jinja2 import Environment, PackageLoader
+import os
 
 class LibvirtUtil(object):
     def __init__(self):
         self.connection = libvirt.open()
         self.readonly = libvirt.openReadOnly()
+        self.basepath = '/mnt/vmstor'
+        self.env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
+
 
     def _get_domain(self, id):
         try:
@@ -49,7 +53,13 @@ class LibvirtUtil(object):
 
         for diskfile in diskfiles:
             vol = self.connection.storageVolLookupByPath(diskfile)
+            diskpool = vol.storagePoolLookupByVolume()
             vol.delete(0)
+            if diskpool.numOfVolumes() == 0:
+                poolpath = os.path.join(self.basepath, diskpool.name())
+                diskpool.destroy()
+                if os.path.exists(poolpath):
+                    os.removedirs(poolpath)
         domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
         return True
 
@@ -134,12 +144,22 @@ class LibvirtUtil(object):
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)
         pool.createXML(diskxml, 0)
+        return True
+
 
     def _get_pool(self, poolname):
         storagepool = self.connection.storagePoolLookupByName(poolname)
         return storagepool
 
-
+    def check_storagepool(self, poolname):
+        if poolname not in self.connection.listStoragePools():
+            poolpath = os.path.join(self.basepath, poolname)
+            if not os.path.exists(poolpath):
+                os.makedirs(poolpath)
+            pool = self.env.get_template('pool.xml').render(poolname=poolname, basepath=self.basepath)
+            self.connection.storagePoolCreateXML(pool, 0)
+        return True
+            
     def create_machine(self, machinexml):
         domain = self.connection.defineXML(machinexml)
         domain.create()

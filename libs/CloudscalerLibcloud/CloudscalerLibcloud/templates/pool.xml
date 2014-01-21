@@ -1,0 +1,7 @@
+ 
+<pool type='dir'>
+  <name>{{poolname}}</name>
+  <target>
+    <path>{{basepath}}/{{poolname}}</path>
+  </target>
+</pool>

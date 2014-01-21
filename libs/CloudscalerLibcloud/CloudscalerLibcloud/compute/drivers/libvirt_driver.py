@@ -11,9 +11,9 @@ import urlparse
 import json
 import os
 import crypt, random
-POOLNAME = 'VMStor'
-POOLPATH = '/mnt/%s' % POOLNAME.lower()
-libvirt.VIR_NETWORK_UPDATE_COMMAND_ADD_LAST = 3
+BASEPOOLPATH = '/mnt/vmstor'
+IMAGEPOOL = '/mnt/vmstor'
+
 
 
 class CSLibvirtNodeDriver():
@@ -100,27 +100,31 @@ class CSLibvirtNodeDriver():
             role = self.id
         return self.backendconnection.agentcontroller_client.executeKwargs('cloudscalers', name_, role, wait=wait, kwargs=kwargs)
 
-    def _create_disk(self, size, image):
+    def _create_disk(self, vm_id, size, image, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = str(uuid.uuid4()) + '.qcow2'
+        diskname = vm_id + '-' + disk_role + '.qcow2'
         diskbasevolume = image.extra['path']
         disksize = size.disk
+        diskbasevolumepath = IMAGEPOOL + '/' + diskbasevolume
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-                                       diskbasevolume, 'disksize': disksize, 'poolpath': POOLPATH})
-        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
+                                       diskbasevolumepath, 'disksize': disksize})
+
+        poolname = vm_id
+        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=poolname)
         return diskname
 
-    def _create_clone_disk(self, size, clone_disk):
+    def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = str(uuid.uuid4()) + '.qcow2'
+        diskname = vm_id+ '-' + disk_role + '.qcow2'
         diskbasevolume = clone_disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-                                       diskbasevolume, 'disksize': size.disk, 'poolpath': POOLPATH})
-        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=POOLNAME)
+                                       diskbasevolume, 'disksize': size.disk})
+        poolname = vm_id
+        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=poolname)
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        return self._execute_agent_job('createmetaiso', name=name, poolname=POOLNAME, metadata=metadata, userdata=userdata, type=type)
+        return self._execute_agent_job('createmetaiso', name=name, poolname=name, metadata=metadata, userdata=userdata, type=type)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -175,7 +179,7 @@ class CSLibvirtNodeDriver():
                 userdata = {}   
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        diskname = self._create_disk(size, image)
+        diskname = self._create_disk(name, size, image)
         if not diskname or diskname == -1:
             #not enough free capcity to create a disk on this node
             return -1
@@ -186,6 +190,7 @@ class CSLibvirtNodeDriver():
         vxlan = self.backendconnection.environmentid
 
         macaddress = self.backendconnection.getMacAddress()
+        POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
@@ -302,7 +307,7 @@ class CSLibvirtNodeDriver():
     def ex_start(self, node):
         xml = ''
         machineid = node.id 
-        return self._execute_agent_job('startmachine', machineid = machineid, xml = xml)
+        return self._execute_agent_job('startmachine', machineid = machineid, xml = xml)    
  
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -319,8 +324,8 @@ class CSLibvirtNodeDriver():
         snapname = snap['name']
         snapxml = snap['xml']
         diskname = self._get_snapshot_disk_file_names(snapxml)[0]
-        diskname = os.path.basename(diskname)
-        clone_diskname = self._create_clone_disk(size, diskname)
+        #diskname = os.path.basename(diskname)
+        clone_diskname = self._create_clone_disk(name, size, diskname)
         return self._create_node(name, clone_diskname, size)
 
     def ex_export(self, node, exportname, uncpath, emailaddress):

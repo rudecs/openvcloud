@@ -462,7 +462,7 @@ class cloudapi_machines(object):
             ctx.start_response('405 Method not Allowed', [])
             return 'This machine has already a clone or is a clone or has been cloned in the past'
 
-        if not self._assertName(cloudspaceId, name, **kwargs):
+        if not self._assertName(machine.cloudspaceId, name, **kwargs):
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'Selected name already exists'
