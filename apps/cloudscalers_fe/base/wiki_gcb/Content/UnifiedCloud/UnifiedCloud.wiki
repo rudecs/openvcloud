@@ -6,17 +6,17 @@
 @divend
 
 @col 9
-h2. CloudScalers' Revolutionary Cloud
+h2. vScalers' Revolutionary Cloud
 
 h3. Unified Cloud
 
 Looking at cloud computing, a lot of (dis)advantages are present in each of the currently available IaaS, PaaS, SaaS, Staas, DaaS,... solutions. In trying to be a complete cloud, providers keep adding features to their platform but being complete is hard and still, sticking to IaaS or PaaS or any of the others will never solve every problem. In the meantime their products get really complex while these added features don't even attract enough new customers to cover the costs of the development, let alone the TCO of them.
 
-CloudScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation: the CloudScalers' Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
+vScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation: the vScalers' Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
 
-h3. Why CloudScalers?
+h3. Why vScalers?
 
-So why choose for CloudScalers? Here our value proposition:
+So why choose for vScalers? Here our value proposition:
 
 * Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
 * High performance thanks to storage deliverd at SSD speeds
@@ -28,9 +28,9 @@ So why choose for CloudScalers? Here our value proposition:
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
 
-h3. Who is CloudScalers?
+h3. Who is vScalers?
 
-CloudScalers includes a team with a proven track record in datacentres and cloud computing as well as a very well built out capital funding network and legal and financial services.
+vScalers includes a team with a proven track record in datacentres and cloud computing as well as a very well built out capital funding network and legal and financial services.
 
 What makes us so different is that we bring scale, reliability and cost advantages to customers without pushing them in a specific technology direction.
 

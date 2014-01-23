@@ -13,7 +13,7 @@
                 <h4>Welcome</h4>
                 <p class="lead">
                     Are you ready for the next step in IT infrastructure?  <br> 
-                    CloudScalers introduces Cloud Buckets <br> 
+                    vScalers introduces Cloud Buckets <br> 
                     Delivering instant virtual machines creation
                 </p>
             </div>
@@ -38,9 +38,9 @@
 
 @col 6
 h3. Revolutionary Cloud Computing!
-CloudScalers has not build yet another competitor for cloud infrastructure. CloudScalers offers a single unified portal to access different private instances: Cloud Buckets. CloudScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
+vScalers has not build yet another competitor for cloud infrastructure. vScalers offers a single unified portal to access different private instances: Cloud Buckets. vScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
 
-CloudScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, CloudScalers delivers equal or better performance and relaibility compared to traditional clouds!
+vScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, vScalers delivers equal or better performance and relaibility compared to traditional clouds!
 
 {{html: <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a> }}
 @colend

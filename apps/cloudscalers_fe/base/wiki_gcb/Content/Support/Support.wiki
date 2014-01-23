@@ -1,9 +1,9 @@
 h2. Support
 
-Please use the form below or mail to [support@cloudscalers.com|mailto:support@cloudscalers.com]
+Please use the form below or mail to [support@vscalers.com|mailto:support@vscalers.com]
 
 {{div3: class=support | ng-app=myApp | ng-controller=SupportController}}
-{{ contact_form: receiver_email:support@cloudscalers.com | custom | subject: CloudScalers.com support}}
+{{ contact_form: receiver_email:support@vscalers.com | custom | subject: vScalers.com support}}
     {{html: <!-- Angular doesn't bind hidden input. This is a workaround to make it work -->}}
     {{html: <input type="hidden" style="display: none" name="sender_name" value="{[currentUser.username]}">}}
     {{html: <input type="hidden" style="display: none" name="sender_email" value="{[currentUser.emailaddresses[0] ]}">}}

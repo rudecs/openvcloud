@@ -6,13 +6,13 @@ h2. FAQ
                        <div class="accordion-group">
                          <div class="accordion-heading">
                            <a class="accordion-toggle collapsed in" data-toggle="collapse" data-parent="#accordion" href="#1">
-                             <h5><i class="icon-plus"></i> Who is CloudScalers for?</h5>
+                             <h5><i class="icon-plus"></i> Who is vScalers for?</h5>
                            </a>
                          </div>
                          <div id="1" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>CloudScalers delivers to anyone that is familiar with managing IT resources Virtual Machines, Cloud Desktops and Storage hosted from one of its datacenters in a secure and transparant model.</p>
+                             <p>vScalers delivers to anyone that is familiar with managing IT resources Virtual Machines, Cloud Desktops and Storage hosted from one of its datacenters in a secure and transparant model.</p>
                            </div>
                          </div>
                        </div>
@@ -26,7 +26,7 @@ h2. FAQ
                          <div id="2" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>Buckets is a CloudScalers specific term to indicate a private offered service that is part of a secured 'space'.</p>
+                             <p>Buckets is a vScalers specific term to indicate a private offered service that is part of a secured 'space'.</p>
                            </div>
                          </div>
                        </div>
@@ -40,7 +40,7 @@ h2. FAQ
                          <div id="3" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>A space is a security realm where buckets live in. CloudScalers creates spaces in order to manage a set of services - the buckets - inside a secured area a space. Users will get access to one or more spaces. If the user is owner of a space, he can grant other users access. Users can get access to multiple spaces.</p>
+                             <p>A space is a security realm where buckets live in. vScalers creates spaces in order to manage a set of services - the buckets - inside a secured area a space. Users will get access to one or more spaces. If the user is owner of a space, he can grant other users access. Users can get access to multiple spaces.</p>
                            </div>
                          </div>
                        </div>
@@ -89,13 +89,13 @@ h2. FAQ
                        <div class="accordion-group">
                          <div class="accordion-heading">
                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#7">
-                             <h5><i class="icon-plus"></i> What makes CloudScalers different?</h5>
+                             <h5><i class="icon-plus"></i> What makes vScalers different?</h5>
                            </a>
                          </div>
                          <div id="7" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>CloudScalers provides faster, cheaper and more flexible bucket creation and management, while complying at all latest technology standards. CloudScalers offers as well a set of multiple Buckets all from the same portal.</p>
+                             <p>vScalers provides faster, cheaper and more flexible bucket creation and management, while complying at all latest technology standards. vScalers offers as well a set of multiple Buckets all from the same portal.</p>
                            </div>
                          </div>
                        </div>
@@ -103,13 +103,13 @@ h2. FAQ
                        <div class="accordion-group">
                          <div class="accordion-heading">
                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#8">
-                             <h5><i class="icon-plus"></i> What performance is CloudScalers providing?</h5>
+                             <h5><i class="icon-plus"></i> What performance is vScalers providing?</h5>
                            </a>
                          </div>
                          <div id="8" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>CloudScalers uses storage at SSD speed. We monitor machines loads and will move instances in the cloud to guarantee an optimal performance. </p>
+                             <p>vScalers uses storage at SSD speed. We monitor machines loads and will move instances in the cloud to guarantee an optimal performance. </p>
                            </div>
                          </div>
                        </div>
@@ -187,13 +187,13 @@ h2. FAQ
                        <div class="accordion-group">
                          <div class="accordion-heading">
                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#24">
-                             <h5><i class="icon-plus"></i> What kind of Network does CloudScalers run on?</h5>
+                             <h5><i class="icon-plus"></i> What kind of Network does vScalers run on?</h5>
                            </a>
                          </div>
                          <div id="24" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>All CloudScalers nodes are connected via gigabit ethernet to 10 Gbit switches. Bandwidth to the internet is growing based on our customer`s needs.</p>
+                             <p>All vScalers nodes are connected via gigabit ethernet to 10 Gbit switches. Bandwidth to the internet is growing based on our customer`s needs.</p>
                            </div>
                          </div>
                        </div>
@@ -207,7 +207,7 @@ h2. FAQ
                          <div id="26" class="accordion-body collapse" style="height: 0px;" expand-based-on-hash>
                            <div class="accordion-inner">
                               <!-- Para -->
-                             <p>No. CloudScalers is completely unmanaged. Only if you experience issues with your virtual server related to a non OS issue, you can reach to support via a ticket.</p>
+                             <p>No. vScalers is completely unmanaged. Only if you experience issues with your virtual server related to a non OS issue, you can reach to support via a ticket.</p>
                            </div>
                          </div>
                        </div>

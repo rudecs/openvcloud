@@ -2,7 +2,7 @@ h2. Storage Buckets
 
 Few truly distributed storage systems are available today. Often, the distributed storage systems are slow, complex, don't have a unified namespace, are hard to use in a cloud context and have a TCO that remains quite high.
 
-CloudScalers presents Storage Buckets, providing you you with a secure, distributed storage solution that is unique in its kind. The storage buckets are used with an S3 API. Check out the [API Documentation|ApiDocs].
+vScalers presents Storage Buckets, providing you you with a secure, distributed storage solution that is unique in its kind. The storage buckets are used with an S3 API. Check out the [API Documentation|ApiDocs].
 
 
 
