@@ -18,6 +18,7 @@ def action(diskxml, poolname):
     connection = LibvirtUtil()
     if not connection.check_disk(diskxml):
     	return -1
+    connection.check_storagepool(poolname)
     return connection.create_disk(diskxml, poolname)
 
 

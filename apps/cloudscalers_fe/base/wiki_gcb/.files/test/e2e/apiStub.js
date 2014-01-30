@@ -502,6 +502,10 @@ defineApiStub = function ($httpBackend) {
             }
         },
     ]);
-    
+
+    $httpBackend.whenGET(/^\/users\/get\?.*/).respond({
+        username: 'tayseer_test',
+        emailaddresses: [ 'tayseer_test123@site.com' ]
+    });
 };
 

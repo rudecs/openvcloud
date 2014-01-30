@@ -68,7 +68,7 @@ class cloudapi_users(object):
         ctx = kwargs['ctx']
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
-            return
+            return 'User already exists'
         else:
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.cb.models.account.new()

@@ -10,7 +10,7 @@
 			<li>
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
-						<span>CloudScalers</span>
+						<span>vScalers</span>
 					</a>	    				
 			</li>
 			<li>

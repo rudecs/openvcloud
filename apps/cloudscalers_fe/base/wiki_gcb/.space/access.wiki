@@ -14,9 +14,9 @@
 }}
 
 
-{{title:CloudScalers - $$space}}
+{{title:vScalers - $$space}}
 
-{{projectname:CloudScalers}}
+{{projectname:vScalers}}
 
 {{css:/$$space/.files/custom.css}}
 
@@ -81,8 +81,8 @@ h2. loading
 {{include:footer}}
 				
                 {{html:					
-	            <p class="cr">2013 &copy; CloudScalers. All Rights Reserved. <br>
-				<a class="brand" href="../$$space">CloudScalers</a>
+	            <p class="cr">2013 &copy; vScalers. All Rights Reserved. <br>
+				<a class="brand" href="../$$space">vScalers</a>
 				</p>
 			     }}
              {{div4}}

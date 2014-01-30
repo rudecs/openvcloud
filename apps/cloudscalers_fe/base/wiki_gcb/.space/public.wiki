@@ -16,9 +16,9 @@
 }}
 
 
-{{title:CloudScalers - $$space}}
+{{title:vScalers - $$space}}
 
-{{projectname:CloudScalers}}
+{{projectname:vScalers}}
 
 {{css:/$$space/.files/css/font-awesome.css}}
 {{css:/$$space/.files/css/base-admin.css}}
@@ -38,7 +38,7 @@
 	<div class="subnavbar-inner">
 	
 		<div class="container">
-		<a class="brand" href="../$$space">CloudScalers</a>
+		<a class="brand" href="../$$space">vScalers</a>
 			
 			
 			<ul class="mainnav">
@@ -53,7 +53,7 @@
 				<li>
 					<a href="../$$space/UnifiedCloud">
 						<i class="icon-building"></i>
-						<span>Why CloudScalers</span>
+						<span>Why vScalers</span>
 					</a>	    				
 				</li> 
 
@@ -142,8 +142,8 @@
 
 				
                 {{html:					
-	            <p class="cr">2013 &copy; CloudScalers. All Rights Reserved. <br>
-				<a class="brand" href="../$$space">CloudScalers</a>
+	            <p class="cr">2013 &copy; vScalers. All Rights Reserved. <br>
+				<a class="brand" href="../$$space">vScalers</a>
 				</p>
 			     }}
              {{div4}}

@@ -4,7 +4,7 @@ import JumpScale.grid.osis
 import string
 from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
-
+import urlparse
 
 ujson = j.db.serializers.ujson
 
@@ -269,16 +269,25 @@ class cloudapi_machines(object):
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         return self.models.vmachine.delete(machineId)
 
-    def exporttoremote(self, machineId, exportName, uncpath, **kwargs):
+    def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
         param:machineId id of machine to export
         param:exportName give name to export action
         param:uncpath unique path where to export machine to ()
-        result int
-
+        param:emailaddress to this address the result of the export is send.
+        result boolean if export is successfully started
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method exporttoremote")
+        provider, node = self._getProviderAndNode(machineId)
+        elements = urlparse.urlparse(uncpath)
+        if not elements.scheme in ['cifs','smb','ftp','file','sftp','http']:
+            ctx = kwargs['ctx']
+            ctx.start_response('400 Bad Request', [])
+            return 'Incorrect uncpath format, only cifs, smb, ftp, file, sftp and http is supported'
+        started = provider.client.ex_export(node, exportName, uncpath, emailaddress)
+        if started:
+            return True
+        else:
+            return False
 
     def _getStorage(self, machine):
         if not machine['stackId'] or machine['stackId'] == 0:
@@ -453,7 +462,7 @@ class cloudapi_machines(object):
             ctx.start_response('405 Method not Allowed', [])
             return 'This machine has already a clone or is a clone or has been cloned in the past'
 
-        if not self._assertName(cloudspaceId, name, **kwargs):
+        if not self._assertName(machine.cloudspaceId, name, **kwargs):
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'Selected name already exists'

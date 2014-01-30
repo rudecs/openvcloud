@@ -7,7 +7,7 @@
                 <capacity unit='GB'>{{disksize}}</capacity>
                 <allocation unit='GB'>{{disksize}}</allocation>
                 <target>
-                    <path>{{poolpath}}/{{diskname}}</path>
+                    <path>{{diskname}}</path>
                     <format type='qcow2'/>
                     <permissions>
                         <mode>0660</mode>
@@ -18,7 +18,7 @@
                 </target>
                 <backingStore>
                     <format type='qcow2'/>
-                    <path>{{poolpath}}/{{diskbasevolume}}</path>
+                    <path>{{diskbasevolume}}</path>
                 </backingStore>
  </volume> 
 

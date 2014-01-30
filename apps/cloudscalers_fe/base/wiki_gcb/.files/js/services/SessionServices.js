@@ -144,7 +144,7 @@ angular.module('cloudscalers.services')
                 signUpResult.error = data;
             });
             return signUpResult;
-        }
+        };
         
         return user;
         
