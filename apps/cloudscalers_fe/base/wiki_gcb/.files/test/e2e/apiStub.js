@@ -507,5 +507,44 @@ defineApiStub = function ($httpBackend) {
         username: 'tayseer_test',
         emailaddresses: [ 'tayseer_test123@site.com' ]
     });
+
+    $httpBackend.whenGET(/^\/accounts\/getCreditBalance.*/).respond("20");
+
+    $httpBackend.whenGET(/^\/accounts\/getCreditHistory.*/).respond([
+       {
+            status: "PROCESSED", 
+            currency: "LTC", 
+            amount: 0.43383948, 
+            reference: "e50d4d6866279ebc18bbe2ef84d187b050b9ed998340c1ef5f74b2d565c7d550", 
+            time: 1391516164, 
+            credit: 10.000000014000001, 
+            comment: "Credit", 
+            accountid: "fe8409b1-fa21-4fc1-b2d3-c752928c450c"
+        },
+        {
+            status: "PROCESSED", 
+            currency: "LTC", 
+            amount: 0.43383948, 
+            reference: "a33f6a65550a7512c0c56c55a0057023a9a987233bd4eb692a9c1c2e788957dd", 
+            time: 1391432480, 
+            credit: 10.000000014000001, 
+            comment: "Credit", 
+            accountid: "fe8409b1-fa21-4fc1-b2d3-c752928c450c"
+        }
+    ]);
+
+    $httpBackend.whenGET(/^\/payments\/getPaymentInfo.*/).respond(function(method,url,data)
+    {
+        var params = new URI(url).search(true);
+        var coin = params.coin;
+        if (coin == 'BTC') {
+            return [200,{coin: "BTC", value: 800.05, address: "1BBnbfhkkVVAan61362PkhGMdjXk5YsrmP"}];
+        } else if (coin == 'LTC') {
+            return [200,{coin: "LTC", value: 23.05, address: "LZLRqxWip27u5pGzc1amMhcaH16VRMSaYt"}];
+        } else  {
+            return [504, 'Bad request'];
+        }
+        
+    });
 };
 

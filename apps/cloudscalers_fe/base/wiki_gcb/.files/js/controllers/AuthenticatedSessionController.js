@@ -2,7 +2,7 @@ angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
-        $scope.currentAccount = undefined;
+        $scope.currentAccount = {id:$scope.currentSpace.accountId};
 
         $scope.setCurrentCloudspace = function(space) {
             CloudSpace.setCurrent(space);

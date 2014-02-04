@@ -3,7 +3,7 @@ h2. Credit
 {{html:  <hr>
 
 
-<div ng-app="myApp" ng-controller="BillingController">
+<div ng-controller="BillingController">
  }}
 
 {{html:
@@ -11,8 +11,8 @@ h2. Credit
 <div class="row" style="height: 100%;">
     <div class="row" style="height: 30%;" >
         <div class="span3" align="center">
-            <h2 ng-model="availableCredit">{[credit | currency:"$"]}</h2>
-            Available credit
+            <br/><br/>
+            <h1 ng-model="availableCredit">{[credit | currency:"$"]}</h1>
         </div>
         <div class="span6" style="border-left: thin;border-left-style: dotted; border-left-color: gray; height: 100%">
             <form class="form-horizontal" role="form">
@@ -53,16 +53,16 @@ h2. Credit
             <h3><img src="/$$space/.files/img/payment/Bitcoin-logo-with-text.png"/> payment</h3>
         </div>
         <div class="modal-body">
-                <div ng-model="creditToAdd" class="row">
-                    <div class="col-sm-3">Credit:</div><div>{[creditToAdd  | currency:"$"]}</div>
+                <div ng-model="creditToAdd" class="row-fluid">
+                    <div class="span3">Credit:</div><div>{[creditToAdd  | currency:"$"]}</div>
                 </div>
-                <div class="row" ng-model="paymentinfo">
+                <div class="row-fluid" ng-model="paymentinfo">
                     <div class="span3">Conversionrate:</div><div>{[paymentinfo.value | currency:"$"]}/BTC</div>
                 </div>
-                <div class="row" ng-model="totalBtc">
+                <div class="row-fluid" ng-model="totalBtc">
                     <div class="span3"><h5>Total:</h5></div><div><h5>{[totalBtc]} BTC</h5></div>
                 </div>
-                <div class="row">
+                <div class="row-fluid">
                     <div class="span6" ng-model="paymenturl">
                         <a ng-href="{[paymenturl]}">
                         <p ng-model="paymentinfo">{[paymentinfo.address]}</p>
@@ -81,16 +81,16 @@ h2. Credit
             <h3><img src="/$$space/.files/img/payment/Litecoin-logo-with-text.png"/> payment</h3>
         </div>
         <div class="modal-body">
-                <div ng-model="creditToAdd" class="row">
+                <div ng-model="creditToAdd" class="row-fluid">
                     <div class="span3">Credit:</div><div>{[creditToAdd  | currency:"$"]}</div>
                 </div>
-                <div class="row" ng-model="paymentinfo">
+                <div class="row-fluid" ng-model="paymentinfo">
                     <div class="span3">Conversionrate:</div><div>{[paymentinfo.value | currency:"$"]}/LTC</div>
                 </div>
-                <div class="row" ng-model="totalLtc">
+                <div class="row-fluid" ng-model="totalLtc">
                     <div class="span3"><h5>Total:</h5></div><div><h5>{[totalLtc]} LTC</h5></div>
                 </div>
-                <div class="row">
+                <div class="row-fluid">
                     <div class="span6" ng-model="paymenturl">
                         <a ng-href="{[paymenturl]}">
                         <p ng-model="paymentinfo">{[paymentinfo.address]}</p>
@@ -134,6 +134,6 @@ h3. History
 </table>
 </div>
 
- <script src="/$$space/.files/js/controllers/billing.js" type="text/javascript"></script>
-   
+<script src="/$$space/.files/js/services/CryptoPayments.js" type="text/javascript"></script> 
+<script src="/$$space/.files/js/controllers/billing.js" type="text/javascript"></script>
 }}
