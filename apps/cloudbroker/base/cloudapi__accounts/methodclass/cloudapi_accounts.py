@@ -129,7 +129,7 @@ class cloudapi_accounts(object):
         raise NotImplementedError("not implemented method update")
     
     @authenticator.auth(acl='R')
-    def getCreditBalance(self, accountId):
+    def getCreditBalance(self, accountId, **kwargs):
         """
         Get the current available credit
 
@@ -146,7 +146,7 @@ class cloudapi_accounts(object):
         return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
     
     @authenticator.auth(acl='R')
-    def getCreditHistory(self, accountId):
+    def getCreditHistory(self, accountId, **kwargs):
         """
         Get all the credit transactions (positive and negative) for this account.
         
