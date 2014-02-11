@@ -9,7 +9,7 @@ def install_compute_node(hostname, workspace):
     
     #Update sources.cfg and bitbucket.cfg
     run('mkdir -p /opt/jumpscale/cfg/jpackages')
-    put(os.path.join(workspace, 'ComputeBox/test/sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
+    put(os.path.join(workspace, 'ComputeBox/test/configurations/',hostname,'sources.cfg'), '/opt/jumpscale/cfg/jpackages/')
 
     run('mkdir -p /opt/jumpscale/cfg/hrd/')
     
