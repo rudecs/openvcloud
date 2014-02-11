@@ -2,6 +2,9 @@ import libvirt
 from xml.etree import ElementTree
 from jinja2 import Environment, PackageLoader
 import os
+import time
+from CloudscalerLibcloud.utils.qcow2 import Qcow2
+
 
 class LibvirtUtil(object):
     def __init__(self):
@@ -126,26 +129,99 @@ class LibvirtUtil(object):
         vol = self.connection.storageVolLookupByPath(path)
         return vol.delete(0)
 
-    def getSnapshot(self, domain, name):
+    def getSnapshot(self, domain, name): 
         domain = self._get_domain(domain)
         snap = domain.snapshotLookupByName('name')
         return {'name': snap.getName(), 'epoch': snap.getXMLDesc()}
 
+    def _isRootVolume(self, domain, file):
+        diskfiles = self._getDomainDiskFiles(domain)
+        if file in diskfiles:
+            return True
+        return False
+
     def deleteSnapshot(self, id, name):
         domain = self._get_domain(id)
         snapshot = domain.snapshotLookupByName(name, 0)
-        return snapshot.delete(0) == 0
+        snapshotfiles = self._getSnapshotDisks(id, name)
+        volumes = []
+        for snapshotfile in snapshotfiles:
+            is_root_volume = self._isRootVolume(domain, snapshotfile['file'].path)
+            if not is_root_volume:
+                print 'Blockcommit from %s to %s' % (snapshotfile['file'].path, snapshotfile['file'].backing_file_path)
+                result = domain.blockCommit(snapshotfile['name'], snapshotfile['file'].backing_file_path, snapshotfile['file'].path)
+                volumes.append(snapshotfile['name'])
+            else:
+                #we can't use blockcommit on topsnapshots
+                new_base = Qcow2(snapshotfile['file'].backing_file_path).backing_file_path
+                print 'Blockrebase from %s' % new_base
+                flags = libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY | libvirt.VIR_DOMAIN_BLOCK_REBASE_REUSE_EXT | libvirt.VIR_DOMAIN_BLOCK_REBASE_SHALLOW
+                result = domain.blockRebase(snapshotfile['name'], new_base, flags)
+                volumes.append(snapshotfile['name'])
 
-    def rollbackSnapshot(self, id, name):
+        while not self._block_job_domain_info(domain, volumes):
+            time.sleep(0.5)
+
+        #we can undefine the snapshot
+        snapshot.delete(flags = libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        return True
+
+    def _block_job_domain_info(self, domain, paths):
+        for path in paths:
+            done = self._block_job_info(domain, path)
+            if not done:
+                return False
+        return True
+        
+    def _block_job_info(self, domain, path):
+        status = domain.blockJobInfo(path, 0)
+        print status
+        try:
+            cur = status.get('cur', 0)
+            end = status.get('end', 0)
+            if cur == end:
+                return True
+        except Exception:
+            return True
+        else:
+            return False
+
+    def rollbackSnapshot(self, id, name, deletechildren=True):
         domain = self._get_domain(id)
         snapshot = domain.snapshotLookupByName(name, 0)
-        return domain.revertToSnapshot(snapshot, libvirt.VIR_DOMAIN_SNAPSHOT_REVERT_FORCE) == 0
+        snapshotdomainxml = ElementTree.fromstring(snapshot.getXMLDesc(0))
+        domainxml = snapshotdomainxml.find('domain')
+        newxml = ElementTree.tostring(domainxml)
+        self.connection.defineXML(newxml)
+        if deletechildren:
+            children = snapshot.listAllChildren(1)
+            for child in children:
+                snapshotfiles = self._getSnapshotDisks(id, child.getName())
+                for snapshotfile in snapshotfiles:
+                    os.remove(snapshotfile['file'].path)
+                child.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+            snapshotfiles = self._getSnapshotDisks(id, name)
+            for snapshotfile in snapshotfiles:
+                os.remove(snapshotfile['file'].path)
+            snapshot.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)      
+        return True
 
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)
         pool.createXML(diskxml, 0)
         return True
 
+    def _getSnapshotDisks(self, id, name):
+        domain = self._get_domain(id)
+        snapshot = domain.snapshotLookupByName(name, 0)
+        snapshotxml = ElementTree.fromstring(snapshot.getXMLDesc(0))
+        snapshotfiles = []
+        disks = snapshotxml.findall('disks/disk')
+        for disk in disks:
+            source = disk.find('source')
+            if source is not None and disk.attrib['snapshot'] == 'external':
+                snapshotfiles.append({'name': disk.attrib['name'], 'file': Qcow2(source.attrib['file'])})
+        return snapshotfiles
 
     def _get_pool(self, poolname):
         storagepool = self.connection.storagePoolLookupByName(poolname)
@@ -179,3 +255,25 @@ class LibvirtUtil(object):
         for x in self.connection.listAllDomains(0):
             nodes.append(self._to_node(x))
         return nodes
+
+    def _getDomainDiskFiles(self, domain):
+        xml = ElementTree.fromstring(domain.XMLDesc(0))
+        disks = xml.findall('devices/disk')
+        diskfiles = list()
+        for disk in disks:
+            if disk.attrib['device'] == 'disk':
+                source = disk.find('source')
+                if source != None:
+                    diskfiles.append(source.attrib['dev'])
+        return diskfiles
+
+    def _getPool(self, domain):
+        #poolname is by definition the machine name
+        return self.readonly.storagePoolLookupByName(domain.name())
+
+    def _getTemplatePool(self, templatepoolname=None):
+        if not templatepoolname:
+            templatepoolname = 'VMStor'
+        return self.readonly.storagePoolLookupByName(templatepoolname)
+
+
