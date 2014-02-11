@@ -49,6 +49,27 @@
     prop:type str,,user or group (U or G)
     prop:right str,,right string now RWD  (depending type of object this action can be anything each type of action represented as 1 letter)
 
+[rootmodel:CreditTransaction]
+	"""
+	Credit transaction (positive and negative) for an account
+	"""
+	prop:accountId int,,
+	prop:time int,,
+	prop:currency str,, the currency the transaction was made in
+	prop:amount float,, the amount of (in currency) of the transaction
+	prop:credit float,, the credit this transaction adds or takes away
+	prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
+	prop:status str,, status of the transaction
+	prop:comment str,, optional comment
+	
+[rootmodel:CreditBalance]
+	"""
+	Available credit for an account at a specific point in time
+	"""
+	prop:accountId int,,
+	prop:time int,, the time at wich this creditbalance was calculated 
+	prop:credit float,, the available credit
+
 [rootmodel:Image] @dbtype:osis
     """
     """

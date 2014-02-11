@@ -4,7 +4,7 @@
 	"""    
 	method:create
 		"""
-		Create a extra an account
+		Create an extra account
 		"""
 		var:name str,,name of space to create
 		var:access list,,list of ids of users which have full access to this space
@@ -25,7 +25,7 @@
 
 	method:update
 	    """
-	    Update a account name
+	    Update an account name
         """
 	    var:accountId int,, id of the account to change
 	    var:name str,, name of the account
@@ -55,3 +55,17 @@
 		"""
         var:accountId int,, id of the account
 		result:dict A json dict
+		
+	method:getCreditBalance
+		"""
+		Get the current available credit
+		"""
+		var:accountId int,, id of the account
+		result:dict A json dict containing the available credit
+		
+	method:getCreditHistory
+		"""
+		Get all the credit transactions (positive and negative) for this account.
+		"""
+		var:accountId int,, id of the account
+		result:[], A json list with the transactions details.
