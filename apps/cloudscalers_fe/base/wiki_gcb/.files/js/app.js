@@ -14,10 +14,12 @@ cloudscalers
         $routeProvider.otherwise({redirectTo: '/list'});
     }])
 
-    // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax.
-    // Use {[]} instead.
-    .config(['$interpolateProvider', function($interpolateProvider) {
+    .config(['$interpolateProvider','$compileProvider', function($interpolateProvider,$compileProvider) {
+        // Angular uses {{}} for data-binding. This operator will conflict with JumpScale macro syntax.
+        // Use {[]} instead.
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
+        //Accept bitcoin and litecoin urls
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|bitcoin|litecoin):/);
     }]);
 
 var cloudscalersServices = angular.module('cloudscalers.services',['ng'])

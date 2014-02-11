@@ -28,7 +28,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             },
@@ -49,7 +49,19 @@ angular.module('cloudscalers.services')
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/deleteUser?accountId=' + account.id + 
                                  '&userId=' + userId)
                     .then(function(result) { return result.data; },
-                          function(result) { return result.data; });
+                          function(reason) { return reason.data; });
+            },
+            getCreditBalance: function(account) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance?accountId=' + account.id).
+                    then(function(result){return result.data;},
+                        function(reason){return $q.reject(reason);}
+                    );
+            },
+            getCreditHistory: function(account) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory?accountId=' + account.id).
+                    then(function(result){return result.data;},
+                        function(reason){return $q.reject(reason);}
+                    );
             }
         };
     });
