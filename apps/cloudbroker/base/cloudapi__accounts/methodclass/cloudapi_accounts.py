@@ -139,7 +139,7 @@ class cloudapi_accounts(object):
         query = {'fields': ['time', 'credit']}
         query['query'] = {'term': {"accountId": accountId}}
         query['size'] = 1
-        query['sort'] = [{ "time" : "desc"}]
+        query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
         results = self.models.creditbalance.find(ujson.dumps(query))['result']
         balance = [res['fields'] for res in results]
         
