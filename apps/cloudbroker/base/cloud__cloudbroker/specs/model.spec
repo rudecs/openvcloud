@@ -49,7 +49,7 @@
     prop:type str,,user or group (U or G)
     prop:right str,,right string now RWD  (depending type of object this action can be anything each type of action represented as 1 letter)
 
-[rootmodel:CreditTransaction]
+[rootmodel:CreditTransaction] @dbtype:osis
 	"""
 	Credit transaction (positive and negative) for an account
 	"""
@@ -62,7 +62,7 @@
 	prop:status str,, status of the transaction
 	prop:comment str,, optional comment
 	
-[rootmodel:CreditBalance]
+[rootmodel:CreditBalance] @dbtype:osis
 	"""
 	Available credit for an account at a specific point in time
 	"""
