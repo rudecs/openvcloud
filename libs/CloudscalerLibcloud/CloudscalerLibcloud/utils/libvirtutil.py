@@ -54,16 +54,16 @@ class LibvirtUtil(object):
         diskfiles = self._get_domain_disk_file_names(domain)
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
             domain.destroy()
-
         for diskfile in diskfiles:
-            vol = self.connection.storageVolLookupByPath(diskfile)
-            diskpool = vol.storagePoolLookupByVolume()
-            vol.delete(0)
-            if diskpool.numOfVolumes() == 0:
-                poolpath = os.path.join(self.basepath, diskpool.name())
-                diskpool.destroy()
-                if os.path.exists(poolpath):
-                    shutil.rmtree(poolpath)
+            if os.path.exists(diskfiles):
+                vol = self.connection.storageVolLookupByPath(diskfile)
+                diskpool = vol.storagePoolLookupByVolume()
+                vol.delete(0)
+                if diskpool.numOfVolumes() == 0:
+                    poolpath = os.path.join(self.basepath, diskpool.name())
+                    diskpool.destroy()
+                    if os.path.exists(poolpath):
+                        shutil.rmtree(poolpath)
         domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
         return True
 
@@ -141,7 +141,19 @@ class LibvirtUtil(object):
             return True
         return False
 
+    def _renameSnapshot(self, id, name, newname):
+        domain = self._get_domain(id)
+        snapshot = domain.snapshotLookupByName(name, 0)
+        xml = snapshot.getXMLDesc()
+        newxml = xml.replace('<name>%s</name>' % name, '<name>%s</name>' % newname)
+        domain.snapshotCreateXML(newxml, (libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_REDEFINE or libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY))
+        snapshot.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        return True
+
     def deleteSnapshot(self, id, name):
+        newname = '%s_%s' % (name, 'DELETING')
+        self._renameSnapshot(id, name, newname)
+        name = newname
         domain = self._get_domain(id)
         snapshot = domain.snapshotLookupByName(name, 0)
         snapshotfiles = self._getSnapshotDisks(id, name)
@@ -155,6 +167,8 @@ class LibvirtUtil(object):
             else:
                 #we can't use blockcommit on topsnapshots
                 new_base = Qcow2(snapshotfile['file'].backing_file_path).backing_file_path
+                if not new_base:
+                    continue
                 print 'Blockrebase from %s' % new_base
                 flags = libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY | libvirt.VIR_DOMAIN_BLOCK_REBASE_REUSE_EXT | libvirt.VIR_DOMAIN_BLOCK_REBASE_SHALLOW
                 result = domain.blockRebase(snapshotfile['name'], new_base, flags)
