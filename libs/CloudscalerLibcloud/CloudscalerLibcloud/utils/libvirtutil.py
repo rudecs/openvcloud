@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 from jinja2 import Environment, PackageLoader
 import os
 import time
+import shutil
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 
 
@@ -62,7 +63,7 @@ class LibvirtUtil(object):
                 poolpath = os.path.join(self.basepath, diskpool.name())
                 diskpool.destroy()
                 if os.path.exists(poolpath):
-                    os.removedirs(poolpath)
+                    shutil.rmtree(poolpath)
         domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
         return True
 
