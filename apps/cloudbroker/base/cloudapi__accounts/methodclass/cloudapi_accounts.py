@@ -140,7 +140,7 @@ class cloudapi_accounts(object):
         query['query'] = {'term': {"accountId": accountId}}
         query['size'] = 1
         query['sort'] = [{ "time" : "desc"}]
-        results = self.models.CreditBalance.find(ujson.dumps(query))['result']
+        results = self.models.creditbalance.find(ujson.dumps(query))['result']
         balance = [res['fields'] for res in results]
         
         return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
@@ -155,6 +155,6 @@ class cloudapi_accounts(object):
         """
         query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
         query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.CreditTransaction.find(ujson.dumps(query))['result']
+        results = self.models.credittransaction.find(ujson.dumps(query))['result']
         history = [res['fields'] for res in results]
         return history
