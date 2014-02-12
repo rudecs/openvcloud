@@ -98,7 +98,7 @@ class CSLibvirtNodeDriver():
     def _execute_agent_job(self, name_, id=None, wait=True, **kwargs):
         if not id:
             role = self.id
-        return self.backendconnection.agentcontroller_client.executeKwargs('cloudscalers', name_, role, wait=wait, kwargs=kwargs)
+        return self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role, wait=wait, args=kwargs)
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
