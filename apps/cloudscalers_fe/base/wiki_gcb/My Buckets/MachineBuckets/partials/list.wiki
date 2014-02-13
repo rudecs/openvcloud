@@ -10,6 +10,9 @@ Machine Buckets are delivered with a basic package of CPU, Memory and Storage. B
 
 h3. Start now and create your Machine Bucket
 
+{{html:
+</div>
+}}
 
 {{html:
   
