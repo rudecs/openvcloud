@@ -11,6 +11,9 @@ class cloudapi_payments(object):
     def __init__(self):
         osiscl = j.core.osis.getClient()
 
+        class Class():
+            pass
+        
         self.models = Class()
         for ns in osiscl.listNamespaceCategories('cryptopayment'):
             self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cryptopayment', ns))
