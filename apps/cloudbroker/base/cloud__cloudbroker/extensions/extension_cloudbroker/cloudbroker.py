@@ -166,7 +166,7 @@ class CloudBroker(object):
             size.referenceId = psize.name
             size.disk = psize.disk * 1024 #we store in MB
             count += 1
-            models.size.set(size.obj2dict())
+            models.size.set(size)
         return count
 
     def getModel(self):

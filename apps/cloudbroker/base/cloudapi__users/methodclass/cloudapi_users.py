@@ -77,7 +77,7 @@ class cloudapi_users(object):
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
-            accountid = self.models.account.set(account.obj2dict())[0]
+            accountid = self.models.account.set(account)[0]
             cs = self.cb.models.cloudspace.new()
             cs.name = 'default'
             cs.accountId = accountid
@@ -85,5 +85,5 @@ class cloudapi_users(object):
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
-            self.models.cloudspace.set(cs.obj2dict())[0]
+            self.models.cloudspace.set(cs)
             return True
