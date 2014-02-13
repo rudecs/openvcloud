@@ -11,6 +11,7 @@ import urlparse
 import json
 import os
 import crypt, random
+import time
 BASEPOOLPATH = '/mnt/vmstor'
 IMAGEPOOL = '/mnt/vmstor'
 
@@ -221,11 +222,13 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-    def ex_snapshot(self, node, name, snapshottype='internal'):
+    def ex_snapshot(self, node, name, snapshottype='external'):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain['XMLDesc'])
         diskfiles = self._get_domain_disk_file_names(xml)
-        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype)
+        t = int(time.time())
+        POOLPATH = '%s/%s' % (BASEPOOLPATH, domain['name'])
+        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype, time=t, poolpath=POOLPATH)
         return self._execute_agent_job('snapshot', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
 
     def ex_listsnapshots(self, node):

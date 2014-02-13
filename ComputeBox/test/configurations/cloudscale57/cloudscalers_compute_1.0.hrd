@@ -15,8 +15,6 @@ cloudscalers.compute.pub_ip=10.240.0.27
 
 cloudscalers.compute.vmstor=/mnt/vmstor
 cloudscalers.compute.isostor=/mnt/isostor
-cloudscalers.compute.backingdevice=/dev/sdb
-cloudscalers.compute.cachedevice=/dev/sdc
 cloudscalers.broker.ip=localhost
 cloudscalers.cloudbroker.host=127.0.0.1
 cloudscalers.cloudbroker.port=80

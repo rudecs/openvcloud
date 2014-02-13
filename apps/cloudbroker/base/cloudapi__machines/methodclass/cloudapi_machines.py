@@ -370,14 +370,13 @@ class cloudapi_machines(object):
         param:machineId id of machine to snapshot
         param:name Optional name to give snapshot
         result int
-
         """
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
         if not modelmachine.status == enums.MachineStatus.HALTED:
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
-            return 'A snapshot can only be taken from a stopped Machine bucket'
+            return 'A snapshot can only be created from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_snapshot(node, name)
@@ -391,6 +390,11 @@ class cloudapi_machines(object):
     @authenticator.auth(acl='C')
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
+        modelmachine = self._getMachine(machineId)
+        if not modelmachine.status == enums.MachineStatus.HALTED:
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'A snapshot can only be removed from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_delete(node, name)

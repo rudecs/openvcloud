@@ -7,7 +7,8 @@
     <disks>
     {% for source in diskfiles %}
     <disk name='{{source}}' snapshot='{{type}}'>
-        </disk>
+        <source file='{{"%s/snapshot_%s_%s.qcow2"|format(poolpath, name, time)}}'/>
+    </disk>
     {% endfor %}
     </disks>
 </domainsnapshot>

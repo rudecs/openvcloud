@@ -119,7 +119,7 @@ class cloudapi_accounts(object):
     @authenticator.auth(acl='A')
     def update(self, accountId, name, **kwargs):
         """
-        Update a account name
+        Update an account name
         param:accountId id of the account to change
         param:name name of the account
         result int
@@ -127,3 +127,34 @@ class cloudapi_accounts(object):
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method update")
+    
+    @authenticator.auth(acl='R')
+    def getCreditBalance(self, accountId, **kwargs):
+        """
+        Get the current available credit
+
+        param:accountId id of the account
+        result:dict A json dict containing the available credit
+        """
+        query = {'fields': ['time', 'credit']}
+        query['query'] = {'term': {"accountId": accountId}}
+        query['size'] = 1
+        query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
+        results = self.models.creditbalance.find(ujson.dumps(query))['result']
+        balance = [res['fields'] for res in results]
+        
+        return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
+    
+    @authenticator.auth(acl='R')
+    def getCreditHistory(self, accountId, **kwargs):
+        """
+        Get all the credit transactions (positive and negative) for this account.
+        
+        param:accountId id of the account
+        result:[] A json list with the transactions details.
+        """
+        query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
+        query['query'] = {'term': {"accountId": accountId}}
+        results = self.models.credittransaction.find(ujson.dumps(query))['result']
+        history = [res['fields'] for res in results]
+        return history
