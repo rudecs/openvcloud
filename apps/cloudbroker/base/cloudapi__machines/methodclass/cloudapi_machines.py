@@ -373,7 +373,7 @@ class cloudapi_machines(object):
         """
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
-        if not modelmachine.status == enums.MachineStatus.HALTED:
+        if not modelmachine.status == enums.MachineStatus.RUNNING:
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
@@ -385,13 +385,18 @@ class cloudapi_machines(object):
     @authenticator.auth(acl='C')
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        return provider.client.ex_listsnapshots(node)
+        snapshots = provider.client.ex_listsnapshots(node)
+        result = []
+        for snapshot in snapshots:
+            if not snapshot['name'].endswith('_DELETING'):
+                result.append(snapshot)
+        return result
 
     @authenticator.auth(acl='C')
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
-        if not modelmachine.status == enums.MachineStatus.HALTED:
+        if not modelmachine.status == enums.MachineStatus.RUNNING:
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be removed from a running Machine bucket'

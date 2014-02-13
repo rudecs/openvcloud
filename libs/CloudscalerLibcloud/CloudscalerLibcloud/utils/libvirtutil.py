@@ -55,8 +55,11 @@ class LibvirtUtil(object):
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
             domain.destroy()
         for diskfile in diskfiles:
-            if os.path.exists(diskfiles):
-                vol = self.connection.storageVolLookupByPath(diskfile)
+            if os.path.exists(diskfile):
+                try:
+                    vol = self.connection.storageVolLookupByPath(diskfile)
+                except:
+                    continue
                 diskpool = vol.storagePoolLookupByVolume()
                 vol.delete(0)
                 if diskpool.numOfVolumes() == 0:
@@ -158,15 +161,18 @@ class LibvirtUtil(object):
         snapshot = domain.snapshotLookupByName(name, 0)
         snapshotfiles = self._getSnapshotDisks(id, name)
         volumes = []
+        todelete = []
         for snapshotfile in snapshotfiles:
             is_root_volume = self._isRootVolume(domain, snapshotfile['file'].path)
             if not is_root_volume:
                 print 'Blockcommit from %s to %s' % (snapshotfile['file'].path, snapshotfile['file'].backing_file_path)
                 result = domain.blockCommit(snapshotfile['name'], snapshotfile['file'].backing_file_path, snapshotfile['file'].path)
+                todelete.append(snapshotfile['file'].path)
                 volumes.append(snapshotfile['name'])
             else:
                 #we can't use blockcommit on topsnapshots
                 new_base = Qcow2(snapshotfile['file'].backing_file_path).backing_file_path
+                todelete.append(snapshotfile['file'].backing_file_path)
                 if not new_base:
                     continue
                 print 'Blockrebase from %s' % new_base
@@ -179,6 +185,9 @@ class LibvirtUtil(object):
 
         #we can undefine the snapshot
         snapshot.delete(flags = libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
+        for disk in todelete:
+            if os.path.exists(disk):
+                os.remove(disk)
         return True
 
     def _block_job_domain_info(self, domain, paths):
