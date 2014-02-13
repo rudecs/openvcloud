@@ -9,7 +9,6 @@ Machine Buckets are ultra fast virtual machines, running at enterprise level SSD
 Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage. You can choose the datacenter location of your Machine Bucket and optionally replicate it to one or more datacenters for failover purposes.
 
 h3. Start now and create your Machine Bucket
-  </div>
 
 
 {{html:

@@ -1,20 +1,19 @@
 @usedefault
+{{html:
 
     <script src="/$$space/.files/lib/noVNC/include/util.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/webutil.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/webutil.js"></script>
     <script src="/$$space/.files/lib/noVNC/include/base64.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/websock.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/des.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/input.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/display.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/jsunzip.js"></script>
-	<script src="/$$space/.files/lib/noVNC/include/rfb.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/websock.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/des.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/input.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/display.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/jsunzip.js"></script>
+    <script src="/$$space/.files/lib/noVNC/include/rfb.js"></script>
 
-{{html:
     <div ng-app="cloudscalers" ng-controller="MachineController">
         <div ng-view></div>
     </div>
-}}
 
     <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
@@ -25,3 +24,4 @@
    
     <script src="/$$space/.files/js/controllers/MachineBuckets/ConsoleController.js" type="text/javascript"></script>
   
+}}
