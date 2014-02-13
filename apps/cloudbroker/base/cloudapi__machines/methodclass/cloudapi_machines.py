@@ -289,11 +289,11 @@ class cloudapi_machines(object):
             return False
 
     def _getStorage(self, machine):
-        if not machine.stackId or machine.stackId == 0:
+        if not machine['stackId']:
             return None
-        provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
-        firstdisk = self.models.disk.get(machine.disks[0])
-        storage = provider.getSize(self.models.size.get(machine.sizeId), firstdisk)
+        provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
+        firstdisk = self.models.disk.get(machine['disks'][0])
+        storage = provider.getSize(self.models.size.get(machine['sizeId']), firstdisk)
         return storage
 
     @authenticator.auth(acl='R')
@@ -306,7 +306,7 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        storage = self._getStorage(machine)
+        storage = self._getStorage(machine.__dict__)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
