@@ -13,9 +13,9 @@ class auth(object):
         return self._models
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):
-        fullacl = self.expandAcl(users, groups, cloudspace['acl'])
-        account = self.models.account.get(cloudspace['accountId'])
-        fullacl.update(self.expandAcl(users, groups, account['acl']))
+        fullacl = self.expandAcl(users, groups, cloudspace.acl)
+        account = self.models.account.get(cloudspace.accountId)
+        fullacl.update(self.expandAcl(users, groups, account.acl))
         return fullacl
 
     def expandAcl(self, user, groups, acl):

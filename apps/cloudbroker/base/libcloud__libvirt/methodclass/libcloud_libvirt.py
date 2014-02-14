@@ -6,8 +6,13 @@ import memcache
 import netaddr
 
 class Models(object):
-    def __init__(self, client, namespace):
-        for category in client.listNamespaceCategories(namespace):
+    def __init__(self, client, namespace, categories):
+        if namespace not in client.listNamespaces():
+            client.createNamespace(namespace, template='modelobjects')
+        osiscats = client.listNamespaceCategories(namespace)
+        for category in categories:
+            if category not in osiscats:
+                client.createNamespaceCategory(namespace, category)
             setattr(self, category, j.core.osis.getClientForCategory(client, namespace, category))
 
 class libcloud_libvirt(object):
@@ -20,16 +25,12 @@ class libcloud_libvirt(object):
 
     def __init__(self):
         self._te={}
-        self.actorname="libvirt"
-        self.appname="libcloud"
         self._client = j.core.osis.getClient(user='root')
         self.cache = memcache.Client(['localhost:11211'])
         self.blobdb = self._getKeyValueStore()
-        self.models = Models(self._client, self.actorname)
+        self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc'])
 
     def _getKeyValueStore(self):
-        print self.NAMESPACE
-        print self.CATEGORY
         if self.NAMESPACE not in self._client.listNamespaces():
             self._client.createNamespace(self.NAMESPACE, template='blob')
         if self.CATEGORY not in self._client.listNamespaceCategories(self.NAMESPACE):
@@ -47,14 +48,14 @@ class libcloud_libvirt(object):
         if resourceid:
             images = []
             try:
-                rp = self.models.resourceprovider.get(resourceid)
+                rp = self._models.resourceprovider.get(resourceid)
             except:
                 return []
             for i in rp.images:
-                images.append(self.image.get(i).__dict__)
-            return images.__dict__
+                images.append(self._models.image.get(i).__dict__)
+            return images
         query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'extra']}
-        results = self.cb.model_image_find(ujson.dumps(query))['result']
+        results = self._models.image.search(query)['result']
         images = [res['fields'] for res in results]
         return images
 
@@ -64,7 +65,7 @@ class libcloud_libvirt(object):
         result
         """
         query = {'fields': ['id', 'name', 'vcpus', 'memory', 'disk']}
-        results = self.models.size.search(query)['result']
+        results = self._models.size.search(query)['result']
         sizes = [res['fields'] for res in results]
         return sizes
 
@@ -136,11 +137,11 @@ class libcloud_libvirt(object):
        result str
        """
        ipaddress = self.getFreeIpaddress()
-       node = self.models.node.new()
+       node = self._models.node.new()
        node.id = id
        node.ipaddress = ipaddress
        node.macaddress = macaddress
-       self.modles.node.set(node)
+       self._models.node.set(node)
        return ipaddress
 
     def unregisterNode(self, id, **kwargs):
@@ -149,9 +150,9 @@ class libcloud_libvirt(object):
         param:id id of the node to unregister
         result bool
         """
-        node = self.models.node.get(id)
+        node = self._models.node.get(id)
         self.releaseIpaddress(node.ipaddress)
-        self.models.node.delete(id)
+        self._models.node.delete(id)
         return True
 
     def listNodes(self, **kwargs):
@@ -161,7 +162,7 @@ class libcloud_libvirt(object):
 
         """
         query = {'fields': ['id', 'ipaddress', 'macaddress']}
-        results = self.models.node.search(query)['result']
+        results = self._models.node.search(query)['result']
         nodes = {}
         for res in results:
             node = {'ipaddress': res['fields'].get('ipaddress')}
@@ -170,7 +171,7 @@ class libcloud_libvirt(object):
 
     def listResourceProviders(self, **kwargs):
         query = {'fields': ['id', 'cloudUnitType', 'images']}
-        results = self.modles.resourceprovider.search(query)['result']
+        results = self._models.resourceprovider.search(query)['result']
         nodes = {}
         for res in results:
             node = {'cloudunittype': res['fields']['cloudUnitType']}
@@ -185,12 +186,12 @@ class libcloud_libvirt(object):
         param:resourceprovider unique id of the resourceprovider
         result bool
         """
-        res = self.modles.resourceprovider.get(resourceprovider)
+        res = self._models.resourceprovider.get(resourceprovider)
         try:
             res.images.remove(imageid)
         except ValueError:
             pass
-        self.models.resourceprovider.set(res)
+        self._models.resourceprovider.set(res)
         return True
 
     def linkImage(self, imageid, resourceprovider, **kwargs):
@@ -200,18 +201,18 @@ class libcloud_libvirt(object):
         param:resourceprovider unique id of the resourceprovider
         result bool
         """
-        res = self.modles.resourceprovider.get(resourceprovider)
+        res = self._models.resourceprovider.get(resourceprovider)
         if not res.images:
             res.images = []
         res.images.append(imageid)
         print res
-        self.models.resourceprovider.set(res)
+        self._models.resourceprovider.set(res)
         return True
 
     def registerVNC(self, url, **kwargs):
-        vnc = self.models.vnc.new()
+        vnc = self._models.vnc.new()
         vnc.url = url
-        return self.models.vnc.set(vnc)
+        return self._models.vnc.set(vnc)
 
     def retreiveInfo(self, key, reset=False, **kwargs):
         """
@@ -242,6 +243,6 @@ class libcloud_libvirt(object):
         result 
         """
         query = {'fields': ['url']}
-        results = self.modles.vnc.search(query)['result']
+        results = self._models.vnc.search(query)['result']
         return [res['fields']['url'] for res in results]
 

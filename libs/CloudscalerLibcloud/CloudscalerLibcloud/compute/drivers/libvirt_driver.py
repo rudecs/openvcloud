@@ -83,7 +83,7 @@ class CSLibvirtNodeDriver():
 
     def _to_image(self, image):
         username = None
-        if image['extra']:
+        if image.get('extra'):
             extra = json.loads(image['extra'])
             if 'username' in extra:
                 username = extra['username']
