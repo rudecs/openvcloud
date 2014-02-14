@@ -2,3 +2,5 @@
     """
     Actor for common cryptopayment actions
     """
+    
+    
