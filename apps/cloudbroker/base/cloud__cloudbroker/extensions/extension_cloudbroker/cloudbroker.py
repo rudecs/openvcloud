@@ -128,7 +128,7 @@ class CloudBroker(object):
         provider = CloudProvider(stackId)
         count = 0
         stack = models.stack.get(stackId)
-        stack['images'] = []
+        stack.images = []
         for pimage in provider.client.list_images():
             imageid = self.getIdByReferenceId('image', pimage.id)
             if not imageid:
@@ -147,8 +147,8 @@ class CloudBroker(object):
                 image['username'] = pimage.extra['username']
             count += 1
             imageid = models.image.set(image)[0]
-            if not imageid in stack['images']:
-                stack['images'].append(imageid)
+            if not imageid in stack.images:
+                stack.images.append(imageid)
                 models.stack.set(stack)
         return count
 
