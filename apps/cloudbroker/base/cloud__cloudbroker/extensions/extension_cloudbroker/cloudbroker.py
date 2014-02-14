@@ -32,22 +32,22 @@ class CloudProvider(object):
     def __init__(self, stackId):
         if stackId not in CloudProvider._providers:
             stack = models.stack.get(stackId)
-            providertype = getattr(Provider, stack['type'])
+            providertype = getattr(Provider, stack.type)
             kwargs = dict()
-            if stack['type'] == 'OPENSTACK':
+            if stack.type == 'OPENSTACK':
                 DriverClass = get_driver(providertype)
-                args = [ stack['login'], stack['passwd']]
-                kwargs['ex_force_auth_url'] = stack['apiUrl']
+                args = [ stack.login, stack.passwd]
+                kwargs['ex_force_auth_url'] = stack.apiUrl
                 kwargs['ex_force_auth_version'] = '2.0_password'
-                kwargs['ex_tenant_name'] = stack['login']
+                kwargs['ex_tenant_name'] = stack.login
                 self.client = CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
-            if stack['type'] == 'DUMMY':
+            if stack.type == 'DUMMY':
                 DriverClass = get_driver(providertype)
                 args = [1,]
                 CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
-            if stack['type'] == 'LIBVIRT':
-                kwargs['id'] = stack['referenceId']
-                kwargs['uri'] = stack['apiUrl']
+            if stack.type == 'LIBVIRT':
+                kwargs['id'] = stack.referenceId
+                kwargs['uri'] = stack.apiUrl
                 CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
                 cb = CloudBrokerConnection()
                 CloudProvider._providers[stackId].set_backend(cb)
@@ -57,14 +57,14 @@ class CloudProvider(object):
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
         for s in providersizes:
-             if s.ram == brokersize['memory'] and firstdisk['sizeMax'] == s.disk:
+             if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk:
                 return s
         return None
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
         for image in self.client.list_images():
-            if image.id == iimage['referenceId']:
+            if image.id == iimage.referenceId:
                 return image, image
 
 

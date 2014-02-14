@@ -172,8 +172,8 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        if 'username' in image and image['username']:
-            account.login = image['username']
+        if hasattr(image, 'username') and image.username:
+            account.login = image.username
         else:
             account.login = 'cloudscalers'
         length = 6
