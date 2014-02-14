@@ -12,6 +12,7 @@ class LibvirtUtil(object):
         self.connection = libvirt.open()
         self.readonly = libvirt.openReadOnly()
         self.basepath = '/mnt/vmstor'
+        self.templatepath = '/mnt/vmstor/templates'
         self.env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
@@ -101,8 +102,6 @@ class LibvirtUtil(object):
             if machinestate == libvirt.VIR_DOMAIN_RUNNING:
                 totalrunningmax += maxmem/1000
         return (hostmem, totalmax, totalrunningmax)
-
-
 
     def check_machine(self, machinexml):
         xml = ElementTree.fromstring(machinexml)
@@ -228,6 +227,32 @@ class LibvirtUtil(object):
                 os.remove(snapshotfile['file'].path)
             snapshot.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)      
         return True
+
+    def _clone(self, id, name, clonefrom):
+        domain = self.connection.lookupByUUIDString(id)
+        domainconfig = domain.XMLDesc()
+        destination_path = os.path.join(self.templatepath, name)
+        if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED, libvirt.VIR_DOMAIN_PAUSED] or not self._isRootVolume(domain, clonefrom):
+            q2 = Qcow2(clonefrom)
+            q2.export(destination_path)
+        else:
+            domain.undefine()
+            try:
+                domain.blockRebase(clonefrom, destination_path, 0, libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY)
+                rebasedone = False
+                while not rebasedone:
+                    rebasedone = self._block_job_info(domain, clonefrom)
+                domain.blockJobAbort(clonefrom, 0)
+            except:
+                self.connection.defineXML(domainconfig)
+                raise
+            self.connection.defineXML(domainconfig)
+        return destination_path
+
+
+    def exportToTemplate(self, id, name, clonefrom):
+        destination_path = self._clone(id, name, clonefrom)
+        return destination_path
 
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)

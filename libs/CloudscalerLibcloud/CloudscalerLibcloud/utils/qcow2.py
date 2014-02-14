@@ -1,6 +1,7 @@
 import sys
 import struct
 import os
+import subprocess
 
 
 class Qcow2():  
@@ -31,8 +32,8 @@ class Qcow2():
         self.backing_file_path = self._read_data(filename, self.backing_file_size, self.backing_file_offset)
 
     def _read_data(self, filename, size, offset=0):
+        f = open(filename, 'r')
         try:
-            f = open(filename, 'r')
             f.seek(offset)
             data = f.read(size)
             f.close()
@@ -41,6 +42,18 @@ class Qcow2():
             f.close()
             raise 'A error occured during reading of the file'
 
+    def export(self, destination, outputtype='qcow2'):
+            subprocess.check_call(
+                    args=[
+                        'qemu-img',
+                        'convert',
+                        '-p',
+                        '-O',
+                         outputtype,
+                         self.path,
+                         destination,
+                        ]
+                   )
 
     def get_parents(self):
         """
