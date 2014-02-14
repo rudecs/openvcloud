@@ -256,7 +256,7 @@ class cloudapi_machines(object):
 
         """
         vmachinemodel = self.models.vmachine.get(machineId)
-        vmachinemodel['status'] = 'DESTROYED'
+        vmachinemodel.status = 'DESTROYED'
         self.models.vmachine.set(vmachinemodel)
         provider, node = self._getProviderAndNode(machineId)
         if provider:
