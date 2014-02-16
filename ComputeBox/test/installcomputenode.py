@@ -33,6 +33,7 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
 
     run('jpackage install --name grid_master')
     run('jpackage install --name grid_node')
+    run('jpackage install --name agent')
 
     run('jpackage install --name computenode')
     print 'Installed the compute node! Start installing cloudbroker'
