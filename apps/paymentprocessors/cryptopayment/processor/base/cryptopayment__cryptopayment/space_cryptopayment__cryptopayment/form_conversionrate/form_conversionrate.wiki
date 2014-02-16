@@ -1,0 +1,5 @@
+
+h2. conversionrate
+
+{{form_cryptopayment_conversionrate}}
+

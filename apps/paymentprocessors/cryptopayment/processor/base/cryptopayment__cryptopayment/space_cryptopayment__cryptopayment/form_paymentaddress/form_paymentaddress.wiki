@@ -1,0 +1,5 @@
+
+h2. paymentaddress
+
+{{form_cryptopayment_paymentaddress}}
+
