@@ -4,6 +4,6 @@ def main(q, args, params, actor, tags, te):
     machine.descr = args['description']
     machine.name = args['name']
     machine.nrCU = args['nrCU']
-    params.result = actor.model_vmachine_set(machine.obj2dict())
+    params.result = actor.model_vmachine_set(machine)
     return params
 

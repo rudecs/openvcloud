@@ -13,14 +13,6 @@
 	    var:username str,,username to validate
 	    var:password str,,password to validate
 	    result:str,,session key.
-	
-	method:get
-	    """
-	    Get information of a existing username based on username id
-	    """
-        var:username str,,username of the user
-        result:dict,,user information.
-	    
 
 	method:register @noauth
 	    """
@@ -30,3 +22,10 @@
 	    var:emailaddress str,,unique emailaddress for the account
 	    var:password str,,unique password for the account
 	    result:bool
+
+	method:get
+	    """
+	    Get information of a existing username based on username id
+	    """
+        var:username str,,username of the user
+        result:dict,,user information.

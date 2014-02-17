@@ -47,8 +47,8 @@ def main(j,jp):
         rp['images'] = [image_id]
     else:
         rp = catresourceclient.get(id)
-        if not image_id in rp['images']:
-            rp['images'].append(image_id)
+        if not image_id in rp.images:
+            rp.images.append(image_id)
     catresourceclient.set(rp)
 
 

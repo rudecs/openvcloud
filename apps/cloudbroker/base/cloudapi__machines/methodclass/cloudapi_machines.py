@@ -23,7 +23,7 @@ class cloudapi_machines(object):
         self._models = None
         j.logger.setLogTargetLogForwarder()
 
-        self.osisclient = j.core.osis.getClient()
+        self.osisclient = j.core.osis.getClient(user='root')
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
 
     @property
@@ -172,8 +172,8 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        if 'username' in image and image['username']:
-            account.login = image['username']
+        if hasattr(image, 'username') and image.username:
+            account.login = image.username
         else:
             account.login = 'cloudscalers'
         length = 6
@@ -224,10 +224,9 @@ class cloudapi_machines(object):
         for ipaddress in node.public_ips:
             nic = machine.new_nic()
             nic.ipAddress = ipaddress
-        self.models.vmachine.set(machine.obj2dict())
+        self.models.vmachine.set(machine)
 
-        cloudspace = self.cb.models.cloudspace.new()
-        cloudspace.dict2obj(self.models.cloudspace.get(machine.cloudspaceId))
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         cloudspace.resourceProviderStacks.append(stackId)
         self.models.cloudspace.set(cloudspace)
 
@@ -257,7 +256,7 @@ class cloudapi_machines(object):
 
         """
         vmachinemodel = self.models.vmachine.get(machineId)
-        vmachinemodel['status'] = 'DESTROYED'
+        vmachinemodel.status = 'DESTROYED'
         self.models.vmachine.set(vmachinemodel)
         provider, node = self._getProviderAndNode(machineId)
         if provider:
@@ -290,7 +289,7 @@ class cloudapi_machines(object):
             return False
 
     def _getStorage(self, machine):
-        if not machine['stackId'] or machine['stackId'] == 0:
+        if not machine['stackId']:
             return None
         provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
         firstdisk = self.models.disk.get(machine['disks'][0])
@@ -307,11 +306,11 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        storage = self._getStorage(machine)
-        return {'id': machine['id'], 'cloudspaceid': machine['cloudspaceId'],
-                'name': machine['name'], 'hostname': machine['hostName'],
-                'status': machine['status'], 'imageid': machine['imageId'], 'sizeid': machine['sizeId'],
-                'interfaces': machine['nics'], 'storage': storage.disk, 'accounts': machine['accounts']}
+        storage = self._getStorage(machine.__dict__)
+        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
+                'name': machine.name, 'hostname': machine.hostName,
+                'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
+                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """
@@ -352,9 +351,7 @@ class cloudapi_machines(object):
         return machines
 
     def _getMachine(self, machineId):
-        machine = self.cb.models.vmachine.new()
-        machine.dict2obj(self.models.vmachine.get(machineId))
-        return machine
+        return self.models.vmachine.get(machineId)
 
     def _getNode(self, referenceId):
         return self.cb.extensions.imp.Dummy(id=referenceId)
@@ -484,8 +481,7 @@ class cloudapi_machines(object):
         clone.cloneReference = machine.id
 
         for diskId in machine.disks:
-            origdisk = self.cb.models.disk.new()
-            origdisk.dict2obj(self.models.disk.get(diskId))
+            origdisk = self.models.disk.get(diskId)
             clonedisk = self.cb.models.disk.new()
             clonedisk.name = origdisk.name
             clonedisk.descr = origdisk.descr

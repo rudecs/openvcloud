@@ -48,7 +48,7 @@ class CloudBrokerConnection():
          self.environmentid = hrd.get('cloudscalers.environmentid')
          self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
-         self.agentcontroller_client = j.clients.agentcontroller
+         self.agentcontroller_client = j.clients.agentcontroller.get()
 
 
      def _getKeyValueStore(self):

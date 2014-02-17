@@ -13,7 +13,7 @@ cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 
 
-osiscl = j.core.osis.getClient()
+osiscl = j.core.osis.getClient(user='root')
 
 models = Class()
 for ns in osiscl.listNamespaceCategories('cloudbroker'):
@@ -32,22 +32,22 @@ class CloudProvider(object):
     def __init__(self, stackId):
         if stackId not in CloudProvider._providers:
             stack = models.stack.get(stackId)
-            providertype = getattr(Provider, stack['type'])
+            providertype = getattr(Provider, stack.type)
             kwargs = dict()
-            if stack['type'] == 'OPENSTACK':
+            if stack.type == 'OPENSTACK':
                 DriverClass = get_driver(providertype)
-                args = [ stack['login'], stack['passwd']]
-                kwargs['ex_force_auth_url'] = stack['apiUrl']
+                args = [ stack.login, stack.passwd]
+                kwargs['ex_force_auth_url'] = stack.apiUrl
                 kwargs['ex_force_auth_version'] = '2.0_password'
-                kwargs['ex_tenant_name'] = stack['login']
+                kwargs['ex_tenant_name'] = stack.login
                 self.client = CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
-            if stack['type'] == 'DUMMY':
+            if stack.type == 'DUMMY':
                 DriverClass = get_driver(providertype)
                 args = [1,]
                 CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
-            if stack['type'] == 'LIBVIRT':
-                kwargs['id'] = stack['referenceId']
-                kwargs['uri'] = stack['apiUrl']
+            if stack.type == 'LIBVIRT':
+                kwargs['id'] = stack.referenceId
+                kwargs['uri'] = stack.apiUrl
                 CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
                 cb = CloudBrokerConnection()
                 CloudProvider._providers[stackId].set_backend(cb)
@@ -57,14 +57,14 @@ class CloudProvider(object):
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
         for s in providersizes:
-             if s.ram == brokersize['memory'] and firstdisk['sizeMax'] == s.disk:
+             if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk:
                 return s
         return None
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
         for image in self.client.list_images():
-            if image.id == iimage['referenceId']:
+            if image.id == iimage.referenceId:
                 return image, image
 
 
@@ -128,7 +128,7 @@ class CloudBroker(object):
         provider = CloudProvider(stackId)
         count = 0
         stack = models.stack.get(stackId)
-        stack['images'] = []
+        stack.images = []
         for pimage in provider.client.list_images():
             imageid = self.getIdByReferenceId('image', pimage.id)
             if not imageid:
@@ -147,8 +147,8 @@ class CloudBroker(object):
                 image['username'] = pimage.extra['username']
             count += 1
             imageid = models.image.set(image)[0]
-            if not imageid in stack['images']:
-                stack['images'].append(imageid)
+            if not imageid in stack.images:
+                stack.images.append(imageid)
                 models.stack.set(stack)
         return count
 
@@ -166,7 +166,7 @@ class CloudBroker(object):
             size.referenceId = psize.name
             size.disk = psize.disk * 1024 #we store in MB
             count += 1
-            models.size.set(size.obj2dict())
+            models.size.set(size)
         return count
 
     def getModel(self):
