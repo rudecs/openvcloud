@@ -19,6 +19,6 @@
 	"""
 	Last processed block.
 	"""
-	prop:blocktime int,, time from which this rate is valid
+	prop:blocktime int,, blocktime
 	prop:hash str,, hash
 	prop:coin str,,
