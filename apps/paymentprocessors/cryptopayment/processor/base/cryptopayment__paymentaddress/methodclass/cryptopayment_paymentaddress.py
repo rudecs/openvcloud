@@ -10,10 +10,16 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         self._te={}
         self.actorname="paymentaddress"
         self.appname="cryptopayment"
-        #cryptopayment_paymentaddress_osis.__init__(self)
-    
+        
+        osiscl = j.core.osis.getClient()
 
-        pass
+        class Class():
+            pass
+        
+        self.models = Class()
+        for ns in osiscl.listNamespaceCategories('cryptopayment'):
+            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cryptopayment', ns))
+            self.models.__dict__[ns].find = self.models.__dict__[ns].search
 
     def create(self, address, currency, **kwargs):
         """
@@ -22,9 +28,40 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         param:address address
         param:currency code of the cryptocurrency (LTC or BTC)
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method create")
+        existingAddress = self.models.paymentaddress.get(address)
+        if (not existingAddress is None):
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'Address already registered'
+        
+        newAddress = self.models.paymentAddress.new()
+        newAddress.id = address
+        newAddress.currency = currency
+        newAddress.accountId = ''
+        #TODO: add to wallet
+        self.models.paymentaddress.set(newAddress)
     
+    def _assignAddressToAccount(self,accountId, currency):
+        query = {'fields': ['id', 'coin', 'accountId']}
+        query['query'] = {'term': {"accountId": '', "currency":currency}}
+        query['size'] = 100
+        results = self.models.paymentAddress.find(ujson.dumps(query))['result']
+        addresses = [res['fields'] for res in results]
+        assignedAddress = None
+        for address in addresses:
+            addressCandidate = self.models.paymentAddress.get(address.address)
+            if not addressCandidate.accountId == '':
+                continue
+            addressCandidate.accountId = accountId
+            self.models.paymentAddress.set(addressCandidate)
+            #validate it is indeed assigned to this accountId
+            addressCandidate = self.models.paymentAddress.get(address.address)
+            if not addressCandidate.accountId == accountId:
+                continue
+            
+            assignedAddress = addressCandidate
+        
+        return addressCandidate
 
     def getAddressForAccount(self, accountId, currency, **kwargs):
         """
@@ -33,6 +70,20 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         param:currency code of the cryptocurrency (LTC or BTC)
         result dict,,
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getAddressForAccount")
+        query = {'fields': ['id', 'coin', 'accountId']}
+        query['query'] = {'term': {"accountId": accountId, "currency":currency}}
+        query['size'] = 1
+        results = self.models.paymentAddress.find(ujson.dumps(query))['result']
+        addresses = [res['fields'] for res in results]
+        if len(addresses) == 0:
+            address = self._assignAddressToAccount(accountId, currency)
+        else:
+            address = addresses[0]
+        if address is None:
+            ctx = kwargs['ctx']
+            ctx.start_response("503 Service Unavailable", [])
+            return 'Temporarily unavailable'
+        
+        return address
+        
     
