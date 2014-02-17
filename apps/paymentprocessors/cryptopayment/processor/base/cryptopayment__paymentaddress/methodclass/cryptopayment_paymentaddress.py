@@ -39,17 +39,17 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         query = {'fields': ['id', 'coin', 'accountId']}
         query['query'] = {'term': {"accountId": '', "currency":currency}}
         query['size'] = 100
-        results = self.models.paymentAddress.find(ujson.dumps(query))['result']
+        results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
         assignedAddress = None
         for address in addresses:
-            addressCandidate = self.models.paymentAddress.get(address.address)
+            addressCandidate = self.models.paymentaddress.get(address.address)
             if not addressCandidate.accountId == '':
                 continue
             addressCandidate.accountId = accountId
-            self.models.paymentAddress.set(addressCandidate)
+            self.models.paymentaddress.set(addressCandidate)
             #validate it is indeed assigned to this accountId
-            addressCandidate = self.models.paymentAddress.get(address.address)
+            addressCandidate = self.models.paymentaddress.get(address.address)
             if not addressCandidate.accountId == accountId:
                 continue
             
@@ -67,7 +67,7 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         query = {'fields': ['id', 'coin', 'accountId']}
         query['query'] = {'term': {"accountId": accountId, "currency":currency}}
         query['size'] = 1
-        results = self.models.paymentAddress.find(ujson.dumps(query))['result']
+        results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
         if len(addresses) == 0:
             address = self._assignAddressToAccount(accountId, currency)
