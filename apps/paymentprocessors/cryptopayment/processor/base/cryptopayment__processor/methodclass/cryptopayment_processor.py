@@ -11,6 +11,3 @@ class cryptopayment_processor(j.code.classGetBase()):
         self.actorname="processor"
         self.appname="cryptopayment"
         #cryptopayment_processor_osis.__init__(self)
-    
-
-        pass

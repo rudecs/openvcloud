@@ -28,12 +28,6 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         param:address address
         param:currency code of the cryptocurrency (LTC or BTC)
         """
-        existingAddress = self.models.paymentaddress.get(address)
-        if (not existingAddress is None):
-            ctx = kwargs['ctx']
-            ctx.start_response('409 Conflict', [])
-            return 'Address already registered'
-        
         newAddress = self.models.paymentAddress.new()
         newAddress.id = address
         newAddress.currency = currency
