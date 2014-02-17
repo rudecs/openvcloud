@@ -34,8 +34,8 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             fullacl = set()
             if self.acl:
-                user = j.core.portal.active.auth.getUserInfo(user)
-                groups = user.groups
+                userobj = j.core.portal.active.auth.getUserInfo(user)
+                groups = userobj.groups
                 # add brokeradmin access
                 if 'admin' in groups:
                     return func(*args, **kwargs)
@@ -45,17 +45,17 @@ class auth(object):
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
                     machine = self.models.vmachine.get(kwargs['machineId'])
-                    cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
+                    cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:
                     fullacl.update('CXDRU')
                 if cloudspace and not self.acl.issubset(fullacl):
                     ctx.start_response('403 No ace rule found for user %s for access %s' % (user, ''.join(self.acl)), [])
-                    return
+                    return ''
                 elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
                     ctx.start_response('403 Method requires admin privileges', [])
-                    return
+                    return ''
 
             return func(*args, **kwargs)
         return wrapper

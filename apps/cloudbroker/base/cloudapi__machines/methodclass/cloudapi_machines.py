@@ -426,7 +426,7 @@ class cloudapi_machines(object):
         """
         machine = self._getMachine(machineId)
         if name:
-            if not self._assertName(cloudspaceId, name, **kwargs):
+            if not self._assertName(machine.cloudspaceId, name, **kwargs):
                 ctx = kwargs['ctx']
                 ctx.start_response('409 Conflict', [])
                 return 'Selected name already exists'
