@@ -11,12 +11,3 @@
         var:address str,, address
         var:currency str,, code of the cryptocurrency (LTC or BTC)
         
-    method:getAddressForAccount
-    	"""
-    	Gets the address assigned to an account, if there is none registered, assign it to the account passed before returning it.
-    	"""
-    	var:accountId int,, account
-    	var:currency str,, code of the cryptocurrency (LTC or BTC)
-    	result:dict,, A json dict containing the address, currency and account
-	
-		
