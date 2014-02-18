@@ -1,5 +1,6 @@
 from JumpScale import j
 import bitcoinrpc
+import ujson
 
 class cryptopayment_processor(j.code.classGetBase()):
     """
@@ -38,19 +39,19 @@ class cryptopayment_processor(j.code.classGetBase()):
             con = None
         return con
         
-    def _get_last_processed_block(coin):
+    def _get_last_processed_block(self, currency):
         query = {'fields': ['coin', 'hash', 'blocktime']}
-        query['query'] = {'term': {"accountId": accountId, "currency":currency}}
+        query['query'] = {'term': {"currency":currency}}
         query['size'] = 1
         query['sort'] = [{ "blocktime" : {'order':'desc', 'ignore_unmapped' : True}}]
         results = self.models.processedblock.find(ujson.dumps(query))['result']
         processedblocks = [res['fields'] for res in results]
-        if len(result) > 0:
+        if len(processedblocks) > 0:
             return processedblocks[0]
         else:
             return ''
         
-    def _getNetworkTransactionsSince(coin, block_hash):
+    def _getNetworkTransactionsSince(self, coin, block_hash):
         con = self._get_wallet_connection(coin)
         rawtransactions = con.listsinceblock(block_hash)
         transactions = [{'txid':t.txid,'address':t.address,'amount':t.amount,'time':t.time,'timereceived':t.timereceived,'confirmations':t.confirmations} for t in rawtransactions['transactions'] if t.category == 'receive']
@@ -86,24 +87,24 @@ class cryptopayment_processor(j.code.classGetBase()):
         else:
             return None
     
-    def process(self, coin, **kwargs):
+    def process(self, currency, **kwargs):
         """
         Process the transactions for a given currency (should become jumpscript)
         
         param:coin code of the currency to process transactions from (LTC and BTC currently supported)
         """
-        block_hash = self._get_last_processed_block(coin)
-        response = self._getNetworkTransactionsSince(coin, block_hash)
+        block_hash = self._get_last_processed_block(currency)
+        response = self._getNetworkTransactionsSince(currency, block_hash)
         
         processedblock = self.models.processedblock.new()
-        processedblock.coin = coin
+        processedblock.coin = currency
         processedblock.hash = response['lastblock']
         processedblock.time = response['time']
         
         networktransactions = response['transactions']
         
         for networktransaction in networktransactions:
-            creditTransaction = self._get_credit_transaction(coin, networktransaction['txid'])
+            creditTransaction = self._get_credit_transaction(currency, networktransaction['txid'])
             if creditTransaction is None:
                 account = self._getAddressForAccount(networktransaction['address'])
                 if account is None: #A transaction in the wallet but not an account assigned on the address yet
@@ -112,12 +113,12 @@ class cryptopayment_processor(j.code.classGetBase()):
                 transaction = self.cloudbrokermodels.credittransaction.new()
                 transaction.accountId = account
                 transaction.time = networktransaction['time']
-                transaction.currency = coin
+                transaction.currency = currency
                 transaction.amount = float(networktransaction['amount'])
                 transaction.comment = 'Credit'
                 transaction.reference = networktransaction['txid']                                                                          
                                 
-                transaction.credit = transaction['amount'] * self._getValueForCurrency(coin, transaction.time)
+                transaction.credit = transaction['amount'] * self._getValueForCurrency(currency, transaction.time)
                 transaction.status = 'PROCESSED' if (networktransaction['confirmations'] > 0) else 'UNCONFIRMED'
                 self.cloudbrokermodels.credittransaction.set(credittransaction)
             else:
