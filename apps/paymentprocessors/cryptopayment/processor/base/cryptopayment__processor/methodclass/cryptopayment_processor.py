@@ -57,6 +57,17 @@ class cryptopayment_processor(j.code.classGetBase()):
         transactions = [{'txid':t.txid,'address':t.address,'amount':t.amount,'time':t.time,'timereceived':t.timereceived,'confirmations':t.confirmations} for t in rawtransactions['transactions'] if t.category == 'receive']
         return {'lastblock':rawtransactions['lastblock'],'transactions':transactions}
     
+    def _set_last_processed_block(self, currency, block_hash):
+        con = self._get_wallet_connection(currency)
+        block_info = con.getblock(block_hash)
+        
+        processedblock = self.models.processedblock.new()
+        processedblock.coin = currency
+        processedblock.hash = last_processed_block_hash
+        processedblock.time = block_info.time
+        
+        self.models.processedblock.set(processedblock)
+    
     def _get_credit_transaction(self, coin, reference):
         query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
         query['query'] = {'term': {"currency": coin, 'reference':reference}}
@@ -95,11 +106,8 @@ class cryptopayment_processor(j.code.classGetBase()):
         """
         block_hash = self._get_last_processed_block(currency)
         response = self._getNetworkTransactionsSince(currency, block_hash)
+        last_processed_block_hash = response['lastblock']
         
-        processedblock = self.models.processedblock.new()
-        processedblock.coin = currency
-        processedblock.hash = response['lastblock']
-        processedblock.time = response['time']
         
         networktransactions = response['transactions']
         
@@ -126,4 +134,4 @@ class cryptopayment_processor(j.code.classGetBase()):
                     creditTransaction.status = 'PROCESSED'
                     self.cloudbrokermodels.credittransaction.set(credittransaction)
                     
-        self.models.processedblock.set(processedblock)
+        self._set_last_processed_block(currency, last_processed_block_hash)
