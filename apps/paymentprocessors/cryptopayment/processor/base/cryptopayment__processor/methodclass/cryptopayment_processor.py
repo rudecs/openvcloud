@@ -13,7 +13,7 @@ class cryptopayment_processor(j.code.classGetBase()):
         self.appname="cryptopayment"
         #cryptopayment_processor_osis.__init__(self)
 
-        osiscl = j.core.osis.getClient()
+        osiscl = j.core.osis.getClient(user='root')
 
         class Class():
             pass
