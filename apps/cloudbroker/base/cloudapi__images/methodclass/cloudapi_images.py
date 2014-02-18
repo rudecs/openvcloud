@@ -36,3 +36,15 @@ class cloudapi_images(object):
         results = self.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         return images
+
+    def delete(self, imageid, **kwargs):
+        """
+        Delete a image, you need to have Write access on the image
+        param:imageid id of the image to delete
+        result 
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method delete")
+
+
+ 

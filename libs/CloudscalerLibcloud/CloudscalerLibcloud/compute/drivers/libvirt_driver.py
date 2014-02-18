@@ -12,8 +12,8 @@ import json
 import os
 import crypt, random
 import time
-BASEPOOLPATH = '/mnt/vmstor'
-IMAGEPOOL = '/mnt/vmstor'
+BASEPOOLPATH = '/mnt/vmstor/'
+IMAGEPOOL = '/mnt/vmstor/templates'
 
 
 
@@ -221,6 +221,11 @@ class CSLibvirtNodeDriver():
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
+
+    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+        domain = self._get_domain_for_node(node=node)
+        self._execute_agent_job('createtemplate', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
+        return True
 
     def ex_snapshot(self, node, name, snapshottype='external'):
         domain = self._get_domain_for_node(node=node)

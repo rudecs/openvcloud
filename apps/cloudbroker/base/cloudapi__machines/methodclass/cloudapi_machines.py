@@ -106,6 +106,29 @@ class cloudapi_machines(object):
         self.models.vmachine.set(machine)
         return diskid
 
+
+    def createTemplate(self, machineId, templatename, basename, **kwargs):
+        """
+        Creates a template from the active machine
+        param:machineId id of the machine
+        param:templatename name of the template
+        param:basename Snapshot id on which the template is based
+        result str
+        """
+        machine = self._getMachine(machineId)
+        node = self._getNode(machine.referenceId)
+        provider = self._getProvider(machine)
+        image = self.cb.models.image.new()
+        image.name = templatename
+        image.referenceId = "" 
+        image.type = 'custom templates'
+        image.size = self._getStorage(self.models.vmachine.get(machineId)).id
+        image.username = ""
+        image.status = 'CREATING'
+        imageid = self.models.image.set(image)[0]
+        provider.client.ex_createTemplate(node, templatename, imageid, basename)
+        return imageid 
+
     @authenticator.auth(acl='C')
     def backup(self, machineId, backupName, **kwargs):
         """

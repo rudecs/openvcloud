@@ -5,6 +5,7 @@ import os
 import time
 import shutil
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
+from JumpScale import j
 
 
 class LibvirtUtil(object):
@@ -250,9 +251,27 @@ class LibvirtUtil(object):
         return destination_path
 
 
+    def _getImageId(self, path):
+        return j.tools.hash.sha1(path)
+
     def exportToTemplate(self, id, name, clonefrom):
+        domain = self.connection.lookupByUUIDString(id)
+        if not clonefrom:
+            domaindisks = self._getDomainDiskFiles(domain)
+            if len(domaindisks) > 0:
+                clonefrom = domaindisks[0]
+            else:
+                raise Exception('Node image found for this machine')
+        else:
+            snapshotfiles = self._getSnapshotDisks(id, name)
+            #we just take the first one at this moment
+            if len(snapshotfiles) > 0:
+                clonefrom = snapshotfiles[0]['file'].backing_file_path
+            else:
+                raise Exception('No snapshot found')
         destination_path = self._clone(id, name, clonefrom)
-        return destination_path
+        imageid = self._getImageId(destination_path)
+        return imageid, destination_path
 
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)
