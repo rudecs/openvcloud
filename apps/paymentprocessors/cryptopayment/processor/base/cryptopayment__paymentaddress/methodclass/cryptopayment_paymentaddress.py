@@ -28,7 +28,7 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         param:address address
         param:currency code of the cryptocurrency (LTC or BTC)
         """
-        newAddress = self.models.paymentAddress.new()
+        newAddress = self.models.paymentaddress.new()
         newAddress.id = address
         newAddress.currency = currency
         newAddress.accountId = ''
