@@ -27,8 +27,8 @@ class cryptopayment_processor(j.code.classGetBase()):
         
         self.cloudbrokermodels = Class()
         for ns in osiscl.listNamespaceCategories('cloudbroker'):
-            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
-            self.models.__dict__[ns].find = self.models.__dict__[ns].search
+            self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
+            self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
     def _get_wallet_connection(self,coin):
         if (coin == 'BTC'):
@@ -63,8 +63,8 @@ class cryptopayment_processor(j.code.classGetBase()):
         
         processedblock = self.models.processedblock.new()
         processedblock.coin = currency
-        processedblock.hash = last_processed_block_hash
-        processedblock.time = block_info.time
+        processedblock.hash = block_hash
+        processedblock.time = block_info['time']
         
         self.models.processedblock.set(processedblock)
     
@@ -75,15 +75,15 @@ class cryptopayment_processor(j.code.classGetBase()):
         transactions = [res['fields'] for res in results]
         return None if len(transactions) == 0 else transactions[0]
    
-    def _getAddressForAccount(self, accountId, currency):
+    def _getAccountForAddress(self, address, currency):
         """
-        Gets the address assigned to an account, if there is none registered, assign it to the account passed before returning it.
-        param:accountId account
+        Gets the account assigned to an aaddress
+        param:address
         param:currency code of the cryptocurrency (LTC or BTC)
         result dict,,
         """
         query = {'fields': ['id', 'coin', 'accountId']}
-        query['query'] = {'term': {"accountId": accountId, "currency":currency}}
+        query['query'] = {'term': {"id": address, "currency":currency}}
         query['size'] = 1
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
@@ -114,7 +114,7 @@ class cryptopayment_processor(j.code.classGetBase()):
         for networktransaction in networktransactions:
             creditTransaction = self._get_credit_transaction(currency, networktransaction['txid'])
             if creditTransaction is None:
-                account = self._getAddressForAccount(networktransaction['address'])
+                account = self._getAccountForAddress(networktransaction['address'], currency)
                 if account is None: #A transaction in the wallet but not an account assigned on the address yet
                     continue
                 
