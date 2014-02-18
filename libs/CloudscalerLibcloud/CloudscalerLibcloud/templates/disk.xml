@@ -1,4 +1,4 @@
- <volume>
+<volume>
                 <name>{{diskname}}</name>
                 <source>
                     <device path='/dev/sdb1'>

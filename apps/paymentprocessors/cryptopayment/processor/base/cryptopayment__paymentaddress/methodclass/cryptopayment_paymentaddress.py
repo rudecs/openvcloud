@@ -1,4 +1,5 @@
 from JumpScale import j
+import bitcoinrpc
 
 class cryptopayment_paymentaddress(j.code.classGetBase()):
     """
@@ -21,6 +22,17 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
             self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cryptopayment', ns))
             self.models.__dict__[ns].find = self.models.__dict__[ns].search
 
+
+    
+    def _get_wallet_connection(self,coin):
+        if (coin == 'BTC'):
+            con = bitcoinrpc.connect_to_remote('bitcoinrpc', '3hze4wu5Bro9UKXXFN2Jhr3N1zqJzMpoa5sWpztA2NiW', '127.0.0.1', 8332)
+        elif (coin =='LTC'):
+            con =  bitcoinrpc.connect_to_remote('litecoinrpc','2Lh856DN1SuBSburBeirD1hgoyP6SZkRCbDzuc4oEkYN' , '127.0.0.1', 9332)
+        else:
+            con = None
+        return con
+
     def create(self, address, currency, **kwargs):
         """
         Registers an address to be available for customers to make payments on.
@@ -32,6 +44,9 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         newAddress.id = address
         newAddress.currency = currency
         newAddress.accountId = ''
-        #TODO: add to wallet
+        
+        walletconnection = self._get_wallet_connection(currency)
+        walletconnection.proxy.importaddress(address,'ListenFor',False)
+        
         self.models.paymentaddress.set(newAddress)
-    
+        return newAddress

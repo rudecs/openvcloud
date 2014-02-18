@@ -152,6 +152,15 @@
         var:name str,, name of the snapshot to rollback
         result:str
 
+    method:createTemplate
+        """
+        Creates a template from the active machine
+        """
+        var:machineId int,, id of the machine
+        var:templatename str,, name of the template
+        var:basename str,, Snapshot id on which the template is based @tags: optional 
+        result:str
+
     method:backup
         """     
         backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running
