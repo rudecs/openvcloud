@@ -3,7 +3,7 @@ j.application.start('cryptopaymentprocessor')
 
 import JumpScale.portal
 
-j.portal.startprocess()
+j.core.portal.getServer().start()
     
 
 j.application.stop()
