@@ -258,15 +258,16 @@ class cloudapi_machines(object):
         vmachinemodel = self.models.vmachine.get(machineId)
         vmachinemodel.status = 'DESTROYED'
         self.models.vmachine.set(vmachinemodel)
+        
+        tags = str(machineId)
+        j.logger.log('Deleted', category='machine.history.ui', tags=tags)
+        
         provider, node = self._getProviderAndNode(machineId)
         if provider:
             for pnode in provider.client.list_nodes():
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
-        tags = str(machineId)
-        j.logger.log('Deleted', category='machine.history.ui', tags=tags)
-        return self.models.vmachine.delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
