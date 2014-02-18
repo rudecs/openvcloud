@@ -13,7 +13,7 @@
     prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:accounts list(VMAccount),,list of machine accounts on the virtual machine
-    prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT)
+    prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT;DESTROYED)
     prop:hostName str,,hostname of the machine as specified by OS; is name in case no hostname is provided
     prop:cpus int,1,number of cpu assigned to the vm
     prop:boot bool,True,indicates if the virtual machine must automatically start upon boot of host machine
@@ -25,6 +25,8 @@
     prop:referenceSizeId str,, reference to the size used on the stack
     prop:cloneReference int,, id to the machine on which this machine is based
     prop:clone int,, id of the clone
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deletionTime int,, epoch time of destruction, in seconds
 
 [model:VMAccount] @dbtype:osis
     """
