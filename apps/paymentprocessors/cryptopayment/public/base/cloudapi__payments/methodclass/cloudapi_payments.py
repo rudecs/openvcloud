@@ -22,8 +22,8 @@ class cloudapi_payments(object):
     
     
     def _assignAddressToAccount(self,accountId, currency):
-        query = {'fields': ['id', 'coin', 'accountId']}
-        query['query'] = {'term': {"accountId": '', "currency":currency}}
+        query = {'fields': ['id', 'currency', 'accountId']}
+        query['query'] = {'term': [{'accountId': 0}, {'currency':currency.lower()}]}
         query['size'] = 100
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
@@ -50,8 +50,8 @@ class cloudapi_payments(object):
         param:currency code of the cryptocurrency (LTC or BTC)
         result dict,,
         """
-        query = {'fields': ['id', 'coin', 'accountId']}
-        query['query'] = {'term': {"accountId": accountId, "currency":currency}}
+        query = {'fields': ['id', 'currency', 'accountId']}
+        query['query'] = {'term': [{"accountId": accountId},{"currency":currency.lower()}]}
         query['size'] = 1
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]

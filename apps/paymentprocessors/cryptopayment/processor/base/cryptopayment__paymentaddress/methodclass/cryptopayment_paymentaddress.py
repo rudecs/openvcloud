@@ -43,7 +43,7 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         newAddress = self.models.paymentaddress.new()
         newAddress.id = address
         newAddress.currency = currency
-        newAddress.accountId = ''
+        newAddress.accountId = 0 
         
         walletconnection = self._get_wallet_connection(currency)
         walletconnection.proxy.importaddress(address,'ListenFor',False)
