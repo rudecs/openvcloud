@@ -35,7 +35,7 @@ angular.module('cloudscalers.controllers')
         $scope.ok = function(){
             $modalInstance.close('confirmed');
         }
-        CryptoPayments.getPaymentInfo($scope.currentAccount,'BTC').then(function(result){
+        CryptoPayments.getPaymentInfo($scope.currentAccount.id,'BTC').then(function(result){
             $scope.paymentinfo = result;
             
             $scope.totalBtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
