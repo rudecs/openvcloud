@@ -23,7 +23,7 @@ class cloudapi_payments(object):
     
     def _assignAddressToAccount(self,accountId, currency):
         query = {'fields': ['id', 'currency', 'accountId']}
-        query['query'] = {'term': [{'accountId': 0}, {'currency':currency.lower()}]}
+        query['query'] = {'term': [{'accountId': '0'}, {'currency':currency.lower()}]}
         query['size'] = 100
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
