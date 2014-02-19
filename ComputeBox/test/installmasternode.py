@@ -39,6 +39,7 @@ def install_compute_node(hostname, workspace, jumpscalebranch):
     run('jpackage install --name cloudbroker')
 
     run('jpackage install --name graphite')
+    run('jpackage install --name grid_portal')
     run('jpackage install --name logger')
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
