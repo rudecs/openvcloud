@@ -23,25 +23,25 @@ class cloudapi_payments(object):
     
     def _assignAddressToAccount(self,accountId, currency):
         query = {'fields': ['id', 'currency', 'accountId']}
-        query['query'] = {'term': [{'accountId': '0'}, {'currency':currency.lower()}]}
+        query['query'] = { 'bool': { 'must': [{'term': {'accountId': '0'}},{'term': {'currency':currency.lower()}}] } }
         query['size'] = 100
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
         assignedAddress = None
         for address in addresses:
-            addressCandidate = self.models.paymentaddress.get(address.address)
-            if not addressCandidate.accountId == '':
+            addressCandidate = self.models.paymentaddress.get(address['id'])
+            if not addressCandidate.accountId == 0:
                 continue
             addressCandidate.accountId = accountId
             self.models.paymentaddress.set(addressCandidate)
             #validate it is indeed assigned to this accountId
-            addressCandidate = self.models.paymentaddress.get(address.address)
+            addressCandidate = self.models.paymentaddress.get(address['id'])
             if not addressCandidate.accountId == accountId:
                 continue
             
             assignedAddress = addressCandidate
         
-        return assignedAddress
+        return None if assignedAddress is None else {'id':assignedAddress.id}
 
     def _getAddressForAccount(self, accountId, currency):
         """
@@ -51,10 +51,10 @@ class cloudapi_payments(object):
         result dict,,
         """
         query = {'fields': ['id', 'currency', 'accountId']}
-        query['query'] = {'term': [{"accountId": accountId},{"currency":currency.lower()}]}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}},{'term':{"currency":currency.lower()}}]}}
         query['size'] = 1
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
-        addresses = [res['fields'] for res in results]
+	addresses = [res['fields'] for res in results]
         if len(addresses) == 0:
             address = self._assignAddressToAccount(accountId, currency)
         else:
@@ -89,4 +89,4 @@ class cloudapi_payments(object):
         
         value = self._getValueForCurrency(coin)
         
-        return {'address':address.id,'value':value, 'coin':coin}
+        return {'address':address['id'],'value':value, 'coin':coin}
