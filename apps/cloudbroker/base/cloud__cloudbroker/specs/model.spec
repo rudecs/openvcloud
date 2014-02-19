@@ -83,6 +83,10 @@
     prop:type str,, dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas)
     prop:referenceId str,,Name of the image on stack
     prop:status str,, status of the image, e.g DISABLED/ENABLED/CREATING/DELETING
+    prop:accountId int,,id of account to which this image belongs
+    prop:acl list(ACE),,access control list
+
+
 
 [rootmodel:Stack] @dbtype:osis
     """

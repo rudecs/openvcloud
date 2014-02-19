@@ -27,14 +27,19 @@ class cloudapi_images(object):
         return self._cb
 
 
-    def list(self, **kwargs):
+    def list(self, accountid, **kwargs):
         """
         List the availabe images, filtering can be based on the user which is doing the request
-
         """
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username']}
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId']}
         results = self.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
+        if accountid:
+            query['query'] = {'term': {"accountId": accountid}}
+            results = self.models.image.find(ujson.dumps(query))['result']
+            images = images + [res['fields'] for res in results]
         return images
 
     def delete(self, imageid, **kwargs):

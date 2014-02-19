@@ -126,6 +126,9 @@ class cloudapi_machines(object):
         image.username = ""
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
+        stack = self.models.stack.get(machine.stackId)
+        stack.images.append(imageid)
+        self.models.stack.set(stack)
         provider.client.ex_createTemplate(node, templatename, imageid, basename)
         return imageid 
 
