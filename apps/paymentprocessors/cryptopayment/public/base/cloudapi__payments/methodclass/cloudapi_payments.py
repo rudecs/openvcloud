@@ -41,7 +41,7 @@ class cloudapi_payments(object):
             
             assignedAddress = addressCandidate
         
-        return addressCandidate
+        return assignedAddress
 
     def _getAddressForAccount(self, accountId, currency):
         """
