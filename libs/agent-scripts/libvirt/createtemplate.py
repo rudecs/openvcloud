@@ -18,11 +18,12 @@ def action(machineid, templatename, imageid, createfrom):
     connection = LibvirtUtil()
     image_id, imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
     osisserver  = j.application.config.get('grid.master.ip')
-    osiscl = j.core.osis.getClient(ipaddr=osisserver)
+    user = j.application.config.get('system.superadmin.login')
+    osiscl = j.core.osis.getClient(ipaddr=osisserver, user=user)
     imagemodel = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', 'image')
     image = imagemodel.get(imageid)
-    image['referenceId'] = image_id
-    image['status'] = 'CREATED'
+    image.referenceId = image_id
+    image.status = 'CREATED'
     imagemodel.set(image)
 
     catimageclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'image')
@@ -47,8 +48,8 @@ def action(machineid, templatename, imageid, createfrom):
         rp['images'] = [image_id]
     else:
         rp = catresourceclient.get(node_id)
-        if not image_id in rp['images']:
-            rp['images'].append(image_id)
+        if not image_id in rp.images:
+            rp.images.append(image_id)
     catresourceclient.set(rp)
 
 
