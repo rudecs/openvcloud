@@ -1,7 +1,7 @@
 from fabric.api import run, put, reboot
 import os
 
-def install_compute_node(hostname, workspace, jumpscalebranch):
+def install_master_node(hostname, workspace, jumpscalebranch):
     # install prerequisites
     run('apt-get update')
     run('apt-get install python-pip python2.7 python-dev ssh mercurial ipython -y')
