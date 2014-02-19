@@ -34,6 +34,7 @@ class cloudapi_images(object):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId']}
+        query['query'] = {'term': {"accountId": 0}}
         results = self.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
         if accountid:

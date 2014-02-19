@@ -138,6 +138,7 @@ class CloudBroker(object):
                 image.type = pimage.extra['imagetype']
                 image.size = pimage.extra['size']
                 image.username = pimage.extra['username']
+                image.accountId = 0
             else:
                 image = models.image.get(imageid)
                 image.name = pimage.name

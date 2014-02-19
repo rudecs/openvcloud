@@ -16,7 +16,7 @@ angular.module('cloudscalers.controllers')
     	}
     	
         $scope.sizes = Size.list();
-        $scope.images = Image.list();
+        $scope.images = Image.list($scope.currentSpace.accountId);
         $scope.machineinfo = {};
         $scope.numeral = numeral;
 
