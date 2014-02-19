@@ -9,7 +9,7 @@ class cloudapi_payments(object):
     """
     
     def __init__(self):
-        osiscl = j.core.osis.getClient()
+        osiscl = j.core.osis.getClient(user='root')
 
         class Class():
             pass
