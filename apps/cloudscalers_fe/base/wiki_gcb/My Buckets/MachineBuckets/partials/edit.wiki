@@ -137,21 +137,21 @@ h2. Manage Machine Bucket
                             </a>
                         </li>
                         <li>
-                            <a ng-click="cloneMachine()">
+                            <a ng-click="createTemplate()">
                                 <i class="icon-copy"></i>
-                                Clone
+                                Create Template
                             </a>
-							<script type="text/ng-template" id="cloneMachineDialog.html"> 
+							<script type="text/ng-template" id="createTemplateDialog.html"> 
                                 <div class="modal-header">
-                                    <h3>Clone</h3>
+                                    <h3>Create Template</h3>
                                 </div>
                                 <div class="modal-body">
                                     <ul>
-                                        Name: <input ng-model="clone.name" type="text" class="input-large" />
+                                        Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="ok()">Clone</button>
+                                    <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
                                     <button class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
                             </script>

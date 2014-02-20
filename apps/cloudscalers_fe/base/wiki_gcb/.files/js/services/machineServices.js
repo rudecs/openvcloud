@@ -77,6 +77,16 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason);
                     });
             },
+            createTemplate: function(machine, templatename) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/createTemplate?machineId=' + machine.id + '&templatename=' + encodeURIComponent(templatename);
+                return $http.get(url).then(
+                    function(result) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
+                    });
+            },
             delete: function (machineid) {
                 url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
                 return $http.get(url).then(

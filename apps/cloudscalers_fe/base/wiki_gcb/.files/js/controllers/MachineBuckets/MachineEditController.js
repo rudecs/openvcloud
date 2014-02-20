@@ -177,6 +177,19 @@ angular.module('cloudscalers.controllers')
         			$modalInstance.dismiss('cancel');
       		};
     	};
+
+        var CreateTemplateController= function ($scope, $modalInstance) {
+            
+            $scope.createtemplate ={name: ''};
+
+            $scope.ok = function () {
+                    $modalInstance.close($scope.createtemplate.name);
+            };
+
+            $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+            };
+        };
     	
         $scope.cloneMachine = function() {
 
@@ -204,6 +217,31 @@ angular.module('cloudscalers.controllers')
                         }
     				);
         		});
+        };
+
+
+        $scope.createTemplate = function() {
+
+       
+            var modalInstance = $modal.open({
+                    templateUrl: 'createTemplateDialog.html',
+                    controller: CreateTemplateController,
+                    resolve: {
+                    }
+                });
+
+                modalInstance.result.then(function (templatename) {
+                    LoadingDialog.show('Creating Template');
+                    Machine.createTemplate($scope.machine, templatename).then(
+                        function(result){
+                            LoadingDialog.hide();
+                        },
+                        function(reason){
+                            LoadingDialog.hide();
+                            $alert(reason.data);
+                        }
+                    );
+                });
         };
         
         $scope.start = function() {
