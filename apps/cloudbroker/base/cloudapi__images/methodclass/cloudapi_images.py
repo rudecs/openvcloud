@@ -33,14 +33,13 @@ class cloudapi_images(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId']}
-        query['query'] = {'term': {"accountId": 0}}
+        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']}
+        if accountid:
+            query['query'] = {"bool": {"must": {"term": {"status": 'created'}}, "should":[{"term":{"accountId":accountid}}, {"term":{"accountId":0}}], "minimum_should_match":1}}
+        else:            
+            query['query'] = {"bool": {"must": {"term": {"status": 'created'}}, "should":[{"term":{"accountId":0}}], "minimum_should_match":1}}
         results = self.models.image.find(ujson.dumps(query))['result']
         images = [res['fields'] for res in results]
-        if accountid:
-            query['query'] = {'term': {"accountId": accountid}}
-            results = self.models.image.find(ujson.dumps(query))['result']
-            images = images + [res['fields'] for res in results]
         return images
 
     def delete(self, imageid, **kwargs):
