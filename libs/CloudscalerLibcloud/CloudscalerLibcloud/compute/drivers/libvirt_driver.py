@@ -97,10 +97,10 @@ class CSLibvirtNodeDriver():
                    'username': username}
         )
 
-    def _execute_agent_job(self, name_, id=None, wait=True, **kwargs):
+    def _execute_agent_job(self, name_, id=None, wait=True, queue=None, **kwargs):
         if not id:
             role = self.id
-        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, args=kwargs)
+        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
                 raise RuntimeError('Could not find agent with role:%s' %  role)
@@ -133,11 +133,11 @@ class CSLibvirtNodeDriver():
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': size.disk})
         poolname = vm_id
-        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=poolname)
+        self._execute_agent_job('createdisk', queue='hypervisor', diskxml=diskxml, poolname=poolname)
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        return self._execute_agent_job('createmetaiso', name=name, poolname=name, metadata=metadata, userdata=userdata, type=type)
+        return self._execute_agent_job('createmetaiso', queue='hypervisor', name=name, poolname=name, metadata=metadata, userdata=userdata, type=type)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -215,11 +215,11 @@ class CSLibvirtNodeDriver():
 
         # 0 means default behaviour, e.g machine is auto started.
 
-        result = self._execute_agent_job('createmachine', machinexml=machinexml)
+        result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
         if not result or result == -1:
             #Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
-                self._execute_agent_job('deletevolume', path=os.path.join(POOLPATH, diskname))
+                self._execute_agent_job('deletevolume', queue='hypervisor', path=os.path.join(POOLPATH, diskname))
             return -1
 
         vmid = result['id']
@@ -236,7 +236,7 @@ class CSLibvirtNodeDriver():
 
     def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
-        self._execute_agent_job('createtemplate', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
+        self._execute_agent_job('createtemplate', wait='false', queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
         return True
 
     def ex_snapshot(self, node, name, snapshottype='external'):
@@ -246,16 +246,16 @@ class CSLibvirtNodeDriver():
         t = int(time.time())
         POOLPATH = '%s/%s' % (BASEPOOLPATH, domain['name'])
         snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype, time=t, poolpath=POOLPATH)
-        return self._execute_agent_job('snapshot', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
+        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
 
     def ex_listsnapshots(self, node):
-        return self._execute_agent_job('listsnapshots', machineid=node.id)
+        return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
 
     def ex_snapshot_delete(self, node, name):
-        return self._execute_agent_job('deletesnapshot', machineid=node.id, name=name)
+        return self._execute_agent_job('deletesnapshot', wait='false', queue='io', machineid=node.id, name=name)
 
     def ex_snapshot_rollback(self, node, name):
-        return self._execute_agent_job('rollbacksnapshot', machineid=node.id, name=name)
+        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, name=name)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
@@ -285,7 +285,7 @@ class CSLibvirtNodeDriver():
         dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
         dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
-        job = self._execute_agent_job('deletemachine', machineid = node.id)
+        job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
         return True
 
     def ex_get_console_url(self, node):
@@ -299,7 +299,7 @@ class CSLibvirtNodeDriver():
     def list_nodes(self):
         noderesult = []
         nodes = self.backendconnection.listNodes()
-        result = self._execute_agent_job('listmachines')
+        result = self._execute_agent_job('listmachines', queue='default')
         for x in result:
             if x['id'] in nodes:
                 ipaddress = nodes[x['id']]['ipaddress']
@@ -310,24 +310,24 @@ class CSLibvirtNodeDriver():
 
     def ex_stop(self, node):
         machineid = node.id
-        return self._execute_agent_job('stopmachine', machineid = machineid)
+        return self._execute_agent_job('stopmachine', queue='hypervisor', machineid = machineid)
 
     def ex_suspend(self, node):
         machineid = node.id
-        return self._execute_agent_job('suspendmachine', machineid = machineid)
+        return self._execute_agent_job('suspendmachine', queue='hypervisor', machineid = machineid)
 
     def ex_resume(self, node):
         machineid = node.id
-        return self._execute_agent_job('resumemachine', machineid = machineid)
+        return self._execute_agent_job('resumemachine', queue='hypervisor', machineid = machineid)
 
     def ex_reboot(self, node):
         machineid = node.id
-        return self._execute_agent_job('rebootmachine', machineid = machineid)
+        return self._execute_agent_job('rebootmachine', queue='hypervisor', machineid = machineid)
 
     def ex_start(self, node):
         xml = ''
         machineid = node.id 
-        return self._execute_agent_job('startmachine', machineid = machineid, xml = xml)    
+        return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)    
  
     def ex_get_console_info(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -370,7 +370,7 @@ class CSLibvirtNodeDriver():
             pass
 
     def _get_domain_for_node(self, node):
-        return self._execute_agent_job('getmachine', machineid = node.id)
+        return self._execute_agent_job('getmachine', queue='default', machineid = node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress=''):
         state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
