@@ -1,17 +1,17 @@
 # Add extra specific cloudscaler functions for libvirt libcloud driver
 
 from CloudscalerLibcloud.utils import connection
-from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, NodeAuthPassword
+from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
 from JumpScale.baselib.dnsmasq import DNSMasq
 from xml.etree import ElementTree
-import uuid
-import libvirt
 import urlparse
 import json
 import os
 import crypt, random
 import time
+from JumpScale import j
+
 BASEPOOLPATH = '/mnt/vmstor/'
 IMAGEPOOL = '/mnt/vmstor/templates'
 
@@ -96,10 +96,22 @@ class CSLibvirtNodeDriver():
                    'imagetype': image['type'],
                    'username': username}
         )
+
     def _execute_agent_job(self, name_, id=None, wait=True, **kwargs):
         if not id:
             role = self.id
-        return self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, args=kwargs)
+        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, args=kwargs)
+        if wait and job['state'] != 'OK':
+            if job['state'] == 'NOWORK':
+                raise RuntimeError('Could not find agent with role:%s' %  role)
+            if job['result']:
+                eco = j.errorconditionhandler.getErrorConditionObject(json.loads(job["result"]))
+                raise RuntimeError("Could not execute %s for role:%s, error was:%s"%(name_,role,eco))
+        if wait:
+            return json.loads(job['result'])
+        else:
+            return job
+
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
