@@ -1,7 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator, enums
 import JumpScale.grid.osis
-import string
+import string, time
 from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
@@ -195,6 +195,7 @@ class cloudapi_machines(object):
         machine.name = name
         machine.sizeId = sizeId
         machine.imageId = imageId
+        machine.creationTime = int(time.time())
 
         disk = self.cb.models.disk.new()
         disk.name = '%s_1'
@@ -289,6 +290,7 @@ class cloudapi_machines(object):
         """
         vmachinemodel = self.models.vmachine.get(machineId)
         vmachinemodel.status = 'DESTROYED'
+        vmachinemodel.deletionTime = int(time.time())
         self.models.vmachine.set(vmachinemodel)
         
         tags = str(machineId)
