@@ -40,9 +40,9 @@ def install_master_node(hostname, workspace, jumpscalebranch):
 
     run('jpackage install --name graphite')
     run('jpackage install --name grid_portal')
-    run('jpackage install --name logger')
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
     run('jpackage install --name cloudscalers_fe')
-    run('jsprocess start')
+    run('jpackage install --name logger') # logger depends on processmanager processmanager will start all
+
 
