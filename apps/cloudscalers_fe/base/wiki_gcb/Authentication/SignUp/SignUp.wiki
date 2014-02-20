@@ -44,9 +44,13 @@
             </div>
 
             <div class="login-actions">
-                <input type="submit" ng-disabled="!canSignUp" class="button btn  btn-primary btn-large" value="Sign Up" />
+              <input type="submit" ng-disabled="!canSignUp" class="button btn  btn-primary btn-large" value="Sign Up" />
             </div>
         </form>
     </div>
+</div>
+<div class="span4 center txt-right mtm mTxt">
+  <span class="mrs">Already a member?</span>
+  <a href="/$$space/login" class="btn mTxt mrll"><i class="icon-lock"></i> Login</a>
 </div>
 }}

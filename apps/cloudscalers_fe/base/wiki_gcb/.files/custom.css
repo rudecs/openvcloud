@@ -1187,4 +1187,34 @@ a.icon-remove-sign {
 .nav, .pagination, .carousel a {
     cursor: pointer;
 }
-
+/* OOCSS */
+.center{
+    margin: 0 auto;
+    float: none;
+}
+.txt-right{
+    text-align: right;
+}
+.txt-left{
+    text-align: right;
+}
+/* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
+.mtm{
+    margin-top: 10px;
+}
+.mrm{
+    margin-right: 10px;
+}
+.mrs{
+    margin-right: 5px;
+}
+.mrl{
+    margin-right: 20px;
+}
+.mrll{
+    margin-right: 25px;
+}
+/* text size units */
+.mTxt{
+    font-size: 13px;
+}
