@@ -236,7 +236,7 @@ class CSLibvirtNodeDriver():
 
     def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
-        self._execute_agent_job('createtemplate', wait=False', queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
+        self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
         return True
 
     def ex_snapshot(self, node, name, snapshottype='external'):
