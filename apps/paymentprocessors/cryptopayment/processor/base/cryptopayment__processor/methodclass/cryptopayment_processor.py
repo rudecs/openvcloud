@@ -41,7 +41,7 @@ class cryptopayment_processor(j.code.classGetBase()):
         
     def _get_last_processed_block(self, currency):
         query = {'fields': ['coin', 'hash', 'blocktime']}
-        query['query'] = {'term': {"currency":currency}}
+        query['query'] = {'term': {"currency":currency.lower()}}
         query['size'] = 1
         query['sort'] = [{ "blocktime" : {'order':'desc', 'ignore_unmapped' : True}}]
         results = self.models.processedblock.find(ujson.dumps(query))['result']
@@ -69,11 +69,11 @@ class cryptopayment_processor(j.code.classGetBase()):
         self.models.processedblock.set(processedblock)
     
     def _get_credit_transaction(self, coin, reference):
-        query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
-        query['query'] = {'term': {"currency": coin, 'reference':reference}}
+        query = {'fields': ['id', 'currency','reference']}
+        query['query'] = {'bool':{'must':[{'term': {"currency": coin.lower()}},{'term':{ 'reference':reference.lower()}}]}}
         results = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
         transactions = [res['fields'] for res in results]
-        return None if len(transactions) == 0 else transactions[0]
+        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['id'])
    
     def _getAccountForAddress(self, address, currency):
         """
@@ -83,7 +83,7 @@ class cryptopayment_processor(j.code.classGetBase()):
         result dict,,
         """
         query = {'fields': ['id', 'coin', 'accountId']}
-        query['query'] = {'term': {"id": address, "currency":currency}}
+        query['query'] = {'bool': {'must':[ {'term': {"id": address.lower()}},{'term':{"currency":currency.lower()}}]}}
         query['size'] = 1
         results = self.models.paymentaddress.find(ujson.dumps(query))['result']
         addresses = [res['fields'] for res in results]
@@ -126,12 +126,12 @@ class cryptopayment_processor(j.code.classGetBase()):
                 transaction.comment = 'Credit'
                 transaction.reference = networktransaction['txid']                                                                          
                                 
-                transaction.credit = transaction['amount'] * self._getValueForCurrency(currency, transaction.time)
+                transaction.credit = transaction.amount * self._getValueForCurrency(currency, transaction.time)
                 transaction.status = 'PROCESSED' if (networktransaction['confirmations'] > 0) else 'UNCONFIRMED'
-                self.cloudbrokermodels.credittransaction.set(credittransaction)
+                self.cloudbrokermodels.credittransaction.set(transaction)
             else:
                 if ((not creditTransaction.status == 'PROCESSED') and (networktransaction['confirmations'] > 0)):
                     creditTransaction.status = 'PROCESSED'
-                    self.cloudbrokermodels.credittransaction.set(credittransaction)
+                    self.cloudbrokermodels.credittransaction.set(creditTransaction)
                     
         self._set_last_processed_block(currency, last_processed_block_hash)
