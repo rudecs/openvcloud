@@ -39,7 +39,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         #For now, sum here, as of ES 1.0, can be done there
         query = {'fields': ['time', 'credit', 'status']}
         query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
+        results = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
         history = [res['fields'] for res in results]
         balance = 0.0
         for transaction in history:
