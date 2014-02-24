@@ -1,4 +1,5 @@
 from JumpScale import j
+import time
 
 class billingengine_billingengine(j.code.classGetBase()):
     """
@@ -22,14 +23,45 @@ class billingengine_billingengine(j.code.classGetBase()):
             self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
             self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
+    def _get_last_transaction_statement(self, accountId):
+        #TODO
+        pass
+
+    def _update_usage(self, transaction_statement):
+        #TODO
+        pass
+    
+    def _save_transaction_statement(self,transaction_statement):
+        #TODO
+        pass
+    
+    def _find_earliest_billable_action_time(self, accountId):
+        #TODO
+        pass
+    
+    def _create_empty_transaction_statements(self, fromTime, untilTime):
+        #TODO
+        pass
+    
     def createTransactionStaments(self, accountId, **kwargs):
         """
         Generates the missing transactions for an account
         param:accountId id of the account
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method createTransactionStaments")
-    
+        now = int(time.time())
+        last_transaction_statement = self._get_last_transaction_statement(accountId)
+        last_transaction_time = None
+        if not last_transaction_statement is None:
+            self._update_usage(last_transaction_statement)
+            self._save_transaction_statement(last_transaction_statement)
+            last_transaction_time = last_transaction_statement.time
+        else:
+            last_transaction_time = self._find_earliest_billable_action_time(accountId)
+            
+        for transaction_statement in self._create_empty_transaction_statements(last_transaction_time.time, now):
+            self._update_usage(transaction_statement)
+            self._save_transaction_statement(transaction_statement)
+        
 
     def updateBalance(self, accountId, **kwargs):
         """
