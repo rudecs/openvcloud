@@ -235,6 +235,7 @@ angular.module('cloudscalers.controllers')
                     Machine.createTemplate($scope.machine, templatename).then(
                         function(result){
                             LoadingDialog.hide();
+                            $scope.machine.locked = true;
                         },
                         function(reason){
                             LoadingDialog.hide();
