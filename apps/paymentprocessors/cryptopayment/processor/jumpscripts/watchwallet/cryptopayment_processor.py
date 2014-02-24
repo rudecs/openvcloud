@@ -16,7 +16,7 @@ async=True
 enable=True
 license = "bsd"
 version = "1.0"
-roles = [""]
+roles = ["cryptowalletwatcher"]
 
 
 
