@@ -12,8 +12,15 @@ class billingengine_billingengine(j.code.classGetBase()):
         self.appname="billingengine"
         #billingengine_billingengine_osis.__init__(self)
     
+        osiscl = j.core.osis.getClient(user='root')
 
-        pass
+        class Class():
+            pass      
+        
+        self.cloudbrokermodels = Class()
+        for ns in osiscl.listNamespaceCategories('cloudbroker'):
+            self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
+            self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
     def createTransactionStaments(self, accountId, **kwargs):
         """
@@ -39,8 +46,8 @@ class billingengine_billingengine(j.code.classGetBase()):
             balance += float(transaction['credit'])
             #TODO: put in processed (but only save after updating the balance
             
-        newbalance = self.models.creditbalance.new()
+        newbalance = self.cloudbrokermodels.creditbalance.new()
         newbalance.accountId = accountId
         newbalance.time = int(time.time())
         newbalance.credit = balance
-        self.models.creditbalance.set(newbalance)
+        self.cloudbrokermodels.creditbalance.set(newbalance)
