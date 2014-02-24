@@ -5,6 +5,6 @@
 	"""
 	prop:id str,,
 	prop:accountId int,,
-	prop:lastupdatedTime
-	prop:fromTime
-	prop:untilTime
+	prop:lastupdatedTime int,,
+	prop:fromTime int,,
+	prop:untilTime int,,
