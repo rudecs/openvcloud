@@ -9,6 +9,7 @@ import urlparse
 ujson = j.db.serializers.ujson
 
 
+
 class cloudapi_machines(object):
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
@@ -340,12 +341,15 @@ class cloudapi_machines(object):
         result
 
         """
+        provider, node = self._getProviderAndNode(machineId)
         machine = self.models.vmachine.get(machineId)
         storage = self._getStorage(machine.__dict__)
+        node = provider.client.ex_getDomain(node)
+
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts}
+                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """

@@ -8,6 +8,12 @@ from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
 
 
+LOCKCREATED = 1
+LOCKREMOVED = 2
+NOLOCK = 3
+LOCKEXIST = 4
+
+
 class LibvirtUtil(object):
     def __init__(self):
         self.connection = libvirt.open()
@@ -26,6 +32,8 @@ class LibvirtUtil(object):
         return domain
 
     def create(self, id, xml):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
         if not domain and xml:
             domain = self.connection.defineXML(xml)
@@ -34,6 +42,8 @@ class LibvirtUtil(object):
         return domain.create() == 0
 
     def shutdown(self, id):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't stop a locked machine")
         domain = self._get_domain(id)
         if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
             return True
@@ -52,6 +62,8 @@ class LibvirtUtil(object):
         return domain.resume() == 0
 
     def delete_machine(self, machineid):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't delete a locked machine")
         domain = self.connection.lookupByUUIDString(machineid)
         diskfiles = self._get_domain_disk_file_names(domain)
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
@@ -113,6 +125,8 @@ class LibvirtUtil(object):
         return True
 
     def snapshot(self, id, xml, snapshottype):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't snapshot a locked machine")
         domain = self._get_domain(id)
         flags = 0 if snapshottype == 'internal' else libvirt.VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY
         snap = domain.snapshotCreateXML(xml, flags)
@@ -153,6 +167,8 @@ class LibvirtUtil(object):
         return True
 
     def deleteSnapshot(self, id, name):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't delete a snapshot from a locked machine")
         newname = '%s_%s' % (name, 'DELETING')
         self._renameSnapshot(id, name, newname)
         name = newname
@@ -189,6 +205,44 @@ class LibvirtUtil(object):
                 os.remove(disk)
         return True
 
+    def isCurrentStorageAction(self, domainid):
+        domain = self._get_domain(domainid)
+        #at this moment we suppose the machine is following the default naming of disks
+        if domain.state()[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+            status = domain.blockJobInfo('vda',0)
+            if 'cur' in status:
+                return True
+        #check also that there is no qemu-img job running
+        if self.isLocked(domainid):
+            return True
+        return False
+
+    def _getLockFile(self, domainid):
+        LOCKPATH = '/opt/jumpscale/var/domain_locks'
+        if not j.system.fs.exists(LOCKPATH):
+            j.system.fs.createDir(LOCKPATH)
+        lockfile = '%s/%s.lock' % (LOCKPATH, domainid)
+        return lockfile
+
+
+    def _lockDomain(self, domainid):
+        if self.isLocked(domainid):
+            return LOCKEXIST
+        j.system.fs.writeFile(self._getLockFile(domainid), str(time.time()))
+        return LOCKCREATED
+
+    def _unlockDomain(self, domainid):
+        if not self.isLocked(domainid):
+            return NOLOCK
+        j.system.fs.remove(self._getLockFile(domainid))
+        return LOCKREMOVED
+
+    def isLocked(self, domainid):
+        if j.system.fs.exists(self._getLockFile(domainid)):
+            return True
+        else:
+            return False
+
     def _block_job_domain_info(self, domain, paths):
         for path in paths:
             done = self._block_job_info(domain, path)
@@ -210,6 +264,8 @@ class LibvirtUtil(object):
             return False
 
     def rollbackSnapshot(self, id, name, deletechildren=True):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't rollback a locked machine")
         domain = self._get_domain(id)
         snapshot = domain.snapshotLookupByName(name, 0)
         snapshotdomainxml = ElementTree.fromstring(snapshot.getXMLDesc(0))
@@ -235,8 +291,18 @@ class LibvirtUtil(object):
         name = '%s_%s.qcow2' % (name, time.time())
         destination_path = os.path.join(self.templatepath, name)
         if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED, libvirt.VIR_DOMAIN_PAUSED] or not self._isRootVolume(domain, clonefrom):
+            if not self.isLocked(id):
+                lock = self._lockDomain(id)
+                if lock != LOCKCREATED:
+                    raise Exception('Failed to create lock: %s' % str(lock))
+            else:
+                raise Exception("Can't perform this action on a locked domain")
             q2 = Qcow2(clonefrom)
-            q2.export(destination_path)
+            try:
+                q2.export(destination_path)
+            finally:
+                if self.isLocked(id):
+                    self._unlockDomain(id)
         else:
             domain.undefine()
             try:
@@ -256,6 +322,8 @@ class LibvirtUtil(object):
         return j.tools.hash.sha1(path)
 
     def exportToTemplate(self, id, name, clonefrom):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't export a locked machine")
         domain = self.connection.lookupByUUIDString(id)
         if not clonefrom:
             domaindisks = self._getDomainDiskFiles(domain)
@@ -311,7 +379,8 @@ class LibvirtUtil(object):
 
     def _to_node(self, domain):
         state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
-        extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(), 'types': self.connection.getType(), 'used_memory': memory / 1024, 'vcpu_count': vcpu_count, 'used_cpu_time': used_cpu_time}
+        locked = self.isCurrentStorageAction(domain.UUIDString())
+        extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(), 'types': self.connection.getType(), 'used_memory': memory / 1024, 'vcpu_count': vcpu_count, 'used_cpu_time': used_cpu_time, 'locked': locked}
         return {'id': domain.UUIDString(), 'name': domain.name(), 'state':state, 'extra': extra, 'XMLDesc': domain.XMLDesc(0)}
 
     def get_domain(self, uuid):
