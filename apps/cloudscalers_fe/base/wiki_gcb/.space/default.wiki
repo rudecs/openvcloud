@@ -89,11 +89,6 @@
     										<select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
                                             </select>
                                         </div>
-                                        <label class="control-label mtl">Datacenter Location</label>
-                                        <div class="controls mtl">
-                                            <select ng-model="dataLocation" required ng-options="dataLocation.name for dataLocation in dataLocations">
-                                            </select>
-                                        </div>
   									</div>
                    					<div class="control-group">
     									<label class="control-label" for="inputNewCloudSpaceName">Name</label>

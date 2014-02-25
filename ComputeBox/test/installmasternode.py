@@ -43,6 +43,7 @@ def install_master_node(hostname, workspace, jumpscalebranch):
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/cloudscalers_frontend.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_frontend.hrd')
     run('jpackage install --name cloudscalers_fe')
+    run('jsprocess start')
     run('jpackage install --name processmanager')
 
 

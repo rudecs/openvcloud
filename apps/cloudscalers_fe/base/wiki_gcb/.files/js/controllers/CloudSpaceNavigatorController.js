@@ -35,10 +35,6 @@ angular.module('cloudscalers.controllers')
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
                 };
-                // get datalocations
-                CloudSpace.listdataLocations().then(function(result) {
-                    $scope.dataLocations=result;
-                });
             };
             $scope.createNewCloudSpace = function () {
                 var modalInstance = $modal.open({
