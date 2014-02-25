@@ -42,7 +42,7 @@ class cloudapi_users(object):
             return session.id
         else:
             ctx.start_response('401 Unauthorized', [])
-            return
+            return 'Unauthorized'
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
