@@ -53,14 +53,16 @@ h2. Manage Machine Bucket
                     </ul>
                 </div>
                 <div class="span2 actions">
-                    <h4>Actions</h4>
+                    <h4>Actions</h4>    <i ng-show="machine.locked == true" class="icon-large icon-lock"></i>
                     <ul class="actions">
-                        <li ng-show="machine.status == 'HALTED'"> 
+
+                        <li ng-show="machine.status == 'HALTED' && machine.locked == false"> 
                             <a ng-click="start()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
+
                         <li ng-show="machine.status == 'PAUSED'"> 
                             <a ng-click="resume()">
                                 <i class="icon-play-circle"></i>
@@ -68,19 +70,21 @@ h2. Manage Machine Bucket
                             </a>
                         </li>
 
-                        <li ng-show="machine.status == 'RUNNING'">
+                        <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                             <a ng-click="stop()">
                                 <i class="icon-stop "></i>
                                 Stop
                             </a>
                         </li>
+
                         <li ng-show="machine.status == 'RUNNING'">
                             <a ng-click="pause()">
                                 <i class=" icon-pause"></i>
                                 Pause
                             </a>
                         </li>
-                        <li>
+
+                        <li ng-show="machine.locked == false">
                             <a ng-click="createSnapshot()"> 
                                 <i class="icon-camera"></i>
                                 Take Snapshot
@@ -105,7 +109,8 @@ h2. Manage Machine Bucket
 			</script>
 
                         </li>
-                        <li>
+
+                        <li ng-show="machine.locked == false">
                             <a ng-click="destroy()">
                                 <i class=" icon-remove-circle"></i>
                                 Destroy
@@ -136,7 +141,7 @@ h2. Manage Machine Bucket
                                 Rebuild
                             </a>
                         </li>
-                        <li>
+                        <li  ng-show="machine.locked == false">
                             <a ng-click="createTemplate()">
                                 <i class="icon-copy"></i>
                                 Create Template
@@ -198,8 +203,8 @@ h2. Manage Machine Bucket
                             {[snapshot.epoch * 1000 | date:'medium']}
                         </td>
                         <td>
-                            <a style="cursor: pointer" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
-                            <a style="cursor: pointer" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                            <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                            <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
                         </td>
                     </tr>
                 </tbody>

@@ -239,6 +239,10 @@ class CSLibvirtNodeDriver():
         self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
         return True
 
+    def ex_getDomain(self, node):
+        node = self._from_agent_to_node(self._get_domain_for_node(node))
+        return node
+
     def ex_snapshot(self, node, name, snapshottype='external'):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain['XMLDesc'])
@@ -351,6 +355,10 @@ class CSLibvirtNodeDriver():
     def ex_export(self, node, exportname, uncpath, emailaddress):
         machineid = node.id
         return self._execute_agent_job('backupmachine', wait=False, machineid=machineid, backupname=exportname, location=uncpath, emailaddress=emailaddress)
+
+    def ex_storageaction(self, node):
+        machineid = node.id
+        return self._execute_agent_job('checkstorageaction', wait=True, machineid=machineid)
 
     def _get_connection_ip(self):
         uri = urlparse.urlparse(self.uri)

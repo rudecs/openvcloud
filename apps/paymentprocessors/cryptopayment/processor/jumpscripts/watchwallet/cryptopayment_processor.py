@@ -1,18 +1,28 @@
+
+
 from JumpScale import j
-import bitcoinrpc
 import ujson
 
-class cryptopayment_processor(j.code.classGetBase()):
-    """
-    API Actor api for processing payments with cryptocurrency
+descr = """
+Watches the cryptocurrency wallets for transactions on addresses that are monitored
+"""
+
+name = "process_cryptopayments"
+category = "billing"
+organization = "cloudscalers"
+author = "cloudscalers"
+period=5
+async=True
+enable=True
+license = "bsd"
+version = "1.0"
+roles = ["cryptowalletwatcher"]
+
+
+
+class CryptopaymentProcessor(object):
     
-    """
     def __init__(self):
-        
-        self._te={}
-        self.actorname="processor"
-        self.appname="cryptopayment"
-        #cryptopayment_processor_osis.__init__(self)
 
         osiscl = j.core.osis.getClient(user='root')
 
@@ -23,7 +33,6 @@ class cryptopayment_processor(j.code.classGetBase()):
         for ns in osiscl.listNamespaceCategories('cryptopayment'):
             self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cryptopayment', ns))
             self.models.__dict__[ns].find = self.models.__dict__[ns].search
-            
         
         self.cloudbrokermodels = Class()
         for ns in osiscl.listNamespaceCategories('cloudbroker'):
@@ -31,6 +40,7 @@ class cryptopayment_processor(j.code.classGetBase()):
             self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
     def _get_wallet_connection(self,coin):
+        import bitcoinrpc
         if (coin == 'BTC'):
             con = bitcoinrpc.connect_to_remote('bitcoinrpc', '3hze4wu5Bro9UKXXFN2Jhr3N1zqJzMpoa5sWpztA2NiW', '127.0.0.1', 8332)
         elif (coin =='LTC'):
@@ -135,3 +145,12 @@ class cryptopayment_processor(j.code.classGetBase()):
                     self.cloudbrokermodels.credittransaction.set(creditTransaction)
                     
         self._set_last_processed_block(currency, last_processed_block_hash)
+
+
+def action():
+    processor = CryptopaymentProcessor()
+    processor.process('LTC')
+    processor.process('BTC')
+
+
+

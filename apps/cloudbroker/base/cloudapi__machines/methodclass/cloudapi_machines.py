@@ -9,6 +9,7 @@ import urlparse
 ujson = j.db.serializers.ujson
 
 
+
 class cloudapi_machines(object):
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
@@ -340,12 +341,15 @@ class cloudapi_machines(object):
         result
 
         """
+        provider, node = self._getProviderAndNode(machineId)
         machine = self.models.vmachine.get(machineId)
         storage = self._getStorage(machine.__dict__)
+        node = provider.client.ex_getDomain(node)
+
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts}
+                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     def importtoremote(self, name, uncpath, **kwargs):
         """
@@ -405,10 +409,14 @@ class cloudapi_machines(object):
         """
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
+        ctx = kwargs['ctx']
         if not modelmachine.status == enums.MachineStatus.RUNNING:
-            ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
+        snapshots = provider.client.ex_listsnapshots(node)
+        if len(snapshots) > 10:
+            ctx.start_response('409 Conflict', [])
+            return 'Max 10 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_snapshot(node, name)

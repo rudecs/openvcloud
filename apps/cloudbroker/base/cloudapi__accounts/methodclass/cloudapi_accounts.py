@@ -83,6 +83,20 @@ class cloudapi_accounts(object):
         #put your code here to implement this method
         return self.models.account.get(accountId)
 
+
+    @authenticator.auth(acl='R')
+    def listTemplates(self, accountId, **kwargs):
+        """
+        List templates which can be managed by this account
+        param:accountId id of the account
+        result dict
+        """
+        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']}
+        query['query'] = {'term': {"accountId": accountId}}
+        results = self.models.image.find(ujson.dumps(query))['result']
+        images = [res['fields'] for res in results]
+        return images
+
     @authenticator.auth(acl='A')
     def deleteUser(self, accountId, userId, **kwargs):
         """
