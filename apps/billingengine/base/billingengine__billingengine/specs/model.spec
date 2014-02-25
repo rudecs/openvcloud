@@ -19,8 +19,6 @@
     prop:name str,,name as given by customer
 	prop:machines list(VMachine),,
     prop:totalCost float,,
-    prop:creationTime int,, epoch time of creation, in seconds
-    prop:deletionTime int,, epoch time of destruction, in seconds
 
 [model:VMachine] @dbtype:osis
     """
