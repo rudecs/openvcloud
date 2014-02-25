@@ -32,6 +32,9 @@ def install_compute_node(hostname, workspace,jumpscalebranch):
     run('jpackage install --name grid')
 
     run('jpackage install --name computenode')
+
+    run('jpackage install --name processmanager')
+    run('jpackage install --name workers')
     run('jpackage install --name cloudbroker_node')
 
     run('jsprocess start')
