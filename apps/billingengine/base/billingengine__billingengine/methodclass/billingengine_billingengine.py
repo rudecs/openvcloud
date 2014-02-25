@@ -42,8 +42,62 @@ class billingengine_billingengine(j.code.classGetBase()):
             return None
 
     def _update_usage(self, billing_statement):
-        #TODO
-        pass
+        
+        query = {'fields': ['id', 'name', 'accountId']}
+        query['query'] = {'term': {"accountId": accountId}}
+        results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
+        cloudspaces = [res['fields'] for res in results]
+        
+        for cloudspace in cloudspaces:
+            query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId']}
+            
+            query['filtered'] = {
+                          "query" : {"term" : { "cloudspaceId" : cloudspace['id'] }},
+                          "filter" : { "not":{"range" : {"deletionTime" : {"lt" : billing_statement.fromTime}}}
+                                      }
+                                 }
+            
+            machines = self.cloudbrokermodels.vmachine.find(ujson.dumps(query))['result']
+            cloudspacebillingstatement = None
+            for machine in machines:
+                cloudspacebillingstatement = billing_statement.cloudspaces.get(cloudspaceId=cloudspace['id'])
+                if cloudspacebillingstatement is None:
+                    cloudspacebillingstatement = billing_statement.cloudspaces.new_cloudspace()
+                    cloudspacebillingstatement.name = cloudspace['name']
+                    cloudspacebillingstatement.cloudspaceId = cloudspace['id']
+
+                machinebillingstatement = cloudspacebillingstatement.machines.get(machineId=machine['id'])
+                if machinebillingstatement is None:
+                    machinebillingstatement = cloudspacebillingstatement.machines.new_machine()
+                    machinebillingstatement.machineId = machine['id']
+                    machinebillingstatement.name = machine['name']
+                    machinebillingstatement.creationTime = machine['creationTime']
+                    machinebillingstatement.deletionTime = machine['deletionTime']
+                    
+                    if not machinebillingstatement.deletionTime is None:
+                        billmachineuntil = machinebillingstatement.untilTime
+                    else:
+                        billmachineuntil = billing_statement.untilTime
+                        
+                    billmachinefrom = max(billing_statement.untilTime, machinebillingstatement.creationTime)
+                    number_of_billable_hours = billmachineuntil - billmachinefrom
+                    if (number_of_billable_hours < 3600): #minimum one hour
+                        if not machinebillingstatement.deletionTime is None:
+                            number_of_billable_hours = 3600
+                            if (machinebillingstatement.creationTime < billing_statement.fromTime):
+                                number_of_billable_hours -= (billing_statement.fromTime)
+                                
+                    price_per_hour = self._get_price_per_hour()
+                    machinebillingstatement.cost = number_of_billable_hours * price_per_hour
+
+            if not cloudspacebillingstatement is None:
+                cloudspacebillingstatement.totalCost = 0.0
+                for machinebillingstatement in cloudspacebillingstatement:
+                    cloudspacebillingstatement.totalCost += machinebillingstatement.cost
+        
+        for cloudspacebillingstatement in billing_statement.cloudspaces:
+            billing_statement.totalCost += cloudspacebillingstatement.totalCost
+        
     
     def _get_credit_transaction(self, currency, reference):
         query = {'fields': ['id', 'currency','reference']}
