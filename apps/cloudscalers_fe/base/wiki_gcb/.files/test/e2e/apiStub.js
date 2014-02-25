@@ -370,17 +370,12 @@ defineApiStub = function ($httpBackend) {
         {id: '2', name: 'Awingu'},
         {id: '4', name: 'Incubaid'},
     ]);
-    $httpBackend.whenGET(/^\/dataLocations\/list.*/).respond([
-        {id: '1', name: 'United States'},
-        {id: '2', name: 'United Kingdom'},
-        {id: '3', name: 'Canada'},
-    ]);
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', locationId: '1'},
-       {id: '2', name: 'Development', accountId: '2' , locationId: '1'},
-       {id: '3', name: 'Training', accountId: '2' , locationId: '1'},
-       {id: '4', name: 'Production', accountId: '2' , locationId: '2'},
-       {id: '4', name: 'Development', accountId: '4', locationId: '3'},
+       {id: '1', name: 'Default', accountId: '1'},
+       {id: '2', name: 'Development', accountId: '2'},
+       {id: '3', name: 'Training', accountId: '2'},
+       {id: '4', name: 'Production', accountId: '2'},
+       {id: '4', name: 'Development', accountId: '4'},
        {id: '4', name: 'Acceptance', accountId: '4'},
        {id: '4', name: 'Production', accountId: '4'},
     ];
