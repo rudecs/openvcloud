@@ -409,10 +409,14 @@ class cloudapi_machines(object):
         """
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
+        ctx = kwargs['ctx']
         if not modelmachine.status == enums.MachineStatus.RUNNING:
-            ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
+        snapshots = provider.client.ex_listsnapshots(node)
+        if len(snapshots) > 10:
+            ctx.start_response('409 Conflict', [])
+            return 'Max 10 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_snapshot(node, name)
