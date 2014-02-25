@@ -2,7 +2,13 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
         	
-    	
+
+        $scope.$watch('currentspace.accountId',function(){
+        	if ($scope.currentSpace){
+        		$scope.images = Image.list($scope.currentSpace.accountId);
+        	}
+        });
+        
     	$scope.$watch('currentSpace.id',function(){
     		if ($scope.currentSpace){
     			Machine.list($scope.currentSpace.id).then(function(machines){
@@ -16,7 +22,6 @@ angular.module('cloudscalers.controllers')
     	}
     	
         $scope.sizes = Size.list();
-        $scope.images = Image.list($scope.currentSpace.accountId);
         $scope.machineinfo = {};
         $scope.numeral = numeral;
 
