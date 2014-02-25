@@ -55,6 +55,14 @@
 		"""
         var:accountId int,, id of the account
 		result:dict A json dict
+
+
+	method:listTemplates
+		"""
+		List templates which can be managed by this account
+		"""
+        var:accountId int,, id of the account
+		result:dict A json dict
 		
 	method:getCreditBalance
 		"""
