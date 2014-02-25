@@ -1,5 +1,7 @@
 from JumpScale import j
-import time
+import time, ujson
+from datetime import datetime
+import calendar
 
 class billingengine_billingengine(j.code.classGetBase()):
     """
@@ -18,54 +20,108 @@ class billingengine_billingengine(j.code.classGetBase()):
         class Class():
             pass      
         
+        self.billingenginemodels = Class()
+        for ns in osiscl.listNamespaceCategories('billingengine'):
+            self.billingenginemodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billingengine', ns))
+            self.billingenginemodels.__dict__[ns].find = self.billingenginemodels.__dict__[ns].search
+                
         self.cloudbrokermodels = Class()
         for ns in osiscl.listNamespaceCategories('cloudbroker'):
             self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
             self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
-    def _get_last_transaction_statement(self, accountId):
-        #TODO
-        pass
+    def _get_last_billing_statement(self, accountId):
+        query = {'fields': ['fromTime', 'accountId','id']}
+        query['query'] = {'term': {"accountId": accountId}}
+        query['size'] = 1
+        query['sort'] = [{ "fromTime" : {'order':'desc', 'ignore_unmapped' : True}}]
+        results = self.billingenginemodels.billingstatement.find(ujson.dumps(query))['result']
+        if len(results) > 0:
+            return self.billingenginemodels.billingstatement.get(results[0]['id'])
+        else:
+            return None
 
-    def _update_usage(self, transaction_statement):
+    def _update_usage(self, billing_statement):
         #TODO
         pass
     
-    def _save_transaction_statement(self,transaction_statement):
-        #TODO
-        pass
+    def _get_credit_transaction(self, currency, reference):
+        query = {'fields': ['id', 'currency','reference']}
+        query['query'] = {'bool':{'must':[{'term': {"currency": currency.lower()}},{'term':{ 'reference':reference.lower()}}]}}
+        transactions = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
+        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['id'])   
+
+    def _save_billing_statement(self,billing_statement):
+        self.billingenginemodels.billingstatement.set(biling_statement)
+        creditTransaction = self._get_credit_transaction('USD', reference)
+        if creditTransaction is None:
+            creditTransaction = self.cloudbrokermodels.credittransaction.new()
+            creditTransaction.currency = 'USD'
+            creditTransaction.reference = billing_statement.id
+            creditTransaction.status = 'DEBIT'
+        
+        creditTransaction.amount = -billing_statement.totalCost
+        creditTransaction.credit = -billing_statement.totalCost
+        self.cloudbrokermodels.credittransaction.set(creditTransaction)
     
     def _find_earliest_billable_action_time(self, accountId):
         #TODO
+        #get cloudspaces
+        #find machine with earliest creationtime and cloudspaceid in cloudspaces
+        #return machine.creationtime
         pass
     
-    def _create_empty_transaction_statements(self, fromTime, untilTime):
-        #TODO
-        pass
+    def _create_empty_billing_statements(self, fromTime, untilTime):
+        untilMonthDate = datetime.utcfromtimestamp(untilTime).replace(day=1,minute=0,second=0,microsecond=0)
+        untilMonthTime = calendar.timegm(untilMonthDate.timetuple())
+        fromMonthDate = datetime.utcfromtimestamp(fromTime).replace(day=1,minute=0,second=0,microsecond=0)
+        fromMonthTime = calendar.timegm(fromMonthDate.timetuple())
+        billingstatments = []
+        while (fromMonthTime < untilMonthTime):
+            nextMontTime = self._addMonth(fromMonthTime)
+            billingstatement = self.billingenginemodels.bilingstatement.new()
+            billingstatement.fromTime = fromMonthTime
+            billingstatement.untilTime = nextMonthTime
+            billingstatements.append(billingstatement)
+            fromMonthTime = nextMonthTime
+    
+        return billingstatements
+    
+    def _addMonth(self, timestamp):
+        timestampdatetime = datetime.utcfromtimestamp(timestamp)
+        monthbeginning = timestampdatetime.replace(day=1,minute=0,second=0,microsecond=0)
+        if monthbeginning.month == 12:
+            nextmonthbeginning = monthbeginning.replace(year=monthbeginning.year + 1, month=1)
+        else:
+            nextmonthbeginning = monthbeginning.replace(month=monthbeginning.month+1)
+        
+        return calendar.timegm(nextmonthbeginning.timetuple())
     
     def createTransactionStaments(self, accountId, **kwargs):
         """
-        Generates the missing transactions for an account
+        Generates the missing billing statements and debit transactions for an account
         param:accountId id of the account
         """
         now = int(time.time())
-        last_transaction_statement = self._get_last_transaction_statement(accountId)
-        last_transaction_time = None
+        last_billing_statement = self._get_last_billing_statement(accountId)
+        next_billing_statement_time = None
         if not last_transaction_statement is None:
-            self._update_usage(last_transaction_statement)
-            self._save_transaction_statement(last_transaction_statement)
-            last_transaction_time = last_transaction_statement.time
+            self._update_usage(last_billing_statement)
+            self._save_billing_statement(last_billing_statement)
+            next_billing_statement_time = _addMonth(last_billing_statement.time)
         else:
-            last_transaction_time = self._find_earliest_billable_action_time(accountId)
+            next_billing_statement_time = self._find_earliest_billable_action_time(accountId)
             
-        for transaction_statement in self._create_empty_transaction_statements(last_transaction_time.time, now):
-            self._update_usage(transaction_statement)
-            self._save_transaction_statement(transaction_statement)
+        for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now):
+            self._update_usage(billing_statement)
+            self._save_billing_statement(billing_statement)
+            
+        self.updateBalance(accountId)
         
 
     def updateBalance(self, accountId, **kwargs):
         """
-        Updates the ballance for an account given the credit/debit transactions
+        Updates the balance for an account given the credit/debit transactions
         param:accountId id of the account
         """
         #For now, sum here, as of ES 1.0, can be done there
