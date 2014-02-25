@@ -5,4 +5,5 @@ grid.ismaster=False
 grid.master=
 grid.master.ip=
 grid.node.roles=node,CScpu2
+osis.key=myencryptionkey
 grid.master.superadminpasswd=6bde6ce08268a6d58ba96f27402bd7d4
