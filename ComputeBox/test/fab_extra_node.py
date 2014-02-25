@@ -2,7 +2,7 @@ from fabric.api import run, put, reboot
 import os
 
 def install_compute_node(hostname, workspace):
-        run('apt-get update')
+    run('apt-get update')
     run('apt-get install python-pip python2.7 python-dev ssh mercurial ipython python-requests -y')
     run('pip install https://bitbucket.org/jumpscale/jumpscale_core/get/%s.zip' % jumpscalebranch)
     
