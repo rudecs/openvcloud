@@ -65,11 +65,22 @@ class billingengine_billingengine(j.code.classGetBase()):
         self.cloudbrokermodels.credittransaction.set(creditTransaction)
     
     def _find_earliest_billable_action_time(self, accountId):
-        #TODO
-        #get cloudspaces
-        #find machine with earliest creationtime and cloudspaceid in cloudspaces
-        #return machine.creationtime
-        pass
+        query = {'fields': ['id', 'name', 'accountId']}
+        query['query'] = {'term': {"accountId": accountId}}
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        cloudspaces = [res['fields'] for res in results]
+        
+        cloudspaceterms = []
+        for cloudspace in cloudspaces:
+            cloudspaceterms.append({'term':{'cloudspaceId':cloudspace['id']}})
+        query = {'fields':['id','creationTime']}
+        query['query'] = {'bool':{'should':cloudspaceterms}}
+        query['size'] = 1
+        query['sort'] = [{ "creationTime" : {'order':'asc', 'ignore_unmapped' : True}}]
+        
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        return results[0]['creationTime'] if len(results) > 0 else None
+
     
     def _create_empty_billing_statements(self, fromTime, untilTime):
         untilMonthDate = datetime.utcfromtimestamp(untilTime).replace(day=1,minute=0,second=0,microsecond=0)
@@ -111,6 +122,9 @@ class billingengine_billingengine(j.code.classGetBase()):
             next_billing_statement_time = _addMonth(last_billing_statement.time)
         else:
             next_billing_statement_time = self._find_earliest_billable_action_time(accountId)
+        
+        if next_billing_statement_time is None:
+            next_billing_statement_time = now
             
         for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now):
             self._update_usage(billing_statement)
