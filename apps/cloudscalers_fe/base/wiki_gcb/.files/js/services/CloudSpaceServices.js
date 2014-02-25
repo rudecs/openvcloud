@@ -9,6 +9,12 @@ angular.module('cloudscalers.services')
             			 });
 
             },
+            listdataLocations: function() {
+                return $http.get(cloudspaceconfig.apibaseurl + '/dataLocations/list').then(
+                        function(result){
+                            return result.data;
+                        })
+            },
             current: function() {
                 return SessionData.getSpace();
             },
