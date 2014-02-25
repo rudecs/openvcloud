@@ -27,7 +27,7 @@ def install_compute_node(hostname, workspace,jumpscalebranch):
     put(os.path.join(workspace, 'ComputeBox/test/configurations/', hostname, 'grid_extra_node.hrd'), '/opt/jumpscale/cfg/hrd/grid.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/system_root_credentials.hrd'), '/opt/jumpscale/cfg/hrd/system_root_credentials.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/', hostname, 'elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
-    put(os.path.join(workspace, 'ComputeBox/test/configurations/agent.hrd'), '/opt/jumpscale/cfg/hrd/agent.hrd')
+    put(os.path.join(workspace, 'ComputeBox/test/configurations/sentry.hrd'), '/opt/jumpscale/cfg/hrd/sentry.hrd')
 
     run('jpackage install --name grid')
 
