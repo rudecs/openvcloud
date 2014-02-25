@@ -4,7 +4,7 @@ import os
 def install_compute_node(hostname, workspace):
     # install prerequisites
     run('apt-get update')
-    run('apt-get install python-pip python2.7 python-dev ssh mercurial ipython -y')
+    run('apt-get install python-pip python2.7 python-dev ssh mercurial ipython python-requests -y')
     run('pip install https://bitbucket.org/jumpscale/jumpscale_core/get/default.zip')
     
     #Update sources.cfg and bitbucket.cfg
