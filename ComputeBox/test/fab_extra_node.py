@@ -2,10 +2,9 @@ from fabric.api import run, put, reboot
 import os
 
 def install_compute_node(hostname, workspace):
-    # install prerequisites
-    run('apt-get update')
+        run('apt-get update')
     run('apt-get install python-pip python2.7 python-dev ssh mercurial ipython python-requests -y')
-    run('pip install https://bitbucket.org/jumpscale/jumpscale_core/get/default.zip')
+    run('pip install https://bitbucket.org/jumpscale/jumpscale_core/get/%s.zip' % jumpscalebranch)
     
     #Update sources.cfg and bitbucket.cfg
     run('mkdir -p /opt/jumpscale/cfg/jpackages')
@@ -16,11 +15,13 @@ def install_compute_node(hostname, workspace):
     run('mkdir -p /opt/jumpscale/cfg/jsconfig')
     put(os.path.join(workspace, 'ComputeBox/test/bitbucket.cfg'), '/opt/jumpscale/cfg/jsconfig/')
 
-    run('jpackage_update')
+    run('jpackage mdupdate')
 
-    run('jpackage_install --name compute_os_base')
+    run('jpackage install --name core')
+    run('jpackage install --name compute_os_base')
 
     reboot(wait=300)
+    run('apt-get update')
 
     put(os.path.join(workspace, 'ComputeBox/test/configurations/',hostname,'cloudscalers_compute_extra_node.hrd'), '/opt/jumpscale/cfg/hrd/cloudscalers_compute_1.0.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/', hostname, 'grid_extra_node.hrd'), '/opt/jumpscale/cfg/hrd/grid.hrd')
@@ -28,10 +29,10 @@ def install_compute_node(hostname, workspace):
     put(os.path.join(workspace, 'ComputeBox/test/configurations/', hostname, 'elasticsearch.hrd'), '/opt/jumpscale/cfg/hrd/elasticsearch.hrd')
     put(os.path.join(workspace, 'ComputeBox/test/configurations/agent.hrd'), '/opt/jumpscale/cfg/hrd/agent.hrd')
 
-    run('jpackage_install --name grid')
+    run('jpackage install --name grid')
 
-    run('jpackage_install --name computenode')
-    run('jpackage_install --name cloudbroker_node')
+    run('jpackage install --name computenode')
+    run('jpackage install --name cloudbroker_node')
 
-    run('jsprocess_startAllReset')
+    run('jsprocess start')
 
