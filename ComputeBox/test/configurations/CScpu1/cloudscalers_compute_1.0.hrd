@@ -7,7 +7,7 @@ cloudscalers.publicrouter = 10.224.254.254
 cloudscalers.publicdns = 8.8.8.8
 cloudscalers.publicsubnet = 10.224.0.0/16
 
-cloudscalers.compute.oob_interface=mgmt
+cloudscalers.compute.oob_interface=eth6
 cloudscalers.compute.pub_interface=eth7
 cloudscalers.compute.pub_ip=10.240.241.1
 
