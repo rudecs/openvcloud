@@ -1,5 +1,5 @@
 from JumpScale import j
-j.application.start('cryptopaymentprocessor')
+j.application.start('cryptopaymentadmin')
 
 import JumpScale.portal
 
