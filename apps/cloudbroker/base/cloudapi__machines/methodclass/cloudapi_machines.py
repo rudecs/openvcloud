@@ -60,7 +60,7 @@ class cloudapi_machines(object):
             machine.status = newstatus
             self.models.vmachine.set(machine)
         tags = str(machineId)
-        j.logger.log(actiontype, category='machine.history.ui', tags=tags)
+        j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
         return method(node)
 
     @authenticator.auth(acl='X')
@@ -453,7 +453,7 @@ class cloudapi_machines(object):
            ctx.start_response('409 Conflict', [])
            return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
-        j.logger.log('Sanpshot rolled back', category='machine.history.ui', tags=tags)
+        j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
     @authenticator.auth(acl='W')
