@@ -37,17 +37,19 @@ class billingengine_billingengine(j.code.classGetBase()):
         query['sort'] = [{ "fromTime" : {'order':'desc', 'ignore_unmapped' : True}}]
         results = self.billingenginemodels.billingstatement.find(ujson.dumps(query))['result']
         if len(results) > 0:
-            return self.billingenginemodels.billingstatement.get(results[0]['id'])
+            return self.billingenginemodels.billingstatement.get(results[0]['fields']['id'])
         else:
             return None
 
     def _update_usage(self, billing_statement):
         
         query = {'fields': ['id', 'name', 'accountId']}
-        query['query'] = {'term': {"accountId": accountId}}
+        query['query'] = {'term': {'accountId': billing_statement.accountId}}
         results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         
+        billing_statement.totalCost = 0.0
+
         for cloudspace in cloudspaces:
             query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId']}
             
@@ -101,13 +103,13 @@ class billingengine_billingengine(j.code.classGetBase()):
     
     def _get_credit_transaction(self, currency, reference):
         query = {'fields': ['id', 'currency','reference']}
-        query['query'] = {'bool':{'must':[{'term': {"currency": currency.lower()}},{'term':{ 'reference':reference.lower()}}]}}
+        query['query'] = {'bool':{'must':[{'term': {"currency": currency.lower()}},{'term':{ 'reference':reference}}]}}
         transactions = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
-        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['id'])   
+        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['fields']['id'])   
 
     def _save_billing_statement(self,billing_statement):
-        self.billingenginemodels.billingstatement.set(biling_statement)
-        creditTransaction = self._get_credit_transaction('USD', reference)
+        self.billingenginemodels.billingstatement.set(billing_statement)
+        creditTransaction = self._get_credit_transaction('USD', billing_statement.id)
         if creditTransaction is None:
             creditTransaction = self.cloudbrokermodels.credittransaction.new()
             creditTransaction.currency = 'USD'
@@ -123,7 +125,6 @@ class billingengine_billingengine(j.code.classGetBase()):
         query['query'] = {'term': {"accountId": accountId}}
         results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
-        
         cloudspaceterms = []
         for cloudspace in cloudspaces:
             cloudspaceterms.append({'term':{'cloudspaceId':cloudspace['id']}})
@@ -133,20 +134,22 @@ class billingengine_billingengine(j.code.classGetBase()):
         query['sort'] = [{ "creationTime" : {'order':'asc', 'ignore_unmapped' : True}}]
         
         results = self.cloudbrokermodels.vmachine.find(ujson.dumps(query))['result']
-        return results[0]['creationTime'] if len(results) > 0 else None
+        return results[0]['fields']['creationTime'] if len(results) > 0 else None
 
     
-    def _create_empty_billing_statements(self, fromTime, untilTime):
+    def _create_empty_billing_statements(self, fromTime, untilTime, accountId):
         untilMonthDate = datetime.utcfromtimestamp(untilTime).replace(day=1,minute=0,second=0,microsecond=0)
         untilMonthTime = calendar.timegm(untilMonthDate.timetuple())
         fromMonthDate = datetime.utcfromtimestamp(fromTime).replace(day=1,minute=0,second=0,microsecond=0)
         fromMonthTime = calendar.timegm(fromMonthDate.timetuple())
         billingstatements = []
         while (fromMonthTime < untilMonthTime):
-            nextMontTime = self._addMonth(fromMonthTime)
-            billingstatement = self.billingenginemodels.bilingstatement.new()
+            nextMonthTime = self._addMonth(fromMonthTime)
+            billingstatement = self.billingenginemodels.billingstatement.new()
             billingstatement.fromTime = fromMonthTime
             billingstatement.untilTime = nextMonthTime
+            billingstatement.accountId = accountId
+            billingstatement.cloudspaces = []
             billingstatements.append(billingstatement)
             fromMonthTime = nextMonthTime
     
@@ -173,14 +176,14 @@ class billingengine_billingengine(j.code.classGetBase()):
         if not last_billing_statement is None:
             self._update_usage(last_billing_statement)
             self._save_billing_statement(last_billing_statement)
-            next_billing_statement_time = _addMonth(last_billing_statement.time)
+            next_billing_statement_time = self._addMonth(last_billing_statement.fromTime)
         else:
             next_billing_statement_time = self._find_earliest_billable_action_time(accountId)
         
         if next_billing_statement_time is None:
             next_billing_statement_time = now
             
-        for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now):
+        for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now, accountId):
             self._update_usage(billing_statement)
             self._save_billing_statement(billing_statement)
             
