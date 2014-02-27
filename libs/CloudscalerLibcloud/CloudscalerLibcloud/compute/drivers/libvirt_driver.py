@@ -105,8 +105,7 @@ class CSLibvirtNodeDriver():
             if job['state'] == 'NOWORK':
                 raise RuntimeError('Could not find agent with role:%s' %  role)
             if job['result']:
-                eco = j.errorconditionhandler.getErrorConditionObject(job["result"])
-                raise RuntimeError("Could not execute %s for role:%s, error was:%s"%(name_,role,eco))
+                raise RuntimeError("Could not execute %s for role:%s, error was:%s"%(name_,role,job['result']))
         if wait:
             return job['result']
         else:
