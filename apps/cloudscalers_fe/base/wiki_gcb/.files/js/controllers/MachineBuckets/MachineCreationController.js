@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', '$alert', '$rootScope', 'LoadingDialog', function($scope, $timeout, $location, $window, Machine, $alert, $rootScope, LoadingDialog) {
+    .controller('MachineCreationController', ['$scope', '$timeout', '$location', '$window', 'Machine', '$rootScope', 'LoadingDialog','$ErrorResponseAlert', function($scope, $timeout, $location, $window, Machine, $rootScope, LoadingDialog,$ErrorResponseAlert) {
         $scope.machine = {
             name: '',
             description: '',
@@ -35,10 +35,6 @@ angular.module('cloudscalers.controllers')
             $location.path('/edit/' + id + '/console');
         };
 
-        $scope.createError = function(response){
-            $alert(response.data);
-        }
-
         $scope.saveNewMachine = function() {
             LoadingDialog.show('Creating')
             Machine.create($scope.currentSpace.id, $scope.machine.name, $scope.machine.description, 
@@ -52,7 +48,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $scope.createError(reason);
+                    $ErrorResponseAlert(reason);
                 }
             );
         };
