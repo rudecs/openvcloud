@@ -121,7 +121,7 @@ class billingengine_billingengine(j.code.classGetBase()):
     def _find_earliest_billable_action_time(self, accountId):
         query = {'fields': ['id', 'name', 'accountId']}
         query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         
         cloudspaceterms = []
@@ -132,7 +132,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         query['size'] = 1
         query['sort'] = [{ "creationTime" : {'order':'asc', 'ignore_unmapped' : True}}]
         
-        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        results = self.cloudbrokermodels.vmachine.find(ujson.dumps(query))['result']
         return results[0]['creationTime'] if len(results) > 0 else None
 
     
@@ -141,7 +141,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         untilMonthTime = calendar.timegm(untilMonthDate.timetuple())
         fromMonthDate = datetime.utcfromtimestamp(fromTime).replace(day=1,minute=0,second=0,microsecond=0)
         fromMonthTime = calendar.timegm(fromMonthDate.timetuple())
-        billingstatments = []
+        billingstatements = []
         while (fromMonthTime < untilMonthTime):
             nextMontTime = self._addMonth(fromMonthTime)
             billingstatement = self.billingenginemodels.bilingstatement.new()
@@ -170,7 +170,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         now = int(time.time())
         last_billing_statement = self._get_last_billing_statement(accountId)
         next_billing_statement_time = None
-        if not last_transaction_statement is None:
+        if not last_billing_statement is None:
             self._update_usage(last_billing_statement)
             self._save_billing_statement(last_billing_statement)
             next_billing_statement_time = _addMonth(last_billing_statement.time)
