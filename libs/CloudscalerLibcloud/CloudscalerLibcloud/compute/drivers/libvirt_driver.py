@@ -66,6 +66,7 @@ class CSLibvirtNodeDriver():
             ram=size['memory'],
             bandwidth=0,
             price=0,
+            extra={'vcpus': size['vcpus']},
             driver=self,
             disk=size['disk'])
 
@@ -182,13 +183,11 @@ class CSLibvirtNodeDriver():
         if auth:
             #At this moment we handle only NodeAuthPassword
             password = auth.password
-            #userdata = {'password': password, 'chpasswd': { 'expire': False }, 'ssh_pwauth': True}
-            hash_pass = self.generate_password_hash(password)
             if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
-                userdata = {'password': password, 'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True, 'chpasswd': {'expire': False }}               
+                userdata = {'password': password, 'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True, 'chpasswd': {'expire': False }}
                 metadata = {'local-hostname': name}
             else:
-                userdata = {}   
+                userdata = {}
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
         diskname = self._create_disk(name, size, image)
@@ -205,11 +204,11 @@ class CSLibvirtNodeDriver():
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
         else:
             machinetemplate = self.env.get_template("machine_iso.xml")
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': 1, 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
 
 
         # 0 means default behaviour, e.g machine is auto started.
