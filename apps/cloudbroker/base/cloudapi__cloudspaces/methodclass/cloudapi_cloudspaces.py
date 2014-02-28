@@ -14,6 +14,7 @@ class cloudapi_cloudspaces(object):
         self.appname = "cloudapi"
         self._cb = None
         self._models = None
+        self.libvirt_actor = j.apps.libcloud.libvirt 
 
     @property
     def cb(self):
@@ -64,6 +65,7 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        networkid = self.libvirt_actor.getFreeNetworkId()
         cs = self.cb.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -73,6 +75,7 @@ class cloudapi_cloudspaces(object):
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
+        cs.networkId = networkid
         return self.models.cloudspace.set(cs)[0]
 
     @authenticator.auth(acl='A')
@@ -92,6 +95,8 @@ class cloudapi_cloudspaces(object):
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
             return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
+        networkid = self.models.cloudspace.get(cloudspaceId).networkId
+        self.libvirt_actor.unregisterNode(networkid)
         return self.models.cloudspace.delete(cloudspaceId)
 
 

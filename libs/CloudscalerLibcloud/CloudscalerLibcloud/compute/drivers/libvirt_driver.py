@@ -150,7 +150,7 @@ class CSLibvirtNodeDriver():
         return crypt.crypt(password, '$6$' + salt)
 
 
-    def create_node(self, name, size, image, location=None, auth=None):
+    def create_node(self, name, size, image, location=None, auth=None, networkid=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -194,21 +194,21 @@ class CSLibvirtNodeDriver():
         if not diskname or diskname == -1:
             #not enough free capcity to create a disk on this node
             return -1
-        return self._create_node(name, diskname, size, metadata_iso)
+        return self._create_node(name, diskname, size, metadata_iso, networkid)
 
-    def _create_node(self, name, diskname, size, metadata_iso=None):
+    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = self.backendconnection.environmentid
-
         macaddress = self.backendconnection.getMacAddress()
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
+        networkname = 'default_%s' % networkid
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
         else:
             machinetemplate = self.env.get_template("machine_iso.xml")
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
 
 
         # 0 means default behaviour, e.g machine is auto started.
@@ -221,16 +221,17 @@ class CSLibvirtNodeDriver():
             return -1
 
         vmid = result['id']
-        dnsmasq = DNSMasq()
-        namespace = 'ns-%s' % vxlan
-        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
+        #dnsmasq = DNSMasq()
+        #namespace = 'ns-%s' % vxlan
+        #dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
 
         ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
-        dnsmasq.addHost(macaddress, ipaddress,name)
+        #dnsmasq.addHost(macaddress, ipaddress,name)
 
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
+
 
     def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)

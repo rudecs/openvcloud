@@ -38,12 +38,34 @@
         var:ipaddress str,,string representing the ipaddres to release
         result:bool
 
+    method: getFreeNetworkId
+    """
+    Get a free NetworkId
+    """
+        result: free ipaddress composed as int
+
+    method: releaseNetworkId
+    """
+    Release a networkid.
+    """
+        var:networkid id,,int representing the netowrkid to release
+        result:bool
+
+
     method: addFreeSubnet
     """
     Add a free subnet to the range
     """
         var:subnet str,,subnet in CIDR notation
         result:bool
+
+    method: registerNetworkIdRange
+    """
+    Add a new network idrange
+    """
+        var:start int,,start of the range
+        var:end int,,end of the range
+        result: bool
 
     method: registerNode
     """
