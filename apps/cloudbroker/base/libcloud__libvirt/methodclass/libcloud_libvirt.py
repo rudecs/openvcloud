@@ -69,37 +69,40 @@ class libcloud_libvirt(object):
         sizes = [res['fields'] for res in results]
         return sizes
 
-    def addFreeSubnet(self, subnet, **kwargs):
+    def addFreeSubnet(self, subnet, networkid, **kwargs):
         """
         Add a free subnet to the range
         param:subnet subnet in CIDR notation e.g network/subnetmask
         result bool
         """
+        key = 'freeipaddresses_%s'% networkid
         try:
-            ipaddresses = self.blobdb.get('freeipaddresses')
+            ipaddresses = self.blobdb.get(key)
         except:
             #no list yet
             ipaddresses = []
-            self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+            self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         net = netaddr.IPNetwork(subnet)
         netrange = net[2:-2]
         for i in netrange:
             if i != net.broadcast:
                 ipaddresses.append(str(i))
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
-    def getFreeIpaddress(self, **kwargs):
+    def getFreeIpaddress(self, networkid, **kwargs):
         """
         Get a free Ipaddress from one of ipadress ranges
+        param: networkid, id of the network
         result
         """
-        ipaddresses = self.blobdb.get('freeipaddresses')
+        key = 'freeipaddresses_%s'% networkid
+        ipaddresses = self.blobdb.get(key)
         if ipaddresses:
             ipaddress = ipaddresses.pop(0)
         else:
             ipaddress = None
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return ipaddress
 
     def getFreeMacAddress(self, **kwargs):
@@ -121,15 +124,16 @@ class libcloud_libvirt(object):
 
     
 
-    def releaseIpaddress(self, ipaddress, **kwargs):
+    def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
         Release a ipaddress.
         param:ipaddress string representing the ipaddres to release
         result bool
         """
-        ipaddresses = self.blobdb.get('freeipaddresses')
+        key = 'freeipaddresses_%s'% networkid
+        ipaddresses = self.blobdb.get(key)
         ipaddresses.append(ipaddress)
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
     def registerNetworkIdRange(self, start, end, **kwargs):
@@ -177,17 +181,18 @@ class libcloud_libvirt(object):
         self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
         return True 
 
-    def registerNode(self, id, macaddress, **kwargs):
+    def registerNode(self, id, macaddress, networkid, **kwargs):
        """
        Register some basic node information E.g ipaddress
        param:id id of the node
        result str
        """
-       ipaddress = self.getFreeIpaddress()
+       ipaddress = self.getFreeIpaddress(networkid)
        node = self._models.node.new()
        node.id = id
        node.ipaddress = ipaddress
        node.macaddress = macaddress
+       node.networkid = networkid
        self._models.node.set(node)
        return ipaddress
 
@@ -198,7 +203,7 @@ class libcloud_libvirt(object):
         result bool
         """
         node = self._models.node.get(id)
-        self.releaseIpaddress(node.ipaddress)
+        self.releaseIpaddress(node.ipaddress, node.networkid)
         self._models.node.delete(id)
         return True
 

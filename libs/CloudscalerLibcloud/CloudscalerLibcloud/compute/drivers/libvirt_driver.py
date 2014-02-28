@@ -221,13 +221,13 @@ class CSLibvirtNodeDriver():
             return -1
 
         vmid = result['id']
-        #dnsmasq = DNSMasq()
-        #namespace = 'ns-%s' % vxlan
-        #dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
-
-        ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
-        #dnsmasq.addHost(macaddress, ipaddress,name)
-
+        dnsmasq = DNSMasq()
+        nsid = '%04d' % networkid
+        namespace = 'ns-%s' % nsid
+        config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        dnsmasq.setConfigPath(nsid, config_path)
+        ipaddress = self.backendconnection.registerMachine(vmid, macaddress, networkid)
+        dnsmasq.addHost(macaddress, ipaddress,name)
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
@@ -282,10 +282,12 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        backendnode = self.backendconnection.getNode(node.id)
         dnsmasq = DNSMasq()
-        namespace = 'ns-%s' % self.backendconnection.environmentid
-        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
+        backendnode = self.backendconnection.getNode(node.id)
+        nsid = '%04d' % backendnode['networkid']
+        namespace = 'ns-%s' % nsid
+        config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        dnsmasq.setConfigPath(nsid, config_path)
         dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
         job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)

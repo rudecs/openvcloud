@@ -77,8 +77,8 @@ class CloudBrokerConnection():
      def getMacAddress(self):
          return self.libvirt_actor.getFreeMacAddress()
 
-     def registerMachine(self, id, macaddress):
-         return self.libvirt_actor.registerNode(id, macaddress)
+     def registerMachine(self, id, macaddress, networkid):
+         return self.libvirt_actor.registerNode(id, macaddress, networkid)
 
      def unregisterMachine(self, id):
          return self.libvirt_actor.unregisterNode(id)

@@ -28,13 +28,15 @@
     method: getFreeIpaddress
     """
     Get a free Ipaddress from one of ipadress ranges
-    """
+    """ 
+        var:networkid int,, id representing the network
         result: free ipaddress composed as string
 
     method: releaseIpaddress
     """
     Release a ipaddress.
-    """
+    """ 
+        var:networkid int,, id representing the network
         var:ipaddress str,,string representing the ipaddres to release
         result:bool
 
@@ -57,6 +59,7 @@
     Add a free subnet to the range
     """
         var:subnet str,,subnet in CIDR notation
+        var:networkid int,,id of the network
         result:bool
 
     method: registerNetworkIdRange
@@ -73,6 +76,7 @@
     """ 
         var:id str,,id of the node
         var:macaddress str,,macaddress of the node
+        var:networkid str,, id of the network
         result:str
 
     method: unregisterNode

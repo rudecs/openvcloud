@@ -16,19 +16,21 @@ class libcloud_libvirt(j.code.classGetBase()):
 
         pass
 
-    def addFreeSubnet(self, subnet, **kwargs):
+    def addFreeSubnet(self, subnet, networkid, **kwargs):
         """
         Add a free subnet to the range
         param:subnet subnet in CIDR notation
+        param:networkid id of the network
         result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method addFreeSubnet")
     
 
-    def getFreeIpaddress(self, **kwargs):
+    def getFreeIpaddress(self, networkid, **kwargs):
         """
         Get a free Ipaddress from one of ipadress ranges
+        param:networkid id representing the network
         result 
         """
         #put your code here to implement this method
@@ -123,11 +125,12 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method registerNetworkIdRange")
     
 
-    def registerNode(self, id, macaddress, **kwargs):
+    def registerNode(self, id, macaddress, networkid, **kwargs):
         """
         Register some basic node information E.g ipaddress
         param:id id of the node
         param:macaddress macaddress of the node
+        param:networkid id of the network
         result str
         """
         #put your code here to implement this method
@@ -144,9 +147,10 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method registerVNC")
     
 
-    def releaseIpaddress(self, ipaddress, **kwargs):
+    def releaseIpaddress(self, networkid, ipaddress, **kwargs):
         """
         Release a ipaddress.
+        param:networkid id representing the network
         param:ipaddress string representing the ipaddres to release
         result bool
         """
