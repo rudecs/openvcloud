@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from JumpScale import j
 from JumpScale.baselib.cmdutils import ArgumentParser
+from jinja2 import Template
 import os
 
 DOMAIN = 'cloudscalers'
@@ -26,7 +27,6 @@ def cleanup(jp):
 
 
 def writeConfigure(jp, name, description, imagepath, type_):
-    from jinja2 import Template
     dirpath = j.system.fs.getDirName(os.path.abspath(__file__))
     tmppath = j.system.fs.joinPaths(dirpath, 'configure.tmpl')
     template = Template(j.system.fs.fileGetContents(tmppath))
