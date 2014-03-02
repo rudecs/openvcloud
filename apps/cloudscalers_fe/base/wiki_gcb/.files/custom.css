@@ -1183,7 +1183,13 @@ a.icon-remove-sign {
 [role=spinbutton] {
     outline: none;
 }
-
+.icon-spinner{
+    font-size: 24px;
+}
+#litecoinSpinner, #bitcoinSpinner{
+    height: 180px;
+    line-height: 180px;
+}
 .nav, .pagination, .carousel a {
     cursor: pointer;
 }
@@ -1197,6 +1203,9 @@ a.icon-remove-sign {
 }
 .txt-left{
     text-align: right;
+}
+.txt-center{
+    text-align: center;
 }
 /* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
 .mtm{
