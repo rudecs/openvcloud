@@ -1173,12 +1173,14 @@ a.icon-remove-sign {
     background-size: 20px;
     padding: 0;
     float: right;
-    margin: 2px;
+    margin: 7px;
 }
 
 [persistent-dropdown].dropdown-menu a.create-cloudspace {
     clear: none;
-    display: inline;
+    display: inline-block;
+    margin: 5px 0 5px 15px;
+    min-width: 77%;
 }
 [role=spinbutton] {
     outline: none;
