@@ -1,6 +1,6 @@
-# Add extra specific cloudscaler functions for libvirt libcloud driver
+#Add extra specific cloudscaler functions for libvirt libcloud driver
 
-from CloudscalerLibcloud.utils import connection
+from CloudscalerLibcloud.utils import connection, routeros
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
 from JumpScale.baselib.dnsmasq import DNSMasq
@@ -221,13 +221,14 @@ class CSLibvirtNodeDriver():
             return -1
 
         vmid = result['id']
-        dnsmasq = DNSMasq()
-        nsid = '%04d' % networkid
-        namespace = 'ns-%s' % nsid
-        config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
-        dnsmasq.setConfigPath(nsid, config_path)
-        ipaddress = self.backendconnection.registerMachine(vmid, macaddress, networkid)
-        dnsmasq.addHost(macaddress, ipaddress,name)
+        #dnsmasq = DNSMasq()
+        #nsid = '%04d' % networkid
+        #namespace = 'ns-%s' % nsid
+        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        #dnsmasq.setConfigPath(nsid, config_path)
+        self.backendconnection.registerMachine(vmid, macaddress, networkid)
+        #dnsmasq.addHost(macaddress, ipaddress,name)
+        ipaddress = 'Undefined'
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
@@ -282,16 +283,27 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        dnsmasq = DNSMasq()
+        #dnsmasq = DNSMasq()
         backendnode = self.backendconnection.getNode(node.id)
-        nsid = '%04d' % backendnode['networkid']
-        namespace = 'ns-%s' % nsid
-        config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
-        dnsmasq.setConfigPath(nsid, config_path)
-        dnsmasq.removeHost(backendnode['macaddress'])
+        #nsid = '%04d' % backendnode['networkid']
+        #namespace = 'ns-%s' % nsid
+        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        #dnsmasq.setConfigPath(nsid, config_path)
+        #dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
         job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
         return True
+    
+    def ex_getIpAddress(self, node):
+        backendnode = self.backendconnection.getNode(node.id)
+        networkid = backendnode.networkid
+        macaddress = backendnode.macaddress
+        ipaddress = '172.16.135.%s' % networkid
+        #ipaddress = '10.240.241.100'
+        ro = routeros.routeros(ipaddress)
+        ipaddress = ro.getIpaddress(macaddress)
+        ro.close()
+        return ipaddress
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC()

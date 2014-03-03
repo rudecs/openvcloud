@@ -55,6 +55,16 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method getFreeNetworkId")
     
 
+    def getNode(self, id, **kwargs):
+        """
+        Get a node
+        param:id id of the node
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method getNode")
+    
+
     def linkImage(self, imageid, resourceprovider, **kwargs):
         """
         Link a image to a resource provider

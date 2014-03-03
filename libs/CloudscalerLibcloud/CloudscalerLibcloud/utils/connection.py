@@ -72,7 +72,7 @@ class CloudBrokerConnection():
          return self.libvirt_actor.listNodes()
 
      def getNode(self,id):
-         return self.libvirt_actor.model_node_get(id)
+         return self.libvirt_actor.getNode(id)
 
      def getMacAddress(self):
          return self.libvirt_actor.getFreeMacAddress()

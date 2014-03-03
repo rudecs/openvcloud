@@ -207,6 +207,15 @@ class libcloud_libvirt(object):
         self._models.node.delete(id)
         return True
 
+    def getNode(self, id, **kwargs):
+        """
+        Get a node 
+        param: id of the node to get 
+        result node
+        """
+        node = self._models.node.get(id)
+        return node
+
     def listNodes(self, **kwargs):
         """
         List all nodes

@@ -346,7 +346,12 @@ class cloudapi_machines(object):
         machine = self.models.vmachine.get(machineId)
         storage = self._getStorage(machine.__dict__)
         node = provider.client.ex_getDomain(node)
-
+        if machine.nics:
+            if machine.nics[0]['ipAddress'] == 'Undefined':
+                ipaddress = provider.client.ex_getIpAddress(node)
+                if ipaddress:
+                    machine.nics[0]['ipAddress']= ipaddress
+                    self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,

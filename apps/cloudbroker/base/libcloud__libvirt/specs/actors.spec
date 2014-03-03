@@ -78,6 +78,13 @@
         var:macaddress str,,macaddress of the node
         var:networkid str,, id of the network
         result:str
+    
+    method: getNode
+    """
+    Get a node
+    """
+        var:id str,,id of the node
+        result:str
 
     method: unregisterNode
     """
