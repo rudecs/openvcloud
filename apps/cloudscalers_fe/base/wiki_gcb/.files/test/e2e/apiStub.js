@@ -546,5 +546,11 @@ defineApiStub = function ($httpBackend) {
         }
         
     });
+
+    var storages = [
+       {url: "https://mybucketname.uss3.vscalers.com", accesskey:"ALSECKCKDKMKC5GUSNFA", size: 1984995885, cloudspaceId: 1},
+       {url: "https://mybucketname.uss3.vscalers.com", accesskey:"bbbbbbbbbbbbbbbbbbbb", size: 2984995885, cloudspaceId: 1},
+    ];
+    $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 };
 

@@ -88,6 +88,11 @@
     									<div class="controls">
     										<select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
                                             </select>
+                                            <div class="controls mtl">
+                                              <select ng-model="dataCenterLocation" required ng-options="dataLocation.name for dataLocation in dataLocations">
+                                            </select>
+                                              {[ dataCenterLocation.name ]}
+                                            </div>
                                         </div>
   									</div>
                    					<div class="control-group">
@@ -268,7 +273,9 @@ h2. loading
   	<script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/services/StorageServices.js" type="text/javascript"></script>
   	<script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/StorageController.js" type="text/javascript"></script>
 }}
