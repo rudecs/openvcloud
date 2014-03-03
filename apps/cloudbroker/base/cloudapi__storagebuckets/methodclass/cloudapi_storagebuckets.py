@@ -10,18 +10,38 @@ class cloudapi_storagebuckets(j.code.classGetBase()):
         self._te={}
         self.actorname="storagebuckets"
         self.appname="cloudapi"
-        #cloudapi_storagebuckets_osis.__init__(self)
-    
+        self._cb = None
+        self._models = None
+        j.logger.setLogTargetLogForwarder()
 
-        pass
+        self.osisclient = j.core.osis.getClient(user='root')
+        self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
 
-    def list(self, cloudspaceId, type, **kwargs):
+    @property
+    def cb(self):
+        if not self._cb:
+            self._cb = j.apps.cloud.cloudbroker
+        return self._cb
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel()
+        return self._models
+
+    @authenticator.auth(acl='R')
+    def list(self, cloudspaceId, storagebuckettype, **kwargs):
         """
         List the storage buckets in a space.
         param:cloudspaceId id of space in which machine exists
-        param:type when not empty will filter on type types are (S3)
+        param:storagebuckettype when not empty will filter on type types are (S3)
         result list
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method list")
+        
+        term = dict()
+        query = {'fields':['id','cloudspaceId','url','name','location','accesskey']}
+        query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
+        results = self.models.s3bucket.find(ujson.dumps(query))['result']
+        storagebuckets = [res['fields'] for res in results]
+        return storagebuckets
     

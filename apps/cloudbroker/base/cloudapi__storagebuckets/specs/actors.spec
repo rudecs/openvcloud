@@ -8,5 +8,5 @@
         List the storage buckets in a space.
         """
         var:cloudspaceId int,,id of space in which machine exists @tags: optional 
-        var:type str,,when not empty will filter on type types are (S3) @tags: optional 
+        var:storagebuckettype str,,when not empty will filter on type. Storagebuckettypes are (S3) @tags: optional 
         result:list 
