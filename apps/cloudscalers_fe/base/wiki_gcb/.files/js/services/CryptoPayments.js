@@ -13,7 +13,7 @@ angular.module('cloudscalers.services')
                             return info;
                         },
                         function(reason){
-                            return q.reject(reason);
+                            return $q.reject(reason);
                         }
                     );
             }

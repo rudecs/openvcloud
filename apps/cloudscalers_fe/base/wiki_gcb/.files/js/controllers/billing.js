@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('BillingController', ['$scope', '$modal', 'Account', '$timeout', function($scope, $modal, Account, $timeout) {
+    .controller('BillingController', ['$scope', '$modal', 'Account', '$timeout', '$ErrorResponseAlert', function($scope, $modal, Account, $timeout, $ErrorResponseAlert) {
    
 
     $scope.credit = "Unavailable";
@@ -31,7 +31,7 @@ angular.module('cloudscalers.controllers')
     $scope.refreshCredit();
     
     
-    var bitcoinPaymentController = function($scope, $modalInstance, CryptoPayments){
+    var bitcoinPaymentController = function($scope, $modalInstance, CryptoPayments, $ErrorResponseAlert){
         $scope.ok = function(){
             $modalInstance.close('confirmed');
         }
@@ -43,10 +43,11 @@ angular.module('cloudscalers.controllers')
             $scope.totalBtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
         
             $scope.paymenturl = 'bitcoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalBtc;
-        }, function(error) {
+        }, function(reason) {
             $scope.spinnerShow = true;
             $scope.bitcoin = false;
-            $scope.bitcoinError = true;
+            // $scope.bitcoinError = true;
+            $ErrorResponseAlert(reason);
         }
         );
             
@@ -62,7 +63,7 @@ angular.module('cloudscalers.controllers')
                 }
             });
     }
-    var litecoinPaymentController = function($scope, $modalInstance, CryptoPayments){
+    var litecoinPaymentController = function($scope, $modalInstance, CryptoPayments, $ErrorResponseAlert){
         $scope.ok = function(){
             $modalInstance.close('confirmed');
         }
@@ -74,10 +75,11 @@ angular.module('cloudscalers.controllers')
             $scope.totalLtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
             
             $scope.paymenturl = 'litecoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalLtc;
-        }, function(error) {
+        }, function(reason) {
             $scope.spinnerShow = true;
             $scope.litecoin = false;
-            $scope.litecoinError = true;
+            // $scope.litecoinError = true;
+            $ErrorResponseAlert(reason);
         });
         
     }

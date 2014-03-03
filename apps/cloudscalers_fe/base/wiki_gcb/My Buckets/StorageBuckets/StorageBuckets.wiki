@@ -14,9 +14,9 @@ vScalers presents Storage Buckets, providing you you with a secure, distributed 
 	    </tr>
 	    <tbody>
 	      <tr ng-repeat="storage in storages">
-	        <td><a href="{[ storage.url ]}">{[ storage.url ]}</a> </td>
+	        <td><a href="{[ storage.url ]}">{[ storage.url ]}</a></td>
 	        <td>{[ storage.accesskey ]}</td>
-	        <td>{[ storage.size ]}</td>
+	        <td>{[ storage.size ]} bytes</td>
 	      </tr>
 	    </tbody>
 	  </table>
