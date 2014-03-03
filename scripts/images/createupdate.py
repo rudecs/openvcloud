@@ -15,7 +15,7 @@ def getJPackage(name, description):
     return j.packages.create(DOMAIN, name, version='1.0', description=description, supportedPlatforms=['generic'])
 
 def downloadImage(jp, url):
-    destination = j.system.fs.joinPaths(jp.getPathFilesPlatform('generic'), 'root', 'mnt', 'vmstor')
+    destination = j.system.fs.joinPaths(jp.getPathFilesPlatform('generic'), 'root', 'mnt', 'vmstor', 'templates')
     j.system.fs.createDir(destination)
     destinationfile = j.system.fs.joinPaths(destination, '%s.qcow2' % jp.name)
     j.system.net.download(url, destinationfile)

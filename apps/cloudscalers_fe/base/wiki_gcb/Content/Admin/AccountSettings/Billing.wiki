@@ -52,7 +52,11 @@ h2. Credit
         <div class="modal-header">
             <h3><img src="/$$space/.files/img/payment/Bitcoin-logo-with-text.png"/> payment</h3>
         </div>
+        <div id="bitcoinSpinner" ng-hide="spinnerShow" class="txt-center">
+            <span class="icon-spinner icon-spin"/>
+        </div>
         <div class="modal-body">
+            <div ng-show="bitcoin">
                 <div ng-model="creditToAdd" class="row-fluid">
                     <div class="span3">Credit:</div><div>{[creditToAdd  | currency:"$"]}</div>
                 </div>
@@ -69,6 +73,10 @@ h2. Credit
                         </a>
                     </div>
                 </div>
+            </div>
+            <div id="bitcoinError" ng-show="bitcoinError" class="alert alert-danger span5 mtl modal-body">
+                Problem with Bitcoin! :(
+            </div>
         </div>
         <div class="modal-footer">
             
@@ -80,7 +88,11 @@ h2. Credit
         <div class="modal-header">
             <h3><img src="/$$space/.files/img/payment/Litecoin-logo-with-text.png"/> payment</h3>
         </div>
+        <div id="litecoinSpinner" ng-hide="spinnerShow" class="txt-center">
+            <span class="icon-spinner icon-spin"/>
+        </div>
         <div class="modal-body">
+            <div ng-show="litecoin">
                 <div ng-model="creditToAdd" class="row-fluid">
                     <div class="span3">Credit:</div><div>{[creditToAdd  | currency:"$"]}</div>
                 </div>
@@ -97,6 +109,10 @@ h2. Credit
                         </a>
                     </div>
                 </div>
+            </div>
+            <div id="litecoinError" ng-show="litecoinError" class="alert alert-danger span5 mtl modal-body">
+                Problem with Litecoin! :(
+            </div>
         </div>
         <div class="modal-footer">
             
