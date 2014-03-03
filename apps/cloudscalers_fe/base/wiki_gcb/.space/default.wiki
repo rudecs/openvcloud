@@ -88,11 +88,6 @@
     									<div class="controls">
     										<select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
                                             </select>
-                                            <div class="controls mtl">
-                                              <select ng-model="dataCenterLocation" required ng-options="dataLocation.name for dataLocation in dataLocations">
-                                            </select>
-                                              {[ dataCenterLocation.name ]}
-                                            </div>
                                         </div>
   									</div>
                    					<div class="control-group">
