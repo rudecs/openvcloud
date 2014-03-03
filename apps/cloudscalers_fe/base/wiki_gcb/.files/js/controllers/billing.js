@@ -36,12 +36,19 @@ angular.module('cloudscalers.controllers')
             $modalInstance.close('confirmed');
         }
         CryptoPayments.getPaymentInfo($scope.currentAccount.id,'BTC').then(function(result){
+            $scope.spinnerShow = true;
+            $scope.bitcoin = true;
             $scope.paymentinfo = result;
             
             $scope.totalBtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
         
             $scope.paymenturl = 'bitcoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalBtc;
-        });
+        }, function(error) {
+            $scope.spinnerShow = true;
+            $scope.bitcoin = false;
+            $scope.bitcoinError = true;
+        }
+        );
             
     }
     
@@ -55,20 +62,22 @@ angular.module('cloudscalers.controllers')
                 }
             });
     }
-    
-
     var litecoinPaymentController = function($scope, $modalInstance, CryptoPayments){
         $scope.ok = function(){
             $modalInstance.close('confirmed');
         }
-
         CryptoPayments.getPaymentInfo($scope.currentAccount.id,'LTC').then(function(result){
+            $scope.spinnerShow = true;
+            $scope.litecoin = true;
             $scope.paymentinfo = result;
             
             $scope.totalLtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
             
             $scope.paymenturl = 'litecoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalLtc;
-            
+        }, function(error) {
+            $scope.spinnerShow = true;
+            $scope.litecoin = false;
+            $scope.litecoinError = true;
         });
         
     }

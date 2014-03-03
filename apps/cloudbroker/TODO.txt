@@ -1,5 +1,0 @@
-
-review the specs
-check if specs work
-create some example scripts using it from remote (so over API from generated client)
-I cannot fill in the classes (the one not ending with .gen, it always gets overwritten)

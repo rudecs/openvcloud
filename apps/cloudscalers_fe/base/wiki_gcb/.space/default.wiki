@@ -115,6 +115,21 @@
                         <span>Machine Buckets</span>
                     </a>
                 </li>
+                <li>
+                    <a href="../$$space/DesktopBuckets"> <i class="icon-cloud"></i>
+                        <span>Desktop Buckets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../$$space/StorageBuckets"> <i class="icon-cloud"></i>
+                        <span>Storage Buckets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../$$space/NetworkBuckets"> <i class="icon-cloud"></i>
+                        <span>Network Buckets</span>
+                    </a>
+                </li>
             </ul>
             <ul class="pull-right">
                 <li>

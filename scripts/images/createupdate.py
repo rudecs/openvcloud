@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from JumpScale import j
 from JumpScale.baselib.cmdutils import ArgumentParser
+from jinja2 import Template
 import os
 
 DOMAIN = 'cloudscalers'
@@ -14,7 +15,7 @@ def getJPackage(name, description):
     return j.packages.create(DOMAIN, name, version='1.0', description=description, supportedPlatforms=['generic'])
 
 def downloadImage(jp, url):
-    destination = j.system.fs.joinPaths(jp.getPathFilesPlatform('generic'), 'root', 'mnt', 'vmstor')
+    destination = j.system.fs.joinPaths(jp.getPathFilesPlatform('generic'), 'root', 'mnt', 'vmstor', 'templates')
     j.system.fs.createDir(destination)
     destinationfile = j.system.fs.joinPaths(destination, '%s.qcow2' % jp.name)
     j.system.net.download(url, destinationfile)
@@ -26,7 +27,6 @@ def cleanup(jp):
 
 
 def writeConfigure(jp, name, description, imagepath, type_):
-    from jinja2 import Template
     dirpath = j.system.fs.getDirName(os.path.abspath(__file__))
     tmppath = j.system.fs.joinPaths(dirpath, 'configure.tmpl')
     template = Template(j.system.fs.fileGetContents(tmppath))
