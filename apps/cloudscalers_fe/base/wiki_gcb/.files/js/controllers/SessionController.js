@@ -5,6 +5,7 @@ angular.module('cloudscalers.controllers')
         $scope.login_error = undefined;
         
         $scope.login = function() {
+            $scope.$broadcast("autofill:update");
         	var usertologin = $scope.user.username;
             User.login(usertologin, $scope.user.password).
             then(
@@ -30,4 +31,13 @@ angular.module('cloudscalers.controllers')
             $scope.user.username = angular.element('[ng-model="user.username"]').val();
             $scope.user.password =angular.element('[ng-model="user.password"]').val();
         }, 0);
-    }]);
+    }]).directive("autofill", function () {
+    return {
+        require: "ngModel",
+        link: function (scope, element, attrs, ngModel) {
+            scope.$on("autofill:update", function() {
+                ngModel.$setViewValue(element.val());
+            });
+        }
+    }
+});;

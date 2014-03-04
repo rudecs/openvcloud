@@ -7,7 +7,7 @@ defineApiStub = function ($httpBackend) {
     function LocalStorageItem(key) {
         return {
             get: function() {
-                var items = localStorage.getItem(key)
+                var items = localStorage.getItem(key);
                 if (items)
                     return JSON.parse(items);
                 return undefined;
