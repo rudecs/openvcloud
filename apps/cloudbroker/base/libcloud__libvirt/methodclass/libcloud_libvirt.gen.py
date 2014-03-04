@@ -1,8 +1,6 @@
 from JumpScale import j
-from libcloud_libvirt_osis import libcloud_libvirt_osis
 
-
-class libcloud_libvirt(libcloud_libvirt_osis):
+class libcloud_libvirt(j.code.classGetBase()):
     """
     libvirt libcloud manager.
     Contains function to access the internal model.
@@ -13,27 +11,27 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         self._te={}
         self.actorname="libvirt"
         self.appname="libcloud"
-        libcloud_libvirt_osis.__init__(self)
+        #libcloud_libvirt_osis.__init__(self)
     
 
         pass
 
-    def addFreeSubnet(self, subnet, **kwargs):
+    def addFreeSubnet(self, subnet, networkid, **kwargs):
         """
         Add a free subnet to the range
         param:subnet subnet in CIDR notation
-        result bool 
-        
+        param:networkid id of the network
+        result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method addFreeSubnet")
     
 
-    def getFreeIpaddress(self, **kwargs):
+    def getFreeIpaddress(self, networkid, **kwargs):
         """
         Get a free Ipaddress from one of ipadress ranges
-        result  
-        
+        param:networkid id representing the network
+        result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeIpaddress")
@@ -42,11 +40,29 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def getFreeMacAddress(self, **kwargs):
         """
         Get a free macaddres in this libvirt environment
-        result  
-        
+        result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeMacAddress")
+    
+
+    def getFreeNetworkId(self, **kwargs):
+        """
+        Get a free NetworkId
+        result 
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method getFreeNetworkId")
+    
+
+    def getNode(self, id, **kwargs):
+        """
+        Get a node
+        param:id id of the node
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method getNode")
     
 
     def linkImage(self, imageid, resourceprovider, **kwargs):
@@ -54,8 +70,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         Link a image to a resource provider
         param:imageid unique id of the image
         param:resourceprovider unique id of the resourceprovider
-        result bool 
-        
+        result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method linkImage")
@@ -67,8 +82,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         If no resourceid is provided, all the images are listed.
         resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
         param:resourceid optional resourceproviderid.
-        result  
-        
+        result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listImages")
@@ -77,8 +91,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def listNodes(self, **kwargs):
         """
         List all nodes
-        result list 
-        
+        result list
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listNodes")
@@ -87,8 +100,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def listResourceProviders(self, **kwargs):
         """
         List all registered resource providers
-        result list 
-        
+        result list
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listResourceProviders")
@@ -97,8 +109,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def listSizes(self, **kwargs):
         """
         List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
-        result  
-        
+        result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listSizes")
@@ -107,20 +118,30 @@ class libcloud_libvirt(libcloud_libvirt_osis):
     def listVNC(self, **kwargs):
         """
         list vnc urls
-        result  
-        
+        result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listVNC")
     
 
-    def registerNode(self, id, macaddress, **kwargs):
+    def registerNetworkIdRange(self, start, end, **kwargs):
+        """
+        Add a new network idrange
+        param:start start of the range
+        param:end end of the range
+        result 
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method registerNetworkIdRange")
+    
+
+    def registerNode(self, id, macaddress, networkid, **kwargs):
         """
         Register some basic node information E.g ipaddress
         param:id id of the node
         param:macaddress macaddress of the node
-        result str 
-        
+        param:networkid id of the network
+        result str
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerNode")
@@ -130,22 +151,31 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         register a vnc application
         param:url url of the application
-        result int 
-        
+        result int
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerVNC")
     
 
-    def releaseIpaddress(self, ipaddress, **kwargs):
+    def releaseIpaddress(self, networkid, ipaddress, **kwargs):
         """
         Release a ipaddress.
+        param:networkid id representing the network
         param:ipaddress string representing the ipaddres to release
-        result bool 
-        
+        result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseIpaddress")
+    
+
+    def releaseNetworkId(self, networkid, **kwargs):
+        """
+        Release a networkid.
+        param:networkid int representing the netowrkid to release
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method releaseNetworkId")
     
 
     def retreiveInfo(self, key, reset, **kwargs):
@@ -153,8 +183,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         get info
         param:key key of data
         param:reset reset info
-        result dict 
-        
+        result dict
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method retreiveInfo")
@@ -165,8 +194,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         store info for period of time
         param:data store data for period of time
         param:timeout timeout for data
-        result str 
-        
+        result str
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method storeInfo")
@@ -177,8 +205,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         Unlink a image from a resource provider
         param:imageid unique id of the image
         param:resourceprovider unique id of the resourceprovider
-        result bool 
-        
+        result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method unLinkImage")
@@ -188,8 +215,7 @@ class libcloud_libvirt(libcloud_libvirt_osis):
         """
         Unregister a node.
         param:id id of the node to unregister
-        result bool 
-        
+        result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method unregisterNode")

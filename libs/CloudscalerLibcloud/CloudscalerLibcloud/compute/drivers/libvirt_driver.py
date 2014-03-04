@@ -1,6 +1,6 @@
-# Add extra specific cloudscaler functions for libvirt libcloud driver
+#Add extra specific cloudscaler functions for libvirt libcloud driver
 
-from CloudscalerLibcloud.utils import connection
+from CloudscalerLibcloud.utils import connection, routeros
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
 from JumpScale.baselib.dnsmasq import DNSMasq
@@ -150,7 +150,7 @@ class CSLibvirtNodeDriver():
         return crypt.crypt(password, '$6$' + salt)
 
 
-    def create_node(self, name, size, image, location=None, auth=None):
+    def create_node(self, name, size, image, location=None, auth=None, networkid=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -194,21 +194,21 @@ class CSLibvirtNodeDriver():
         if not diskname or diskname == -1:
             #not enough free capcity to create a disk on this node
             return -1
-        return self._create_node(name, diskname, size, metadata_iso)
+        return self._create_node(name, diskname, size, metadata_iso, networkid)
 
-    def _create_node(self, name, diskname, size, metadata_iso=None):
+    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = self.backendconnection.environmentid
-
         macaddress = self.backendconnection.getMacAddress()
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
+        networkname = 'default_%s' % networkid
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
         else:
             machinetemplate = self.env.get_template("machine_iso.xml")
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
 
 
         # 0 means default behaviour, e.g machine is auto started.
@@ -221,16 +221,18 @@ class CSLibvirtNodeDriver():
             return -1
 
         vmid = result['id']
-        dnsmasq = DNSMasq()
-        namespace = 'ns-%s' % vxlan
-        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
-
-        ipaddress = self.backendconnection.registerMachine(vmid, macaddress)
-        dnsmasq.addHost(macaddress, ipaddress,name)
-
+        #dnsmasq = DNSMasq()
+        #nsid = '%04d' % networkid
+        #namespace = 'ns-%s' % nsid
+        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        #dnsmasq.setConfigPath(nsid, config_path)
+        self.backendconnection.registerMachine(vmid, macaddress, networkid)
+        #dnsmasq.addHost(macaddress, ipaddress,name)
+        ipaddress = 'Undefined'
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
+
 
     def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
@@ -281,14 +283,27 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
+        #dnsmasq = DNSMasq()
         backendnode = self.backendconnection.getNode(node.id)
-        dnsmasq = DNSMasq()
-        namespace = 'ns-%s' % self.backendconnection.environmentid
-        dnsmasq.setConfigPath(namespace, self.backendconnection.publicdnsmasqconfigpath)
-        dnsmasq.removeHost(backendnode['macaddress'])
+        #nsid = '%04d' % backendnode['networkid']
+        #namespace = 'ns-%s' % nsid
+        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
+        #dnsmasq.setConfigPath(nsid, config_path)
+        #dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
         job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
         return True
+    
+    def ex_getIpAddress(self, node):
+        backendnode = self.backendconnection.getNode(node.id)
+        networkid = backendnode.networkid
+        macaddress = backendnode.macaddress
+        ipaddress = '172.16.135.%s' % networkid
+        #ipaddress = '10.240.241.100'
+        ro = routeros.routeros(ipaddress)
+        ipaddress = ro.getIpaddress(macaddress)
+        ro.close()
+        return ipaddress
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC()

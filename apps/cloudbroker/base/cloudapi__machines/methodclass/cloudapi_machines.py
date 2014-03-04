@@ -191,6 +191,7 @@ class cloudapi_machines(object):
 
         machine = self.cb.models.vmachine.new()
         image = self.models.image.get(imageId)
+        networkid = self.models.cloudspace.get(cloudspaceId).networkId
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
@@ -229,7 +230,7 @@ class cloudapi_machines(object):
         except:
             self.models.vmachine.delete(machine.id)
             raise
-        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth)
+        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
         excludelist = [stack['id']]
         while(node == -1):
             #problem during creation of the machine on the node, we should create the node on a other machine
@@ -243,7 +244,7 @@ class cloudapi_machines(object):
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
-            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth)
+            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
         self._updateMachineFromNode(machine, node, stack['id'], psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
@@ -345,7 +346,12 @@ class cloudapi_machines(object):
         machine = self.models.vmachine.get(machineId)
         storage = self._getStorage(machine.__dict__)
         node = provider.client.ex_getDomain(node)
-
+        if machine.nics:
+            if machine.nics[0]['ipAddress'] == 'Undefined':
+                ipaddress = provider.client.ex_getIpAddress(node)
+                if ipaddress:
+                    machine.nics[0]['ipAddress']= ipaddress
+                    self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
