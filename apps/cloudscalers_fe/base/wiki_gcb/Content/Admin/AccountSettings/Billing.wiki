@@ -74,9 +74,6 @@ h2. Credit
                     </div>
                 </div>
             </div>
-            <div id="bitcoinError" ng-show="bitcoinError" class="alert alert-danger span5 mtl modal-body">
-                Problem with Bitcoin! :(
-            </div>
         </div>
         <div class="modal-footer">
             
@@ -109,9 +106,6 @@ h2. Credit
                         </a>
                     </div>
                 </div>
-            </div>
-            <div id="litecoinError" ng-show="litecoinError" class="alert alert-danger span5 mtl modal-body">
-                Problem with Litecoin! :(
             </div>
         </div>
         <div class="modal-footer">

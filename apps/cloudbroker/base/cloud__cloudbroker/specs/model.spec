@@ -180,4 +180,16 @@
     prop:vcpus int,, Number of vcpus assigned to the machine
     prop:description str,,Description of the size
 
+[rootmodel:S3Bucket] @dbtype:osis
+    """
+    An S3 Bucket is a kind of storagebucket
+    """
+    prop:id int,, id of the bucket
+    prop:cloudspaceId int,, the cloudspace this bucket belongs to
+    prop:url str,, the url of this S3 bucket
+    prop:name str,, bucketname
+    prop:location str,, the location this buckets is at
+    prop:accesskey str,, the key for accessing this S3 bucket 
+    
+
 

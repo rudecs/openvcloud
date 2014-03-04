@@ -14,14 +14,14 @@
                     <label for="username">Username:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-user"></i></span>
-                    	<input type="text" id="username" value="" placeholder="Username" ng-model="user.username" />
+                    	<input type="text" id="username" value="" placeholder="Username" ng-model="user.username" autofill="autofill"/>
 					</div>
                 </div>
                 <div class="field">
                     <label for="password">Password:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>
-                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="user.password"/>
+                   		<input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="user.password" autofill="autofill"/>
                    	</div>
                 </div>
             </div>

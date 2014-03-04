@@ -4,6 +4,21 @@ Few truly distributed storage systems are available today. Often, the distribute
 
 vScalers presents Storage Buckets, providing you you with a secure, distributed storage solution that is unique in its kind. The storage buckets are used with an S3 API. Check out the [API Documentation|ApiDocs].
 
-
-
-
+{{html:
+	<div ng-controller="StorageController">
+	    <table class="table table-striped table-bordered" ng-cloak>
+	    <tr>
+	      <th>Bucket</th>
+	      <th>Access Key</th>
+	      <th>Size</th>
+	    </tr>
+	    <tbody>
+	      <tr ng-repeat="storage in storages">
+	        <td><a href="{[ storage.url ]}">{[ storage.url ]}</a></td>
+	        <td>{[ storage.accesskey ]}</td>
+	        <td>{[ storage.size ]} bytes</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	</div>
+}}

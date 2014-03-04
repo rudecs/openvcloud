@@ -113,6 +113,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         if creditTransaction is None:
             creditTransaction = self.cloudbrokermodels.credittransaction.new()
             creditTransaction.currency = 'USD'
+            creditTransaction.accountId = billing_statement.accountId
             creditTransaction.reference = billing_statement.id
             creditTransaction.status = 'DEBIT'
         
