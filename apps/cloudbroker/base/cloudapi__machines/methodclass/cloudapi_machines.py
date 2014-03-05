@@ -304,6 +304,7 @@ class cloudapi_machines(object):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
+        self.models.vmachine.delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
