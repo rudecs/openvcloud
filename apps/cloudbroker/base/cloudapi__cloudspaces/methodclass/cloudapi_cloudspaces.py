@@ -66,6 +66,7 @@ class cloudapi_cloudspaces(object):
 
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
+        publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
         cs = self.cb.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -76,6 +77,7 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.networkId = networkid
+        cs.publicipaddress = publicipaddress
         return self.models.cloudspace.set(cs)[0]
 
     @authenticator.auth(acl='A')
@@ -135,7 +137,7 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'descr', 'accountId','acl']}
+        query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress']}
         query['query'] = {'term': {"userGroupId": user}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]

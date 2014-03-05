@@ -12,7 +12,8 @@ class cloudapi_users(object):
         self.appname = "cloudapi"
         self._cb = None
         self._models = None
-        self.libvirt_actor = j.apps.libcloud.libvirt 
+        self.libvirt_actor = j.apps.libcloud.libvirt
+
 
     @property
     def cb(self):
@@ -80,10 +81,12 @@ class cloudapi_users(object):
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
             networkid = self.libvirt_actor.getFreeNetworkId()
+            publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
             cs = self.cb.models.cloudspace.new()
             cs.name = 'default'
             cs.accountId = accountid
             cs.networkId = networkid
+            cs.publicipaddress = publicipaddress
             ace = cs.new_acl()
             ace.userGroupId = username
             ace.type = 'U'

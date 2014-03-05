@@ -174,3 +174,10 @@ class CloudBroker(object):
     def getModel(self):
         return models
 
+    def getPublicIpAddress(self, networkid):
+        publicaddresses = {201:'192.198.94.10', 202:'192.198.94.11', 203:'192.198.94.12', 204:'192.198.94.13', 205:'192.198.94.14', 206:'192.198.94.15'}
+        if networkid in publicaddresses:
+            return publicaddresses[networkid]
+        else:
+            return None
+
