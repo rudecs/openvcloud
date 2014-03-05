@@ -69,37 +69,40 @@ class libcloud_libvirt(object):
         sizes = [res['fields'] for res in results]
         return sizes
 
-    def addFreeSubnet(self, subnet, **kwargs):
+    def addFreeSubnet(self, subnet, networkid, **kwargs):
         """
         Add a free subnet to the range
         param:subnet subnet in CIDR notation e.g network/subnetmask
         result bool
         """
+        key = 'freeipaddresses_%s'% networkid
         try:
-            ipaddresses = self.blobdb.get('freeipaddresses')
+            ipaddresses = self.blobdb.get(key)
         except:
             #no list yet
             ipaddresses = []
-            self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+            self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         net = netaddr.IPNetwork(subnet)
         netrange = net[2:-2]
         for i in netrange:
             if i != net.broadcast:
                 ipaddresses.append(str(i))
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
-    def getFreeIpaddress(self, **kwargs):
+    def getFreeIpaddress(self, networkid, **kwargs):
         """
         Get a free Ipaddress from one of ipadress ranges
+        param: networkid, id of the network
         result
         """
-        ipaddresses = self.blobdb.get('freeipaddresses')
+        key = 'freeipaddresses_%s'% networkid
+        ipaddresses = self.blobdb.get(key)
         if ipaddresses:
             ipaddress = ipaddresses.pop(0)
         else:
             ipaddress = None
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return ipaddress
 
     def getFreeMacAddress(self, **kwargs):
@@ -119,30 +122,80 @@ class libcloud_libvirt(object):
         self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(newmacaddr))
         return str(macaddr)
 
-    def releaseIpaddress(self, ipaddress, **kwargs):
+    
+
+    def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
         Release a ipaddress.
         param:ipaddress string representing the ipaddres to release
         result bool
         """
-        ipaddresses = self.blobdb.get('freeipaddresses')
+        key = 'freeipaddresses_%s'% networkid
+        ipaddresses = self.blobdb.get(key)
         ipaddresses.append(ipaddress)
-        self.blobdb.set(key='freeipaddresses', obj=ujson.dumps(ipaddresses))
+        self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
-    def registerNode(self, id, macaddress, **kwargs):
-       """
-       Register some basic node information E.g ipaddress
-       param:id id of the node
-       result str
-       """
-       ipaddress = self.getFreeIpaddress()
-       node = self._models.node.new()
-       node.id = id
-       node.ipaddress = ipaddress
-       node.macaddress = macaddress
-       self._models.node.set(node)
-       return ipaddress
+    def registerNetworkIdRange(self, start, end, **kwargs):
+        """
+        Add a new network idrange
+        param:start start of the range
+        param:end end of the range
+        result 
+        """
+        try:
+           networkids  = self.blobdb.get('networkids')
+        except:
+            #no list yet
+            networkids = []
+            self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        toappend = [i for i in range(int(start), int(end) + 1) if i not in networkids]
+        networkids = networkids + toappend
+        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        return True
+
+
+    def getFreeNetworkId(self, **kwargs):
+        """
+        Get a free NetworkId
+        result 
+        """
+        networkids = self.blobdb.get('networkids')
+        if networkids:
+            networkid = networkids.pop(0)
+        else:
+            networkid = None
+        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        return networkid
+
+
+
+    def releaseNetworkId(self, networkid, **kwargs):
+        """
+        Release a networkid.
+        param:networkid int representing the netowrkid to release
+        result bool
+        """
+        networkids = self.blobdb.get('networkids')
+        networkids.insert(int(networkid))
+        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        return True 
+
+    def registerNode(self, id, macaddress, networkid, **kwargs):
+        """
+        Register some basic node information E.g ipaddress
+        param:id id of the node
+        result str
+        """
+        #ipaddress = self.getFreeIpaddress(networkid)
+        node = self._models.node.new()
+        node.id = id
+        #node.ipaddress = ipaddress
+        node.macaddress = macaddress
+        node.networkid = networkid
+        self._models.node.set(node)
+        ipaddress = 'Unknown'
+        return ipaddress
 
     def unregisterNode(self, id, **kwargs):
         """
@@ -151,9 +204,18 @@ class libcloud_libvirt(object):
         result bool
         """
         node = self._models.node.get(id)
-        self.releaseIpaddress(node.ipaddress)
+        #self.releaseIpaddress(node.ipaddress, node.networkid)
         self._models.node.delete(id)
         return True
+
+    def getNode(self, id, **kwargs):
+        """
+        Get a node 
+        param: id of the node to get 
+        result node
+        """
+        node = self._models.node.get(id)
+        return node
 
     def listNodes(self, **kwargs):
         """

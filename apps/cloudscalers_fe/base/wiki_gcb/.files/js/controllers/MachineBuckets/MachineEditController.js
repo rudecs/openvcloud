@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog',
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', 
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
@@ -244,7 +244,11 @@ angular.module('cloudscalers.controllers')
                     );
                 });
         };
-        
+        $scope.refreshPage = function() {
+            // angular.element('[ng-click="refreshPage()"]').addClass('clicked').find('.icon-refresh')
+            // .addClass('icon-spin').addClass('clicked');
+            $scope.machine = Machine.get($routeParams.machineId);
+        };
         $scope.start = function() {
             LoadingDialog.show('Starting');
             Machine.start($scope.machine).then(

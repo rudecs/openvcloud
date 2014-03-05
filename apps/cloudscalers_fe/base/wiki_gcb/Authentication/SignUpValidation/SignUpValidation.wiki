@@ -1,0 +1,5 @@
+@template public
+
+h3. Thank you for signing up!
+
+As we are currently in a limited beta, we will confirm your registration after review.

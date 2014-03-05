@@ -33,6 +33,7 @@
     prop:id str,,id of the node
     prop:ipaddress str,,ipaddress of the node
     prop:macaddress str,,macaddress of the node
+    prop:networkid int,,id of the network
 
 [rootmodel:VNC] @dbtype:osis
     """
