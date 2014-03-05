@@ -1,3 +1,8 @@
 h2. Network Buckets
 
-Coming Soon
+The Network Bucket is your personal private virtual firewall that handles all incoming and outgoing traffic for your cloud space, your routing, port fowards and firewall settings.
+
+The Network Bucket provides tons of possibilities to offer more flexibility and enhanced security compared to other public clouds. Configuring the Network Bucket is done by the intuitive web panel. By default we provide one Network Bucket for each Cloud Space, but additional network buckets can be ordered if required.
+
+Click the link below to access your Network Bucket(s):
+
