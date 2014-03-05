@@ -300,9 +300,11 @@ class CSLibvirtNodeDriver():
         macaddress = backendnode.macaddress
         ipaddress = '172.16.135.%s' % networkid
         #ipaddress = '10.240.241.100'
-        ro = routeros.routeros(ipaddress)
-        ipaddress = ro.getIpaddress(macaddress)
-        ro.close()
+        try:
+            ro = routeros.routeros(ipaddress)
+            ipaddress = ro.getIpaddress(macaddress)
+        except:
+            ipaddress = 'Undefined'
         return ipaddress
 
     def ex_get_console_url(self, node):

@@ -177,7 +177,7 @@ class libcloud_libvirt(object):
         result bool
         """
         networkids = self.blobdb.get('networkids')
-        networkids.append(int(networkid))
+        networkids.insert(int(networkid))
         self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
         return True 
 
@@ -187,10 +187,10 @@ class libcloud_libvirt(object):
        param:id id of the node
        result str
        """
-       ipaddress = self.getFreeIpaddress(networkid)
+       #ipaddress = self.getFreeIpaddress(networkid)
        node = self._models.node.new()
        node.id = id
-       node.ipaddress = ipaddress
+       #node.ipaddress = ipaddress
        node.macaddress = macaddress
        node.networkid = networkid
        self._models.node.set(node)
@@ -203,7 +203,7 @@ class libcloud_libvirt(object):
         result bool
         """
         node = self._models.node.get(id)
-        self.releaseIpaddress(node.ipaddress, node.networkid)
+        #self.releaseIpaddress(node.ipaddress, node.networkid)
         self._models.node.delete(id)
         return True
 
