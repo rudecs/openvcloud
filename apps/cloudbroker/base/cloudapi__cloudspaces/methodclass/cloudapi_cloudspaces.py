@@ -96,7 +96,7 @@ class cloudapi_cloudspaces(object):
             ctx.start_response('409 Conflict', [])
             return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
         networkid = self.models.cloudspace.get(cloudspaceId).networkId
-        self.libvirt_actor.unregisterNode(networkid)
+        self.libvirt_actor.releaseNetworkId(networkid)
         return self.models.cloudspace.delete(cloudspaceId)
 
 
