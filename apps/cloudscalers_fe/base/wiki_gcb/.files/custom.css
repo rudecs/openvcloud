@@ -1195,9 +1195,6 @@ a.icon-remove-sign {
     cursor: pointer;
     display: inline-block;
 }
-.refresh-page.clicked{
-    cursor: default;
-}
 #litecoinSpinner, #bitcoinSpinner{
     height: 180px;
     line-height: 180px;
@@ -1206,6 +1203,9 @@ a.icon-remove-sign {
     cursor: pointer;
 }
 /* OOCSS */
+.right{
+    float: right;
+}
 .center{
     margin: 0 auto;
     float: none;

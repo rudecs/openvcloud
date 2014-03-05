@@ -1,11 +1,14 @@
 
 h2. Manage Machine Bucket
+{{cssstyle
+h2 { float: left;  }
+}}
 {{html:
-<a ng-click="refreshPage()" class="refresh-page mbm">
+<a ng-click="refreshPage()" class="refresh-page mtl right">
     <i class="icon-refresh mrs"></i>
-    Refresh Page
+    Refresh
 </a>
-<tabset>
+<tabset style="clear:both;">
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
             <div class="row">
