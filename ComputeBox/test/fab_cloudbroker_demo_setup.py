@@ -11,3 +11,7 @@ vncproxy.publicurl=http://%s:8091/vnc_auto.html?token=
     put(StringIO(vncproxyhrd), '/opt/jumpscale/cfg/hrd/vncproxy.hrd')
     run('jpackage mdupdate')
     run('jpackage install --name cloudbroker_minimal_install --domain cloudscalers --version 1.0')
+
+def templates():
+    run('jpackage install --name image_ubuntu1310 --domain cloudscalers')
+    run('jpackage install --name image_fedora20 --domain cloudscalers')
