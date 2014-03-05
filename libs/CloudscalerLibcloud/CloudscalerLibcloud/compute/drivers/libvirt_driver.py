@@ -298,7 +298,7 @@ class CSLibvirtNodeDriver():
         backendnode = self.backendconnection.getNode(node.id)
         networkid = backendnode.networkid
         macaddress = backendnode.macaddress
-        ipaddress = '172.16.135.%s' % networkid
+        ipaddress = '10.199.0.%s' % networkid
         #ipaddress = '10.240.241.100'
         try:
             ro = routeros.routeros(ipaddress)

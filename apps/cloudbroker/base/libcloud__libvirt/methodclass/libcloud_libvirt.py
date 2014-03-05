@@ -170,7 +170,7 @@ class libcloud_libvirt(object):
 
 
 
-    def releaseNetworkId(self, networkid, **kwargs):
+    def releaseNetworkId1(self, networkid, **kwargs):
         """
         Release a networkid.
         param:networkid int representing the netowrkid to release
@@ -194,6 +194,7 @@ class libcloud_libvirt(object):
        node.macaddress = macaddress
        node.networkid = networkid
        self._models.node.set(node)
+       ipaddress = 'Unknown'
        return ipaddress
 
     def unregisterNode(self, id, **kwargs):
