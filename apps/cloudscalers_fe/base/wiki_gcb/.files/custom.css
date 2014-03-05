@@ -1188,6 +1188,16 @@ a.icon-remove-sign {
 .icon-spinner{
     font-size: 24px;
 }
+.refresh-page:hover{
+    text-decoration: none;
+}
+.refresh-page{
+    cursor: pointer;
+    display: inline-block;
+}
+.refresh-page.clicked{
+    cursor: default;
+}
 #litecoinSpinner, #bitcoinSpinner{
     height: 180px;
     line-height: 180px;
@@ -1218,6 +1228,9 @@ a.icon-remove-sign {
 }
 .mrm{
     margin-right: 10px;
+}
+.mbm{
+    margin-bottom: 10px;
 }
 .mrs{
     margin-right: 5px;

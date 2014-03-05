@@ -1,7 +1,10 @@
 
 h2. Manage Machine Bucket
 {{html:
-
+<a ng-click="refreshPage()" class="refresh-page mbm">
+    <i class="icon-refresh mrs"></i>
+    Refresh Page
+</a>
 <tabset>
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
