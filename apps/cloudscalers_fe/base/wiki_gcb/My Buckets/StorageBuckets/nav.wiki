@@ -1,2 +1,1 @@
-
-{{children: page:StorageBuckets}}
+Storage Buckets:StorageBuckets

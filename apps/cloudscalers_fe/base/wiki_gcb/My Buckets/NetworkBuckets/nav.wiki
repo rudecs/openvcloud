@@ -1,2 +1,1 @@
-
-{{children: page:NetworkBuckets}}
+Network Buckets:NetworkBuckets

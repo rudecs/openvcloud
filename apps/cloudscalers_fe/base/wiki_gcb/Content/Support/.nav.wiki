@@ -1,5 +1,5 @@
 Knowledge Base:http://support.vscalers.com/kb/index.php
 Machine Buckets API:ApiDocs
 Storage Buckets API:ApiDocs
-Contact Support:http://support.vscalers.com/open.php
-Support Ticket Status:http://support.vscalers.com/view.php
+Contact Support:Support
+Support Ticket Status:Tickets
