@@ -1,3 +1,5 @@
-FAQ:FAQ
-API:ApiDocs
-Create Ticket:Support
+Knowledge Base:http://support.vscalers.com/kb/index.php
+Machine Buckets API:ApiDocs
+Storage Buckets API:ApiDocs
+Contact Support:http://support.vscalers.com/open.php
+Support Ticket Status:http://support.vscalers.com/view.php
