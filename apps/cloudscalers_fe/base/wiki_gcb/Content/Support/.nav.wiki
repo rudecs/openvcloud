@@ -1,4 +1,4 @@
-Knowledge Base:http://support.vscalers.com/kb/index.php
+Knowledge Base:KB
 Machine Buckets API:ApiDocs
 Storage Buckets API:ApiDocs
 Contact Support:Support
