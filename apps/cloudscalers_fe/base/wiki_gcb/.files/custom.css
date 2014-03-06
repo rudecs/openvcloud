@@ -1219,6 +1219,9 @@ a.icon-remove-sign {
 .txt-center{
     text-align: center;
 }
+.display-none{
+    display: none;
+}
 /* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
 .mtm{
     margin-top: 10px;
