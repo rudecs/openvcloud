@@ -6,7 +6,7 @@ The Network Bucket provides tons of possibilities to offer more flexibility and 
 
 {{html:
 	<div ng-controller="NetworkController">
-		<a ng-href="{[ managementui ]}" target="_blank">Network Bucket portal for this cloudspace</a> (user=Admin,password=jjkqwerm78kKLGHGb1g)
+		<a ng-href="{[ managementui ]}" target="_blank">Network Bucket portal for this cloudspace</a> (user=admin,password=jjkqwerm78kKLGHGb1g)
 	</div>
 
     <script src="/$$space/.files/js/controllers/NetworkController.js" type="text/javascript"></script>
