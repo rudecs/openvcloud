@@ -1,6 +1,6 @@
 h2. Storage Buckets
 
-Storage Buckets provide you with a secure, distributed storage solution using the Ceph Object Gateway S3 API. [Click here|http://ceph.com/docs/master/radosgw/s3/] for the API documentation.
+Storage Buckets provide you with a secure, distributed storage solution with an Object Gateway S3 API.
 
 {{html:
 	<div ng-controller="StorageController">
