@@ -1202,6 +1202,23 @@ a.icon-remove-sign {
 .nav, .pagination, .carousel a {
     cursor: pointer;
 }
+/*Sticky footer fix*/
+html, body{
+    height: 97%;
+}
+#wrap{
+    min-height: 101%;
+}
+.main{
+    overflow:auto;
+    padding-bottom: 60px;
+}
+#footer{
+    position: relative;
+    margin-top: -60px;
+    height: 60px;
+    clear:both;
+}
 /* OOCSS */
 .right{
     float: right;

@@ -34,7 +34,7 @@
 {{html:
 
 <script src="/$$space/.files/lib/angular-1.2.6/angular.min.js"></script>
-<div ng-app="cloudscalers" ng-controller="AuthenticatedSessionController">
+<div id="wrap" ng-app="cloudscalers" ng-controller="AuthenticatedSessionController">
 <div class="subnavbar" ng-controller="CloudSpaceNavigatorController">
 
     <div class="subnavbar-inner">
@@ -220,13 +220,13 @@ h2. loading
 @divend
 @divend
 @divend
+@divend
+@divend
 
 
 
 
-
-
-{{div: class=copyright}}
+{{div: id=footer | class=copyright}}
 	{{div2: class=container}}
 
 		{{div3: class=row-fluid}}
