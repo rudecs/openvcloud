@@ -177,7 +177,7 @@ class libcloud_libvirt(object):
         result bool
         """
         networkids = self.blobdb.get('networkids')
-        networkids.insert(int(networkid))
+        networkids.insert(0,int(networkid))
         self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
         return True 
 

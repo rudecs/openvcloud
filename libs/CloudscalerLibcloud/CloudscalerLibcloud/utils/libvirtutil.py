@@ -62,7 +62,7 @@ class LibvirtUtil(object):
         return domain.resume() == 0
 
     def delete_machine(self, machineid):
-        if self.isCurrentStorageAction(id):
+        if self.isCurrentStorageAction(machineid):
             raise Exception("Can't delete a locked machine")
         domain = self.connection.lookupByUUIDString(machineid)
         diskfiles = self._get_domain_disk_file_names(domain)
