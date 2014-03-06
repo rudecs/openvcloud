@@ -21,7 +21,7 @@ angular.module('cloudscalers.controllers')
                 // $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.email);
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub");
                 // , $scope.user.password
             }
         };
