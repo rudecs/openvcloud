@@ -226,8 +226,8 @@ h2. loading
 
 
 
-{{div: id=footer | class=copyright}}
-	{{div2: class=container}}
+{{div: id=footer | class=copyright container}}
+	{{div2:}}
 
 		{{div3: class=row-fluid}}
 			{{div4: class=span12}}
