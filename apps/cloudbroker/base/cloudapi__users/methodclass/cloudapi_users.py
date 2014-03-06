@@ -72,6 +72,10 @@ class cloudapi_users(object):
             ctx.start_response('409 Conflict', [])
             return 'User already exists'
         else:
+            #During beta, generate a random password
+            import string, random
+            password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
+            
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.cb.models.account.new()
             account.name = username
@@ -80,16 +84,16 @@ class cloudapi_users(object):
             ace.type = 'U'
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
-            networkid = self.libvirt_actor.getFreeNetworkId()
-            publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-            cs = self.cb.models.cloudspace.new()
-            cs.name = 'default'
-            cs.accountId = accountid
-            cs.networkId = networkid
-            cs.publicipaddress = publicipaddress
-            ace = cs.new_acl()
-            ace.userGroupId = username
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
-            self.models.cloudspace.set(cs)
+            #networkid = self.libvirt_actor.getFreeNetworkId()
+            #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
+            #cs = self.cb.models.cloudspace.new()
+            #cs.name = 'default'
+            #cs.accountId = accountid
+            #cs.networkId = networkid
+            #cs.publicipaddress = publicipaddress
+            #ace = cs.new_acl()
+            #ace.userGroupId = username
+            #ace.type = 'U'
+            #ace.right = 'CXDRAU'
+            #self.models.cloudspace.set(cs)
             return True
