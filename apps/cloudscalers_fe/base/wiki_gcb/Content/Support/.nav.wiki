@@ -1,5 +1,5 @@
 Knowledge Base:KB
 Machine Buckets API:ApiDocs
-Storage Buckets API:ApiDocs
+Storage Buckets API:ApiS3
 Contact Support:Support
 Support Ticket Status:Tickets
