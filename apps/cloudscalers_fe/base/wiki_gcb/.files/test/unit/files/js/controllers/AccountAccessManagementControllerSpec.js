@@ -46,26 +46,5 @@ describe("AccountAccessManagementController tests", function(){
         $scope.$digest();
     }));
 
-
-    it('addUser adds a new user to the list of users', function() {
-        $scope.newUser.nameOrEmail = 'User 4';
-        $scope.addUser();
-        addUserDefer.resolve("Success");
-        $scope.$digest();
-        
-        expect(Account.addUser).toHaveBeenCalled();
-        expect($scope.userError).toEqual(false);
-    });
-
-    it("addUser rejects adding a user which doesn't exist", function() {
-        $scope.newUser.nameOrEmail = 'Not working';
-        $scope.addUser();
-        addUserDefer.reject("Failed");
-        $scope.$digest();
-        
-        expect(Account.addUser).toHaveBeenCalled();
-        expect($scope.userError).toEqual(true);
-    });
-
 });
 

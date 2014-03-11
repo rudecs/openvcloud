@@ -55,15 +55,5 @@ describe("CloudSpaceAccessManagementController tests", function(){
         expect($scope.userError).toEqual(false);
     });
 
-    it("addUser rejects adding a user which doesn't exist", function() {
-        $scope.newUser.nameOrEmail = 'Not working';
-        $scope.addUser();
-        addUserDefer.reject("Failed");
-        $scope.$digest();
-        
-        expect(CloudSpace.addUser).toHaveBeenCalled();
-        expect($scope.userError).toEqual(true);
-    });
-
 });
 
