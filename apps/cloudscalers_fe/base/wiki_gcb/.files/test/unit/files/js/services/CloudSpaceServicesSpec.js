@@ -32,16 +32,6 @@ describe('CloudSpaceServices', function() {
         expect(addUserResult).toEqual("Success");
     });
 
-    it('can handle user addition failure', function() {
-        var addUserResult;
-        CloudSpace.addUser({id: 1}, 'user 20', {'R': true}).then(function(result) {
-            addUserResult = result;
-        });
-        expect(addUserResult).toBeUndefined();
-        $httpBackend.flush();
-        expect(addUserResult).toEqual("Failed");
-    });
-
     it('can delete user', function() {
         var deleteUserResult;
         CloudSpace.deleteUser({id: 1}, 'user 10').then(function(result) {
@@ -51,15 +41,4 @@ describe('CloudSpaceServices', function() {
         $httpBackend.flush();
         expect(deleteUserResult).toEqual("Success");
     });
-
-    it('can handle user deletion failure', function() {
-        var deleteUserResult;
-        CloudSpace.deleteUser({id: 1}, 'user 20').then(function(result) {
-            deleteUserResult = result;
-        });
-        expect(deleteUserResult).toBeUndefined();
-        $httpBackend.flush();
-        expect(deleteUserResult).toEqual("Failed");
-    });
-
 });

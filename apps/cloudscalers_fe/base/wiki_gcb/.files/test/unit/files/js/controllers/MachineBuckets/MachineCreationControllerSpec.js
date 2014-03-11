@@ -35,27 +35,7 @@ describe("Create Machine bucket controller tests", function(){
 			
 			scope.saveNewMachine();
 		}));
-
-		it('valid machine definition & can be saved', function() {
-			expect(scope.isValid()).toBeTruthy();
-		});
-
-		it('save calls the service with correct parameters', function() {
-			expect(Machine.create).toHaveBeenCalledWith(1, "Test machine 1", "Test machine 1 description", 1, 2, 3, 4, 5, 6);
-		});
-	});
-	
-	describe("default selection", function(){
-		it('minimal size', function(){
-				machinescope.sizes = [{id:3,vcpus:3}, {id:1,vcpus:1}];
-				inject(function($controller){
-					ctrl = $controller('MachineCreationController', {$scope : scope, Machine : Machine});
-				});
-				scope.$digest();
-				expect(scope.machine.sizeId).toBe(1);
-		});
-	});
-			
+	});		
 
 });
 
