@@ -202,7 +202,11 @@ class CSLibvirtNodeDriver():
         macaddress = self.backendconnection.getMacAddress()
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         
-        networkname = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
+        result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
+        if not result or result == -1:
+            return -1
+
+        networkname = result['networkname']
         
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
