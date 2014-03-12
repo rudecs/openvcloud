@@ -56,7 +56,7 @@
         <div class="container">
             <ul>
                 <li><a href="../$$space"> <i class="icon-home"></i></a></li>
-                <li class="dropdown">
+                <li id="cloudspace-nav" class="dropdown">
                     
                     <a href="#" class="cloudspaceCollapse dropdown-toggle" ng-click="isCollapsed = !isCollapsed"><span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
                     <div persistent-dropdown ng-cloak>
