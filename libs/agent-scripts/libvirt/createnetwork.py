@@ -26,7 +26,7 @@ def action(networkid):
     	from JumpScale.lib import ovsnetconfig
     	#TODO: check if the bridge does not exist yet
     	#TODO: check if the vxLan does not exist yet
-    	vxlan = j.system.ovsnetconfig.newVXLan(networkid)
+    	vxlan = j.system.ovsnetconfig.newVXlan(networkid)
     	j.system.ovsnetconfig.newBridge(bridgename, vxlan)
 
     	connection.createNetwork(networkname,bridgename)
