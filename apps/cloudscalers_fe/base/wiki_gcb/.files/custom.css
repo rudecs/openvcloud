@@ -1246,6 +1246,9 @@ html, body{
 .right{
     float: right;
 }
+.left{
+    float: left;
+}
 .center{
     margin: 0 auto;
     float: none;
@@ -1268,6 +1271,9 @@ html, body{
 }
 .mtl{
     margin-top: 20px;
+}
+.mll{
+    margin-left: 20px;
 }
 .mrm{
     margin-right: 10px;
