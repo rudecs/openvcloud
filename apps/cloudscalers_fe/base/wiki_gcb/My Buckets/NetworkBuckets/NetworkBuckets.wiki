@@ -21,7 +21,6 @@ The Network Bucket provides tons of possibilities to offer more flexibility and 
 				      <th>Port</th>
 				      <th style="text-align: center;">Virtual Machine</th>
 				      <th>Port</th>
-				      <th>Alias Name</th>
 				    </tr>
 				    <tbody>
 				      <tr ng-repeat="portforward in portforwarding | filter:search | groupBy:'ip' | groupBy:'vmName'">
@@ -29,7 +28,6 @@ The Network Bucket provides tons of possibilities to offer more flexibility and 
 				        <td>{[portforward.puplicPort]}</td>
 				        <td style="text-align: center;"><strong ng-show="portforward.vmName_CHANGED">{[portforward.vmName]}</strong></td>
 				        <td>{[portforward.localPort]}</td>
-				        <td>{[portforward.alias]}</td>
 				      </tr>
 				    </tbody>
 			  </table>
@@ -58,8 +56,8 @@ The Network Bucket provides tons of possibilities to offer more flexibility and 
 			}
 			.form-control{
 				width: 86px;
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
+				border-top-left-radius: 0 !important;
+				border-bottom-left-radius: 0 !important;
 				width: 102px;
 			}
 			.modal-body{
@@ -90,13 +88,11 @@ The Network Bucket provides tons of possibilities to offer more flexibility and 
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-					         	<!-- <input ng-model="newRule.publicPort" id="inputNewPublicPort" type="text" class="input-large" placeholder="Port"/> -->
 					         	<div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" ng-model="commonPorts" ng-change="updatePorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
+						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updatePorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
 						        </select>
-						        <!-- <button id="common-port-menu" type="button" class="left btn btn-default dropdown-toggle" data-toggle="dropdown">Common ports <span class="caret"></span></button> -->
 						      </div>
-						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" ng-model="commmmmmmmmon.port">
+						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort">
 		       			</div>
 					</div>
 				</div>

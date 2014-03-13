@@ -14,20 +14,34 @@ angular.module('cloudscalers.controllers')
                 $scope.newRule = {
                     ip: '',
                     publicPort: '',
-                    VM: '1',
-                    localPort: ''
+                    VM: '',
+                    localPort: '',
+                    commonPort: ''
                 };
                 NetworkBuckets.commonports().then(function(data) {
                     $scope.commonports = data;
                 });
                 $scope.updatePorts = function () {
-                    // $scope.newRule.publicPort  = $scope.selected;
+                    $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
+                    $scope.newRule.localPort = $scope.newRule.commonPort.port;
                 };
                 $scope.submit = function () {
-                    $modalInstance.close({
-                        name: $scope.newRule.name,
-                        accountId: $scope.newRule.account.id
-                    });
+                    // console.log( $scope.newRule );
+                    // $modalInstance.close({
+                    //     portforward.ip: $scope.newRule.ip,
+                    //     portforwar.publicPort: $scope.newRule.publicPort
+                    // });
+                    // console.log($scope.newRule.VM.vmName);
+                    NetworkBuckets.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
+                        function (result) {
+                            $scope.portforwarding.push({ip: $scope.newRule.ip.ip, puplicPort: $scope.newRule.publicPort, 
+                            vmName: $scope.newRule.VM.vmName, localPort: $scope.newRule.localPort});
+                        },
+                        function (result) {
+                            // LoadingDialog.hide();
+                            //TODO: show error
+                        }
+                    );
                 };
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
@@ -41,17 +55,9 @@ angular.module('cloudscalers.controllers')
                     scope: $scope
                 });
 
-                modalInstance.result.then(function (space) {
-                    LoadingDialog.show('Creating New Rule');
-                    NetworkBuckets.create().then(
-                        function () {
-                            
-                        },
-                        function (result) {
-                            LoadingDialog.hide();
-                            //TODO: show error
-                        }
-                    );
+                modalInstance.result.then(function () {
+                    // LoadingDialog.show('Creating New Rule');
+                            console.log( $scope )
                 });
             };
             

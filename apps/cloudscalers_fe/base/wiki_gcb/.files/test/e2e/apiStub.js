@@ -577,5 +577,16 @@ defineApiStub = function ($httpBackend) {
         {port: '403', name: 'HTTPS'},
         {port: '27', name: 'FTP'}
     ]);
+
+    $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        portforwarding.push({
+            ip: params.ip,
+            vmName: params.vmName,
+            puplicPort: params.puplicPort,
+            localPort: params.localPort
+        });
+        return [200, params.ip];
+    });
 };
 
