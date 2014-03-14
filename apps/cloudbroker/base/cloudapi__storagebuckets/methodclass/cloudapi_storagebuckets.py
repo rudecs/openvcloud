@@ -1,4 +1,5 @@
 from JumpScale import j
+import ujson
 
 class cloudapi_storagebuckets(j.code.classGetBase()):
     """

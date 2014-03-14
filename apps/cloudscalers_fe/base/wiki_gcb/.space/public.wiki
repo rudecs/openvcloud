@@ -32,7 +32,7 @@
 
 {{html:
 
-<div ng-app="cloudscalers">
+<div id="wrap" ng-app="cloudscalers">
 <div class="subnavbar">
 
 	<div class="subnavbar-inner">
@@ -97,8 +97,8 @@
 	<div class="main-inner">
 
 	    <div class="container">
-		<div class="row">
-
+		<div id="wrap" class="row">
+		<div id="main">
 
   <script src="/$$space/.files/lib/angular-1.2.6/angular.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
@@ -124,14 +124,14 @@
 
 
 @divend
+@divend
+@divend
+@divend
+@divend
+@divend
 
-
-
-
-
-
-{{div: class=copyright}}
-	{{div2: class=container}}
+{{div: id=footer | class=copyright container}}
+	{{div2:}}
 
 		{{div3: class=row-fluid}}
 			{{div4: class=span12}}

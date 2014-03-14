@@ -3,7 +3,7 @@ angular.module('cloudscalers.controllers')
         function ($scope) {
             $scope.$watch('currentSpace.id',function(){
     		if ($scope.currentSpace){
-    			$scope.managementui = "http://" + $scope.currentSpace.publicipaddress
+    			$scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
     		}
     	});
         }
