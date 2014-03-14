@@ -1,9 +1,12 @@
+@usedefault
+
+h2. Port Forwarding
 {{html:
 	<div ng-controller="NetworkController">
 		<div>
-			<input type="search" ng-model="search.ip" placeholder="filter IPs..." />
+			<select ng-model="search" ng-options="portforward.ip for portforward in portforwarding | unique: 'ip'"></select>
 				<div style="margin-bottom: 5px;">
-					<a href="" ng-click="rulesPopup()" class="create-cloudspace">New Rule...</a>
+					<a href="" ng-click="rulesPopup()" class="create-cloudspace">Add Portforward...</a>
 	            </div>
 				<table class="table table-striped table-bordered">
 				    <tr>
@@ -13,7 +16,7 @@
 				      <th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
 				    </tr>
 				    <tbody>
-				      <tr ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | filter:search | groupBy:'ip' | groupBy:'vmName'">
+				      <tr ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | filter:search.ip | groupBy:'ip' | groupBy:'vmName'">
 				      	<td style="text-align: center;"><strong>{[portforward.ip]}</strong></td>
 				        <td>{[portforward.puplicPort]}</td>
 				        <td style="text-align: center;"><strong>{[portforward.vmName]}</strong></td>

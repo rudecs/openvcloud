@@ -17,10 +17,10 @@ angular.module('cloudscalers.controllers')
                     localPort: '',
                     commonPort: ''
                 };
-
                 NetworkBuckets.commonports().then(function(data) {
                     $scope.commonports = data;
                 });
+                
                 $scope.updatePorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
