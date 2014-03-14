@@ -96,14 +96,14 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        disk = self.cb.models.disk.new()
+        disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
         self.cb.extensions.imp.addDiskToMachine(machine, disk)
         diskid = self.models.disk.set(disk)[0]
-        machine['disks'].append(diskid)
+        machine.disks.append(diskid)
         self.models.vmachine.set(machine)
         return diskid
 
@@ -120,7 +120,7 @@ class cloudapi_machines(object):
         node = self._getNode(machine.referenceId)
         provider = self._getProvider(machine)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        image = self.cb.models.image.new()
+        image = self.models.image.new()
         image.name = templatename
         image.referenceId = "" 
         image.type = 'custom templates'
@@ -189,7 +189,7 @@ class cloudapi_machines(object):
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
-        machine = self.cb.models.vmachine.new()
+        machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
         networkid = self.models.cloudspace.get(cloudspaceId).networkId
         machine.cloudspaceId = cloudspaceId
@@ -199,7 +199,7 @@ class cloudapi_machines(object):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
 
-        disk = self.cb.models.disk.new()
+        disk = self.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
@@ -275,9 +275,9 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        diskfound = diskId in machine['disks']
+        diskfound = diskId in machine.disks
         if diskfound:
-            machine['disks'].remove(diskId)
+            machine.disks.remove(diskId)
             self.models.vmachine.set(machine)
             self.models.disk.delete(diskId)
         return diskfound
@@ -345,13 +345,17 @@ class cloudapi_machines(object):
         """
         provider, node = self._getProviderAndNode(machineId)
         machine = self.models.vmachine.get(machineId)
-        storage = self._getStorage(machine.__dict__)
+        m = {}
+        m['stackId'] = machine.stackId
+        m['disks'] = machine.disks
+        m['sizeId'] = machine.sizeId
+        storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
         if machine.nics:
-            if machine.nics[0]['ipAddress'] == 'Undefined':
+            if machine.nics[0].ipAddress == 'Undefined':
                 ipaddress = provider.client.ex_getIpAddress(node)
                 if ipaddress:
-                    machine.nics[0]['ipAddress']= ipaddress
+                    machine.nics[0].ipAddress= ipaddress
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'hostname': machine.hostName,

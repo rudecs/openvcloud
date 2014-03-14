@@ -45,9 +45,8 @@ class cloudapi_cloudspaces(object):
         if not j.apps.system.usermanager.userexists(userId):
             ctx.start_response('404 Not Found', [])
         else:
-            cs = self.cb.models.cloudspace.new()
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cs.dict2obj(cloudspace)
+            cs = cloudspace
             acl = cs.new_acl()
             acl.userGroupId = userId
             acl.type = 'U'
@@ -67,7 +66,7 @@ class cloudapi_cloudspaces(object):
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-        cs = self.cb.models.cloudspace.new()
+        cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
         ace = cs.new_acl()
@@ -122,9 +121,9 @@ class cloudapi_cloudspaces(object):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         change = False
-        for ace in cloudspace['acl'][:]:
-            if ace['userGroupId'] == userId:
-                cloudspace['acl'].remove(ace)
+        for ace in cloudspace.acl:
+            if ace.userGroupId == userId:
+                cloudspace.acl.remove(ace)
                 change = True
         if change:
             self.models.cloudspace.set(cloudspace)
