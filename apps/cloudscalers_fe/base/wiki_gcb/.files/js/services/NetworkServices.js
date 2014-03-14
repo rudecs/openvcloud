@@ -1,4 +1,3 @@
-
 angular.module('cloudscalers.services')
      .factory('NetworkBuckets',function ($http, $q) {
         return {
