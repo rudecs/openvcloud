@@ -91,12 +91,6 @@ angular.module('cloudscalers.directives', [])
                     else
                         header.removeClass('open');
                 });
-
-                // Keep the left border aligned with the border of the window.
-                // Because 'position: absolute' doesn't work inside <ul>, I need to do it with JS.
-                setInterval(function() {
-                    element.css('margin-left', -element.parent('li').offset().left);
-                }, 50);
             }
         };
     })

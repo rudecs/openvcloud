@@ -383,6 +383,12 @@ class LibvirtUtil(object):
         extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(), 'types': self.connection.getType(), 'used_memory': memory / 1024, 'vcpu_count': vcpu_count, 'used_cpu_time': used_cpu_time, 'locked': locked}
         return {'id': domain.UUIDString(), 'name': domain.name(), 'state':state, 'extra': extra, 'XMLDesc': domain.XMLDesc(0)}
 
+    def _to_node_list(self, domain):
+        state, max_mem, memory, vcpu_count, used_cpu_time = domain.info()
+        extra = {'uuid': domain.UUIDString(), 'os_type': domain.OSType(), 'types': self.connection.getType(), 'used_memory': memory / 1024, 'vcpu_count': vcpu_count, 'used_cpu_time': used_cpu_time}
+        return {'id': domain.UUIDString(), 'name': domain.name(), 'state':state, 'extra': extra}
+
+
     def get_domain(self, uuid):
         domain = self.connection.lookupByUUIDString(uuid)
         return self._to_node(domain)
@@ -390,7 +396,7 @@ class LibvirtUtil(object):
     def list_domains(self):
         nodes = []
         for x in self.connection.listAllDomains(0):
-            nodes.append(self._to_node(x))
+            nodes.append(self._to_node_list(x))
         return nodes
 
     def _getDomainDiskFiles(self, domain):
@@ -413,4 +419,8 @@ class LibvirtUtil(object):
             templatepoolname = 'VMStor'
         return self.readonly.storagePoolLookupByName(templatepoolname)
 
+    def createNetwork(self, networkname, bridge):
+        networkxml = self.env.get_template('network.xml').render(networkname=networkname, bridge=bridge)
+        self.connection.networkCreateXML(networkxml)
+        
 
