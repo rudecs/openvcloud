@@ -1,6 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('NetworkController', ['$scope', 'NetworkBuckets', '$modal',
         function ($scope, NetworkBuckets, $modal) {
+            $scope.search = "";
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
@@ -8,22 +9,25 @@ angular.module('cloudscalers.controllers')
             });
             NetworkBuckets.listPortforwarding().then(function(data) {
                 $scope.portforwarding = data;
+                $scope.search = $scope.portforwarding[0];
             });
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
-                    ip: '',
+                    ip: $scope.portforwarding[0],
                     publicPort: '',
-                    VM: '',
+                    VM: $scope.portforwarding[0],
                     localPort: '',
                     commonPort: ''
                 };
                 NetworkBuckets.commonports().then(function(data) {
                     $scope.commonports = data;
                 });
-                
-                $scope.updatePorts = function () {
+                $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
+                };
+                $scope.editPortforward = function () {
+                    
                 };
                 $scope.submit = function () {
                     NetworkBuckets.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
@@ -45,11 +49,6 @@ angular.module('cloudscalers.controllers')
                     resolve: {},
                     scope: $scope
                 });
-
-                // modalInstance.result.then(function () {
-                //     // LoadingDialog.show('Creating New Rule');
-                //             console.log( $scope )
-                // });
             };
             
         }

@@ -4,6 +4,7 @@ h2. Port Forwarding
 {{html:
 	<div ng-controller="NetworkController">
 		<div>
+			<label class="mrm left" style="margin-top: 3px;">Filter IPs:</label>
 			<select ng-model="search" ng-options="portforward.ip for portforward in portforwarding | unique: 'ip'"></select>
 				<div style="margin-bottom: 5px;">
 					<a href="" ng-click="rulesPopup()" class="create-cloudspace">Add Portforward...</a>
@@ -82,7 +83,7 @@ h2. Port Forwarding
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
 					         	<div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updatePorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
+						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
 						        </select>
 						      </div>
 						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
