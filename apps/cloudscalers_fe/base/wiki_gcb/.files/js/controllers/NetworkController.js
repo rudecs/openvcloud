@@ -1,7 +1,8 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'NetworkBuckets', '$modal',
-        function ($scope, NetworkBuckets, $modal) {
+    .controller('NetworkController', ['$scope', 'NetworkBuckets', '$modal', '$timeout',
+        function ($scope, NetworkBuckets, $modal, $timeout) {
             $scope.search = "";
+            $scope.portforwardbyID = "";
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
@@ -17,7 +18,9 @@ angular.module('cloudscalers.controllers')
                     publicPort: '',
                     VM: $scope.portforwarding[0],
                     localPort: '',
-                    commonPort: ''
+                    commonPort: '',
+                    // message: false,
+                    statusMessage: ''
                 };
                 NetworkBuckets.commonports().then(function(data) {
                     $scope.commonports = data;
@@ -26,9 +29,7 @@ angular.module('cloudscalers.controllers')
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
                 };
-                $scope.editPortforward = function () {
-                    
-                };
+                
                 $scope.submit = function () {
                     NetworkBuckets.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
                         function (result) {
@@ -42,14 +43,66 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
             };
-            $scope.rulesPopup = function () {
+            $scope.portForwardPopup = function () {
                 var modalInstance = $modal.open({
-                    templateUrl: 'rulesDialog.html',
+                    templateUrl: 'portForwardDialog.html',
                     controller: addRuleController,
                     resolve: {},
                     scope: $scope
                 });
             };
+            $scope.tableRowClicked = function (index) {
+              var modalInstance = $modal.open({templateUrl: 'editPortForwardDialog.html', scope: $scope , resolve: {}});
+              $scope.editRule = [];
+              NetworkBuckets.listPortforwarding(index.id).then(function(data) {
+                $scope.portforwardbyID = data;
+                $scope.editRule = {
+                    id: $scope.portforwardbyID[0].id,
+                    ip: $scope.portforwardbyID[0].ip,
+                    publicPort: $scope.portforwardbyID[0].puplicPort,
+                    VM: $scope.portforwardbyID[0].vmName,
+                    localPort: $scope.portforwardbyID[0].localPort
+                };
+              });
+              NetworkBuckets.commonports().then(function(data) {
+                    $scope.commonports = data;
+              });
+              $scope.update = function () {
+                  NetworkBuckets.updatePortforward($scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM, $scope.editRule.localPort).then(
+                      function (result) {
+                          $scope.portforwarding = result.data;
+                          $scope.search = $scope.portforwarding[0];
+                          modalInstance.close({});
+                          $scope.message = true;
+                          $scope.statusMessage = "Saved!";
+                          $timeout(function() {
+                              $scope.message = false;
+                          }, 3000); 
+                      }
+                  );
+              };
+              $scope.delete = function () {
+                  NetworkBuckets.deletePortforward($scope.editRule.id).then(
+                      function (result) {
+                          $scope.portforwarding = result.data;
+                          $scope.search = $scope.portforwarding[0];
+                          modalInstance.close({});
+                          $scope.message = true;
+                          $scope.statusMessage = "Removed!";
+                          $timeout(function() {
+                              $scope.message = false;
+                          }, 3000); 
+                      }
+                  );
+              };
+              $scope.cancel = function () {
+                    modalInstance.dismiss('cancel');
+              };
+              $scope.updateCommonPorts = function () {
+                    $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
+                    $scope.editRule.localPort = $scope.editRule.commonPort.port;
+                };
+            }
             
         }
     ]).filter('groupBy', function(){
