@@ -1275,6 +1275,9 @@ html, body{
 .mll{
     margin-left: 20px;
 }
+.mlm{
+    margin-left: 10px;
+}
 .mrm{
     margin-right: 10px;
 }
