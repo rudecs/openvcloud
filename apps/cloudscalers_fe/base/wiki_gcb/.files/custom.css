@@ -1265,6 +1265,9 @@ html, body{
 .display-none{
     display: none;
 }
+.justify{
+    text-align: justify;
+}
 /* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
 .mtm{
     margin-top: 10px;

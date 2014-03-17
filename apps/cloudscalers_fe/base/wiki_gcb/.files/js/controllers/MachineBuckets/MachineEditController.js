@@ -301,4 +301,23 @@ angular.module('cloudscalers.controllers')
             );
         };
 
+        $scope.updateDescription = function() {
+            Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
+                function(result){
+                    $scope.machine = result;
+                    $scope.descriptionEdit = false;
+                },
+                function(reason){
+                    $alert(reason.data);
+                }
+            );
+        };
+        $scope.descriptionEdit = false;
+        $scope.beginEdit = function() {
+            $scope.descriptionEdit = true;
+            $scope.machine.newdescription = $scope.machine.description;
+        };
+        $scope.cancelDescription = function() {
+            $scope.descriptionEdit = false;
+        };
     }]);

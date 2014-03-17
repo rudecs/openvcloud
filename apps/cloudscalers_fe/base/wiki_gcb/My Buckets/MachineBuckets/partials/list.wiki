@@ -45,7 +45,7 @@ h3. Start now and create your Machine Bucket
       <tr ng-repeat="machine in machines | filter:machineIsManageable">
         <td>{[machine.status]}</td>
         <td>
-          <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
+          <a ng-href="#/edit/{[machine.id]}" title="{[machine.description]}">{[machine.name]}</a>
         </td>
         <td style="display: none">{[machine.ip]}</td>
         <td>{[numeral(machineinfo[machine.id].size.memory * 1024 * 1024).format('0 b')]}</td>

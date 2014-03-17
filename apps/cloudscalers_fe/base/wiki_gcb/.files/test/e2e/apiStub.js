@@ -244,6 +244,15 @@ defineApiStub = function ($httpBackend) {
         MachinesList.add(machine);
         return [200, id];
     });
+
+    $httpBackend.whenGET(/^\/machines\/updatedescription\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);      
+        var machine = MachinesList.getById(params.machineId);
+        machine.description = params.newdescription;
+        MachinesList.save(machine);
+        return [200, machine];
+    });
+
     $httpBackend.whenGET(/^\/machines\/action\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
