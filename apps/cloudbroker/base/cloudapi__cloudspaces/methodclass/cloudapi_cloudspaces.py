@@ -163,7 +163,7 @@ class cloudapi_cloudspaces(object):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress']}
-        query['query'] = {'term': {"userGroupId": user}}
+        query['query'] = {'bool':{'must':[{'term': {"userGroupId": user}}],'must_not':[{'status':'DESTROYED'.lower()}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         return cloudspaces

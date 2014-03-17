@@ -376,14 +376,8 @@ class cloudapi_machines(object):
         result list
 
         """
-        term = dict()
-        if cloudspaceId:
-            term["cloudspaceId"] = cloudspaceId
-        if status:
-            term["status"] = status
         query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
-        if term:
-            query['query'] = {'term': term}
+        query['query'] = {'bool':{'must':[{'term': {'cloudspaceId':cloudspaceId}}],'must_not':{'term':{'status':'DESTROYED'.lower()}}}}
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         machines = []
         for res in results:
