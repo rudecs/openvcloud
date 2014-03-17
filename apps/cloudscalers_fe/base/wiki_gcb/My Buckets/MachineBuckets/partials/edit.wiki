@@ -24,7 +24,7 @@ h2 { float: left;  }
                             <div class="row">
                                 <h5 class="span2">Description</h5>
                                 <div class="span3 mtm justify">
-                                    <div ng-hide="descriptionEdit">{[machine.description]}</div>
+                                    <div ng-hide="descriptionEdit" class="word-break">{[machine.description]}</div>
                                     <textarea ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description" ng-show="descriptionEdit"></textarea>
                                     <a href="" ng-click="beginEdit()" ng-hide="descriptionEdit">Edit</a>
                                     <a href="" ng-click="updateDescription()" ng-show="descriptionEdit">Save</a>

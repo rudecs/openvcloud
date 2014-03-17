@@ -1268,6 +1268,10 @@ html, body{
 .justify{
     text-align: justify;
 }
+.word-break{
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
 /* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
 .mtm{
     margin-top: 10px;
