@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', 
-                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert', 
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
 
@@ -317,7 +317,7 @@ angular.module('cloudscalers.controllers')
                         $modalInstance.close({});
                     },
                     function(reason){
-                        $alert(reason.data);
+                        $ErrorResponseAlert(reason.data);
                     }
                 );
             };
