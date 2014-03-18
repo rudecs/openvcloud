@@ -300,24 +300,29 @@ angular.module('cloudscalers.controllers')
                 }
             );
         };
-
-        $scope.updateDescription = function() {
-            Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
-                function(result){
-                    $scope.machine = result;
-                    $scope.descriptionEdit = false;
-                },
-                function(reason){
-                    $alert(reason.data);
-                }
-            );
+        $scope.updateDescriptionPopup = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'updateDescription.html',
+                controller: updateDescriptionController,
+                resolve: {},
+                scope: $scope
+            });
         };
-        $scope.descriptionEdit = false;
-        $scope.beginEdit = function() {
-            $scope.descriptionEdit = true;
+        var updateDescriptionController = function($modalInstance) {
             $scope.machine.newdescription = $scope.machine.description;
-        };
-        $scope.cancelDescription = function() {
-            $scope.descriptionEdit = false;
+            $scope.submit = function () {
+                Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
+                    function(result){
+                        $scope.machine = result;
+                        $modalInstance.close({});
+                    },
+                    function(reason){
+                        $alert(reason.data);
+                    }
+                );
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
         };
     }]);

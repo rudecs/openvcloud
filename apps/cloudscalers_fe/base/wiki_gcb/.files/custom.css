@@ -1202,6 +1202,9 @@ a.icon-remove-sign {
 .nav, .pagination, .carousel a {
     cursor: pointer;
 }
+.edit-description:hover .edit-description-link{
+    display: inline !important;
+}
 #cloudspace-nav{
     border: 1px solid #fff;
     margin-top: -1px;

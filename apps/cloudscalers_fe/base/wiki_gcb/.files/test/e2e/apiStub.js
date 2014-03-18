@@ -17,6 +17,11 @@ defineApiStub = function ($httpBackend) {
                 return _.find(this.get(), function(m) { return m.id == id; }); // '==' here is intentional
             },
 
+            getByName: function(machineName) {
+                return _.find(this.get(), function(m) { return m.hostname == machineName; });
+                console.log(m);
+            },
+
             save: function(item) {
                 var items = this.get();
                 for (var i = 0; i < items.length; i++) {
@@ -224,25 +229,30 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/sizes\/list\b.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var id = Math.random();
-        var machine = {
-            status: "RUNNING",
-            cloudspaceId: parseInt(params.cloudspaceId),
-            hostname: params.name,
-            description: params.description,
-            name: params.name,
-            accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
-            interfaces: [{'ipAddress':'192.168.100.34'}],
-            sizeId: parseInt(params.sizeId),
-            imageId: parseInt(params.imageId),
-            disksize: parseInt(params.disksize),
-            archive: params.archive,
-            region: params.region,
-            replication: params.replication,
-            id: id
-        };
-        MachinesList.add(machine);
-        return [200, id];
+        if(MachinesList.getByName(params.name) == undefined){
+            var id = Math.random();
+            var machine = {
+                status: "RUNNING",
+                cloudspaceId: parseInt(params.cloudspaceId),
+                hostname: params.name,
+                description: params.description,
+                name: params.name,
+                accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
+                interfaces: [{'ipAddress':'192.168.100.34'}],
+                sizeId: parseInt(params.sizeId),
+                imageId: parseInt(params.imageId),
+                disksize: parseInt(params.disksize),
+                archive: params.archive,
+                region: params.region,
+                replication: params.replication,
+                id: id
+            };
+                MachinesList.add(machine);
+                return [200, id];
+        }
+        else{
+            return [409, 'Machine name duplicated!']
+        }
     });
 
     $httpBackend.whenGET(/^\/machines\/updatedescription\?.*/).respond(function (method, url, data) {
