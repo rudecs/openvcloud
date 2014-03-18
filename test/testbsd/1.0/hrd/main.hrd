@@ -1,16 +1,16 @@
 jp.domain=cloudscalers
-jp.name=rosapi
+jp.name=testbsd
 jp.version=1.0
 jp.autobuild=0
 
 jp.export=0
 
 #supported platforms linux, linux32, linux64, win32, win64, win
-jp.supportedplatforms=cygwin,generic,linux,linux32,linux64,mint,mint32,mint64,ubuntu,ubuntu32,ubuntu64,unix,unknown,vista,win,win2008_64,win2012_64,win32,win64,win7,win8
+jp.supportedplatforms=generic
 
 jp.description=!(../description.wiki)
 
-jp.buildnr=3
+jp.buildnr=2
 
 jp.taskletschecksum=
 jp.descrchecksum=
