@@ -17,6 +17,11 @@ defineApiStub = function ($httpBackend) {
                 return _.find(this.get(), function(m) { return m.id == id; }); // '==' here is intentional
             },
 
+            getByName: function(machineName) {
+                return _.find(this.get(), function(m) { return m.hostname == machineName; });
+                console.log(m);
+            },
+
             save: function(item) {
                 var items = this.get();
                 for (var i = 0; i < items.length; i++) {
@@ -224,26 +229,40 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/sizes\/list\b.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var id = Math.random();
-        var machine = {
-            status: "RUNNING",
-            cloudspaceId: parseInt(params.cloudspaceId),
-            hostname: params.name,
-            description: params.description,
-            name: params.name,
-            accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
-            interfaces: [{'ipAddress':'192.168.100.34'}],
-            sizeId: parseInt(params.sizeId),
-            imageId: parseInt(params.imageId),
-            disksize: parseInt(params.disksize),
-            archive: params.archive,
-            region: params.region,
-            replication: params.replication,
-            id: id
-        };
-        MachinesList.add(machine);
-        return [200, id];
+        if(MachinesList.getByName(params.name) == undefined){
+            var id = Math.random();
+            var machine = {
+                status: "RUNNING",
+                cloudspaceId: parseInt(params.cloudspaceId),
+                hostname: params.name,
+                description: params.description,
+                name: params.name,
+                accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
+                interfaces: [{'ipAddress':'192.168.100.34'}],
+                sizeId: parseInt(params.sizeId),
+                imageId: parseInt(params.imageId),
+                disksize: parseInt(params.disksize),
+                archive: params.archive,
+                region: params.region,
+                replication: params.replication,
+                id: id
+            };
+                MachinesList.add(machine);
+                return [200, id];
+        }
+        else{
+            return [409, 'Machine name duplicated!']
+        }
     });
+
+    $httpBackend.whenGET(/^\/machines\/updatedescription\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);      
+        var machine = MachinesList.getById(params.machineId);
+        machine.description = params.newdescription;
+        MachinesList.save(machine);
+        return [200, machine];
+    });
+
     $httpBackend.whenGET(/^\/machines\/action\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
@@ -552,5 +571,41 @@ defineApiStub = function ($httpBackend) {
        {url: "https://mybucketname.uss3.vscalers.com", accesskey:"bbbbbbbbbbbbbbbbbbbb", size: 2984995885, cloudspaceId: 1},
     ];
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
+
+    var portforwarding = [
+       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 8080, localPort: 80},
+       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
+       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 7070, localPort: 70},
+       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 9090, localPort: 90},
+       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
+       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 8080, localPort: 80},
+       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
+       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 4040, localPort: 40},
+       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 6060, localPort: 60},
+       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 1010, localPort: 10},
+       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
+       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 5050, localPort: 50},
+    ];
+
+    $httpBackend.whenGET(/^\/portforwarding\/list.*/).respond(portforwarding);
+    $httpBackend.whenGET(/^\/portforwarding\/list\?ip=\d+.*/).respond(portforwarding);
+
+    $httpBackend.whenGET(/^\/commonports\/list.*/).respond([
+        {port: '80', name: 'HTTP'},
+        {port: '72', name: 'SSH'},
+        {port: '403', name: 'HTTPS'},
+        {port: '27', name: 'FTP'}
+    ]);
+
+    $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        portforwarding.push({
+            ip: params.ip,
+            vmName: params.vmName,
+            puplicPort: params.puplicPort,
+            localPort: params.localPort
+        });
+        return [200, params.ip];
+    });
 };
 

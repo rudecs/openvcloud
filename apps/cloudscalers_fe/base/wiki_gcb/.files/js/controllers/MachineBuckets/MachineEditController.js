@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', 
-                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert', 
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
 
@@ -300,5 +300,29 @@ angular.module('cloudscalers.controllers')
                 }
             );
         };
-
+        $scope.updateDescriptionPopup = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'updateDescription.html',
+                controller: updateDescriptionController,
+                resolve: {},
+                scope: $scope
+            });
+        };
+        var updateDescriptionController = function($modalInstance) {
+            $scope.machine.newdescription = $scope.machine.description;
+            $scope.submit = function () {
+                Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
+                    function(result){
+                        $scope.machine = result;
+                        $modalInstance.close({});
+                    },
+                    function(reason){
+                        $ErrorResponseAlert(reason.data);
+                    }
+                );
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
     }]);
