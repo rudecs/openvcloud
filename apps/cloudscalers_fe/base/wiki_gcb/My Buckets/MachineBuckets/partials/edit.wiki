@@ -17,7 +17,7 @@ h2 { float: left;  }
                         <li>
                         	<div class="row">
                         		<h5 class="span2">Name</h5>
-                        		<div class="span3 mtm">{[machine.name]}</div>
+                        		<div class="span3 mtm word-break">{[machine.name]}</div>
                         	</div>
                         </li>
                         <li>
