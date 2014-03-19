@@ -89,17 +89,42 @@ class cloudapi_cloudspaces(object):
 
         """
         ctx = kwargs['ctx']
-        term = {"cloudspaceId": cloudspaceId}
+        #A cloudspace may not contain any resources any more
         query = {'fields': ['id', 'name']}
-        if term:
-            query['query'] = {'term': term}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'cloudspaceId': cloudspaceId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}}
+                                              ]
+                                  }
+                          }
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
             return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
-        networkid = self.models.cloudspace.get(cloudspaceId).networkId
-        self.libvirt_actor.releaseNetworkId(networkid)
-        return self.models.cloudspace.delete(cloudspaceId)
+        #The last cloudspace in a space may not be deleted
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        query = {'fields': ['id', 'name']}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': cloudspace.accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}},
+                                              {'term':{'id':cloudspaceId}}
+                                              ]
+                                  }
+                          }
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        if len(results) > 0:
+            ctx.start_response('409 Conflict', [])
+            return 'The last CloudSpace of an account can not be deleted.'
+        
+        cloudspace.status = 'DESTROYED'
+        #TODO: remove this
+        self.libvirt_actor.releaseNetworkId(cloudspace.networkid)
+        
+        self.models.cloudspace.set(cloudspace)
 
 
     def get(self, cloudspaceId, **kwargs):
@@ -138,7 +163,7 @@ class cloudapi_cloudspaces(object):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress']}
-        query['query'] = {'term': {"userGroupId": user}}
+        query['query'] = {'bool':{'must':[{'term': {'userGroupId': user}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         return cloudspaces
