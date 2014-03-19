@@ -24,8 +24,8 @@ h2 { float: left;  }
                             <div class="row">
                                 <h5 class="span2">Description</h5>
                                 <div class="span3 mtm justify edit-description">
-                                    <div style="cursor: pointer;" title="Click to edit description!" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
-                                    <a href="" style="font-style:italic; display:none;" class="right edit-description-link" ng-click="updateDescriptionPopup()">Edit</a>
+                                    <div style="cursor: pointer;" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
+                                        <a href="" style="font-style:italic; display:none;" class="right edit-description-link" ng-click="updateDescriptionPopup()">Edit</a>
                                     </div>
                                 </div>
                             </div>
