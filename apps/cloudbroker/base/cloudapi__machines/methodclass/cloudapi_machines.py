@@ -354,7 +354,7 @@ class cloudapi_machines(object):
                     machine.nics[0]['ipAddress']= ipaddress
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
-                'name': machine.name, 'hostname': machine.hostName,
+                'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
