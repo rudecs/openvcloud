@@ -69,7 +69,7 @@ angular.module('cloudscalers.services')
             },
             updateDescription: function (id, newdescription) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/updatedescription?machineId=' + encodeURIComponent(id) + '&newdescription=' + 
+                url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + encodeURIComponent(id) + '&description=' + 
                 encodeURIComponent(newdescription);
                 return $http.get(url).then(
                         function (result) {

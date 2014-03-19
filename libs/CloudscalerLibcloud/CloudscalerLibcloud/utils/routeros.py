@@ -8,6 +8,7 @@ class routeros():
     def __init__(self, ipaddress):
         self.ipaddress = ipaddress
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(1)
         self.sock.connect((self.ipaddress, 8728))
         self.api = rosapi.RosAPI(self.sock)
         self.api.login(b'api', b'api')

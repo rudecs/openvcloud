@@ -255,10 +255,10 @@ defineApiStub = function ($httpBackend) {
         }
     });
 
-    $httpBackend.whenGET(/^\/machines\/updatedescription\?.*/).respond(function (method, url, data) {
+    $httpBackend.whenGET(/^\/machines\/update\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);      
         var machine = MachinesList.getById(params.machineId);
-        machine.description = params.newdescription;
+        machine.description = params.description;
         MachinesList.save(machine);
         return [200, machine];
     });
