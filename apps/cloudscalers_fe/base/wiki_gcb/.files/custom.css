@@ -1205,6 +1205,12 @@ a.icon-remove-sign {
 .edit-description:hover .edit-description-link{
     display: inline !important;
 }
+.edit-description-link{
+    color: #0088cc;
+}
+.edit-description-link:hover{
+    text-decoration: underline;
+}
 #cloudspace-nav{
     border: 1px solid #fff;
     margin-top: -1px;
