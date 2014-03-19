@@ -463,7 +463,7 @@ class cloudapi_machines(object):
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
-    @authenticator.auth(acl='W')
+    @authenticator.auth(acl='C')
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
@@ -475,16 +475,16 @@ class cloudapi_machines(object):
 
         """
         machine = self._getMachine(machineId)
-        if name:
-            if not self._assertName(machine.cloudspaceId, name, **kwargs):
-                ctx = kwargs['ctx']
-                ctx.start_response('409 Conflict', [])
-                return 'Selected name already exists'
-            machine.name = name
+        #if name:
+        #    if not self._assertName(machine.cloudspaceId, name, **kwargs):
+        #        ctx = kwargs['ctx']
+        #        ctx.start_response('409 Conflict', [])
+        #        return 'Selected name already exists'
+        #    machine.name = name
         if description:
-            machine.description = description
-        if size:
-            machine.nrCU = size
+            machine.descr = description
+        #if size:
+        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     def getConsoleUrl(self, machineId, **kwargs):
