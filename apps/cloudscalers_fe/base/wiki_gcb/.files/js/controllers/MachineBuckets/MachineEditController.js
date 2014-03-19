@@ -301,7 +301,7 @@ angular.module('cloudscalers.controllers')
             );
         };
         $scope.updateDescriptionPopup = function () {
-            var modalInstance = $modal.open({
+            $scope.modalInstance = $modal.open({
                 templateUrl: 'updateDescription.html',
                 controller: updateDescriptionController,
                 resolve: {},
@@ -312,12 +312,13 @@ angular.module('cloudscalers.controllers')
             $scope.machine.newdescription = $scope.machine.description;
             $scope.submit = function () {
                 Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
-                    function(result){
-                        $scope.machine = result;
+                    function(machineId){
+                        $scope.machine.description = $scope.machine.newdescription;
                         $modalInstance.close({});
                     },
                     function(reason){
-                        $ErrorResponseAlert(reason.data);
+                        $modalInstance.close({});
+                        $ErrorResponseAlert(reason);
                     }
                 );
             };

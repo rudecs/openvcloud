@@ -260,7 +260,7 @@ defineApiStub = function ($httpBackend) {
         var machine = MachinesList.getById(params.machineId);
         machine.description = params.description;
         MachinesList.save(machine);
-        return [200, machine];
+        return [200, true];
     });
 
     $httpBackend.whenGET(/^\/machines\/action\?.*/).respond(function (method, url, data) {
