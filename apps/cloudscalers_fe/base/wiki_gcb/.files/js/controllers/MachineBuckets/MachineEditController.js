@@ -134,7 +134,7 @@ angular.module('cloudscalers.controllers')
 					},
 					function(reason){
 						LoadingDialog.hide();
-						$alert(reason.data);
+						$ErrorResponseAlert(reason);
                     }
 				);
     		});
