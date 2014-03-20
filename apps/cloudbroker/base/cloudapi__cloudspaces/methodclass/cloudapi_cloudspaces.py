@@ -116,13 +116,11 @@ class cloudapi_cloudspaces(object):
                                   }
                           }
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
-        if len(results) > 0:
+        if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
         
         cloudspace.status = 'DESTROYED'
-        #TODO: remove this
-        self.libvirt_actor.releaseNetworkId(cloudspace.networkid)
         
         self.models.cloudspace.set(cloudspace)
 
