@@ -42,7 +42,7 @@ class cloudapi_cloudspaces(object):
         """
         
         ctx = kwargs['ctx']
-        if not j.apps.system.usermanager.userexists(userId):
+        if not j.core.portal.active.auth.userExists(userId):
             ctx.start_response('404 Not Found', [])
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
@@ -131,7 +131,16 @@ class cloudapi_cloudspaces(object):
         result dict
         """
         #put your code here to implement this method
-        return self.models.cloudspace.get(cloudspaceId)
+        cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
+
+        import ipdb; ipdb.set_trace()
+        cloudspace = { "accountId": cloudspaceObject.accountId, 
+                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl], 
+                        "description": cloudspaceObject.descr, 
+                        "id": cloudspaceObject.id, 
+                        "name": cloudspaceObject.name, 
+                        "publicipaddress": cloudspaceObject.publicipaddress}
+        return cloudspace
 
     @authenticator.auth(acl='U')
     def deleteUser(self, cloudspaceId, userId, **kwargs):
