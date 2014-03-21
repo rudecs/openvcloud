@@ -21,10 +21,10 @@ class auth(object):
     def expandAcl(self, user, groups, acl):
         fullacl = set()
         for ace in acl:
-            right = set(ace['right'])
-            if ace['type'] == 'U' and ace['userGroupId'] == user:
+            right = set(ace.right)
+            if ace.type == 'U' and ace.userGroupId == user:
                 fullacl.update(right)
-            elif ace['type'] == 'G' and ace['userGroupId'] in groups:
+            elif ace.type == 'G' and ace.userGroupId in groups:
                 fullacl.update(right)
         return fullacl
 

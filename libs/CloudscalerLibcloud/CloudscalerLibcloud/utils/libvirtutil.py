@@ -76,8 +76,11 @@ class LibvirtUtil(object):
                     continue
                 vol.delete(0)
         poolpath = os.path.join(self.basepath, domain.name())
-        diskpool = vol.storagePoolLookupByVolume()
-        diskpool.destroy()
+        try:
+            diskpool =  self.connection.storagePoolLookupByName(domain.name())
+            diskpool.destroy()
+        except:
+            pass
         if os.path.exists(poolpath):
             shutil.rmtree(poolpath)
         domain.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)

@@ -38,7 +38,7 @@ class cloudapi_accounts(object):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.cb.models.account.new()
+        account = self.models.account.new()
         account.dict2obj(self.models.account.get(accountId))
         acl = account.new_acl()
         acl.userGroupId = userId
@@ -54,7 +54,7 @@ class cloudapi_accounts(object):
         param:access list of ids of users which have full access to this space
         result int
         """
-        account = self.cb.models.account.new()
+        account = self.models.account.new()
         account.name = name
         for userid in access:
             ace = account.new_acl()
@@ -108,9 +108,9 @@ class cloudapi_accounts(object):
         """
         account = self.models.account.get(accountId)
         change = False
-        for ace in account['acl'][:]:
-            if ace['userGroupId'] == userId:
-                account['acl'].remove(ace)
+        for ace in account.acl:
+            if ace.userGroupId == userId:
+                account.acl.remove(ace)
                 change = True
         if change:
             self.models.account.set(account)

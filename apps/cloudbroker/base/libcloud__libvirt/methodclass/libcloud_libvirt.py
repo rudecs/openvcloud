@@ -52,7 +52,7 @@ class libcloud_libvirt(object):
             except:
                 return []
             for i in rp.images:
-                images.append(self._models.image.get(i).__dict__)
+                images.append(j.code.object2dict(self._models.image.get(i)))
             return images
         query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'extra']}
         results = self._models.image.search(query)['result']
