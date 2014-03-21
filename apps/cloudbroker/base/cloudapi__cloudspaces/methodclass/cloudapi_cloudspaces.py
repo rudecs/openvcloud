@@ -133,7 +133,6 @@ class cloudapi_cloudspaces(object):
         #put your code here to implement this method
         cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
 
-        import ipdb; ipdb.set_trace()
         cloudspace = { "accountId": cloudspaceObject.accountId, 
                         "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl], 
                         "description": cloudspaceObject.descr, 
