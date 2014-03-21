@@ -6,7 +6,7 @@
 
 Machine Buckets are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
 
-Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage. You can choose the datacenter location of your Machine Bucket and optionally replicate it to one or more datacenters for failover purposes.
+Machine Buckets are delivered with a basic package of CPU, Memory and Storage. Bandwidth is unlimited as long as fair use applies. You can add to your basic package additional primary storage and archive/backup storage.
 
 h3. Start now and create your Machine Bucket
 
@@ -45,7 +45,7 @@ h3. Start now and create your Machine Bucket
       <tr ng-repeat="machine in machines | filter:machineIsManageable">
         <td>{[machine.status]}</td>
         <td>
-          <a ng-href="#/edit/{[machine.id]}">{[machine.name]}</a>
+          <a ng-href="#/edit/{[machine.id]}" title="{[machine.description]}">{[machine.name]}</a>
         </td>
         <td style="display: none">{[machine.ip]}</td>
         <td>{[numeral(machineinfo[machine.id].size.memory * 1024 * 1024).format('0 b')]}</td>

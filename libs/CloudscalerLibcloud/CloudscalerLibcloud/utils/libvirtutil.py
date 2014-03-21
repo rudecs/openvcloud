@@ -422,4 +422,8 @@ class LibvirtUtil(object):
             templatepoolname = 'VMStor'
         return self.readonly.storagePoolLookupByName(templatepoolname)
 
+    def createNetwork(self, networkname, bridge):
+        networkxml = self.env.get_template('network.xml').render(networkname=networkname, bridge=bridge)
+        self.connection.networkCreateXML(networkxml)
+        
 

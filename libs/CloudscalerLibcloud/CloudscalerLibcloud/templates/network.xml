@@ -1,0 +1,6 @@
+<network>
+    <name>{{networkname}}</name>
+    <forward mode='bridge'/>
+    <bridge name='{{bridge}}'/>
+    <virtualport type='openvswitch'/>
+</network>

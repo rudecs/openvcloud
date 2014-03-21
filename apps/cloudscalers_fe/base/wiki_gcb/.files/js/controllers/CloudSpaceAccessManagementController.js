@@ -1,14 +1,12 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', function($scope, CloudSpace) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert', function($scope, CloudSpace, $ErrorResponseAlert) {
         $scope.resetUser = function() {
-            // For now, we will grant the new user all permissions. See http://<server>/specifications/Security
             $scope.newUser = {
                 nameOrEmail: '', 
                 access: {
                     R: true,
                     X: true,
                     C: true,
-                    D: true,
                     U: true,
                     A: true
                 }
@@ -31,17 +29,21 @@ angular.module('cloudscalers.controllers')
                     $scope.resetUser();
                 });
                 $scope.userError = false;
-            }, function(result) {
-                if (result.status == 404)
+            }, function(reason) {
+                if (reason.status == 404)
                     $scope.userError = 'User not found';
                 else
-                    $scope.userError = 'An error has occurred';
+                    $ErrorResponseAlert(reason);
             });
         };
 
         $scope.deleteUser = function(space, user) {
-            CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).then(function() {
-                $scope.loadSpaceAcl();
-            });
+            CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).
+            then(function() {
+                    $scope.loadSpaceAcl();
+                },
+                function(reason){
+                    $ErrorResponseAlert(reason);
+                });
         };
     }]);

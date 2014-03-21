@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', 
-                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert', 
+                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
 
@@ -134,7 +134,7 @@ angular.module('cloudscalers.controllers')
 					},
 					function(reason){
 						LoadingDialog.hide();
-						$alert(reason.data);
+						$ErrorResponseAlert(reason);
                     }
 				);
     		});
@@ -300,5 +300,30 @@ angular.module('cloudscalers.controllers')
                 }
             );
         };
-
+        $scope.updateDescriptionPopup = function () {
+            $scope.modalInstance = $modal.open({
+                templateUrl: 'updateDescription.html',
+                controller: updateDescriptionController,
+                resolve: {},
+                scope: $scope
+            });
+        };
+        var updateDescriptionController = function($modalInstance) {
+            $scope.machine.newdescription = $scope.machine.description;
+            $scope.submit = function () {
+                Machine.updateDescription($scope.machine.id, $scope.machine.newdescription).then(
+                    function(machineId){
+                        $scope.machine.description = $scope.machine.newdescription;
+                        $modalInstance.close({});
+                    },
+                    function(reason){
+                        $modalInstance.close({});
+                        $ErrorResponseAlert(reason);
+                    }
+                );
+            };
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
     }]);

@@ -304,7 +304,6 @@ class cloudapi_machines(object):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
-        self.models.vmachine.delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
@@ -358,7 +357,7 @@ class cloudapi_machines(object):
                     machine.nics[0].ipAddress= ipaddress
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
-                'name': machine.name, 'hostname': machine.hostName,
+                'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
@@ -381,14 +380,8 @@ class cloudapi_machines(object):
         result list
 
         """
-        term = dict()
-        if cloudspaceId:
-            term["cloudspaceId"] = cloudspaceId
-        if status:
-            term["status"] = status
         query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
-        if term:
-            query['query'] = {'term': term}
+        query['query'] = {'bool':{'must':[{'term': {'cloudspaceId':cloudspaceId}}],'must_not':{'term':{'status':'DESTROYED'.lower()}}}}
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         machines = []
         for res in results:
@@ -467,7 +460,7 @@ class cloudapi_machines(object):
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
-    @authenticator.auth(acl='W')
+    @authenticator.auth(acl='C')
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
@@ -479,16 +472,16 @@ class cloudapi_machines(object):
 
         """
         machine = self._getMachine(machineId)
-        if name:
-            if not self._assertName(machine.cloudspaceId, name, **kwargs):
-                ctx = kwargs['ctx']
-                ctx.start_response('409 Conflict', [])
-                return 'Selected name already exists'
-            machine.name = name
+        #if name:
+        #    if not self._assertName(machine.cloudspaceId, name, **kwargs):
+        #        ctx = kwargs['ctx']
+        #        ctx.start_response('409 Conflict', [])
+        #        return 'Selected name already exists'
+        #    machine.name = name
         if description:
-            machine.description = description
-        if size:
-            machine.nrCU = size
+            machine.descr = description
+        #if size:
+        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     def getConsoleUrl(self, machineId, **kwargs):
