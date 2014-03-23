@@ -53,8 +53,9 @@ angular.module('cloudscalers.services')
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
-            delete: function(cloudspace) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspace.id)
+            delete: function(cloudspace, userId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspace.id + 
+                                 '&userId=' + userId)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             }
