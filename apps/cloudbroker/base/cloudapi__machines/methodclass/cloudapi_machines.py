@@ -96,14 +96,14 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        disk = self.cb.models.disk.new()
+        disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
         self.cb.extensions.imp.addDiskToMachine(machine, disk)
         diskid = self.models.disk.set(disk)[0]
-        machine['disks'].append(diskid)
+        machine.disks.append(diskid)
         self.models.vmachine.set(machine)
         return diskid
 
@@ -120,7 +120,7 @@ class cloudapi_machines(object):
         node = self._getNode(machine.referenceId)
         provider = self._getProvider(machine)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        image = self.cb.models.image.new()
+        image = self.models.image.new()
         image.name = templatename
         image.referenceId = "" 
         image.type = 'custom templates'
@@ -189,7 +189,7 @@ class cloudapi_machines(object):
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
-        machine = self.cb.models.vmachine.new()
+        machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
         networkid = self.models.cloudspace.get(cloudspaceId).networkId
         machine.cloudspaceId = cloudspaceId
@@ -199,7 +199,7 @@ class cloudapi_machines(object):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
 
-        disk = self.cb.models.disk.new()
+        disk = self.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
@@ -275,9 +275,9 @@ class cloudapi_machines(object):
 
         """
         machine = self.models.vmachine.get(machineId)
-        diskfound = diskId in machine['disks']
+        diskfound = diskId in machine.disks
         if diskfound:
-            machine['disks'].remove(diskId)
+            machine.disks.remove(diskId)
             self.models.vmachine.set(machine)
             self.models.disk.delete(diskId)
         return diskfound
@@ -304,7 +304,6 @@ class cloudapi_machines(object):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
-        self.models.vmachine.delete(machineId)
 
     def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
@@ -345,16 +344,20 @@ class cloudapi_machines(object):
         """
         provider, node = self._getProviderAndNode(machineId)
         machine = self.models.vmachine.get(machineId)
-        storage = self._getStorage(machine.__dict__)
+        m = {}
+        m['stackId'] = machine.stackId
+        m['disks'] = machine.disks
+        m['sizeId'] = machine.sizeId
+        storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
         if machine.nics:
-            if machine.nics[0]['ipAddress'] == 'Undefined':
+            if machine.nics[0].ipAddress == 'Undefined':
                 ipaddress = provider.client.ex_getIpAddress(node)
                 if ipaddress:
-                    machine.nics[0]['ipAddress']= ipaddress
+                    machine.nics[0].ipAddress= ipaddress
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
-                'name': machine.name, 'hostname': machine.hostName,
+                'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
@@ -377,14 +380,8 @@ class cloudapi_machines(object):
         result list
 
         """
-        term = dict()
-        if cloudspaceId:
-            term["cloudspaceId"] = cloudspaceId
-        if status:
-            term["status"] = status
         query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
-        if term:
-            query['query'] = {'term': term}
+        query['query'] = {'bool':{'must':[{'term': {'cloudspaceId':cloudspaceId}}],'must_not':{'term':{'status':'DESTROYED'.lower()}}}}
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         machines = []
         for res in results:
@@ -463,7 +460,7 @@ class cloudapi_machines(object):
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_snapshot_rollback(node, name)
 
-    @authenticator.auth(acl='W')
+    @authenticator.auth(acl='C')
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
@@ -475,16 +472,16 @@ class cloudapi_machines(object):
 
         """
         machine = self._getMachine(machineId)
-        if name:
-            if not self._assertName(machine.cloudspaceId, name, **kwargs):
-                ctx = kwargs['ctx']
-                ctx.start_response('409 Conflict', [])
-                return 'Selected name already exists'
-            machine.name = name
+        #if name:
+        #    if not self._assertName(machine.cloudspaceId, name, **kwargs):
+        #        ctx = kwargs['ctx']
+        #        ctx.start_response('409 Conflict', [])
+        #        return 'Selected name already exists'
+        #    machine.name = name
         if description:
-            machine.description = description
-        if size:
-            machine.nrCU = size
+            machine.descr = description
+        #if size:
+        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     def getConsoleUrl(self, machineId, **kwargs):

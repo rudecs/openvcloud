@@ -46,9 +46,9 @@
         Name, description can be changed with this action.
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the machine
-        var:description str,, description of the machine
-        var:size int,,size of the machine in CU
+        var:name str,, name of the machine @tags: optional
+        var:description str,, description of the machine @tags: optional
+        var:size int,,size of the machine in CU @tags: optional
 
     method:start
         """

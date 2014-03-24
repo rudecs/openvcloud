@@ -62,11 +62,16 @@ cloudscalers.factory('$alert', function($modal) {
 });
 cloudscalers.factory('$ErrorResponseAlert',function($alert){
     return function(reason) {
-        if (reason.status == 500){
+        if (reason.status == 500 || reason.status == 502 || reason.status == 504){
             $alert("An unexpected error has occurred");
         }
         else{
-            $alert(reason.data);
+            if(reason.data != undefined){
+                $alert(reason.data);
+            }
+            else{
+                $alert(reason);
+            }
         }
     }
 });

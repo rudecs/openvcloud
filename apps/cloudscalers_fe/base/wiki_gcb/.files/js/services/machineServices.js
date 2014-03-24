@@ -67,6 +67,19 @@ angular.module('cloudscalers.services')
                         }
                 );
             },
+            updateDescription: function (id, newdescription) {
+                var machine = [];
+                url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + encodeURIComponent(id) + '&description=' + 
+                encodeURIComponent(newdescription);
+                return $http.get(url).then(
+                        function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                            return $q.reject(reason);
+                        }
+                );
+            },
             clone: function(machine, cloneName) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id + '&name=' + encodeURIComponent(cloneName);
                 return $http.get(url).then(

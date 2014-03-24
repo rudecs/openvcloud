@@ -1202,6 +1202,15 @@ a.icon-remove-sign {
 .nav, .pagination, .carousel a {
     cursor: pointer;
 }
+.edit-description:hover .edit-description-link{
+    display: inline !important;
+}
+.edit-description-link{
+    color: #0088cc;
+}
+.edit-description-link:hover{
+    text-decoration: underline;
+}
 #cloudspace-nav{
     border: 1px solid #fff;
     margin-top: -1px;
@@ -1265,6 +1274,13 @@ html, body{
 .display-none{
     display: none;
 }
+.justify{
+    text-align: justify;
+}
+.word-break{
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
 /* margi & padding units ex. mtm ("m = margin" + "t = top") + "m = medium" */
 .mtm{
     margin-top: 10px;
@@ -1274,6 +1290,9 @@ html, body{
 }
 .mll{
     margin-left: 20px;
+}
+.mlm{
+    margin-left: 10px;
 }
 .mrm{
     margin-right: 10px;

@@ -42,12 +42,11 @@ class cloudapi_cloudspaces(object):
         """
         
         ctx = kwargs['ctx']
-        if not j.apps.system.usermanager.userexists(userId):
+        if not j.core.portal.active.auth.userExists(userId):
             ctx.start_response('404 Not Found', [])
         else:
-            cs = self.cb.models.cloudspace.new()
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cs.dict2obj(cloudspace)
+            cs = cloudspace
             acl = cs.new_acl()
             acl.userGroupId = userId
             acl.type = 'U'
@@ -67,7 +66,7 @@ class cloudapi_cloudspaces(object):
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-        cs = self.cb.models.cloudspace.new()
+        cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
         ace = cs.new_acl()
@@ -89,17 +88,40 @@ class cloudapi_cloudspaces(object):
 
         """
         ctx = kwargs['ctx']
-        term = {"cloudspaceId": cloudspaceId}
+        #A cloudspace may not contain any resources any more
         query = {'fields': ['id', 'name']}
-        if term:
-            query['query'] = {'term': term}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'cloudspaceId': cloudspaceId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}}
+                                              ]
+                                  }
+                          }
         results = self.models.vmachine.find(ujson.dumps(query))['result']
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
             return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
-        networkid = self.models.cloudspace.get(cloudspaceId).networkId
-        self.libvirt_actor.releaseNetworkId(networkid)
-        return self.models.cloudspace.delete(cloudspaceId)
+        #The last cloudspace in a space may not be deleted
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        query = {'fields': ['id', 'name']}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': cloudspace.accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}},
+                                              {'term':{'id':cloudspaceId}}
+                                              ]
+                                  }
+                          }
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        if len(results) == 0:
+            ctx.start_response('409 Conflict', [])
+            return 'The last CloudSpace of an account can not be deleted.'
+        
+        cloudspace.status = 'DESTROYED'
+        
+        self.models.cloudspace.set(cloudspace)
 
 
     def get(self, cloudspaceId, **kwargs):
@@ -109,7 +131,15 @@ class cloudapi_cloudspaces(object):
         result dict
         """
         #put your code here to implement this method
-        return self.models.cloudspace.get(cloudspaceId)
+        cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
+
+        cloudspace = { "accountId": cloudspaceObject.accountId, 
+                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl], 
+                        "description": cloudspaceObject.descr, 
+                        "id": cloudspaceObject.id, 
+                        "name": cloudspaceObject.name, 
+                        "publicipaddress": cloudspaceObject.publicipaddress}
+        return cloudspace
 
     @authenticator.auth(acl='U')
     def deleteUser(self, cloudspaceId, userId, **kwargs):
@@ -122,9 +152,9 @@ class cloudapi_cloudspaces(object):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         change = False
-        for ace in cloudspace['acl'][:]:
-            if ace['userGroupId'] == userId:
-                cloudspace['acl'].remove(ace)
+        for ace in cloudspace.acl:
+            if ace.userGroupId == userId:
+                cloudspace.acl.remove(ace)
                 change = True
         if change:
             self.models.cloudspace.set(cloudspace)
@@ -138,7 +168,7 @@ class cloudapi_cloudspaces(object):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress']}
-        query['query'] = {'term': {"userGroupId": user}}
+        query['query'] = {'bool':{'must':[{'term': {'userGroupId': user}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         return cloudspaces

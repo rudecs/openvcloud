@@ -21,13 +21,10 @@ def action(networkid):
     networks = connection.connection.listNetworks()
     networkinformation = {'networkname':networkname}
     if networkname not in networks:
-    	bridgename = 'br-%s' % networkid
     	#create the bridge if it does not exist
     	from JumpScale.lib import ovsnetconfig
-    	#TODO: check if the bridge does not exist yet
-    	#TODO: check if the vxLan does not exist yet
-    	vxlan = j.system.ovsnetconfig.newVXlan(networkid)
-    	j.system.ovsnetconfig.newBridge(bridgename, vxlan)
+    	vxnet = j.system.ovsnetconfig.ensureVXNet(networkid)
+    	bridgename = vxnet.bridge.name
 
     	connection.createNetwork(networkname,bridgename)
     	

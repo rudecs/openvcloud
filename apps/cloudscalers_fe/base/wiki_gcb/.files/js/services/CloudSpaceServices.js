@@ -7,7 +7,6 @@ angular.module('cloudscalers.services')
             			 function(result){
             				 return result.data;
             			 });
-
             },
             current: function() {
                 return SessionData.getSpace();
@@ -21,7 +20,7 @@ angular.module('cloudscalers.services')
             				return JSON.parse(result.data);
             			},
             			function(reason){
-            				$q.defer(reason);
+            				return $q.defer(reason);
             			}
             		);
             },
@@ -31,7 +30,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.defer(reason);
                         }
                     );
             },
@@ -44,9 +43,9 @@ angular.module('cloudscalers.services')
 
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser?cloudspaceId=' + space.id +
                           '&accesstype=' + accessString + '&userId=' + user)
-                    .then(function(reason) { 
-                        return reason.data; 
-                    });
+                    .then(
+                            function(result){ return result.data;},
+                            function(reason) { return $q.reject(reason);});
             },
             deleteUser: function(space, userId) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id + 
@@ -54,8 +53,9 @@ angular.module('cloudscalers.services')
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
-            delete: function(cloudspace) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspace.id)
+            delete: function(cloudspace, userId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspace.id + 
+                                 '&userId=' + userId)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             }

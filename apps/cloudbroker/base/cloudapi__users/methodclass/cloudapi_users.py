@@ -77,7 +77,7 @@ class cloudapi_users(object):
             password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
             
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
-            account = self.cb.models.account.new()
+            account = self.models.account.new()
             account.name = username
             ace = account.new_acl()
             ace.userGroupId = username
@@ -86,7 +86,7 @@ class cloudapi_users(object):
             accountid = self.models.account.set(account)[0]
             #networkid = self.libvirt_actor.getFreeNetworkId()
             #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-            #cs = self.cb.models.cloudspace.new()
+            #cs = self.models.cloudspace.new()
             #cs.name = 'default'
             #cs.accountId = accountid
             #cs.networkId = networkid

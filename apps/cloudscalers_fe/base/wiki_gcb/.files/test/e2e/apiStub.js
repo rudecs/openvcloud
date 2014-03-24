@@ -17,6 +17,11 @@ defineApiStub = function ($httpBackend) {
                 return _.find(this.get(), function(m) { return m.id == id; }); // '==' here is intentional
             },
 
+            getByName: function(machineName) {
+                return _.find(this.get(), function(m) { return m.hostname == machineName; });
+                console.log(m);
+            },
+
             save: function(item) {
                 var items = this.get();
                 for (var i = 0; i < items.length; i++) {
@@ -224,26 +229,40 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/sizes\/list\b.*/).respond(sizes);
     $httpBackend.whenGET(/^\/machines\/create\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var id = Math.random();
-        var machine = {
-            status: "RUNNING",
-            cloudspaceId: parseInt(params.cloudspaceId),
-            hostname: params.name,
-            description: params.description,
-            name: params.name,
-            accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
-            interfaces: [{'ipAddress':'192.168.100.34'}],
-            sizeId: parseInt(params.sizeId),
-            imageId: parseInt(params.imageId),
-            disksize: parseInt(params.disksize),
-            archive: params.archive,
-            region: params.region,
-            replication: params.replication,
-            id: id
-        };
-        MachinesList.add(machine);
-        return [200, id];
+        if(MachinesList.getByName(params.name) == undefined){
+            var id = Math.random();
+            var machine = {
+                status: "RUNNING",
+                cloudspaceId: parseInt(params.cloudspaceId),
+                hostname: params.name,
+                description: params.description,
+                name: params.name,
+                accounts:[{password:"xGiooOyrRp",login:"cloudscalers",guid:""}],
+                interfaces: [{'ipAddress':'192.168.100.34'}],
+                sizeId: parseInt(params.sizeId),
+                imageId: parseInt(params.imageId),
+                disksize: parseInt(params.disksize),
+                archive: params.archive,
+                region: params.region,
+                replication: params.replication,
+                id: id
+            };
+                MachinesList.add(machine);
+                return [200, id];
+        }
+        else{
+            return [409, 'Machine name duplicated!']
+        }
     });
+
+    $httpBackend.whenGET(/^\/machines\/update\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);      
+        var machine = MachinesList.getById(params.machineId);
+        machine.description = params.description;
+        MachinesList.save(machine);
+        return [200, true];
+    });
+
     $httpBackend.whenGET(/^\/machines\/action\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var action = params.action;
@@ -375,9 +394,9 @@ defineApiStub = function ($httpBackend) {
        {id: '2', name: 'Development', accountId: '2'},
        {id: '3', name: 'Training', accountId: '2'},
        {id: '4', name: 'Production', accountId: '2'},
-       {id: '4', name: 'Development', accountId: '4'},
-       {id: '4', name: 'Acceptance', accountId: '4'},
-       {id: '4', name: 'Production', accountId: '4'},
+       {id: '5', name: 'Development', accountId: '4'},
+       {id: '6', name: 'Acceptance', accountId: '4'},
+       {id: '7', name: 'Production', accountId: '4'},
     ];
 
     var cloudSpace = {
@@ -445,6 +464,12 @@ defineApiStub = function ($httpBackend) {
             ],
         });
         return [200, '15']; // ID = 15
+    });
+
+    $httpBackend.whenGET(/^\/cloudspaces\/delete\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);
+        cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId}), 1);
+        return [200, true];
     });
 
     var account = {
