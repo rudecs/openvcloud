@@ -14,7 +14,7 @@
                     <label for="username">Username:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-user"></i></span>
-                    	<input type="text" id="username" value="" placeholder="Username" ng-model="user.username" />
+                    	<input type="text" id="username" name="username" value="" placeholder="Username" ng-model="user.username" />
 					</div>
                 </div>
                 <div class="field">
@@ -26,7 +26,7 @@
  					</div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                     <label for="password">Password:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>
@@ -34,7 +34,7 @@
                    	</div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                     <label for="password">Password Confirmation:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>
