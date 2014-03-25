@@ -6,13 +6,13 @@ h1. Access Management
     <table class="table users-table">
         <tr class="header">
             <th class="username-text-container">
-                <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail">
+                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
             </th>
             <th><input type="submit" class="btn" value="Add"></input></th>
         </tr>
         <tr>
             <td colspan=2 ng-cloak ng-show="userError">
-                <div class="alert alert-error">
+                <div class="alert alert-error" style="margin-bottom: 0px;">
                     {[ userError ]}
                 </div>
             </td>
