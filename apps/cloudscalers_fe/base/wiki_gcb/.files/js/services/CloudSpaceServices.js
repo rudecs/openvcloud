@@ -48,14 +48,13 @@ angular.module('cloudscalers.services')
                             function(reason) { return $q.reject(reason);});
             },
             deleteUser: function(space, userId) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id + 
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id +
                                  '&userId=' + userId)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
-            delete: function(cloudspaceId, userId) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspaceId + 
-                                 '&userId=' + userId)
+            delete: function(cloudspaceId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspaceId)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             }
