@@ -14,7 +14,7 @@ class cloudapi_cloudspaces(object):
         self.appname = "cloudapi"
         self._cb = None
         self._models = None
-        self.libvirt_actor = j.apps.libcloud.libvirt 
+        self.libvirt_actor = j.apps.libcloud.libvirt
 
     @property
     def cb(self):
@@ -40,10 +40,11 @@ class cloudapi_cloudspaces(object):
         result bool
 
         """
-        
+
         ctx = kwargs['ctx']
         if not j.core.portal.active.auth.userExists(userId):
             ctx.start_response('404 Not Found', [])
+            return 'Unexisting user'
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
             cs = cloudspace
@@ -118,9 +119,9 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-        
+
         cloudspace.status = 'DESTROYED'
-        
+
         self.models.cloudspace.set(cloudspace)
 
 
@@ -133,11 +134,11 @@ class cloudapi_cloudspaces(object):
         #put your code here to implement this method
         cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
 
-        cloudspace = { "accountId": cloudspaceObject.accountId, 
-                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl], 
-                        "description": cloudspaceObject.descr, 
-                        "id": cloudspaceObject.id, 
-                        "name": cloudspaceObject.name, 
+        cloudspace = { "accountId": cloudspaceObject.accountId,
+                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl],
+                        "description": cloudspaceObject.descr,
+                        "id": cloudspaceObject.id,
+                        "name": cloudspaceObject.name,
                         "publicipaddress": cloudspaceObject.publicipaddress}
         return cloudspace
 
