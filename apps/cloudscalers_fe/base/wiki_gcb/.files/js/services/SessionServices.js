@@ -95,24 +95,6 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason); }
             );
         };
-
-        user.waitlogin = function (username, password) {
-            return $http({
-                method: 'POST',
-                data: {
-                    username: username,
-                    password: password
-                },
-                url: cloudspaceconfig.apibaseurl + '/users/waitauthenticate'
-            }).then(
-                    function (result) {
-                        return result.data;
-                    },
-                    function (reason) {
-                        return $q.reject(reason); }
-            );
-        };
-
         user.get = function(username){
         	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
         	var currentUser = SessionData.getUser();

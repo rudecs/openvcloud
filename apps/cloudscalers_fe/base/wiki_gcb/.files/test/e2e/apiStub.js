@@ -71,11 +71,6 @@ defineApiStub = function ($httpBackend) {
         return [200, '"yep123456789"'];
     });
 
-    $httpBackend.whenPOST('/users/waitauthenticate').
-    respond(function (method, url, data) {
-        return [200, "Success"];
-    });
-
     $httpBackend.whenPOST('/users/register').respond(function(method, url, data) {
         var credentials = angular.fromJson(data);
         var users = UsersList.get();
@@ -473,8 +468,13 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/cloudspaces\/delete\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId}), 1);
-        return [200, true];
+        var cloudSpaceItem = _.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId});
+        if(cloudSpaceItem.length > 0){
+            cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId}), 1);
+            return [200, true];
+        }else{
+            return [500, "Cloudspace couldn't found!"];
+        }
     });
 
     var account = {
