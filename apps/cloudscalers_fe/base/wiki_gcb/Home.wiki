@@ -1,67 +1,68 @@
 @template public
 
 
-@col 12
+{{html: 
 
+<div class="jumbotron">
+    <div class="container">
+        <div class="col-md-9 marginText">
+            <p class="font mainText">
+                Create and manage Cloud Buckets from a unified platform including a simple and straightforward API At ultra competitive prices! 
+                <br>
+                <span class="arrow font">Lorem ipsum, <span class="font">dolor sit amet, consectetur</span></span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="marginTop">
+    <div class="container">
+        <div class="col-md-12">
+            <p class="font mainText">Revolutionary Cloud Computing!<br>
+                <div class="someText font">vScalers has not build yet another competitor for cloud infrastructure. vScalers offers a single unified portal to access different private instances: Cloud Buckets. vScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
 
-{{html:
+                    vScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, vScalers delivers equal or better performance and relaibility compared to traditional clouds!
+                    <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a>
+                </div>
+            </p>
+        </div>
+    </div>
+</div>
 
-    <carousel interval="15000" ng-cloak>
-        <slide>
-            <img ng-src="/$$space/.files/img/1.png" style="margin:auto;">
-            <div class="carousel-caption">
-                <h4>Welcome</h4>
-                <p class="lead">
-                    Are you ready for the next step in IT infrastructure?  <br> 
-                    vScalers introduces Cloud Buckets <br> 
-                    Delivering instant virtual machines creation
-                </p>
-            </div>
-        </slide>
-
-        <slide>
-            <img ng-src="/$$space/.files/img/2.png" style="margin:auto;">
-            <div class="carousel-caption">
-                <h4>Machine Buckets</h4>
-                <p class="lead">
-                    Create and manage Cloud Buckets from a unified platform  <br> 
-                    Including a simple and straightforward API
-                    At ultra competitive prices!
-                </p>
-            </div>
-        </slide>
-
-    </carousel>
 }}
-{{div: class=row }}
-{{div2: class= marker span12}}
+{{html:
+<div class="container">
+    <div class="row">
+        <div class="col-md-5 boxes font color1 leftIcon">
+            <img src="/$$space/.files/img/icon1.png" alt=""/>
+            <h2>Desktop Deck</h2>
+            <p class="font">Create cloud desktops for your users, delivering them access to a web portal streaming any windows, web or legacy application to any device: laptop, tablet or smartphone. Applications are integrated with a private cloud storage drive including easy to use sharing features.</p>
+        </div>
+        <div class="col-md-5 boxes font color2">
+            <img src="/$$space/.files/img/icon2.png" alt=""/>
+            <h2>Storage Deck</h2>
+            <p class="font">The vScalers Storage Bucket provides a flexible storage pool for backup and archive data. The Storage Bucket uses a private distributed filesystem which means that cloud service providers can aggregate across multiple locations and backends to build truly flexible solutions. </p>
+        </div>
+        <div class="col-md-5 boxes font color3">
+            <img src="/$$space/.files/img/icon3.png" alt=""/>
+            <h2>Machine Deck</h2>
+            <p class="font">Come and discover vScalers ultra fast virtual machines, running at enterprise level SSD speeds, delivering even more IO performance than other SSD providers. Virtual Machines are delivered with a toolset of powerful functions: start, stop, clone, snapshot, rollback, export and monitor machines.</p>
+        </div>
+        <div class="col-md-5 boxes font color4">
+            <img src="/$$space/.files/img/icon4.png" alt=""/>
+            <h2>App Deck 3</h2>
+            <p class="font">Lorem ipsum dolor sit amet. </p>
+        </div>
+    </div>
+</div>
+}}
 
-@col 6
-h3. Revolutionary Cloud Computing!
-vScalers has not build yet another competitor for cloud infrastructure. vScalers offers a single unified portal to access different private instances: Cloud Buckets. vScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
 
-vScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, vScalers delivers equal or better performance and relaibility compared to traditional clouds!
-
-{{html: <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a> }}
-@colend
-
-@col 6
-{{html: <iframe src="//player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> }}
-@colend
-{{div2}}
-{{div}}
 
 {{div2:class=loader | style=display: none }} 
 h2. loading
 !dots_2.gif! 
 {{div2}}
-{{div2:class=loading | style=display: none}} {{div2}}
 
-@divend
+{{div2:class=loading | style=display: none}} 
+{{div2}}
 
-
-
-
-@divend
-@divend
-@divend
