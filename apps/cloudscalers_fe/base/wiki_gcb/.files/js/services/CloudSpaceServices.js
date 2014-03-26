@@ -20,7 +20,7 @@ angular.module('cloudscalers.services')
             				return JSON.parse(result.data);
             			},
             			function(reason){
-            				return $q.defer(reason);
+            				return $q.reject(reason);
             			}
             		);
             },
@@ -30,7 +30,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            return $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             },
