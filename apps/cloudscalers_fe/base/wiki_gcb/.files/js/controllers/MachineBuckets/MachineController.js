@@ -1,33 +1,39 @@
 
 angular.module('cloudscalers.controllers')
-    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', function($scope, Machine, Size, Image) {
-        	
+    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert',
+      function($scope, Machine, Size, Image, $ErrorResponseAlert) {
+
 
         $scope.$watch('currentspace.accountId',function(){
         	if ($scope.currentSpace){
         		$scope.images = Image.list($scope.currentSpace.accountId);
         	}
         });
-        
+
     	$scope.$watch('currentSpace.id',function(){
     		if ($scope.currentSpace){
-    			Machine.list($scope.currentSpace.id).then(function(machines){
-    				$scope.machines = machines;
-    			});
+    			Machine.list($scope.currentSpace.id).then(
+            function(machines){
+    				      $scope.machines = machines;
+    			  },
+            function(reason){
+              $ErrorResponseAlert(reason);
+            }
+          );
     		}
     	});
-       
+
     	$scope.machineIsManageable = function(machine){
     		return machine.status != 'DESTROYED';
     	}
-    	
+
         $scope.sizes = Size.list();
         $scope.machineinfo = {};
         $scope.numeral = numeral;
 
         var updateMachineSizes = function(){
         	$scope.machineinfo = {};
-        	_.each($scope.machines, function(element, index, list){ 
+        	_.each($scope.machines, function(element, index, list){
         		$scope.machineinfo[element.id] = {};
         		size = _.findWhere($scope.sizes, { id: element.sizeId });
         		$scope.machineinfo[element.id]['size'] = size;
