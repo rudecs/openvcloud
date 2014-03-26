@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'CloudSpace', 'LoadingDialog','$timeout',
-        function ($scope, $modal, CloudSpace, LoadingDialog, $timeout) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert',
+        function ($scope, $modal, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert) {
             $scope.isCollapsed = true;
 
             $scope.AccountCloudSpaceHierarchy = undefined;
@@ -55,9 +55,9 @@ angular.module('cloudscalers.controllers')
                                 LoadingDialog.hide();
                             }, 1000);
                         },
-                        function (result) {
+                        function (reason) {
                             LoadingDialog.hide();
-                            //TODO: show error
+                            $ErrorResponseAlert(reason);
                         }
                     );
                 });

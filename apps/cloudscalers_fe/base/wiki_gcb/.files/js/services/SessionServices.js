@@ -95,7 +95,6 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason); }
             );
         };
-
         user.get = function(username){
         	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
         	var currentUser = SessionData.getUser();
