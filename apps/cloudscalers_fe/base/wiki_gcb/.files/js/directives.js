@@ -37,10 +37,10 @@ angular.module('cloudscalers.directives', [])
                            'view_only':    false,
                            'updateState':  updateState,
                            });
-            		rfb.connect(data.host, data.port, '', data.path);
+            		rfb.connect(window.location.host, data.port, '', data.path);
             		scope.rfb = rfb;
     			}
-        
+
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
                     if (newValue && newValue.host) {
                         connect(newValue);
@@ -49,7 +49,7 @@ angular.module('cloudscalers.directives', [])
                     else
                         scope.showPlaceholder = true;
         		}, true);
-			
+
 
 	        },
 		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;" ng-show="!showPlaceholder">\
@@ -80,7 +80,7 @@ angular.module('cloudscalers.directives', [])
             link: function(scope, element, attrs) {
                 element.addClass('dropdown-menu').on('click', '.accordion-heading', function(e) {
                     // Prevent the click event from propagation to the dropdown & closing it
-                    e.preventDefault(); 
+                    e.preventDefault();
                     e.stopPropagation();
 
                     // If the body will be expanded, then add .open to the header
