@@ -24,13 +24,12 @@
 
 {{projectname:Mothership1}}
 
-{{favicon:/$$space/.files/img/favicon.jpg}}
+{{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/css/custom.css}}
 
 
 {{html:
-
 <div id="wrap" ng-app="cloudscalers">
 
 <div class="navbar navbar-inverse" role="navigation">
@@ -46,7 +45,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <div class="navbar-right">
-                <a href="/$$space/SignUp" class="signUp">Sign in</a>
+                <a href="/$$space/SignUp" class="signUp">Sign Up</a>
                 <a href="/$$space/login" class="signUp login">Login</a>
             </div>
             <div class="navbar-right clearR myNav">
