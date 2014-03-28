@@ -5,8 +5,7 @@
 
     method:get
         """
-        Gets detailed consumption for a specific creditTransaction
-        The user needs write access rights on the space.    
+        Gets detailed consumption for a specific creditTransaction.
         """
         var:accountId int,,id of the account
         var:creditTransactionId int,,id of the credit transaction

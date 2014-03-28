@@ -17,8 +17,7 @@ class cloudapi_consumption(j.code.classGetBase()):
 
     def get(self, accountId, creditTransactionId, **kwargs):
         """
-        Gets detailed consumption for a specific creditTransaction
-        The user needs write access rights on the space.
+        Gets detailed consumption for a specific creditTransaction.
         param:accountId id of the account
         param:creditTransactionId id of the credit transaction
         result bool
