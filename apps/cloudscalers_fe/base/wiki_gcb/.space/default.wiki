@@ -240,31 +240,7 @@ h2. loading
 
 
 
-
-{{div: id=footer | class=copyright container}}
-	{{div2:}}
-
-		{{div3: class=row-fluid}}
-			{{div4: class=span12}}
-			
 {{include:footer}}
-
-
-{{html:				
-
-	            <p class="cr">2013 &copy; vScalers. All Rights Reserved. <br>
-				<a class="brand" href="../$$space">vScalers</a>
-				</p>
-
-}}
-             {{div4}}
-			{{div4: class=span4}}	
-
-			{{div4}}
-		{{div3}}
-
-	{{div2}}
-{{div}}
 
 
 {{html:

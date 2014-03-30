@@ -1,36 +1,32 @@
 {{html:
-		<ul class="mainnav">
-			
-			<li>
-				<a href="../$$space">
-					<i class="icon-home"></i>
-					<span>Home</span>
-				</a>	    
-			</li>
-			<li>
-					<a href="../$$space/UnifiedCloud">
-						<i class="icon-building"></i>
-						<span>vScalers</span>
-					</a>	    				
-			</li>
-			<li>
-				<a href="../$$space/Products">
-				<i class="icon-cloud"></i>
-				<span>Product Info</span>
-				</a>	
-			</li>
-			<li>
-				<a href="../$$space/Pricing">
-					<span>Pricing</span>
-				</a>	    				
-			</li> 
-			<li>					
-				<!-- <a href="../$$space/Support"> -->
-				<a href="http://support.vscalers.com">
-					<span>Create Ticket</span>
-
-				</a>  									
-			</li>
-		</ul>
+	<footer class="font">
+	    <div class="container">
+	        <div class="topFooter"></div>
+	        <div class="midFooter">
+	            <div class="col-md-6">
+	                <ul class="first-list">
+	                    <li><a href="/$$space/UnifiedCloud">Why</a></li>
+	                    <li><a href="/$$space/Contact">Contact</a></li>
+	                </ul>
+	            </div>
+	            <div class="col-md-6">
+	                <ul class="second-list">
+	                    <li><a href="#">Follow Mothership1</a></li>
+	                    <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
+	                    <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
+	                    <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
+	                </ul>
+	            </div>
+	        </div>
+	        <div class="bottomFooter">
+	            <div class="col-md-12">
+	                <ul class="first-list ">
+	                    <li><a href="#">Copyright © 2014 Mothership1</a></li>
+	                    <li><a href="/$$space/">Mothership1</a></li>                        
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
+	</footer>
 }}
 	
