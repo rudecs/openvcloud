@@ -64,7 +64,7 @@ footer .container { width: 1090px; }
 .Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
 .Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
-.active { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
+.active { color: #FFF !important; background: url(../img/images/machine-hover.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 79px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 68px; font-family: 'maven_pro_light200'; }
 .white h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Medium'; }
@@ -72,7 +72,7 @@ footer .container { width: 1090px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Medium'; line-height: 30px; }
 .marginTop + .container { margin-bottom: 100px; }
 .nameField { font-size: 26px; color: #06a7e2; }
-.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; }
+.nameField input, .nameField textarea { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; }
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; }
 .machineList ul li { float: left; list-style: none; margin: 17px 14px; }
@@ -109,4 +109,11 @@ p { color:#77777b; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
 .jumbotron p { margin-bottom: 0px; font-size: 35px !important; font-weight: 200; }
 .mainText { font-size: 35px !important; color: #FFF; }
+}
+.color3{clear: left;}
+.left{
+	float: left;
+}
+.right{
+	float: right;
 }

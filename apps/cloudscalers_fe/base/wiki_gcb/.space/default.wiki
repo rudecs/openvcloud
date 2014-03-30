@@ -1,5 +1,4 @@
 {{HasBootstrapCSS}}
-{{HasBootstrapJS}}
 
 {{htmlhead:
     <meta charset="utf-8">
