@@ -19,9 +19,18 @@ h2. Create Machine Bucket
         <div class="controls ">{{include:image_list}}</div>
     </div>
     
-    <div class="control-group">
+    <div class="control-group machineList">
         <label class="control-label">Package *:</label>
-        <div class="controls " >{{include:plan_list}}</div>
+        <ul class="controls" >
+            <!-- {{include:plan_list}} -->
+            <li ng-repeat="size in sizes | orderBy:sizepredicate">
+                <a href="" ng-model="machine.sizeId" btn-radio="size.id" 
+                ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+                {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+                {[ size.vcpus ]} core(s), </br>
+                {[ size.description ]}</a>
+            </li>
+        </ul>
     </div>
 
 }}

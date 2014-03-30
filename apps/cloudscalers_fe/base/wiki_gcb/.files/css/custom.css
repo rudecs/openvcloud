@@ -5,18 +5,19 @@
 a:hover, a:focus { text-decoration: none; color: #FFF; }
 .jumbotron { padding-top: 60px; }
 .navbar-inverse { background-color: rgba(3,0,0,0.4); border: 0; margin: 0 0 0 0; }
-body { background: url(../img/bg.jpg) no-repeat center top #000; }
+body { background: url(../img/images/bg.jpg) no-repeat center top #000; }
 .jumbotron { background-color: initial; }
 .signUp { background: #80bd01; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
 .login { background: #00a8e1; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
 .navbar-right.clearR { margin: 46px 0 0 0; }
-.why { width: 63px; background: url(../img/why.png) no-repeat 42px 7px; }
-.contactButton { background: url(../img/contact.png) no-repeat 78px 7px; }
+.contactButton { margin: 0 0 0 17px; }
+.why { width: 63px; background: url(../img/images/why.png) no-repeat 42px 7px; }
+.contactButton { width: 100px; background: url(../img/images/contact.png) no-repeat 78px 7px; }
 .font { font-family: 'maven_pro_light200'; }
 .mainText { font-size: 60px !important; color: #FFF; }
 /*.marginText {margin: 0 0 0 145px;}*/
-.arrow { font-family: 'maven_pro_light200'; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/arrow.png) no-repeat 0 5px; }
+.arrow { font-family: 'maven_pro_light200'; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
 .arrow { color: #06a7e2; font-family: 'maven_pro_light200'; }
  @media (min-width: 992px) {
 .marginText { margin: 0 0 0 145px; }
@@ -32,9 +33,8 @@ body { background: url(../img/bg.jpg) no-repeat center top #000; }
 .color4 h2 { color: #f6b332; }
 .leftIcon { margin: 0 0 0 215px; }
 .color3, .color4 { margin: 50px 0 0 0; }
-.color3 { clear: left; }
 footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; display: inline-block; }
-.topFooter { height: 191px; background: url(../img/footer-bg.jpg) no-repeat center top; }
+.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
 .midFooter { padding: 20px 0; min-height: 140px; border-bottom: 1px solid #fff; display: block; }
 .midFooter ul li { float: left; margin: 0 15px; }
 .midFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 16px; }
@@ -47,24 +47,24 @@ footer .container { width: 1090px; }
 }
 .second-list { list-style: none; float: right; margin: 12px 0 0 0; }
 .second-list li { margin: 0 5px !important; }
-.bottomFooter .first-list li { list-style: none; float: left; padding: 0 16px; background: url(../img/seperat.png) no-repeat right 50%; }
+.bottomFooter .first-list li { list-style: none; float: left; padding: 0 16px; background: url(../img/images/seperat.png) no-repeat right 50%; }
 .bottomFooter .first-list li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 13px; }
 .bottomFooter .first-list { margin-left: -65px; line-height: 79px; }
 .bottomFooter .first-list li:last-child { background: none; }
 .myNav { }
 .myNav ul { }
 .myNav ul li { float: left; margin: 0; list-style: none; }
-.myNav ul li a { font-family: 'maven_pro_light200'; color: #06a7e2; font-size: 21px; display: inline-block; padding: 0 25px; background: url(../img/menu-icon2.png) no-repeat 100% 6px; }
-.Why { background: url(../img/menu-icon1.png) no-repeat 100% 6px !important; }
-.Settings { background: url(../img/menu-icon2.png) no-repeat 100% 6px !important; }
-.Billing { background: url(../img/menu-icon3.png) no-repeat 100% 6px !important; }
-.Support { background: url(../img/menu-icon4.png) no-repeat 100% 6px !important; }
+.myNav ul li a { font-family: 'maven_pro_light200'; color: #06a7e2; font-size: 21px; display: inline-block; padding: 0 25px; background: url(../img/images/menu-icon2.png) no-repeat 100% 6px; }
+.Why { background: url(../img/images/menu-icon1.png) no-repeat 100% 6px !important; }
+.Settings { background: url(../img/images/menu-icon2.png) no-repeat 100% 6px !important; }
+.Billing { background: url(../img/images/menu-icon3.png) no-repeat 100% 6px !important; }
+.Support { background: url(../img/images/menu-icon4.png) no-repeat 100% 6px !important; }
 .myNav ul li a:hover { color: #FFF; }
-.Why:hover { background: url(../img/menu-icon-hover1.png) no-repeat 100% 6px !important; }
-.Settings:hover { background: url(../img/menu-icon-hover2.png) no-repeat 100% 6px !important; }
-.Billing:hover { background: url(../img/menu-icon-hover3.png) no-repeat 100% 6px !important; }
-.Support:hover { background: url(../img/menu-icon-hover4.png) no-repeat 100% 6px !important; }
-.active { color: #FFF !important; background: url(../img/menu-icon-hover1.png) no-repeat 100% 6px !important; }
+.Why:hover { background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
+.Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
+.Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
+.Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
+.active { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 79px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 68px; font-family: 'maven_pro_light200'; }
 .white h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Medium'; }
@@ -76,9 +76,9 @@ footer .container { width: 1090px; }
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; }
 .machineList ul li { float: left; list-style: none; margin: 17px 14px; }
-.machineList ul li a { color: #77777b; font-size: 14px; display: inline-block; width:250px; height: 117px; background: url(../img/machine.png); text-align: center; padding: 10px 45px 36px; line-height: 23px; overflow: hidden; }
+.machineList ul li a { color: #77777b; font-size: 14px; display: inline-block; width:250px; height: 117px; background: url(../img/images/machine.png); text-align: center; padding: 10px 45px 36px; line-height: 23px; overflow: hidden; }
 .machineList ul { margin: -60px 0 0 60px; }
-.machineList ul li a:hover { background: url(../img/machine-hover.png); color: #FFF; }
+.machineList ul li a:hover { background: url(../img/images/machine-hover.png); color: #FFF; }
 .machineWrap { clear: both; }
 .machineList { display: inline-block; }
 .sideNav { position: absolute; top: 250px; right: 0; width: 200px; height: 50px; z-index: 999999; }

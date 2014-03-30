@@ -1,31 +1,32 @@
-{{htmlhead:
- 
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet"/>
+{{HasBootstrapCSS}}
+{{HasBootstrapJS}}
 
-	<style type="text/css">
-		[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
-  			display: none !important;
-		}
-	</style>
+{{htmlhead:
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+            display: none !important;
+        }
+    </style>
+
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-	
+    <![endif]-->    
 }}
 
 
-{{title:vScalers - $$space}}
+{{title:Mothership1}}
 
-{{projectname:vScalers}}
+{{projectname:Mothership1}}
 
-{{css:/$$space/.files/css/font-awesome.css}}
-{{css:/$$space/.files/css/base-admin.css}}
-{{css:/$$space/.files/css/base-admin-responsive.css}}
-{{css:/$$space/.files/css/pages/dashboard.css}}
-{{css:/$$space/.files/custom.css}}
-
+{{favicon:.files/img/favicon.jpg}}
+{{css:/$$space/.files/css/bootstrap.min.css}}
+{{css:/$$space/.files/css/custom.css}}
 
 #{{find}}
 
@@ -49,11 +50,11 @@
         </div>
     </script>
 
-    <div class="subnavbar" ng-controller="CloudSpaceNavigatorController">
+    <div class="navbar navbar-inverse" ng-controller="CloudSpaceNavigatorController" role="navigation">
 
         <div class="subnavbar-inner">
             <div class="container">
-                <a class="brand" href="../$$space">vScalers</a>
+                <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width=318 height=119></a>
                 <ul class="pull-right">
                     <li><a href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
                     <li>
@@ -174,7 +175,7 @@
 
     </div>
 
-    <div class="main">
+    <div class="main white">
         <div class="main-inner">
 
             <div class="container">
