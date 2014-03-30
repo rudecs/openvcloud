@@ -64,7 +64,7 @@ footer .container { width: 1090px; }
 .Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
 .Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
-.active { color: #FFF !important; background: url(../img/images/machine-hover.png) no-repeat 100% 6px !important; }
+.active { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 79px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 68px; font-family: 'maven_pro_light200'; }
 .white h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Medium'; }
