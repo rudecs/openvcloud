@@ -8,6 +8,6 @@
         Gets detailed consumption for a specific creditTransaction.
         """
         var:accountId int,,id of the account
-        var:creditTransactionId int,,id of the credit transaction
+        var:reference int,,id of the billingstatement
         result:bool    
 

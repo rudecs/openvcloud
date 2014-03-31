@@ -6,22 +6,33 @@ class cloudapi_consumption(j.code.classGetBase()):
     
     """
     def __init__(self):
+        osiscl = j.core.osis.getClient(user='root')
+
+        class Class():
+            pass
         
+        self.models = Class()
+        for ns in osiscl.listNamespaceCategories('billing'):
+            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billing', ns))
+            self.models.__dict__[ns].find = self.models.__dict__[ns].search
+    
         self._te={}
         self.actorname="consumption"
         self.appname="cloudapi"
         #cloudapi_consumption_osis.__init__(self)
-    
-
         pass
 
-    def get(self, accountId, creditTransactionId, **kwargs):
+    @authenticator.auth(acl='R')
+    def get(self, accountId, reference, **kwargs):
         """
         Gets detailed consumption for a specific creditTransaction.
         param:accountId id of the account
-        param:creditTransactionId id of the credit transaction
+        param:reference id of the billingstatement
         result bool
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method get")
+        billingstatement = self.models.billingstatement.get(reference)
+        if billingstatement.accountId is not accountId:
+            ctx = kwargs['ctx']
+            ctx.start_response('401 Unauthorized', [])
+        return {'id':billingstatement.id}
     
