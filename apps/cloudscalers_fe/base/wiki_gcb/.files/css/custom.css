@@ -113,3 +113,23 @@ p { color:#77777b; }
 .jumbotron p { margin-bottom: 0px; font-size: 35px !important; font-weight: 200; }
 .mainText { font-size: 35px !important; color: #FFF; }
 }
+
+/*new style*/
+#singlebutton{
+	font-size: 20px;
+	margin-bottom: 35px;
+}
+table.table th{
+	background: #f6b332 !important;
+	font-size: 18px;
+	color: #fff;
+	font-weight: normal;
+}
+.table-bordered{
+	border: 1px solid #c4c4c4;
+	color: #808083;
+}
+.white a:hover, .white a:focus{
+	color: #39b3d7;
+}
+/*end of new style*/
