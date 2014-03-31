@@ -53,7 +53,7 @@
 
         <div class="subnavbar-inner">
             <div class="container">
-                <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width=318 height=119></a>
+                <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
                 <ul class="pull-right span7">
                     <li class="right">
                         <a class="signUp login right" ng-click="logout()" href="" >
@@ -171,6 +171,79 @@
             </div>
         </div>
     
+
+    <nav id="navbar-example" class="navbar navbar-default navbar-static blueBar" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-example-js-navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+    </div>
+    <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown noPad"><a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Lenny Miller/ Default <b class="caret"></b></a>
+        <div class="dropdown-menu">
+        
+            <div class="accordionInside">
+  <div class="panel-group grey" id="accordion" close-others="false">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#One"> Machine Deck 1 </a> </h4>
+      </div>
+      <div id="One" class="panel-collapse collapse in">
+        <div class="panel-body"> My Machine Decks
+          Create Machine Deck
+          Custom Machine Image
+          Manage DNS </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#Two"> Desktop Deck 2 </a> </h4>
+      </div>
+      <div id="Two" class="panel-collapse collapse">
+        <div class="panel-body"> My Machine Decks
+          Create Machine Deck
+          Custom Machine Image
+          Manage DNS </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#Three"> Application Deck 3 </a> </h4>
+      </div>
+      <div id="Three" class="panel-collapse collapse">
+        <div class="panel-body"> My Machine Decks
+          Create Machine Deck
+          Custom Machine Image
+          Manage DNS </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+        
+        <a class="new" href="#">New CloudSpace ..</a> <a class="accordionPic" href="#"><img src="img/images/ques.png"/></a>
+        
+        </div>
+          
+        </li>
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li id="fat-menu" class="dropdown"><a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Docs </a></li>
+        <li id="fat-menu" class="dropdown"><a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+          </ul>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
 
     </div>
 
