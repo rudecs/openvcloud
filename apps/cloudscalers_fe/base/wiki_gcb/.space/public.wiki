@@ -51,7 +51,7 @@
             <div class="navbar-right clearR myNav">
                 <ul>
                     <li><a href="/$$space/UnifiedCloud" class="Why active">Why</a></li>
-                    <li><a href="/$$space/Contact" class="contactButton">Contact</a></li>
+                    <li><a href="/$$space/Contact" class="contact">Contact</a></li>
                 </ul>               
             </div>
         </div>
