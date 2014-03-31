@@ -21,8 +21,8 @@ class billingengine_billingengine(j.code.classGetBase()):
             pass      
         
         self.billingenginemodels = Class()
-        for ns in osiscl.listNamespaceCategories('billingengine'):
-            self.billingenginemodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billingengine', ns))
+        for ns in osiscl.listNamespaceCategories('billing'):
+            self.billingenginemodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billing', ns))
             self.billingenginemodels.__dict__[ns].find = self.billingenginemodels.__dict__[ns].search
                 
         self.cloudbrokermodels = Class()
@@ -204,10 +204,11 @@ class billingengine_billingengine(j.code.classGetBase()):
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
-            #TODO: put in processed (but only save after updating the balance
+            #TODO: put in processed (but only save after updating the balance)
             
         newbalance = self.cloudbrokermodels.creditbalance.new()
         newbalance.accountId = accountId
         newbalance.time = int(time.time())
         newbalance.credit = balance
         self.cloudbrokermodels.creditbalance.set(newbalance)
+        #TODO: remove older credit balances
