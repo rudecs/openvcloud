@@ -132,4 +132,10 @@ table.table th{
 .white a:hover, .white a:focus{
 	color: #39b3d7;
 }
+.modal.fade{
+	width: 50%;
+	height: 300px;
+	margin: 0 auto;
+	overflow: auto;
+}
 /*end of new style*/
