@@ -115,6 +115,9 @@ p { color:#77777b; }
 }
 
 /*new style*/
+ul{
+	list-style: none;
+}
 #singlebutton{
 	font-size: 20px;
 	margin-bottom: 35px;
@@ -154,5 +157,20 @@ table.table th{
 *:-ms-input-placeholder { /* IE10+ */
   color: #EBEBEB;
 }
-
+.left{
+	float: left;
+}
+.right{
+	float: right;
+}
+.user-name{
+	color: #fff;
+	margin-top: 5px;
+	display: inline-block;
+	margin-right: 15px;
+	font-size: 16px;
+}
+.user-name:hover{
+	color: #00a8e1;
+}
 /*end of new style*/

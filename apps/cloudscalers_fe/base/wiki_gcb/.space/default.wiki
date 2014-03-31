@@ -54,14 +54,14 @@
         <div class="subnavbar-inner">
             <div class="container">
                 <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width=318 height=119></a>
-                <ul class="pull-right">
-                    <li><a href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
-                    <li>
-                        <a ng-click="logout()" href="" >
+                <ul class="pull-right span7">
+                    <li class="right">
+                        <a class="signUp login right" ng-click="logout()" href="" >
                             <i class="icon-lock"></i>
                             <span>Logout</span>
                         </a>
                     </li>
+                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
                 </ul>
             </div>
         </div>
