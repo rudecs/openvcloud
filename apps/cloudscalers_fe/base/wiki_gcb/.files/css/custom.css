@@ -11,9 +11,8 @@ body { background: url(../img/images/bg.jpg) no-repeat center top #000; }
 .login { background: #00a8e1; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
 .navbar-right.clearR { margin: 46px 0 0 0; }
-.contactButton { margin: 0 0 0 17px; }
 .why { width: 63px; background: url(../img/images/why.png) no-repeat 42px 7px; }
-.contactButton { width: 100px; background: url(../img/images/contact.png) no-repeat 78px 7px; }
+.contactButton { background: url(../img/images/contact.png) no-repeat 78px 7px; }
 .font { font-family: 'maven_pro_light200'; }
 .mainText { font-size: 60px !important; color: #FFF; }
 /*.marginText {margin: 0 0 0 145px;}*/
@@ -25,7 +24,7 @@ body { background: url(../img/images/bg.jpg) no-repeat center top #000; }
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
 .marginTop { margin-top: 500px; margin-bottom: 40px; }
 .boxes img { float: left; margin: 25px 18px 0 0; }
-.boxes p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; }
+.boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: 'maven_pro_light200'; }
 .boxes h2 { font-size: 22px; }
 .color1 h2 { color: #80bd01; }
 .color2 h2 { color: #d97804; }
@@ -33,9 +32,10 @@ body { background: url(../img/images/bg.jpg) no-repeat center top #000; }
 .color4 h2 { color: #f6b332; }
 .leftIcon { margin: 0 0 0 215px; }
 .color3, .color4 { margin: 50px 0 0 0; }
+.color3 { clear: left; }
 footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; display: inline-block; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
-.midFooter { padding: 20px 0; min-height: 140px; border-bottom: 1px solid #fff; display: block; }
+.midFooter { padding: 20px 0; min-height: 90px; border-bottom: 1px solid #fff; display: block; }
 .midFooter ul li { float: left; margin: 0 15px; }
 .midFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 16px; }
 .midFooter .first-list { list-style:none; display: inline-block; margin: 10px 0; margin-left: -65px; }
@@ -57,11 +57,14 @@ footer .container { width: 1090px; }
 .myNav ul li a { font-family: 'maven_pro_light200'; color: #06a7e2; font-size: 21px; display: inline-block; padding: 0 25px; background: url(../img/images/menu-icon2.png) no-repeat 100% 6px; }
 .Why { background: url(../img/images/menu-icon1.png) no-repeat 100% 6px !important; }
 .Settings { background: url(../img/images/menu-icon2.png) no-repeat 100% 6px !important; }
+.contact { background: url(../img/images/contact-pic.png) no-repeat 100% 8px !important; }
 .Billing { background: url(../img/images/menu-icon3.png) no-repeat 100% 6px !important; }
 .Support { background: url(../img/images/menu-icon4.png) no-repeat 100% 6px !important; }
 .myNav ul li a:hover { color: #FFF; }
+
 .Why:hover { background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
+.contact:hover { background: url(../img/images/contact-pic-hover.png) no-repeat 100% 8px !important; }
 .Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
 .active { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
@@ -72,7 +75,7 @@ footer .container { width: 1090px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Medium'; line-height: 30px; }
 .marginTop + .container { margin-bottom: 100px; }
 .nameField { font-size: 26px; color: #06a7e2; }
-.nameField input, .nameField textarea { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; }
+.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; }
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; }
 .machineList ul li { float: left; list-style: none; margin: 17px 14px; }
@@ -98,22 +101,15 @@ footer .container { width: 1090px; }
 .panel-body { color: #77777b; font-size: 13px; }
 p { color:#77777b; }
  @media (max-width: 1290px) {
-.boxes p { width: 279px; }
+.boxes p { width: 279px !important; }
 }
 @media (max-width: 992px) {
-.boxes p { width: 77%; }
+.boxes p { width: 77% !important; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
 }
  @media (max-width: 768px) {
-.boxes p { width: 55%; }
+.boxes p { width: 55% !important; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
 .jumbotron p { margin-bottom: 0px; font-size: 35px !important; font-weight: 200; }
 .mainText { font-size: 35px !important; color: #FFF; }
-}
-.color3{clear: left;}
-.left{
-	float: left;
-}
-.right{
-	float: right;
 }
