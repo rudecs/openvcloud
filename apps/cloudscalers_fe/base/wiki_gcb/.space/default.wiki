@@ -257,10 +257,6 @@
 }}
 
 
-@col 3
-{{navigation}}
-@divend
-
 @col 9
 
 {{html:
