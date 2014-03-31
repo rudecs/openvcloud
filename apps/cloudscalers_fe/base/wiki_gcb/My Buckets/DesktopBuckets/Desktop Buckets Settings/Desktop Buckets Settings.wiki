@@ -1,4 +1,4 @@
-h2. Desktop Buckets Settings
+h1. Desktop Buckets Settings
 
 {{html:
 <hr>

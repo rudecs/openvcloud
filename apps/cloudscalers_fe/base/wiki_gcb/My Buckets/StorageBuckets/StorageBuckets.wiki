@@ -1,4 +1,4 @@
-h2. Storage Buckets
+h1. Storage Buckets
 
 Storage Buckets provide you with a secure, distributed storage solution with an Object Gateway S3 API.
 

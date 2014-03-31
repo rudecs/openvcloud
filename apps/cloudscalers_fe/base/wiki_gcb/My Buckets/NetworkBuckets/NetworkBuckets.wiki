@@ -1,4 +1,4 @@
-h2. Network Buckets
+h1. Network Buckets
 
 The Network Bucket is your personal private virtual firewall that handles all incoming and outgoing traffic for your cloud space, your routing, port fowards and firewall settings.
 
