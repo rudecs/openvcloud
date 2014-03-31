@@ -76,7 +76,7 @@ h2. Credit
             </div>
         </div>
         <div class="modal-footer">
-            
+
             <button class="btn btn-primary" ng-click="ok()">OK</button>
         </div>
     </script>
@@ -109,7 +109,7 @@ h2. Credit
             </div>
         </div>
         <div class="modal-footer">
-            
+
             <button class="btn btn-primary" ng-click="ok()">OK</button>
         </div>
     </script>
@@ -130,6 +130,7 @@ h3. History
             <th>Credit</th>
             <th>Status</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -138,12 +139,13 @@ h3. History
             <td>{[transaction.amount | currency:' ' + transaction.currency + ' ']}</td>
             <td>{[transaction.credit | currency:"$"]}</td>
             <td>{[transaction.status]}</td>
+            <td><a href="" ng-click="showUsageDetails(transaction.reference)" ng-show="transaction.status == 'DEBIT'">Details</a></td>
             <td>{[transaction.comment]}</td>
         </tr>
     </tbody>
 </table>
 </div>
 
-<script src="/$$space/.files/js/services/CryptoPayments.js" type="text/javascript"></script> 
+<script src="/$$space/.files/js/services/CryptoPayments.js" type="text/javascript"></script>
 <script src="/$$space/.files/js/controllers/billing.js" type="text/javascript"></script>
 }}
