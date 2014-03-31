@@ -10,12 +10,12 @@
 	                </ul>
 	            </div>
 	            <div class="col-md-6">
-	                <ul class="second-list">
+	                <!-- <ul class="second-list">
 	                    <li><a href="#">Follow Mothership1</a></li>
 	                    <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
 	                    <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
 	                    <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
-	                </ul>
+	                </ul> -->
 	            </div>
 	        </div>
 	        <div class="bottomFooter">

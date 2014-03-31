@@ -138,4 +138,21 @@ table.table th{
 	margin: 0 auto;
 	overflow: auto;
 }
+.nameField h2{
+	display: inline-block;
+}
+.nameField{
+	margin-bottom: 20px;
+}
+
+*::-webkit-input-placeholder {
+  color: #EBEBEB;
+}
+*:-moz-placeholder {
+  color: #EBEBEB;
+}
+*:-ms-input-placeholder { /* IE10+ */
+  color: #EBEBEB;
+}
+
 /*end of new style*/
