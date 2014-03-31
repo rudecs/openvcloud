@@ -34,5 +34,5 @@ class cloudapi_consumption(j.code.classGetBase()):
         if billingstatement.accountId is not accountId:
             ctx = kwargs['ctx']
             ctx.start_response('401 Unauthorized', [])
-        return {'id':billingstatement.id}
+        return billingstatement.dump()
     
