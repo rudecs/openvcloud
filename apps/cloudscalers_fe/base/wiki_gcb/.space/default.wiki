@@ -257,7 +257,11 @@
 }}
 
 
+<<<<<<< local
 @col 10
+=======
+@col 9
+>>>>>>> other
 
 {{html:
     <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
