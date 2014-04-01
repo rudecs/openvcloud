@@ -1,12 +1,13 @@
 angular.module('cloudscalers.controllers')
-    .controller('BillingController', ['$scope', '$modal', 'Account', '$timeout', '$ErrorResponseAlert', function($scope, $modal, Account, $timeout, $ErrorResponseAlert) {
-   
+    .controller('BillingController', ['$scope', '$modal', 'Account', '$timeout', '$ErrorResponseAlert', '$window',
+      function($scope, $modal, Account, $timeout, $ErrorResponseAlert,$window) {
+
 
     $scope.credit = "Unavailable";
     $scope.creditToAdd = 10;
     $scope.refreshTimeoutReference = null;
-    
-    
+
+
     $scope.refreshCredit = function(){
         Account.getCreditBalance($scope.currentAccount).then(
             function(result){
@@ -27,10 +28,10 @@ angular.module('cloudscalers.controllers')
     $scope.$on('$destroy',function(){
             $timeout.cancel($scope.refreshTimeoutReference);
     });
-    
+
     $scope.refreshCredit();
-    
-    
+
+
     var bitcoinPaymentController = function($scope, $modalInstance, CryptoPayments, $ErrorResponseAlert){
         $scope.ok = function(){
             $modalInstance.close('confirmed');
@@ -39,9 +40,9 @@ angular.module('cloudscalers.controllers')
             $scope.spinnerShow = true;
             $scope.bitcoin = true;
             $scope.paymentinfo = result;
-            
+
             $scope.totalBtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
-        
+
             $scope.paymenturl = 'bitcoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalBtc;
         }, function(reason) {
             $scope.spinnerShow = true;
@@ -50,11 +51,11 @@ angular.module('cloudscalers.controllers')
             $ErrorResponseAlert(reason);
         }
         );
-            
+
     }
-    
+
     $scope.payWithBitcoin = function(){
-        
+
         var modalInstance = $modal.open({
               templateUrl: 'bitcoinModal.html',
               controller: bitcoinPaymentController,
@@ -71,9 +72,9 @@ angular.module('cloudscalers.controllers')
             $scope.spinnerShow = true;
             $scope.litecoin = true;
             $scope.paymentinfo = result;
-            
+
             $scope.totalLtc = ($scope.creditToAdd / $scope.paymentinfo.value).toFixed(8);
-            
+
             $scope.paymenturl = 'litecoin:' +  $scope.paymentinfo.address + '?amount=' + $scope.totalLtc;
         }, function(reason) {
             $scope.spinnerShow = true;
@@ -81,11 +82,11 @@ angular.module('cloudscalers.controllers')
             // $scope.litecoinError = true;
             $ErrorResponseAlert(reason);
         });
-        
+
     }
 
     $scope.payWithLitecoin = function(){
-        
+
         var modalInstance = $modal.open({
               templateUrl: 'litecoinModal.html',
               controller: litecoinPaymentController,
@@ -93,6 +94,13 @@ angular.module('cloudscalers.controllers')
               resolve: {
                 }
             });
+    }
+
+    $scope.showUsageDetails = function(reference){
+        var uri = new URI($window.location);
+        uri.filename('UsageReport');
+        uri.addQuery('reference',reference)
+        $window.location = uri.toString();
     }
 
 
