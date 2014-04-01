@@ -74,15 +74,15 @@ footer .container { width: 1090px; }
 .white p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 30px; }
 .marginTop + .container { margin-bottom: 100px; }
-.nameField { font-size: 26px; color: #06a7e2; }
-.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; }
+.nameField { font-size: 26px; color: #06a7e2; width: 67%; margin: 21px 0; display: inline-block;}/**/
+.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; float: right;}/**/
 .machineBox { }
-.machineBox h2 { display: inline-block; margin-right: 15px; }
-.machineList ul li { float: left; list-style: none; margin: 17px 14px; }
-.machineList ul li a { color: #77777b; font-size: 14px; display: inline-block; width:250px; height: 117px; background: url(../img/images/machine.png); text-align: center; padding: 10px 45px 36px; line-height: 23px; overflow: hidden; }
+.machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0;}/**/
+.machineList ul li { float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px;}/**/
+.machineList ul li a { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg); text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
 .machineList ul { margin: -60px 0 0 60px; }
-.machineList ul li a:hover { background: url(../img/images/machine-hover.png); color: #FFF; }
-.machineWrap { clear: both; }
+.machineList ul li a:hover { background: url(../img/images/machine-hover.jpg); color: #FFF; }/**/
+.machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList { display: inline-block; }
 .sideNav { position: absolute; top: 250px; right: 0; width: 200px; height: 50px; z-index: 999999; }
 .panel-heading { padding: 0; }
@@ -200,3 +200,38 @@ table.table th{
 	color: #00a8e1;
 }
 /*end of new style*/
+
+
+
+/*4.1.2014*/
+
+
+.nameField textarea {border: 0;
+border: 1px solid #77777b;
+outline: none;
+padding: 5px 5px;
+font-size: 20px;
+color: #77777b;
+width: 500px;
+ float: right;}
+ 
+ .tab-content>.tab-pane {padding: 29px 0;}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;}
+.nav-tabs {
+border-bottom: 1px solid #06a7e2;
+}
+
+.nav-tabs>li>a { font-size: 17px; }
+.nav-tabs>li>a:hover { color: #06a7e2; background: #FFF;}
+a {
+color: #06a7e2;
+text-decoration: none;
+}
+
+.mainButton {
+    background-color: #06a7e2;
+ 
+    padding: 10px 20px;
+    font-size: 16px;
+}
+.disabled2 { background: #e5e5e5; border: 1px solid #e5e5e5; color: #666;}
