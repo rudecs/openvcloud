@@ -1,4 +1,5 @@
 from JumpScale import j
+from cloudbrokerlib import authenticator
 
 class cloudapi_consumption(j.code.classGetBase()):
     """
