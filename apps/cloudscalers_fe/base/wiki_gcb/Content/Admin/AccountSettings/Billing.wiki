@@ -19,9 +19,9 @@ h2. Credit
                 <div class="control-group">
                     <label for="creditToAddInput" class="control-label">Add Credit</label>
                     <div class="controls">
-                        <div class="input-prepend">
-                            <span class="add-on">$</span>
-                            <input type="number" id="creditToAddInput" ng-model="creditToAdd" class="input-medium span1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">$</span>
+                            <input type="number" id="creditToAddInput" ng-model="creditToAdd" class="form-control">
                         </div>
                     </div>
                 </div>

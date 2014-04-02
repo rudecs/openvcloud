@@ -256,6 +256,10 @@
 
 }}
 
+@col 2
+{{navigation}}
+@divend
+
 
 @col 10
 
