@@ -63,24 +63,27 @@ h3. Start now and create your Machine Bucket
         <a href="#">Machine Deck 1</a>
         <ul class="body" style="padding: 12px;">
           <li>
-            <a href="#">My Machines</a>
+            <a href="../$$space/MachineBuckets">My Machines</a>
           </li>
           <li>
             <a href="#">Create Machine</a>
           </li>
           <li>
-            <a href="#">Cusom Machine</a>
+            <a href="#">Cusom Machine Image</a>
+          </li>
+          <li>
+            <a href="#">Manage DNS</a>
           </li>
         </ul>
       </li>
       <li class="header green">
-        <a href="#">My Machines</a>
+        <a href="#">Desktop Deck2</a>
       </li>
       <li class="header orange">
-        <a href="#">Create Machine Image</a>
+        <a href="#">Application Deck3</a>
       </li>
       <li class="header darkOrange">
-        <a href="#">Manage DNS</a>
+        <a href="#">Storage Deck 4</a>
       </li>
     </ul>
   </div>
