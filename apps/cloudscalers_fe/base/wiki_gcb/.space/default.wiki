@@ -156,7 +156,6 @@
                 <div class="row">
 
 }}
-{{navigation}}
 
 @col 10
 
