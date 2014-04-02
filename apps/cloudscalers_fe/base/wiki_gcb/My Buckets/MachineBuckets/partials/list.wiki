@@ -54,5 +54,35 @@ h3. Start now and create your Machine Bucket
       </tr>
     </tbody>
   </table>
+
 </div>
+  <!-- static right nav -->
+  <div class="sideNav">
+    <ul style="padding-left: 0;">
+      <li class="header blue">
+        <a href="#">Machine Deck 1</a>
+        <ul class="body" style="padding: 12px;">
+          <li>
+            <a href="#">My Machines</a>
+          </li>
+          <li>
+            <a href="#">Create Machine</a>
+          </li>
+          <li>
+            <a href="#">Cusom Machine</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header green">
+        <a href="#">My Machines</a>
+      </li>
+      <li class="header orange">
+        <a href="#">Create Machine Image</a>
+      </li>
+      <li class="header darkOrange">
+        <a href="#">Manage DNS</a>
+      </li>
+    </ul>
+  </div>
+  <!-- end of nav-->
 }}
