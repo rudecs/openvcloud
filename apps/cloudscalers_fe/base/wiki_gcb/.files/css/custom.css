@@ -91,7 +91,7 @@ footer .container { width: 1090px; }
 .sideNav .panel-body ul li a { padding: 4px 0; display: inline-block; color: #333;}
 .sideNav .panel-body ul li a:hover { color: #000;}
 .panel-heading { padding: 0; }
-.panel-title>a { padding: 14px 15px; display: block; color: #FFF; font-family: 'maven_pro_light200'; }
+.panel-title>a { padding: 14px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
 .blue h4 > a { background: #06a7e2; }
 .green h4 > a { background: #80bd01; }
 .orange h4 > a { background: #f6b332; }
