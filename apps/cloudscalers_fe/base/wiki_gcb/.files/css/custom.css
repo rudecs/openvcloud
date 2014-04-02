@@ -68,7 +68,7 @@ footer .container { width: 1090px; }
 .Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
-.white { background: #FFF; padding: 79px 0 79px 0; }
+.white { background: #FFF; padding: 30px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 68px; font-family: 'maven_pro_light200'; }
 .white h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Book'; }
 .white p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }
@@ -84,7 +84,12 @@ footer .container { width: 1090px; }
 .machineList ul li a:hover { background: url(../img/images/machine-hover.jpg); color: #FFF; }/**/
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList { display: inline-block; }
+/*sideNav*/
 .sideNav { position: absolute; top: 250px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav .panel-body { padding: 7px 0 7px 15px;}
+.sideNav .panel-body ul { padding: 0; list-style: none;}
+.sideNav .panel-body ul li a { padding: 4px 0; display: inline-block; color: #333;}
+.sideNav .panel-body ul li a:hover { color: #000;}
 .panel-heading { padding: 0; }
 .panel-title>a { padding: 14px 15px; display: block; color: #FFF; font-family: 'maven_pro_light200'; }
 .blue h4 > a { background: #06a7e2; }
@@ -99,6 +104,7 @@ footer .container { width: 1090px; }
 .panel-group .panel { border-radius: 0; }
 .panel-group .panel+.panel { margin-top: 0; }
 .panel-body { color: #77777b; font-size: 13px; }
+/*sideNav*/
 p { color:#77777b; }
  @media (max-width: 1290px) {
 .boxes p { width: 279px !important; }
@@ -246,7 +252,7 @@ color: #FFF;}
 
 .username-text-container input { width: 99%; border: 1px solid #FFF; padding: 3px 12px; color: #333;}
 .table.users-table .header .btn  { background: #FFF; color: #333;}
-.icon-remove-sign { background: url(../img/images/x.png); width: 12px; height: 12px; display: block; margin: 0 0 0 24px;}
+.icon-remove-sign { background: url(../img/images/x.png); width: 12px; height: 12px; display: block; margin: 5px 0 0 24px;}
 .table { font-size: 16px;}
 .control-label { float: left;
  margin: 0 14px 0 0;}
@@ -261,4 +267,5 @@ color: #FFF;}
     font-size: 16px;
 }
  .controls .btn.btn-small { float: left; border: 1px solid #00a8e1; border-radius: 0; margin: 0 0 0 20px;}
- .controls { display: table-cell; margin: 0 0 0 0;}
+ label + .controls { display: table-cell; margin: 0 0 0 0;}
+
