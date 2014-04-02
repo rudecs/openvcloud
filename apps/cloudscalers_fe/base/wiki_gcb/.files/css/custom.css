@@ -133,7 +133,13 @@ p { color:#77777b; }
 .noPad .dropdown-menu { padding: 0; border: 2px solid #00a8e1; border-top: 0 !important;}	
 
 .grey h4 > a { background: #e5e5e5; }
-.grey .panel-title>a { color: #4f4f4f;	 font-size: 16px; font-family: 'Conv_Gotham-Book';}	
+.grey a { color: #4f4f4f; font-family: 'Conv_Gotham-Book';}	
+.grey a:hover{
+	color: #06a7e2;
+}
+.grey .panel-title>a{
+	font-size: 16px;
+}
 .dropdown-menu {box-shadow: none;}
 .grey .panel.panel-default { margin: 0 0 2px 0;}
 .new {margin: 7px 0 0 14px; display: inline-block;}

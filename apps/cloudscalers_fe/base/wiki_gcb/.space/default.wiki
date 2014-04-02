@@ -73,49 +73,61 @@
     </div>
     <div class="collapse navbar-collapse bs-example-js-navbar-collapse">
       <ul class="nav navbar-nav">
-        <li class="dropdown noPad"><a id="cloudSpaceNav" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Lenny Miller/ Default <b class="caret"></b></a>
+        <li class="dropdown noPad"><a id="cloudSpaceNav" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
         <div class="dropdown-menu">
-        
             <div class="accordionInside">
-  <div class="panel-group grey" id="accordion" close-others="false">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#One"> Machine Deck 1 </a> </h4>
-      </div>
-      <div id="One" class="panel-collapse collapse in">
-        <div class="panel-body"> My Machine Decks
-          Create Machine Deck
-          Custom Machine Image
-          Manage DNS </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#Two"> Desktop Deck 2 </a> </h4>
-      </div>
-      <div id="Two" class="panel-collapse collapse">
-        <div class="panel-body"> My Machine Decks
-          Create Machine Deck
-          Custom Machine Image
-          Manage DNS </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#Three"> Application Deck 3 </a> </h4>
-      </div>
-      <div id="Three" class="panel-collapse collapse">
-        <div class="panel-body"> My Machine Decks
-          Create Machine Deck
-          Custom Machine Image
-          Manage DNS </div>
-      </div>
-    </div>
-    
-  </div>
-</div>
+              <div class="panel-group grey" id="accordion" close-others="false">
+                <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title"> 
+                        <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a> 
+                    </h4>
+                  </div>
+                  <div id="{[account.name | nospace]}" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <ul>
+                            <li ng-repeat="space in account.cloudspaces">
+                                <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
+                            </li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ul>
+                <li>
+                    <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New CloudSpace...</a>
+                    <a href="/$$space/FAQ#/3" class="icon-faq"></a>
+                </li>
+            </ul>
         
-        <a class="new" href="#">New CloudSpace ..</a> <a class="accordionPic" href="#"><img src="img/images/ques.png"/></a>
+            <script type="text/ng-template" id="createNewCloudSpaceDialog.html"> 
+                <form name="form" class="form-horizontal" ng-submit="submit()">
+                    <div class="modal-header">
+                        <h3>New CloudSpace</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="control-group">
+                            <label class="control-label" for="inputAccount">Account</label>
+                            <div class="controls">
+                                <select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputNewCloudSpaceName">Name</label>
+                            <div class="controls">
+                                <input ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary ok">Ok</button>
+                        <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
+                    </div>
+                </form>
+            </script>
         
         </div>
           
