@@ -82,21 +82,21 @@ class billingengine_billingengine(j.code.classGetBase()):
                     machinebillingstatement.creationTime = machine['creationTime']
                     machinebillingstatement.deletionTime = machine['deletionTime']
 
+                if not machinebillingstatement.deletionTime is 0:
+                    billmachineuntil = machinebillingstatement.deletionTime
+                else:
+                    billmachineuntil = billing_statement.untilTime
+
+                billmachinefrom = max(billing_statement.fromTime, machinebillingstatement.creationTime)
+                number_of_billable_hours = (billmachineuntil - billmachinefrom) / 3600.0
+                if (number_of_billable_hours < 1.0): #minimum one hour
                     if not machinebillingstatement.deletionTime is 0:
-                        billmachineuntil = machinebillingstatement.deletionTime
-                    else:
-                        billmachineuntil = billing_statement.untilTime
+                        number_of_billable_hours = 1.0
+                        if (machinebillingstatement.creationTime < billing_statement.fromTime):
+                          number_of_billable_hours -= (billing_statement.fromTime * 3600.0)
 
-                    billmachinefrom = max(billing_statement.untilTime, machinebillingstatement.creationTime)
-                    number_of_billable_hours = billmachineuntil - billmachinefrom
-                    if (number_of_billable_hours < 3600): #minimum one hour
-                        if not machinebillingstatement.deletionTime is 0:
-                            number_of_billable_hours = 3600
-                            if (machinebillingstatement.creationTime < billing_statement.fromTime):
-                                number_of_billable_hours -= (billing_statement.fromTime)
-
-                    price_per_hour = self._get_price_per_hour()
-                    machinebillingstatement.cost = number_of_billable_hours * price_per_hour
+                price_per_hour = self._get_price_per_hour()
+                machinebillingstatement.cost = number_of_billable_hours * price_per_hour
 
             if not cloudspacebillingstatement is None:
                 cloudspacebillingstatement.totalCost = 0.0
@@ -192,9 +192,7 @@ class billingengine_billingengine(j.code.classGetBase()):
             next_billing_statement_time = now
 
         for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now, accountId):
-            import ipdb; ipdb.set_trace()
             self._update_usage(billing_statement)
-            import ipdb; ipdb.set_trace()
             self._save_billing_statement(billing_statement)
 
         self.updateBalance(accountId)
