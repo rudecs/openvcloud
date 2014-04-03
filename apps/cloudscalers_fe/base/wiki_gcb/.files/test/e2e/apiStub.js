@@ -394,9 +394,9 @@ defineApiStub = function ($httpBackend) {
        {id: '2', name: 'Development', accountId: '2'},
        {id: '3', name: 'Training', accountId: '2'},
        {id: '4', name: 'Production', accountId: '2'},
-       {id: '4', name: 'Development', accountId: '4'},
-       {id: '4', name: 'Acceptance', accountId: '4'},
-       {id: '4', name: 'Production', accountId: '4'},
+       {id: '5', name: 'Development', accountId: '4'},
+       {id: '6', name: 'Acceptance', accountId: '4'},
+       {id: '7', name: 'Production', accountId: '4'},
     ];
 
     var cloudSpace = {
@@ -464,6 +464,17 @@ defineApiStub = function ($httpBackend) {
             ],
         });
         return [200, '15']; // ID = 15
+    });
+
+    $httpBackend.whenGET(/^\/cloudspaces\/delete\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);
+        var cloudSpaceItem = _.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId});
+        if(cloudSpaceItem.length > 0){
+            cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId}), 1);
+            return [200, true];
+        }else{
+            return [500, "Cloudspace couldn't found!"];
+        }
     });
 
     var account = {

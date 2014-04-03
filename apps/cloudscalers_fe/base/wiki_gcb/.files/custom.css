@@ -1235,6 +1235,11 @@ a.icon-remove-sign {
 #cloudspace-nav .dropdown-menu{
     margin: -3px 0 0 -1px;
 }
+.action-disabled{
+    pointer-events: none; 
+    cursor: default; 
+    color: #808080 !important;
+}
 /*Sticky footer fix*/
 html, body{
     height: 97%;

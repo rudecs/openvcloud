@@ -17,14 +17,14 @@
     """
     prop:cloudspaceId int,,
     prop:name str,,name as given by customer
-	prop:machines list(VMachine),,
+    prop:machines list(VMachine),,
     prop:totalCost float,,
 
-[model:VMachine] @dbtype:osis
+[rootmodel:VMachine] @dbtype:osis
     """
-    Machine account on the virtual machine
+    Usage that should be billed for a virtual machine
     """
-	prop:machineId int,,
+    prop:machineId int,,
     prop:name str,,name as given by customer
     prop:sizeId int,,id of size used by machine, size is the cloudbroker size.
     prop:imageId int,,id of image used to create machine
@@ -36,3 +36,4 @@
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:cost float,, cost of the machine for this billingstatement period

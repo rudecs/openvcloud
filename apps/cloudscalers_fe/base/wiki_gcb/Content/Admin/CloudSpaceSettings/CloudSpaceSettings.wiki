@@ -2,7 +2,7 @@ h1. CloudSpace Details
 
 {{html:
 <div ng-controller="CloudSpaceManagementController">
-	<button class="btn btn-danger" ng-click="deleteCloudspace(currentSpace)"><i class="icon-trash"></i> Delete</button>
+	<button class="btn btn-danger" ng-click="deleteCloudspace()"><i class="icon-trash"></i> Delete</button>
 	
 	<script type="text/ng-template" id="deleteCloudSpaceDialog.html"> 
                             <form name="destroyform" ng-submit="cancelDeletion()">
@@ -20,7 +20,6 @@ h1. CloudSpace Details
                                 </div>
                             </form>
             </script>
-	
 	
 </div>
 

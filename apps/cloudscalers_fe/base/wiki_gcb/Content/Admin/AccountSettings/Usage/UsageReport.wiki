@@ -1,0 +1,16 @@
+@usedefault
+h1. Usage report
+
+{{html:
+
+
+<div ng-controller="UsageController">
+
+
+
+
+</div>
+
+
+<script src="/$$space/.files/js/controllers/Billing/UsageController.js" type="text/javascript"></script>
+}}
