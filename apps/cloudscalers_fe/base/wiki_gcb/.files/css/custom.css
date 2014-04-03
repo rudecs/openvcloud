@@ -284,3 +284,6 @@ color: #FFF;}
 .create-cloudspace:hover { color: initial !important;  }
 
 .create-cloudspace + .icon-faq { background: url(../img/images/ques.png); width: 22px !important; height: 21px; margin: 7px 11px 7px; display: inline-block; float: right;}
+.account-container.stacked { width: 617px; margin: 0 auto; border: 7px solid rgba(255, 255, 255, 0.2);  -webkit-border-radius: 10px;  -moz-border-radius: 10px;  border-radius: 10px;}
+.content.clearfix.padding { background: url(../img/images/login-slice.png) repeat-x 0 0px;  color: #FFF;}
+.content.clearfix.padding h1 { font-family: 'Conv_Gotham-Book'; font-size: 26px; font-weight: bold; color: #FFF;}
