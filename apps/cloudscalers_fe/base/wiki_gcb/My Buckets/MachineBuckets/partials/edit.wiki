@@ -1,5 +1,5 @@
 
-h2. Manage Machine Bucket
+h1. Manage Machine Bucket
 {{cssstyle
 h2 { float: left;  }
 }}
@@ -12,18 +12,18 @@ h2 { float: left;  }
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
             <div class="row">
-                <div class="span6">
+                <div class="span8">
                     <ul class="list">
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">Name</h5>
-                        		<div class="span3 mtm word-break">{[machine.name]}</div>
+                        		<h5 class="span3">Name</h5>
+                        		<div class="span9 mtm word-break">{[machine.name]}</div>
                         	</div>
                         </li>
                         <li>
                             <div class="row">
-                                <h5 class="span2">Description</h5>
-                                <div class="span3 justify edit-description">
+                                <h5 class="span3">Description</h5>
+                                <div class="span9 justify edit-description">
                                     <div style="cursor: pointer; height: 40px; line-height: 40px;" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                         <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
                                     </div>
@@ -32,43 +32,43 @@ h2 { float: left;  }
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">Status</h5>
-                        		<div class="span3 mtm">{[machine.status]}</div>
+                        		<h5 class="span3">Status</h5>
+                        		<div class="span9 mtm">{[machine.status]}</div>
                         	</div>
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">IP Address</h5>
-                        		<div class="span3 mtm">{[machine.interfaces[0].ipAddress]}</div>
+                        		<h5 class="span3">IP Address</h5>
+                        		<div class="span9 mtm">{[machine.interfaces[0].ipAddress]}</div>
                         	</div>
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">Credentials</h5>
-                        		<div class="span3">Login: {[machine.accounts[0].login]}<br/>Password: {[machine.accounts[0].password]}</div>
+                        		<h5 class="span3">Credentials</h5>
+                        		<div class="span9">Login: {[machine.accounts[0].login]}<br/>Password: {[machine.accounts[0].password]}</div>
                         	</div>
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">CPU</h5>
-                        		<div class="span3 mtm">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
+                        		<h5 class="span3">CPU</h5>
+                        		<div class="span9 mtm">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
                         	</div>
                         </li>
                         <li>
                         	<div class="row">
-                                <h5 class="span2">Memory</h5>
-                        		<div class="span3 mtm">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
+                                <h5 class="span3">Memory</h5>
+                        		<div class="span9 mtm">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
                         	</div>
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span2">Storage</h5>
-                        		<div class="span3 mtm">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
+                        		<h5 class="span3">Storage</h5>
+                        		<div class="span9 mtm">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
                         	</div>
                         </li>
                     </ul>
                 </div>
-                <div class="span2 actions">
+                <div class="span3 actions">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="icon-large icon-lock"></i>
                     <ul class="actions">
 

@@ -269,3 +269,14 @@ color: #FFF;}
  .controls .btn.btn-small { float: left; border: 1px solid #00a8e1; border-radius: 0; margin: 0 0 0 20px;}
  label + .controls { display: table-cell; margin: 0 0 0 0;}
 
+.list li {
+    clear: both;
+ 
+    width: 100%;
+    display: inline-block;
+    border-bottom: 1px solid #999;
+}
+.list h5 {font-size: 16px; color: #77777b;}
+.list { padding-left: 10px;}
+.dropdown.noPad.open .dropdown-toggle, .dropdown.open > a { background: transparent !important; color: #000 !important; }
+.dropdown.noPad.open .dropdown-toggle:hover, .dropdown.open > a { background: transparent !important; color: #000 !important; }
