@@ -85,18 +85,19 @@ footer .container { width: 1090px; }
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList { display: inline-block; }
 /*sideNav*/
-.sideNav { position: absolute; top: 250px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav { position: absolute; top: 10%; right: 0; width: 200px; height: 50px; z-index: 999999; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
-.sideNav .panel-body ul li a { padding: 4px 0; display: inline-block; color: #333;}
-.sideNav .panel-body ul li a:hover { color: #000;}
+.sideNav .panel-body ul li a, .sideNav .body a { padding: 4px 0; display: inline-block; color: #333; font-size: 15px;}
+.sideNav .panel-body ul li a:hover, .sideNav .body a:hover { color: #000;}
 .panel-heading { padding: 0; }
-.panel-title>a { padding: 14px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
-.blue h4 > a { background: #06a7e2; }
-.green h4 > a { background: #80bd01; }
-.orange h4 > a { background: #f6b332; }
-.darkOrange h4 > a { background: #d97804; }
-.blue + .panel-collapse { background: #cdedf9; }
+.panel-title>a, .sideNav .header > a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
+.sideNav .header > a{text-align: center;}
+.blue h4 > a, .sideNav .header.blue > a{ background: #06a7e2; }
+.green h4 > a, .sideNav .header.green > a{ background: #80bd01; }
+.orange h4 > a , .sideNav .header.orange > a{ background: #f6b332; }
+.darkOrange h4 > a , .sideNav .header.darkOrange > a{ background: #d97804; }
+.blue + .panel-collapse, .sideNav .header { background: #cdedf9; }
 .green + .panel-collapse { background: #edffc9; }
 .orange + .panel-collapse { background: #ffeecc; }
 .darkOrange + .panel-collapse { background: #ffe3c2; }
@@ -211,6 +212,16 @@ table.table th{
 }
 .user-name:hover{
 	color: #00a8e1;
+}
+#right-nav{
+	position: absolute;
+	right: 0;
+}
+.positionIntial{
+	position: initial;
+}
+.block{
+	display: block;
 }
 /*end of new style*/
 

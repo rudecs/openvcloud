@@ -150,14 +150,13 @@
 
     </div>
 
-    <div class="main white">
+    <div class="main white" style="position: relative;">
         <div class="main-inner">
 
             <div class="container">
                 <div class="row">
 
 }}
-
 
 @col 10
 
@@ -208,115 +207,6 @@ h2. loading
 @divend
 @divend
 @divend
-
-{{html:
-<div class="sideNav">
-    <div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-      <div class="panel-heading blue">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="return false;">
-            Machine Decks
-          </a>
-        </h4>
-      </div>
-      <div id="collapseOne" class="panel-collapse collapse">
-        <div class="panel-body">
-          <ul>
-        <li><a href="../$$space/MachineBuckets">My Machine Decks</a></li>
-        <li><a href="../$$space/MachineBuckets?singlebutton=#/new">Create Machine Deck</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading green">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="return false;">
-            Desktop Decks
-          </a>
-        </h4>
-      </div>
-      <div id="collapseTwo" class="panel-collapse collapse">
-        <div class="panel-body">
-         <ul>
-        <li><a href="../$$space/DesktopBuckets">My Desktop Decks</a></li>
-        <li><a href="#">Create Desktop Deck</a></li>
-        <li><a href="#">Desktop Decks Settings</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading orange">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" onclick="return false;">
-            Storage Decks
-          </a>
-        </h4>
-      </div>
-      <div id="collapseThree" class="panel-collapse collapse">
-        <div class="panel-body">
-         <ul>
-        <li><a href="../$$space/StorageBuckets">My Storage Decks</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading darkOrange">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" onclick="return false;">
-            Network Decks
-          </a>
-        </h4>
-      </div>
-      <div id="collapse4" class="panel-collapse collapse">
-        <div class="panel-body">
-          <ul>
-        <li><a href="../$$space/NetworkBuckets">My Network Decks</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading blue">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive" onclick="return false;">
-            Account Settings
-          </a>
-        </h4>
-      </div>
-      <div id="collapseFive" class="panel-collapse collapse">
-        <div class="panel-body">
-         <ul>
-        <li><a href="#">Credit</a></li>
-        <li><a href="#">Account Details</a></li>
-        <li><a href="#">Account Access Management</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading green">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix" onclick="return false;">
-            CloudSpace Settings
-          </a>
-        </h4>
-      </div>
-      <div id="collapseSix" class="panel-collapse collapse">
-        <div class="panel-body">
-         <ul>
-        <li><a href="#">CloudSpace Details</a></li>
-        <li><a href="#">CloudSpace Access Management</a></li>
-        </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-}}
 @divend
 @divend
 
@@ -342,5 +232,6 @@ h2. loading
         $(document).click(function(){
         $('.noPad .dropdown-menu').slideUp();
         });
+        $('.span10').addClass('positionIntial');
     </script>
 }}
