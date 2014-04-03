@@ -1,5 +1,5 @@
 
-h1. Manage Machine Bucket
+h1. Manage Machine
 {{cssstyle
 h2 { float: left;  }
 }}
@@ -72,14 +72,14 @@ h2 { float: left;  }
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="icon-large icon-lock"></i>
                     <ul class="actions">
 
-                        <li ng-show="machine.status == 'HALTED' && machine.locked == false"> 
+                        <li ng-show="machine.status == 'HALTED' && machine.locked == false">
                             <a ng-click="start()">
                                 <i class="icon-play-circle"></i>
                                 Start
                             </a>
                         </li>
 
-                        <li ng-show="machine.status == 'PAUSED'"> 
+                        <li ng-show="machine.status == 'PAUSED'">
                             <a ng-click="resume()">
                                 <i class="icon-play-circle"></i>
                                 Resume
@@ -92,7 +92,7 @@ h2 { float: left;  }
                                 Pause
                             </a>
                         </li>
-                        
+
                         <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                             <a ng-click="stop()">
                                 <i class="icon-stop "></i>
@@ -101,12 +101,12 @@ h2 { float: left;  }
                         </li>
 
                         <li>
-                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}"> 
+                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
                                 <i class="icon-camera"></i>
                                 Take Snapshot
                             </a>
 
-			<script type="text/ng-template" id="createSnapshotDialog.html"> 
+			<script type="text/ng-template" id="createSnapshotDialog.html">
                             <form name="form" ng-submit="submit(form)">
                                 <div class="modal-header">
                                     <h3>Take snapshot</h3>
@@ -137,7 +137,7 @@ h2 { float: left;  }
                                 <i class="icon-copy"></i>
                                 Create Template
                             </a>
-							<script type="text/ng-template" id="createTemplateDialog.html"> 
+							<script type="text/ng-template" id="createTemplateDialog.html">
                                 <div class="modal-header">
                                     <h3>Create Template</h3>
                                 </div>
@@ -163,7 +163,7 @@ h2 { float: left;  }
                                 <i class=" icon-remove-circle"></i>
                                 Destroy
                             </a>
-                            <script type="text/ng-template" id="destroyMachineDialog.html"> 
+                            <script type="text/ng-template" id="destroyMachineDialog.html">
                                 <form name="destroyform" ng-submit="cancelDestroy()">
                                     <div class="modal-header">
                                         <h3>Destroy machine bucket?</h3>
@@ -183,7 +183,7 @@ h2 { float: left;  }
                     </ul>
                 </div>
             </div>
-        <script type="text/ng-template" id="updateDescription.html"> 
+        <script type="text/ng-template" id="updateDescription.html">
                             <form name="form" class="form-horizontal" ng-submit="submit()">
                                 <div class="modal-header">
                                     <h3>Edit Description</h3>
@@ -212,7 +212,7 @@ h2 { float: left;  }
                 </div>
 				<div novncwindow connectioninfo="novnc_connectioninfo">
 		</div>
-            </div>          
+            </div>
         </div>
       </tab>
       <tab heading="Snapshots" active="tabactive.snapshots">
@@ -245,7 +245,7 @@ h2 { float: left;  }
       </tab>
       <tab heading="Change Log" active="tabactive.changelog">
         <div id="logging" class="tab-pane">
-            {{include:bucket_history}}
+            {{include:machine_history}}
         </div>
       </tab>
 </tabset>
