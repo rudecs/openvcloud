@@ -1,7 +1,7 @@
 defineApiStub = function ($httpBackend) {
 
 
-    $httpBackend.whenGET(/^partials\//).passThrough();
+    $httpBackend.whenGET(/^pages\//).passThrough();
 
     // Saves items in localStorage, under the given key. This allows us to persist items in the front-end.
     function LocalStorageItem(key) {
@@ -94,7 +94,7 @@ defineApiStub = function ($httpBackend) {
     var MachinesList = LocalStorageItem('gcb:machines');
     if (!MachinesList.get()) {
         MachinesList.set([{
-        	"cloudspaceId":1, 
+        	"cloudspaceId":1,
             "status": "RUNNING",
             "hostname": "jenkins.cloudscalers.com",
             "accounts":[{"password":"xGuiyrRp","login":"cloudscalers","guid":""}],
@@ -105,7 +105,7 @@ defineApiStub = function ($httpBackend) {
             "imageId": 0,
             "id": 0
         }, {
-        	"cloudspaceId":1, 
+        	"cloudspaceId":1,
             "status": "HALTED",
             "hostname": "cloudbroker.cloudscalers.com",
             "accounts":[{"password":"nGGuqMKJrRp","login":"cloudscalers","guid":""}],
@@ -256,7 +256,7 @@ defineApiStub = function ($httpBackend) {
     });
 
     $httpBackend.whenGET(/^\/machines\/update\?.*/).respond(function (method, url, data) {
-        var params = new URI(url).search(true);      
+        var params = new URI(url).search(true);
         var machine = MachinesList.getById(params.machineId);
         machine.description = params.description;
         MachinesList.save(machine);
@@ -297,7 +297,7 @@ defineApiStub = function ($httpBackend) {
     ];
 
     $httpBackend.whenGET(/\/machines\/listSnapshots\?.*/).respond(snapshots);
-    
+
     $httpBackend.whenGET(new RegExp('/machines/snapshot\\?machineId=2&name=.*?(&api_key=.*?)')).respond(function(status, data) {
         return [500, "Can't create snapshot"];
     });
@@ -308,7 +308,7 @@ defineApiStub = function ($httpBackend) {
         return [200, name];
     });
 
-    
+
 
     // getConsoleUrl
     $httpBackend.whenGET(/^\/machines\/getConsoleUrl\?machineId=(\d+).*/).respond('null');
@@ -444,10 +444,10 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         if (_.findWhere(cloudspaces, {name: params.name}))
             return [500, 'Cloudspace already exists'];
-        
+
         cloudspaces.push({
             id: '15',
-            name: params.name, 
+            name: params.name,
             accountId: params.accountId,
             acl: [
                 {
@@ -542,23 +542,23 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/accounts\/getCreditHistory.*/).respond([
        {
-            status: "PROCESSED", 
-            currency: "LTC", 
-            amount: 0.43383948, 
-            reference: "e50d4d6866279ebc18bbe2ef84d187b050b9ed998340c1ef5f74b2d565c7d550", 
-            time: 1391516164, 
-            credit: 10.000000014000001, 
-            comment: "Credit", 
+            status: "PROCESSED",
+            currency: "LTC",
+            amount: 0.43383948,
+            reference: "e50d4d6866279ebc18bbe2ef84d187b050b9ed998340c1ef5f74b2d565c7d550",
+            time: 1391516164,
+            credit: 10.000000014000001,
+            comment: "Credit",
             accountid: "fe8409b1-fa21-4fc1-b2d3-c752928c450c"
         },
         {
-            status: "PROCESSED", 
-            currency: "LTC", 
-            amount: 0.43383948, 
-            reference: "a33f6a65550a7512c0c56c55a0057023a9a987233bd4eb692a9c1c2e788957dd", 
-            time: 1391432480, 
-            credit: 10.000000014000001, 
-            comment: "Credit", 
+            status: "PROCESSED",
+            currency: "LTC",
+            amount: 0.43383948,
+            reference: "a33f6a65550a7512c0c56c55a0057023a9a987233bd4eb692a9c1c2e788957dd",
+            time: 1391432480,
+            credit: 10.000000014000001,
+            comment: "Credit",
             accountid: "fe8409b1-fa21-4fc1-b2d3-c752928c450c"
         }
     ]);
@@ -574,7 +574,7 @@ defineApiStub = function ($httpBackend) {
         } else  {
             return [504, 'Bad request'];
         }
-        
+
     });
 
     var storages = [
@@ -619,4 +619,3 @@ defineApiStub = function ($httpBackend) {
         return [200, params.ip];
     });
 };
-
