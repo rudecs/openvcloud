@@ -147,5 +147,5 @@ h2. History
 </div>
 
 <script src="/$$space/.files/js/services/CryptoPayments.js" type="text/javascript"></script>
-<script src="/$$space/.files/js/controllers/billing.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/controllers/Billing/Billing.js" type="text/javascript"></script>
 }}

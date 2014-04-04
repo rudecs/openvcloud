@@ -1,0 +1,14 @@
+h1. Network Deck
+
+The Network Deck is your personal private virtual firewall that handles all incoming and outgoing traffic for your cloud space, your routing, port fowards and firewall settings.
+
+The private virtual firewall provides tons of possibilities to offer more flexibility and enhanced security compared to other public clouds. Configuring the Network Bucket is done by the intuitive web panel. By default we provide one Network Bucket for each Cloud Space, but additional network buckets can be ordered if required.
+
+{{html:
+	<div ng-controller="NetworkController">
+		<div>
+			<a ng-href="{[ managementui ]}" target="_blank">Network Deck portal for this cloudspace</a>
+		</div>
+	</div>
+    <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
+}}
