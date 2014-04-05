@@ -98,7 +98,7 @@ footer .container { width: 1090px; }
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList { display: inline-block; }
 /*sideNav*/
-.sideNav { position: absolute; top: 80px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav { position: absolute; top: 60px; right: 0; width: 200px; height: 50px; z-index: 999999; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #666; font-size: 13px;}
@@ -419,7 +419,7 @@ padding: 10px 0!important;text-shadow: none;
 
 /*for remove in imporvements*/
 .white{
-	min-height: 500px;
+	min-height: 520px;
 }
 /*end of remove in imporovemnts*/
 

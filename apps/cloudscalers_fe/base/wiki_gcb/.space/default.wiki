@@ -236,9 +236,12 @@ h2. loading
         <a ng-class="getClass('../$$space/StorageDeck')" href="../$$space/StorageDeck">Storage Deck</a>
       </li>
       <li class="header blue">
-        <a ng-class="getClass('../$$space/ComputeBuckets')" href="../$$space/ComputeBuckets">Compute Deck</a>
+        <a ng-class="getClass('../$$space/NetworkDeck')" href="../$$space/NetworkDeck">Network Deck</a>
       </li>
       <li class="header green">
+        <a ng-class="getClass('../$$space/ComputeBuckets')" href="../$$space/ComputeBuckets">Compute Deck</a>
+      </li>
+      <li class="header orange">
         <a ng-class="getClass('../$$space/DevelopmentBuckets')" href="../$$space/DevelopmentBuckets">Development Deck</a>
       </li>
     </ul>
