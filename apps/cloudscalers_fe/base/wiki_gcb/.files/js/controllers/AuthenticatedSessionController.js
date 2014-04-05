@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout) {
+    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
         $scope.currentAccount = {id:$scope.currentSpace ? $scope.currentSpace.accountId : ''};
@@ -51,4 +51,14 @@ angular.module('cloudscalers.controllers')
 			$window.location = uri.toString();
         };
 
+        var absUrl = $location.absUrl();
+        $scope.getClass = function(path) {
+            var path = path.split("../wiki_gcb/");
+            if(absUrl.indexOf(path[1]) != -1){
+                return "active"
+            }
+            else {
+              return ""
+            }
+        }
     }]);

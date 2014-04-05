@@ -210,36 +210,36 @@ h2. loading
   <div class="sideNav">
     <ul style="padding-left: 0;">
       <li class="header blue">
-        <a href="../$$space/MachineDeck">Machine Deck</a>
+        <a ng-class="getClass('../$$space/MachineDeck')" href="../$$space/MachineDeck">Machine Deck</a>
         <ul class="body" style="padding: 12px;">
           <li>
-            <a href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
+            <a ng-class="getClass('../$$space/MachineDeck?singlebutton=#/new')" href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
           </li>
           <li>
-            <a href="../$$space/Custom Images">Cusom Machine Image</a>
+            <a ng-class="getClass('../$$space/Custom%20Images')" href="../$$space/Custom Images">Cusom Machine Image</a>
           </li>
           <li>
-            <a href="../$$space/dns">Manage DNS</a>
+            <a ng-class="getClass('../$$space/dns')" href="../$$space/dns">Manage DNS</a>
           </li>
           <li>
-            <a href="../$$space/ssh">SSH Keys</a>
+            <a ng-class="getClass('../$$space/ssh')" href="../$$space/ssh">SSH Keys</a>
           </li>
         </ul>
       </li>
       <li class="header green">
-        <a href="../$$space/DesktopBuckets">Desktop Deck</a>
+        <a ng-class="getClass('../$$space/DesktopBuckets')" href="../$$space/DesktopBuckets">Desktop Deck</a>
       </li>
       <li class="header orange">
-        <a href="../$$space/ApplicationBuckets">Application Deck</a>
+        <a ng-class="getClass('../$$space/ApplicationBuckets')" href="../$$space/ApplicationBuckets">Application Deck</a>
       </li>
       <li class="header darkOrange">
-        <a href="../$$space/StorageDeck">Storage Deck</a>
+        <a ng-class="getClass('../$$space/StorageDeck')" href="../$$space/StorageDeck">Storage Deck</a>
       </li>
       <li class="header blue">
-        <a href="../$$space/ComputeBuckets">Compute Deck</a>
+        <a ng-class="getClass('../$$space/ComputeBuckets')" href="../$$space/ComputeBuckets">Compute Deck</a>
       </li>
       <li class="header green">
-        <a href="../$$space/DevelopmentBuckets">Development Deck</a>
+        <a ng-class="getClass('../$$space/DevelopmentBuckets')" href="../$$space/DevelopmentBuckets">Development Deck</a>
       </li>
     </ul>
   </div>
