@@ -211,7 +211,7 @@ h2. loading
     <ul style="padding-left: 0;">
       <li class="header blue">
         <a ng-class="getClass('../$$space/MachineDeck')" href="../$$space/MachineDeck">Machine Deck</a>
-        <ul class="body" style="padding: 12px;">
+        <ul class="body" style="padding: 0 12px;">
           <li>
             <a ng-class="getClass('../$$space/MachineDeck?singlebutton=#/new')" href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
           </li>
