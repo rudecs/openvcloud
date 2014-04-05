@@ -85,13 +85,13 @@ footer .container { width: 1090px; }
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList { display: inline-block; }
 /*sideNav*/
-.sideNav { position: absolute; top: 10%; right: 0; width: 200px; height: 50px; z-index: 999999; }
-.sideNav .panel-body { padding: 7px 0 7px 15px;}
+.sideNav { position: absolute; top: 100px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav .panel-body { padding: 5px 0 5px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
-.sideNav .panel-body ul li a, .sideNav .body a { padding: 4px 0; display: inline-block; color: #333; font-size: 15px;}
+.sideNav .panel-body ul li a, .sideNav .body a { padding: 1px 0; display: inline-block; color: #333; font-size: 12px;}
 .sideNav .panel-body ul li a:hover, .sideNav .body a:hover { color: #000;}
 .panel-heading { padding: 0; }
-.panel-title>a, .sideNav .header > a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
+.panel-title>a, .sideNav .header > a{ padding: 4px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
 .sideNav .header > a{text-align: center;}
 .blue h4 > a, .sideNav .header.blue > a{ background: #06a7e2; }
 .green h4 > a, .sideNav .header.green > a{ background: #80bd01; }
@@ -299,3 +299,9 @@ color: #FFF;}
 .account-container.stacked { width: 617px; margin: 0 auto; border: 7px solid rgba(255, 255, 255, 0.2);  -webkit-border-radius: 10px;  -moz-border-radius: 10px;  border-radius: 10px;}
 .content.clearfix.padding { background: url(../img/images/login-slice.png) repeat-x 0 0px;  color: #FFF;}
 .content.clearfix.padding h1 { font-family: 'Conv_Gotham-Book'; font-size: 26px; font-weight: bold; color: #FFF;}
+
+/*for remove in imporvements*/
+.white{
+	min-height: 450px;
+}
+/*end of remove in imporovemnts*/

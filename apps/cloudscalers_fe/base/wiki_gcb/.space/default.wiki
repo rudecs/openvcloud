@@ -157,7 +157,6 @@
                 <div class="row">
 
 }}
-
 @col 10
 
 
@@ -180,7 +179,6 @@
 
 
 }}
-
 
 {content}
 
@@ -207,9 +205,48 @@ h2. loading
 @divend
 @divend
 @divend
+{{html:
+      <!-- static right nav -->
+  <div class="sideNav">
+    <ul style="padding-left: 0;">
+      <li class="header blue">
+        <a href="../$$space/MachineDeck">Machine Deck</a>
+        <ul class="body" style="padding: 12px;">
+          <li>
+            <a href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
+          </li>
+          <li>
+            <a href="../$$space/Custom Images">Cusom Machine Image</a>
+          </li>
+          <li>
+            <a href="../$$space/dns">Manage DNS</a>
+          </li>
+          <li>
+            <a href="../$$space/ssh">SSH Keys</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header green">
+        <a href="../$$space/DesktopBuckets">Desktop Deck</a>
+      </li>
+      <li class="header orange">
+        <a href="../$$space/ApplicationBuckets">Application Deck</a>
+      </li>
+      <li class="header darkOrange">
+        <a href="../$$space/StorageDeck">Storage Deck</a>
+      </li>
+      <li class="header blue">
+        <a href="../$$space/ComputeBuckets">Compute Deck</a>
+      </li>
+      <li class="header green">
+        <a href="../$$space/DevelopmentBuckets">Development Deck</a>
+      </li>
+    </ul>
+  </div>
+  <!-- end of nav-->
+}}
 @divend
 @divend
-
 
 {{include:footer}}
 
