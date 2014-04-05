@@ -434,5 +434,6 @@ padding: 10px 0!important;text-shadow: none;
     display: inline-block;
     margin: 10px 0;
 }
+.upMargin { margin: 80px auto 0;}
 .body ul li {line-height: 26px;}
 .body {padding: 10px 12px !important;}
