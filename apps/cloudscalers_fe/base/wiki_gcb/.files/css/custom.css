@@ -45,7 +45,7 @@ textarea {
 .leftIcon { margin: 0 0 0 215px; }
 .color3, .color4 { margin: 50px 0 0 0; }
 .color3 { clear: left; }
-footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; display: inline-block; }
+footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
 .midFooter { padding: 20px 0; min-height: 90px; border-bottom: 1px solid #fff; display: block; }
 .midFooter ul li { float: left; margin: 0 15px; }
