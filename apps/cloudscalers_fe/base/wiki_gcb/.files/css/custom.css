@@ -411,7 +411,7 @@ box-shadow: none!important;
 font-size: 18px!important;
 padding: 10px 0!important;text-shadow: none;
 }
-.login-symbol { background: url(../img/images/login-symbol.png) no-repeat 31px 19px; padding: 15px 34px; padding-bottom: 10px;}
+.login-symbol { background: url(../img/images/login-symbol.png) no-repeat 31px 19px; padding: 15px 34px; padding-bottom: 20px;}
 .login-fields { margin-bottom: 10px;}
 
 /*for remove in imporvements*/
@@ -419,3 +419,16 @@ padding: 10px 0!important;text-shadow: none;
 	min-height: 450px;
 }
 /*end of remove in imporovemnts*/
+
+.loginFieldName2 { font-size: 16px; width: 130px; text-align: left; margin-right: 10px;}
+.signUpForm {} 
+.signUpForm .inputWrap {width: 73%;}
+.signUpForm .inputWrap .inputLogin {font-size: 16px !important;}
+.mrs {
+    text-align: center;
+ 
+    width: 100%;
+    display: inline-block;
+    margin: 10px 0;
+}
+.upMargin { margin: 80px auto 0;}
