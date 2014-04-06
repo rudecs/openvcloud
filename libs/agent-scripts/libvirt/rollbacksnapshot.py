@@ -11,6 +11,7 @@ author = "deboeckj@incubaid.com"
 license = "bsd"
 version = "1.0"
 roles = ["*"]
+async = True
 
 
 def action(machineid, name):

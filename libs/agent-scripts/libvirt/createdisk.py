@@ -11,6 +11,7 @@ author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
 roles = ["*"]
+async = True
 
 
 def action(diskxml, poolname):
