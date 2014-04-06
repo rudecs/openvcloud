@@ -14,9 +14,11 @@
 }}
 
 
-{{title:vScalers - $$space}}
+{{title:Mothership1}}
 
-{{projectname:vScalers}}
+{{projectname:Mothership1}}
+
+{{favicon:.files/img/favicon.jpg}}
 
 
 {{css:/$$space/.files/css/custom.css}}
