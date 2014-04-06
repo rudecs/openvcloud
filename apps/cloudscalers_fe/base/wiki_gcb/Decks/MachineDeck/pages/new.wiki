@@ -52,14 +52,14 @@ h1. Create Machine
     <hr>
     <div class="nameField">
         <h2>Increase disk size to:</h2>
-        <div class="controls " >
+        <div class="controls container" >
             {{include:storage_list}}
         </div>
     </div>
     <hr>
 
     <div class="form-actions">
-        <button class="btn btn-info btn-large " ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
+        <button class="btn btn-info btn-large mainButton" ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
     </div>
     <hr>
 }}

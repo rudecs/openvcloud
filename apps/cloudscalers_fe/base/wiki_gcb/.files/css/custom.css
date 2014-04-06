@@ -91,12 +91,15 @@ footer .container { width: 1090px; }
 .nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; float: right;}/**/
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0;}/**/
-.machineList ul li { float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px;}/**/
-.machineList ul li a { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg); text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
+.machineList ul li, .storage-size-list li{ float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px;}/**/
+.machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg); text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
 .machineList ul { margin: -60px 0 0 60px; }
-.machineList ul li a:hover { background: url(../img/images/machine-hover.jpg); color: #FFF; }/**/
+.machineList ul li a:hover, .storage-size-list button:hover, .storage-size-list button.active { background: url(../img/images/machine-hover.jpg); color: #FFF; }/**/
+.storage-size-list li button{ box-shadow: none !important; border: 0; }
+.storage-size-list li button:focus{ outline: 0 !important; outline-offset: 0 !important; }
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
-.machineList { display: inline-block; }
+.machineList, .storage-size-list { display: inline-block; }
+.storage-size-list { padding-left: 6%; }
 /*sideNav*/
 .sideNav { position: absolute; top: 60px; right: 0; width: 200px; height: 50px; z-index: 999999; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
@@ -265,7 +268,7 @@ text-decoration: none;
     padding: 10px 20px;
     font-size: 16px;
 }
-.disabled2 { background: #e5e5e5; border: 1px solid #e5e5e5; color: #666;}
+#singlebutton.disabled { background: #e5e5e5; border: 1px solid #e5e5e5; color: #666;}
 .machineList ul li a.active { background: url(../img/images/machine-hover.jpg);
 color: #FFF;}
 
