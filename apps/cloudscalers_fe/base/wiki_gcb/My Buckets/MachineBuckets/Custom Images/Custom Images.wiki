@@ -1,4 +1,4 @@
-h2. Custom Images
+h1. Custom Images
 
 {{html: <hr> }}
 

@@ -101,7 +101,7 @@ footer .container { width: 1090px; }
 .machineList, .storage-size-list { display: inline-block; }
 .storage-size-list { padding-left: 6%; }
 /*sideNav*/
-.sideNav { position: absolute; top: 60px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav { position: absolute; top: 70px; right: 0; width: 200px; height: 50px; z-index: 999999; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #666; font-size: 13px;}
@@ -176,12 +176,8 @@ p { color:#77777b; }
 ul{
 	list-style: none;
 }
-#singlebutton{
-	font-size: 20px;
-	margin-bottom: 35px;
-}
 table.table th{
-	background: #00a8e1 !important;
+	background: #707070 !important;
 	font-size: 18px;
 	color: #fff;
 	font-weight: normal;
@@ -423,7 +419,7 @@ padding: 10px 0!important;text-shadow: none;
 
 /*for remove in imporvements*/
 .white{
-	min-height: 520px;
+	min-height: 450px;
 }
 /*end of remove in imporovemnts*/
 

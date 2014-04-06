@@ -5,7 +5,7 @@ h2 { float: left;  }
 }}
 {{html:
 <a ng-click="refreshPage()" class="refresh-page mtl right">
-    <i class="icon-refresh mrs"></i>
+    <i class="fa fa-refresh mrs"></i>
     Refresh
 </a>
 <tabset style="clear:both;">
@@ -69,40 +69,40 @@ h2 { float: left;  }
                     </ul>
                 </div>
                 <div class="span3 actions">
-                    <h4>Actions</h4>    <i ng-show="machine.locked == true" class="icon-large icon-lock"></i>
+                    <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
                     <ul class="actions">
 
                         <li ng-show="machine.status == 'HALTED' && machine.locked == false">
                             <a ng-click="start()">
-                                <i class="icon-play-circle"></i>
+                                <i class="fa fa-play-circle"></i>
                                 Start
                             </a>
                         </li>
 
                         <li ng-show="machine.status == 'PAUSED'">
                             <a ng-click="resume()">
-                                <i class="icon-play-circle"></i>
+                                <i class="fa fa-play-circle"></i>
                                 Resume
                             </a>
                         </li>
 
                         <li ng-show="machine.status == 'RUNNING'">
                             <a ng-click="pause()">
-                                <i class=" icon-pause"></i>
+                                <i class=" fa fa-pause"></i>
                                 Pause
                             </a>
                         </li>
 
                         <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                             <a ng-click="stop()">
-                                <i class="icon-stop "></i>
+                                <i class="fa fa-stop "></i>
                                 Stop
                             </a>
                         </li>
 
                         <li>
                             <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
-                                <i class="icon-camera"></i>
+                                <i class="fa fa-camera"></i>
                                 Take Snapshot
                             </a>
 
@@ -128,13 +128,13 @@ h2 { float: left;  }
 
                         <li>
                             <a onclick="location.reload()">
-                                <i class="icon-undo"></i>
+                                <i class="fa fa-undo"></i>
                                 Rebuild
                             </a>
                         </li>
                         <li>
                             <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
-                                <i class="icon-copy"></i>
+                                <i class="fa fa-copy"></i>
                                 Create Template
                             </a>
 							<script type="text/ng-template" id="createTemplateDialog.html">
@@ -154,13 +154,13 @@ h2 { float: left;  }
                         </li>
                         <li>
                             <a>
-                                <i class="icon-download"></i>
+                                <i class="fa fa-download"></i>
                                 Export
                             </a>
                         </li>
                         <li>
                             <a ng-click="destroy()">
-                                <i class=" icon-remove-circle"></i>
+                                <i class=" fa fa-times-circle-o"></i>
                                 Destroy
                             </a>
                             <script type="text/ng-template" id="destroyMachineDialog.html">
