@@ -268,7 +268,8 @@ text-decoration: none;
     padding: 10px 20px;
     font-size: 16px;
 }
-#singlebutton.disabled { background: #e5e5e5; border: 1px solid #e5e5e5; color: #666;}
+#tabbable .tab-pane ul{ padding-left: 0; }
+#tabbable .tab-pane ul .mainButton:active{ outline: 5px auto -webkit-focus-ring-color !important; outline-offset: -2px !important; }
 .machineList ul li a.active { background: url(../img/images/machine-hover.jpg);
 color: #FFF;}
 
