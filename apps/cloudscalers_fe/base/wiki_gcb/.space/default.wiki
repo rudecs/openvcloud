@@ -106,20 +106,20 @@
             <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
                 <form name="form" class="form-horizontal" ng-submit="submit()">
                     <div class="modal-header">
-                        <h3>New CloudSpace</h3>
+                        <h2>New CloudSpace</h2>
                     </div>
                     <div class="modal-body">
-                        <div class="control-group">
-                            <label class="control-label" for="inputAccount">Account</label>
-                            <div class="controls">
-                                <select ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="inputAccount">Account</label>
+                            <div class="controls col-sm-9">
+                                <select class="form-control" ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group">
-                            <label class="control-label" for="inputNewCloudSpaceName">Name</label>
-                            <div class="controls">
-                                <input ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="inputNewCloudSpaceName">Name</label>
+                            <div class="controls col-sm-9">
+                                <input class="form-control" ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
                             </div>
                         </div>
                     </div>
