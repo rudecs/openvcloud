@@ -21,7 +21,7 @@
                 <div class="someText font">vScalers has not build yet another competitor for cloud infrastructure. vScalers offers a single unified portal to access different private instances: Cloud Buckets. vScalers Cloud Buckets offer a all the best of cloud, with powerfull new features like snapshotting, cloning, replication, etc.
 
                     vScalers` Cloud Buckets will most amaze you buy its ultra sharp pricing. Thanks to the use of smarter technology, vScalers delivers equal or better performance and relaibility compared to traditional clouds!
-                    <a href="../$$space/UnifiedCloud">Read more  <i class="icon-circle-arrow-right"></i></a>
+                    <a href="../$$space/UnifiedCloud">Read more  <i class="fa fa-circle-arrow-right"></i></a>
                 </div>
             </p>
         </div>

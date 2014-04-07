@@ -53,7 +53,7 @@ h2. Credit
             <h3><img src="/$$space/.files/img/payment/Bitcoin-logo-with-text.png"/> payment</h3>
         </div>
         <div id="bitcoinSpinner" ng-hide="spinnerShow" class="txt-center">
-            <span class="icon-spinner icon-spin"/>
+            <span class="fa fa-spinner fa-spin"/>
         </div>
         <div class="modal-body">
             <div ng-show="bitcoin">
@@ -86,7 +86,7 @@ h2. Credit
             <h3><img src="/$$space/.files/img/payment/Litecoin-logo-with-text.png"/> payment</h3>
         </div>
         <div id="litecoinSpinner" ng-hide="spinnerShow" class="txt-center">
-            <span class="icon-spinner icon-spin"/>
+            <span class="fa fa-spinner fa-spin"/>
         </div>
         <div class="modal-body">
             <div ng-show="litecoin">
