@@ -82,7 +82,7 @@ footer .container { width: 1090px; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 30px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 40px; font-family: 'maven_pro_light200'; font-weight: bold;}
-.white h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Book'; }
+.white h2 { color: #06a7e2; font-size: 20px; font-family: 'Conv_Gotham-Book'; }
 .white p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 30px; }
 .body a{ line-height: 1.3em; }
