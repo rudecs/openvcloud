@@ -92,16 +92,16 @@ footer .container { width: 1090px; }
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0;}/**/
 .machineList ul li, .storage-size-list li{ float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px;}/**/
-.machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg); text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
+.machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg) no-repeat; text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
 .machineList ul { margin: 0; }
-.machineList ul li a:hover, .storage-size-list button:hover, .storage-size-list button.active { background: url(../img/images/machine-hover.jpg); color: #FFF; }/**/
+.machineList ul li a:hover, .storage-size-list button:hover, .storage-size-list button.active { background: url(../img/images/machine-hover.jpg) no-repeat; color: #FFF; }/**/
 .storage-size-list li button{ box-shadow: none !important; border: 0; }
 .storage-size-list li button:focus{ outline: 0 !important; outline-offset: 0 !important; }
 .machineWrap { clear: both; margin: 0 0 38px 0;}/**/
 .machineList, .storage-size-list { display: inline-block; }
 .storage-size-list { padding-left: 6%; }
 /*sideNav*/
-.sideNav { position: absolute; top: 70px; right: 0; width: 200px; height: 50px; z-index: 999999; }
+.sideNav { position: absolute; top: 70px; right: 0; width: 180px; height: 50px; z-index: 999999; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #666; font-size: 13px;}
@@ -111,12 +111,15 @@ footer .container { width: 1090px; }
 .sideNav .header > a{ padding: 5px 15px; display: block; color: #FFF !important; font-family: 'maven_pro_light200'; }
 .sideNav .header > a.active{font-weight: bold; text-decoration: underline;}
 .blue h4 > a, .sideNav .header.blue > a{ background: #06a7e2; }
+.sideNav .header a{ text-align: center; }
+.sideNav .header span{font-size: 11px; top: 3px; position: absolute; margin-left: 5px;}
+.sideNav .header{ position: relative; }
 .green h4 > a, .sideNav .header.green > a{ background: #80bd01; }
 .orange h4 > a , .sideNav .header.orange > a{ background: #f6b332; }
 .darkOrange h4 > a , .sideNav .header.darkOrange > a{ background: #d97804; }
-.blue + .panel-collapse, .sideNav .header { background: #cdedf9; }
-.green + .panel-collapse { background: #edffc9; }
-.orange + .panel-collapse { background: #ffeecc; }
+.blue + .panel-collapse, .sideNav .blue.header { background: #cdedf9; }
+.green + .panel-collapse, .sideNav .header.green{ background: #edffc9; }
+.orange + .panel-collapse, .sideNav .orange.header { background: #ffeecc; }
 .darkOrange + .panel-collapse { background: #ffe3c2; }
 .panel { background-color: initial; border: 0; border-radius: 0 !important; -webkit-box-shadow: none; box-shadow: none; }
 .panel-group .panel { border-radius: 0; }
@@ -464,9 +467,9 @@ padding: 10px 0!important;text-shadow: none;
     margin: 10px 0;
 }
 .upMargin { margin: 80px auto 0;}
-.body ul li {line-height: 26px;}
-.body {padding: 10px 12px !important;}
-
+.sideNav .body ul li {line-height: 26px;}
+.sideNav .body {padding: 10px 12px !important; display: none;}
+.sideNav .body.active{ display: block; }
 
 .modal.fade.in {
 top: 50%;
