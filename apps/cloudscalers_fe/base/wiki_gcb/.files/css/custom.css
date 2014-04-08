@@ -101,7 +101,7 @@ footer .container { width: 1090px; }
 .machineList, .storage-size-list { display: inline-block; }
 .storage-size-list { padding-left: 6%; }
 /*sideNav*/
-.sideNav { position: absolute; top: 70px; right: 0; width: 180px; height: 50px; z-index: 999999; }
+.sideNav { position: absolute; top: 70px; right: 0; width: 180px; height: 50px; z-index: 1040; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #666; font-size: 13px;}
@@ -262,8 +262,7 @@ table.table th{
 	display: block;
 }
 .loader   {
-
- background: none repeat scroll 0 0 #EFEFEF;
+ 	background: none repeat scroll 0 0 #EFEFEF;
     border-radius: 10px 10px 10px 10px;
     left: 50%;
     margin-left: -100px;
@@ -271,7 +270,7 @@ table.table th{
     padding: 10px 40px;
     position: fixed;
     top: 50%;
-    width: 200px;
+    min-width: 200px;
     z-index: 10;
     border: 3px solid #CCCCCC;
 }
