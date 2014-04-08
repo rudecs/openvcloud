@@ -11,6 +11,8 @@ author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
 roles = ["*"]
+queue = "io"
+async = True
 
 
 def action(machineid,backupname,location,emailaddress):

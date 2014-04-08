@@ -12,12 +12,20 @@ class cloud_cloudbroker(object):
         self.actorname = "cloudbroker"
         self.appname = "cloud"
         self._cb = None
+        self._models = None
 
     @property
     def cb(self):
         if not self._cb:
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
+
+    @property
+    def models(self):
+        if not self._models:
+            self._models = self.cb.extensions.imp.getModel()
+        return self._models
+
 
     def updateImages(self, **kwargs):
         """
