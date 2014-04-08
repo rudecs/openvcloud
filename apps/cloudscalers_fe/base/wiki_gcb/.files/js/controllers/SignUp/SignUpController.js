@@ -20,7 +20,11 @@ angular.module('cloudscalers.controllers')
                 $scope.signUpResult = User.signUp($scope.user.username, $scope.email, $scope.user.password);
             }
         };
-
+        $scope.openPopup = function() {
+            LoadingDialog.show('Creating account').then(function() {
+                        console.log('open');
+                    });
+        }
         $scope.$watch('signUpResult', function() {
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
