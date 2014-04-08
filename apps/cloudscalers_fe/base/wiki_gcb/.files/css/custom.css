@@ -82,18 +82,18 @@ footer .container { width: 1090px; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 30px 0 79px 0; }
 .white h1 { color: #06a7e2; font-size: 40px; font-family: 'maven_pro_light200'; font-weight: bold;}
-.white h2 { color: #06a7e2; font-size: 20px; font-family: 'Conv_Gotham-Book'; }
+.white h2 { color: #06a7e2; font-size: 17px; font-family: 'Conv_Gotham-Book'; }
 .white p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 30px; }
 .body a{ line-height: 1.3em; }
 .marginTop + .container { margin-bottom: 100px; }
-.nameField { font-size: 26px; color: #06a7e2; width: 55%; margin: 21px 0; display: inline-block;}/**/
-.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 5px 5px; font-size: 20px; color: #77777b; width: 500px; float: right;}/**/
+.nameField { font-size: 26px; color: #06a7e2; width: 60%; margin: 21px 0; display: inline-block;}/**/
+.nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 17px !important; color: #77777b; width: 500px; float: right;}/**/
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0;}/**/
 .machineList ul li, .storage-size-list li{ float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px;}/**/
 .machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; display: table-cell; width:250px; height: 137px; background: url(../img/images/machine.jpg) no-repeat; text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle;}/**/
-.machineList ul { margin: 0; }
+.machineList ul { margin: 0; padding: 0;}
 .machineList ul li a:hover, .storage-size-list button:hover, .storage-size-list button.active { background: url(../img/images/machine-hover.jpg) no-repeat; color: #FFF; }/**/
 .storage-size-list li button{ box-shadow: none !important; border: 0; }
 .storage-size-list li button:focus{ outline: 0 !important; outline-offset: 0 !important; }
@@ -133,10 +133,14 @@ p { color:#77777b; }
 
 
  @media (max-width: 1290px) {
-	.boxes p { width: 279px !important; }
-	.nameField {width: 70%}
-.white h2 {font-size: 17px;}
-.machineList ul li a, .storage-size-list button { font-size: 12px;}
+	.boxes p {width: 196px !important;}
+	.mainText {font-size: 52px !important;}
+	.nameField {width: 80%;}
+	.white h2 {font-size: 17px;}
+	.machineList ul li a, .storage-size-list button { font-size: 12px;}
+
+	.leftIcon {margin: 0 0 0 144px;}
+	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
 }
 
 
@@ -146,7 +150,7 @@ p { color:#77777b; }
 	.boxes p { width: 77% !important; }
 	.boxes.font { display: inline-block; width: 100%; margin: 20px 0;  }
 	.white h2 {font-size: 17px;}
-	.nameField {width: 100%;}
+	.nameField {width: 84%;}
 
 }
  @media (max-width: 768px) {
@@ -167,9 +171,12 @@ p { color:#77777b; }
 	.nameField textarea {font-size: 16px !important;width: 100% !important;}
 	.nameField input {width: 100%;font-size: 16px !important;}
 	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
-color: #FFF;}
-.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover {
-color: #000;}
+	color: #FFF;}
+	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover {
+	color: #000;}
+	.modal {width:100%;}
+	label + .controls {display: inherit !important;margin: 0 0 0 0;}
+	.sideNav {position: static;width: 100%;}
 }
 
 
@@ -215,7 +222,7 @@ ul{
 }
 table.table th{
 	background: #707070 !important;
-	font-size: 18px;
+	font-size: 12px;
 	color: #fff;
 	font-weight: normal;
 }
@@ -272,13 +279,13 @@ table.table th{
 border: 1px solid #77777b;
 outline: none;
 padding: 5px 5px;
-font-size: 20px;
+font-size: 17px !important;
 color: #77777b;
 width: 500px;
  float: right;}
  
  .tab-content>.tab-pane {padding: 29px 0;}
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;border-bottom: 3px solid transparent;}
 .nav-tabs {
 border-bottom: 1px solid #06a7e2;
 }
@@ -304,7 +311,7 @@ color: #FFF;}
 .username-text-container input { width: 99%; border: 1px solid #FFF; padding: 3px 12px; color: #333;}
 .table.users-table .header .btn  { background: #FFF; color: #333;}
 .icon-remove-sign { background: url(../img/images/x.png); width: 12px; height: 12px; display: block; margin: 5px 0 0 24px;}
-.table { font-size: 16px;}
+.table { font-size: 12px;}
 .control-label { float: left;
  margin: 0 14px 0 0;}
 .input-group-addon { background-color: #00a8e1; color: #FFF;  border-radius: 0 !important;}
@@ -597,3 +604,8 @@ background-color: #06a7e2;
 .justBorder {border-top: 1px solid #06a7e2;}
 .justOpen { padding: 0; border: 1px solid #06a7e2; border-top: 0; border-radius: 0 !important;}
 
+
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background: inherit; color: #000;}
+.grey .panel-body ul {padding: 0 0 0 15px; }
+.grey .panel-body ul li {margin: 5px 0; }
+.grey .panel-body {padding: 5px 15px; }
