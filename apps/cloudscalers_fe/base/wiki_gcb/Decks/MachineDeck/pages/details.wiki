@@ -166,12 +166,11 @@ h2 { float: left;  }
                             <script type="text/ng-template" id="destroyMachineDialog.html">
                                 <form name="destroyform" ng-submit="cancelDestroy()">
                                     <div class="modal-header">
-                                        <h3>Destroy machine bucket?</h3>
+                                        <h3>Destroy machine?</h3>
                                     </div>
                                     <div class="modal-body">
                                         <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-                                        After destroying a machine bucket, <br/>
-                                        all data and will be lost and the ip is released.
+                                        After destroying a machine all data is lost.
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn ok" ng-click="ok()">Ok</button>
@@ -208,7 +207,7 @@ h2 { float: left;  }
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
-                    The machine bucket is not running.
+                    The machine is not running.
                 </div>
 				<div novncwindow connectioninfo="novnc_connectioninfo">
 		</div>

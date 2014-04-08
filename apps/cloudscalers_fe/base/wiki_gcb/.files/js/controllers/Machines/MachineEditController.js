@@ -115,7 +115,7 @@ angular.module('cloudscalers.controllers')
         $scope.createSnapshot = function() {
 
         	if ($scope.machine.status != "RUNNING"){
-        		$alert("A snapshot can only be taken from a running machine bucket.");
+        		$alert("A snapshot can only be taken from a running machine.");
         		return;
         	}
         	
@@ -143,7 +143,7 @@ angular.module('cloudscalers.controllers')
         $scope.rollbackSnapshot = function(snapshot) {
 
         	if ($scope.machine.status != "HALTED"){
-        		$alert("A snapshot can only be rolled back to a stopped machine bucket.");
+        		$alert("A snapshot can only be rolled back to a stopped machine.");
         		return;
         	}
 
@@ -194,7 +194,7 @@ angular.module('cloudscalers.controllers')
         $scope.cloneMachine = function() {
 
         	if ($scope.machine.status != "HALTED"){
-        		$alert("A clone can only be taken from a stopped machine bucket.");
+        		$alert("A clone can only be taken from a stopped machine.");
         		return;
         	}
     		var modalInstance = $modal.open({
