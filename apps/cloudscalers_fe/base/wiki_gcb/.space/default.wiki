@@ -187,6 +187,41 @@
     </div>
 
     <div class="main white" style="position: relative;">
+
+      <!-- static right nav -->
+  <div class="sideNav">
+    <ul style="padding-left: 0;">
+      <li class="header blue">
+        <a href="../$$space/MachineDeck">Machine Deck <span>1</span></a>
+        <ul class="body" ng-class="getClass('../$$space/MachineDeck')">
+          <li>
+            <a ng-class="getClass('../$$space/MachineDeck')" href="../$$space/MachineDeck">My Machines</a>
+          </li>
+          <li>
+            <a ng-class="getClass('../$$space/MachineDeck?singlebutton=#/new')" href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header green">
+        <a href="../$$space/NetworkDeck">Network Deck <span>2</span></a>
+        <ul class="body" ng-class="getClass('../$$space/NetworkDeck')">
+          <li>
+            <a ng-class="getClass('../$$space/NetworkDeck')" href="../$$space/NetworkDeck">My Networks</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header orange">
+        <a href="../$$space/StorageDeck">Storage Deck <span>3</span></a>
+        <ul class="body" ng-class="getClass('../$$space/StorageDeck')">
+          <li>
+            <a ng-class="getClass('../$$space/StorageDeck')" href="../$$space/StorageDeck">My Storages</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <!-- end of nav-->
+
         <div class="main-inner">
 
             <div class="container">
@@ -241,41 +276,7 @@ h2. loading
 @divend
 @divend
 @divend
-{{html:
-      <!-- static right nav -->
-  <div class="sideNav">
-    <ul style="padding-left: 0;">
-      <li class="header blue">
-        <a href="../$$space/MachineDeck">Machine Deck <span>1</span></a>
-        <ul class="body" ng-class="getClass('../$$space/MachineDeck')">
-          <li>
-            <a ng-class="getClass('../$$space/MachineDeck')" href="../$$space/MachineDeck">My Machines</a>
-          </li>
-          <li>
-            <a ng-class="getClass('../$$space/MachineDeck?singlebutton=#/new')" href="../$$space/MachineDeck?singlebutton=#/new">Create Machine</a>
-          </li>
-        </ul>
-      </li>
-      <li class="header green">
-        <a href="../$$space/NetworkDeck">Network Deck <span>2</span></a>
-        <ul class="body" ng-class="getClass('../$$space/NetworkDeck')">
-          <li>
-            <a ng-class="getClass('../$$space/NetworkDeck')" href="../$$space/NetworkDeck">My Networks</a>
-          </li>
-        </ul>
-      </li>
-      <li class="header orange">
-        <a href="../$$space/StorageDeck">Storage Deck <span>3</span></a>
-        <ul class="body" ng-class="getClass('../$$space/StorageDeck')">
-          <li>
-            <a ng-class="getClass('../$$space/StorageDeck')" href="../$$space/StorageDeck">My Storages</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-  <!-- end of nav-->
-}}
+
 @divend
 @divend
 
