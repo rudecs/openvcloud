@@ -25,7 +25,7 @@ angular.module('cloudscalers.controllers')
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
                 if ($scope.signUpResult.success) {
-                    LoadingDialog.show('Creating account', 1000).then(function() {
+                    LoadingDialog.show('Creating account', 100000000).then(function() {
                         $scope.login();
                     });
                 }
