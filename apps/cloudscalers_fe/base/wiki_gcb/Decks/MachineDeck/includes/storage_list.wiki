@@ -1,4 +1,4 @@
-<ul class="storage-size-list span12">
+<ul class="storage-size-list">
  <li>
     <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(10) ng-model="machine.disksize" btn-radio="10">
       10GB at SSD speed<br>0 USD/month

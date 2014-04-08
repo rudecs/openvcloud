@@ -52,7 +52,7 @@ h1. Create Machine
     <hr>
     <div>
         <h2>Increase disk size to:</h2>
-        <div class="controls container" >
+        <div class="machineList" >
             {{include:storage_list}}
         </div>
     </div>

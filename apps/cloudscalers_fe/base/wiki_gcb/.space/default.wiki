@@ -193,7 +193,7 @@
                 <div class="row">
 
 }}
-@col 12
+@col 10
 
 
 {{html:
@@ -227,7 +227,7 @@
 
 {{div2:class=loader | style=display: none }}
 h2. loading
-!dots_2.gif!
+!/$$space/.files/img/images/dots_2.gif! 
 {{div2}}
 {{div2:class=loading | style=display: none}} {{div2}}
 
