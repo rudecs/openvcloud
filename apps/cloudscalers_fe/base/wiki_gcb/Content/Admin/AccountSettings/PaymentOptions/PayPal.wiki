@@ -1,0 +1,6 @@
+<a class="btn btn-small"  ng-click="payWithPayPal()">
+                                <img src="/$$space/.files/img/payment/paypal_logo.gif" alt="PayPal" style="
+                                        height: 20px;
+                                        width: 90px;
+                                        padding: 3px;"/>
+                            </a><br/>
