@@ -311,6 +311,9 @@ table.table th{
     opacity: 0.9;
 
 }
+.primaryMine.btn-primary[disabled]{
+	color: #0087b9;
+}
 /*end of new style*/
 
 
