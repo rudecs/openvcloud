@@ -282,6 +282,9 @@ table.table th{
 .mTxt{
 	font-size: 12px;
 }
+h3, .h3{
+	font-size: 18px;
+}
 .user-name{
 	color: #fff;
 	margin-top: 5px;
@@ -415,7 +418,7 @@ color: #FFF;}
     display: inline-block;
     border-bottom: 1px solid #77777b;
 }
-.list h5 {font-size: 16px; color: #77777b;}
+.list h5 {font-size: 14px; color: #77777b;}
 .list { padding-left: 10px;}
 .dropdown.noPad.open .dropdown-toggle, .dropdown.open > a { background: transparent !important; color: #000 !important; }
 .dropdown.noPad.open .dropdown-toggle:hover, .dropdown.open > a { background: transparent !important; color: #000 !important; }
