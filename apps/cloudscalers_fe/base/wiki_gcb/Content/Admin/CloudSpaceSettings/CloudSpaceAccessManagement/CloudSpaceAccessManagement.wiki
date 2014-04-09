@@ -1,6 +1,3 @@
-h1. Access Management
-
-
 {{html:
 <form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController">
     <table class="table users-table">

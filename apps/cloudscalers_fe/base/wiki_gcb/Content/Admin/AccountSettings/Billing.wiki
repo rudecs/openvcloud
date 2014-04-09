@@ -1,12 +1,7 @@
-@usedefault
-h2. Credit
-{{html:  <hr>
+{{html:
 
 
 <div ng-controller="BillingController">
- }}
-
-{{html:
 
 <div class="row" style="height: 100%;">
     <div class="row" style="height: 30%;" >
@@ -32,9 +27,9 @@ h2. Credit
 {{include:PayPal}}
 {{include:CryptoPayment}}
 {{html:
-                    		
-                            
-                            
+
+
+
                     </div>
                 </div>
             </form>

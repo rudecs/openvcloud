@@ -13,9 +13,9 @@ textarea {
 	font-family: 'Conv_Gotham-Book';
 }
 .navbar-search .search-query {
- 
+
   font-family: 'Conv_Gotham-Book';
-  
+
 }
 
 .jumbotron { background-color: initial; }
@@ -134,7 +134,7 @@ p { color:#77777b; }
 	.boxes p { width: 255px !important; }
 	.mainText {font-size: 40px !important;}
 	.nameField {width: 80%;}
-	.white h2 {font-size: 12px;}
+	.white h2 {font-size: 18px;}
 	.machineList ul li a, .storage-size-list button { font-size: 12px; font-weight: normal;}
 	.leftIcon {margin: 0 0 0 144px;}
 	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
@@ -146,7 +146,7 @@ p { color:#77777b; }
  	.white h1 {font-size: 24px;}
 	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {font-size: 12px !important;}
 	.nav-tabs>li>a { font-size: 12px !important;}
-	.nav-tabs>li>a:hover {border-color: #eee #eee #ddd;border-bottom: 2px;}	
+	.nav-tabs>li>a:hover {border-color: #eee #eee #ddd;border-bottom: 2px;}
 	.mainButton {padding: 7px 10px !important;font-size: 12px !important;}
 	.btn.btn-info.btn-large {padding: 7px 10px !important;font-size: 12px !important;}
 	.midFooter ul li a {font-size: 12px;}
@@ -227,10 +227,10 @@ p { color:#77777b; }
 .navbar { margin-bottom: 0; border-radius: 0; }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: #000; }
 .accordionInside {min-width: 425px;box-shadow: none;}
-.noPad .dropdown-menu { padding: 0; border: 2px solid #00a8e1; border-top: 0 !important; border-radius: 0;}	
+.noPad .dropdown-menu { padding: 0; border: 2px solid #00a8e1; border-top: 0 !important; border-radius: 0;}
 
 .grey h4 > a { background: #BEE4F2; padding: 14px 16px;}
-.grey a { color: #4f4f4f; font-family: 'Conv_Gotham-Book';}	
+.grey a { color: #4f4f4f; font-family: 'Conv_Gotham-Book';}
 .grey a:hover{
 	color: #06a7e2;
 }
@@ -297,10 +297,10 @@ table.table th{
 	display: block;
 }
 .loader   {
-    
+
     left: 50%;
-    
- 	
+
+
     margin-left: -250px;
     margin-top: -200px;
     padding: 10px 40px;
@@ -308,8 +308,8 @@ table.table th{
     top: 50%;
     min-width: 200px;
     z-index: 10;
-    
- 	
+
+
 }
 .loader img  {
    border-radius: 10px 10px 10px 10px;
@@ -358,7 +358,7 @@ font-size: 17px !important;
 color: #77777b;
 width: 500px;
  float: right;}
- 
+
  .tab-content>.tab-pane {padding: 29px 0;}
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;border-bottom: 3px solid transparent;}
 .nav-tabs {
@@ -374,7 +374,7 @@ text-decoration: none;
 
 .mainButton {
     background-color: #06a7e2;
- 
+
     padding: 10px 20px;
     font-size: 16px;
 }
@@ -393,7 +393,7 @@ color: #FFF;}
 .form-control.ng-pristine.ng-valid.ng-valid-number { border-radius: 0 !important; }
 .control-group {
     margin: 15px 0;
- 
+
     display: inline-block;
     width: 100%;
     color: #666;
@@ -404,7 +404,7 @@ color: #FFF;}
 
 .list li {
     clear: both;
- 
+
     width: 100%;
     display: inline-block;
     border-bottom: 1px solid #77777b;
@@ -431,7 +431,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', end
 .loginField { clear: both; display: inline-block; width: 100%; margin: 8px 0;}
 .inputLogin {
     width: 100%;
- 
+
     background-color: transparent !important;
     border: 0 !important;
     border-bottom: 1px solid #FFF !important;
@@ -501,7 +501,7 @@ border: 0 !important;text-shadow: none;
 }
 
 
-.defaultMine { 
+.defaultMine {
 background: #444444 !important;
     color: #FFF;
 	-webkit-border-radius: 5px;
@@ -538,12 +538,12 @@ padding: 10px 0!important;text-shadow: none;
 /*end of remove in imporovemnts*/
 
 .loginFieldName2 { font-size: 16px; width: 130px; text-align: left; margin-right: 10px;}
-.signUpForm {} 
+.signUpForm {}
 .signUpForm .inputWrap {width: 73%;}
 .signUpForm .inputWrap .inputLogin {font-size: 16px !important;}
 .mrs {
     text-align: center;
- 
+
     width: 100%;
     display: inline-block;
     margin: 10px 0;
@@ -690,22 +690,22 @@ background-color: #06a7e2;
 
 .loader1 {
   display: block;
-	float: left; 
+	float: left;
   margin: 0 1px 0 0;
 }
 
 canvas {
 	display: block;
-  
+
 	float: left;
-  
+
   /* uncomment to test overlay */
-  
+
   /*
   position: absolute;
   left: 0;
   opacity: .5;
   top: 0;
-  */  
-  
+  */
+
 }
