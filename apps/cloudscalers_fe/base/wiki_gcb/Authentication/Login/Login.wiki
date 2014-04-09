@@ -23,7 +23,7 @@
                     <div class="loginField">
                         <label class="loginFieldName" for="password">Password:</label>
                         <div class="inputWrap">
-                            <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password" autofill="autofill"/>
+                            <input class="inputLogin" type="password" id="password_field" name="" value=""  ng-model="user.password" autofill="autofill"/>
                         </div>
                     </div>
                  </div>

@@ -276,6 +276,15 @@ table.table th{
 .right{
 	float: right;
 }
+.mtl{
+	margin-top: 20px;
+}
+.mTxt{
+	font-size: 12px;
+}
+h3, .h3{
+	font-size: 18px;
+}
 .user-name{
 	color: #fff;
 	margin-top: 5px;
@@ -409,11 +418,12 @@ color: #FFF;}
     display: inline-block;
     border-bottom: 1px solid #77777b;
 }
-.list h5 {font-size: 16px; color: #77777b;}
+.list h5 {font-size: 14px; color: #77777b;}
 .list { padding-left: 10px;}
 .dropdown.noPad.open .dropdown-toggle, .dropdown.open > a { background: transparent !important; color: #000 !important; }
 .dropdown.noPad.open .dropdown-toggle:hover, .dropdown.open > a { background: transparent !important; color: #000 !important; }
 .span4.actions { border-left: 1px solid #77777b;}
+.span4.actions .actions{ padding-left: 5px; }
 .create-cloudspace:hover { color: initial !important;  }
 
 .create-cloudspace + .icon-faq { background: url(../img/images/ques.png); width: 22px !important; height: 21px; margin: 7px 11px 7px; display: inline-block; float: right;}
