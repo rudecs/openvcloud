@@ -1,11 +1,11 @@
 
 h1. Manage Machine
 {{cssstyle
-h2 { float: left;  }
+h1 { float: left; margin-bottom: 20px; }
 }}
 {{html:
-<a ng-click="refreshPage()" class="refresh-page mtl right">
-    <i class="fa fa-refresh mrs"></i>
+<a ng-click="refreshPage()" class="refresh-page mtl right mTxt">
+    <i class="fa fa-refresh"></i>
     Refresh
 </a>
 <tabset style="clear:both;">
