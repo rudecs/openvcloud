@@ -4,7 +4,7 @@
 <div class="account-container stacked" ng-app="cloudscalers" ng-controller="SessionController">
     <div class="content clearfix padding">
     <div class="login-symbol">
-        <form ng-submit="login()" autocomplete="off">
+        <form ng-submit="login()">
             <h1>Sign In</h1>
 
             <div class="login-fields">
@@ -15,7 +15,7 @@
                     <div class="loginField">
                         <label class="loginFieldName">Username:</label>
                         <div class="inputWrap">
-                            <input type="text" class="inputLogin ng-pristine ng-valid" id="username" name="username" value=""  ng-model="user.username" autofill="autofill"/>
+                            <input type="text" class="inputLogin" id="username" name="username" value=""  ng-model="user.username" autofill="autofill"/>
                         </div>
                     </div>
                  </div>
@@ -23,7 +23,6 @@
                     <div class="loginField">
                         <label class="loginFieldName" for="password">Password:</label>
                         <div class="inputWrap">
-                            
                             <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password" autofill="autofill"/>
                         </div>
                     </div>

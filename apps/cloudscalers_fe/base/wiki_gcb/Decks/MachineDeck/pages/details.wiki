@@ -68,7 +68,7 @@ h2 { float: left;  }
                         </li>
                     </ul>
                 </div>
-                <div class="span3 actions">
+                <div class="span4 actions">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
                     <ul class="actions">
 

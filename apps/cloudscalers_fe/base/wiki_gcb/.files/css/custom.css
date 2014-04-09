@@ -339,8 +339,9 @@ table.table th{
     opacity: 0.9;
 
 }
-
-
+.primaryMine.btn-primary[disabled]{
+	color: #0087b9;
+}
 loaderWhite { background: #FFF;}
 /*end of new style*/
 
@@ -412,7 +413,7 @@ color: #FFF;}
 .list { padding-left: 10px;}
 .dropdown.noPad.open .dropdown-toggle, .dropdown.open > a { background: transparent !important; color: #000 !important; }
 .dropdown.noPad.open .dropdown-toggle:hover, .dropdown.open > a { background: transparent !important; color: #000 !important; }
-.span3.actions { border-left: 1px solid #77777b; margin: 0 0 0 23px; padding-left: 35px;}
+.span4.actions { border-left: 1px solid #77777b;}
 .create-cloudspace:hover { color: initial !important;  }
 
 .create-cloudspace + .icon-faq { background: url(../img/images/ques.png); width: 22px !important; height: 21px; margin: 7px 11px 7px; display: inline-block; float: right;}

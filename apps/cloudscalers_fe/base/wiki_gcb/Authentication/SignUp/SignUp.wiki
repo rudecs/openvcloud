@@ -54,13 +54,7 @@
                 </div>
                 </div>
             </div>
-
-
-
-
-
-            
-              <input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" ng-disabled="!canSignUp btn btn-primary btn-lg btn-block primaryMine" value="Sign Up" />
+              <input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" ng-disabled="!canSignUp" value="Sign Up" />
 
               <div class="center txt-right mtm mTxt">
           <span class="mrs">Already a member?</span>
