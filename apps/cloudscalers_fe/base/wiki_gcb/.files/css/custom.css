@@ -29,7 +29,7 @@ textarea {
 .mainText { font-size: 60px !important; color: #FFF; }
 /*.marginText {margin: 0 0 0 145px;}*/
 .arrow { font-family: 'maven_pro_light200'; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
-.arrow { color: #06a7e2; font-family: 'maven_pro_light200'; }
+.arrow { color: #06a7e2; font-family: 'maven_pro_light200'; font-size: 24px;}
  @media (min-width: 992px) {
 .marginText { margin: 0 0 0 145px; }
 }
@@ -46,7 +46,7 @@ textarea {
 .color3, .color4 { margin: 50px 0 0 0; }
 .color3 { clear: left; }
 footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
-.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
+.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; background-size: 900px auto;}
 .midFooter { padding: 20px 0; min-height: 90px; border-bottom: 1px solid #fff; display: block; }
 .midFooter ul li { float: left; margin: 0 15px; }
 .midFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 16px; }
@@ -54,9 +54,6 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .bottomFooter { min-height: 80px; }
 .nextBold { font-weight: bold; }
 .nextBold li a { font-size: 14px !important; }
-@media (min-width: 1290px) {
-footer .container { width: 1090px; }
-}
 .second-list { list-style: none; float: right; margin: 12px 0 0 0; }
 .second-list li { margin: 0 5px !important; }
 .bottomFooter .first-list li { list-style: none; float: left; padding: 0 16px; background: url(../img/images/seperat.png) no-repeat right 50%; }
@@ -132,15 +129,42 @@ p { color:#77777b; }
 
 
 
- @media (max-width: 1290px) {
-	.boxes p {width: 196px !important;}
-	.mainText {font-size: 52px !important;}
+ @media (max-width: 1290px)  {
+ 	footer .container { width: 950px; }
+	.boxes p { width: 255px !important; }
+	.mainText {font-size: 40px !important;}
 	.nameField {width: 80%;}
-	.white h2 {font-size: 17px;}
-	.machineList ul li a, .storage-size-list button { font-size: 12px;}
-
+	.white h2 {font-size: 12px;}
+	.machineList ul li a, .storage-size-list button { font-size: 12px; font-weight: normal;}
 	.leftIcon {margin: 0 0 0 144px;}
 	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
+	.logo img { width: 240px; height: auto;}
+	.signUp {font-size: 10px;}
+	.navbar-default .navbar-nav>li>a {font-size: 12px !important;}
+	.navbar-nav>li>a {padding-top: 5px;padding-bottom: 5px;}
+	.navbar.navbar-default {min-height: 20px; }
+ 	.white h1 {font-size: 24px;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {font-size: 12px !important;}
+	.nav-tabs>li>a { font-size: 12px !important;}
+	.nav-tabs>li>a:hover {border-color: #eee #eee #ddd;border-bottom: 2px;}	
+	.mainButton {padding: 7px 10px !important;font-size: 12px !important;}
+	.btn.btn-info.btn-large {padding: 7px 10px !important;font-size: 12px !important;}
+	.midFooter ul li a {font-size: 12px;}
+	.bottomFooter .first-list li a {font-size: 12px; }
+	.myNav ul li a { font-size: 17px; background-size: 11px auto !important;}
+	.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}
+	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
+	.navbar-right.clearR {margin: 33px 0 0 0;}
+	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
+	.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}
+	.marginText {margin: 0 0 0 62px;}
+	body {background-size: 1290px auto;}
+	.boxes img {width: 100px;}
+	.white ul li {font-size: 12px !important;line-height: 30px;}
+	h4, .h4 {font-size: 18px;font-weight: bold; }
+	.sideNav .header a {text-align: center;font-size: 12px !important;}
+	.sideNav .header > a {font-size: 13px !important; }
+	.msg.alert.alert-warning p {font-size: 12px ;line-height: 12px;}
 }
 
 
@@ -151,6 +175,7 @@ p { color:#77777b; }
 	.boxes.font { display: inline-block; width: 100%; margin: 20px 0;  }
 	.white h2 {font-size: 17px;}
 	.nameField {width: 84%;}
+	footer .container {width: auto;}
 
 }
  @media (max-width: 768px) {
@@ -177,6 +202,9 @@ p { color:#77777b; }
 	.modal {width:100%;}
 	label + .controls {display: inherit !important;margin: 0 0 0 0;}
 	.sideNav {position: static;width: 100%;}
+	footer .container {width: auto;}
+	.marginText {margin-left: 0px; }
+	.jumbotron p {font-size: 31px !important;}
 }
 
 

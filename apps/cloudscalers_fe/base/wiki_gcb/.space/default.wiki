@@ -477,5 +477,5 @@ setInterval(loop, 16);
     </script>
 
 
-    </script>
+  
 }}
