@@ -1,8 +1,9 @@
-
-                            <a class="btn btn-small"  ng-click="payWithBitcoin()">
-                                <img src="/$$space/.files/img/payment/Bitcoin-logo-with-text.png" alt="Bitcoin" style="
-                                        height: 20px;
-                                        width: 90px;
+{{html:
+                            <a class="btn btn-small"  ng-click="payWithBitcoin()" style="margin-top: 4px;border-radius: 4px; padding-top: 6px;padding-left: 7px;padding-right: 10px;">
+                                <img src="/$$space/.files/img/payment/Bitcoin-logo-with-text.png" alt="Bitcoin"
+                                style="
+                                        height: 22px;
+                                        width: 85px;
                                         padding: 3px;"/>
                             </a><br/>
 
@@ -39,7 +40,7 @@
         </div>
     </script>
 
-                            <a style="margin-top: 5px;" class="btn btn-small" ng-click="payWithLitecoin()">
+                            <a class="btn btn-small" ng-click="payWithLitecoin()" style="margin-top: 4px;border-radius: 4px; padding-top: 4px;padding-left: 6px;padding-right: 6px;">
                                 <img src="/$$space/.files/img/payment/Litecoin-logo-with-text.png" alt="Litecoin" style="
                                         height: 24px;
                                         width: 90px;
@@ -81,3 +82,4 @@
             <button class="btn btn-primary" ng-click="ok()">OK</button>
         </div>
     </script>
+}}
