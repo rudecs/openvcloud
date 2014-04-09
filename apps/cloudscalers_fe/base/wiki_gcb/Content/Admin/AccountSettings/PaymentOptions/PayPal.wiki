@@ -1,6 +1,13 @@
-<a class="btn btn-small"  ng-click="payWithPayPal()">
+{{html:
+                            <a class="btn btn-small"  ng-click="payWithPayPal()" style="margin-top: 4px;border-radius: 4px; padding-top: 4px;padding-left: 6px;padding-right: 6px;">
                                 <img src="/$$space/.files/img/payment/paypal_logo.gif" alt="PayPal" style="
-                                        height: 20px;
-                                        width: 90px;
-                                        padding: 3px;"/>
+                                        height: 40px;
+                                        width: 160px;
+                                        padding: 5px;
+                                        margin-right: -65px;
+                                        margin-left: -5px;
+                                        margin-top: -5px;
+                                        margin-bottom: -10px;"
+                                    />
                             </a><br/>
+}}
