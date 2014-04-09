@@ -1,32 +1,21 @@
 {{html:
 	<footer class="font">
 	    <div class="container">
-	        <div class="topFooter"></div>
-	        <div class="midFooter">
-	            <div class="col-md-6">
-	                <ul class="first-list">
-	                    <li><a href="/$$space/UnifiedCloud">Why</a></li>
-	                    <li><a href="/$$space/Contact">Contact</a></li>
-	                </ul>
-	            </div>
-	            <div class="col-md-6">
-	                <!-- <ul class="second-list">
-	                    <li><a href="#">Follow Mothership1</a></li>
-	                    <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
-	                    <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
-	                    <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
-	                </ul> -->
-	            </div>
-	        </div>
-	        <div class="bottomFooter">
-	            <div class="col-md-12">
+					<div class="midFooter">
+							<div class="col-md-6"></div>
+					</div>
+					<div class="bottomFooter">
+	            <div class="col-md-8">
 	                <ul class="first-list ">
-	                    <li><a href="#">Copyright © 2014 Mothership1</a></li>
-	                    <li><a href="/$$space/">Mothership1</a></li>                        
+	                    <li><a href="/$$space/">Copyright © 2014 Mothership1</a></li>
 	                </ul>
 	            </div>
+								<div class="col-md-4">
+										<ul class="second-list">
+											<li><a href="/$$space/Contact">Contact</a></li>
+										</ul>
+								</div>
 	        </div>
 	    </div>
 	</footer>
 }}
-	
