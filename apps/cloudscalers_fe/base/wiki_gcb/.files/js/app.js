@@ -66,12 +66,7 @@ cloudscalers.factory('$ErrorResponseAlert',function($alert){
             $alert("An unexpected error has occurred");
         }
         else{
-            if(reason.data != undefined){
-                $alert(reason.data);
-            }
-            else{
-                $alert(reason);
-            }
+            $alert(reason.data);
         }
     }
 });

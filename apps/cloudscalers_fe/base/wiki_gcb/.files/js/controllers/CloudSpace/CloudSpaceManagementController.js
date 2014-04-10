@@ -14,10 +14,10 @@ angular.module('cloudscalers.controllers')
                 resolve: {
                 }
             });
-            
+
             modalInstance.result.then(function (result) {
         		LoadingDialog.show('Deleting cloudspace');
-                CloudSpace.delete($scope.currentSpace.id, $scope.currentSpace.accountId)
+                CloudSpace.delete($scope.currentSpace.id)
                     .then(function() {
                         $timeout(function(){
                             $scope.cloudspaces.splice(_.where($scope.cloudspaces, {id: $scope.currentSpace.id, accountId: $scope.currentSpace.accountId}), 1);

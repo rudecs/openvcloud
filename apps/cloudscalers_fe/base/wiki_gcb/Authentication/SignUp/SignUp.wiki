@@ -11,21 +11,22 @@
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
                 <div class="field">
-                    <label>Username:</label>
+                    <label for="username">Username:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-user"></i></span>
-                    	<input type="text" value="" name="" placeholder="Username" ng-model="user.username" />
+                    	<input type="text" id="username" name="username" value="" placeholder="Username" ng-model="user.username" />
 					</div>
                 </div>
                 <div class="field">
-                    <label>Email address:</label>
+                    <label for="username">Email address:</label>
                      <div class="input-prepend">
   						<span class="add-on"><i class="icon-envelope"></i></span>
-                    	<input type="email" value="" name="" placeholder="Email address" ng-model="email" />
+                    	<input type="text" id="email" value="" placeholder="Email address" ng-model="email" />
+                      <input style="display: none;" type="text" id="username" value="" placeholder="Username" ng-model="user.username" />
  					</div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                     <label for="password">Password:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>
@@ -33,7 +34,7 @@
                    	</div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                     <label for="password">Password Confirmation:</label>
                     <div class="input-prepend">
   						<span class="add-on"><i class="icon-lock"></i></span>

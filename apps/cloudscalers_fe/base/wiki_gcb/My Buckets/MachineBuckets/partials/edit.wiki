@@ -86,6 +86,13 @@ h2 { float: left;  }
                             </a>
                         </li>
 
+                        <li ng-show="machine.status == 'RUNNING'">
+                            <a ng-click="pause()">
+                                <i class=" icon-pause"></i>
+                                Pause
+                            </a>
+                        </li>
+                        
                         <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                             <a ng-click="stop()">
                                 <i class="icon-stop "></i>
@@ -93,15 +100,8 @@ h2 { float: left;  }
                             </a>
                         </li>
 
-                        <li ng-show="machine.status == 'RUNNING'">
-                            <a ng-click="pause()">
-                                <i class=" icon-pause"></i>
-                                Pause
-                            </a>
-                        </li>
-
-                        <li ng-show="machine.locked == false">
-                            <a ng-click="createSnapshot()"> 
+                        <li>
+                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}"> 
                                 <i class="icon-camera"></i>
                                 Take Snapshot
                             </a>
@@ -126,39 +126,14 @@ h2 { float: left;  }
 
                         </li>
 
-                        <li ng-show="machine.locked == false">
-                            <a ng-click="destroy()">
-                                <i class=" icon-remove-circle"></i>
-                                Destroy
-                            </a>
-
-            <script type="text/ng-template" id="destroyMachineDialog.html"> 
-                            <form name="destroyform" ng-submit="cancelDestroy()">
-                                <div class="modal-header">
-                                    <h3>Destroy machine bucket?</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-                                    After destroying a machine bucket, <br/>
-                                    all data and will be lost and the ip is released.
-                                </div>
-                                 <div class="modal-footer">
-                                    <button type="button" class="btn ok" ng-click="ok()">Ok</button>
-                                    <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
-                                </div>
-                            </form>
-            </script>
-
-
-                        </li>
                         <li>
                             <a onclick="location.reload()">
                                 <i class="icon-undo"></i>
                                 Rebuild
                             </a>
                         </li>
-                        <li  ng-show="machine.locked == false">
-                            <a ng-click="createTemplate()">
+                        <li>
+                            <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
                                 <i class="icon-copy"></i>
                                 Create Template
                             </a>
@@ -182,6 +157,28 @@ h2 { float: left;  }
                                 <i class="icon-download"></i>
                                 Export
                             </a>
+                        </li>
+                        <li>
+                            <a ng-click="destroy()">
+                                <i class=" icon-remove-circle"></i>
+                                Destroy
+                            </a>
+                            <script type="text/ng-template" id="destroyMachineDialog.html"> 
+                                <form name="destroyform" ng-submit="cancelDestroy()">
+                                    <div class="modal-header">
+                                        <h3>Destroy machine bucket?</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+                                        After destroying a machine bucket, <br/>
+                                        all data and will be lost and the ip is released.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+                                        <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
+                                    </div>
+                                </form>
+                            </script>
                         </li>
                     </ul>
                 </div>

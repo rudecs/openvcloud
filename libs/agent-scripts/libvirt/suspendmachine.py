@@ -11,6 +11,8 @@ author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
 roles = ["*"]
+async = True
+queue = "hypervisor"
 
 
 def action(machineid, xml=None):

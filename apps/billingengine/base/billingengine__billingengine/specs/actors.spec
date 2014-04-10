@@ -10,7 +10,7 @@
 	    
 	method:updateBalance
 		"""
-		Updates the ballance for an account given the credit/debit transactions
+		Updates the balance for an account given the credit/debit transactions
 		"""
 		var:accountId int,, id of the account
     
