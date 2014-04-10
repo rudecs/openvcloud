@@ -96,7 +96,7 @@
 <footer class="font">
     <div class="container">
         <div class="topFooter"></div>
-        <div class="midFooter">
+        <!--<div class="midFooter">
             <div class="col-md-6">
                 <ul class="first-list">
                     <li><a href="/$$space/UnifiedCloud">Why</a></li>
@@ -111,16 +111,36 @@
                     <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
                 </ul>
             </div>
-        </div>
-        <div class="bottomFooter">
+        </div>-->
+        <!-- <div class="bottomFooter">
             <div class="col-md-12">
                 <ul class="first-list ">
                     <li><a href="#">Copyright © 2014 Mothership1</a></li>
                     <li><a href="/$$space/">Mothership1</a></li>                        
                 </ul>
             </div>
+        </div> -->
+        
+        <div class="bottomFooter">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-7">
+                <ul class="first-list ">
+                    <li><a href="/$$space/">Copyright © 2014 Mothership1</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <ul class="second-list">
+                    <li><a href="/$$space/Contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-1">
+                
+            </div>
+            </div>
         </div>
-    </div>
+
+    
 </footer>
 }}
 

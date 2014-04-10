@@ -35,7 +35,7 @@
 {{html:
 
 <script src="/$$space/.files/lib/angular-1.2.6/angular.min.js"></script>
-<div id="wrap" ng-app="cloudscalers" ng-controller="AuthenticatedSessionController">
+<div id="wrap" class="sticky" ng-app="cloudscalers" ng-controller="AuthenticatedSessionController">
 
 
     <script type="text/ng-template" id="myModalContent.html">
@@ -89,7 +89,7 @@
                       <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a> 
                     </h4>
                   </div>
-                  <div id="{[account.name | nospace]}" class="panel-collapse collapse in">
+                  <div id="{[account.name | nospace]}" class="panel-collapse collapse">
                     <div class="panel-body">
                         <ul>
                             <li ng-repeat="space in account.cloudspaces">

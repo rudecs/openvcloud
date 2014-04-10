@@ -15,7 +15,7 @@
                     <label class="loginFieldName loginFieldName2" for="username">Username:</label>
                     <div class="inputWrap">
   						
-                    	<input class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" />
+                    	<input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" />
 					       </div>
                 </div>
                 </div>

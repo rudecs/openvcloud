@@ -55,7 +55,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .nextBold li a { font-size: 14px !important; }
 .bottomFooter .first-list li { list-style: none; float: left; padding: 0 16px; background: url(../img/images/seperat.png) no-repeat right 50%; }
 .bottomFooter .second-list li { list-style: none; float: right; padding: 0 16px; background: url(../img/images/seperat.png) no-repeat right 50%; }
-.bottomFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 13px; }
+.bottomFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 16px; }
 .bottomFooter ul { margin-left: -65px; line-height: 39px; }
 .bottonFooter ul li {height: 40px;}
 .bottomFooter ul li:last-child { height: 40px; background: none; }
@@ -78,7 +78,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 30px 0 79px 0; }
-.white h1 { color: #06a7e2; font-size: 40px; font-family: 'maven_pro_light200'; font-weight: bold;}
+.white h1 { color: #06a7e2; font-size: 40px; font-family: 'maven_pro_light200'; font-weight: bold; margin-bottom: 30px;}
 .white h2 { color: #06a7e2; font-size: 17px; font-family: 'Conv_Gotham-Book'; }
 .white p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }
 .white ul li { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 30px; }
@@ -181,7 +181,16 @@ p { color:#77777b; }
 	
 	.arrow { font-size: 24px;}
 	.midFooter { padding: 0;}
+	.bottomFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 13px; }
 
+	table.table th, table.table td, table.table tbody th, table.table tbody td {font-size: 12px !important;}
+	.table.users-table .header .btn {font-size: 12px;padding: 3px 5px;}
+	.control-label { font-size: 12px;}
+	.form-control.ng-pristine.ng-valid.ng-valid-number { padding: 0 10px;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px;}
+	.nav-tabs>li>a {padding: 5px 10px !important;}
+	.nav-tabs { margin:  10p 0;}
+	.justBorder {padding: 4px 0 10px 39px;}
 }
 
 
@@ -194,8 +203,10 @@ p { color:#77777b; }
 	.nameField {width: 84%;}
 	footer .container {width: auto;}
 	.midFooter { padding: 0;}
-
+	.bottomFooter .col-md-1 {display: none;}
+	.bottomFooter .col-md-3 {margin: -47px 0 0 0;}
 }
+
  @media (max-width: 768px) {
 	.boxes p { width: 55% !important; }
 	.boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
@@ -224,6 +235,11 @@ p { color:#77777b; }
 	.marginText {margin-left: 0px; }
 	.jumbotron p {font-size: 31px !important;}
 	.midFooter { padding: 0;}
+	.bottomFooter .col-md-1 {display: none;}
+	.bottomFooter .col-md-3 {margin: -47px 0 0 0;}
+	.modal { width: 300px !important; left: 80% !important;}
+	.modal-footer button { font-size: 12px;}
+	.modal-header h2 {font-size: 15px; }
 }
 
 
@@ -273,7 +289,13 @@ table.table th{
 	font-size: 17px;
 	color: #fff;
 	font-weight: normal;
+	word-break: break-all;
 }
+table.table td{
+	
+	word-break: break-all;
+}
+
 .table-bordered{
 	border: 1px solid #c4c4c4;
 	color: #808083;
@@ -380,13 +402,13 @@ width: 500px;
  float: right;}
 
  .tab-content>.tab-pane {padding: 29px 0;}
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;border-bottom: 3px solid transparent;}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px;border-bottom: 3px solid transparent;padding-bottom: 9px;}
 .nav-tabs {
 border-bottom: 1px solid #06a7e2;
 }
 
 .nav-tabs>li>a { font-size: 17px; }
-.nav-tabs>li>a:hover { color: #06a7e2; background: #FFF;}
+.nav-tabs>li>a:hover { color: #06a7e2; background: #FFF; padding-bottom: 11px;}
 a {
 color: #06a7e2;
 text-decoration: none;
@@ -447,7 +469,7 @@ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%,rgba(255,255,255,0.6
 background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%,rgba(255,255,255,0.6) 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */}
 .content.clearfix.padding h1 { font-family: 'Conv_Gotham-Book'; font-size: 26px; font-weight: bold; color: #FFF; text-align: center; margin: 16px 0 24px 0;}
-.loginFieldName { color: #FFF; font-size: 19px; float: left; width: 113px;}
+.loginFieldName { color: #FFF; font-size: 19px; float: left; width: 113px; padding: 6px 0 0 0;}
 .loginField { clear: both; display: inline-block; width: 100%; margin: 8px 0;}
 .inputLogin {
     width: 100%;
@@ -459,7 +481,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', end
     border-radius: 0 !important;
     color: #FFF !important;
     font-size: 20px !important;
-    padding: 0px 0 7px 5px !important;
+    padding: 5px  0 7px 5px !important;
 }
 .inputWrap {
     float: left;
@@ -658,7 +680,7 @@ h1 { color: #06a7e2; font-size: 40px; font-family: 'maven_pro_light200'; font-we
 h2 { color: #06a7e2; font-size: 26px; font-family: 'Conv_Gotham-Book'; }
 /*p { color: #77777b; font-size: 16px; font-family: 'Conv_Gotham-Book'; line-height: 32px; }*/
 
-.modal-header h2 { margin: : 10px 0;}
+.modal-header h2 { margin: : 10px 0; font-size: 18px;}
 .label { color: #77777b;}
 
 
@@ -734,4 +756,89 @@ canvas {
 
 .navbar-nav>li>.dropdown-menu {border-color: #06a7e2;border-top: 0;}
 table.table td {font-size: 14px;}
+/*
+#inputId:-webkit-autofill {
+    background-color: white !important;
+    background-color: #000000 !important;
+background-image: none !important;
+}
 
+
+.inputLogin.ng-valid.ng-dirty.GINGER_SOFTWARE_control:-webkit-autofill {
+background-color: #000000 !important;
+background-image: none !important;
+}*/
+
+
+
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px white inset !important; /* Change the color to your own background color */
+    -webkit-text-fill-color: #333;
+    font-size: 19px !important;
+}
+ 
+input:-webkit-autofill:focus {
+    -webkit-box-shadow:0 0 0 50px white inset !important;
+    -webkit-text-fill-color: #333;
+    font-size: 19px !important;
+} 
+
+#swagger-ui-container .container {width: auto;}
+
+#swagger-ui-container h2 {font-size: 13px;}
+
+.toggleOperation { font-size: 13px;}
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options {margin: 0 10px 0 0;}
+/*
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content { background-color: #cdedf9; }
+*/
+
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content div.sandbox_header input.submit { padding: 0 10px; color: #fff;  background-color: #5bc0de;  border-color: #46b8da; display: inline-block;  margin-bottom: 0;  font-weight: 400;  text-align: center;  vertical-align: middle;  cursor: pointer;  background-image: none;  border: 1px solid transparent;  white-space: nowrap;  padding: 6px 12px;  font-size: 14px;  line-height: 1.42857143;  border-radius: 4px;  -webkit-user-select: none;  -moz-user-select: none;  -ms-user-select: none;  user-select: none;}
+
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options li:last-child, body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options li.last { padding: 0;}
+
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading h3 span.http_method a { background-color: #5bc0de;}
+
+body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content h4 { color: #06a7e2;}
+.docutils { width: 100%} 
+.docutils th, .docutils td  { padding: 5px;} 
+.section h3 { font-size: 17px;}
+/*
+#paymentbuttons img { width: 50px; height: auto;}*/
+
+.row-fluid.ng-pristine.ng-valid .ng-binding { display: inline-block;margin: 0 15px 0;}
+
+
+.modal-body.ng-scope { display: inline-block;width: 100%; }
+.modal-body.ng-scope > div { display: inline-block;width: 100%; }
+.row-fluid.ng-pristine.ng-valid { margin: 10px 0;}
+
+
+
+
+
+
+
+html, body {height: 100%;}
+
+.sticky {min-height: 100%; background-color: #FFF}
+
+#main {overflow:auto;
+	padding-bottom: 150px;}  /* must be same height as the footer */
+
+#footer {position: relative;
+	margin-top: -150px; /* negative value of footer height */
+	height: 150px;
+	clear:both;} 
+
+/*Opera Fix*/
+body:before {
+	content:"";
+	height:100%;
+	float:left;
+	width:0;
+	margin-top:-32767px;/
+}
+
+
+.sticky > .navbar.navbar-inverse.ng-scope > .subnavbar-inner { background: url(../img/images/bg.jpg) no-repeat center top #000;}
