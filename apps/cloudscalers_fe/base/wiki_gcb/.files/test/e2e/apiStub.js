@@ -584,22 +584,29 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 
     var portforwarding = [
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 8080, localPort: 80},
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 7070, localPort: 70},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 9090, localPort: 90},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 8080, localPort: 80},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 4040, localPort: 40},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 6060, localPort: 60},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 1010, localPort: 10},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 5050, localPort: 50},
+       {id: 1,ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 8080, localPort: 80},
+       {id: 2,ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
+       {id: 3,ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 7070, localPort: 70},
+       {id: 4,ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 9090, localPort: 90},
+       {id: 5,ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
+       {id: 6,ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 8080, localPort: 80},
+       {id: 7,ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
+       {id: 8,ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 4040, localPort: 40},
+       {id: 9,ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 6060, localPort: 60},
+       {id: 10,ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 1010, localPort: 10},
+       {id: 11,ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
+       {id: 12,ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 5050, localPort: 50},
     ];
-
-    $httpBackend.whenGET(/^\/portforwarding\/list.*/).respond(portforwarding);
-    $httpBackend.whenGET(/^\/portforwarding\/list\?ip=\d+.*/).respond(portforwarding);
+    $httpBackend.whenGET(/^\/portforwarding\/list.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        if(params.id == undefined){
+            return [200, portforwarding];
+        }else{
+            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            return[200, filteredPorts];
+        }
+    });
+    $httpBackend.whenGET(/^\/portforwarding\/list\?id=\d+.*/).respond(storages);
 
     $httpBackend.whenGET(/^\/commonports\/list.*/).respond([
         {port: '80', name: 'HTTP'},
@@ -617,6 +624,26 @@ defineApiStub = function ($httpBackend) {
             localPort: params.localPort
         });
         return [200, params.ip];
+    });
+
+    $httpBackend.whenGET(/^\/portforwarding\/update.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        for (var i = 0, l = portforwarding.length; i < l; i++) {
+            if (portforwarding[i].id === parseInt(params.id)) {
+                portforwarding[i].ip = params.ip;
+                portforwarding[i].puplicPort = params.puplicPort;
+                portforwarding[i].vmName = params.vmName;
+                portforwarding[i].localPort = params.localPort;
+                break;
+            }
+        }
+        return [200, portforwarding];
+    });
+
+    $httpBackend.whenGET(/^\/portforwarding\/delete.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1)
+        return [200, portforwarding];
     });
 };
 
