@@ -9,7 +9,7 @@ angular.module('cloudscalers.controllers')
             $scope.currentSpace = space;
             $scope.setCurrentAccount();
         };
-        
+
         $scope.setCurrentAccount = function(){
             if ($scope.currentSpace && $scope.accounts){
                 $scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
@@ -28,7 +28,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.loadSpaces();
-        
+
         $scope.$watch('cloudspaces', function(){
             if (!$scope.cloudspaces)
                 return;
@@ -37,28 +37,18 @@ angular.module('cloudscalers.controllers')
 
             $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
         }, true);
-        
+
         $scope.$watch('accounts', function(){
         	$scope.setCurrentAccount();
         });
-        
+
         $scope.logout = function() {
             User.logout();
-            
+
 			var uri = new URI($window.location);
 			uri.filename('');
 			uri.fragment('');
 			$window.location = uri.toString();
         };
 
-        var absUrl = $location.absUrl();
-        $scope.getClass = function(path) {
-            var path = path.split("../wiki_gcb/");
-            if(absUrl.indexOf(path[1]) != -1){
-                return "active"
-            }
-            else {
-              return ""
-            }
-        }
     }]);

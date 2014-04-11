@@ -1,5 +1,5 @@
 angular.module('cloudscalers.services')
-     .factory('NetworkBuckets',function ($http, $q) {
+     .factory('Networks',function ($http, $q) {
         return {
             listPortforwarding: function(id) {
                 if(encodeURIComponent(id) == "undefined"){
@@ -22,11 +22,11 @@ angular.module('cloudscalers.services')
                         }
                     );
                 }
-                
+
             },
             createPortforward: function(ip, puplicPort, vmName, localPort) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?ip=' + encodeURIComponent(ip) + "&puplicPort=" +
-                    encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" + 
+                    encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" +
                     encodeURIComponent(localPort)).then(
                         function(result){
                             return result;
@@ -38,7 +38,7 @@ angular.module('cloudscalers.services')
             },
             updatePortforward: function(id, ip, puplicPort, vmName, localPort) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?ip=' + encodeURIComponent(ip) + "&puplicPort=" +
-                    encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" + 
+                    encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" +
                     encodeURIComponent(localPort) + "&id=" + encodeURIComponent(id)).then(
                         function(result){
                             return result;

@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'NetworkBuckets', '$modal', '$timeout',
-        function ($scope, NetworkBuckets, $modal, $timeout) {
+    .controller('NetworkController', ['$scope', 'Networks', '$modal', '$timeout',
+        function ($scope, Networks, $modal, $timeout) {
             $scope.search = "";
             $scope.portforwardbyID = "";
             $scope.$watch('currentSpace.id',function(){
@@ -8,9 +8,8 @@ angular.module('cloudscalers.controllers')
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
                 }
             });
-            NetworkBuckets.listPortforwarding().then(function(data) {
+            Networks.listPortforwarding().then(function(data) {
                 $scope.portforwarding = data;
-                $scope.search = $scope.portforwarding[0];
             });
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
@@ -22,18 +21,18 @@ angular.module('cloudscalers.controllers')
                     // message: false,
                     statusMessage: ''
                 };
-                NetworkBuckets.commonports().then(function(data) {
+                Networks.commonports().then(function(data) {
                     $scope.commonports = data;
                 });
                 $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
                 };
-                
+
                 $scope.submit = function () {
-                    NetworkBuckets.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
+                    Networks.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
                         function (result) {
-                            $scope.portforwarding.push({ip: $scope.newRule.ip.ip, puplicPort: $scope.newRule.publicPort, 
+                            $scope.portforwarding.push({ip: $scope.newRule.ip.ip, puplicPort: $scope.newRule.publicPort,
                             vmName: $scope.newRule.VM.vmName, localPort: $scope.newRule.localPort});
                             $modalInstance.close({});
                         }
@@ -54,7 +53,7 @@ angular.module('cloudscalers.controllers')
             $scope.tableRowClicked = function (index) {
               var modalInstance = $modal.open({templateUrl: 'editPortForwardDialog.html', scope: $scope , resolve: {}});
               $scope.editRule = [];
-              NetworkBuckets.listPortforwarding(index.id).then(function(data) {
+              Networks.listPortforwarding(index.id).then(function(data) {
                 $scope.portforwardbyID = data;
                 $scope.editRule = {
                     id: $scope.portforwardbyID[0].id,
@@ -64,11 +63,11 @@ angular.module('cloudscalers.controllers')
                     localPort: $scope.portforwardbyID[0].localPort
                 };
               });
-              NetworkBuckets.commonports().then(function(data) {
+              Networks.commonports().then(function(data) {
                     $scope.commonports = data;
               });
               $scope.update = function () {
-                  NetworkBuckets.updatePortforward($scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM, $scope.editRule.localPort).then(
+                  Networks.updatePortforward($scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM, $scope.editRule.localPort).then(
                       function (result) {
                           $scope.portforwarding = result.data;
                           $scope.search = $scope.portforwarding[0];
@@ -77,12 +76,12 @@ angular.module('cloudscalers.controllers')
                           $scope.statusMessage = "Saved!";
                           $timeout(function() {
                               $scope.message = false;
-                          }, 3000); 
+                          }, 3000);
                       }
                   );
               };
               $scope.delete = function () {
-                  NetworkBuckets.deletePortforward($scope.editRule.id).then(
+                  Networks.deletePortforward($scope.editRule.id).then(
                       function (result) {
                           $scope.portforwarding = result.data;
                           $scope.search = $scope.portforwarding[0];
@@ -91,7 +90,7 @@ angular.module('cloudscalers.controllers')
                           $scope.statusMessage = "Removed!";
                           $timeout(function() {
                               $scope.message = false;
-                          }, 3000); 
+                          }, 3000);
                       }
                   );
               };
@@ -103,7 +102,7 @@ angular.module('cloudscalers.controllers')
                     $scope.editRule.localPort = $scope.editRule.commonPort.port;
                 };
             }
-            
+
         }
     ]).filter('groupBy', function(){
         return function(list, group_by) {
@@ -132,7 +131,7 @@ angular.module('cloudscalers.controllers')
         };
     }).filter('unique', function() {
        return function(collection, keyname) {
-          var output = [], 
+          var output = [],
               keys = [];
 
           angular.forEach(collection, function(item) {
@@ -150,14 +149,14 @@ angular.module('cloudscalers.controllers')
      require: 'ngModel',
      link: function(scope, element, attrs, modelCtrl) {
        modelCtrl.$parsers.push(function (inputValue) {
-           if (inputValue == undefined) return '' 
-           var transformedInput = inputValue.replace(/[^0-9]/g, ''); 
+           if (inputValue == undefined) return ''
+           var transformedInput = inputValue.replace(/[^0-9]/g, '');
            if (transformedInput!=inputValue) {
               modelCtrl.$setViewValue(transformedInput);
               modelCtrl.$render();
-           }         
+           }
 
-           return transformedInput;         
+           return transformedInput;
        });
      }
    };

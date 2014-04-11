@@ -11,4 +11,5 @@ The private virtual firewall provides tons of possibilities to offer more flexib
 		</div>
 	</div>
     <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
+		<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript"></script>
 }}

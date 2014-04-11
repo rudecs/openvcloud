@@ -116,4 +116,17 @@ angular.module('cloudscalers.directives', [])
             }
         };
     })
+		.directive('menuLinkActiveLocation',function($window) {
+			return {
+				restrict: 'A',
+				scope: {},
+				link: function(scope, element, attrs) {
+					var currentlocation = $window.location;
+					if (currentlocation.toString().search(attrs.menuLinkActiveLocation) > -1){
+							element.addClass('active');
+							element.parents('ul.body')[0].classList.add('active');
+						}
+				}
+			};
+		})
 ;
