@@ -17,7 +17,7 @@ h3. Start now and create your Machine
 {{html:
 
 <div id="tabbable">
-  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machines</h1>
+  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
     <fieldset>
 
