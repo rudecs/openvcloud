@@ -18,18 +18,18 @@ h3. Features
 
 {{html:
 <ul class="Features multi">
-   <li><i class="icon-play-circle"></i><span>Start/Stop/Pause Machine</span></li>
-   <li><i class="icon-bolt"></i><span>Automated Snapshotting</span></li>
-   <li><i class="icon-camera"></i><span>Take manual snapshot</span></li>
-   <li><i class="icon-reply"></i><span>Self-rollback snapshots</span></li>
-   <li><i class="icon-copy"></i><span>Clone machine</span></li>
-   <li><i class="icon-download"></i><span>Export machine</span></li>
-   <li><i class="icon-upload"></i><span>Import custom image</span></li>
-   <li><i class="icon-sitemap"></i><span>Virtual networking</span></li>
-   <li><i class="icon-desktop"></i><span>Console access from browser</span></li>
-   <li><i class="icon-search"></i><span>Built-in server monitoring</span></li>
-   <li><i class="icon-fullscreen"></i><span>Scale machine package up/down</span></li>
-   <li><i class="icon-plus-sign"></i><span>Add storage</span></li>
+   <li><i class="fa fa-play-circle"></i><span>Start/Stop/Pause Machine</span></li>
+   <li><i class="fa fa-bolt"></i><span>Automated Snapshotting</span></li>
+   <li><i class="fa fa-camera"></i><span>Take manual snapshot</span></li>
+   <li><i class="fa fa-reply"></i><span>Self-rollback snapshots</span></li>
+   <li><i class="fa fa-copy"></i><span>Clone machine</span></li>
+   <li><i class="fa fa-download"></i><span>Export machine</span></li>
+   <li><i class="fa fa-upload"></i><span>Import custom image</span></li>
+   <li><i class="fa fa-sitemap"></i><span>Virtual networking</span></li>
+   <li><i class="fa fa-desktop"></i><span>Console access from browser</span></li>
+   <li><i class="fa fa-search"></i><span>Built-in server monitoring</span></li>
+   <li><i class="fa fa-fullscreen"></i><span>Scale machine package up/down</span></li>
+   <li><i class="fa fa-plus-sign"></i><span>Add storage</span></li>
 </ul>
 
 }}

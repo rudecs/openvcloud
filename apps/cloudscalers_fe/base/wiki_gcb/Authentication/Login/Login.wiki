@@ -3,35 +3,41 @@
 {{html:
 <div class="account-container stacked" ng-app="cloudscalers" ng-controller="SessionController">
     <div class="content clearfix padding">
+    <div class="login-symbol">
         <form ng-submit="login()">
             <h1>Sign In</h1>
 
             <div class="login-fields">
 
-                <p>Sign in using your registered account:</p>
+                
                 <div class="alert alert-error ng-hide" ng-show="login_error">Please enter the correct username & password.</div>
                 <div class="field">
-                    <label for="username">Username:</label>
-                    <div class="input-prepend">
-  						<span class="add-on"><i class="icon-user"></i></span>
-                    	<input type="text" id="username" name="username" value="" placeholder="Username" ng-model="user.username" autofill="autofill"/>
-					</div>
-                </div>
-                <div class="field">
-                    <label for="password">Password:</label>
-                    <div class="input-prepend">
-  						<span class="add-on"><i class="icon-lock"></i></span>
-                        <input type="password" id="password_field" name="" value="" placeholder="Password" ng-model="user.password" autofill="autofill"/>
-                   	</div>
-                </div>
+                    <div class="loginField">
+                        <label class="loginFieldName">Username:</label>
+                        <div class="inputWrap">
+                            <input type="text"  class="inputLogin" id="username" name="username" value=""  ng-model="user.username" autofill="autofill"/>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="field">
+                    <div class="loginField">
+                        <label class="loginFieldName" for="password">Password:</label>
+                        <div class="inputWrap">
+                            <input class="inputLogin" type="password" id="password_field" name="" value=""  ng-model="user.password" autofill="autofill"/>
+                        </div>
+                    </div>
+                 </div>
+                
             </div>
 
-            <div class="login-actions">
-                <input type="submit" class="button btn  btn-primary btn-large" value="Login" />
-            </div>
-			<p class="sp"><span>Or</span></p> <hr>
-			<a class="btn long-btn" href="/$$space/SignUp">Sign Up</a>
+            
+                <input type="submit" class="btn btn-primary btn-lg btn-block primaryMine" value="Login" >
+            
+			<div class="sp"></div> 
+			<a href="/$$space/SignUp" class="btn btn-default btn-lg btn-block defaultMine">Sign Up</a>
+            
         </form>
+        </div>
     </div>
 </div>
 }}

@@ -1,20 +1,16 @@
-@template public
-@col 3
+h1. Mothership1 Revolutionary Cloud
 
-{{navigation}}
-
-@divend
-
-@col 9
-h2. vScalers' Revolutionary Cloud
-
-h3. Unified Cloud
+h2. Unified Cloud
 
 Looking at cloud computing, a lot of (dis)advantages are present in each of the currently available IaaS, PaaS, SaaS, Staas, DaaS,... solutions. In trying to be a complete cloud, providers keep adding features to their platform but being complete is hard and still, sticking to IaaS or PaaS or any of the others will never solve every problem. In the meantime their products get really complex while these added features don't even attract enough new customers to cover the costs of the development, let alone the TCO of them.
 
-vScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation: the vScalers' Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
+vScalers brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation:
 
-h3. Why vScalers?
+* The Desktop Bucket makes it easy for providing any application on any device using a single web portal.
+* Our Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
+* Storage Buckets provide you with a secure, distributed storage solution that is unique in its kind.
+
+h2. Why vScalers?
 
 So why choose for vScalers? Here our value proposition:
 
@@ -28,14 +24,10 @@ So why choose for vScalers? Here our value proposition:
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
 
-h3. Who is vScalers?
+h2. Who is vScalers?
 
 vScalers includes a team with a proven track record in datacentres and cloud computing as well as a very well built out capital funding network and legal and financial services.
 
 What makes us so different is that we bring scale, reliability and cost advantages to customers without pushing them in a specific technology direction.
 
 The team offers a counterpoint to the hype surrounding cloud computing by advocating that organisations need to challenge the existing best of breed technologies. Together, this tight knit group has spent the last decade focusing on datacentre and utility computing with the aim of bringing customers truly green, highly available and agile IT platforms. To reach this goal, the team has set about redesigning many of the vital parts of the IT ecosystem for the cloud capable datacentre environment.
-
-
-
-@divend

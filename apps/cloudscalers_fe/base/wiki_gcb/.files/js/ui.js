@@ -14,7 +14,7 @@ var Application = function () {
 	
 	function init () {
 		
-		enableBackToTop ();
+		// enableBackToTop ();
 		enableLightbox ();
 		enableCirque ();
 		enableEnhancedAccordion ();
@@ -38,31 +38,31 @@ var Application = function () {
 		}
 	}
 
-	function enableBackToTop () {
-		var backToTop = $('<a>', { id: 'back-to-top', href: '#top' });
-		var icon = $('<i>', { class: 'icon-chevron-up' });
+	// function enableBackToTop () {
+	// 	var backToTop = $('<a>', { id: 'back-to-top', href: '#top' });
+	// 	var icon = $('<i>', { class: 'icon-chevron-up' });
 
-		backToTop.appendTo ('body');
-		icon.appendTo (backToTop);
+	// 	backToTop.appendTo ('body');
+	// 	icon.appendTo (backToTop);
 		
-	    backToTop.hide();
+	//     backToTop.hide();
 
-	    $(window).scroll(function () {
-	        if ($(this).scrollTop() > 150) {
-	            backToTop.fadeIn ();
-	        } else {
-	            backToTop.fadeOut ();
-	        }
-	    });
+	//     $(window).scroll(function () {
+	//         if ($(this).scrollTop() > 150) {
+	//             backToTop.fadeIn ();
+	//         } else {
+	//             backToTop.fadeOut ();
+	//         }
+	//     });
 
-	    backToTop.click (function (e) {
-	    	e.preventDefault ();
+	//     backToTop.click (function (e) {
+	//     	e.preventDefault ();
 
-	        $('body, html').animate({
-	            scrollTop: 0
-	        }, 600);
-	    });
-	}
+	//         $('body, html').animate({
+	//             scrollTop: 0
+	//         }, 600);
+	//     });
+	// }
 	
 	function enableEnhancedAccordion () {
 		$('.accordion').on('show', function (e) {

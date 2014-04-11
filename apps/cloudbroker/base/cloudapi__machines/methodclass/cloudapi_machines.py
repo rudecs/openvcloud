@@ -122,7 +122,7 @@ class cloudapi_machines(object):
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
         image.name = templatename
-        image.referenceId = "" 
+        image.referenceId = ""
         image.type = 'custom templates'
         m = {}
         m['stackId'] = machine.stackId
@@ -137,7 +137,7 @@ class cloudapi_machines(object):
         stack.images.append(imageid)
         self.models.stack.set(stack)
         provider.client.ex_createTemplate(node, templatename, imageid, basename)
-        return imageid 
+        return imageid
 
     @authenticator.auth(acl='C')
     def backup(self, machineId, backupName, **kwargs):
@@ -161,7 +161,7 @@ class cloudapi_machines(object):
             if m['name'] == name:
                 return False
         return True
-                
+
 
 
     def _getSize(self, provider, machine):
@@ -291,13 +291,14 @@ class cloudapi_machines(object):
 
         """
         vmachinemodel = self.models.vmachine.get(machineId)
-        vmachinemodel.status = 'DESTROYED'
-        vmachinemodel.deletionTime = int(time.time())
-        self.models.vmachine.set(vmachinemodel)
-        
+        if not vmachinemodel.status == 'DESTROYED':
+            vmachinemodel.deletionTime = int(time.time())
+            vmachinemodel.status = 'DESTROYED'
+            self.models.vmachine.set(vmachinemodel)
+
         tags = str(machineId)
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
-        
+
         provider, node = self._getProviderAndNode(machineId)
         if provider:
             for pnode in provider.client.list_nodes():
