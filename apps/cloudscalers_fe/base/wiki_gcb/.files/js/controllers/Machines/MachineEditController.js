@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('MachineEditController', 
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert', 
+    .controller('MachineEditController',
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
         $scope.tabactive = {};
@@ -10,13 +10,13 @@ angular.module('cloudscalers.controllers')
         		$scope.tabactive = {actions: tab=='actions', console: tab == 'console', snapshots: tab=='snapshots', changelog: tab=='changelog'};
         	}
         }
-        
+
         changeSelectedTab($routeParams.activeTab);
-        
+
         var retrieveMachineHistory = function() {
             if (!$scope.machineHistory)
                 $scope.machineHistory = {};
-            
+
             Machine.getHistory($routeParams.machineId)
                 .success(function(data, status, headers, config) {
                     if (data == 'None') {
@@ -28,16 +28,16 @@ angular.module('cloudscalers.controllers')
                     }
                 }).error(function (data, status, headers, config) {
                     $scope.machineHistory.error = status;
-                    $scope.machineHistory.history = [];    
+                    $scope.machineHistory.history = [];
                 });
         };
-        
+
         $scope.$watch('tabactive.changelog', function() {
             if (!$scope.tabactive.changelog)
                 return;
             retrieveMachineHistory();
         }, true);
-        
+
         $scope.oldMachine = {};
         $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
 
@@ -82,7 +82,7 @@ angular.module('cloudscalers.controllers')
 
             modalInstance.result.then(function (result) {
                 Machine.delete($scope.machine.id);
-                var machine = _.findWhere($scope.machines, {id: $scope.machine.id});
+                var machine = _.find($scope.machines, function(machine){ return machine.id == $scope.machine.id;});
                 if (machine){
                     machine.status = 'DESTROYED';
                 }
@@ -111,14 +111,14 @@ angular.module('cloudscalers.controllers')
                 return;
             updatesnapshots();
         }, true);
-        
+
         $scope.createSnapshot = function() {
 
         	if ($scope.machine.status != "RUNNING"){
         		$alert("A snapshot can only be taken from a running machine.");
         		return;
         	}
-        	
+
         	var modalInstance = $modal.open({
       			templateUrl: 'createSnapshotDialog.html',
       			controller: CreateSnapshotController,
@@ -164,9 +164,9 @@ angular.module('cloudscalers.controllers')
             location.reload();
         };
 
-        
+
     	var CloneMachineController= function ($scope, $modalInstance) {
-        	
+
     		$scope.clone ={name: ''};
 
       		$scope.ok = function () {
@@ -179,7 +179,7 @@ angular.module('cloudscalers.controllers')
     	};
 
         var CreateTemplateController= function ($scope, $modalInstance) {
-            
+
             $scope.createtemplate ={name: ''};
 
             $scope.ok = function () {
@@ -190,7 +190,7 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
             };
         };
-    	
+
         $scope.cloneMachine = function() {
 
         	if ($scope.machine.status != "HALTED"){
@@ -222,7 +222,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.createTemplate = function() {
 
-       
+
             var modalInstance = $modal.open({
                     templateUrl: 'createTemplateDialog.html',
                     controller: CreateTemplateController,

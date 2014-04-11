@@ -2,7 +2,7 @@
 
    <div ng-cloak ng-show="(machines | filter:machineIsManageable).length == 0">
   }}
-  h2. Machine Deck
+  h1. Machine Deck
 
 Machines are ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
 
