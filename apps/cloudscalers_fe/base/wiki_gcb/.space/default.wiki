@@ -190,7 +190,7 @@
             <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Virtual Firewall</a>
           </li>
           <li>
-            <a href="Portforwarding" menu-link-active-location="Portforwarding">Port forwards</a>
+            <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
           </li>
         </ul>
       </li>

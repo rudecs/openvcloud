@@ -1,14 +1,12 @@
 @usedefault
 
-h2. Port Forwarding
+h1. Port Forwards
 {{html:
 	<div ng-controller="NetworkController">
 		<div>
-			<label class="mrm left" style="margin-top: 3px;">Filter IPs:</label>
-			<select ng-model="search" ng-options="portforward.ip for portforward in portforwarding | unique: 'ip'"></select>
 				<div style="margin-bottom: 5px;">
-					<a href="" ng-click="portForwardPopup()" class="create-cloudspace">Add Portforward...</a>
-	            </div>
+					<button class="btn btn-info btn-large" ng-click="portForwardPopup()">Add</button>
+	      </div>
 				<table class="table table-striped table-bordered">
 				    <tr>
 				      <th style="text-align: center;"><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
