@@ -65,13 +65,14 @@ angular.module('cloudscalers.services')
                       function(reason){return $q.reject(reason);}
                     );
             },
-						getUsage: function(account, reference){
-								return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
-											'&reference=' + encodeURIComponent(reference)).
-											then(
-												function(result){return result.data;},
-												function(reason){return $q.reject(reason);}
-											);
-						}
+			getUsage: function(account, reference){
+				return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
+					'&reference=' + encodeURIComponent(reference)).
+					then(
+						function(result){
+                            return result.data;},
+						function(reason){return $q.reject(reason);}
+					);
+			}
         };
     });
