@@ -16,7 +16,7 @@
         </tr>
         <tr ng-cloak ng-repeat="user in currentSpace.acl">
             <td>{[user.userGroupId]}</td>
-            <td><a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-remove-sign"></a></td>
+            <td><a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times"></a></td>
         </tr>
     </table>
 </form>
