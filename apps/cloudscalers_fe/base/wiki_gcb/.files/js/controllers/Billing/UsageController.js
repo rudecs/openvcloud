@@ -6,7 +6,7 @@ angular.module('cloudscalers.controllers')
         if ($scope.currentAccount && $scope.currentAccount.id) {
           var uri = new URI($window.location);
           var reference = uri.search(true).reference;
-          
+
           Account.getUsage($scope.currentAccount, reference).
             then(function(result){
                     $scope.usagereport = result;
@@ -17,6 +17,5 @@ angular.module('cloudscalers.controllers')
                 );
           }
         });
-
 
   }]);
