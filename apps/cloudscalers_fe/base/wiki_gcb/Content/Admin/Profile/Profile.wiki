@@ -1,44 +1,27 @@
-h2. Profile
+h1. Profile
 
 {{html:
 <hr>
 <form class="form-horizontal" ng-controller="SettingsController" ng-app="myApp">
-<fieldset>
+  <fieldset>
+    <div class="nameField">
+        <h2>Name:</h2>
+        <input id="textinput" name="textinput" type="text" placeholder="Name" class="input-xlarge" ng-model="settings.name">
+    </div>
+    <div class="nameField">
+        <h2>E-mail:</h2>
+        <input id="textinput" name="textinput" type="email" placeholder="Email" class="input-xlarge" ng-model="settings.email"
+          patterm="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$" >
+    </div>
+    <div class="nameField">
+        <h2>Password:</h2>
+        <input id="passwordinput" name="passwordinput" type="password" placeholder="xxxxxxx" class="input-xlarge" ng-model="password">
+    </div>
+    <hr>
+    <div class="form-actions">
+      <button class="btn btn-info btn-large " ng-click="save()" >Save</button> 
+    </div>
 
-<!-- Form Name -->
-
-<!-- Text input-->
-<div class="control-group">
-  <label class="control-label" for="textinput">Name</label>
-  <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="Name" class="input-xlarge" ng-model="settings.name">
-    
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="control-group">
-  <label class="control-label" for="textinput">E-mail</label>
-  <div class="controls">
-    <input id="textinput" name="textinput" type="email" placeholder="Email" class="input-xlarge" ng-model="settings.email"
-      patterm="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$" >
-    
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="passwordinput">Password</label>
-  <div class="controls">
-    <input id="passwordinput" name="passwordinput" type="password" placeholder="xxxxxxx" class="input-xlarge" ng-model="password">
-    
-  </div>
-</div>
-<hr>
-
-
-<div class="form-actions">
-  <button class="btn btn-info btn-large " ng-click="save()" >Save</button> 
-</div>
-
-</fieldset>
+  </fieldset>
 </form>
 }}
