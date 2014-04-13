@@ -13,7 +13,7 @@ angular.module('cloudscalers.services')
                     );
                 }
                 else{
-                    return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?id=' + encodeURIComponent(id)).then(
+                    return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id)).then(
                         function(result){
                             return result.data;
                         },
@@ -25,7 +25,7 @@ angular.module('cloudscalers.services')
                 
             },
             createPortforward: function(ip, puplicPort, vmName, localPort) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?ip=' + encodeURIComponent(ip) + "&puplicPort=" +
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?publicIp=' + encodeURIComponent(ip) + "&puplicPort=" +
                     encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" + 
                     encodeURIComponent(localPort)).then(
                         function(result){
@@ -48,8 +48,8 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            deletePortforward: function(id) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/delete?id=' + encodeURIComponent(id)).then(
+            deletePortforward: function(cloudspaceid, id) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/delete?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id)).then(
                         function(result){
                             return result;
                         },
@@ -59,7 +59,7 @@ angular.module('cloudscalers.services')
                     );
             },
             commonports: function() {
-                return $http.get(cloudspaceconfig.apibaseurl + '/commonports/list').then(
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/listcommonports').then(
                         function(result){
                             return result.data;
                         },

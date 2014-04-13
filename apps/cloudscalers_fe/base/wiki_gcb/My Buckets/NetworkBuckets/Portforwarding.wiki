@@ -19,8 +19,8 @@ h2. Port Forwarding
 				    <tbody>
 				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | filter:search.ip | groupBy:'ip' | groupBy:'vmName'">
 				      <td style="display: none;"><strong>{[portforward.id]}</strong></td>
-				      	<td style="text-align: center; cursor: pointer;"><strong>{[portforward.ip]}</strong></td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.puplicPort]}</td>
+				      	<td style="text-align: center; cursor: pointer;"><strong>{[portforward.publicIp]}</strong></td>
+				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
 				        <td style="text-align: center; cursor: pointer;" ng-click="portForwardPopupEdit()"><strong>{[portforward.vmName]}</strong></td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
 				      </tr>
@@ -77,7 +77,7 @@ h2. Port Forwarding
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
-					        <select ng-model="newRule.ip" ng-options="portforward.ip for portforward in portforwarding | unique: 'ip'">
+					        <select ng-model="newRule.ip" ng-options="portforward.publicIp for portforward in portforwarding | unique: 'ip'">
 		                    </select>
 		       			</div>
 					</div>
@@ -174,7 +174,7 @@ h2. Port Forwarding
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
 		                    <select ng-model="editRule.ip">
-								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.ip ]}</option>
+								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.publicIp ]}</option>
 							</select>
 							<input type="hidden" ng-model="editRule.id">
 		       			</div>

@@ -8,7 +8,7 @@ angular.module('cloudscalers.controllers')
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
                 }
             });
-            NetworkBuckets.listPortforwarding().then(function(data) {
+            NetworkBuckets.listPortforwarding($scope.currentSpace.id).then(function(data) {
                 $scope.portforwarding = data;
                 $scope.search = $scope.portforwarding[0];
             });
@@ -54,14 +54,14 @@ angular.module('cloudscalers.controllers')
             $scope.tableRowClicked = function (index) {
               var modalInstance = $modal.open({templateUrl: 'editPortForwardDialog.html', scope: $scope , resolve: {}});
               $scope.editRule = [];
-              NetworkBuckets.listPortforwarding(index.id).then(function(data) {
+              NetworkBuckets.listPortforwarding($scope.currentSpace.id).then(function(data) {
                 $scope.portforwardbyID = data;
                 $scope.editRule = {
-                    id: $scope.portforwardbyID[0].id,
-                    ip: $scope.portforwardbyID[0].ip,
-                    publicPort: $scope.portforwardbyID[0].puplicPort,
-                    VM: $scope.portforwardbyID[0].vmName,
-                    localPort: $scope.portforwardbyID[0].localPort
+                    id: index.id,
+                    ip: $scope.portforwardbyID[index.id].publicIp,
+                    publicPort: $scope.portforwardbyID[index.id].publicPort,
+                    VM: $scope.portforwardbyID[index.id].vmName,
+                    localPort: $scope.portforwardbyID[index.id].localPort
                 };
               });
               NetworkBuckets.commonports().then(function(data) {
@@ -82,7 +82,7 @@ angular.module('cloudscalers.controllers')
                   );
               };
               $scope.delete = function () {
-                  NetworkBuckets.deletePortforward($scope.editRule.id).then(
+                  NetworkBuckets.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
                       function (result) {
                           $scope.portforwarding = result.data;
                           $scope.search = $scope.portforwarding[0];
