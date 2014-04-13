@@ -284,7 +284,7 @@ p { color:#77777b; }
 ul{
 	list-style: none;
 }
-table.table th{
+table.table th, table.table th a{
 	background: #707070 !important;
 	font-size: 17px;
 	color: #fff;
@@ -337,6 +337,9 @@ table.table td{
 }
 .block{
 	display: block;
+}
+.sTxt{
+	font-size: 10px;
 }
 .loader   {
 

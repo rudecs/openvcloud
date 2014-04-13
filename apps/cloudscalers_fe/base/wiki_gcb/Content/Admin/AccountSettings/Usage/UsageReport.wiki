@@ -31,7 +31,7 @@ h1. Usage report
 					</div>
 					<div class="span6">
 						<h2>Cloudspace total cost</h2>
-						{[ cloudspace.totalCost ]}
+						{[ cloudspace.totalCost | currency:"USD$" ]}
 					</div>				
 				</div>
 				<hr />
@@ -39,16 +39,32 @@ h1. Usage report
 				<table class="table table-striped table-bordered">
 				    <thead>
 				        <tr>
-				            <th>Machine name</th>
-				            <th>Cost</th>
-				            <th>Creation time</th>
-				            <th>Deletion time</th>
+				            <th>
+					            <a href="#" ng-click="orderByField='name'; reverseSort = !reverseSort">Machine name
+					            	<span ng-show="orderByField == 'name'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            </a>
+				            </th>
+				            <th>
+				            	<a href="#" ng-click="orderByField='cost'; reverseSort = !reverseSort">Cost
+					            	<span ng-show="orderByField == 'cost'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            </a>
+					        </th>
+				            <th>
+				            	<a href="#" ng-click="orderByField='creationTime'; reverseSort = !reverseSort">Creation Time
+					            	<span ng-show="orderByField == 'creationTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            </a>
+				            </th>
+				            <th>
+				            	<a href="#" ng-click="orderByField='deletionTime'; reverseSort = !reverseSort">Deletion time
+					            	<span ng-show="orderByField == 'deletionTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            </a>
+				            </th>
 				        </tr>
 				    </thead>
 				    <tbody>
-				        <tr ng-repeat="machine in cloudspace.machines">
+				        <tr ng-repeat="machine in cloudspace.machines | orderBy:orderByField:reverseSort">
 				            <td>{[ machine.name ]}</td>
-				            <td>{[ machine.cost ]}</td>
+				            <td>{[ machine.cost | currency:"USD$" ]}</td>
 				            <td>{[ machine.creationTime * 1000 | date:'dd/MM/yyyy h:mma' ]}</td>
 				            <td>
 				            	<span ng-show="machine.deletiontime.length">{[ machine.deletiontime * 1000 | date:'dd/MM/yyyy h:mma' ]}</span>
