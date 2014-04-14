@@ -38,8 +38,8 @@ angular.module('cloudscalers.controllers')
                 $scope.submit = function () {
                     Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, $scope.newRule.VM.id, $scope.newRule.localPort).then(
                         function (result) {
-                            $scope.portforwarding.push({ip: $scope.currentSpace.publicipaddress, puplicPort: $scope.newRule.publicPort,
-                            vmName: $scope.newRule.VM.vmName, vmId: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
+                            $scope.portforwarding.push({publicIp: $scope.currentSpace.publicipaddress, publicPort: $scope.newRule.publicPort,
+                            vmName: $scope.newRule.VM.name, vmid: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
                             $modalInstance.close({});
                         }
                     );
