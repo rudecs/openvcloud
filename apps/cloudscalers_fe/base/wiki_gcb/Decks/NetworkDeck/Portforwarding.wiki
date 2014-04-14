@@ -73,7 +73,6 @@ h1. Port Forwards
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 					         {[currentSpace.publicipaddress]}
-					         10.1.1.131
 		       			</div>
 					</div>
 					<div class="control-group">
