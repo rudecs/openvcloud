@@ -847,3 +847,79 @@ body:before {
 
 
 .sticky > .navbar.navbar-inverse.ng-scope > .subnavbar-inner { background: url(../img/images/bg.jpg) no-repeat center top #000;}
+
+
+/*
+
+.modal{
+	width: 800px !important;
+	left: 41%;
+}
+.form-horizontal .control-label{
+	width: 105px;
+}
+.form-horizontal .controls{
+	margin-left: 0;
+}
+.row-fluid{
+	width: 96%;
+}
+.form-horizontal .control-label{
+	float: none;
+}
+
+.form-control{
+	width: 86px;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+	width: 102px;
+}
+.modal-body{
+	overflow: visible;
+	min-height: 222px;
+}
+#common-port-menu{
+	padding: 4px 3px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	width: 102px;
+	float: left;
+}*/
+
+
+/*
+
+			.modal{
+				width: 800px !important;
+				left: 41%;
+			}
+			.form-horizontal .control-label{
+				width: 105px;
+			}
+			.form-horizontal .controls{
+				margin-left: 0;
+			}
+			.row-fluid{
+				width: 96%;
+			}
+			.form-horizontal .control-label{
+				float: none;
+			}
+			.dropdown-menu{
+				top: 28px;
+			}
+			.modal-body{
+				overflow: visible;
+				min-height: 222px;
+			}
+			#common-port-menu{
+				padding: 4px 3px;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				width: 102px;
+				float: left;
+			}
+			.form-horizontal .controls{
+				display: block;
+			}
+*/
