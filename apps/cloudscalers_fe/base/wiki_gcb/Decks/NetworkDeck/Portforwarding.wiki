@@ -79,7 +79,7 @@ h1. Port Forwards
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
 					         	<div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
+						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
 						        </select>
 						      </div>
 						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
