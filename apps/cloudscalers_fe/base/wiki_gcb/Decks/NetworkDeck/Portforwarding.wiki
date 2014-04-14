@@ -9,17 +9,17 @@ h1. Port Forwards
 	      </div>
 				<table class="table table-striped table-bordered">
 				    <tr>
-				      <th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
+				      <th style="text-align: center;"><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
 				      <th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
-				      <th style=""><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
+				      <th style="text-align: center;"><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
 				      <th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
 				    </tr>
 				    <tbody>
 				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | filter:search.ip | groupBy:'ip' | groupBy:'vmName'">
 				      <td style="display: none;"><strong>{[portforward.id]}</strong></td>
-				      	<td style=" cursor: pointer;"><strong>{[portforward.publicIp]}</strong></td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
-				        <td style=" cursor: pointer;" ng-click="portForwardPopupEdit()"><strong>{[portforward.vmName]}</strong></td>
+				      	<td style="text-align: center; cursor: pointer;"><strong>{[portforward.ip]}</strong></td>
+				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.puplicPort]}</td>
+				        <td style="text-align: center; cursor: pointer;" ng-click="portForwardPopupEdit()"><strong>{[portforward.vmName]}</strong></td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
 				      </tr>
 				    </tbody>
@@ -30,7 +30,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="portForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px;
+				width: 800px !important;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -44,7 +44,6 @@ h1. Port Forwards
 			}
 			.form-horizontal .control-label{
 				float: none;
-				text-align: left;
 			}
 			.dropdown-menu{
 				top: 28px;
@@ -52,14 +51,14 @@ h1. Port Forwards
 			.modal-body{
 				overflow: visible;
 				min-height: 222px;
-			}/*
+			}
 			#common-port-menu{
 				padding: 4px 3px;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 				width: 102px;
 				float: left;
-			}*/
+			}
 			.form-horizontal .controls{
 				display: block;
 			}
@@ -69,12 +68,11 @@ h1. Port Forwards
                 <h3>Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="col-md-4" >
+            	<div class="span5" style="padding-left: 40px;">
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 					         {[currentSpace.publicipaddress]}
-					         
 		       			</div>
 					</div>
 					<div class="control-group">
@@ -84,17 +82,17 @@ h1. Port Forwards
 						        <select id="common-port-menu" class="form-control" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
 						        </select>
 						      </div>
-						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"/>
+						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
 		       			</div>
 					</div>
 				</div>
 				<div class="col-md-3" >
 					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/$$space/.files/img/icons/right-arrow2.png">
+					<img src="/$$space/.files/img/icons/right-arrow.png">
 				</div>
-				<div class="col-md-4" >
+				<div class="span4" style="margin-left: 40px;">
 					<div class="control-group">
-						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
+						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
@@ -124,7 +122,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="editPortForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px;
+				width: 800px !important;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -138,16 +136,20 @@ h1. Port Forwards
 			}
 			.form-horizontal .control-label{
 				float: none;
-				text-align: left;
 			}
 			.dropdown-menu{
 				top: 28px;
+			}
+			.form-control{
+				width: 86px;
+				border-top-left-radius: 0 !important;
+				border-bottom-left-radius: 0 !important;
+				width: 102px;
 			}
 			.modal-body{
 				overflow: visible;
 				min-height: 222px;
 			}
-			/*
 			#common-port-menu{
 				padding: 4px 3px;
 				border-top-right-radius: 0;
@@ -155,7 +157,6 @@ h1. Port Forwards
 				width: 102px;
 				float: left;
 			}
-			*/
 		</style>
         <form name="form" class="form-horizontal" ng-submit="update()">
             <div class="modal-header">
@@ -166,43 +167,43 @@ h1. Port Forwards
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
-		                  {[currentSpace.publicipaddress]}
-		                </div>
+		                    
+							<input type="hidden" ng-model="editRule.id">
+		       			</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
-						
-					         <div style="position: relative; width: 100%;" class="input-group-btn marginB">
-						        <select id="common-port-menu" class="form-control" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
+						<div class="controls">
+					         	<div style="position: relative; width: 280px;" class="input-group-btn">
+						        <select id="common-port-menu" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
 						        </select>
 						      </div>
-		       				
 						      <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
 		       			</div>
 					</div>
-				
-				<div class="col-md-3">
-					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/$$space/.files/img/icons/right-arrow2.png">
 				</div>
-				<div class="col-md-4" >
+				<div class="span2" style="margin-right: 15px;">
+					<h4 style="margin-top: 54%;">Forward to</h4>
+					<img src="/$$space/.files/img/icons/right-arrow.png">
+				</div>
+				<div class="span4" style="margin-left: 40px;">
 					<div class="control-group">
-						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
-						<div class="">
-						<select ng-model="editRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
-		                    </select>
+						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
+						<div class="controls">
+		                    <select ng-model="editRule.VM">
+								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
+							</select>
 		                </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
-						<div>
+						<div class="controls">
 					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" 
 					         	"placeholder="Port" required numbers-only="numbers-only"/>
 		       			</div>
 					</div>
 				</div>
             </div>
-
              <div class="modal-footer">
                 <button type="submit" class="btn btn-primary ok">Ok</button>
                 <button type="button" class="btn cancel" ng-click="delete()">Delete</button>

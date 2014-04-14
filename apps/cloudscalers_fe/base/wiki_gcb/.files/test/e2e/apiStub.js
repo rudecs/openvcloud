@@ -618,12 +618,13 @@ defineApiStub = function ($httpBackend) {
     });
     $httpBackend.whenGET(/^\/portforwarding\/list\?id=\d+.*/).respond(storages);
 
-    $httpBackend.whenGET(/^\/commonports\/list.*/).respond([
+    $httpBackend.whenGET(/^\/portforwarding\/listcommonports.*/).respond([
         {port: '80', name: 'HTTP'},
         {port: '72', name: 'SSH'},
         {port: '403', name: 'HTTPS'},
         {port: '27', name: 'FTP'}
     ]);
+
 
     $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
