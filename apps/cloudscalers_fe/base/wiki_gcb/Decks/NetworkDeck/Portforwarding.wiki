@@ -167,17 +167,14 @@ h1. Port Forwards
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
-		                    <select ng-model="editRule.ip">
-								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.publicIp ]}</option>
-							</select>
-							<input type="hidden" ng-model="editRule.id">
+		                  {[currentSpace.publicipaddress]}
 		       			</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
 					         	<div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports">
+						        <select id="common-port-menu" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
 						        </select>
 						      </div>
 						      <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
@@ -192,15 +189,15 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
 						<div class="controls">
-		                    <select ng-model="editRule.VM">
-								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
-							</select>
+						<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+		                    </select>
 		                </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="input-large" style="height: 12px;" placeholder="Port" required numbers-only="numbers-only"/>
+					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" 
+					         	"placeholder="Port" required numbers-only="numbers-only"/>
 		       			</div>
 					</div>
 				</div>
