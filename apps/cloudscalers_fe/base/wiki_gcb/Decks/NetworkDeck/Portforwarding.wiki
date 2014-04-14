@@ -48,12 +48,6 @@ h1. Port Forwards
 			.dropdown-menu{
 				top: 28px;
 			}
-			.form-control{
-				width: 86px;
-				border-top-left-radius: 0 !important;
-				border-bottom-left-radius: 0 !important;
-				width: 102px;
-			}
 			.modal-body{
 				overflow: visible;
 				min-height: 222px;
@@ -65,6 +59,9 @@ h1. Port Forwards
 				width: 102px;
 				float: left;
 			}
+			.form-horizontal .controls{
+				display: block;
+			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="submit()">
             <div class="modal-header">
@@ -74,8 +71,9 @@ h1. Port Forwards
             	<div class="span5" style="padding-left: 40px;">
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls left">
+						<div class="controls">
 					         {[currentSpace.publicipaddress]}
+					         10.1.1.131
 		       			</div>
 					</div>
 					<div class="control-group">
@@ -97,14 +95,14 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines">
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<input ng-model="newRule.localPort" id="inputNewLocalPort" type="text" class="input-large" style="height: 12px;" placeholder="Port" required numbers-only="numbers-only"/>
+					         	<input ng-model="newRule.localPort" id="inputNewLocalPort" type="text" class="form-control" placeholder="Port" required numbers-only="numbers-only"/>
 		       			</div>
 					</div>
 				</div>
