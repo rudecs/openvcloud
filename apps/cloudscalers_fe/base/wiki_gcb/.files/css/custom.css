@@ -275,6 +275,7 @@ p { color:#77777b; }
 	font-weight: normal;
 	background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #BEE4F2;
 }
+.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #BEE4F2; }
 .dropdown-menu {box-shadow: none;}
 .grey .panel.panel-default { margin: 0 0 2px 0;}
 .create-cloudspace {margin: 7px 0 10px -21px; display: inline-block;}
@@ -286,7 +287,7 @@ ul{
 	list-style: none;
 }
 table.table th, table.table th a{
-	background: #707070 !important;
+	background: #06a7e2 !important;
 	font-size: 17px;
 	color: #fff;
 	font-weight: normal;
