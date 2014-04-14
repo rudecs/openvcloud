@@ -15,6 +15,10 @@ angular.module('cloudscalers.controllers')
                 $scope.portforwarding = data;
             });
 
+            Networks.commonports().then(function(data) {
+                $scope.commonports = data;
+            });
+
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
                     ip: $scope.currentSpace.publicipaddress,
@@ -25,9 +29,7 @@ angular.module('cloudscalers.controllers')
                     // message: false,
                     statusMessage: ''
                 };
-                Networks.commonports().then(function(data) {
-                    $scope.commonports = data;
-                });
+
                 $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
@@ -63,12 +65,9 @@ angular.module('cloudscalers.controllers')
                     id: index.id,
                     ip: $scope.portforwardbyID[index.id].publicIp,
                     publicPort: $scope.portforwardbyID[index.id].publicPort,
-                    VM: $scope.portforwardbyID[index.id].vmName,
+                    VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
                     localPort: $scope.portforwardbyID[index.id].localPort
                 };
-              });
-              Networks.commonports().then(function(data) {
-                    $scope.commonports = data;
               });
               $scope.update = function () {
                   Networks.updatePortforward($scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM, $scope.editRule.localPort).then(

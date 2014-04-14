@@ -189,7 +189,7 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-						<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+						<select ng-model="editRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
 					</div>
