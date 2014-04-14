@@ -60,6 +60,7 @@ angular.module('cloudscalers.services')
             commonports: function() {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/listcommonports').then(
                         function(result){
+                            console.log(result.data);
                             return result.data;
                         },
                         function(reason){
