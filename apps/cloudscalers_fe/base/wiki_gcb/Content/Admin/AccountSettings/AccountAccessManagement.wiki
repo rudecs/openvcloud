@@ -1,7 +1,3 @@
-@usedefault
-h1. Access Management
-
-
 {{html:
 <form ng-submit="addUser()"  ng-controller="AccountAccessManagementController">
     <table class="table users-table">
@@ -20,7 +16,7 @@ h1. Access Management
         </tr>
         <tr ng-cloak ng-repeat="user in currentAccount.acl">
             <td>{[user.userGroupId]}</td>
-            <td><a href="#" ng-click="deleteUser(currentAccount, user)" class="icon-remove-sign"></a></td>
+            <td><a href="#" ng-click="deleteUser(currentAccount, user)" class="fa fa-times"></a></td>
         </tr>
     </table>
 </form>

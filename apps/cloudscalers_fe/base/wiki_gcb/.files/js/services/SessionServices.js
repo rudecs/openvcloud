@@ -6,7 +6,7 @@ angular.module('cloudscalers.services')
                 if (config) {
                     var url = config.url;
 
-                    if(! /((partials)|(template)\/)|(\.html)/i.test(url)){
+                    if(! /((pages)|(template)\/)|(\.html)/i.test(url)){
 
                     	var currentUser = SessionData.getUser();
                     	if (currentUser){
@@ -21,7 +21,7 @@ angular.module('cloudscalers.services')
     	    'response': function(response) {
                 return response || $q.when(response);
             },
-            
+
            'responseError': function(rejection) {
         	   if (rejection.status == 401){
         		   var uri = new URI($window.location);
@@ -52,11 +52,11 @@ angular.module('cloudscalers.services')
         		},
             getSpace : function() {
                 var space = $window.sessionStorage.getItem('gcb:currentSpace');
-                if (!space) {   
+                if (!space) {
                     space = $window.localStorage.getItem('gcb:currentSpace');
                 }
 
-                if (space) {   
+                if (space) {
                     return JSON.parse(space);
                 }
             },
@@ -72,11 +72,11 @@ angular.module('cloudscalers.services')
     })
     .factory('User', function ($http, SessionData, $q) {
         var user = {};
-        
+
         user.current = function() {
             return SessionData.getUser();
         };
-        
+
         user.login = function (username, password) {
             return $http({
                 method: 'POST',
@@ -105,7 +105,7 @@ angular.module('cloudscalers.services')
 			}
         	return $http.get(url);
         }
-        
+
         user.updateUserDetails= function(username){
         	return user.get(username).then(
         			function(result){
@@ -115,12 +115,12 @@ angular.module('cloudscalers.services')
         				return storedUser;
         			},
         			function(reason){
-                        return $q.reject(reason); 
+                        return $q.reject(reason);
                     }
         			);
-            
+
         }
-        
+
         user.logout = function() {
         	SessionData.setUser(undefined);
         };
@@ -144,7 +144,7 @@ angular.module('cloudscalers.services')
             });
             return signUpResult;
         };
-        
+
         return user;
-        
+
     });

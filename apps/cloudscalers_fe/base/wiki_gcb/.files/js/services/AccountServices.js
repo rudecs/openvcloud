@@ -41,27 +41,38 @@ angular.module('cloudscalers.services')
 
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/addUser?accountId=' + account.id +
                           '&accesstype=' + accessString + '&userId=' + user)
-                    .then(function(reason) { 
-                        return reason.data; 
-                    });
+                    .then(
+											function(result) {return result.data;},
+											function(reason){return $q.reject(reason);});
             },
             deleteUser: function(account, userId) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/deleteUser?accountId=' + account.id + 
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/deleteUser?accountId=' + account.id +
                                  '&userId=' + userId)
                     .then(function(result) { return result.data; },
                           function(reason) { return reason.data; });
             },
             getCreditBalance: function(account) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance?accountId=' + account.id).
-                    then(function(result){return result.data;},
-                        function(reason){return $q.reject(reason);}
+                    then(
+											function(result){return result.data;},
+                      function(reason){return $q.reject(reason);}
                     );
             },
             getCreditHistory: function(account) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory?accountId=' + account.id).
-                    then(function(result){return result.data;},
-                        function(reason){return $q.reject(reason);}
+                    then(
+											function(result){return result.data;},
+                      function(reason){return $q.reject(reason);}
                     );
-            }
+            },
+			getUsage: function(account, reference){
+				return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
+					'&reference=' + encodeURIComponent(reference)).
+					then(
+						function(result){
+                            return result.data;},
+						function(reason){return $q.reject(reason);}
+					);
+			}
         };
     });

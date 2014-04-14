@@ -1,27 +1,46 @@
 h1. CloudSpace Details
 
+
+
 {{html:
-<div ng-controller="CloudSpaceManagementController">
-	<button class="btn btn-danger" ng-click="deleteCloudspace()"><i class="icon-trash"></i> Delete</button>
-	
-	<script type="text/ng-template" id="deleteCloudSpaceDialog.html"> 
-                            <form name="destroyform" ng-submit="cancelDeletion()">
-                                <div class="modal-header">
-                                    <h3>Delete CloudSpace?</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-                                    Deleting a CloudSpace is irreversible and <br/>
-                                    all data and authorizations to it will be removed.
-                                </div>
-                                 <div class="modal-footer">
-                                    <button type="button" class="btn ok" ng-click="ok()">Ok</button>
-                                    <button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
-                                </div>
-                            </form>
-            </script>
-	
-</div>
+	<tabset style="clear:both;">
+			<tab id="details" heading="General">
+				<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
+					<button class="btn btn-danger" ng-click="deleteCloudspace()"><i class="fa fa-trash"></i> Delete</button>
+
+	<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
+														<form name="destroyform" ng-submit="cancelDeletion()">
+																<div class="modal-header">
+																		<h3>Delete CloudSpace?</h3>
+																</div>
+																<div class="modal-body">
+																		<input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+																		Deleting a CloudSpace is irreversible and <br/>
+																		all data and authorizations to it will be removed.
+																</div>
+																<div class="modal-footer">
+																		<button type="button" class="btn ok" ng-click="ok()">Ok</button>
+																		<button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
+																</div>
+														</form>
+						</script>
+
+				</div>
+			</tab>
+			<tab id="access" heading="Access">
+				<div id="access" class="tab-pane">
+}}
+					{{include:CloudSpaceAccessManagement}}
+{{html:
+				</div>
+			</tab>
+	</tabset>
+}}
+
+
+
+
+{{html:
 
 <script src="/$$space/.files/js/controllers/CloudSpace/CloudSpaceManagementController.js" type="text/javascript"></script>
 

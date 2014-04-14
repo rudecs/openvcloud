@@ -17,7 +17,7 @@ h3. Start now and create your Machine Bucket
 {{html:
   
 <div id="tabbable">
-  <h2 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Buckets</h2>
+  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Buckets</h1>
   <form class="form-horizontal" method="get" action="MachineBuckets#/new">
     <fieldset>
 
@@ -54,5 +54,6 @@ h3. Start now and create your Machine Bucket
       </tr>
     </tbody>
   </table>
+
 </div>
 }}

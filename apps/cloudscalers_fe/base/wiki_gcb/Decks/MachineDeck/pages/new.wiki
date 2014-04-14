@@ -1,0 +1,74 @@
+h1. Create Machine
+{{html:
+    <hr>
+<div class="form-horizontal">
+    <div class="nameField">
+        <h2>Name:</h2>
+        <input ng-model="machine.name" type="text" class="input-xxlarge"/>
+    </div>
+    <div class="nameField">
+        <h2>Description:</h2>
+            <textarea ng-model="machine.description" type="text" class="input-xxlarge" />
+    </div>
+    <div class="nameField">
+        <h2>OS Image</h2>
+
+    </div>
+    <div class="controls ">{{include:image_list}}</div>
+    <div class="machineWrap">
+        <h2>Package *:</h2>
+        <div class="machineList">
+            <ul class="controls" >
+                <!-- {{include:plan_list}} -->
+                <li ng-repeat="size in sizes | orderBy:sizepredicate">
+                    <a href="" ng-model="machine.sizeId" btn-radio="size.id"
+                    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+                    {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+                    {[ size.vcpus ]} core(s), </br>
+                    {[ size.description ]}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="machineWrap">
+        <h2>Options:</h2>
+        <div class="machineList">
+            <ul class="controls" >
+                <!-- {{include:plan_list}} -->
+                <li ng-repeat="size in sizes | orderBy:sizepredicate">
+                    <a href="" ng-model="machine.sizeId" btn-radio="size.id"
+                    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+                    {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+                    {[ size.vcpus ]} core(s), </br>
+                    {[ size.description ]}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+}}
+
+{{html:
+    <hr>
+    <div>
+        <h2>Increase disk size to:</h2>
+        <div class="machineList" >
+            {{include:storage_list}}
+        </div>
+    </div>
+    <hr>
+
+    <div class="form-actions">
+        <button class="btn btn-info btn-large mainButton" ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
+    </div>
+    <hr>
+}}
+    {{div: class=msg alert alert-warning}}
+	*Fair use policy for Unlimited Transfer:*
+        * Small machines: &lt;= 4 cores = 1 Mbit/s average usage per month
+        * Large machines: &gt;= 5 cores = 5 Mbit/s average usage per month
+    _This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us._
+	{{div}}
+
+
+{{html: </div>}}

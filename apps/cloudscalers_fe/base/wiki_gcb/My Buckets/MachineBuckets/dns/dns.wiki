@@ -1,6 +1,6 @@
 @usedefault
 
-h2. Manage DNS
+h1. Manage DNS
 
 {{html:
 <div ng-app="myApp" ng-controller="DNSController">

@@ -1,9 +1,9 @@
 angular.module('cloudscalers.controllers')
     .controller('SessionController', ['$scope', 'User', '$window', '$timeout', function($scope, User, $window, $timeout) {
         $scope.user = {username : '', password:''};
-       
+
         $scope.login_error = undefined;
-        
+
         $scope.login = function() {
             $scope.$broadcast("autofill:update");
         	var usertologin = $scope.user.username;
@@ -14,9 +14,9 @@ angular.module('cloudscalers.controllers')
             			User.updateUserDetails(usertologin).then(
                                 function(result) {
                         			var uri = new URI($window.location);
-                        			uri.filename('MachineBuckets');
+                        			uri.filename('MachineDeck');
                         			$window.location = uri.toString();
-                                }, 
+                                },
                                 function(reason){
                                 	$scope.login_error = reason.status
                                 });
