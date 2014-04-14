@@ -75,8 +75,7 @@ h1. Port Forwards
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
-					        <select ng-model="newRule.ip" ng-options="portforward.publicIp for portforward in portforwarding | unique: 'ip'">
-		                    </select>
+					         {[currentSpace.publicipaddress]}
 		       			</div>
 					</div>
 					<div class="control-group">
@@ -98,7 +97,7 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="portforward.vmName for portforward in portforwarding | unique: 'vmName'">
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines">
 		                    </select>
 		                </div>
 					</div>
@@ -218,4 +217,5 @@ h1. Port Forwards
 	</script>
     <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
 		<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript"></script>
+		<script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
 }}

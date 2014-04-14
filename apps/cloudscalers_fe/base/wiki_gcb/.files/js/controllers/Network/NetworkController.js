@@ -1,21 +1,25 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'Networks', '$modal', '$timeout',
-        function ($scope, Networks, $modal, $timeout) {
+    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout',
+        function ($scope, Networks, Machine, $modal, $timeout) {
             $scope.search = "";
             $scope.portforwardbyID = "";
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
+                    Machine.list($scope.currentSpace.id).then(function(data) {
+                      $scope.currentSpace.machines = data;
+                    });
                 }
             });
             Networks.listPortforwarding($scope.currentSpace.id).then(function(data) {
                 $scope.portforwarding = data;
             });
+
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
-                    ip: $scope.portforwarding[0],
+                    ip: $scope.currentSpace.publicipaddress,
                     publicPort: '',
-                    VM: $scope.portforwarding[0],
+                    VM: $scope.currentSpace.machines[0],
                     localPort: '',
                     commonPort: '',
                     // message: false,
@@ -30,10 +34,10 @@ angular.module('cloudscalers.controllers')
                 };
 
                 $scope.submit = function () {
-                    Networks.createPortforward($scope.newRule.ip.ip, $scope.newRule.publicPort, $scope.newRule.VM.vmName, $scope.newRule.localPort).then(
+                    Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, $scope.newRule.VM.id, $scope.newRule.localPort).then(
                         function (result) {
-                            $scope.portforwarding.push({ip: $scope.newRule.ip.ip, puplicPort: $scope.newRule.publicPort,
-                            vmName: $scope.newRule.VM.vmName, localPort: $scope.newRule.localPort});
+                            $scope.portforwarding.push({ip: $scope.currentSpace.publicipaddress, puplicPort: $scope.newRule.publicPort,
+                            vmName: $scope.newRule.VM.vmName, vmId: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
                             $modalInstance.close({});
                         }
                     );

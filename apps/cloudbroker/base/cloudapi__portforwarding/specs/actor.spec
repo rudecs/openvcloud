@@ -17,7 +17,7 @@
         var:cloudspaceid int,,id of the cloudspace
         var:publicIp str,, public ipaddress
         var:publicPort int,, public port
-        var:vmName str,, name of the vm
+        var:vmid int,, id of the vm
         var:privatePort int,, private port
 
     method:delete

@@ -10,6 +10,8 @@ The private virtual firewall provides tons of possibilities to offer more flexib
 			<a ng-href="{[ managementui ]}" target="_blank">Network Deck portal for this cloudspace</a>
 		</div>
 	</div>
+    <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
-		<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript"></script>
+		<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript">
+        </script>
 }}

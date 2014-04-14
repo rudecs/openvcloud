@@ -30,13 +30,13 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             self._models = self.cb.extensions.imp.getModel()
         return self._models
 
-    def create(self, cloudspaceid, publicIp, publicPort, vmName, privatePort, **kwargs):
+    def create(self, cloudspaceid, publicIp, publicPort, vmid, privatePort, **kwargs):
         """
         Create a portforwarding rule
         param:cloudspaceid id of the cloudspace
         param:publicIp public ipaddress
         param:publicPort public port
-        param:vmName name of the vm
+        param:vmid id of the vm
         param:privatePort private port
         """
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
@@ -44,20 +44,13 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway' 
         fw_id = fw[0]['guid']
-        query = {}
-        query['query'] = {'term': {'name':vmName,'cloudspaceId':cloudspaceid}}
-        machine = self.models.vmachine.find(ujson.dumps(query))
-        if machine['total'] != 1:
-            ctx.start_response('404 Not Found', [])
-            return 'No machine with name %s found in cloudspace' % vmName
-        else:
-            m = machine['result'][0]['_source']
-            if machine.nics:
-                if machine.nics[0].ipaddress != 'Undefined':
-                    privateIp = machine.nics[0].ipaddress
-                else:
-                    ctx.start_response('404 Not Found', [])
-                    return 'No correct ipaddress found for machine with name %s' % vmName
+        machine = self.models.vmachine.get(vmid)
+        if machine.nics:
+            if machine.nics[0].ipAddress != 'Undefined':
+                privateIp = machine.nics[0].ipAddress
+            else:
+                ctx.start_response('404 Not Found', [])
+                return 'No correct ipaddress found for machine with name %s' % vmName
         return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, privateIp, privatePort)
 
     
@@ -96,6 +89,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 f['vmName'] = f['localIp']
             else:
                 f['vmName'] = "%s (%s)" % (machine['result'][0]['_source']['name'], f['localIp'])
+                f['vmid'] = machine['result'][0]['_source']['id'] 
             result.append(f)
             index = index + 1
         return result
