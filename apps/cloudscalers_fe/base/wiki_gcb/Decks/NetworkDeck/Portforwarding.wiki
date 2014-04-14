@@ -74,21 +74,21 @@ h1. Port Forwards
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 					         {[currentSpace.publicipaddress]}
-					         <div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" class="form-control" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
-						        </select>
-						      </div>
+					         
 		       			</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-					         	
+					         	<div style="position: relative; width: 100%;" class="input-group-btn marginB">
+						        <select id="common-port-menu" class="form-control" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
+						        </select>
+						      </div>
 						      <input type="text" class="form-control" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"/>
 		       			</div>
 					</div>
 				</div>
-				<div class="col-md-2" >
+				<div class="col-md-3" >
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/$$space/.files/img/icons/right-arrow2.png">
 				</div>
@@ -162,46 +162,47 @@ h1. Port Forwards
                 <h3>Edit Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="col-md-4" style="padding-left: 40px;">
+            	<div class="col-md-4" >
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
 		                  {[currentSpace.publicipaddress]}
-		                  <div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" class="form-control" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
-						        </select>
-						      </div>
-		       			</div>
+		                </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
-						<div >
-					         	
+						
+					         <div style="position: relative; width: 100%;" class="input-group-btn marginB">
+						        <select id="common-port-menu" class="form-control" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
+						        </select>
+						      </div>
+		       				
 						      <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
 		       			</div>
 					</div>
-				</div>
-				<div class="col-md-2" >
+				
+				<div class="col-md-3">
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/$$space/.files/img/icons/right-arrow2.png">
 				</div>
 				<div class="col-md-4" >
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
-						<div class="controls">
+						<div class="">
 						<select ng-model="editRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
-						<div >
+						<div>
 					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" 
 					         	"placeholder="Port" required numbers-only="numbers-only"/>
 		       			</div>
 					</div>
 				</div>
             </div>
+
              <div class="modal-footer">
                 <button type="submit" class="btn btn-primary ok">Ok</button>
                 <button type="button" class="btn cancel" ng-click="delete()">Delete</button>

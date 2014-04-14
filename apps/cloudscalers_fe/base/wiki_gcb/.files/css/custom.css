@@ -205,6 +205,7 @@ p { color:#77777b; }
 	.midFooter { padding: 0;}
 	.bottomFooter .col-md-1 {display: none;}
 	.bottomFooter .col-md-3 {margin: -47px 0 0 0;}
+	.modal .col-md-3 h4 {margin: 10px auto !important;}
 }
 
  @media (max-width: 768px) {
@@ -240,8 +241,8 @@ p { color:#77777b; }
 	.modal { width: 300px !important; left: 80% !important;}
 	.modal-footer button { font-size: 12px;}
 	.modal-header h2 {font-size: 15px; }
-	.modal .col-md-2 h4 {margin: 10px auto !important;}
-	.modal .col-md-2 img {display: none;}
+	.modal .col-md-3 h4 {margin: 10px auto !important;}
+	.modal .col-md-3 img {display: none;}
 
 }
 
@@ -853,4 +854,8 @@ body:before {
 
 .modal-header h3 {color: #06a7e2;}
 
-.modal .col-md-4 {margin: 0 30px;}
+.modal .col-md-3 {margin: 0 30px;}
+.marginB {
+margin: 0 0 5px 0;
+display: inline-block;
+}
