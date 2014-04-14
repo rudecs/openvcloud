@@ -264,7 +264,7 @@ p { color:#77777b; }
 .accordionInside {min-width: 425px;box-shadow: none;border-bottom: 1px solid #06a7e2;}
 .noPad .dropdown-menu { padding: 0; border: 2px solid #00a8e1; border-top: 0 !important; border-radius: 0;}
 
-.grey h4 > a { background: #BEE4F2; padding: 14px 16px;}
+.grey h4 > a { background: #BEE4F2; padding: 14px 25px;}
 .grey a { color: #4f4f4f; font-family: 'Conv_Gotham-Book';}
 .grey a:hover{
 	color: #06a7e2;
@@ -273,6 +273,7 @@ p { color:#77777b; }
 	font-size: 14px;
 	color: #4f4f4f !important;
 	font-weight: normal;
+	background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #BEE4F2;
 }
 .dropdown-menu {box-shadow: none;}
 .grey .panel.panel-default { margin: 0 0 2px 0;}
