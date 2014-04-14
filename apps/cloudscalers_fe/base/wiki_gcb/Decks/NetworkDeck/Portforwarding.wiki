@@ -143,12 +143,6 @@ h1. Port Forwards
 			.dropdown-menu{
 				top: 28px;
 			}
-			.form-control{
-				width: 86px;
-				border-top-left-radius: 0 !important;
-				border-bottom-left-radius: 0 !important;
-				width: 102px;
-			}
 			.modal-body{
 				overflow: visible;
 				min-height: 222px;
@@ -173,15 +167,16 @@ h1. Port Forwards
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
 		                  {[currentSpace.publicipaddress]}
+		                  <div style="position: relative; width: 280px;" class="input-group-btn">
+						        <select id="common-port-menu" class="form-control" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
+						        </select>
+						      </div>
 		       			</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
-						<div class="controls">
-					         	<div style="position: relative; width: 280px;" class="input-group-btn">
-						        <select id="common-port-menu" class="form-control" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
-						        </select>
-						      </div>
+						<div >
+					         	
 						      <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
 		       			</div>
 					</div>
@@ -200,7 +195,7 @@ h1. Port Forwards
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
-						<div class="controls">
+						<div >
 					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" 
 					         	"placeholder="Port" required numbers-only="numbers-only"/>
 		       			</div>
