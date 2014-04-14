@@ -301,6 +301,7 @@ h2. loading
         event.stopPropagation();
         $($(this).data('parent')).find('.panel-collapse.in').collapse('hide');
         $($(this).attr('href')).collapse('show');
+	$(this).parents('.panel-heading').toggleClass('open');
       })
 
 
