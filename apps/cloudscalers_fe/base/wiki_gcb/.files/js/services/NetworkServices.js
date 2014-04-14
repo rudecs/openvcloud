@@ -25,7 +25,7 @@ angular.module('cloudscalers.services')
 
             },
             createPortforward: function(id, ip, puplicPort, vmid, localPort) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + 'publicIp=' + encodeURIComponent(ip) + "&puplicPort="+ encodeURIComponent(puplicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + '&publicIp=' + encodeURIComponent(ip) + "&publicPort="+ encodeURIComponent(puplicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
                     encodeURIComponent(localPort)).then(
                         function(result){
                             return result;

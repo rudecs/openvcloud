@@ -18,7 +18,18 @@
         var:publicIp str,, public ipaddress
         var:publicPort int,, public port
         var:vmid int,, id of the vm
-        var:privatePort int,, private port
+        var:localPort int,, local port
+
+    method:update
+        """
+        Update a porforwarding rule
+        """
+        var:cloudspaceid int,,id of the cloudspace
+        var:id int,, id of the portforward to edit
+        var:publicIp str,, public ipaddress
+        var:publicPort int,, public port
+        var:vmid int,, id of the vm
+        var:localPort int,, local port
 
     method:delete
         """
