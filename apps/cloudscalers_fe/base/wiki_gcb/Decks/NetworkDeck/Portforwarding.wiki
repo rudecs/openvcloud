@@ -30,7 +30,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="portForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px !important;
+				width: 800px;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -69,7 +69,7 @@ h1. Port Forwards
                 <h3>Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="span5" style="padding-left: 40px;">
+            	<div class="col-md-4" >
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
@@ -88,11 +88,11 @@ h1. Port Forwards
 		       			</div>
 					</div>
 				</div>
-				<div class="span2" style="margin-right: 15px;">
+				<div class="col-md-2" >
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/$$space/.files/img/icons/right-arrow2.png">
 				</div>
-				<div class="span4" style="margin-left: 40px;">
+				<div class="col-md-4" >
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
@@ -124,7 +124,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="editPortForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px !important;
+				width: 800px;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -162,7 +162,7 @@ h1. Port Forwards
                 <h3>Edit Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="span5" style="padding-left: 40px;">
+            	<div class="col-md-4" style="padding-left: 40px;">
 	            	<div class="control-group">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
@@ -181,11 +181,11 @@ h1. Port Forwards
 		       			</div>
 					</div>
 				</div>
-				<div class="span2" style="margin-right: 15px;">
+				<div class="col-md-2" >
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/$$space/.files/img/icons/right-arrow2.png">
 				</div>
-				<div class="span4" style="margin-left: 40px;">
+				<div class="col-md-4" >
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
