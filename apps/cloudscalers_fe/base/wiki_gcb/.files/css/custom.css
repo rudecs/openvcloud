@@ -958,4 +958,7 @@ display: inline-block;
 .just  {margin-left: 0 !important;padding-left: 0 !important; }
 
 
-
+/*  karim changes  */
+.mrl{
+	margin-right: 20px;
+}
