@@ -1,10 +1,10 @@
 
 h1. Manage Machine
 {{cssstyle
-h1 { float: left; margin-bottom: 20px; }
+h1 { margin-bottom: 20px; }
 }}
 {{html:
-<a ng-click="refreshPage()" class="refresh-page mtl right mTxt">
+<a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
