@@ -409,7 +409,7 @@ table.table td{
 
 
 .left{
-	float: left;
+	float: left !important;
 }
 .right{
 	float: right;
@@ -495,7 +495,6 @@ loaderWhite { background: #FFF;}
 border: 1px solid #77777b;
 outline: none;
 padding: 5px 5px;
-font-size: 17px !important;
 color: #77777b;
 width: 500px;
  float: right;}
