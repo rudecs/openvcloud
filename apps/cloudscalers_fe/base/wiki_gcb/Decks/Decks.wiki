@@ -9,11 +9,11 @@
 {{html:
 </h2>
             <p class="font"><ul>
-              <li>The Office Deck brings an innovative way to deliver IT to end users</li>
-              <li>A private portal and secure cloud storage delivering access to familiar applications</li>
-              <li>Use preferred device including laptops, tablets and smartphones</li>
-              <li>With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser</li>
-              <li>Using powerful built-in cloud collaboration tools, like a cloud drive, chat, and application session sharing</li>
+              <li>Innovative new way to deliver IT</li>
+              <li>Private and secure cloud storage</li>
+              <li>Use laptops, tablets and smartphones</li>
+              <li>MS Windows, Linux and Legacy apps</li>
+              <li>Built-in cloud collaboration tools</li>
             </ul></p>
         </div>
         <div class="col-md-5 boxes font color2">
@@ -24,11 +24,11 @@
 {{html:
 </h2>
             <p class="font"><ul>
-              <li>The Storage Deck provides ultra reliable storage</li>
-              <li>Secure distributed storage ensuring data reliability</li>
-              <li>Use the archive storage through the S3 compatible storage API</li>
-              <li>Attach archive storage disks directly to your virtual machines</li>
-              <li>All integrated in your personal cloud portal</li>
+              <li>Ultra reliable storage</li>
+              <li>Secure distributed storage</li>
+              <li>S3 compatible storage API</li>
+              <li>Attach as disk to the VM</li>
+              <li>All integrated in one cloud portal</li>
             </ul></p>
         </div>
         <div class="col-md-5 boxes font color3">
@@ -39,10 +39,10 @@
 {{html:
 </h2>
             <p class="font"><ul>
-              <li>The Machines Deck offers a powerful extension to popular IAAS stacks</li>
-              <li>Almost instant creation of virtual machines</li>
-              <li>Select your preferred SSD drive size</li>
-              <li>Discover the ultra fast snapshotting and rollback</li>
+              <li>Powerful IAAS stack</li>
+              <li>Almost instant creation of VMs</li>
+              <li>Select preferred SSD drive size</li>
+              <li>Ultra fast snapshotting and rollback</li>
               <li>Automate using the simple API</li>
             </ul></p>
         </div>
@@ -54,8 +54,8 @@
 {{html:
 </h2>
             <p class="font"><ul>
-              <li>The answer to life, the universe and everything</li>
-              <li>Bringing apps secured and ready to go</li>
+              <li>The answer to everything</li>
+              <li>Private apps ready to go</li>
               <li>Sized to your project</li>
               <li>Flexible to fit your needs</li>
               <li>Using the best of all Decks</li>
