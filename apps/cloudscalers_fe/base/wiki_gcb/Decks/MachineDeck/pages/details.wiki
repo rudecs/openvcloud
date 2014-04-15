@@ -229,7 +229,7 @@ h1 { margin-bottom: 20px; }
                         {[machine.accounts[0].password]}
                     </p>
                 </div>
-                <div novncwindow connectioninfo="novnc_connectioninfo">
+                <div novncwindow connectioninfo="novnc_connectioninfo" style="margin-top: 50px;">
         </div>
             </div>
         </div>
