@@ -980,6 +980,9 @@ display: inline-block;
 .mtm{
 	margin-top: 10px;
 }
+.bTxt{
+	color: #000 !important;
+}
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
 
