@@ -1,10 +1,10 @@
 
 h1. Manage Machine
 {{cssstyle
-h1 { float: left; margin-bottom: 20px; }
+h1 { margin-bottom: 20px; }
 }}
 {{html:
-<a ng-click="refreshPage()" class="refresh-page mtl right mTxt">
+<a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
@@ -44,8 +44,8 @@ h1 { float: left; margin-bottom: 20px; }
                         </li>
                         <li>
                         	<div class="row">
-                        		<h5 class="span3">Credentials</h5>
-                        		<div class="span9">Login: {[machine.accounts[0].login]}<br/>Password: {[machine.accounts[0].password]}</div>
+                        		<h5 class="span3">Initial Credentials</h5>
+                        		<div class="span9"><span class="mrl">Login: {[machine.accounts[0].login]}</span> <span>Password: {[machine.accounts[0].password]}</span></div>
                         	</div>
                         </li>
                         <li>
