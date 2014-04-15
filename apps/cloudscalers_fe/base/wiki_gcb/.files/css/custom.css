@@ -986,10 +986,28 @@ display: inline-block;
 
 .boxes h2 + .font.andP {
 float: left;
-width: 279px;
+width: 400px;
 color: #FFF;
 letter-spacing: 1px;
 font-family: arial,sans-serif;
+list-style: inherit;
+list-style-type: circle;
 }
 
 .newDecks .leftIcon { margin-left: 0;}
+
+
+
+.color1 h2 p a { color: #06a7e2; }
+.color2 h2 p a { color: #d97804; }
+.color3 h2 p a { color: #06a7e2; }
+.color4 h2 p a { color: #f6b332; }
+
+.boxes h2 p a {
+font-size: 22px;
+}
+
+
+.boxes h2 p a:hover {
+color: inherit;
+}
