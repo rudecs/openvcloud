@@ -385,7 +385,7 @@ table.table th, table.table th a{
 	font-size: 17px;
 	color: #fff;
 	font-weight: normal;
-	word-break: break-all;
+	/*word-break: break-all;*/
 }
 table.table td{
 	
@@ -978,6 +978,9 @@ display: inline-block;
 .mtl{
 	margin-top: 20px;
 }
+.mtm{
+	margin-top: 10px;
+}
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
 
@@ -1010,4 +1013,3 @@ font-size: 22px;
 
 .boxes h2 p a:hover {
 color: inherit;
-}

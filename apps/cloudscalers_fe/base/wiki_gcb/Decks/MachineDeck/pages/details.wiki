@@ -238,8 +238,11 @@ h1 { margin-bottom: 20px; }
 
 
         <div id="snapshots" class="tab-pane">
-            <h3>Restore from Snapshot</h3>
-            <table class="table table-bordered table-striped">
+            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
+                <i class="fa fa-camera"></i>
+                Take Snapshot
+            </a>
+            <table class="table table-bordered table-striped mtm" ng-show="snapshots.snapshots.length > 0">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -249,7 +252,7 @@ h1 { margin-bottom: 20px; }
                 </thead>
                 <tbody>
                     <tr ng-repeat="snapshot in snapshots.snapshots">
-                        <td width="89%">{[snapshot.name]}</td>
+                        <td width="45%">{[snapshot.name]}</td>
                         <td style="white-space:nowrap" >
                             {[snapshot.epoch * 1000 | date:'medium']}
                         </td>
