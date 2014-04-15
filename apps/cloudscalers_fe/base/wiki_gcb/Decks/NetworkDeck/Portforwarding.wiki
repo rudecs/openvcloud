@@ -86,9 +86,9 @@ h1. Port Forwards
 		       			</div>
 					</div>
 				</div>
-				<div class="span2" style="margin-right: 15px;">
+				<div class="col-md-3">
 					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/$$space/.files/img/icons/right-arrow.png">
+					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
 				</div>
 				<div class="span4" style="margin-left: 40px;">
 					<div class="control-group">
@@ -184,9 +184,9 @@ h1. Port Forwards
 		       			</div>
 					</div>
 				</div>
-				<div class="span2" style="margin-right: 15px;">
+				<div class="col-md-3">
 					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/$$space/.files/img/icons/right-arrow.png">
+					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
 				</div>
 				<div class="span4" style="margin-left: 40px;">
 					<div class="control-group">
