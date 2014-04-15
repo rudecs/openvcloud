@@ -169,7 +169,7 @@ p { color:#77777b; }
 	.nameField textarea {font-size: 12px !important; }
 	.grey .panel-title>a { font-size: 12px !important; padding: 8px 14px;}
 	.grey a { font-size: 12px;}
-	.grey .panel-body ul li { margin: 0 !important;}
+	.grey .panel-body ul li { margin: 0 9px !important;}
 	.create-cloudspace {margin: 6px 0 0px -23px !important;font-size: 12px;}
 	.question-symbol {margin: 6px 10px 1px 0 !important;}
 	.question-symbol i {font-size: 18px !important; }
@@ -190,7 +190,11 @@ p { color:#77777b; }
 	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px;}
 	.nav-tabs>li>a {padding: 5px 10px !important;}
 	.nav-tabs { margin:  10p 0;}
-	.justBorder {padding: 4px 0 10px 39px;}
+	.justBorder {padding: 0px 0 0px 39px;}
+	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+	
+
 }
 
 
@@ -206,6 +210,10 @@ p { color:#77777b; }
 	.bottomFooter .col-md-1 {display: none;}
 	.bottomFooter .col-md-3 {margin: -47px 0 0 0;}
 	.modal .col-md-3 h4 {margin: 10px auto !important;}
+	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+
+
 }
 
  @media (max-width: 768px) {
@@ -243,7 +251,16 @@ p { color:#77777b; }
 	.modal-header h2 {font-size: 15px; }
 	.modal .col-md-3 h4 {margin: 10px auto !important;}
 	.modal .col-md-3 img {display: none;}
-
+	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close-white.png) 13px 9px no-repeat #06a7e2 !important;padding: 8px 25px;color: #FFF !important;}
+	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #06a7e2 !important;padding: 8px 25px;color: #000 !important;}
+	.grey .panel-body {background: inherit !important; border-top: 0 !important;}
+	.grey a {color: #FFF !important;}
+	.grey a:hover { color: #000 !important; }
+	.accordionInside {min-width: auto; margin-left: 17px;}
+	.justBorder { background: #06a7e2 !important;}
+	.create-cloudspace { color: #FFF;}
+	.create-cloudspace:hover { color: #000;}
+	.grey .panel-body ul li {margin: 5px 9px !important;}
 }
 
 
