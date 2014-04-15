@@ -29,10 +29,6 @@ textarea {
 .mainText { font-size: 60px !important; color: #FFF; }
 /*.marginText {margin: 0 0 0 145px;}*/
 .arrow { color: #06a7e2;font-family: 'maven_pro_light200'; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
-
- @media (min-width: 992px) {
-.marginText { margin: 0 0 0 145px; }
-}
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
 .marginTop { margin-top: 500px; margin-bottom: 40px; }
 .boxes img { float: left; margin: 25px 18px 0 0; }
@@ -212,7 +208,7 @@ p { color:#77777b; }
 	.modal .col-md-3 h4 {margin: 10px auto !important;}
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
-
+	.marginText { margin: 0 0 0 145px; }
 
 }
 
@@ -227,7 +223,7 @@ p { color:#77777b; }
 
 	.signUp {-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
-	border-radius: 5px;margin: 0 -15px 0 0;}
+	border-radius: 5px;}
 	.white h2 {font-size: 17px;}
 	.nameField {width: 100%;}
 
@@ -261,8 +257,13 @@ p { color:#77777b; }
 	.create-cloudspace { color: #FFF;}
 	.create-cloudspace:hover { color: #000;}
 	.grey .panel-body ul li {margin: 5px 9px !important;}
+	.navbar-header + .navbar-collapse .navbar-right { text-align: right;}
+	.navbar-right.clearR.myNav ul { text-align: right;}
+	.myNav ul { float: right;}
+	.form-horizontal .control-label { text-align: left !important;}
+	.nav.navbar-nav.navbar-right { text-align: left;}
 }
-
+.form-horizontal .control-label { text-align: left !important;}
 
 
 
@@ -333,6 +334,8 @@ table.table td{
 .nameField{
 	margin-bottom: 20px;
 }
+
+
 .left{
 	float: left;
 }
@@ -881,6 +884,7 @@ margin: 0 0 5px 0;
 display: inline-block;
 }
 
-table.table thead a:hover{
-	color: #000;
-}
+.navbar-collapse.collapse { box-shadow: none; border-top: 0;}
+
+.mpl0 {margin-left: 0 !important;padding-left: 0 !important;}
+.just  {margin-left: 0 !important;padding-left: 0 !important; }

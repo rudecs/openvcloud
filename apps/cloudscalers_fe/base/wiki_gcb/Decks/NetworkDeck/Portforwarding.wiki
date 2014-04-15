@@ -9,18 +9,18 @@ h1. Port Forwards
 	      </div>
 				<table class="table table-striped table-bordered">
 				    <tr>
-				      <th style="text-align: center;"><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
+				      <th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
 				      <th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
-				      <th style="text-align: center;"><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
+				      <th style=""><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
 				      <th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
 				    </tr>
 				    <tbody>
 				    <!--  | filter:search.ip -->
 				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
 				      <td style="display: none;"><strong>{[portforward.id]}</strong></td>
-				      	<td style="text-align: center; cursor: pointer;"><strong>{[portforward.ip]}</strong></td>
+				      	<td style=" cursor: pointer;"><strong>{[portforward.ip]}</strong></td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.puplicPort]}</td>
-				        <td style="text-align: center; cursor: pointer;" ng-click="portForwardPopupEdit()"><strong>{[portforward.vmName]}</strong></td>
+				        <td style=" cursor: pointer;" ng-click="portForwardPopupEdit()"><strong>{[portforward.vmName]}</strong></td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
 				      </tr>
 				    </tbody>
@@ -31,7 +31,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="portForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px !important;
+				width: 800px;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -74,7 +74,7 @@ h1. Port Forwards
                 <h3>Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="span5">
+            	<div class="col-md-5">
 	            	<div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
@@ -96,9 +96,9 @@ h1. Port Forwards
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
 				</div>
-				<div class="span4">
+				<div class="col-md-4">
 					<div class="control-group">
-						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
+						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
@@ -128,7 +128,7 @@ h1. Port Forwards
 	<script type="text/ng-template" id="editPortForwardDialog.html">
 		<style type="text/css">
 			.modal{
-				width: 800px !important;
+				width: 800px;
 				left: 41%;
 			}
 			.form-horizontal .control-label{
@@ -168,7 +168,7 @@ h1. Port Forwards
                 <h3>Edit Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
-            	<div class="span5">
+            	<div class="col-md-5">
 	            	<div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls left">
@@ -193,9 +193,9 @@ h1. Port Forwards
 					<h4 style="margin-top: 54%;">Forward to</h4>
 					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
 				</div>
-				<div class="span4">
+				<div class="col-md-4">
 					<div class="control-group">
-						<label class="control-label" style="width: 90%; text-align: center;">Virtual Machine</label>
+						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
 		                    <select ng-model="editRule.VM" class="form-control">
 								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
