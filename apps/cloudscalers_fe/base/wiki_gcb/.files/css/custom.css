@@ -333,13 +333,17 @@ table.table td{
 .nameField{
 	margin-bottom: 20px;
 }
-
-
 .left{
 	float: left;
 }
 .right{
 	float: right;
+}
+.mtl{
+	margin-top: 20px;
+}
+.mrm{
+	margin-right: 10px;
 }
 .user-name{
 	color: #fff;
@@ -875,4 +879,8 @@ body:before {
 .marginB {
 margin: 0 0 5px 0;
 display: inline-block;
+}
+
+table.table thead a:hover{
+	color: #000;
 }

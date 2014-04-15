@@ -19,4 +19,16 @@ angular.module('cloudscalers.controllers')
           }
         });
 
+
+        var toUTCDate = function(date){
+          var _utc = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+          return _utc;
+        };
+
+        var millisToUTCDate = function(millis){
+          return toUTCDate(new Date(millis));
+        };
+
+          $scope.toUTCDate = toUTCDate;
+          $scope.millisToUTCDate = millisToUTCDate;
   }]);
