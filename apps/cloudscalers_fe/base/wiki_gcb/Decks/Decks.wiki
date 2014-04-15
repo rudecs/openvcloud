@@ -64,19 +64,5 @@
     </div>
 </div>
 
-<style type="text/css">
-      .white{
-        background-color: #000;
-        
-      }
-      .boxes h2 + .font.andP li {
-color: #FFF;
-}
 
-.sticky {
-
-background-color: #000;
-}
-
-</style>
 }}

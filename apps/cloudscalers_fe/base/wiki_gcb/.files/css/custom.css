@@ -72,7 +72,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 30px 0 79px 0; }
-.white h1 { color: #06a7e2; font-size: 35px; font-family: arial,sans-serif; margin-bottom: 30px;}
+.white h1 { color: #06a7e2; font-size: 35px; font-family: arial,sans-serif; margin-bottom: 30px; font-weight: normal !important;}
 .white h2 { color: #06a7e2; font-size: 17px; font-family: arial,sans-serif; }
 .white p { color: #000; font-size: 16px; font-family: arial,sans-serif; line-height: 32px; }
 .white ul li { color: #000; font-size: 16px; font-family: arial,sans-serif; line-height: 30px; }
@@ -365,11 +365,11 @@ p { color:#77777b; }
 }
 .grey .panel-title>a{
 	font-size: 14px;
-	color: #4f4f4f !important;
+	color: #000000 !important;
 	font-weight: normal;
 	background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #BEE4F2;
 }
-.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #BEE4F2; }
+.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3; }
 .dropdown-menu {box-shadow: none;}
 .grey .panel.panel-default { margin: 0 0 2px 0;}
 .create-cloudspace {margin: 7px 0 10px -21px; display: inline-block;}
@@ -381,7 +381,7 @@ ul{
 	list-style: none;
 }
 table.table th, table.table th a{
-	background: #06a7e2 !important;
+	background: #383838 !important;
 	font-size: 17px;
 	color: #fff;
 	font-weight: normal;
@@ -1014,4 +1014,12 @@ font-size: 22px;
 
 
 .boxes h2 p a:hover {
-color: inherit;
+color: inherit;}
+
+
+.form-horizontal.ng-scope h2 { color: #000;}
+
+table.table td { color: #000; }
+
+
+.grey .panel-title>a:hover { background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3;}
