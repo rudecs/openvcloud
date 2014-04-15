@@ -382,7 +382,7 @@ ul{
 }
 table.table th, table.table th a{
 	background: #383838 !important;
-	font-size: 17px;
+	/*font-size: 17px;*/
 	color: #fff;
 	font-weight: normal;
 	/*word-break: break-all;*/
