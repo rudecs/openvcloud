@@ -14,7 +14,7 @@ angular.module('cloudscalers.controllers')
             			User.updateUserDetails(usertologin).then(
                                 function(result) {
                         			var uri = new URI($window.location);
-                        			uri.filename('MachineDeck');
+                        			uri.filename('Decks');
                         			$window.location = uri.toString();
                                 },
                                 function(reason){
