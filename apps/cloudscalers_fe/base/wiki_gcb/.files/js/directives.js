@@ -52,8 +52,7 @@ angular.module('cloudscalers.directives', [])
 
 
 	        },
-            // !   ng-show="showPlaceholder
-		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" ng-show="showPlaceholder">\
+		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" ng-show="!showPlaceholder">\
                         <table border=0 width="100%"><tr>\
                         <td width="20%">\
                             <input id="capturekeyboardbutton" type=button class="btn" value="Capture keyboard"></input>\
