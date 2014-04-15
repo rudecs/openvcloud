@@ -125,6 +125,80 @@ p { color:#77777b; }
 
 
 
+
+@media (max-width: 1376px)  {
+ 	
+	.boxes p { width: 255px !important; }
+	.mainText {font-size: 40px !important;}
+	.nameField {width: 80%;}
+	.white h2 {font-size: 13px;}
+	.machineList ul li a, .storage-size-list button { font-size: 13px; font-weight: normal;}
+	.leftIcon {margin: 0 0 0 144px;}
+	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
+	.logo img { width: 240px; height: auto;}
+	.signUp {font-size: 10px;}
+	.navbar-default .navbar-nav>li>a {font-size: 13px !important;}
+	.navbar-nav>li>a {padding-top: 5px;padding-bottom: 5px;}
+	.navbar.navbar-default {min-height: 31px; }
+ 	.white h1 {font-size: 24px;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {font-size: 13px !important;}
+	.nav-tabs>li>a { font-size: 13px !important;}
+	.nav-tabs>li>a:hover {border-color: #eee #eee #ddd;border-bottom: 2px;}
+	.mainButton {padding: 7px 10px !important;font-size: 13px !important;}
+	.btn.btn-info.btn-large {padding: 7px 10px !important;font-size: 13px !important;}
+	.midFooter ul li a {font-size: 13px;}
+	.bottomFooter .first-list li a {font-size: 13px; }
+	.myNav ul li a { font-size: 17px; background-size: 11px auto !important;}
+	.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}
+	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
+	.navbar-right.clearR {margin: 33px 0 0 0;}
+	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
+	.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}
+	.marginText {margin: 0 0 0 62px;}
+	body {background-size: 1290px auto;}
+	.boxes img {width: 100px;}
+	.white ul li {font-size: 13px !important;line-height: 30px;}
+	h4, .h4 {font-size: 18px;font-weight: bold; }
+	.sideNav .header a {text-align: center;font-size: 13px !important;}
+	.sideNav .header > a {font-size: 13px !important; }
+	.msg.alert.alert-warning p {font-size: 13px;line-height: 12px;}
+	.nameField input {font-size: 13px !important; }
+	.nameField textarea {font-size: 13px !important; }
+	.grey .panel-title>a { font-size: 13px !important; padding: 8px 14px;}
+	.grey a { font-size: 13px;}
+	.grey .panel-body ul li { margin: 0 9px !important;}
+	.create-cloudspace {margin: 6px 0 0px -23px !important;font-size: 13px;}
+	.question-symbol {margin: 6px 10px 1px 0 !important;}
+	.question-symbol i {font-size: 18px !important; }
+	table.table th {font-size: 13px !important;}
+	.sideNav { width: 138px;}
+	.white p {font-size: 13px;}
+	.dropdown-menu>li>a {font-size: 13px;}
+	.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; background-size: 900px auto;}
+	
+	.arrow { font-size: 24px;}
+	.midFooter { padding: 0;}
+	.bottomFooter ul li a { color: #FFF; font-family: 'maven_pro_light200'; font-size: 13px; }
+
+	table.table th, table.table td, table.table tbody th, table.table tbody td {font-size: 13px !important;}
+	.table.users-table .header .btn {font-size: 13px;padding: 3px 5px;}
+	.control-label { font-size: 13px;}
+	.form-control.ng-pristine.ng-valid.ng-valid-number { padding: 0 10px;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px;}
+	.nav-tabs>li>a {padding: 5px 10px !important;}
+	.nav-tabs { margin:  10p 0;}
+	.justBorder {padding: 0px 0 0px 39px;}
+	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
+	
+
+}
+
+
+
+
+
+
  @media (max-width: 1290px)  {
  	
 	.boxes p { width: 255px !important; }
@@ -341,12 +415,6 @@ table.table td{
 }
 .right{
 	float: right;
-}
-.mtl{
-	margin-top: 20px;
-}
-.mrm{
-	margin-right: 10px;
 }
 .user-name{
 	color: #fff;
@@ -888,3 +956,6 @@ display: inline-block;
 
 .mpl0 {margin-left: 0 !important;padding-left: 0 !important;}
 .just  {margin-left: 0 !important;padding-left: 0 !important; }
+
+
+
