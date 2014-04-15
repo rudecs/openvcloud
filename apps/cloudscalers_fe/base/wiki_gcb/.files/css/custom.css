@@ -17,14 +17,14 @@ textarea {
 }
 
 .jumbotron { background-color: initial; }
-.signUp { background: #80bd01; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
-.login { background: #00a8e1; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
+.signUp { background: #06a7e2; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
+.login { background: #06a7e2; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
 .navbar-right.clearR { margin: 46px 0 0 0; }
 .why { width: 63px; background: url(../img/images/why.png) no-repeat 42px 7px; }
 .contactButton { background: url(../img/images/contact.png) no-repeat 78px 7px; }
 .font { font-family: arial,sans-serif; }
-.mainText { font-size: 60px !important; color: #FFF; }
+.mainText { font-size: 50px !important; color: #FFF; }
 /*.marginText {margin: 0 0 0 145px;}*/
 .arrow { color: #06a7e2;font-family: arial,sans-serif; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
@@ -32,7 +32,7 @@ textarea {
 .boxes img { float: left; margin: 25px 18px 0 0; }
 .boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: arial,sans-serif; }
 .boxes h2 { font-size: 22px; }
-.color1 h2 { color: #80bd01; }
+.color1 h2 { color: #06a7e2; }
 .color2 h2 { color: #d97804; }
 .color3 h2 { color: #06a7e2; }
 .color4 h2 { color: #f6b332; }
@@ -72,10 +72,10 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .Support:hover { background: url(../img/images/menu-icon-hover4.png) no-repeat 100% 6px !important; }
 .active1 { color: #FFF !important; background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
 .white { background: #FFF; padding: 30px 0 79px 0; }
-.white h1 { color: #06a7e2; font-size: 40px; font-family: arial,sans-serif; margin-bottom: 30px;}
+.white h1 { color: #06a7e2; font-size: 35px; font-family: arial,sans-serif; margin-bottom: 30px;}
 .white h2 { color: #06a7e2; font-size: 17px; font-family: arial,sans-serif; }
-.white p { color: #77777b; font-size: 16px; font-family: arial,sans-serif; line-height: 32px; }
-.white ul li { color: #77777b; font-size: 16px; font-family: arial,sans-serif; line-height: 30px; }
+.white p { color: #000; font-size: 16px; font-family: arial,sans-serif; line-height: 32px; }
+.white ul li { color: #000; font-size: 16px; font-family: arial,sans-serif; line-height: 30px; }
 .body a{ line-height: 1.3em; }
 .marginTop + .container { margin-bottom: 100px; }
 .nameField { font-size: 26px; color: #06a7e2; width: 60%; margin: 21px 0; display: inline-block;}/**/
@@ -95,7 +95,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .sideNav { position: absolute; top: 70px; right: 0; width: 180px; height: auto; z-index: 1040; }
 .sideNav .panel-body { padding: 7px 0 7px 15px;}
 .sideNav .panel-body ul { padding: 0; list-style: none;}
-.sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #666; font-size: 13px;}
+.sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #000; font-size: 13px;}
 .sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active{ color: #000;}
 .panel-heading { padding: 0; }
 .panel-title>a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: arial,sans-serif; }
@@ -339,7 +339,7 @@ p { color:#77777b; }
 
 
 
-.blueBar { background: #00a8e1; height: 48px; }
+.blueBar { background: #06a7e2; height: 48px; }
 /*.blueBar ul li a { color: #FFF; font-size: 16px; padding: 13px 22px 13px 0; background: url(../img/images/arrow-menu.png) no-repeat 100% 20px; display: inline-block;}
 .blueBar ul li {  list-style: none;}
 */
@@ -356,7 +356,7 @@ p { color:#77777b; }
 .navbar { margin-bottom: 0; border-radius: 0; }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: #000; }
 .accordionInside {min-width: 425px;box-shadow: none;border-bottom: 1px solid #06a7e2;}
-.noPad .dropdown-menu { padding: 0; border: 2px solid #00a8e1; border-top: 0 !important; border-radius: 0;}
+.noPad .dropdown-menu { padding: 0; border: 2px solid #06a7e2; border-top: 0 !important; border-radius: 0;}
 
 .grey h4 > a { background: #BEE4F2; padding: 14px 25px;}
 .grey a { color: #4f4f4f; font-family: arial,sans-serif;}
@@ -394,7 +394,7 @@ table.table td{
 
 .table-bordered{
 	border: 1px solid #c4c4c4;
-	color: #808083;
+	color: #000000;
 }
 .white a:hover, .white a:focus{
 	color: #39b3d7;
@@ -422,7 +422,7 @@ table.table td{
 	font-size: 16px;
 }
 .user-name:hover{
-	color: #00a8e1;
+	color: #06a7e2;
 }
 #right-nav{
 	position: absolute;
@@ -530,17 +530,17 @@ color: #FFF;}
 .table { font-size: 12px;}
 .control-label { float: left;
  margin: 0 14px 0 0;}
-.input-group-addon { background-color: #00a8e1; color: #FFF;  border-radius: 0 !important;}
+.input-group-addon { background-color: #06a7e2; color: #FFF;  border-radius: 0 !important;}
 .form-control.ng-pristine.ng-valid.ng-valid-number { border-radius: 0 !important; }
 .control-group {
     margin: 15px 0;
 
     display: inline-block;
     width: 100%;
-    color: #666;
+    color: #000;
     font-size: 16px;
 }
- .controls .btn.btn-small { float: left; border: 1px solid #00a8e1; border-radius: 0; margin: 0 0 0 20px;}
+ .controls .btn.btn-small { float: left; border: 1px solid #06a7e2; border-radius: 0; margin: 0 0 0 20px;}
  label + .controls { display: table-cell; margin: 0 0 0 0;}
 
 .list li {
@@ -795,12 +795,12 @@ background-color: #06a7e2;
 
 
 .blueBar {
-background: #00a8e1;
+background: #06a7e2;
 height: 48px;
 z-index: 5555555555555555555555555;
 }
 
-.navbar-collapse.bs-example-js-navbar-collapse.collapse.in { background: #00a8e1;}
+.navbar-collapse.bs-example-js-navbar-collapse.collapse.in { background: #06a7e2;}
 
 
 .navbar-default {
@@ -978,3 +978,18 @@ display: inline-block;
 .mtl{
 	margin-top: 20px;
 }
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
+
+
+
+
+.boxes h2 + .font.andP {
+float: left;
+width: 279px;
+color: #FFF;
+letter-spacing: 1px;
+font-family: arial,sans-serif;
+}
+
+.newDecks .leftIcon { margin-left: 0;}
