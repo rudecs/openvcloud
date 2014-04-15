@@ -15,6 +15,10 @@ angular.module('cloudscalers.controllers')
                 $scope.portforwarding = data;
             });
 
+            Networks.commonports().then(function(data) {
+                $scope.commonports = data;
+            });
+
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
                     ip: $scope.currentSpace.publicipaddress,
@@ -25,9 +29,7 @@ angular.module('cloudscalers.controllers')
                     // message: false,
                     statusMessage: ''
                 };
-                Networks.commonports().then(function(data) {
-                    $scope.commonports = data;
-                });
+
                 $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
@@ -36,8 +38,8 @@ angular.module('cloudscalers.controllers')
                 $scope.submit = function () {
                     Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, $scope.newRule.VM.id, $scope.newRule.localPort).then(
                         function (result) {
-                            $scope.portforwarding.push({ip: $scope.currentSpace.publicipaddress, puplicPort: $scope.newRule.publicPort,
-                            vmName: $scope.newRule.VM.vmName, vmId: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
+                            $scope.portforwarding.push({publicIp: $scope.currentSpace.publicipaddress, publicPort: $scope.newRule.publicPort,
+                            vmName: $scope.newRule.VM.name, vmid: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
                             $modalInstance.close({});
                         }
                     );
@@ -63,15 +65,12 @@ angular.module('cloudscalers.controllers')
                     id: index.id,
                     ip: $scope.portforwardbyID[index.id].publicIp,
                     publicPort: $scope.portforwardbyID[index.id].publicPort,
-                    VM: $scope.portforwardbyID[index.id].vmName,
+                    VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
                     localPort: $scope.portforwardbyID[index.id].localPort
                 };
               });
-              Networks.commonports().then(function(data) {
-                    $scope.commonports = data;
-              });
               $scope.update = function () {
-                  Networks.updatePortforward($scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM, $scope.editRule.localPort).then(
+                  Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
                       function (result) {
                           $scope.portforwarding = result.data;
                           $scope.search = $scope.portforwarding[0];

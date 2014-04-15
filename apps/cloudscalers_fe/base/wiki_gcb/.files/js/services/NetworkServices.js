@@ -24,8 +24,8 @@ angular.module('cloudscalers.services')
                 }
 
             },
-            createPortforward: function(id, ip, puplicPort, vmid, localPort) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + 'publicIp=' + encodeURIComponent(ip) + "&puplicPort="+ encodeURIComponent(puplicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
+            createPortforward: function(id, ip, publicPort, vmid, localPort) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + '&publicIp=' + encodeURIComponent(ip) + "&publicPort="+ encodeURIComponent(publicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
                     encodeURIComponent(localPort)).then(
                         function(result){
                             return result;
@@ -35,10 +35,8 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            updatePortforward: function(id, ip, puplicPort, vmName, localPort) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?ip=' + encodeURIComponent(ip) + "&puplicPort=" +
-                    encodeURIComponent(puplicPort) + "&vmName=" + encodeURIComponent(vmName) + "&localPort=" +
-                    encodeURIComponent(localPort) + "&id=" + encodeURIComponent(id)).then(
+            updatePortforward: function(cloudspaceid, id, ip, publicPort, vmid, localPort) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id) + "&publicIp=" + encodeURIComponent(ip) + "&publicPort=" + encodeURIComponent(publicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +encodeURIComponent(localPort)).then(
                         function(result){
                             return result;
                         },
