@@ -206,11 +206,31 @@ h1 { margin-bottom: 20px; }
       <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
+                <em style="display: block;">Use the control buttons below to get access to the screen. In case of a black screen, 
+                select the Keyboard button and hit any key to disable the screen saving mode.</em>
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine is not running.
                 </div>
-				<div novncwindow connectioninfo="novnc_connectioninfo">
-		</div>
+                <div class="">
+                    <h4 class="machine-label left mbn">IP Address</h4>
+                    <p class="pas mbn left mrl" style="margin-top: 2px;">
+                        {[machine.interfaces[0].ipAddress]}    
+                    </p>
+                </div>
+                <div class="">
+                    <h4 class="machine-label left mbn">login</h4>
+                    <p class="left mrl" style="margin-top: 2px;">
+                        {[machine.accounts[0].login]}
+                    </p>
+                </div>
+                <div class="mbl">
+                    <h4 class="machine-label left mbn">password</h4>
+                    <p class="left" style="margin-top: 2px;">
+                        {[machine.accounts[0].password]}
+                    </p>
+                </div>
+                <div novncwindow connectioninfo="novnc_connectioninfo">
+        </div>
             </div>
         </div>
       </tab>

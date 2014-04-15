@@ -960,3 +960,21 @@ display: inline-block;
 .mrl{
 	margin-right: 20px;
 }
+.machine-label{
+	font-size: 16px;
+	color: #77777b;
+	font-weight: normal;
+	margin-right: 10px;
+}
+.pas{
+	padding-top: 3px;
+}
+.mvn{
+	margin-bottom: 0;
+}
+.mbl{
+	margin-bottom: 20px;
+}
+.mtl{
+	margin-top: 20px;
+}

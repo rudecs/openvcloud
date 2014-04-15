@@ -52,7 +52,8 @@ angular.module('cloudscalers.directives', [])
 
 
 	        },
-		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" style="margin-top: 0px;" ng-show="!showPlaceholder">\
+            // !   ng-show="showPlaceholder
+		template: '<div id="noVNC_status_bar" class="noVNC_status_bar" ng-show="showPlaceholder">\
                         <table border=0 width="100%"><tr>\
                         <td width="20%">\
                             <input id="capturekeyboardbutton" type=button class="btn" value="Capture keyboard"></input>\
@@ -64,7 +65,6 @@ angular.module('cloudscalers.directives', [])
                             id="sendCtrlAltDelButton">\
                             </div></td>\
                         </tr></table>\
-                    <hr/>\
                     <canvas id="noVNC_canvas" width="640px" height="20px">\
                         Canvas not supported.\
                     </canvas>\
