@@ -198,6 +198,8 @@ p { color:#77777b; }
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	
 	.user-name {font-size: 11px !important;}
+	.nameField23 {width: 9% !important;}
+
 }
 
 
@@ -269,7 +271,7 @@ p { color:#77777b; }
 	.justBorder {padding: 0px 0 0px 39px;}
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
-	
+	.nameField23 {width: 12% !important;}
 
 }
 
@@ -290,6 +292,8 @@ p { color:#77777b; }
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.marginText { margin: 0 0 0 145px; }
 	.bottomFooter {padding: 0;}
+	.nameField23 {width: 100% !important;}
+	.controls2 {width: 100% !important;}
 
 }
 
@@ -343,6 +347,8 @@ p { color:#77777b; }
 	.myNav ul { float: right;}
 	.form-horizontal .control-label { text-align: left !important;}
 	.nav.navbar-nav.navbar-right { text-align: left;}
+	.nameField23 {width: 100% !important;}
+	.controls2 {width: 100% !important;}
 }
 .form-horizontal .control-label { text-align: left !important;}
 
@@ -414,6 +420,7 @@ table.table td{
 }
 .nameField{
 	margin-bottom: 20px;
+	float: left;
 }
 
 
@@ -861,7 +868,7 @@ canvas {
   
 }
 
-.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit;}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit; outline: 0;}
 
 .navbar-nav>li>.dropdown-menu {border-color: #06a7e2;border-top: 0;}
 table.table td {font-size: 14px;}
@@ -1066,3 +1073,15 @@ padding: 7px 20px;
 
 
 .alert {margin: 20px 0;}
+
+.nameField23 {
+width: 12%;
+clear: both;
+display: inline-block;
+}
+
+.controls2 {
+    display: inline-block;
+    width: 88%;
+    float: left;
+}

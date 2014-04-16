@@ -10,11 +10,11 @@ h1. Create Machine
         <h2>Description:</h2>
             <textarea ng-model="machine.description" type="text" class="input-xxlarge" />
     </div>
-    <div class="nameField">
+    <div class="nameField nameField23">
         <h2>OS Image</h2>
 
     </div>
-    <div class="controls ">{{include:image_list}}</div>
+    <div class="controls controls2">{{include:image_list}}</div>
     <div class="machineWrap">
         <h2>Package *:</h2>
         <div class="machineList">
