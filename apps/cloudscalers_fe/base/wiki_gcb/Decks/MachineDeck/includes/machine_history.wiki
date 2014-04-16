@@ -1,4 +1,3 @@
-<h3>Most recent changes:</h3>
 <table class="table table-striped table-bordered">
     <thead>
         <tr>

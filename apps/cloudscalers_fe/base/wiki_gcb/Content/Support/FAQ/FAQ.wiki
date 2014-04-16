@@ -1,4 +1,4 @@
-h2. Documentation & Support
+h1. Documentation & Support
 
 Welcome to the Documentation and Support center.
 

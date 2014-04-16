@@ -607,7 +607,7 @@ defineApiStub = function ($httpBackend) {
        {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
        {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 5050, localPort: 50},
     ];
-    $httpBackend.whenGET(/^\/portforwarding\/list.*/).respond(function(method, url, data) {
+    $httpBackend.whenGET(/^\/portforwarding\/list.*cloudspaceid.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         if(params.id == undefined){
             return [200, portforwarding];
@@ -616,14 +616,16 @@ defineApiStub = function ($httpBackend) {
             return[200, filteredPorts];
         }
     });
-    $httpBackend.whenGET(/^\/portforwarding\/list\?id=\d+.*/).respond(storages);
 
-    $httpBackend.whenGET(/^\/commonports\/list.*/).respond([
+    $httpBackend.whenGET(/^\/portforwarding\/listcommonports/).respond([
         {port: '80', name: 'HTTP'},
         {port: '72', name: 'SSH'},
         {port: '403', name: 'HTTPS'},
         {port: '27', name: 'FTP'}
     ]);
+
+    $httpBackend.whenGET(/^\/portforwarding\/list\?id=\d+.*/).respond(storages);
+
 
     $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);

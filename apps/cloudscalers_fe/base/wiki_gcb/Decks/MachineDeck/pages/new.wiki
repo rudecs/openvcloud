@@ -3,12 +3,12 @@ h1. Create Machine
     <hr>
 <div class="form-horizontal">
     <div class="nameField">
-        <h2>Name:</h2>
-        <input ng-model="machine.name" type="text" class="input-xxlarge"/>
+        <h2 class="left" style="margin-right: 45px;">Name:</h2>
+        <input ng-model="machine.name" type="text" class="input-xxlarge left"/>
     </div>
     <div class="nameField">
-        <h2>Description:</h2>
-            <textarea ng-model="machine.description" type="text" class="input-xxlarge" />
+        <h2 class="left">Description:</h2>
+            <textarea ng-model="machine.description" type="text" class="input-xxlarge left" />
     </div>
     <div class="nameField">
         <h2>OS Image</h2>

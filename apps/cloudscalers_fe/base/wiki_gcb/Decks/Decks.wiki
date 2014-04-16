@@ -1,8 +1,68 @@
+{{html:
+<div class="container">
+    <div class="row newDecks">
+        <div class="col-md-6 boxes font color1 leftIcon">
+            <img src="/$$space/.files/img/icon1.png" alt=""/>
+            <h2>
+}}
+[Office Deck|OfficeDeck]
+{{html:
+</h2>
+            <ul class="font andP">
+              <li>Innovative new way to deliver IT</li>
+              <li>Private and secure cloud storage</li>
+              <li>Use laptops, tablets and smartphones</li>
+              <li>MS Windows, Linux and Legacy apps</li>
+              <li>Built-in cloud collaboration tools</li>
+            </ul>
+        </div>
+        <div class="col-md-6 boxes font color2">
+            <img src="/$$space/.files/img/icon2.png" alt=""/>
+            <h2>
+}}
+[Storage Deck|StorageDeck]
+{{html:
+</h2>
+            <ul class="font andP">
+              <li>Ultra reliable storage</li>
+              <li>Secure distributed storage</li>
+              <li>S3 compatible storage API</li>
+              <li>Attach as disk to the VM</li>
+              <li>All integrated in one cloud portal</li>
+            </ul>
+        </div>
+        <div class="col-md-6 boxes font color3">
+            <img src="/$$space/.files/img/icon3.png" alt=""/>
+            <h2>
+}}
+[Machine Deck|MachineDeck]
+{{html:
+</h2>
+            <ul class="font andP">
+              <li>Powerful IAAS stack</li>
+              <li>Almost instant creation of VMs</li>
+              <li>Select preferred SSD drive size</li>
+              <li>Ultra fast snapshotting and rollback</li>
+              <li>Automate using the simple API</li>
+            </ul>
+        </div>
+        <div class="col-md-6 boxes font color4">
+            <img src="/$$space/.files/img/icon4.png" alt=""/>
+            <h2>
+}}
+[Deck 42|Deck42]
+{{html:
+</h2>
+            <ul class="font andP">
+              <li>The answer to everything</li>
+              <li>Private apps ready to go</li>
+              <li>Sized to your project</li>
+              <li>Flexible to fit your needs</li>
+              <li>Using the best of all Decks</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-h2. $$page
 
-#{{pageexplorer}}
-
-h2. children
-
-{{children: bullets}}
+}}

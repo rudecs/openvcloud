@@ -86,7 +86,7 @@
         <span class="icon-bar"></span>
       </button>
     </div>
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav">
         <li class="dropdown dropdown-accordion">
           <a id="drop1" href="#" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
