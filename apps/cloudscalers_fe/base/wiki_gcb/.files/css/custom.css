@@ -99,7 +99,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active{ color: #000;}
 .panel-heading { padding: 0; }
 .panel-title>a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: arial,sans-serif; }
-.sideNav .header > a{ padding: 5px 15px; display: block; color: #FFF !important; font-family: arial,sans-serif; }
+.sideNav .header > a{ padding: 5px 15px; display: block; color: #000 !important; font-family: arial,sans-serif; }
 .sideNav .header > a.active{font-weight: bold; text-decoration: underline;}
 .blue h4 > a, .sideNav .header.blue > a{ background: #06a7e2; }
 .sideNav .header a{ text-align: center; }
@@ -116,6 +116,14 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .panel-group .panel { border-radius: 0; }
 .panel-group .panel+.panel { margin-top: 0; }
 .panel-body { color: #77777b; font-size: 13px; background: #FFF;}
+
+
+.blue h4 > a, .sideNav .header.blue > a:hover{ background: #21C3FF; }
+.green h4 > a, .sideNav .header.green > a:hover{ background: #8ED300; }
+.orange h4 > a , .sideNav .header.orange > a:hover{ background: #FFC75C; }
+.darkOrange h4 > a , .sideNav .header.darkOrange > a:hover{ background: #d97804; }
+
+
 /*sideNav*/
 p { color:#77777b; }
 
@@ -134,7 +142,7 @@ p { color:#77777b; }
 	.leftIcon {margin: 0 0 0 144px;}
 	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
 	.logo img { width: 240px; height: auto;}
-	.signUp {font-size: 10px;}
+	.signUp {font-size: 11px;}
 	.navbar-default .navbar-nav>li>a {font-size: 13px !important;}
 	.navbar-nav>li>a {padding-top: 5px;padding-bottom: 5px;}
 	.navbar.navbar-default {min-height: 31px; }
@@ -189,7 +197,7 @@ p { color:#77777b; }
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	
-
+	.user-name {font-size: 11px !important;}
 }
 
 
