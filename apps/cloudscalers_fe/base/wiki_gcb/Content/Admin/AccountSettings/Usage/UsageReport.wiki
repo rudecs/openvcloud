@@ -1,4 +1,7 @@
 @usedefault
+{{html:
+	<a href="AccountSettings"><i class="fa fa-arrow-left mrm mbl"></i>Back to account details</a>
+}}
 h1. Usage report
 
 {{html:
