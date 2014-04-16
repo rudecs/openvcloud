@@ -1,6 +1,6 @@
 h1. Create Machine
 {{html:
-    <hr>
+    
 <div class="form-horizontal">
     <div class="nameField">
         <h2 class="left" style="margin-right: 45px;">Name:</h2>
@@ -34,19 +34,19 @@ h1. Create Machine
 }}
 
 {{html:
-    <hr>
+    
     <div>
         <h2>Increase disk size to:</h2>
         <div class="machineList" >
             {{include:storage_list}}
         </div>
     </div>
-    <hr>
+    
 
     <div class="form-actions">
         <button class="btn btn-info btn-large mainButton" ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
     </div>
-    <hr>
+    
 }}
     {{div: class=msg alert alert-warning}}
 	*Fair use policy for Unlimited Transfer:*

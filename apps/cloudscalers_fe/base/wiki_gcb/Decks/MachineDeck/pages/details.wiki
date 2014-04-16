@@ -10,7 +10,7 @@ h1 { margin-bottom: 20px; }
 </a>
 <tabset style="clear:both;">
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
-        <div id="actions" class="tab-pane active">
+        <div id="actions" class="tab-pane active active2">
             <div class="row">
                 <div class="span8">
                     <ul class="list">
@@ -24,7 +24,7 @@ h1 { margin-bottom: 20px; }
                             <div class="row">
                                 <h5 class="span3">Description</h5>
                                 <div class="span9 justify edit-description">
-                                    <div style="cursor: pointer; height: 40px; line-height: 40px;" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
+                                    <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                         <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
                                     </div>
                                 </div>
@@ -68,7 +68,7 @@ h1 { margin-bottom: 20px; }
                         </li>
                     </ul>
                 </div>
-                <div class="span4 actions">
+                <div class="span3 actions">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
                     <ul class="actions">
 
@@ -237,8 +237,8 @@ h1 { margin-bottom: 20px; }
       <tab heading="Snapshots" active="tabactive.snapshots">
 
 
-        <div id="snapshots" class="tab-pane">
-            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
+        <div id="snapshots" class="tab-pane tab-pane2">
+            <a class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
                 <i class="fa fa-camera"></i>
                 Take Snapshot
             </a>
