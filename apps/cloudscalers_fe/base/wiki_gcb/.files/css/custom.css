@@ -861,7 +861,7 @@ canvas {
   
 }
 
-.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit;}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit; outline: 0;}
 
 .navbar-nav>li>.dropdown-menu {border-color: #06a7e2;border-top: 0;}
 table.table td {font-size: 14px;}
