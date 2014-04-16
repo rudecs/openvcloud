@@ -983,6 +983,9 @@ display: inline-block;
 .bTxt{
 	color: #000 !important;
 }
+.mrm{
+	margin-right: 10px;
+}
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
 
