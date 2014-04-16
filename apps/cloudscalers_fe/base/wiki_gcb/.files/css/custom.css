@@ -136,7 +136,7 @@ p { color:#77777b; }
  	
 	.boxes p { width: 255px !important; }
 	.mainText {font-size: 40px !important;}
-	.nameField {width: 80%;}
+	.nameField {width: 57%;}
 	.white h2 {font-size: 13px;}
 	.machineList ul li a, .storage-size-list button { font-size: 13px; font-weight: normal;}
 	.leftIcon {margin: 0 0 0 144px;}
@@ -209,7 +209,7 @@ p { color:#77777b; }
  	
 	.boxes p { width: 255px !important; }
 	.mainText {font-size: 40px !important;}
-	.nameField {width: 80%;}
+	.nameField {width: 76%;}
 	.white h2 {font-size: 12px;}
 	.machineList ul li a, .storage-size-list button { font-size: 12px; font-weight: normal;}
 	.leftIcon {margin: 0 0 0 144px;}
@@ -861,7 +861,7 @@ canvas {
   
 }
 
-.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit; outline: 0;}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {color: #06a7e2;background-color: inherit;}
 
 .navbar-nav>li>.dropdown-menu {border-color: #06a7e2;border-top: 0;}
 table.table td {font-size: 14px;}
