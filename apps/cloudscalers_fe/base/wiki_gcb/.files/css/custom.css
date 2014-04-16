@@ -994,6 +994,9 @@ display: inline-block;
 .mrm{
 	margin-right: 10px;
 }
+.mvm{
+	margin: 10px 0;
+}
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
 
