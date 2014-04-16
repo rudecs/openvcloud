@@ -1093,3 +1093,6 @@ display: inline-block;
     width: 88%;
     float: left;
 }
+
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form { border: 0;}
