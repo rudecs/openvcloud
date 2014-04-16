@@ -60,7 +60,7 @@
 
 {{div2:class=loader | style=display: none }} 
 h2. loading
-!/$$space/.files/img/images/dots_2.gif! 
+!loading_cropped.gif! 
 {{div2}}
 
 {{div2:class=loading | style=display: none}} 
