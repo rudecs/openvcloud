@@ -30,21 +30,6 @@ h1. Create Machine
             </ul>
         </div>
     </div>
-    <div class="machineWrap">
-        <h2>Options:</h2>
-        <div class="machineList">
-            <ul class="controls" >
-                <!-- {{include:plan_list}} -->
-                <li ng-repeat="size in sizes | orderBy:sizepredicate">
-                    <a href="" ng-model="machine.sizeId" btn-radio="size.id"
-                    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
-                    {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
-                    {[ size.vcpus ]} core(s), </br>
-                    {[ size.description ]}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
 
 }}
 
