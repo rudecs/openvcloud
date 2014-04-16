@@ -161,7 +161,7 @@ p { color:#77777b; }
 	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
 	.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}
 	.marginText {margin: 0 0 0 62px;}
-	body {background-size: 1290px auto;}
+	body {background-size: 1376px auto;}
 	.boxes img {width: 100px;}
 	.white ul li {font-size: 13px !important;line-height: 30px;}
 	h4, .h4 {font-size: 18px; }
@@ -199,6 +199,8 @@ p { color:#77777b; }
 	
 	.user-name {font-size: 11px !important;}
 	.nameField23 {width: 9% !important;}
+	.account-container.stacked {width: 544px !important;}
+	.signUpForm .inputWrap {width: 69% !important;}
 
 }
 
@@ -290,7 +292,7 @@ p { color:#77777b; }
 	.modal .col-md-3 h4 {margin: 10px auto !important;}
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
-	.marginText { margin: 0 0 0 145px; }
+	.marginText { margin: 0 0 0 35px; }
 	.bottomFooter {padding: 0;}
 	.nameField23 {width: 100% !important;}
 	.controls2 {width: 100% !important;}
@@ -349,7 +351,20 @@ p { color:#77777b; }
 	.nav.navbar-nav.navbar-right { text-align: left;}
 	.nameField23 {width: 100% !important;}
 	.controls2 {width: 100% !important;}
+	.account-container.stacked {width: 400px !important;}
+	.signUpForm .inputWrap {width: 97% !important;}
+	.signUpForm .inputWrap input {width: 100% !important;}
+	.upMargin {margin: 30px auto 0 !important;}
+	.inputWrap {width: 98% !important;}
+
 }
+
+
+
+
+
+
+
 .form-horizontal .control-label { text-align: left !important;}
 
 
