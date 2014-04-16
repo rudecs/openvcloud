@@ -197,7 +197,7 @@ p { color:#77777b; }
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	
-	.user-name {font-size: 11px;}
+	.user-name {font-size: 11px !important;}
 }
 
 
@@ -215,7 +215,7 @@ p { color:#77777b; }
 	.leftIcon {margin: 0 0 0 144px;}
 	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
 	.logo img { width: 240px; height: auto;}
-	.signUp {font-size: 10px;}
+	.signUp {font-size: 11px;}
 	.navbar-default .navbar-nav>li>a {font-size: 12px !important;}
 	.navbar-nav>li>a {padding-top: 5px;padding-bottom: 5px;}
 	.navbar.navbar-default {min-height: 31px; }
@@ -993,9 +993,6 @@ display: inline-block;
 }
 .bTxt{
 	color: #000 !important;
-}
-.mvm{
-	margin: 10px 0;
 }
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}

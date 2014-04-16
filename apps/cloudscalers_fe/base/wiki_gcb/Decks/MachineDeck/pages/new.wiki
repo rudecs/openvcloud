@@ -10,14 +10,11 @@ h1. Create Machine
         <h2 class="left">Description:</h2>
             <textarea ng-model="machine.description" type="text" class="input-xxlarge left" />
     </div>
-    <div class="row mvm">
-        <div class="nameField left" style="width: 8%;">
-            <h2>OS Image:</h2>
-        </div>
-        <div class="controls left" style="width: 84%;">
-            {{include:image_list}}
-        </div>
+    <div class="nameField">
+        <h2>OS Image</h2>
+
     </div>
+    <div class="controls ">{{include:image_list}}</div>
     <div class="machineWrap">
         <h2>Package *:</h2>
         <div class="machineList">
@@ -52,11 +49,11 @@ h1. Create Machine
     
 }}
     {{div: class=msg alert alert-warning}}
-	*Fair use policy for Unlimited Transfer:*
+    *Fair use policy for Unlimited Transfer:*
         * Small machines: &lt;= 4 cores = 1 Mbit/s average usage per month
         * Large machines: &gt;= 5 cores = 5 Mbit/s average usage per month
     _This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us._
-	{{div}}
+    {{div}}
 
 
 {{html: </div>}}
