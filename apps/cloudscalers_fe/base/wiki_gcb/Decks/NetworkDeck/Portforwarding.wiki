@@ -173,11 +173,7 @@ h1. Port Forwards
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 							{[currentSpace.publicipaddress]}
-		                    <!-- <select ng-model="editRule.ip" class="form-control">
-								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.ip ]}</option>
-							</select> -->
-							<input type="hidden" ng-model="editRule.id">
-		       			</div>
+		       			       </div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
