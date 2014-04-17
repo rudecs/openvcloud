@@ -1023,6 +1023,13 @@ display: inline-block;
 .man{
 	margin: 0;
 }
+.alert{
+	padding: 10px;
+	line-height: 1.2em !important;
+}
+.center{
+	text-align: center;
+}
 
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
