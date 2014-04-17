@@ -18,8 +18,8 @@ h1. Port Forwards
 				    <!--  | filter:search.ip -->
 				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
 				      <td style="display: none;">{[portforward.id]}</td>
-				      	<td style=" cursor: pointer;">{[portforward.ip]}</td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.puplicPort]}</td>
+				      	<td style=" cursor: pointer;">{[portforward.publicIp]}</td>
+				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
 				        <td style=" cursor: pointer;" ng-click="portForwardPopupEdit()">{[portforward.vmName]}</td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
 				      </tr>
