@@ -1026,6 +1026,7 @@ display: inline-block;
 .alert{
 	padding: 10px;
 	line-height: 1.2em !important;
+	margin: 0 !important;
 }
 .center{
 	text-align: center;
