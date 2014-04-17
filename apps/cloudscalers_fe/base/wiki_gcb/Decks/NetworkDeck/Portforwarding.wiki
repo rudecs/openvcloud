@@ -169,15 +169,13 @@ h1. Port Forwards
             </div>
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
-	            	<div class="control-group" style="min-height: 63px;">
+            	    <div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls left">
-		                    <!-- <select ng-model="editRule.ip" class="form-control">
-								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.ip ]}</option>
-							</select> -->
-							<input type="hidden" ng-model="editRule.id">
+						<div class="controls">
+					         {[currentSpace.publicipaddress]}
 		       			</div>
 					</div>
+
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
@@ -197,10 +195,8 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-		                    <select ng-model="editRule.VM" class="form-control">
-								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
-							</select>
-		                </div>
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+		                    </select>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
