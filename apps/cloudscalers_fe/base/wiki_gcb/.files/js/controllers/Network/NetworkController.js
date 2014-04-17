@@ -63,10 +63,10 @@ angular.module('cloudscalers.controllers')
                 $scope.portforwardbyID = data;
                 $scope.editRule = {
                     id: index.id,
-                    ip: index.ip,
-                    publicPort: index.publicPort,
-                    VM: index.vmName,
-                    localPort: index.localPort
+                    ip: $scope.portforwardbyID[index.id].publicIp,
+                    publicPort: $scope.portforwardbyID[index.id].publicPort,
+                    VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
+                    localPort: $scope.portforwardbyID[index.id].localPort
                 };
               });
               $scope.update = function () {
