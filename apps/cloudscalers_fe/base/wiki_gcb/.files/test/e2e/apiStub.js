@@ -103,7 +103,7 @@ defineApiStub = function ($httpBackend) {
             "interfaces": [{'ipAddress': '192.168.100.123'}],
             "sizeId": 0,
             "imageId": 0,
-            "id": 0
+            "id": 0,
         }, {
         	"cloudspaceId":1,
             "status": "HALTED",
@@ -114,7 +114,7 @@ defineApiStub = function ($httpBackend) {
             "interfaces": [{'ipAddress': '192.168.100.66'}],
             "sizeId": 0,
             "imageId": 1,
-            "id": 1
+            "id": 1,
         }]);
     }
 
@@ -390,13 +390,13 @@ defineApiStub = function ($httpBackend) {
         {id: '4', name: 'Incubaid'},
     ]);
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1'},
-       {id: '2', name: 'Development', accountId: '2'},
-       {id: '3', name: 'Training', accountId: '2'},
-       {id: '4', name: 'Production', accountId: '2'},
-       {id: '5', name: 'Development', accountId: '4'},
-       {id: '6', name: 'Acceptance', accountId: '4'},
-       {id: '7', name: 'Production', accountId: '4'},
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40'},
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40'},
+       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40'},
+       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40'},
+       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40'},
+       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40'},
+       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40'},
     ];
 
     var cloudSpace = {
