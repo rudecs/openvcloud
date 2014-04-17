@@ -64,7 +64,7 @@
         <div class="subnavbar-inner">
             <div class="container">
                 <a ng-show="!currentUser.username" class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
-                <a ng-show="currentUser.username" class="logo" href="../$$space/MachineDeck"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
+                <a ng-show="currentUser.username" class="logo" href="../$$space/Decks"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
                 <ul class="pull-right span7">
                     <li class="right">
                         <a class="signUp login right" ng-click="logout()" href="" >
