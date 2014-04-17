@@ -18,8 +18,8 @@ h1. Port Forwards
 				    <!--  | filter:search.ip -->
 				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
 				      <td style="display: none;">{[portforward.id]}</td>
-				      	<td style=" cursor: pointer;">{[portforward.ip]}</td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.puplicPort]}</td>
+				      	<td style=" cursor: pointer;">{[portforward.publicIp]}</td>
+				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
 				        <td style=" cursor: pointer;" ng-click="portForwardPopupEdit()">{[portforward.vmName]}</td>
 				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
 				      </tr>
@@ -171,7 +171,8 @@ h1. Port Forwards
             	<div class="col-md-5">
 	            	<div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls left">
+						<div class="controls">
+							{[currentSpace.publicipaddress]}
 		                    <!-- <select ng-model="editRule.ip" class="form-control">
 								<option ng-repeat="portforward in portforwarding | unique: 'ip'">{[ portforward.ip ]}</option>
 							</select> -->
@@ -197,9 +198,8 @@ h1. Port Forwards
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-		                    <select ng-model="editRule.VM" class="form-control">
-								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
-							</select>
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+		                    </select>
 		                </div>
 					</div>
 					<div class="control-group">
