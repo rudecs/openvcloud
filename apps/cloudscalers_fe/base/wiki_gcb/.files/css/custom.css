@@ -1031,6 +1031,9 @@ display: inline-block;
 .center{
 	text-align: center;
 }
+.btn:focus, .btn:active:focus{
+	outline: 0;
+}
 
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
