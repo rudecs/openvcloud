@@ -20,9 +20,9 @@
 }}
 
 
-{{title:Mothership1}}
+{{title:Mothership<sup>1</sup>}}
 
-{{projectname:Mothership1}}
+{{projectname:Mothership<sup>1</sup>}}
 
 {{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
@@ -50,8 +50,11 @@
             </div>
             <div class="navbar-right clearR myNav">
                 <ul>
-                    <li><a href="/$$space/UnifiedCloud" class="Why active">Why</a></li>
-                    <li><a href="/$$space/Contact" class="contact">Contact</a></li>
+                    <li><a href="/$$space/" class="Home active">Home</a></li>
+                    <li><a href="/$$space/Mothership" class="Mothership Features active">Mothership<sup>1</sup> Features</a></li>
+                    <li><a href="/$$space/Why" class="Why Mothership<sup>1</sup> active">Why Mothership<sup>1</sup></a></li>
+                    <li><a href="/$$space/Pricing" class="Pricing active">Pricing</a></li>
+                    <li><a href="/$$space/API" class="API active">API</a></li>
                 </ul>               
             </div>
         </div>
@@ -105,7 +108,7 @@
             </div>
             <div class="col-md-6">
                 <ul class="second-list">
-                    <li><a href="#">Follow Mothership1</a></li>
+                    <li><a href="#">Follow Mothership<sup>1</sup></a></li>
                     <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
                     <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
                     <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
@@ -115,8 +118,8 @@
         <!-- <div class="bottomFooter">
             <div class="col-md-12">
                 <ul class="first-list ">
-                    <li><a href="#">Copyright © 2014 Mothership1</a></li>
-                    <li><a href="/$$space/">Mothership1</a></li>                        
+                    <li><a href="#">Copyright © 2014 Mothership<sup>1</sup></a></li>
+                    <li><a href="/$$space/">Mothership<sup>1</sup></a></li>                        
                 </ul>
             </div>
         </div> -->
@@ -126,7 +129,7 @@
             </div>
             <div class="col-md-7">
                 <ul class="first-list ">
-                    <li><a href="/$$space/">Copyright © 2014 Mothership1</a></li>
+                    <li><a href="/$$space/">Copyright © 2014 Mothership<sup>1</sup></a></li>
                 </ul>
             </div>
             <div class="col-md-3">

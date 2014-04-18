@@ -1,4 +1,4 @@
-h1. Application Deck (Beta)
+h1. Application Deck
 
 Activate your Application Deck and start enjoying your answer to everything you need in IT!
 
