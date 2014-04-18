@@ -13,6 +13,16 @@ h1. Account Details
         <div id="access" class="tab-pane">
 }}
           {{include:AccountAccessManagement}}
+
+{{html:
+        </div>
+      </tab>
+      <tab id="templatemanagment" heading="Template Management">
+        <div id="templatemanagement" class="tab-pane">
+}}
+
+{{include:AccountTemplateManagement}}
+
 {{html:
         </div>
       </tab>
