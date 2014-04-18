@@ -20,18 +20,7 @@
 
 
 {{title:Mothership1}}
-{{html:
-<!--
-  __  __       _   _                  _____ _     _         __
- |  \/  |     | | | |                / ____| |   (_)       /_ |
- | \  / | ___ | |_| |__   ___ _ __  | (___ | |__  _ _ __    | |
- | |\/| |/ _ \| __| '_ \ / _ \ '__|  \___ \| '_ \| | '_ \   | |
- | |  | | (_) | |_| | | |  __/ |     ____) | | | | | |_) |  | |
- |_|  |_|\___/ \__|_| |_|\___|_|    |_____/|_| |_|_| .__/   |_|
-                                                   | |
-                                                   |_|
--->
-}}
+
 {{projectname:Mothership1}}
 
 {{favicon:.files/img/favicon.jpg}}
@@ -39,8 +28,6 @@
 {{css:/$$space/.files/css/custom.css}}
 
 #{{find}}
-
-
 
 {{html:
 
@@ -153,8 +140,8 @@
         <li class="dropdown">
           <a href="../$$space/Profile" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="AccountSettings">Account</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="CloudSpaceSettings">CloudSpace</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="AccountSettings">Account Settings</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="CloudSpaceSettings">CloudSpace Settings</a></li>
           </ul>
         </li>
       </ul>

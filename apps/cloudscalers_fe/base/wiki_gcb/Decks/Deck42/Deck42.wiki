@@ -1,6 +1,0 @@
-h1. Deck 42 (Beta)
-
-Activate your Deck 42 ans start enjoying your answer to everything you need in IT!
-
-{{html:
-}}

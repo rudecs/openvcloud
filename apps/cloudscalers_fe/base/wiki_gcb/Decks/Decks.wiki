@@ -5,16 +5,10 @@
             <img src="/$$space/.files/img/icon1.png" alt=""/>
             <h2>
 }}
-[Office Deck|OfficeDeck]
+[Desktop Deck|DesktopDeck]
 {{html:
 </h2>
-            <ul class="font andP">
-              <li>Innovative new way to deliver IT</li>
-              <li>Private and secure cloud storage</li>
-              <li>Use laptops, tablets and smartphones</li>
-              <li>MS Windows, Linux and Legacy apps</li>
-              <li>Built-in cloud collaboration tools</li>
-            </ul>
+              An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
         </div>
         <div class="col-md-6 boxes font color2">
             <img src="/$$space/.files/img/icon2.png" alt=""/>
@@ -23,13 +17,7 @@
 [Storage Deck|StorageDeck]
 {{html:
 </h2>
-            <ul class="font andP">
-              <li>Ultra reliable storage</li>
-              <li>Secure distributed storage</li>
-              <li>S3 compatible storage API</li>
-              <li>Attach as disk to the VM</li>
-              <li>All integrated in one cloud portal</li>
-            </ul>
+              Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</li>
         </div>
         <div class="col-md-6 boxes font color3">
             <img src="/$$space/.files/img/icon3.png" alt=""/>
@@ -38,28 +26,16 @@
 [Machine Deck|MachineDeck]
 {{html:
 </h2>
-            <ul class="font andP">
-              <li>Powerful IAAS stack</li>
-              <li>Almost instant creation of VMs</li>
-              <li>Select preferred SSD drive size</li>
-              <li>Ultra fast snapshotting and rollback</li>
-              <li>Automate using the simple API</li>
-            </ul>
+              Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
         </div>
         <div class="col-md-6 boxes font color4">
             <img src="/$$space/.files/img/icon4.png" alt=""/>
             <h2>
 }}
-[Deck 42|Deck42]
+[Application Deck|ApplicationDeck]
 {{html:
 </h2>
-            <ul class="font andP">
-              <li>The answer to everything</li>
-              <li>Private apps ready to go</li>
-              <li>Sized to your project</li>
-              <li>Flexible to fit your needs</li>
-              <li>Using the best of all Decks</li>
-            </ul>
+              Coming soon: Private apps ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
         </div>
     </div>
 </div>
