@@ -10,7 +10,7 @@
                 EveryWare AnyWare<br>
                 <br>
                 <span class="arrow font">Every of your Virtual Machines, Cloud Desktops, Applications and Storage available anywhere</span>
-                <span class="arrow font">Mothership<sup>1<s/sup> allows you to connect your local office securely to your remote cloud</span>
+                <span class="arrow font">Connect your local office securely to your remote cloud</span>
                 <span class="arrow font">Designed to be simple and easy to use</span>
             </p>
         </div>
@@ -20,7 +20,7 @@
     <div class="container">
         <div class="col-md-12">
             <p class="font mainText">Revolutionary Cloud Computing!<br>
-                <div class="someText font">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available ‘everyware anyware.’
+                <div class="someText font">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available 'everyware anyware'.
                     <a href="../$$space/Why">Read more  <i class="fa fa-circle-arrow-right"></i></a>
                 </div>
             </p>
@@ -34,22 +34,38 @@
     <div class="row">
         <div class="col-md-5 boxes font color1 leftIcon">
             <img src="/$$space/.files/img/icon1.png" alt=""/>
-            <h2>[Desktop Deck|DesktopDeck]</h2>
+            <h2>
+}}
+[Desktop Deck]
+{{html:
+</h2>
             <p class="font">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.</p>
         </div>
         <div class="col-md-5 boxes font color2">
             <img src="/$$space/.files/img/icon2.png" alt=""/>
-            <h2>[Storage Deck|StorageDeck]</h2>
+            <h2>
+}}
+[Storage Deck]
+{{html:
+</h2>
             <p class="font">Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</p>
         </div>
         <div class="col-md-5 boxes font color3">
             <img src="/$$space/.files/img/icon3.png" alt=""/>
-            <h2>[Machine Deck|MachineDeck]</h2>
+            <h2>
+}}
+[Machine Deck]
+{{html:
+</h2>
             <p class="font">Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.</p>
         </div>
         <div class="col-md-5 boxes font color4">
             <img src="/$$space/.files/img/icon4.png" alt=""/>
-            <h2>[Application Deck|ApplicationDeck]</h2>
+            <h2>
+}}
+[Application Deck]
+{{html:
+</h2>
             <p class="font">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks</p>
         </div>
     </div>
