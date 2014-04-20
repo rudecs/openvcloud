@@ -29,7 +29,7 @@ textarea {
 .arrow { color: #06a7e2;font-family: arial,sans-serif; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
 .marginTop { margin-top: 500px; margin-bottom: 40px; }
-.boxes img { float: left; margin: 25px 18px 0 0; }
+.boxes img { float: left; margin: 25px 18px 0 0; padding-bottom: 35%;}
 .boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: arial,sans-serif; }
 .boxes h2 { font-size: 22px; }
 .color1 h2 { color: #06a7e2; }
@@ -37,7 +37,7 @@ textarea {
 .color3 h2 { color: #06a7e2; }
 .color4 h2 { color: #f6b332; }
 .leftIcon { margin: 0 0 0 215px; }
-.color3, .color4 { margin: 50px 0 0 0; }
+/*.color3, .color4 { margin: 50px 0 0 0; }*/
 .color3 { clear: left; }
 footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
@@ -134,7 +134,7 @@ p { color:#77777b; }
 
 @media (max-width: 1376px)  {
  	
-	.boxes p { width: 255px !important; }
+	.boxes p { width: 340px !important; }
 	.mainText {font-size: 40px !important;}
 	.nameField {width: 57%;}
 	.white h2 {font-size: 13px;}
@@ -211,7 +211,7 @@ p { color:#77777b; }
 
  @media (max-width: 1290px)  {
  	
-	.boxes p { width: 255px !important; }
+	.boxes p { width: 340px !important; }
 	.mainText {font-size: 40px !important;}
 	.nameField {width: 76%;}
 	.white h2 {font-size: 12px;}
@@ -274,7 +274,7 @@ p { color:#77777b; }
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.nameField23 {width: 12% !important;}
-
+	#decks-list li{font-size: 13px !important;}
 }
 
 
@@ -1036,6 +1036,22 @@ display: inline-block;
 }
 .mls{
 	margin-left: 5px;
+}
+.mTxt{
+	font-size: 15px !important;
+}
+.grayTxt{
+	color: rgb(102, 102, 102) !important;
+}
+.line-height{
+	line-height: 1.6em !important;
+	list-style-position:inside;
+}
+.plm{
+	padding-left: 15px;
+}
+.prn{
+	padding-right: 0;
 }
 
 

@@ -1,14 +1,31 @@
 {{html:
 <div class="container">
-    <div class="row newDecks">
+    <div class="span11 newDecks">
         <div class="col-md-6 boxes font color1 leftIcon">
-            <img src="/$$space/.files/img/icon1.png" alt=""/>
+            <div class="col-md-3">
+                <img src="/$$space/.files/img/icon1.png" alt=""/>
+            </div>
+            <div class="col-md-9 prn">
             <h2>
 }}
-[Desktop Deck|DesktopDeck]
+[Desktop Deck (Alfa)|DesktopDeck]
 {{html:
 </h2>
-              An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+        <ul id="decks-list" class="plm" style="list-style: inherit;">
+          <li class="mTxt grayTxt line-height">
+              The Desktops Deck brings an innovative way to deliver IT to end users
+          </li>
+          <li class="mTxt grayTxt line-height">
+              A private portal and secure cloud storage delivering access to familiar applications
+          </li>
+          <li class="mTxt grayTxt line-height">
+              Use preferred device including laptops, tablets and smartphones
+          </li>
+          <li class="mTxt grayTxt line-height">
+              With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
+          </li>
+        </ul>
+        </div>
         </div>
         <div class="col-md-6 boxes font color2">
             <img src="/$$space/.files/img/icon2.png" alt=""/>
@@ -20,22 +37,57 @@
               Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</li>
         </div>
         <div class="col-md-6 boxes font color3">
-            <img src="/$$space/.files/img/icon3.png" alt=""/>
+            <div class="col-md-3">
+                <img src="/$$space/.files/img/icon3.png" alt=""/>
+            </div>
+            <div class="col-md-9 prn">
             <h2>
 }}
 [Machine Deck|MachineDeck]
 {{html:
 </h2>
-              Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+              <ul id="decks-list" class="plm" style="list-style: inherit;">
+                  <li class="mTxt grayTxt line-height">
+                      Almost instant creation of virtual machines
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Any OS: windows, linux
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Select your preferred SSD drive size
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Discover the ultra fast snapshotting and rollback
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Automate using the simple API
+                  </li>
+              </ul>
+        </div>
         </div>
         <div class="col-md-6 boxes font color4">
+        <div class="col-md-3">
+            
             <img src="/$$space/.files/img/icon4.png" alt=""/>
+        </div>
+        <div class="col-md-9 prn">
             <h2>
 }}
-[Application Deck|ApplicationDeck]
+[Application Deck (Q4)|ApplicationDeck]
 {{html:
 </h2>
-              Coming soon: Private apps ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
+              <ul id="decks-list" class="plm" style="list-style: inherit;">
+                  <li class="mTxt grayTxt line-height">
+                      Choose and size applications without the need for a technical background.
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application.
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend.
+                  </li>
+              </ul>
+        </div>
         </div>
     </div>
 </div>
