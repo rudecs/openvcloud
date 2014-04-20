@@ -63,7 +63,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .contact { background: url(../img/images/contact-pic.png) no-repeat 100% 8px !important; }
 .Billing { background: url(../img/images/menu-icon3.png) no-repeat 100% 6px !important; }
 .Support { background: url(../img/images/menu-icon4.png) no-repeat 100% 6px !important; }
-.myNav ul li a:hover { color: #000; }
+.myNav ul li a:hover { color: #06a7e2; }
 
 /*.Why:hover { background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }*/
 .Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
