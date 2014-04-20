@@ -20,7 +20,7 @@
 }}
 
 
-{{title:Mothership<sup>1</sup>}}
+{{title:Mothership1}}
 
 {{projectname:Mothership<sup>1</sup>}}
 
