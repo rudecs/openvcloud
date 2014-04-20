@@ -57,15 +57,15 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .myNav { }
 .myNav ul { }
 .myNav ul li { float: left; margin: 0; list-style: none; }
-.myNav ul li a { font-family: arial,sans-serif; color: #06a7e2; font-size: 21px; display: inline-block; padding: 0 25px; background: url(../img/images/menu-icon2.png) no-repeat 100% 6px; }
-.Why { background: url(../img/images/menu-icon1.png) no-repeat 100% 6px !important; }
+.myNav ul li a { font-family: arial,sans-serif; color: #fff; font-size: 19px; display: inline-block; padding: 0 12px; font-weight: 100; /*background: url(../img/images/menu-icon2.png) no-repeat 100% 6px;*/ }
+/*.Why { background: url(../img/images/menu-icon1.png) no-repeat 100% 6px !important; }*/
 .Settings { background: url(../img/images/menu-icon2.png) no-repeat 100% 6px !important; }
 .contact { background: url(../img/images/contact-pic.png) no-repeat 100% 8px !important; }
 .Billing { background: url(../img/images/menu-icon3.png) no-repeat 100% 6px !important; }
 .Support { background: url(../img/images/menu-icon4.png) no-repeat 100% 6px !important; }
-.myNav ul li a:hover { color: #FFF; }
+.myNav ul li a:hover { color: #000; }
 
-.Why:hover { background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }
+/*.Why:hover { background: url(../img/images/menu-icon-hover1.png) no-repeat 100% 6px !important; }*/
 .Settings:hover { background: url(../img/images/menu-icon-hover2.png) no-repeat 100% 6px !important; }
 .contact:hover { background: url(../img/images/contact-pic-hover.png) no-repeat 100% 8px !important; }
 .Billing:hover { background: url(../img/images/menu-icon-hover3.png) no-repeat 100% 6px !important; }
@@ -155,7 +155,7 @@ p { color:#77777b; }
 	.midFooter ul li a {font-size: 13px;}
 	.bottomFooter .first-list li a {font-size: 13px; }
 	.myNav ul li a { font-size: 17px; background-size: 11px auto !important;}
-	.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}
+	/*.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}*/
 	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
 	.navbar-right.clearR {margin: 33px 0 0 0;}
 	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
@@ -236,7 +236,7 @@ p { color:#77777b; }
 	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
 	.navbar-right.clearR {margin: 33px 0 0 0;}
 	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
-	.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}
+	/*.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}*/
 	.marginText {margin: 0 0 0 62px;}
 	body {background-size: 1290px auto;}
 	.boxes img {width: 100px;}
@@ -1033,6 +1033,9 @@ display: inline-block;
 }
 .btn:focus, .btn:active:focus{
 	outline: 0;
+}
+.mls{
+	margin-left: 5px;
 }
 
 
