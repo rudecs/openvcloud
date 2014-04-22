@@ -1,0 +1,13 @@
+@template public
+@col 3
+
+{{navigation}}
+
+@divend
+
+@col 9
+h2. Why Mothership1
+
+...
+
+@divend

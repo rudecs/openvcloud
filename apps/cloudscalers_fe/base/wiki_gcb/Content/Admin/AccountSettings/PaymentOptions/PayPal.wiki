@@ -10,4 +10,8 @@
                                         margin-bottom: -10px;"
                                     />
                             </a><br/>
+
+<script src="/$$space/.files/js/controllers/PaypalPaymentController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/services/PaypalPayments.js" type="text/javascript"></script>
+
 }}

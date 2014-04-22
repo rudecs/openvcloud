@@ -1,12 +1,13 @@
 @template public
 
+@col 12 | white
 h3. Thank you for signing up!
 {{cssstyle
     h3 { margin-left: 30px;  }
 }}
-
 {{html:
 	<div class="span12">
 		As we are currently in a limited beta, we will confirm your registration after review.
 	</div>
 }}
+@divend

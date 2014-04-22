@@ -11,7 +11,7 @@
             display: none !important;
         }
     </style>
-
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -22,7 +22,7 @@
 
 {{title:Mothership1}}
 
-{{projectname:Mothership1}}
+{{projectname:Mothership<sup>1</sup>}}
 
 {{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
@@ -48,10 +48,24 @@
                 <a href="/$$space/SignUp" class="signUp">Sign Up</a>
                 <a href="/$$space/login" class="signUp login">Login</a>
             </div>
-            <div class="navbar-right clearR myNav">
+            <div class="navbar-right clearR myNav justMine">
                 <ul>
-                    <li><a href="/$$space/UnifiedCloud" class="Why active">Why</a></li>
-                    <li><a href="/$$space/Contact" class="contact">Contact</a></li>
+                    <li><a href="/$$space/" class="Home active">Home<i class="fa fa-home mls"></i></a></li>
+                    <li class="dropdown motherShipSub">
+                          <a href="#" class="dropdown-toggle Mothership Features active" data-toggle="dropdown">Mothership<sup>1</sup><b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="#">Cloud Space</a></li>
+                                <li><a href="#">Defense Shield</a></li>
+                                <li><a href="#">Machine Deck</a></li>
+                                <li><a href="#">Storage Deck</a></li>
+                                <li><a href="#">Desktop Deck</a></li>
+                                <li><a href="#">Application Deck</a></li>
+                              </ul>
+                        </li>
+                    
+                    <li><a href="/$$space/Why" class="Why Mothership<sup>1</sup> active">Why Mothership<sup>1</sup></a></li>
+                    <li><a href="/$$space/Pricing" class="Pricing active">Pricing</a></li>
+                    <li><a href="/$$space/API" class="API active">API</a></li>
                 </ul>               
             </div>
         </div>
@@ -96,7 +110,7 @@
 <footer class="font">
     <div class="container">
         <div class="topFooter"></div>
-        <!--<div class="midFooter">
+        <!-- <div class="midFooter">
             <div class="col-md-6">
                 <ul class="first-list">
                     <li><a href="/$$space/UnifiedCloud">Why</a></li>
@@ -105,38 +119,42 @@
             </div>
             <div class="col-md-6">
                 <ul class="second-list">
-                    <li><a href="#">Follow Mothership1</a></li>
+                    <li>Follow Mothership<sup>1</sup></li>
                     <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
                     <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
                     <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
                 </ul>
             </div>
-        </div>-->
+        </div> -->
         <!-- <div class="bottomFooter">
             <div class="col-md-12">
                 <ul class="first-list ">
-                    <li><a href="#">Copyright © 2014 Mothership1</a></li>
-                    <li><a href="/$$space/">Mothership1</a></li>                        
+                    <li><a href="#">Copyright © 2014 Mothership<sup>1</sup></a></li>
+                    <li><a href="/$$space/">Mothership<sup>1</sup></a></li>                        
                 </ul>
             </div>
         </div> -->
         
-        <div class="bottomFooter">
-            <div class="col-md-1">
-            </div>
-            <div class="col-md-7">
-                <ul class="first-list ">
-                    <li><a href="/$$space/">Copyright © 2014 Mothership1</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <ul class="second-list">
-                    <li><a href="/$$space/Contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-md-1">
-                
-            </div>
+            <div class="bottomFooter">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-8">
+                    <ul class="first-list ">
+                        <li><a href="/$$space/">Copyright © 2014 Mothership<sup>1</sup></a></li>
+                        <li><a href="/$$space/">General Term & Conditions</a></li>
+                        <li><a href="/$$space/">Privacy Policy</a></li>
+                        <li><a href="/$$space/">About Us</a></li>
+                        <li><a href="/$$space/">Press</a></li>
+                        <li><a href="/$$space/Contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <ul class="second-list">
+                        <!-- <li><a href="/$$space/Contact">Contact</a></li> -->
+                        <li>Follow Mothership<sup>1</sup></li>
+                        <li><a href="https://twitter.com/mothershipware"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 

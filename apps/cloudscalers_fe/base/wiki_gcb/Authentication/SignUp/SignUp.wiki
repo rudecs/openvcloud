@@ -31,7 +31,7 @@
                   </div>
            </div>
 
-                <div class="field">
+                <div class="field" style="display: none;">
                 <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="password">Password:</label>
                     <div class="input-prepend">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
 
-                <div class="field">
+                <div class="field" style="display: none;">
                 <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="password">Password Confirmation:</label>
                     <div class="input-prepend">
