@@ -1,13 +1,33 @@
 @template public
-@col 3
+@col 12 | white
 
-{{navigation}}
-
-@divend
-
-@col 9
-h2. $$page
-
+h1. $$page
+{{html:
+	<ul>
+		<li>
+			Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
+		</li>
+		<li>
+			Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+		</li>
+		<li>
+			Its up to you to organize your cloud workloads over cloudspaces.
+		</li>
+		<li>
+			Each CloudSpace is owned by a cost center (the person paying the bills)
+		</li>
+		<li>
+			Each CloudSpace has strictly defined permission scheme to allow people to use it (independent from who pays for it).
+		</li>
+		<li>
+			Each CloudSpace is hosted in a datacenter of choice.
+		</li>
+		<li>
+			Overview of usage based consumption per space.
+		</li>
+	</ul>
+}}
 {{gallery}}
 
+@divend
 @divend

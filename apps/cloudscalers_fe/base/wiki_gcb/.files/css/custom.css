@@ -942,7 +942,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .row-fluid.ng-pristine.ng-valid .ng-binding { display: inline-block;margin: 0 15px 0;}
 
 
-.modal-body.ng-scope { display: inline-block;width: 100%; }
+.modal-body.ng-scope { display: inline-block; /*width: 100%;*/ }
 .modal-body.ng-scope > div { display: inline-block;width: 100%; }
 .row-fluid.ng-pristine.ng-valid { margin: 10px 0;}
 

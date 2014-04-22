@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', function($scope, User, LoadingDialog, $window) {
+    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', '$modal', function($scope, User, LoadingDialog, $window, $modal) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
@@ -39,4 +39,19 @@ angular.module('cloudscalers.controllers')
                 }
             }
         }, true);
+
+        var termsController = function ($scope, $modalInstance) {
+                $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                };
+                
+            };
+            $scope.openTerms = function () {
+                var modalInstance = $modal.open({
+                    templateUrl: 'termsDialog.html',
+                    controller: termsController,
+                    resolve: {},
+                    scope: $scope
+                });
+            };
     }]);
