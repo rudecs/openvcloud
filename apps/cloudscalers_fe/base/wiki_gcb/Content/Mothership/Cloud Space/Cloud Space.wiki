@@ -1,8 +1,5 @@
 @template public
-{{html:
-<div class="container">
-	<div class="row">
-}}
+@col12 | white
 @col 3
 
 {{navigation}}
@@ -10,6 +7,9 @@
 @divend
 
 @col 9
+{{html:
+<img src="/$$space/.files/img/icon1.png" alt=""/>
+}}
 h1. $$page
 {{html:
 	<ul>
@@ -40,7 +40,3 @@ h1. $$page
 {{gallery}}
 
 @divend
-{{html:
-</div>
-</div>
-}}
