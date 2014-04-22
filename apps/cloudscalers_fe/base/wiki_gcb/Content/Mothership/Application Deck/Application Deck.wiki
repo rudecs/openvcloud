@@ -1,4 +1,6 @@
 @template public
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -6,8 +8,38 @@
 @divend
 
 @col 9
-h2. $$page
+{{html:
+<img class="internaIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+}}
+h1. $$page
+{{html:
+	<ul class="internalList"> 
+		<li>
+			Choose and size applications without the need for a technical background
 
-{{gallery}}
 
+
+		</li>
+		
+		<li>
+			Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application
+
+
+			
+
+		</li>
+		<li>
+					Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend 
+
+		</li>
+		
+		
+	</ul>
+}}
+
+
+
+@divend
+
+@divend
 @divend

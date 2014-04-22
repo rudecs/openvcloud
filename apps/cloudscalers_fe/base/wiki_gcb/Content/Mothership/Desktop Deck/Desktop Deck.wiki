@@ -1,4 +1,6 @@
 @template public
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -6,8 +8,42 @@
 @divend
 
 @col 9
-h2. $$page
+{{html:
+<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+}}
+h1. $$page
+{{html:
+	<ul class="internalList"> 
+		<li>
+			The Desktops Deck brings an innovative way to deliver IT to end users
+		</li>
+		
+		<li>
+			A private portal and secure cloud storage delivering access to familiar applications
 
-{{gallery}}
 
+
+			
+
+		</li>
+		<li>
+					Use preferred device including laptops, tablets and smartphones
+
+
+		</li>
+		<li>
+					With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
+
+		</li>
+
+		
+		
+	</ul>
+}}
+
+
+
+@divend
+
+@divend
 @divend

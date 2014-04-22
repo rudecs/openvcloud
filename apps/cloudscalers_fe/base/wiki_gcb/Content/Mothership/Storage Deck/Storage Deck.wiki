@@ -1,4 +1,6 @@
 @template public
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -6,8 +8,59 @@
 @divend
 
 @col 9
-h2. $$page
+{{html:
+<img class="internaIcon" src="/$$space/.files/img/icon2.png" alt=""/>
+}}
+h1. $$page
+{{html:
+	<ul class="internalList"> 
+		<li>
+			The Storage Deck provides ultra reliable & scalable storage
 
-{{gallery}}
 
+		</li>
+		
+		<li>
+			3 types
+
+
+			<ul>
+				
+				<li>
+					Object Based storage using S3 compatible API
+
+
+				</li>
+				<li>
+					Virtual Disks (10 GB to 2 TB, seamless attached to your vm’s) (*)
+
+
+				</li>
+				<li>
+					Virtual Fileserver (upto Petabytes per space) (*)
+
+				</li>
+				
+
+			</ul>
+
+		</li>
+		<li>
+					Your virtual machines are backed up to your private storage deck.
+
+		</li>
+		<li>
+			All integrated in your personal cloud portal
+
+
+		</li>
+		
+	</ul>
+}}
+
+
+
+@divend
+
+@divend
 @divend
