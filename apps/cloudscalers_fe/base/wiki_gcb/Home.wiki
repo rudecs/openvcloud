@@ -22,7 +22,7 @@
                 Everyware Anyware<br>
                 
                 <ul class="arrow">
-                    <li>Every of your Virtual Machines, Cloud Desktops, Applications and Storage available anywhere.</li>
+                    <li>VMs, Cloud Desktops, Applications & Storage available anywhere.</li>
                     <li>Connect your local office securely to your remote cloud.</li>
                     <li>Designed to be simple and easy to use.</li>
 
