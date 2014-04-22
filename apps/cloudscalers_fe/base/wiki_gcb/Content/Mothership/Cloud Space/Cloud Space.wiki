@@ -9,11 +9,11 @@
 
 @col 9
 {{html:
-<img src="/$$space/.files/img/icon1.png" alt=""/>
+<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
 h1. $$page
 {{html:
-	<ul>
+	<ul class="internalList"> 
 		<li>
 			Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
 		</li>
