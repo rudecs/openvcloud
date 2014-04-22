@@ -71,6 +71,11 @@ defineApiStub = function ($httpBackend) {
         return [200, '"yep123456789"'];
     });
 
+    $httpBackend.whenPOST('/users/waitauthenticate').
+    respond(function (method, url, data) {
+        return [200, "Success"];
+    });
+    
     $httpBackend.whenPOST('/users/register').respond(function(method, url, data) {
         var credentials = angular.fromJson(data);
         var users = UsersList.get();
