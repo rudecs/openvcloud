@@ -8,6 +8,75 @@
             <div class="col-md-9 prn">
             <h2>
 }}
+[Cloud Space|MachineDeck]
+{{html:
+</h2>
+        <ul id="decks-list" class="plm" style="list-style: inherit;">
+          <li class="mTxt grayTxt line-height">
+              The Desktops Deck brings an innovative way to deliver IT to end users
+          </li>
+          <li class="mTxt grayTxt line-height">
+              A private portal and secure cloud storage delivering access to familiar applications
+          </li>
+          <li class="mTxt grayTxt line-height">
+              Use preferred device including laptops, tablets and smartphones
+          </li>
+          <li class="mTxt grayTxt line-height">
+              With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
+          </li>
+        </ul>
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color2">
+          <div class="col-md-3">
+            <img src="/$$space/.files/img/icon2.png" alt=""/>
+          </div>
+          <div class="col-md-9 prn">
+            <h2>
+}}
+[Defense Shields|NetworkDeck]
+{{html:
+</h2>
+        <ul id="decks-list" class="plm" style="list-style: inherit;">
+                  <li class="mTxt grayTxt line-height">
+                      The defense shields provide privacy, security & secure access to your cloud spaces.
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                    Each space has a private defense shield owned by ONLY you.
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      Defense Shield features
+                  </li>
+                  <ul class="mTxt grayTxt line-height">
+                    <li class="mTxt grayTxt line-height">
+                      Enterprise capable firewall technology
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      5 different types of VPN technologies supported
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      Simplified UI for portforwarding configuration.
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      WebProxy
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      Loadbalancing
+                    </li>
+                  </ul>
+                  <li class="mTxt grayTxt line-height">
+                    UNIQUE, connect your office seamless to your cloud.
+                  </li>
+              </ul>
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color3">
+            <div class="col-md-3">
+                <img src="/$$space/.files/img/icon3.png" alt=""/>
+            </div>
+            <div class="col-md-9 prn">
+            <h2>
+}}
 [Desktop Deck (Alfa)|DesktopDeck]
 {{html:
 </h2>
