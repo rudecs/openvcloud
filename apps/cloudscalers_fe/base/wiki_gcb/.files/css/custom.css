@@ -1181,10 +1181,12 @@ margin-top: 0;
 
 
 .internalList { list-style-type: disc; margin: 25px 0;}
-.internalList  li { margin: 12px 0;}
+.internalList  li { margin: 12px 0; list-style-type: disc;}
 .internaIcon {
     margin: 0 0 28px 0;
 }
+
+
 
 
 .well { background: #FFFFFF;
