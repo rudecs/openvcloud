@@ -8,11 +8,10 @@
 @divend
 
 @col 9
-{{html:
-<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
-}}
+
 h1. $$page
 {{html:
+<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 	<ul class="internalList"> 
 		<li>
 			The defense shields provide privacy, security & secure access to your cloud spaces.

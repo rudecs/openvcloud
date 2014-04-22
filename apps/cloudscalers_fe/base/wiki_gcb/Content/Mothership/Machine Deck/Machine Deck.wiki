@@ -8,12 +8,11 @@
 @divend
 
 @col 9
-{{html:
-<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
-}}
-h1. Machine Deck
 
+h1. Machine Deck
 {{html:
+<img class="internaIcon" src="/$$space/.files/img/icon3.png" alt=""/>
+
    <ul class="internalList">
       <li>
          Almost instant creation of virtual machines
