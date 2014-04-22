@@ -14,7 +14,7 @@
 h1. Machine Deck
 
 {{html:
-   <ul>
+   <ul class="internalList">
       <li>
          Almost instant creation of virtual machines
       </li>
