@@ -1,6 +1,12 @@
 @template public
 @col 12 | white
+@col 3
 
+{{navigation}}
+
+@divend
+
+@col 9
 h1. $$page
 {{html:
 	<ul>
@@ -27,7 +33,7 @@ h1. $$page
 		</li>
 	</ul>
 }}
+
 {{gallery}}
 
-@divend
 @divend
