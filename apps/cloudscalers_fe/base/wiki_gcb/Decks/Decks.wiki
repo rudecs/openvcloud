@@ -13,16 +13,22 @@
 </h2>
         <ul id="decks-list" class="plm" style="list-style: inherit;">
           <li class="mTxt grayTxt line-height">
-              The Desktops Deck brings an innovative way to deliver IT to end users
+              Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
           </li>
           <li class="mTxt grayTxt line-height">
-              A private portal and secure cloud storage delivering access to familiar applications
+              Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
           </li>
           <li class="mTxt grayTxt line-height">
-              Use preferred device including laptops, tablets and smartphones
+              Its up to you to organize your cloud workloads over cloudspaces.
           </li>
           <li class="mTxt grayTxt line-height">
-              With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
+              Each CloudSpace is owned by a cost center (the person paying the bills)
+          </li>
+          <li class="mTxt grayTxt line-height">
+              Each CloudSpace is hosted in a datacenter of choice.
+          </li>
+          <li class="mTxt grayTxt line-height">
+              Overview of usage based consumption per space.
           </li>
         </ul>
         </div>
