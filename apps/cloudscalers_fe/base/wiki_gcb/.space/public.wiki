@@ -102,9 +102,7 @@
     </script>
 
 }}
-
 {content}
-
 {{html:
 </div><!-- ng-app="cloudscalers" -->
 <footer class="font">
