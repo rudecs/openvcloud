@@ -159,7 +159,7 @@ p { color:#77777b; }
 	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
 	.navbar-right.clearR {margin: 33px 0 0 0;}
 	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
-	.Why:hover {background: url(../img/images/menu-icon-hover1.png) no-repeat 83% 6px !important;background-size: 11px auto !important;}
+	
 	.marginText {margin: 0 0 0 62px;}
 	body {background-size: 1376px auto;}
 	.boxes img {width: 100px;}
@@ -296,6 +296,7 @@ p { color:#77777b; }
 	.bottomFooter {padding: 0;}
 	.nameField23 {width: 100% !important;}
 	.controls2 {width: 100% !important;}
+	.myNav ul li {text-align: left;}
 
 }
 
@@ -345,7 +346,7 @@ p { color:#77777b; }
 	.create-cloudspace:hover { color: #000;}
 	.grey .panel-body ul li {margin: 5px 9px !important;}
 	.navbar-header + .navbar-collapse .navbar-right { text-align: right;}
-	.navbar-right.clearR.myNav ul { text-align: right;}
+	.navbar-right.clearR.myNav ul { text-align: right; margin: 13px 0; padding: 0;}
 	.myNav ul { float: right;}
 	.form-horizontal .control-label { text-align: left !important;}
 	.nav.navbar-nav.navbar-right { text-align: left;}
@@ -356,6 +357,7 @@ p { color:#77777b; }
 	.signUpForm .inputWrap input {width: 100% !important;}
 	.upMargin {margin: 30px auto 0 !important;}
 	.inputWrap {width: 98% !important;}
+	.myNav ul li {text-align: left;}
 
 }
 
@@ -853,7 +855,7 @@ background-color: #06a7e2;
 .justOpen { padding: 0; border: 1px solid #06a7e2; border-top: 0; border-radius: 0 !important;}
 
 
-.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background: inherit; color: #000;}
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background: inherit; color: #000 !important;}
 .grey .panel-body ul {padding: 0 0 0 15px; }
 .grey .panel-body ul li {margin: 5px 0; }
 .grey .panel-body {padding: 5px 15px; }
@@ -1153,4 +1155,4 @@ color: #06a7e2 !important;
 
 .motherShipSub ul li a {color: #000;font-size: 14px;display: inline-block;padding: 4px 0 4px 15px;font-weight: inherit;width: 174px;}
 
-.motherShipSub ul { background: rgba(255, 255, 255, 1); margin: 12px 10px 0 0;}
+.motherShipSub ul { background: rgba(255, 255, 255, 1); margin: 12px 10px 0 0; border: 2px solid #06a7e2;      left: 6px !important;}
