@@ -24,9 +24,9 @@ textarea {
 .why { width: 63px; background: url(../img/images/why.png) no-repeat 42px 7px; }
 .contactButton { background: url(../img/images/contact.png) no-repeat 78px 7px; }
 .font { font-family: arial,sans-serif; }
-.mainText { font-size: 50px !important; color: #FFF; }
+.mainText { font-size: 41px !important; color: #06a7e2; }
 /*.marginText {margin: 0 0 0 145px;}*/
-.arrow { color: #06a7e2;font-family: arial,sans-serif; font-size: 32px; font-weight: bold; padding: 0 0 0 46px; background: url(../img/images/arrow.png) no-repeat 0 5px; }
+.arrow { color: #FFFFFF; font-size: 30px; list-style-type: disc;}
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
 .marginTop { margin-top: 500px; margin-bottom: 40px; }
 .boxes img { float: left; margin: 25px 18px 0 0; padding-bottom: 35%;}
@@ -1156,3 +1156,9 @@ color: #06a7e2 !important;
 .motherShipSub ul li a {color: #000;font-size: 14px;display: inline-block;padding: 4px 0 4px 15px;font-weight: inherit;width: 174px;}
 
 .motherShipSub ul { background: rgba(255, 255, 255, 1); margin: 12px 10px 0 0; border: 2px solid #06a7e2;      left: 6px !important;}
+
+.carousel-control.left { background: none;}
+.carousel-control.right { background: none;}
+.carousel-indicators {bottom: -52px !important;}
+.arrow li { margin: 26px 0;}
+.marginText { margin: 20px 0 0 0;}

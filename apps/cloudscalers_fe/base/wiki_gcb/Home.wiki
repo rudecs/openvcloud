@@ -5,14 +5,68 @@
 
 <div class="jumbotron">
     <div class="container">
-        <div class="col-md-9 marginText">
-            <p class="font mainText">
-                EveryWare AnyWare<br>
-                <br>
-                <span class="arrow font">Every of your Virtual Machines, Cloud Desktops, Applications and Storage available anywhere</span>
-                <span class="arrow font">Connect your local office securely to your remote cloud</span>
-                <span class="arrow font">Designed to be simple and easy to use</span>
+        <div class="col-md-7 marginText">
+
+
+
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
+        <li data-target="#carousel-example-generic" data-slide-to="1" class="active"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="item active">
+          <p class="font mainText">
+                Everyware Anyware<br>
+                
+                <ul class="arrow">
+                    <li>Every of your Virtual Machines, Cloud Desktops, Applications and Storage available anywhere.</li>
+                    <li>Connect your local office securely to your remote cloud.</li>
+                    <li>Designed to be simple and easy to use.</li>
+
+                </ul>
+                
             </p>
+        </div>
+        <div class="item">
+          <p class="font mainText">
+                Powerful Defense Shield<br>
+             <ul class="arrow">   
+                <li>Your Private Cloud Space.</li>
+                <li>Integrated VPN, Firewall.</li>
+                <li>Integrated Backup,Replication.</li>
+                </ul>
+            </p>
+        </div>
+        <div class="item">
+          <p class="font mainText">
+                Warp Speed<br>
+              <ul class="arrow">  
+                <li>A New Machine In Less Than 10 seconds.</li>
+                <li>Immediate Snapshots.</li>
+                <li>Dedicated Compute Capacity.</li>
+                </ul>
+            </p>
+        </div>
+        <div class="item">
+          <p class="font mainText">
+                Designed to fit your needs<br>
+               <ul class="arrow"> 
+                <li>Usage based.</li>
+                <li>IWindows / Linux.</li>
+                <li>Flexible disk sizes.</li>
+                </ul>
+            </p>
+        </div>
+      </div>
+      
+    </div>
+
+
+
+
+            
         </div>
     </div>
 </div>
