@@ -23,13 +23,34 @@ class cloudapi_consumption(j.code.classGetBase()):
         #cloudapi_consumption_osis.__init__(self)
         pass
 
+
+
+    def confirmauthorization(self, paymentId, **kwargs):
+        """
+        Paypal callback url
+        param:paymentId id of the paymentrequest
+        result string
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method confirmauthorization")
+
+
+    def confirmpayment(self, paymentId, **kwargs):
+        """
+        Confirm and execute the payment
+        param:paymentId id of the paymentrequest
+        result bool
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method confirmpayment")
+
+
     def initiatepayment(self, accountId, amount, currency, **kwargs):
         """
         Starts a paypal payment flow.
-        
         param:accountId id of the account
-        param:amount the amount of credit to add
-        param:currency the code of the currency you want to make a payment with (USD currently supported)
-        result:dict A json dict containing the paypal payment confirmation url
+        param:amount amount of credit to add
+        param:currency currency the code of the currency you want to make a payment with (USD currently supported)
+        result dict
         """
-        return ""
+        return {'paypalurl':'https://sandbox.paypal.com'}
