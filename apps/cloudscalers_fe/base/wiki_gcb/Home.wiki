@@ -27,7 +27,7 @@
                     <li>Designed to be simple and easy to use.</li>
 
                 </ul>
-                <button type="button" class="btn btn-selector btn-info btn-large mainButton" >Read more</button>
+                <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Mothership'">Read more</button>
             </p>
         </div>
         <div class="item">
@@ -38,7 +38,7 @@
                 <li>Integrated VPN, Firewall.</li>
                 <li>Integrated Backup,Replication.</li>
                 </ul>
-                <button type="button" class="btn btn-selector btn-info btn-large mainButton" >Read more</button>
+                <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Cloud Space'">Read more</button>
             </p>
         </div>
         <div class="item">
@@ -49,7 +49,7 @@
                 <li>Immediate Snapshots.</li>
                 <li>Dedicated Compute Capacity.</li>
                 </ul>
-                <button type="button" class="btn btn-selector btn-info btn-large mainButton" >Read more</button>
+                <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>
             </p>
         </div>
         <div class="item">
@@ -60,7 +60,7 @@
                 <li>IWindows / Linux.</li>
                 <li>Flexible disk sizes.</li>
                 </ul>
-                <button type="button" class="btn btn-selector btn-info btn-large mainButton" >Read more</button>
+                <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>
             </p>
         </div>
       </div>

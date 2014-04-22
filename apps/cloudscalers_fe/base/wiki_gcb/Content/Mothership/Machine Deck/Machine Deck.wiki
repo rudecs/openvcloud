@@ -1,4 +1,6 @@
 @template public
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -6,7 +8,7 @@
 @divend
 
 @col 9
-h2. Machine Deck
+h1. Machine Deck
 
 The Machine Deck delivers ultra fast virtual machines, running at enterprise level SSD speeds, delivering a very high IO performance. Machine Buckets are delivered with a complete toolset of powerful functions that provide control and flexibility: start, stop, clone, snapshot, rollback, export and monitor machines.
 
@@ -14,7 +16,7 @@ Virtual machines are delivered with a basic package of CPU, Memory and Storage. 
 
 {{html: <hr> }}
 
-h3. Features
+h2. Features
 
 {{html:
 <ul class="Features multi">
@@ -34,11 +36,11 @@ h3. Features
 
 }}
 {{html: <hr> }}
-h3. Screenshots
+h2. Screenshots
 {{gallery: picturedir:machineimgs | title:Screenshots | thumb_size:300x200}}
 
 {{html: <hr> }}
-h3. Machine Buckets Pricing
+h2. Machine Buckets Pricing
 
 {{css:/$$space/.files/lib/jquery-ui/jquery-ui.min.css}}
 
@@ -92,4 +94,7 @@ h3. Machine Buckets Pricing
 }}
 
 
+@divend
+
+@divend
 @divend
