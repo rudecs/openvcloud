@@ -1202,8 +1202,8 @@ margin-top: 0;
   box-sizing: border-box;
 
  padding: 12px 10px;}
-/*
- .well li {padding-left: 24px;
+
+ .well li {padding-left: 8px;
 background-image: url("../img/arrow.png");
 background-repeat: no-repeat;
 background-position: 6px 5px;
@@ -1214,7 +1214,7 @@ padding-bottom: 5px;
 
 }
  .well li a {display: inline;
-margin-left: 17px;
+margin-left: -12px;
 padding-left: 0;
 padding: 3px 15px;
-}*/
+}
