@@ -1123,6 +1123,7 @@ margin: 0 0 0 20px;
 .btn-large, .btn-group-lg>.btn {
 padding: 7px 20px;
 
+border: 0;
 } 
 
 .footer2 { background: #FFF !important;}
@@ -1161,7 +1162,7 @@ color: #06a7e2 !important;
 .carousel-control.right { background: none;}
 .carousel-indicators {bottom: -52px !important;}
 .arrow li { margin: 26px 0;}
-.marginText { margin: 20px 0 0 0; min-height: 413px;}
+.marginText { min-height: 413px;}
 
 .videoMain { margin: 29px 0 0 0;}
 .videoMain iframe { box-shadow: 0px 0px 15px #06a7e2;}
@@ -1169,7 +1170,7 @@ color: #06a7e2 !important;
 
 .jumbotron .container {
 
-margin-top: 84px;
+margin-top: 50px;
 }
 
 .motherShipSub ul li { margin: 0;}
