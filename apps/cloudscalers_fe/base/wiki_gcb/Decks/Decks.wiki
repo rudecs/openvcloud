@@ -28,13 +28,41 @@
         </div>
         </div>
         <div class="col-md-6 boxes font color2">
+          <div class="col-md-3">
             <img src="/$$space/.files/img/icon2.png" alt=""/>
+          </div>
+          <div class="col-md-9 prn">
             <h2>
 }}
 [Storage Deck|StorageDeck]
 {{html:
 </h2>
-              Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</li>
+        <ul id="decks-list" class="plm" style="list-style: inherit;">
+                  <li class="mTxt grayTxt line-height">
+                      The Storage Deck provides ultra reliable & scalable storage
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                      3 types
+                  </li>
+                  <ul class="mTxt grayTxt line-height">
+                    <li class="mTxt grayTxt line-height">
+                      Object Based storage using S3 compatible API
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      Virtual Disks (10 GB to 2 TB, seamless attached to your vm’s) (*)
+                    </li>
+                    <li class="mTxt grayTxt line-height">
+                      Virtual Fileserver (upto Petabytes per space) (*)
+                    </li>
+                  </ul>
+                  <li class="mTxt grayTxt line-height">
+                    Your virtual machines are backed up to your private storage deck.
+                  </li>
+                  <li class="mTxt grayTxt line-height">
+                    All integrated in your personal cloud portal
+                  </li>
+              </ul>
+        </div>
         </div>
         <div class="col-md-6 boxes font color3">
             <div class="col-md-3">
