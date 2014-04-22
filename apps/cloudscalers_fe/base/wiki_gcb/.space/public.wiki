@@ -48,13 +48,24 @@
                 <a href="/$$space/SignUp" class="signUp">Sign Up</a>
                 <a href="/$$space/login" class="signUp login">Login</a>
             </div>
-            <div class="navbar-right clearR myNav">
+            <div class="navbar-right clearR myNav justMine">
                 <ul>
                     <li><a href="/$$space/" class="Home active">Home<i class="fa fa-home mls"></i></a></li>
-                    <li><a href="/$$space/Mothership" class="Mothership Features active">Mothership<sup>1</sup> Features<i class="fa fa-heart mls"></i></a></li>
+                    <li class="dropdown motherShipSub">
+                          <a href="#" class="dropdown-toggle Mothership Features active" data-toggle="dropdown">Mothership<sup>1</sup><i class="fa fa-rocket mls"></i></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="#">Cloud Space</a></li>
+                                <li><a href="#">Defense Shield</a></li>
+                                <li><a href="#">Machine Deck</a></li>
+                                <li><a href="#">Storage Deck</a></li>
+                                <li><a href="#">Desktop Deck</a></li>
+                                <li><a href="#">Application Deck</a></li>
+                              </ul>
+                        </li>
+                    
                     <li><a href="/$$space/Why" class="Why Mothership<sup>1</sup> active">Why Mothership<sup>1</sup><i class="fa fa-question mls"></i></a></li>
-                    <li><a href="/$$space/Pricing" class="Pricing active">Pricing<i class="fa fa-dollar mlm"></i></a></li>
-                    <li><a href="/$$space/API" class="API active">API<i class="fa fa-desktop mls"></i></a></li>
+                    <li><a href="/$$space/Pricing" class="Pricing active">Pricing<i class="fa fa-dollar mls"></i></a></li>
+                    <li><a href="/$$space/API" class="API active">API<i class="fa fa-book mls"></i></a></li>
                 </ul>               
             </div>
         </div>
