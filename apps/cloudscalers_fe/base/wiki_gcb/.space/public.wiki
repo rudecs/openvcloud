@@ -152,7 +152,7 @@
                     <ul class="second-list">
                         <!-- <li><a href="/$$space/Contact">Contact</a></li> -->
                         <li>Follow Mothership<sup>1</sup></li>
-                        <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
+                        <li><a href="https://twitter.com/mothershipware"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
                     </ul>
                 </div>
             </div>
