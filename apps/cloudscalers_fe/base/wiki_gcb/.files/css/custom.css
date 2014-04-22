@@ -3,7 +3,7 @@
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer;}
 .jumbotron { padding-top: 60px; }
 .navbar-inverse { background-color: rgba(3,0,0,0.4); border: 0; margin: 0 0 0 0; }
-body { background: url(../img/images/bg.jpg) no-repeat center top #000; font-family: arial,sans-serif;  color: #666; background-size: 100%;}
+body { background: url(../img/images/bg.jpg) no-repeat center top #000; font-family: arial,sans-serif;  color: #666; background-size: 100%; background-position: center -344px;}
 input,
 button,
 select,
@@ -16,7 +16,7 @@ textarea {
 
 }
 
-.jumbotron { background-color: initial; }
+.jumbotron { background-color: initial; margin: 0;}
 .signUp { background: #80bd01; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
 .login { background: #06a7e2; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
@@ -28,7 +28,7 @@ textarea {
 /*.marginText {margin: 0 0 0 145px;}*/
 .arrow { color: #FFFFFF; font-size: 30px; list-style-type: disc;}
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
-.marginTop { margin-top: 750px; margin-bottom: 80px; }
+.marginTop { margin-top: 452px; margin-bottom: 80px; }
 .boxes img { float: left; margin: 25px 18px 0 0;}
 .boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: arial,sans-serif; }
 .boxes h2 { font-size: 22px; }
@@ -139,7 +139,7 @@ p { color:#77777b; }
 	.nameField {width: 57%;}
 	.white h2 {font-size: 13px;}
 	.machineList ul li a, .storage-size-list button { font-size: 13px; font-weight: normal;}
-	.leftIcon {margin: 0 0 0 144px;}
+	.leftIcon {margin: 0 0 0 204px;}
 	.machineList ul li, .storage-size-list li { margin: 17px 4px;}
 	.logo img { width: 240px; height: auto;}
 	.signUp {font-size: 10px;}
@@ -154,14 +154,14 @@ p { color:#77777b; }
 	.btn.btn-info.btn-large {padding: 7px 10px !important;font-size: 13px !important;}
 	.midFooter ul li a {font-size: 13px;}
 	.bottomFooter .first-list li a {font-size: 13px; }
-	.myNav ul li a { font-size: 17px; background-size: 11px auto !important;}
+	.myNav ul li a { font-size: 14px; background-size: 11px auto !important;}
 	/*.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}*/
 	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
 	.navbar-right.clearR {margin: 33px 0 0 0;}
 	.contact:hover {background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important;background-size: 11px auto !important;}
 	
-	.marginText {margin: 0 0 0 62px;}
-	body {background-size: 1376px auto;}
+	
+	body {background-size: 1376px auto;background: url(../img/images/bg-mask2.jpg) no-repeat center -200px #000;}
 	.boxes img {width: 100px;}
 	.white ul li {font-size: 13px !important;line-height: 30px;}
 	h4, .h4 {font-size: 18px; }
@@ -201,6 +201,8 @@ p { color:#77777b; }
 	.nameField23 {width: 9% !important;}
 	.account-container.stacked {width: 544px !important;}
 	.signUpForm .inputWrap {width: 69% !important;}
+	.marginTop {margin-top: 0px;margin-bottom: 80px;}
+	.jumbotron .container {margin-top: 0px !important;}
 
 }
 
@@ -231,7 +233,7 @@ p { color:#77777b; }
 	.btn.btn-info.btn-large {padding: 7px 10px !important;font-size: 12px !important;}
 	.midFooter ul li a {font-size: 12px;}
 	.bottomFooter .first-list li a {font-size: 12px; }
-	.myNav ul li a { font-size: 17px; background-size: 11px auto !important;}
+	.myNav ul li a { font-size: 14px; background-size: 11px auto !important;}
 	.Why {/* background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important; */}
 	.contact {background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important;}
 	.navbar-right.clearR {margin: 33px 0 0 0;}
@@ -1160,9 +1162,9 @@ color: #06a7e2 !important;
 
 .carousel-control.left { background: none;}
 .carousel-control.right { background: none;}
-.carousel-indicators {bottom: -52px !important;}
-.arrow li { margin: 26px 0;}
-.marginText { min-height: 413px;}
+.carousel-indicators {bottom: -52px !important;left: 18%;}
+.arrow li { margin: 15px 0; text-shadow: black 0.1em 0.1em 0.2em;}
+.marginText { min-height: 413px; margin: 24px 0 0 0;}
 
 .videoMain { margin: 29px 0 0 0;}
 .videoMain iframe { box-shadow: 0px 0px 15px #06a7e2;}
@@ -1170,7 +1172,7 @@ color: #06a7e2 !important;
 
 .jumbotron .container {
 
-margin-top: 50px;
+margin-top: 0;
 }
 
 .motherShipSub ul li { margin: 0;}
