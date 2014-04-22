@@ -1,4 +1,6 @@
 @template public
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -6,8 +8,53 @@
 @divend
 
 @col 9
-h2. $$page
+{{html:
+<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+}}
+h1. $$page
+{{html:
+	<ul class="internalList"> 
+		<li>
+			The defense shields provide privacy, security & secure access to your cloud spaces.
+
+		</li>
+		<li>
+			Each space has a private defense shield owned by ONLY you.
+
+		</li>
+		<li>
+			Defense Shield features
+
+			<ul>
+				
+				<li>
+					Enterprise capable firewall technology
+
+				</li>
+				<li>
+					5 different types of VPN technologies supported
+
+				</li>
+				<li>
+					WebProxy
+				</li>
+				<li>
+					Loadbalancing
+				</li>
+
+			</ul>
+
+		</li>
+		<li>
+					UNIQUE, connect your office seamless to your cloud.
+		</li>
+		
+	</ul>
+}}
 
 {{gallery}}
 
+@divend
+
+@divend
 @divend
