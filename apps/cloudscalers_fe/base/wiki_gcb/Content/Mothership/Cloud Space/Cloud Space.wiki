@@ -1,5 +1,6 @@
 @template public
-@col12 | white
+{{div: class=white}}
+{{div: class=container}}
 @col 3
 
 {{navigation}}
@@ -39,4 +40,7 @@ h1. $$page
 
 {{gallery}}
 
+@divend
+
+@divend
 @divend
