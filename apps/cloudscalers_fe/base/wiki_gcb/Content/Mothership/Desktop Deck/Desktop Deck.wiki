@@ -8,10 +8,10 @@
 @divend
 
 @col 9
+h1. $$page
 {{html:
 <img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
-h1. $$page
 {{html:
 	<ul class="internalList"> 
 		<li>
