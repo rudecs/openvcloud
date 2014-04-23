@@ -8,8 +8,10 @@ angular.module('cloudscalers.controllers')
         $scope.signUpResult = '';
         $scope.user.password = " ";
         $scope.passwordConfirmation = " ";
-        $scope.$watch('user.username + user.password + email + passwordConfirmation', function() {
-            $scope.canSignUp = $scope.user.username && $scope.email;
+        var acceptTerms = '';
+        var acceptBelgian = '';
+        $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms + acceptBelgian', function() {
+                $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms && $scope.acceptBelgian;
              // && $scope.user.password && $scope.passwordConfirmation
         });
         $scope.signUp = function() {
@@ -40,12 +42,39 @@ angular.module('cloudscalers.controllers')
             }
         }, true);
 
+
         var termsController = function ($scope, $modalInstance) {
-                $scope.cancel = function () {
-                    $modalInstance.dismiss('cancel');
-                };
-                
+            $scope.cancel = function () {
+                $modalInstance.dismiss(acceptTerms);
             };
+            $(window).scroll(function() {
+                    buffer = 20
+                    if ($("#terms").prop('scrollHeight') - $("#terms").scrollTop() <= $("#terms").height() + buffer )   {
+                        $('#accept-terms').removeAttr("disabled");
+                        $('#accept-terms-belgian').removeAttr("disabled");
+                    }
+            });
+
+
+        };
+            
+        acceptTermsChanged = function(checkboxElem) {
+          if (checkboxElem.checked) {
+            $scope.acceptTerms = "accept";
+          } else {
+            $scope.acceptTerms = "";
+          }
+        }
+
+        acceptBelgianChanged = function(checkboxElem) {
+          if (checkboxElem.checked) {
+            $scope.acceptBelgian = "accept";
+          } else {
+            $scope.acceptBelgian = "";
+          }
+        }
+
+                
             $scope.openTerms = function () {
                 var modalInstance = $modal.open({
                     templateUrl: 'termsDialog.html',
@@ -54,4 +83,6 @@ angular.module('cloudscalers.controllers')
                     scope: $scope
                 });
             };
+
+
     }]);

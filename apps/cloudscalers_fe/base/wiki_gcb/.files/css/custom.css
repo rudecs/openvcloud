@@ -1058,7 +1058,22 @@ display: inline-block;
 .prn{
 	padding-right: 0;
 }
-
+#terms{
+	height: 150px;
+	width: 490px;
+	overflow-y: scroll;
+}
+#openTerms{
+	color: #fff;
+	text-decoration: underline;
+	margin-top: 20px;
+	display: block;
+	font-size: 16px;
+	text-align: center;
+}
+#openTerms:hover{
+	color: #06a7e2;
+}
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000;}
 
