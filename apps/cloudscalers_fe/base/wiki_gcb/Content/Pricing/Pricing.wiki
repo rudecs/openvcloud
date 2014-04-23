@@ -4,8 +4,19 @@
 
 @col 12
 {{css:/$$space/.files/css/pricing.css}}
+h1. Pricing
+{{html:
+<br>
+<ul class="nav nav-tabs tabOfPrice">
+  <li class="active"><a href="#home" data-toggle="tab">Linux</a></li>
+  <li><a href="#profile" data-toggle="tab">Windows</a></li>
+  
+</ul>
 
-h2. Pricing
+
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="home">
+}}
 {{div: class=row | ng-app | ng-controller=MachinePricingController}}
     {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
@@ -17,7 +28,7 @@ h2. Pricing
                 {{div5}}
             {{div4}}
             {{div4: class=panel-heading}}
-                {{html: <h3> {[plan.name]} </h3>}}
+                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -34,7 +45,7 @@ h2. Pricing
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a> 1 month FREE trial}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a><br> 1 month FREE trial}}
             {{div4}}
         {{div3}}
     {{div2}}
@@ -42,6 +53,62 @@ h2. Pricing
 
 
 {{div}}
+
+{{html:
+
+  </div>
+  <div class="tab-pane fade" id="profile">
+}}
+
+
+{{div: class=row | ng-app | ng-controller=MachinePricingController}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash | ng-show=plan.recommended}}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/mo</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB Storge</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a><br> 2 month FREE trial}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+
+
+
+{{div}}
+
+
+{{html:
+
+  </div>
+  
+</div>
+
+
+}}
+
+
 
 @divend
 @divend

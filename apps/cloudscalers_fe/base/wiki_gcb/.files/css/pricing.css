@@ -1,7 +1,4 @@
-body
-{
-    margin-top: 20px;
-}
+
 .panel
 {
     text-align: center;
@@ -38,22 +35,26 @@ body
 {
     /*Position correctly within container*/
     position: absolute;
-    top: -9px;
-    right: 4px;
+    
+ top: -6px;
+    
+ right: 3px;
     z-index: 1; /*Set overflow to hidden, to mask inner square*/
-    overflow: hidden; /*Set size and add subtle rounding  		to soften edges*/
-    width: 100px;
-    height: 100px;
+    overflow: hidden; /*Set size and add subtle rounding        to soften edges*/
+    
+ width: 75px;
+    
+ height: 75px;
     border-radius: 3px 5px 3px 0;
 }
 .cnrflash-inner
 {
-    /*Set position, make larger then 			container and rotate 45 degrees*/
+    /*Set position, make larger then            container and rotate 45 degrees*/
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 145px;
-    height: 145px;
+    width: 120px;
+    height: 120px;
     -ms-transform: rotate(45deg); /* IE 9 */
     -o-transform: rotate(45deg); /* Opera */
     -moz-transform: rotate(45deg); /* Firefox */
@@ -69,7 +70,7 @@ body
 }
 .cnrflash-inner:before, .cnrflash-inner:after
 {
-    /*Use the border triangle trick to make  				it look like the ribbon wraps round it's 				container*/
+    /*Use the border triangle trick to make                 it look like the ribbon wraps round it's                container*/
     content: " ";
     display: block;
     position: absolute;
