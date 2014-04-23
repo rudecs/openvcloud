@@ -1,24 +1,31 @@
 @template public
 {{div: class=white}}
-{{div2: class=container}}
+{{div2: class=container | ng-app | ng-controller=MachinePricingController}}
 
 @col 12
 
 h1. Pricing
+
+{{html:
+<div class="btn-group">
+    <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+    <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+</div>
+}}
+
 {{html:
 <br>
 <ul class="nav nav-tabs tabOfPrice">
   <li class="active"><a href="#home" data-toggle="tab">Linux</a></li>
   <li><a href="#profile" data-toggle="tab">Windows</a></li>
-  
 </ul>
 
 
 <div class="tab-content">
   <div class="tab-pane fade in active" id="home">
 }}
-{{div: class=row | ng-app | ng-controller=MachinePricingController}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
+{{div: class=row}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -32,7 +39,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>/mo</span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -43,7 +50,7 @@ h1. Pricing
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
                     <tr><td>Upgrade SSD up to <br> 100GB</td></tr>
                     
-                    <tr><td>Unlimiter Trasnfer*</td></tr>
+                    <tr><td>Unlimiter Transfer*</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -64,8 +71,8 @@ h1. Pricing
 }}
 
 
-{{div: class=row | ng-app | ng-controller=MachinePricingController}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
+{{div: class=row}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in windowsPlans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -79,7 +86,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>/mo</span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -90,7 +97,7 @@ h1. Pricing
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
                     <tr><td>Upgrade SSD up to <br> 100GB</td></tr>
                     
-                    <tr><td>Unlimiter Trasnfer*</td></tr>
+                    <tr><td>Unlimiter Transfer*</td></tr>
                 </table>
                 }}
             {{div4}}
