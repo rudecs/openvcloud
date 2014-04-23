@@ -1,18 +1,13 @@
 @template public
 {{div: class=white}}
 {{div2: class=container}}
-@col 3
 
-{{navigation}}
-
-@divend
-
-@col 9
+@col 12
 {{css:/$$space/.files/css/pricing.css}}
 
 h2. Pricing
 {{div: class=row | ng-app | ng-controller=MachinePricingController}}
-    {{div2: class=col-xs-12 col-md-3 | ng-repeat=plan in plans}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
