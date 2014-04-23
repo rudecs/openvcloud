@@ -10,9 +10,12 @@ class cloudapi_paypal(j.code.classGetBase()):
 
     """
     def __init__(self):
-        
+
         self.paypal_user = 'AR3m7BDSytnZsBY_dSQr23VJ1E_63LQrHr7jZ6OIchco3RmoFjhNRDhLuuUT'
         self.paypal_secret = 'EKcPPRDv9IBNQ6g0io06kO1GvSZtWRA0WdM3BGOMRp4qqSRfNiZ4eqLaq8g1'
+        self.paypal_url = 'https://api.sandbox.paypal.com'
+
+
         osiscl = j.core.osis.getClient(user='root')
 
         class Class():
@@ -30,11 +33,25 @@ class cloudapi_paypal(j.code.classGetBase()):
         pass
 
 
+    def _get_paypal_token(self):
 
-    def confirmauthorization(self, paymentId, **kwargs):
+        tokenurl = '%s/v1/oauth2/token' % self.paypal_url
+        headers = {'Accept': 'application/json'}
+        payload = {'grant_type':'client_credentials'}
+        paypalresponse = requests.post(tokenurl,headers=headers,data=payload,auth=HTTPBasicAuth(self.paypal_user, self.paypal_secret))
+        if paypalresponse.status_code is not 200:
+            #TODO raise error
+            pass
+        paypalresponsedata = paypalresponse.json()
+        access_token = paypalresponsedata['access_token']
+        #TODO: cache the token
+        return access_token
+
+    def confirmauthorization(self, token, PayerID, **kwargs):
         """
         Paypal callback url
-        param:paymentId id of the paymentrequest
+        param:token
+        param:PayerID
         result string
         """
         #put your code here to implement this method
@@ -59,19 +76,9 @@ class cloudapi_paypal(j.code.classGetBase()):
         param:currency currency the code of the currency you want to make a payment with (USD currently supported)
         result dict
         """
+        access_token = self._get_access_token()
 
-        tokenurl = 'https://api.sandbox.paypal.com/v1/oauth2/token'
-        headers = {'Accept': 'application/json'}
-        payload = {'grant_type':'client_credentials'}
-	paypalresponse = requests.post(tokenurl,headers=headers,data=payload,auth=HTTPBasicAuth(self.paypal_user, self.paypal_secret))
-        if paypalresponse.status_code is not 200:
-            #TODO raise error
-            pass
-        paypalresponsedata = paypalresponse.json()
-        access_token = paypalresponsedata['access_token']
-        #TODO: cache the token
-        
-        paymenturl = 'https://api.sandbox.paypal.com/v1/payments/payment'
+        paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
                    "intent":"sale",
                    "redirect_urls":{
@@ -90,6 +97,7 @@ class cloudapi_paypal(j.code.classGetBase()):
                                    }
                                   ]
                   }
+
         headers = {'content-type': 'application/json', 'Authorization': 'Bearer %s' % access_token}
         paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
         if paypalresponse.status_code is not 201:
