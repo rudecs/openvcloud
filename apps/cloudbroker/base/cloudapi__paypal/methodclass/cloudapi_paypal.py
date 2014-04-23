@@ -10,6 +10,9 @@ class cloudapi_paypal(j.code.classGetBase()):
 
     """
     def __init__(self):
+        
+        self.paypal_user = 'AR3m7BDSytnZsBY_dSQr23VJ1E_63LQrHr7jZ6OIchco3RmoFjhNRDhLuuUT'
+        self.paypal_secret = 'EKcPPRDv9IBNQ6g0io06kO1GvSZtWRA0WdM3BGOMRp4qqSRfNiZ4eqLaq8g1'
         osiscl = j.core.osis.getClient(user='root')
 
         class Class():
@@ -57,13 +60,10 @@ class cloudapi_paypal(j.code.classGetBase()):
         result dict
         """
 
-        import ipdb; ipdb.set_trace()
         tokenurl = 'https://api.sandbox.paypal.com/v1/oauth2/token'
-        user = 'AR3m7BDSytnZsBY_dSQr23VJ1E_63LQrHr7jZ6OIchco3RmoFjhNRDhLuuUT'
-        secret = 'EKcPPRDv9IBNQ6g0io06kO1GvSZtWRA0WdM3BGOMRp4qqSRfNiZ4eqLaq8g1'
         headers = {'Accept': 'application/json'}
         payload = {'grant_type':'client_credentials'}
-	paypalresponse = requests.post(tokenurl,headers=headers,data=payload,auth=HTTPBasicAuth(user, secret))
+	paypalresponse = requests.post(tokenurl,headers=headers,data=payload,auth=HTTPBasicAuth(self.paypal_user, self.paypal_secret))
         if paypalresponse.status_code is not 200:
             #TODO raise error
             pass
@@ -75,8 +75,8 @@ class cloudapi_paypal(j.code.classGetBase()):
         payload = {
                    "intent":"sale",
                    "redirect_urls":{
-                                    "return_url":"https://test1.mothership1.com/your_redirect_url/",
-                                    "cancel_url":"https://test1.mothership1.com/your_cancel_url/"
+                                    "return_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal",
+                                    "cancel_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal"
                                    },
                    "payer":{
                             "payment_method":"paypal"
