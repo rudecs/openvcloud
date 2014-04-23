@@ -2,11 +2,13 @@
 <div class="container">
     <div class="span11 newDecks newDecks2">
         <div class="col-md-4 boxes font color1 leftIcon">
-        }}
+        }} 
 [Cloud Space|MachineDeck]
-{{html:
+
             
-                <img src="/$$space/.files/img/icon1.png" alt=""/>
+                [!/$$space/.files/img/icon1.png! | MachineDeck]
+
+          {{html:     
             
             <div class="prn">
             <h2>
@@ -37,9 +39,9 @@
         <div class="col-md-4 boxes font color2">
          }}
 [Defense Shields|NetworkDeck]
-{{html:
-            <img src="/$$space/.files/img/icon2.png" alt=""/>
-          
+
+            [!/$$space/.files/img/icon2.png! | NetworkDeck]
+    {{html:      
           <div class="prn">
             <h2>
 
@@ -80,9 +82,9 @@
         <div class="col-md-4 boxes font color3">
            }}
 [Desktop Deck (Alfa)|DesktopDeck]
-{{html:
-                <img src="/$$space/.files/img/icon3.png" alt=""/>
-            
+
+                [!/$$space/.files/img/icon3.png! | DesktopDeck]
+    {{html:        
             <div class="prn">
             <h2>
 
@@ -106,9 +108,9 @@
         <div class="col-md-4 boxes font color2 color5">
           }}
 [Storage Deck|StorageDeck]
-{{html:
-            <img src="/$$space/.files/img/icon2.png" alt=""/>
-          
+
+            [!/$$space/.files/img/icon2.png! | StorageDeck]
+   {{html:       
           <div class="prn">
             <h2>
 
@@ -143,9 +145,9 @@
         <div class="col-md-4 boxes font color3">
            }}
 [Machine Deck|MachineDeck]
-{{html:
-                <img src="/$$space/.files/img/icon3.png" alt=""/>
-            
+
+                [!/$$space/.files/img/icon3.png! | MachineDeck]
+      {{html:      
             <div class="prn">
             <h2>
 
@@ -172,10 +174,10 @@
         <div class="col-md-4 boxes font color4">
        }}
 [Application Deck (Q4)|ApplicationDeck]
-{{html:
+
             
-            <img src="/$$space/.files/img/icon4.png" alt=""/>
-        
+            [!/$$space/.files/img/icon4.png! | ApplicationDeck]
+       {{html: 
         <div class="prn">
             <h2>
 
