@@ -3,7 +3,7 @@
 {{div2: class=container}}
 
 @col 12
-{{css:/$$space/.files/css/pricing.css}}
+
 h1. Pricing
 {{html:
 <br>
@@ -36,6 +36,11 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB Storge</td></tr>
                     <tr><td>{[plan.mem]} Memory</td></tr>
                     <tr><td>{[plan.cores]} 
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
@@ -85,6 +90,11 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB Storge</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -104,7 +114,47 @@ h1. Pricing
   </div>
   
 </div>
+<table class="techspecs">
+    <tr>
+        <th  class="title">Options:</th>
 
+        <td class="column-divider"></td>
+        <td class="full-span">
+        <ul>
+        <li>100$ for extra SSD storage</li>
+        <li>100$ for extra HDD storage</li>
+        </ul>
+        
+
+        
+
+        </td>
+
+    </tr>
+    <tr>
+        <th  class="title">All Plans Include:</th>
+
+        <td class="column-divider"></td>
+        <td class="full-span">
+            <ul>
+                <li>Cloud Space with defense shield.</li>
+                <li>Choice of standard Linux and Windows templates.</li>
+                <li>All functions as described in the Machine Deck.
+</li>
+                <li>Disaster Recovery Backup (managed by Mothership Operations).
+</li>
+                <li>Monitoring by Mothership Operations.
+</li>
+                <li>99.99% Uptime SLA.
+</li>
+            </ul>
+
+        </td>
+
+    </tr>
+
+
+</table>
 
 }}
 
