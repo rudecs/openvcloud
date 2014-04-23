@@ -41,11 +41,9 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
-                    <tr><td>{[plan.mem]} Memory</td></tr>
-                    <tr><td>{[plan.cores]} 
-                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
-                    </td></tr>
-                    <tr><td>{[plan.primary]}GB Storge</td></tr>
+                    <tr><td>Upgrade SSD up to <br> 100GB at 2/month</td></tr>
+                    
+                    <tr><td>Transfer 20mb/sec</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -90,11 +88,9 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
-                    <tr><td>{[plan.mem]} Memory</td></tr>
-                    <tr><td>{[plan.cores]} 
-                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
-                    </td></tr>
-                    <tr><td>{[plan.primary]}GB Storge</td></tr>
+                    <tr><td>Upgrade SSD up to <br> 100GB at 2/month</td></tr>
+                    
+                    <tr><td>Transfer 20mb/sec</td></tr>
                 </table>
                 }}
             {{div4}}
