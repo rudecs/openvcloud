@@ -8,57 +8,60 @@
 @divend
 
 @col 9
+
 h1. $$page
 {{html:
-<img class="internaIcon" src="/$$space/.files/img/icon2.png" alt=""/>
+
+<div class="half copy col-md-6">
+        
+        <p class="niceHead">The Storage Deck provides ultra reliable & scalable storage
+
+</p>
+      </div>
+      <div class="half col-md-6 justOne">
+        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+      </div>
+
+<div class="seperateDecks"></div>
+      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
+
+      <h3>S3</h3>
+      <p>Object Based storage using S3 compatible API
+</p>
+
+      </div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Virtual Disks</h3>
+      <p>Virtual Disks  of 10 GB up to to 2 TB, seamless attached to your VMs
+</p></div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Fileserver </h3>
+      <p>Virtual Fileserver up to Petabytes per space (Roadmap)
+
+</p></div>
+
+<div class="seperateDecks"></div>
+
+<div class="col-md-4 boxDecks clearL">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Very Reliable</h3>
+      <p>Distributed storage ensuring data reliability
+
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Backup </h3>
+      <p>Your virtual machines are backed up to your private storage deck.
+
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Integrated </h3>
+      <p>All integrated in your personal cloud portal
+
+</p></div>
+
+
 }}
-{{html:
-	<ul class="internalList"> 
-		<li>
-			The Storage Deck provides ultra reliable & scalable storage
 
-
-		</li>
-		
-		<li>
-			3 types
-
-
-			<ul>
-				
-				<li>
-					Object Based storage using S3 compatible API
-
-
-				</li>
-				<li>
-					Virtual Disks (10 GB to 2 TB, seamless attached to your vm’s) (*)
-
-
-				</li>
-				<li>
-					Virtual Fileserver (upto Petabytes per space) (*)
-
-				</li>
-				
-
-			</ul>
-
-		</li>
-		<li>
-					Your virtual machines are backed up to your private storage deck.
-
-		</li>
-		<li>
-			All integrated in your personal cloud portal
-
-
-		</li>
-		
-	</ul>
-}}
-
-
+{{gallery}}
 
 @divend
 

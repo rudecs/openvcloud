@@ -1050,7 +1050,6 @@ display: inline-block;
 }
 .line-height{
 	line-height: 1.6em !important;
-	list-style-position:inside;
 }
 .plm{
 	padding-left: 15px;
@@ -1452,3 +1451,20 @@ padding: 0;
 .justBorder2 { border-right: 0 !important;}
 
 .full-span2 { width: 348px !important;} 
+
+.copy {
+margin-top: 20px;
+}
+
+.half {
+width: 50%;
+float: left;
+}
+
+.niceHead{ color: #333 !important; font-size: 20px !important; line-height: 33px; margin: 17px 0 0 0;}
+
+
+.justOne { margin: 0 0 36px 0; box-shadow: 0px 0px 10px #888888;}
+.seperateDecks { clear: both;}
+
+.boxDecks { margin: 40px 0; text-align: center;}

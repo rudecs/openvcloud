@@ -8,37 +8,59 @@
 @divend
 
 @col 9
+
 h1. $$page
 {{html:
-<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
-}}
-{{html:
-	<ul class="internalList"> 
-		<li>
-			The Desktops Deck brings an innovative way to deliver IT to end users
-		</li>
-		
-		<li>
-			A private portal and secure cloud storage delivering access to familiar applications
+
+<div class="half copy col-md-6">
+        
+        <p class="niceHead">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+
+</p>
+      </div>
+      <div class="half col-md-6 justOne">
+        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+      </div>
+<div class="seperateDecks"></div>
+
+      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
+
+      <h3>Private Portal</h3>
+      <p>A private portal and secure cloud storage delivering access to familiar Microsoft Windows, Linux and legacy applications
+
+</p>
+
+      </div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>HTML5 </h3>
+      <p>Use preferred device including laptops, tablets and smartphones, no local client needed, just html5 capable browser
+</p></div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Cloud Drive</h3>
+      <p>Private cloud drive integrated with sharing capabilities
+
+</p></div>
+
+<div class="seperateDecks"></div>
+
+<div class="col-md-4 boxDecks clearL">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Collaboration </h3>
+      <p>Collaboration features like screen sharing and chatting fully integrated
 
 
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Secure </h3>
+      <p> Enterprise-grade security, control and auditing
 
-			
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Easy roll out</h3>
+      <p>Zero-config secure access for mobile workforce.
 
-		</li>
-		<li>
-					Use preferred device including laptops, tablets and smartphones
+</p></div>
 
 
-		</li>
-		<li>
-					With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
-
-		</li>
-
-		
-		
-	</ul>
 }}
 
 

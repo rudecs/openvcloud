@@ -8,33 +8,58 @@
 @divend
 
 @col 9
+
 h1. $$page
 {{html:
-<img class="internaIcon" src="/$$space/.files/img/icon4.png" alt=""/>
-}}
-{{html:
-	<ul class="internalList"> 
-		<li>
-			Choose and size applications without the need for a technical background
+
+<div class="half copy col-md-6">
+        
+        <p class="niceHead">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
+</p>
+      </div>
+      <div class="half col-md-6 justOne">
+        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+      </div>
+<div class="seperateDecks"></div>
+
+      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
+
+      <h3>Non technical setup</h3>
+      <p>Choose and size applications without the need for a technical background
+
+</p>
+
+      </div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Size to needs</h3>
+      <p>Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application
+
+</p></div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Scale </h3>
+      <p>Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend 
+
+</p></div>
+
+<div class="seperateDecks"></div>
+
+<div class="col-md-4 boxDecks clearL">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Collaborate</h3>
+      <p>Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
+
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Multiple Datacenters</h3>
+      <p>Each CloudSpace is hosted in a datacenter of choice.
+
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Usage Based</h3>
+      <p>Overview of usage based consumption per space.
+
+</p></div>
 
 
-
-		</li>
-		
-		<li>
-			Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application
-
-
-			
-
-		</li>
-		<li>
-					Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend 
-
-		</li>
-		
-		
-	</ul>
 }}
 
 

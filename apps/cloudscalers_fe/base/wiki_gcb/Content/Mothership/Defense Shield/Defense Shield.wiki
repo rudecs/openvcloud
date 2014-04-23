@@ -11,44 +11,52 @@
 
 h1. $$page
 {{html:
-<img class="internaIcon" src="/$$space/.files/img/icon1.png" alt=""/>
-	<ul class="internalList"> 
-		<li>
-			The defense shields provide privacy, security & secure access to your cloud spaces.
 
-		</li>
-		<li>
-			Each space has a private defense shield owned by ONLY you.
+<div class="half copy col-md-6">
+        
+        <p class="niceHead">The defense shields provide privacy, security & secure access to your cloud spaces. Each space has a private defense shield owned by only you.</p>
+      </div>
+      <div class="half col-md-6 justOne">
+        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+      </div>
 
-		</li>
-		<li>
-			Defense Shield features
+<div class="seperateDecks"></div>
+      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
 
-			<ul>
-				
-				<li>
-					Enterprise capable firewall technology
+      <h3>Hybrid </h3>
+      <p>Connect your office seamless to your cloud
 
-				</li>
-				<li>
-					5 different types of VPN technologies supported
+</p>
 
-				</li>
-				<li>
-					WebProxy
-				</li>
-				<li>
-					Loadbalancing
-				</li>
+      </div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Enterprise </h3>
+      <p>Enterprise capable firewall technology
 
-			</ul>
+</p></div>
+      <div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>VPNs </h3>
+      <p>Many different types of VPN technologies supported
 
-		</li>
-		<li>
-					UNIQUE, connect your office seamless to your cloud.
-		</li>
-		
-	</ul>
+
+</p></div>
+
+<div class="seperateDecks"></div>
+
+<div class="col-md-4 boxDecks clearL">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Simple </h3>
+      <p>Simplified UI for port forwarding configuration.
+
+
+</p></div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>WebProxy</h3>
+      </div>
+<div class="col-md-4 boxDecks">
+      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Loadbalancing</h3>
+      </div>
+
+
 }}
 
 {{gallery}}
