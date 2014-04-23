@@ -22,8 +22,8 @@ class cloudapi_paypal(j.code.classGetBase()):
             pass
 
         self.models = Class()
-        for ns in osiscl.listNamespaceCategories('billing'):
-            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billing', ns))
+        for ns in osiscl.listNamespaceCategories('cloudbroker'):
+            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
             self.models.__dict__[ns].find = self.models.__dict__[ns].search
 
         self._te={}
@@ -33,7 +33,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         pass
 
 
-    def _get_paypal_token(self):
+    def _get_access_token(self):
 
         tokenurl = '%s/v1/oauth2/token' % self.paypal_url
         headers = {'Accept': 'application/json'}
@@ -47,16 +47,35 @@ class cloudapi_paypal(j.code.classGetBase()):
         #TODO: cache the token
         return access_token
 
-    def confirmauthorization(self, token, PayerID, **kwargs):
+
+    def confirmauthorization(self, id, token, PayerID, **kwargs):
         """
         Paypal callback url
+        param:id
         param:token
         param:PayerID
         result string
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method confirmauthorization")
+        ctx = kwargs['ctx']
+        creditTransaction = self.models.credittransaction.get(id)
+        paymentreference = creditTransaction.reference
+        access_token = self._get_access_token()
+        paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        payload = { "payer_id" : PayerID }
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 200:
+            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
+            return "There was an error executing the payment at paypal"
+            #TODO raise erro
+            
+        paypalresponsedata = paypalresponse.json()
 
+        creditTransaction.status = 'PROCESSED'
+        self.models.credittransaction.set(creditTransaction)
+        ctx.start_response('302 Found', [('location','/wiki_gcb/PaypalConfirmation')])
+        return ""
 
     def confirmpayment(self, paymentId, **kwargs):
         """
@@ -76,14 +95,20 @@ class cloudapi_paypal(j.code.classGetBase()):
         param:currency currency the code of the currency you want to make a payment with (USD currently supported)
         result dict
         """
+        import ipdb; ipdb.set_trace()
         access_token = self._get_access_token()
-
+        credittransaction = self.models.credittransaction.new()
+        credittransaction.amount = amount
+        credittransaction.currency = 'USD'
+        credittransaction.status = 'NOT PAYED'
+        credittransaction.accountId = accountId
+        credittransaction.id = self.models.credittransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
                    "intent":"sale",
                    "redirect_urls":{
-                                    "return_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal",
-                                    "cancel_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal"
+                                    "return_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal/confirmauthorization?id=%s" % credittransaction.id,
+                                    "cancel_url":"https://test1.mothership1.com/wiki_gcb/AccountSettings"
                                    },
                    "payer":{
                             "payment_method":"paypal"
@@ -95,8 +120,7 @@ class cloudapi_paypal(j.code.classGetBase()):
                                               "currency":"USD"
                                              }
                                    }
-                                  ],
-                   "description":"MotherShip1 Credit"
+                                  ]
                   }
 
         headers = {'content-type': 'application/json', 'Authorization': 'Bearer %s' % access_token}
@@ -105,5 +129,9 @@ class cloudapi_paypal(j.code.classGetBase()):
              #TODO raise error
              pass
         paypalresponsedata = paypalresponse.json()
+
+        credittransaction.reference = paypalresponsedata['id']
+        self.models.credittransaction.set(credittransaction)
+        
         approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
         return {'paypalurl':approval_url}
