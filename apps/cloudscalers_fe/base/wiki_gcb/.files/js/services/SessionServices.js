@@ -95,12 +95,14 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason); }
             );
         };
-        user.waitlogin = function (username, password) {
+        user.waitlogin = function (username, password, company, vat) {
             return $http({
                 method: 'POST',
                 data: {
                     username: username,
-                    password: password
+                    password: password,
+                    company: company,
+                    vat: vat
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/waitauthenticate'
             }).then(
@@ -142,14 +144,16 @@ angular.module('cloudscalers.services')
         	SessionData.setUser(undefined);
         };
 
-        user.signUp = function(username, email, password) {
+        user.signUp = function(username, email, password, company, vat) {
             var signUpResult = {};
             $http({
                 method: 'POST',
                 data: {
                     username: username,
                     emailaddress: email,
-                    password: password
+                    password: password,
+                    company: company,
+                    vat: vat
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/register'
             })

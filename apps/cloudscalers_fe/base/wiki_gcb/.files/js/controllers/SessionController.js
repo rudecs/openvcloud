@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('SessionController', ['$scope', 'User', '$window', '$timeout', function($scope, User, $window, $timeout) {
-        $scope.user = {username : '', password:''};
+        $scope.user = {username : '', password:'', company: '', vat: ''};
 
         $scope.login_error = undefined;
 
@@ -29,7 +29,7 @@ angular.module('cloudscalers.controllers')
         $scope.waitlogin = function() {
             $scope.$broadcast("autofill:update");
             var usertologin = $scope.user.username;
-            User.waitlogin(usertologin, $scope.user.password).
+            User.waitlogin(usertologin, $scope.user.password, $scope.user.company , $scope.user.vat).
             then(
                     function(result) {
                         $scope.login_error = undefined;

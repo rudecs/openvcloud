@@ -23,7 +23,7 @@ angular.module('cloudscalers.controllers')
                 // $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub");
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub" ,$scope.user.company , $scope.user.vat);
                 // , $scope.user.password
             }
         };
@@ -54,8 +54,6 @@ angular.module('cloudscalers.controllers')
                         $('#accept-terms-belgian').removeAttr("disabled");
                     }
             });
-
-
         };
             
         acceptTermsChanged = function(checkboxElem) {
