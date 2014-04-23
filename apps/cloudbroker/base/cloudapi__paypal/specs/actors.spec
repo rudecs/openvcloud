@@ -8,9 +8,9 @@
         Starts a paypal payment flow.
         """
         var:accountId int,,id of the account
-        var:amount float,, amount of credit to add
-        var:currency string,,currency the code of the currency you want to make a payment with (USD currently supported)
-        result:dict A json dict containing the paypal payment confirmation url
+        var:amount int,,amount of credit to add
+        var:currency str,,currency the code of the currency you want to make a payment with (USD currently supported)
+        result:dict #A json dict containing the paypal payment confirmation url
         
         
     method:confirmauthorization
@@ -18,7 +18,7 @@
     	Paypal callback url
     	"""
     	var:paymentId int,,id of the paymentrequest
-    	result:string An HTTP "302 Found" response code is given with the url of the confirmation or cancelled page.
+    	result:dict #An HTTP 302 Found response code is given with the url of the confirmation or cancelled page.
     	
     method:confirmpayment
     	"""

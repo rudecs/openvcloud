@@ -5,7 +5,7 @@ angular.module('cloudscalers.services')
         return {
             initiatePayment: function(accountid,amount,currency){
                 
-                return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatepayment?accountId=' + encodeURIComponent(accountid) + '&amount='+ encodeURIComponent(amount) + '&currency=' + enodeURIComponent(currency)).
+                return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatepayment?accountId=' + encodeURIComponent(accountid) + '&amount='+ encodeURIComponent(amount) + '&currency=' + encodeURIComponent(currency)).
                     then(function(result){
                             var info = {'paypalurl':result.data.paypalurl};
                             return info;
