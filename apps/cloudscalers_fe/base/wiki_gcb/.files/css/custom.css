@@ -1204,33 +1204,21 @@ margin-top: 0;
 
 
 
-.well { background: #FFFFFF;
-	padding: 10px 15px 0 15px;
-	margin: 0 0 30px 0;
-  border: 1px solid #e6e6e6;
-  -webkit-box-shadow: 0 2px 0 rgba(0,0,0,0.03);
-  -moz-box-shadow: 0 2px 0 rgba(0,0,0,0.03);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.03);
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+.well {
+    background: #FFF;
+    box-shadow: none;
+    border-top-right-radius: 4px;  border-top-left-radius: 4px;
+    border: 0;
+    padding-top: 15px;
+}
 
- padding: 12px 10px;}
-
- .well li {padding-left: 8px;
-background-image: url("../img/arrow.png");
-background-repeat: no-repeat;
-background-position: 6px 5px;
-line-height: 19px;
-border-bottom: 1px dotted #efefef;
-margin: 15px 0 0 0;
-padding-bottom: 5px;
+ .well li {
+    list-style-type: none;
 
 }
- .well li a {display: inline;
-margin-left: -12px;
-padding-left: 0;
-padding: 3px 15px;
+ .well li a {
+    position: relative;  display: block;  padding: 10px 15px;  margin-bottom: -1px;  background-color: #fff;  border: 1px solid #ddd;
+    color: #555;
 }
 
 
@@ -1473,3 +1461,23 @@ margin-top: 20px;
 .storagMargin {
     margin-top: -31px;
  }
+
+
+.well li.active a, .well li.active:hover a, .well li.active:focus a {
+z-index: 2;
+color: #fff;
+background-color: #06a7e2;
+border-color: #06a7e2;
+
+}
+
+
+.well li a:hover, .well li a:focus {
+text-decoration: none;
+background-color: #f5f5f5;
+color: #555;
+}
+
+.well li a.list-group-item {
+color: #555;
+}
