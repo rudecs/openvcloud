@@ -95,7 +95,8 @@ class cloudapi_paypal(j.code.classGetBase()):
                                               "currency":"USD"
                                              }
                                    }
-                                  ]
+                                  ],
+                   "description":"MotherShip1 Credit"
                   }
 
         headers = {'content-type': 'application/json', 'Authorization': 'Bearer %s' % access_token}
