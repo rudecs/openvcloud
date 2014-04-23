@@ -12,6 +12,7 @@
 {{html:
 
 <div class="half copy col-md-6">
+<img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
      h1. $$page   
      {{html:

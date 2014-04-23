@@ -8,16 +8,20 @@
 @divend
 
 @col 9
-
-h1. $$page
 {{html:
 
 <div class="half copy col-md-6">
+ <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+}}
+
+
+h1. $$page
+{{html:  
         
         <p class="niceHead">The defense shields provide privacy, security & secure access to your cloud spaces. Each space has a private defense shield owned by only you.</p>
       </div>
       <div class="half col-md-6 justOne">
-        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+        <img class="appMargin" src="/$$space/.files/img/images/defence-pic.jpg">
       </div>
 
 <div class="seperateDecks"></div>

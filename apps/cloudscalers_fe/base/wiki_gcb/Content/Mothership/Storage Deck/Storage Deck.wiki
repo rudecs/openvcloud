@@ -7,19 +7,24 @@
 
 @divend
 
-@col 9
 
-h1. $$page
+@col 9
 {{html:
 
 <div class="half copy col-md-6">
+ <img class="smallIcon" src="/$$space/.files/img/icon2.png" alt=""/>
+}}
+
+
+h1. $$page
+{{html:  
         
         <p class="niceHead">The Storage Deck provides ultra reliable & scalable storage
 
 </p>
       </div>
       <div class="half col-md-6 justOne">
-        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+        <img class="storagMargin" src="/$$space/.files/img/images/storage-pic.jpg">
       </div>
 
 <div class="seperateDecks"></div>

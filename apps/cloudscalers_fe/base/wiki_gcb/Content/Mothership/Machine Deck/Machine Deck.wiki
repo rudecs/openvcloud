@@ -8,18 +8,22 @@
 @divend
 
 @col 9
-
-h1. $$page
 {{html:
 
 <div class="half copy col-md-6">
+ <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
+}}
+
+
+h1. $$page
+{{html: 
         
         <p class="niceHead">The Machines Deck offers a renewing and powerful IAAS stack
 
 </p>
       </div>
       <div class="half col-md-6 justOne">
-        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+        <img class="appMargin" src="/$$space/.files/img/images/machine-pic.jpg">
       </div>
 
 <div class="seperateDecks"></div>

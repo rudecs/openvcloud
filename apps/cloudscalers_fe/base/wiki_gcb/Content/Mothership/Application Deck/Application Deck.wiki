@@ -8,17 +8,22 @@
 @divend
 
 @col 9
-
-h1. $$page
 {{html:
 
 <div class="half copy col-md-6">
+ <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+}}
+
+
+h1. $$page
+{{html:  
+        
         
         <p class="niceHead">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
 </p>
       </div>
       <div class="half col-md-6 justOne">
-        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+         <img class="appMargin" src="/$$space/.files/img/images/application-pic.jpg">
       </div>
 <div class="seperateDecks"></div>
 

@@ -8,18 +8,21 @@
 @divend
 
 @col 9
-
-h1. $$page
 {{html:
 
 <div class="half copy col-md-6">
-        
+ <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+}}
+
+
+h1. $$page
+{{html:       
         <p class="niceHead">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
 
 </p>
       </div>
       <div class="half col-md-6 justOne">
-        <img height="387" src="/assets/images/features/features-reliability-macs-a5202f90.png">
+        <img src="/$$space/.files/img/images/desk-pic.jpg">
       </div>
 <div class="seperateDecks"></div>
 
