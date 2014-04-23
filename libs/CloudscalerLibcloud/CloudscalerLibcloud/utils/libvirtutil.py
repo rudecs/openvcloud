@@ -221,7 +221,7 @@ class LibvirtUtil(object):
         return False
 
     def _getLockFile(self, domainid):
-        LOCKPATH = '/opt/jumpscale/var/domain_locks'
+        LOCKPATH = '%s/domain_locks'%j.dirs.varDir
         if not j.system.fs.exists(LOCKPATH):
             j.system.fs.createDir(LOCKPATH)
         lockfile = '%s/%s.lock' % (LOCKPATH, domainid)
