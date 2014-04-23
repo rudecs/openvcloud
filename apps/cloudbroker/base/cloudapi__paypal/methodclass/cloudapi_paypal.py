@@ -1,7 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator
 
-class cloudapi_consumption(j.code.classGetBase()):
+class cloudapi_paypal(j.code.classGetBase()):
     """
     API consumption Actor, this actor is the final api a enduser uses to get consumption details
 
