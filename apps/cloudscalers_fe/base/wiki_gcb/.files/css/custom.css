@@ -26,9 +26,9 @@ textarea {
 .font { font-family: arial,sans-serif; }
 .mainText { font-size: 41px !important; color: #06a7e2; }
 /*.marginText {margin: 0 0 0 145px;}*/
-.arrow { color: #FFFFFF; font-size: 30px; list-style-type: disc;}
+.arrow { color: #FFFFFF; font-size: 27px; list-style-type: disc; margin: 0; padding: 0;}
 .someText { font-size: 20px; line-height: 28px; color: #FFF; }
-.marginTop { margin-top: 452px; margin-bottom: 80px; }
+.marginTop { margin-top: 50px; margin-bottom: 80px; }
 .boxes img { float: left; margin: 25px 18px 0 0;}
 .boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: arial,sans-serif; }
 .boxes h2 { font-size: 22px; }
@@ -40,7 +40,7 @@ textarea {
 /*.color3, .color4 { margin: 50px 0 0 0; }*/
 .color3 { clear: left; }
 footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
-.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; }
+.topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; display: none;}
 .midFooter { padding: 5px 0; min-height: 20px; border-bottom: 1px solid #fff; display: block; }
 .midFooter ul li { float: left; margin: 0 15px; }
 .midFooter ul li a { color: #FFF; font-family: arial,sans-serif; font-size: 16px; }
@@ -128,7 +128,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 p { color:#77777b; }
 
 
-
+body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;background-size: 100%;}
 
 
 
@@ -1176,8 +1176,8 @@ color: #06a7e2 !important;
 
 .carousel-control.left { background: none;}
 .carousel-control.right { background: none;}
-.carousel-indicators {bottom: -52px !important;left: 18%;}
-.arrow li { margin: 15px 0; text-shadow: black 0.1em 0.1em 0.2em;}
+.carousel-indicators {bottom: -52px !important;left: 0;width: auto;margin-left: 0;}
+.arrow li { margin: 15px 0; text-shadow: black 0.1em 0.1em 0.2em; list-style-type: none;}
 .marginText { min-height: 413px; margin: 24px 0 0 0;}
 
 .videoMain { margin: 29px 0 0 0;}
@@ -1480,4 +1480,29 @@ color: #555;
 
 .well li a.list-group-item {
 color: #555;
+}
+
+.newDecks2 .boxes img { float: none; margin: 10px 0;}
+.newDecks2 .boxes { text-align: center;}
+
+.newDecks2 .boxes { list-style-type: none;}
+
+.color1 p a { color: #06a7e2; }
+.color2 p a { color: #d97804; }
+.color3 p a { color: #06a7e2; }
+.color4 p a { color: #f6b332; }
+
+.boxes p a {
+font-size: 22px;
+}
+
+.newDecks2 .boxes ul { margin: 0; padding: 0;}
+
+
+.newDecks2 .color3 {
+clear: none;
+}
+
+.newDecks2 .color5 {
+clear: left;
 }
