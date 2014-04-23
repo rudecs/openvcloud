@@ -1309,7 +1309,7 @@ border-top: 1px solid #e7e7e7;
 
 
 .techspecs .full-span {
-width: 684px;
+width: 300px;
 border-right: 1px solid transparent;
 }
 
@@ -1445,3 +1445,10 @@ padding: 0;
     text-align: center;
 }
 
+.half-span { width: 200px !important;}
+
+.justWidth { width: 50px !important;}
+.justSeperat { border-right: 0 !important; width: 8% !important;}
+.justBorder2 { border-right: 0 !important;}
+
+.full-span2 { width: 348px !important;} 
