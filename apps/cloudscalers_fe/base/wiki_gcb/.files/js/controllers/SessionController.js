@@ -26,24 +26,6 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
-        $scope.waitlogin = function() {
-            $scope.$broadcast("autofill:update");
-            var usertologin = $scope.user.username;
-            User.waitlogin(usertologin, $scope.user.password, $scope.user.company , $scope.user.vat).
-            then(
-                    function(result) {
-                        $scope.login_error = undefined;
-                        var uri = new URI($window.location);
-                        uri.filename('SignUpValidation');
-                        $window.location = uri.toString();
-                        $scope.user.password = "";
-                        $scope.passwordConfirmation = "";
-                    },
-                    function(reason) {
-                        $scope.login_error = reason.status;
-                    }
-            );
-        };
         $timeout(function() {
             // Read the value set by browser autofill
             $scope.user.username = angular.element('[ng-model="user.username"]').val();

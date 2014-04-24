@@ -32,12 +32,9 @@ angular.module('cloudscalers.controllers')
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
                 if ($scope.signUpResult.success) {
-                    // LoadingDialog.show('Creating account', 1000).then(function() {
-                        $scope.waitlogin();
-                    // });
-                    // var uri = new URI($window.location);
-                    // uri.filename('SignUpValidation');
-                    // $window.location = uri.toString();
+                    var uri = new URI($window.location);
+                    uri.filename('SignUpValidation');
+                    $window.location = uri.toString();
                 }
             }
         }, true);
