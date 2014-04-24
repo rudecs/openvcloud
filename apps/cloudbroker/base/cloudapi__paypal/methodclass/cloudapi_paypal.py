@@ -2,7 +2,7 @@ from JumpScale import j
 from cloudbrokerlib import authenticator
 import requests
 from requests.auth import HTTPBasicAuth
-import ujson
+import ujson, time
 
 class cloudapi_paypal(j.code.classGetBase()):
     """
@@ -69,23 +69,13 @@ class cloudapi_paypal(j.code.classGetBase()):
             ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
             return "There was an error executing the payment at paypal"
             #TODO raise erro
-            
+
         paypalresponsedata = paypalresponse.json()
 
         creditTransaction.status = 'PROCESSED'
         self.models.credittransaction.set(creditTransaction)
         ctx.start_response('302 Found', [('location','/wiki_gcb/PaypalConfirmation')])
         return ""
-
-    def confirmpayment(self, paymentId, **kwargs):
-        """
-        Confirm and execute the payment
-        param:paymentId id of the paymentrequest
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method confirmpayment")
-
 
     def initiatepayment(self, accountId, amount, currency, **kwargs):
         """
@@ -98,6 +88,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         import ipdb; ipdb.set_trace()
         access_token = self._get_access_token()
         credittransaction = self.models.credittransaction.new()
+        credittransaction.time = time.time()
         credittransaction.amount = amount
         credittransaction.currency = 'USD'
         credittransaction.status = 'NOT PAYED'
@@ -132,6 +123,6 @@ class cloudapi_paypal(j.code.classGetBase()):
 
         credittransaction.reference = paypalresponsedata['id']
         self.models.credittransaction.set(credittransaction)
-        
+
         approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
         return {'paypalurl':approval_url}
