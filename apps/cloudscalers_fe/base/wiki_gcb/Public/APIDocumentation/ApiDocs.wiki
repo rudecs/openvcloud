@@ -1,12 +1,6 @@
 @template public
 {{div: class=white}}
 {{div: class=container}}
-@col 3
-
-{{navigation}}
-
-@divend
-
 @col 9
 h1. Machine Decks API Documentation
 {{html:
