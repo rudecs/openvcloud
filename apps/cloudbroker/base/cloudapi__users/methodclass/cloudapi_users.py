@@ -59,22 +59,46 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
     
-    def _send_mail(self):
+    def _send_signup_mail(self, **kwargs):
+        shouldsendmail = j.application.config.get("mothership1.cloudbroker.sendmail")
+        if shouldsendmail is not '1':
+            return
         import smtplib
-
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        
         fromaddr = 'support@mothership1.com'
         toaddrs  = 'support@mothership1.com'
         
-        msg = '''
-Subject: testin'...
-        
-There was a terrible error that occured and I wanted you to know!
-'''
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "New customer on %s" % kwargs['portalurl']
+        msg['From'] = fromaddr
+        msg['To'] = toaddrs
+        text = "A new customer registration needs to be handled.\nCustomer Id: \nYours sincerely,\nThe CloudBroker"
+        html = """
+<html>
+  <head></head>
+  <body>
+    <p><h1>New customer</h1><br>
+       Account Id: %s<br/>
+       Account Name: %s<br/>
+       Email Address: %s<br/>
+       Environment: %s
+    </p>
+  </body>
+</html>
+""" % (kwargs['accountid'],kwargs['username'],kwargs['emailaddress'],kwargs['portalurl'])
 
+        # Record the MIME types of both parts - text/plain and text/html.
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+
+        msg.attach(part1)
+        msg.attach(part2)
 
         # Credentials (if needed)
-        username = 'support@mothership1.com'
-        password = ''
+        username = j.application.config.get("mothership1.cloudbroker.mailfrom") 
+        password = j.application.config.get("mothership1.cloudbroker.mailpassword") 
 
         # The actual mail send
         server = smtplib.SMTP('smtp.gmail.com:587')
@@ -82,7 +106,7 @@ There was a terrible error that occured and I wanted you to know!
         server.starttls()
         server.ehlo()
         server.login(username,password)
-        server.sendmail(fromaddr, toaddrs, msg)
+        server.sendmail(fromaddr, toaddrs, msg.as_string())
         server.quit()
 
     def register(self, username, emailaddress, password, **kwargs):
@@ -110,6 +134,8 @@ There was a terrible error that occured and I wanted you to know!
             ace.type = 'U'
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
+            portalurl = ctx.env['HTTP_ORIGIN']
+            self._send_signup_mail(accountid=accountid, username=username, emailaddress=emailaddress, portalurl=portalurl)
             #networkid = self.libvirt_actor.getFreeNetworkId()
             #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
             #cs = self.models.cloudspace.new()
