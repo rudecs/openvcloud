@@ -39,7 +39,7 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/features/DS_LoadBalancing.jpg!
+      !/$$space/.files/img/features/SD_VeryReliable.jpg!
       h3. Very Reliable
       Distributed storage ensuring data reliability
 {{div}}

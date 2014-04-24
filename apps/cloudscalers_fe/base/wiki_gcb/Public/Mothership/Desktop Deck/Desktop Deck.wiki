@@ -21,17 +21,17 @@ h1. $$page
 {{div}}
 
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_PrivatePortal.jpg!
       h3. Private Portal
       A private portal and secure cloud storage delivering access to familiar Microsoft Windows, Linux and legacy applications
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_HTML5.png!
       h3. HTML5
       Use preferred device including laptops, tablets and smartphones, no local client needed, just html5 capable browser
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_CloudDrive.jpg!
       h3. Cloud Drive
       Private cloud drive integrated with sharing capabilities
 {{div}}
@@ -39,17 +39,17 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_Collaboration.jpg!
       h3. Collaboration
       Collaboration features like screen sharing and chatting fully integrated
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_Secure.jpg!
       h3. Secure
       Enterprise-grade security, control and auditing
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DD_EasyRollOut.jpg!
       h3. Easy roll out
       Zero-config secure access for mobile workforce.
 {{div}}
