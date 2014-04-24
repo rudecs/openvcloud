@@ -1,2 +1,0 @@
-Machine Decks API:ApiDocs
-Storage Decks API:ApiS3

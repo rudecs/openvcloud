@@ -77,7 +77,7 @@ h1. Pricing
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
                     {{span: class=cnrflash-label}}
-                        MOST @LF POPULR
+                        MOST @LF POPULAR
                     {{span}}
                 {{div5}}
             {{div4}}
@@ -216,7 +216,7 @@ h1. Pricing
 
 }}
 
-(*) Unlimited Transfer si subject to fair use policy as descibed in the FAQ section
+(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section
 
 @divend
 @divend
