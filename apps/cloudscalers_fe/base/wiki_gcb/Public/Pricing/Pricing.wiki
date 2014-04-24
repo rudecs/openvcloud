@@ -7,7 +7,7 @@
 h1. Pricing
 
 {{html:
-<div class="btn-group">
+<div class="btn-group btn-group-sm" style="float: right; margin-top: 18px">
     <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
     <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
 </div>
