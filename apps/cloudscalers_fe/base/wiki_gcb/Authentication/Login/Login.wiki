@@ -14,7 +14,7 @@
                 <div class="field">
                     <div class="loginField">
                         <label class="loginFieldName">Username:</label>
-                        <div class="inputWrap">
+                        <div class="inputWrap" style="width: 75%;">
                             <input type="text"  class="inputLogin" id="username" name="username" value=""  ng-model="user.username" autofill="autofill"/>
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                  <div class="field">
                     <div class="loginField">
                         <label class="loginFieldName" for="password">Password:</label>
-                        <div class="inputWrap">
+                        <div class="inputWrap" style="width: 75%;">
                             <input class="inputLogin" type="password" id="password_field" name="" value=""  ng-model="user.password" autofill="autofill"/>
                         </div>
                     </div>

@@ -1,2 +1,2 @@
-Machine Buckets API:ApiDocs
-Storage Buckets API:ApiS3
+Machine Decks API:ApiDocs
+Storage Decks API:ApiS3
