@@ -1506,3 +1506,7 @@ clear: none;
 .newDecks2 .color5 {
 clear: left;
 }
+
+.why-page ul{
+	list-style: initial;
+}
