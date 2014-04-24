@@ -77,7 +77,7 @@
                     <h2>Terms & Conditions</h2>
                 </div>
                 <div class="modal-body">
-                  <textarea readonly id="terms" id="terms">
+                  <textarea readonly id="terms" id="terms" scroll>
 Please note that this is a beta version of the MOTHERSHIP1 website which is still undergoing final testing before its official release.
 
 The website, its software and all content found on it are provided on an “as is” and “as available” basis.
