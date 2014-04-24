@@ -27,8 +27,8 @@ h1. $$page
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/icon1.png!
-      h3. Private cloud
-      Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+      h3. Organize
+      Its up to you to organize your cloud workloads over cloudspaces.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/icon1.png!
