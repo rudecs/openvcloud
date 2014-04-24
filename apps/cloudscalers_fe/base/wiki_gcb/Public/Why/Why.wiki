@@ -55,7 +55,7 @@ Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT
 * [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
 * [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks.
-
+@LF
 h1. Why Mothership{{html:<sup>1</sup>}}?
 
 So why choose for Mothership{{html:<sup>1</sup>}}? Here our value proposition:
