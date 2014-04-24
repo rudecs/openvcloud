@@ -36,27 +36,6 @@ h1. $$page
       Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend
 {{div}}
 
-{{div: class=seperateDecks}}{{div}}
-
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
-      h3. Collaborate 
-      Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
-{{div}}
-
-
-{{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
-      h3. Multiple Datacenters
-      Each CloudSpace is hosted in a datacenter of choice.
-{{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
-      h3. Usage Based
-      Overview of usage based consumption per space.
-{{div}}
-
-
 {{gallery}}
 
 @divend
