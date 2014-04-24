@@ -21,17 +21,17 @@ h1. $$page
 {{div}}
 
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_Hybrid.jpg!
       h3. Hybrid
       Connect your office seamless to your cloud
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_Enterprise.jpg!
       h3. Enterprise
       Enterprise capable firewall technology
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_VPNs.jpg!
       h3. VPNs
       Many different types of VPN technologies supported
 {{div}}
@@ -39,16 +39,16 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_Simple.jpg!
       h3. Simple
       Simplified UI for port forwarding configuration.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_WebProxy.jpg!
       h3. WebProxy
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_LoadBalancing.jpg!
       h3. Loadbalancing 
 {{div}}
 

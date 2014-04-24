@@ -21,17 +21,17 @@ h1. $$page
 {{div}}
 
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_UltraFast.jpg!
       h3. Ultra Fast
       Almost instant creation of virtual machines
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_AnyOS.png!
       h3. Any OS
       Windows, Linux and custom x86 templates
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_ChooseSSD.jpg!
       h3. Choose SSD
       Select your preferred SSD drive size
 {{div}}
@@ -39,17 +39,17 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_PowerfullSnapshotting.jpg!
       h3. Powerfull Snapshotting
       Discover the ultra fast snapshotting and rollback
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_ PayPerHour.jpg!
       h3. Pay per hour
       Pay for deployed resources per hour only
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/MD_API.png!
       h3. API 
       Automate using the simple API
 {{div}}
