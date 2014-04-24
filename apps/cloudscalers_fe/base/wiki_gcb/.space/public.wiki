@@ -31,46 +31,11 @@
 
 {{html:
 <div id="wrap" ng-app="cloudscalers">
+}}
 
-<div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width=318 height=119></a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <div class="navbar-right">
-                <a href="/$$space/SignUp" class="signUp">Sign Up</a>
-                <a href="/$$space/login" class="signUp login">Login</a>
-            </div>
-            <div class="navbar-right clearR myNav justMine">
-                <ul>
-                    <li><a href="/$$space/" class="Home active">Home<i class="fa fa-home mls"></i></a></li>
-                    <li class="dropdown motherShipSub">
-                          <a href="#" class="dropdown-toggle Mothership Features active" data-toggle="dropdown">Mothership<sup>1</sup><b class="caret"></b></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="/$$space/Cloud Space">Cloud Space</a></li>
-                                <li><a href="/$$space/Defense Shield">Defense Shield</a></li>
-                                <li><a href="/$$space/Machine Deck">Machine Deck</a></li>
-                                <li><a href="/$$space/Storage Deck">Storage Deck</a></li>
-                                <li><a href="/$$space/Desktop Deck">Desktop Deck</a></li>
-                                <li><a href="/$$space/Application Deck">Application Deck</a></li>
-                              </ul>
-                        </li>
-                    
-                    <li><a href="/$$space/Why" class="Why Mothership<sup>1</sup> active">Why Mothership<sup>1</sup></a></li>
-                    <li><a href="/$$space/Pricing" class="Pricing active">Pricing</a></li>
-                    <li><a href="/$$space/ApiDocs" class="API active">API</a></li>
-                </ul>               
-            </div>
-        </div>
-    </div>
-</div>
+{{include:menu}}
+{{html:
+
 
     <script src="/$$space/.files/lib/angular-1.2.6/angular.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
