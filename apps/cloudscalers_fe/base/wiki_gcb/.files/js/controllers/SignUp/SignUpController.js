@@ -47,12 +47,10 @@ angular.module('cloudscalers.controllers')
             $scope.cancel = function () {
                 $modalInstance.dismiss(acceptTerms);
             };
-            $(window).scroll(function() {
-                    buffer = 20
-                    if ($("#terms").prop('scrollHeight') - $("#terms").scrollTop() <= $("#terms").height() + buffer )   {
-                        $('#accept-terms').removeAttr("disabled");
-                    }
-            });
+            if($scope.acceptTerms){
+                $('#accept-terms').removeAttr("disabled");
+                $('#accept-terms').prop('checked' , true);
+            }
         };
             
         acceptTermsChanged = function(checkboxElem) {
@@ -73,4 +71,14 @@ angular.module('cloudscalers.controllers')
         };
 
 
-    }]);
+    }]).directive("scroll", function ($window) {
+    return function(scope, element, attrs) {
+        angular.element($('#terms')).bind("scroll", function() {
+            var scrollHeight = this.scrollHeight - this.scrollHeight / 2.5;
+                if (this.scrollTop >= scrollHeight) {
+                 $('#accept-terms').removeAttr("disabled");
+             }
+            scope.$apply();
+        });
+    };
+});

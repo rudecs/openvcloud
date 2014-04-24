@@ -1,2 +1,0 @@
-Network Buckets:NetworkBuckets
-Port Forwarding:Portforwarding

@@ -1,5 +1,0 @@
-h2. Main Office
-{{html:
-    <hr>
-}}
-{{include:CreateOrEditDesktopBucket}}
