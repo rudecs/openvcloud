@@ -1,2 +1,2 @@
-Machine Decks API:ApiDocs
-Storage Decks API:ApiS3
+Machine Decks API:Api Docs
+Storage Decks API:Api S3
