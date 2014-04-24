@@ -1,7 +1,16 @@
 @template public
-{{div: class=white}}
 
-h1. Why Mothership{{html:<span class="MothershuiSub"><sup>1</sup></span>}}
+{{div: class=white}}
+{{div2: class=container}}
+
+{{div3: class=half copy col-md-8}}
+
+{{html:
+ <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
+}}
+
+
+h1. Why Mothership{{html:<sup>1</sup>}}
 
 h1. Painpoints in Cloud Computing
 
@@ -13,8 +22,34 @@ h1. Mothership1
 
 Mothership1 brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
 
-||Everyware Anyware||Warp Speed||Ultimate Defense||
-|Mothership1 integrates multiple functions in one portal, called ‘Decks’, bringing not only virtual machines, but as well storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private ‘Cloud Spaces’, assign credits and easily give access to users.|Speed is what Mothership1 values, a new cloud design brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots a matter of just seconds, immediate rollbacks, faster start and stop, use of PRO SSD drives with high performance and reliability.|A renewing way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable firewall and router. VPN functions allow seamless and secure 2 way integration with your local offices.|
+{{div3}}
+
+{{div3: class=half col-md-4 justOne}}
+  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
+{{div3}}
+
+
+{{div3: class=seperateDecks}}
+{{div3}}
+
+{{div3: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/why/why_Anywhere.png!
+      h3. Everyware Anyware
+      Mothership1 integrates multiple functions in one portal, called 'Decks', bringing not only virtual machines, but as well storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
+{{div3}}
+{{div3: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/why/why_warpspeed.jpg!
+      h3. Warp Speed
+      Speed is what Mothership1 values, a new cloud design brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots a matter of just seconds, immediate rollbacks, faster start and stop, use of PRO SSD drives with high performance and reliability.
+{{div3}}
+{{div3: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/why/why_DefenseShield.jpg!
+      h3. Ultimate Defense
+      A renewing way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable firewall and router. VPN functions allow seamless and secure 2 way integration with your local offices.
+{{div3}}
+
+{{div3: class=seperateDecks}}
+
 
 h2. Select your Cloud Deck
 
@@ -41,4 +76,9 @@ So why choose for Mothership1? Here our value proposition:
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
 
+{{gallery}}
+
 @divend
+@divend
+@divend
+

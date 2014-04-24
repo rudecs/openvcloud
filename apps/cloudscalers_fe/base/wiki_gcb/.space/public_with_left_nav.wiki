@@ -28,6 +28,15 @@
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/css/custom.css}}
 
+{{html:
+    <script src="/$$space/.files/js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+<!-- Fix for bootstrap gallery -->
+jQuery.fn.modal.defaults = {};
+</script>
+
+<script  src='/lib/bootstrap-image-gallery/js/bootstrap-image-gallery.min.js' type='text/javascript'></script>
+}}
 
 {{html:
 <div id="wrap" ng-app="cloudscalers">
@@ -47,7 +56,6 @@
     <script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.6.0.js"></script>
     <script src="/$$space/.files/lib/angular-ui/slider.min.js"></script>
     <script src="/$$space/.files/lib/angular-ui/angular-ui-router-0.2.0.js"></script>
-    <script src="/$$space/.files/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/ui.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/config.js" type="text/javascript"></script>
     <script src="/$$space/.files/test/e2e/apiStub.js"></script> 
