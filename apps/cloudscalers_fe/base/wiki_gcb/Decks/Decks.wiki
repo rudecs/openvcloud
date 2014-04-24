@@ -14,26 +14,7 @@
             <h2>
 
 </h2>
-        <ul id="decks-list" class="plm" style="list-style: inherit;">
-          <li class="mTxt grayTxt line-height">
-              Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Its up to you to organize your cloud workloads over cloudspaces.
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Each CloudSpace is owned by a cost center (the person paying the bills)
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Each CloudSpace is hosted in a datacenter of choice.
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Overview of usage based consumption per space.
-          </li>
-        </ul>
+        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
         </div>
         </div>
         <div class="col-md-4 boxes font color2">
@@ -46,37 +27,7 @@
             <h2>
 
 </h2>
-        <ul id="decks-list" class="plm" style="list-style: inherit;">
-                  <li class="mTxt grayTxt line-height">
-                      The defense shields provide privacy, security & secure access to your cloud spaces.
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                    Each space has a private defense shield owned by ONLY you.
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Defense Shield features
-                  </li>
-                  <ul class="mTxt grayTxt line-height">
-                    <li class="mTxt grayTxt line-height">
-                      Enterprise capable firewall technology
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      5 different types of VPN technologies supported
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      Simplified UI for portforwarding configuration.
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      WebProxy
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      Loadbalancing
-                    </li>
-                  </ul>
-                  <li class="mTxt grayTxt line-height">
-                    UNIQUE, connect your office seamless to your cloud.
-                  </li>
-              </ul>
+The defense shields provide privacy, security & secure access to your cloud spaces. Each space has a private defense shield owned by only you.
         </div>
         </div>
         <div class="col-md-4 boxes font color3">
@@ -89,20 +40,7 @@
             <h2>
 
 </h2>
-        <ul id="decks-list" class="plm" style="list-style: inherit;">
-          <li class="mTxt grayTxt line-height">
-              The Desktops Deck brings an innovative way to deliver IT to end users
-          </li>
-          <li class="mTxt grayTxt line-height">
-              A private portal and secure cloud storage delivering access to familiar applications
-          </li>
-          <li class="mTxt grayTxt line-height">
-              Use preferred device including laptops, tablets and smartphones
-          </li>
-          <li class="mTxt grayTxt line-height">
-              With full access to Microsoft Windows, Linux and legacy applications that run directly from the browser
-          </li>
-        </ul>
+An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
         </div>
         </div>
         <div class="col-md-4 boxes font color2 color5">
@@ -115,31 +53,7 @@
             <h2>
 
 </h2>
-        <ul id="decks-list" class="plm" style="list-style: inherit;">
-                  <li class="mTxt grayTxt line-height">
-                      The Storage Deck provides ultra reliable & scalable storage
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      3 types
-                  </li>
-                  <ul class="mTxt grayTxt line-height">
-                    <li class="mTxt grayTxt line-height">
-                      Object Based storage using S3 compatible API
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      Virtual Disks (10 GB to 2 TB, seamless attached to your vm’s) (*)
-                    </li>
-                    <li class="mTxt grayTxt line-height">
-                      Virtual Fileserver (upto Petabytes per space) (*)
-                    </li>
-                  </ul>
-                  <li class="mTxt grayTxt line-height">
-                    Your virtual machines are backed up to your private storage deck.
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                    All integrated in your personal cloud portal
-                  </li>
-              </ul>
+Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
         </div>
         </div>
         <div class="col-md-4 boxes font color3">
@@ -152,23 +66,7 @@
             <h2>
 
 </h2>
-              <ul id="decks-list" class="plm" style="list-style: inherit;">
-                  <li class="mTxt grayTxt line-height">
-                      Almost instant creation of virtual machines
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Any OS: windows, linux
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Select your preferred SSD drive size
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Discover the ultra fast snapshotting and rollback
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Automate using the simple API
-                  </li>
-              </ul>
+Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
         </div>
         </div>
         <div class="col-md-4 boxes font color4">
@@ -182,17 +80,7 @@
             <h2>
 
 </h2>
-              <ul id="decks-list" class="plm" style="list-style: inherit;">
-                  <li class="mTxt grayTxt line-height">
-                      Choose and size applications without the need for a technical background.
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application.
-                  </li>
-                  <li class="mTxt grayTxt line-height">
-                      Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend.
-                  </li>
-              </ul>
+Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
         </div>
         </div>
     </div>

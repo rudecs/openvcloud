@@ -30,7 +30,7 @@ h1. Pricing
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
                     {{span: class=cnrflash-label}}
-                        MOST @LF POPULR
+                        MOST @LF POPULAR
                     {{span}}
                 {{div5}}
             {{div4}}
@@ -48,14 +48,16 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
-                    <tr><td>Upgrade SSD up to <br> 100GB</td></tr>
-                    
-                    <tr><td>Unlimiter Transfer*</td></tr>
+                    <tr><td>Scale SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Firewall & VPN</td></tr>
+                    <tr><td>Instant Snapshots</td></tr>
+                    <tr><td>Unlimited Transfer*</td></tr>
                 </table>
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a><br> 1 month FREE trial}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
             {{div4}}
         {{div3}}
     {{div2}}
@@ -95,14 +97,16 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB Storge</td></tr>
-                    <tr><td>Upgrade SSD up to <br> 100GB</td></tr>
-                    
-                    <tr><td>Unlimiter Transfer*</td></tr>
+                    <tr><td>Scale SSD</td></tr>
+                    <tr><td>Managed Backup</td></tr>
+                    <tr><td>Firewall & VPN</td></tr>
+                    <tr><td>Instant Snapshots</td></tr>                    
+                    <tr><td>Unlimited Transfer*</td></tr>
                 </table>
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a><br> 2 month FREE trial}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
             {{div4}}
         {{div3}}
     {{div2}}
@@ -126,9 +130,9 @@ h1. Pricing
         <ul>
         <li>Extra Primary Storage </li>
         <li>Extra Secondary Storage attached to VM </li>
-        <li>Snapshots (taking full primary storage size)</li>
+        <li>Snapshots</li>
         <li>Templates</li>
-       <li> Extra cloudspace</li>
+        <li>Extra cloudspace</li>
         </ul>
         
 
@@ -150,11 +154,11 @@ h1. Pricing
         </td>
         <td class="full-span half-span">
         <ul>
-        <li>0.00042/hour</li>
-        <li>0.00021/hour</li>
-        <li>0.00021/hour</li>
-        <li>0.00042/hour</li>
-       <li>0.01389/hour</li>
+        <li>$0.00042/hour</li>
+        <li>$0.00021/hour</li>
+        <li>$0.00021/hour</li>
+        <li>$0.00042/hour</li>
+        <li>$0.01389/hour</li>
         </ul>
         
 
@@ -182,16 +186,12 @@ h1. Pricing
         <td class="column-divider"></td>
         <td class="full-span full-span2">
             <ul>
-                <li>Cloud Space with defense shield.</li>
-                <li>Choice of standard Linux and Windows templates.</li>
-                <li>All functions as described in the Machine Deck.
-</li>
-                <li>Disaster Recovery Backup (managed by Mothership Operations).
-</li>
-                <li>Monitoring by Mothership Operations.
-</li>
-                <li>99.99% Uptime SLA.
-</li>
+                <li>Cloud Space with defense shield</li>
+                <li>Choice of standard Linux and Windows templates</li>
+                <li>All functions as described in the Machine Deck</li>
+                <li class="motherShipSub">Disaster Recovery Backup (managed by Mothership<sup>1</sup>)</li>
+                <li>Monitoring by Mothership Operations</li>
+                <li>99.99% Uptime SLA</li>
             </ul>
 
         </td>
@@ -220,7 +220,7 @@ h1. Pricing
 
 }}
 
-
+(*) Unlimited Transfer si subject to fair use policy as descibed in the FAQ section
 
 @divend
 @divend

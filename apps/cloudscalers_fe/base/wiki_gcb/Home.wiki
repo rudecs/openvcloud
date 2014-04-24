@@ -22,7 +22,7 @@
                 Everyware Anyware<br>
                 
                 <ul class="arrow">
-                    <li>VMs, Cloud Desktops, Applications & Storage available anywhere.</li>
+                    <li>VMs, Cloud Desktops, Applications & Storage anywhere.</li>
                     <li>Connect your local office securely to your remote cloud.</li>
                     <li>Designed to be simple and easy to use.</li>
 
@@ -57,7 +57,7 @@
                 Designed to fit your needs<br>
                <ul class="arrow"> 
                 <li>Usage based.</li>
-                <li>IWindows / Linux.</li>
+                <li>Mirosoft Windows and Linux.</li>
                 <li>Flexible disk sizes.</li>
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>

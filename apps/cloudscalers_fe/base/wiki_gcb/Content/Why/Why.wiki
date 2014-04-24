@@ -1,13 +1,5 @@
 @template public
-@col 3
+{{div: class=white}}
 
-{{navigation}}
-
-@divend
-
-@col 9
-h2. Why Mothership1
-
-...
 
 @divend

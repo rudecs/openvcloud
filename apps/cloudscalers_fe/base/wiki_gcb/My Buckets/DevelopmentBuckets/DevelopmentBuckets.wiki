@@ -1,7 +1,0 @@
-h2. Development Buckets
-
-Development buckets bring agile deployment for Java, Python, and others. Development buckets allow developers to run and scale any type of app. 
-
-Developers can focus 100% on your code where they do not need to handle or think anymore in servers.
-
-Developers can run any web or background process with any web framework or worker type. controlling and scaling their apps has become more easy. Scaling apps to be able to deal with many users has become easy.
