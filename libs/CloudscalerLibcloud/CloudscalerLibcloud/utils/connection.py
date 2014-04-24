@@ -44,9 +44,6 @@ class CloudBrokerConnection():
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
              self.libvirt_actor = j.apps.libcloud.libvirt
-         hrd = j.application.config
-         self.environmentid = hrd.get('cloudscalers.environmentid')
-         self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
          self.agentcontroller_client = j.clients.agentcontroller.get()
 

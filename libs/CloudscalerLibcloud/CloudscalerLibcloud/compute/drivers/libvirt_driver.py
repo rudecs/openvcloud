@@ -198,7 +198,7 @@ class CSLibvirtNodeDriver():
 
     def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
-        vxlan = self.backendconnection.environmentid
+        vxlan = '%04x' % networkid 
         macaddress = self.backendconnection.getMacAddress()
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         
