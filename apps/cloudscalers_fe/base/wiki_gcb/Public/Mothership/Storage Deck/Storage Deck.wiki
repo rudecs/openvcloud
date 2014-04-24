@@ -21,17 +21,17 @@ h1. $$page
 {{div}}
 
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/SD-S3.jpg!
       h3. S3
       Object Based storage using S3 compatible API
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/SD_VirtualDisks.jpg!
       h3. Virtual Disks
       Virtual Disks  of 10 GB up to to 2 TB, seamless attached to your VMs
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/SD_Fileserver.jpg!
       h3. Fileserver
       Virtual Fileserver up to Petabytes per space (Roadmap)
 {{div}}
@@ -39,17 +39,17 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/DS_LoadBalancing.jpg!
       h3. Very Reliable
       Distributed storage ensuring data reliability
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/SD_Backup.jpg!
       h3. Backup
       Your virtual machines are backed up to your private storage deck.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/SD_Integrated.jpg!
       h3. Integrated
       All integrated in your personal cloud portal
 {{div}}
