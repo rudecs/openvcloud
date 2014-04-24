@@ -1,5 +1,38 @@
 @template public
 {{div: class=white}}
+{{div2: class=container}}
 
+{{ contact_form: receiver_email:info@mothership1.com | custom | subject: About Mothership1 }}
+    {{div3: class=form-group}}
+        {{html: <label class="control-label col-md-1" for="sender_email">Email</label>}}
+        {{div4: class=col-md-4}}
+            {{ email: name=sender_email | required | placeholder=Email | class=form-control}}
+        {{div4}}
+    {{div3}}
+    {{div3: class=form-group}}
+        {{html: <label class="control-label col-md-1" for="sender_name">Name</label>}}
+        {{div4: class=col-md-4}}
+            {{ text: name=sender_name | required=true | placeholder=Name | class=form-control}}
+        {{div4}}
+    {{div3}}
+    {{div3: class=form-group }}
+        {{html: <label class="control-label col-md-1" for="body">Message</label>}}
+        {{div4: class=col-md-4}}
+            {{ textarea: rows=10 | cols=20 | required | name=body | class=form-control}}
+        {{div4}}
+    {{div3}}
 
+    {{div3: class=form-group}}
+        {{html: <label class="control-label col-md-1"></label>}}
+        {{div4: class=col-md-4}}
+            {{ submit: class=btn btn-primary | data-loading-text=Sending... }}
+                {{html: Send the big email}}
+            {{submit}}
+
+            {{ reset }}
+        {{div4}}
+    {{div3}}
+{{ contact_form }}
+
+@divend
 @divend
