@@ -10,8 +10,8 @@ angular.module('cloudscalers.controllers')
         $scope.passwordConfirmation = " ";
         var acceptTerms = '';
         var acceptBelgian = '';
-        $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms + acceptBelgian', function() {
-                $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms && $scope.acceptBelgian;
+        $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
+                $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms;
              // && $scope.user.password && $scope.passwordConfirmation
         });
         $scope.signUp = function() {
@@ -51,7 +51,6 @@ angular.module('cloudscalers.controllers')
                     buffer = 20
                     if ($("#terms").prop('scrollHeight') - $("#terms").scrollTop() <= $("#terms").height() + buffer )   {
                         $('#accept-terms').removeAttr("disabled");
-                        $('#accept-terms-belgian').removeAttr("disabled");
                     }
             });
         };
@@ -63,24 +62,15 @@ angular.module('cloudscalers.controllers')
             $scope.acceptTerms = "";
           }
         }
-
-        acceptBelgianChanged = function(checkboxElem) {
-          if (checkboxElem.checked) {
-            $scope.acceptBelgian = "accept";
-          } else {
-            $scope.acceptBelgian = "";
-          }
-        }
-
                 
-            $scope.openTerms = function () {
-                var modalInstance = $modal.open({
-                    templateUrl: 'termsDialog.html',
-                    controller: termsController,
-                    resolve: {},
-                    scope: $scope
-                });
-            };
+        $scope.openTerms = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'termsDialog.html',
+                controller: termsController,
+                resolve: {},
+                scope: $scope
+            });
+        };
 
 
     }]);
