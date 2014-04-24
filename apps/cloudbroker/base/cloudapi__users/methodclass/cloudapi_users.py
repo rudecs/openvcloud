@@ -58,6 +58,32 @@ class cloudapi_users(object):
             ctx = kwargs['ctx']
             ctx.start_response('404 Not Found', [])
             return 'User not found'
+    
+    def _send_mail(self):
+        import smtplib
+
+        fromaddr = 'support@mothership1.com'
+        toaddrs  = 'support@mothership1.com'
+        
+        msg = '''
+Subject: testin'...
+        
+There was a terrible error that occured and I wanted you to know!
+'''
+
+
+        # Credentials (if needed)
+        username = 'support@mothership1.com'
+        password = ''
+
+        # The actual mail send
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.login(username,password)
+        server.sendmail(fromaddr, toaddrs, msg)
+        server.quit()
 
     def register(self, username, emailaddress, password, **kwargs):
         """
