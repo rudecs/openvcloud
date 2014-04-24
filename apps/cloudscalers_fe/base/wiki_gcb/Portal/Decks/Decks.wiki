@@ -21,7 +21,7 @@
          }}
 [Defense Shields|NetworkDeck]
 
-            [!/$$space/.files/img/icon2.png! | NetworkDeck]
+            [!/$$space/.files/img/icon5.png! | NetworkDeck]
     {{html:      
           <div class="prn">
             <h2>

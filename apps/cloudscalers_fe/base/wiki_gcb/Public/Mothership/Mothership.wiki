@@ -32,7 +32,7 @@
         </div>
         <div class="col-md-6 boxes font color3">
             <div class="col-md-4">
-                <img src="/$$space/.files/img/icon1.png" alt=""/>
+                <img src="/$$space/.files/img/icon5.png" alt=""/>
             </div>
             <div class="col-md-8 prn">
             <h2>
