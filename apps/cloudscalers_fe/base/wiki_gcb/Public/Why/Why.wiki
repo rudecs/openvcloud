@@ -3,39 +3,42 @@
 
 h1. Why Mothership{{html:<span class="MothershuiSub"><sup>1</sup></span>}}
 
-h1. Mothership1 Revolutionary Cloud
+h1. Painpoints in Cloud Computing
 
-h2. Unified Cloud
+At Mothership1 we are not new to cloud. For the last 15 years, the Mothership1 team has been on a quest of making things better in IT around automating the datacenter and its resources. Going through these challenges, we have learned a lot and with Mothership1, we try to deliver a simple and easy to use cloud solution that really ressonates what a cloud should offer.
 
-Looking at cloud computing, a lot of (dis)advantages are present in each of the currently available IaaS, PaaS, SaaS, Staas, DaaS,... solutions. In trying to be a complete cloud, providers keep adding features to their platform but being complete is hard and still, sticking to IaaS or PaaS or any of the others will never solve every problem. In the meantime their products get really complex while these added features don't even attract enough new customers to cover the costs of the development, let alone the TCO of them.
+We see that many public clouds are still struggling with features like: Scalability, as they tend to offer fixed instances; A time consuming implementation of snapshotting where taking snapshots and rolling them back helps to solve most critical issues; The uncertainty of data, as providers are not offering out of the box backup; The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
+
+h1. Mothership1
+
+Mothership1 brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
+
+||Everyware Anyware||Warp Speed||Ultimate Defense||
+|Mothership1 integrates multiple functions in one portal, called ‘Decks’, bringing not only virtual machines, but as well storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private ‘Cloud Spaces’, assign credits and easily give access to users.|Speed is what Mothership1 values, a new cloud design brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots a matter of just seconds, immediate rollbacks, faster start and stop, use of PRO SSD drives with high performance and reliability.|A renewing way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable firewall and router. VPN functions allow seamless and secure 2 way integration with your local offices.|
+
+h2. Select your Cloud Deck
 
 Mothership1 brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation:
 
-* The Desktop Bucket makes it easy for providing any application on any device using a single web portal.
-* Our Machine Buckets allow you to start any virtual machine in the cloud in seconds and use it as such or hook it up to your Desktop Bucket.
-* Storage Buckets provide you with a secure, distributed storage solution that is unique in its kind.
+* [Desktop Deck]: An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+* [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
+* [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+* [Application Deck]: Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks.
+
+These decks are organized in secure [Cloud Spaces|Cloud Space] that have each an extensive configurable private [Defense Shield].
 
 h2. Why Mothership1?
 
 So why choose for Mothership1? Here our value proposition:
 
 * Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
-* High performance thanks to storage deliverd at SSD speeds
+* High performance thanks to storage delivered at SSD speeds
 * Much more flexibility in instance creation
 * No lock in thanks to built in import and export functions
-* Extended management functions facilitating cloud management: snapshotting, cloning
+* Extended management functions facilitating cloud management like improved snapshotting, template creation, ...
 * Intuitive and easy to understand billing model
 * Straightforward API
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
-
-h2. Who is Mothership1?
-
-Mothership1 includes a team with a proven track record in datacentres and cloud computing as well as a very well built out capital funding network and legal and financial services.
-
-What makes us so different is that we bring scale, reliability and cost advantages to customers without pushing them in a specific technology direction.
-
-The team offers a counterpoint to the hype surrounding cloud computing by advocating that organisations need to challenge the existing best of breed technologies. Together, this tight knit group has spent the last decade focusing on datacentre and utility computing with the aim of bringing customers truly green, highly available and agile IT platforms. To reach this goal, the team has set about redesigning many of the vital parts of the IT ecosystem for the cloud capable datacentre environment.
-
 
 @divend
