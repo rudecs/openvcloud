@@ -21,17 +21,17 @@ h1. $$page
 {{div}}
 
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_PrivateCloud.jpg!
       h3. Private cloud
       Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_Organize.jpg!
       h3. Organize
       Its up to you to organize your cloud workloads over cloudspaces.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_Credits.jpg!
       h3. Credits
       Each CloudSpace is owned by an account owner uploading the credit
 {{div}}
@@ -39,17 +39,17 @@ h1. $$page
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_Collaborate.jpg!
       h3. Collaborate
       Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_MultipleDatacenters.jpg!
       h3. Multiple Datacenters
       Each CloudSpace is hosted in a datacenter of choice.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/icon1.png!
+      !/$$space/.files/img/features/CS_UsageBased.jpg!
       h3. Usage Based
       Overview of usage based consumption per space.
 {{div}}

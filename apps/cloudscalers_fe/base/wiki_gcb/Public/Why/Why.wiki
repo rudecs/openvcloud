@@ -5,22 +5,19 @@
 
 {{div3: class=half copy col-md-8}}
 
-{{html:
- <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
-}}
+#{{html:
+# <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
+#}}
 
+#h1. Why Mothership{{html:<sup>1</sup>}}
 
-h1. Why Mothership{{html:<sup>1</sup>}}
+h1. Cloud Computing Today
 
-h1. Painpoints in Cloud Computing
+At Mothership{{html:<sup>1</sup>}} we are not new to cloud. For the last 15 years, the Mothership{{html:<sup>1</sup>}} team has been on a quest of making things better in IT around automating the datacenter and its resources. We see that many public clouds are still struggling with features like: Scalability, as they tend to offer fixed instances; A time consuming implementation of snapshotting where taking snapshots and rolling them back helps to solve most critical issues; The uncertainty of data, as providers are not offering out of the box backup; The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
 
-At Mothership1 we are not new to cloud. For the last 15 years, the Mothership1 team has been on a quest of making things better in IT around automating the datacenter and its resources. Going through these challenges, we have learned a lot and with Mothership1, we try to deliver a simple and easy to use cloud solution that really ressonates what a cloud should offer.
+h1. Mothership{{html:<sup>1</sup>}}
 
-We see that many public clouds are still struggling with features like: Scalability, as they tend to offer fixed instances; A time consuming implementation of snapshotting where taking snapshots and rolling them back helps to solve most critical issues; The uncertainty of data, as providers are not offering out of the box backup; The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
-
-h1. Mothership1
-
-Mothership1 brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
+Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
 
 {{div3}}
 
@@ -35,12 +32,12 @@ Mothership1 brings a solution that addresses these painpoints, with a simple sol
 {{div3: class=col-md-4 boxDecks}}
       !/$$space/.files/img/why/why_Anywhere.png!
       h3. Everyware Anyware
-      Mothership1 integrates multiple functions in one portal, called 'Decks', bringing not only virtual machines, but as well storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
+      Mothership{{html:<sup>1</sup>}} integrates multiple functions in one portal, called 'Decks', bringing not only virtual machines, but as well storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
 {{div3}}
 {{div3: class=col-md-4 boxDecks}}
       !/$$space/.files/img/why/why_warpspeed.jpg!
       h3. Warp Speed
-      Speed is what Mothership1 values, a new cloud design brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots a matter of just seconds, immediate rollbacks, faster start and stop, use of PRO SSD drives with high performance and reliability.
+      Speed is what Mothership{{html:<sup>1</sup>}} values, a new cloud design brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots a matter of just seconds, immediate rollbacks, faster start and stop, use of PRO SSD drives with high performance and reliability.
 {{div3}}
 {{div3: class=col-md-4 boxDecks}}
       !/$$space/.files/img/why/why_DefenseShield.jpg!
@@ -50,21 +47,18 @@ Mothership1 brings a solution that addresses these painpoints, with a simple sol
 
 {{div3: class=seperateDecks}}
 
+h1. Select your Cloud Deck
 
-h2. Select your Cloud Deck
-
-Mothership1 brings a unified Cloud platform that delivers IT elements to be able to meet all needs into an organisation:
+Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT elements in the form of Cloud Decks to be able to meet all needs into an organisation. These decks are organized in secure [Cloud Spaces|Cloud Space] that have each an extensive configurable private [Defense Shield].
 
 * [Desktop Deck]: An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
 * [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
 * [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks.
 
-These decks are organized in secure [Cloud Spaces|Cloud Space] that have each an extensive configurable private [Defense Shield].
+h1. Why Mothership{{html:<sup>1</sup>}}?
 
-h2. Why Mothership1?
-
-So why choose for Mothership1? Here our value proposition:
+So why choose for Mothership{{html:<sup>1</sup>}}? Here our value proposition:
 
 * Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
 * High performance thanks to storage delivered at SSD speeds
@@ -75,8 +69,6 @@ So why choose for Mothership1? Here our value proposition:
 * Straightforward API
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
-
-{{gallery}}
 
 @divend
 @divend
