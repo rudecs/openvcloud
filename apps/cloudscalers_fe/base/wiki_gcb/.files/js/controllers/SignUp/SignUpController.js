@@ -48,7 +48,6 @@ angular.module('cloudscalers.controllers')
                 $modalInstance.dismiss(acceptTerms);
             };
             if($scope.acceptTerms){
-                console.log($('#accept-terms'));
                 $('#accept-terms').removeAttr("disabled");
                 $('#accept-terms').prop('checked' , true);
             }
