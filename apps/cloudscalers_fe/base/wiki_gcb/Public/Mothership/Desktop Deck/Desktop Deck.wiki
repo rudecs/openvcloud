@@ -1,74 +1,60 @@
-@template public
-{{div: class=white}}
-{{div: class=container}}
-@col 3
+@template public_with_left_nav
 
-{{navigation}}
+{{div: class=half copy col-md-6}}
 
-@divend
-
-@col 9
 {{html:
-
-<div class="half copy col-md-6">
  <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
 
 
 h1. $$page
-{{html:       
-        <p class="niceHead">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
 
-</p>
-      </div>
-      <div class="half col-md-6 justOne">
-        <img src="/$$space/.files/img/images/desk-pic.jpg">
-      </div>
-<div class="seperateDecks"></div>
+{{html: <p class="niceHead">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.</p>}}
 
-      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
+{{div}}
 
-      <h3>Private Portal</h3>
-      <p>A private portal and secure cloud storage delivering access to familiar Microsoft Windows, Linux and legacy applications
+{{div: class=half col-md-6 justOne}}
+  {{html: <img class="appMargin" src="/$$space/.files/img/images/desk-pic.jpg">}}
+{{div}}
 
-</p>
+{{div: class=seperateDecks}}
+{{div}}
 
-      </div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>HTML5 </h3>
-      <p>Use preferred device including laptops, tablets and smartphones, no local client needed, just html5 capable browser
-</p></div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Cloud Drive</h3>
-      <p>Private cloud drive integrated with sharing capabilities
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Private Portal
+      A private portal and secure cloud storage delivering access to familiar Microsoft Windows, Linux and legacy applications
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. HTML5
+      Use preferred device including laptops, tablets and smartphones, no local client needed, just html5 capable browser
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Cloud Drive
+      Private cloud drive integrated with sharing capabilities
+{{div}}
 
-</p></div>
+{{div: class=seperateDecks}}{{div}}
 
-<div class="seperateDecks"></div>
-
-<div class="col-md-4 boxDecks clearL">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Collaboration </h3>
-      <p>Collaboration features like screen sharing and chatting fully integrated
-
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Secure </h3>
-      <p> Enterprise-grade security, control and auditing
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Easy roll out</h3>
-      <p>Zero-config secure access for mobile workforce.
-
-</p></div>
-
-
-}}
+{{div: class=col-md-4 boxDecks clearL}}
+      !/$$space/.files/img/icon1.png!
+      h3. Collaboration
+      Collaboration features like screen sharing and chatting fully integrated
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Secure
+      Enterprise-grade security, control and auditing
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Easy roll out
+      Zero-config secure access for mobile workforce.
+{{div}}
 
 
+{{gallery}}
 
-@divend
-
-@divend
 @divend

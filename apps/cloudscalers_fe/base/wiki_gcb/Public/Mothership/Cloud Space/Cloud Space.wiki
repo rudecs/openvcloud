@@ -1,70 +1,60 @@
-@template public
-{{div: class=white}}
-{{div: class=container}}
-@col 3
+@template public_with_left_nav
 
-{{navigation}}
-
-@divend
-
-@col 9
+{{div: class=half copy col-md-6}}
 
 {{html:
-
-<div class="half copy col-md-6">
-<img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+ <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
-     h1. $$page   
-     {{html:
-        <p class="niceHead">Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
-</p>
-      </div>
-      <div class="half col-md-6 justOne">
-        <img src="/$$space/.files/img/images/cloudspace-pic.jpg">
-      </div>
-<div class="seperateDecks"></div>
-
-      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
-
-      <h3>Private cloud</h3>
-      <p>Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
-</p>
-
-      </div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Private cloud</h3>
-      <p>Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
-</p></div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Credits</h3>
-      <p>Each CloudSpace is owned by an account owner uploading the credit
-
-</p></div>
-
-<div class="seperateDecks"></div>
-
-<div class="col-md-4 boxDecks clearL">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Collaborate</h3>
-      <p>Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Multiple Datacenters</h3>
-      <p>Each CloudSpace is hosted in a datacenter of choice.
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Usage Based</h3>
-      <p>Overview of usage based consumption per space.
-
-</p></div>
 
 
-}}
+h1. $$page
+
+{{html: <p class="niceHead">Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.</p>}}
+
+{{div}}
+
+{{div: class=half col-md-6 justOne}}
+  {{html: <img src="/$$space/.files/img/images/cloudspace-pic.jpg">}}
+{{div}}
+
+{{div: class=seperateDecks}}
+{{div}}
+
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Private cloud
+      Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Private cloud
+      Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Credits
+      Each CloudSpace is owned by an account owner uploading the credit
+{{div}}
+
+{{div: class=seperateDecks}}{{div}}
+
+{{div: class=col-md-4 boxDecks clearL}}
+      !/$$space/.files/img/icon1.png!
+      h3. Collaborate
+      Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Multiple Datacenters
+      Each CloudSpace is hosted in a datacenter of choice.
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Usage Based
+      Overview of usage based consumption per space.
+{{div}}
+
 
 {{gallery}}
 
-@divend
-
-@divend
 @divend

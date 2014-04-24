@@ -1,75 +1,62 @@
-@template public
-{{div: class=white}}
-{{div: class=container}}
-@col 3
+@template public_with_left_nav
 
-{{navigation}}
+{{div: class=half copy col-md-6}}
 
-@divend
-
-@col 9
 {{html:
-
-<div class="half copy col-md-6">
  <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
 }}
 
 
 h1. $$page
-{{html:  
-        
-        
-        <p class="niceHead">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
-</p>
-      </div>
-      <div class="half col-md-6 justOne">
-         <img class="appMargin" src="/$$space/.files/img/images/application-pic.jpg">
-      </div>
-<div class="seperateDecks"></div>
 
-      <div class="col-md-4 boxDecks"><img src="/$$space/.files/img/icon1.png" alt=""/>
+{{html: <p class="niceHead">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks</p>}}
 
-      <h3>Non technical setup</h3>
-      <p>Choose and size applications without the need for a technical background
+{{div}}
 
-</p>
+{{div: class=half col-md-6 justOne}}
+  {{html: <img class="appMargin" src="/$$space/.files/img/images/application-pic.jpg">}}
+{{div}}
 
-      </div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Size to needs</h3>
-      <p>Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application
+{{div: class=seperateDecks}}
+{{div}}
 
-</p></div>
-      <div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Scale </h3>
-      <p>Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend 
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Non technical setup
+      Choose and size applications without the need for a technical background
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Size to needs
+      Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your application
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Scale
+      Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend
+{{div}}
 
-</p></div>
+{{div: class=seperateDecks}}{{div}}
 
-<div class="seperateDecks"></div>
-
-<div class="col-md-4 boxDecks clearL">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Collaborate</h3>
-      <p>Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Multiple Datacenters</h3>
-      <p>Each CloudSpace is hosted in a datacenter of choice.
-
-</p></div>
-<div class="col-md-4 boxDecks">
-      <img src="/$$space/.files/img/icon1.png" alt=""/><h3>Usage Based</h3>
-      <p>Overview of usage based consumption per space.
-
-</p></div>
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Collaborate 
+      Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
+{{div}}
 
 
-}}
+{{div: class=col-md-4 boxDecks clearL}}
+      !/$$space/.files/img/icon1.png!
+      h3. Multiple Datacenters
+      Each CloudSpace is hosted in a datacenter of choice.
+{{div}}
+{{div: class=col-md-4 boxDecks}}
+      !/$$space/.files/img/icon1.png!
+      h3. Usage Based
+      Overview of usage based consumption per space.
+{{div}}
 
 
+{{gallery}}
 
-@divend
-
-@divend
 @divend
