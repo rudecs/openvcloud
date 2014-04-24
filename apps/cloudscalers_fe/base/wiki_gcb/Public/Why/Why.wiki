@@ -14,7 +14,7 @@
 h1. Cloud Computing Today
 
 At Mothership{{html:<sup>1</sup>}} we are not new to cloud. For the last 15 years, the Mothership{{html:<sup>1</sup>}} team has been on a quest of making things better in IT around automating the datacenter and its resources. We see that many public clouds are still struggling with features like: Scalability, as they tend to offer fixed instances; A time consuming implementation of snapshotting where taking snapshots and rolling them back helps to solve most critical issues; The uncertainty of data, as providers are not offering out of the box backup; The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
-{{html:<hr />}}
+@LF
 h1. Mothership{{html:<sup>1</sup>}}
 
 Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
