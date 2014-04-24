@@ -25,7 +25,6 @@
                     <div class="controls" id="paymentbuttons">
 }}
 {{include:PayPal}}
-{{include:CryptoPayment}}
 {{html:
 
 
