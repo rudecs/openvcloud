@@ -139,10 +139,10 @@
                 <div class="col-md-8">
                     <ul class="first-list ">
                         <li><a href="/$$space/">Copyright © 2014 Mothership<sup>1</sup></a></li>
-                        <li><a href="/$$space/">General Term & Conditions</a></li>
-                        <li><a href="/$$space/">Privacy Policy</a></li>
-                        <li><a href="/$$space/">About Us</a></li>
-                        <li><a href="/$$space/">Press</a></li>
+                        <li><a href="/$$space/Terms">General Term & Conditions</a></li>
+                        <li><a href="/$$space/Privacy Policy">Privacy Policy</a></li>
+                        <li><a href="/$$space/About Us">About Us</a></li>
+                        <li><a href="/$$space/Press">Press</a></li>
                         <li><a href="/$$space/Contact">Contact</a></li>
                     </ul>
                 </div>

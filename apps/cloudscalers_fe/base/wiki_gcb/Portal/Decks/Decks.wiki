@@ -1,0 +1,90 @@
+{{html:
+<div class="container">
+    <div class="span11 newDecks newDecks2">
+        <div class="col-md-4 boxes font color1 leftIcon">
+        }} 
+[Cloud Space|MachineDeck]
+
+            
+                [!/$$space/.files/img/icon1.png! | MachineDeck]
+
+          {{html:     
+            
+            <div class="prn">
+            <h2>
+
+</h2>
+        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
+        </div>
+        </div>
+        <div class="col-md-4 boxes font color2">
+         }}
+[Defense Shields|NetworkDeck]
+
+            [!/$$space/.files/img/icon2.png! | NetworkDeck]
+    {{html:      
+          <div class="prn">
+            <h2>
+
+</h2>
+The defense shields provide privacy, security & secure access to your cloud spaces. Each space has a private defense shield owned by only you.
+        </div>
+        </div>
+        <div class="col-md-4 boxes font color3">
+           }}
+[Desktop Deck (Alfa)|DesktopDeck]
+
+                [!/$$space/.files/img/icon3.png! | DesktopDeck]
+    {{html:        
+            <div class="prn">
+            <h2>
+
+</h2>
+An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+        </div>
+        </div>
+        <div class="col-md-4 boxes font color2 color5">
+          }}
+[Storage Deck|StorageDeck]
+
+            [!/$$space/.files/img/icon2.png! | StorageDeck]
+   {{html:       
+          <div class="prn">
+            <h2>
+
+</h2>
+Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
+        </div>
+        </div>
+        <div class="col-md-4 boxes font color3">
+           }}
+[Machine Deck|MachineDeck]
+
+                [!/$$space/.files/img/icon3.png! | MachineDeck]
+      {{html:      
+            <div class="prn">
+            <h2>
+
+</h2>
+Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+        </div>
+        </div>
+        <div class="col-md-4 boxes font color4">
+       }}
+[Application Deck (Q4)|ApplicationDeck]
+
+            
+            [!/$$space/.files/img/icon4.png! | ApplicationDeck]
+       {{html: 
+        <div class="prn">
+            <h2>
+
+</h2>
+Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
+        </div>
+        </div>
+    </div>
+</div>
+
+
+}}
