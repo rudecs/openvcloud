@@ -7,7 +7,8 @@
         <h1>Sign Up</h1>
 
         <div class="login-fields">
-            <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
+        <!-- remove autocomplete="off" when password fields back to make sure browser save passwords -->
+            <form name="reg" ng-submit="signUp()" autocomplete="off"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
                 <div class="field">
