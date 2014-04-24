@@ -85,10 +85,9 @@ class cloudapi_paypal(j.code.classGetBase()):
         param:currency currency the code of the currency you want to make a payment with (USD currently supported)
         result dict
         """
-        import ipdb; ipdb.set_trace()
         access_token = self._get_access_token()
         credittransaction = self.models.credittransaction.new()
-        credittransaction.time = time.time()
+        credittransaction.time = int(time.time())
         credittransaction.amount = amount
         credittransaction.currency = 'USD'
         credittransaction.status = 'NOT PAYED'
