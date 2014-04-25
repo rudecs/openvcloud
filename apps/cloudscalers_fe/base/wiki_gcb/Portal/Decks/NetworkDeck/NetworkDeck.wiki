@@ -5,19 +5,25 @@ The Shield your personal firewall that handles all incoming and outgoing traffic
 The Shield provides tons of possibilities to offer more flexibility and enhanced security compared to other public clouds. By default we provide one public IP address for each Cloud Space.
 
 {{html:
+<style>
+.modal 
+{
+	width: 100%;
+	left: 22%;
+	height: 100%;
+	margin: -25% 0 0 -280px;
+}
+</style>
 	<div ng-controller="NetworkController">
 		<div>
-			<a ng-click="routeros()">Advanced Shield configuration</a>
+			<a ng-click="routeros()">Advanced Shield configuration</a> (Use the same credentials as for the MotherShip1 portal)
 		</div>
 		<script type="text/ng-template" id="routerosDialog.html">
                 <div class="modal-header">
-                    <h2>RouterOS</h2>
+                    <button type="submit" class="btn btn-primary ok" ng-click="cancel()">Close</button>
                 </div>
-                <div class="modal-body">
-					<iframe ng-src="{[ trustSrc(managementui) ]}" width="100%">Something wrong...</iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary ok" ng-click="cancel()">Ok</button>
+                <div class="modal-body" style="width:100%;height:100%;">
+					<iframe ng-src="{[ trustSrc(managementui) ]}" style="width:100%;height:80%"></iframe>
                 </div>
         </script>
 
