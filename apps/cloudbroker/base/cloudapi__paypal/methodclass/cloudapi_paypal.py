@@ -85,6 +85,10 @@ class cloudapi_paypal(j.code.classGetBase()):
         param:currency currency the code of the currency you want to make a payment with (USD currently supported)
         result dict
         """
+        ctx = kwargs['ctx']
+        import urlparse
+        urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+        portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
         access_token = self._get_access_token()
         credittransaction = self.models.credittransaction.new()
         credittransaction.time = int(time.time())
@@ -98,8 +102,8 @@ class cloudapi_paypal(j.code.classGetBase()):
         payload = {
                    "intent":"sale",
                    "redirect_urls":{
-                                    "return_url":"https://test1.mothership1.com/restmachine/cloudapi/paypal/confirmauthorization?id=%s" % credittransaction.id,
-                                    "cancel_url":"https://test1.mothership1.com/wiki_gcb/AccountSettings"
+                                    "return_url":"%s/restmachine/cloudapi/paypal/confirmauthorization?id=%s" % (portalurl,credittransaction.id),
+                                    "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
                                    },
                    "payer":{
                             "payment_method":"paypal"

@@ -134,7 +134,9 @@ class cloudapi_users(object):
             ace.type = 'U'
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
-            portalurl = ctx.env['HTTP_ORIGIN']
+            import urlparse
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
             self._send_signup_mail(accountid=accountid, username=username, emailaddress=emailaddress, portalurl=portalurl)
             #networkid = self.libvirt_actor.getFreeNetworkId()
             #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
