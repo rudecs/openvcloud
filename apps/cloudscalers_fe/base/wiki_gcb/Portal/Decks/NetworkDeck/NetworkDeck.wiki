@@ -10,7 +10,7 @@ The Shield provides tons of possibilities to offer more flexibility and enhanced
 {
 	width: 100%;
 	height: 100%;
-	margin: -25% 0 0 -50px;
+	margin: -25% 0 0 -50%;
 }
 </style>
 	<div ng-controller="NetworkController">
