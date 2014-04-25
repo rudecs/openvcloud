@@ -1,7 +1,6 @@
 @template public
 {{div: class=white}}
-{{div: class=container}}
-{{div3: class=seperateDecks}}
+{{div: class=container why-page}}
 
 @col 9
 h1. General Terms & Conditions
@@ -93,7 +92,7 @@ User can pay for selected Services using credit units as indicated on the Websit
 
 User can purchase Mothership{{html:<sup>1</sup>}} Credits using any payment method made available to Users on the Website from time to time. The Mothership{{html:<sup>1</sup>}} Credit will be credited to your account as soon as the relevant payment has been accepted by the payment processor and/or, where applicable, a currency exchange has been effected into U.S. Dollars and the corresponding U.S. Dollars amount has been credited to the relevant Mothership{{html:<sup>1</sup>}} account.
 
-The purchase price of any Services is expressed as an amount in U.S. Dollars[[PVH1]|file:///C:/Users/arvid/Downloads/CloudScalers%20-%20General%20Terms%20&amp;%20Conditions%20-%20draft%201%20-%2020140422.docx#_msocom_1] per month (the "Price"). Any purchase of Services shall require that an amount of Mothership{{html:<sup>1</sup>}} Credits corresponding to at least 50% of the Price for the relevant Services have been credited to the User's account prior to such purchase. For example, if you purchase compute capacity corresponding to a Price of 20 U.S. Dollars, you will need to have at least 10 Mothership{{html:<sup>1</sup>}} Credits on your account in view of ordering this Service. In that case, 10 Mothership{{html:<sup>1</sup>}} Credits will allow you to use this compute capacity during two weeks.
+The purchase price of any Services is expressed as an amount in U.S. Dollars per month (the "Price"). Any purchase of Services shall require that an amount of Mothership{{html:<sup>1</sup>}} Credits corresponding to at least 50% of the Price for the relevant Services have been credited to the User's account prior to such purchase. For example, if you purchase compute capacity corresponding to a Price of 20 U.S. Dollars, you will need to have at least 10 Mothership{{html:<sup>1</sup>}} Credits on your account in view of ordering this Service. In that case, 10 Mothership{{html:<sup>1</sup>}} Credits will allow you to use this compute capacity during two weeks.
 
 The Auto-Recharge feature will be automatically enabled when you buy Mothership{{html:<sup>1</sup>}} Credit, unless you untick the appropriate box. Your Mothership{{html:<sup>1</sup>}} Credit balance will be recharged with the same amount and by the same payment method chosen when you first sign up for Auto-Recharge, unless you subsequently change the amount by accessing your User account. For example, if you purchase 10 U.S. Dollars of Mothership{{html:<sup>1</sup>}} Credit with your credit card, the recharge amount charged to your credit card will also be 10 U.S. Dollars of Mothership{{html:<sup>1</sup>}} Credit. In future the same amount will be charged to your credit card every time your account balance goes below the threshold set by Mothership{{html:<sup>1</sup>}} from time to time. If you do not want to enable Auto-Recharge, please untick the box. You can disable Auto-Recharge at any time by accessing your User account.
 
