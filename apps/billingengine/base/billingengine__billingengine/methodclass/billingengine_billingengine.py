@@ -29,10 +29,60 @@ class billingengine_billingengine(j.code.classGetBase()):
         for ns in osiscl.listNamespaceCategories('cloudbroker'):
             self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
             self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
+            
+        self.base_machine_prices = {
+                                    'Linux':
+                                        {
+                                         '512':0.0083,
+                                         '1024':0.0153,
+                                         '2048':0.0278,
+                                         '4096':0.0500,
+                                         '8192':0.0889,
+                                         '16384':0.1556
+                                         },
+                                    'Windows':
+                                        {
+                                         '512':0.0167,
+                                         '1024':0.0306,
+                                         '2048':0.0556,
+                                         '4096':0.1000,
+                                         '8192':0.1778,
+                                         '16384':0.3111
+                                         }
+                                    }
+        self._machine_sizes = None
+        self._machine_images = None
+    
+    @property
+    def machine_sizes(self):
+        if not self._machine_sizes:
+            query = {'fields': ['id', 'memory']}
+            results  = self.cloudbrokermodels.size.find(ujson.dumps(query))['result']
+            self._machine_sizes = dict([(res['fields']['id'], res['fields']) for res in results])
+        return self._machine_sizes
+    
+    
+    @property
+    def machine_images(self):
+        if not self._machine_images:
+            query = {'fields': ['id', 'type','name']}
+            results  = self.cloudbrokermodels.image.find(ujson.dumps(query))['result']
+            self._machine_sizes = dict([(res['fields']['id'], res['fields']) for res in results])
+        return self._machine_sizes
+    
+    
+    def _get_machine_price_per_hour(self, machine):
+        machine_imageid = machine['imageId']
+        machine_sizeId = machine['sizeId']
+        machine_memory = self.machine_sizes['memory']
+        machine_type = 'Linux'
+        if self.machine_images.has_key(machine_imageid):
+            machine_type = self.machine_images[machine_imageid]
+        if not self.base_machine_prices.has_key(machine_type):
+            machine_type = 'Linux'
 
-    def _get_price_per_hour(self):
-        return 1.0
-
+        return self.base_machine_prices[machine_type][machine_memory]
+    
     def _get_last_billing_statement(self, accountId):
         query = {'fields': ['fromTime', 'accountId','id']}
         query['query'] = {'term': {"accountId": accountId}}
@@ -61,7 +111,7 @@ class billingengine_billingengine(j.code.classGetBase()):
                 if (machinebillingstatement.creationTime < billing_statement.fromTime):
                     number_of_billable_hours -= (billing_statement.fromTime * 3600.0)
 
-        price_per_hour = self._get_price_per_hour()
+        price_per_hour = self._get_machine_price_per_hour(machine)
         machinebillingstatement.cost = number_of_billable_hours * price_per_hour
 
     def _update_usage(self, billing_statement):
