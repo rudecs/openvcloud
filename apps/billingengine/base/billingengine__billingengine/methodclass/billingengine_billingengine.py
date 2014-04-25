@@ -74,7 +74,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         billing_statement.totalCost = 0.0
 
         for cloudspace in cloudspaces:
-            query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId']}
+            query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId','imageId','sizeId']}
 
             query['query'] = {'filtered':{
                           "query" : {"term" : { "cloudspaceId" : cloudspace['id'] }},
