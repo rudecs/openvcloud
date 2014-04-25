@@ -1,23 +1,15 @@
 @usedefault
 {{html:
-	<a href="AccountSettings"><i class="fa fa-arrow-left mrm mbl"></i>Back to account details</a>
-}}
-h1. Usage report
-
-{{html:
+	<a href="AccountSettings"><i class="fa fa-arrow-left mrm mbl"></i>Back</a>
 
 
 <div ng-controller="UsageController">
-			<div class="row">
-				<div class="span6">
-					<h2>
-					{[millisToUTCDate(usagereport.fromTime  * 1000) | date:'MMMM']}
-					</h2>
-				</div>
-				<div class="span6">
-					<h2>Total cost</h2> {[ usagereport.totalCost | currency:"USD$" ]}
-				</div>
-			</div>
+
+	<h1>Usage report {[millisToUTCDate(usagereport.fromTime  * 1000) | date:'MMMM YYYY']}</h1>
+	{[ usagereport.totalCost | currency:"$" ]}
+
+
+
 			<hr />
 			<div ng-repeat="cloudspace in usagereport.cloudspaces">
 				<div class="row">
@@ -27,7 +19,7 @@ h1. Usage report
 					</div>
 					<div class="span6">
 						<h2 class="left mrm">Cost</h2>
-						<div class="mtl">{[ cloudspace.totalCost | currency:"USD$" ]}</div>
+						<div class="mtl">{[ cloudspace.totalCost | currency:"$" ]}</div>
 					</div>
 				</div>
 				<table class="table table-striped table-bordered mtl">
@@ -58,7 +50,7 @@ h1. Usage report
 				    <tbody>
 				        <tr ng-repeat="machine in cloudspace.machines | orderBy:orderByField:reverseSort">
 				            <td>{[ machine.name ]}</td>
-				            <td>{[ machine.cost | currency:"USD$" ]}</td>
+				            <td>{[ machine.cost | currency:"$" ]}</td>
 				            <td>{[ machine.creationTime * 1000 | date:'dd/MM/yyyy h:mma' ]}</td>
 				            <td>
 				            	<span ng-show="machine.deletiontime.length">{[ machine.deletiontime * 1000 | date:'dd/MM/yyyy h:mma' ]}</span>
