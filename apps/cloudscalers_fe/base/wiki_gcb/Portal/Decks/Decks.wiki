@@ -14,7 +14,7 @@
             <h2>
 
 </h2>
-        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
+        A cloud space is a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
         </div>
         <div class="col-md-4 boxes font color2">
@@ -41,7 +41,7 @@ The defense shields provide privacy, security & secure access to your cloud spac
             <h2>
 
 </h2>
-An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps.
         </div>
         </div>
         <div class="col-md-4 boxes font color2 color5">
