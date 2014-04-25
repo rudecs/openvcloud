@@ -6,7 +6,7 @@
 [Cloud Space|MachineDeck]
 
             
-                [!/$$space/.files/img/icon1.png! | MachineDeck]
+                [!/$$space/.files/img/icon6.png! | MachineDeck]
 
           {{html:     
             

@@ -6,7 +6,7 @@
     <div class="span11 newDecks">
         <div class="col-md-6 boxes font color1 leftIcon">
             <div class="col-md-4">
-                <img src="/$$space/.files/img/icon1.png" alt=""/>
+                <img src="/$$space/.files/img/icon6.png" alt=""/>
             </div>
             <div class="col-md-8 prn">
             <h2>

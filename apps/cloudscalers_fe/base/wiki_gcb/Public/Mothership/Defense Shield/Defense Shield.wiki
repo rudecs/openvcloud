@@ -53,6 +53,6 @@ h1. $$page
 {{div}}
 
 
-{{gallery}}
+#{{gallery}}
 
 @divend

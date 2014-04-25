@@ -3,7 +3,7 @@
 {{div: class=half copy col-md-6}}
 
 {{html:
- <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
+ <img class="smallIcon" src="/$$space/.files/img/icon6.png" alt=""/>
 }}
 
 
@@ -55,6 +55,6 @@ h1. $$page
 {{div}}
 
 
-{{gallery}}
+#{{gallery}}
 
 @divend

@@ -36,6 +36,6 @@ h1. $$page
       Afterwards, upscale your application seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend
 {{div}}
 
-{{gallery}}
+#{{gallery}}
 
 @divend
