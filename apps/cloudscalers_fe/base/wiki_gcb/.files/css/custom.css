@@ -112,10 +112,10 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .red h4 > a , .sideNav .header.red > a{ background: #ff0000; }
 .darkOrange h4 > a , .sideNav .header.darkOrange > a{ background: #d97804; }
 
-.blue + .panel-collapse, .sideNav .blue.header { background: #ccf1ff; }
+.blue + .panel-collapse, .sideNav .blue.header { background: #ebfaff; }
 .green + .panel-collapse, .sideNav .green.header { background: #edffc9; }
-.orange + .panel-collapse, .sideNav .orange.header { background: #f2deb6; }
-.red + .panel-collapse, .sideNav .red.header { background: #fed2d2; }
+.orange + .panel-collapse, .sideNav .orange.header { background: #ffefd0; }
+.red + .panel-collapse, .sideNav .red.header { background: #ffdada; }
 .darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #f9dfc0; }
 
 .panel { background-color: initial; border: 0; border-radius: 0 !important; -webkit-box-shadow: none; box-shadow: none; }
