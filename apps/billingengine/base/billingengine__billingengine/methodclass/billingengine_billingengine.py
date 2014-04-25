@@ -44,6 +44,26 @@ class billingengine_billingengine(j.code.classGetBase()):
         else:
             return None
 
+    def _update_machine_billingstatement(self, machinebillingstatement, machine):
+        machinebillingstatement.deletionTime = machine['deletionTime']
+
+        if not machinebillingstatement.deletionTime is 0:
+            billmachineuntil = machinebillingstatement.deletionTime
+        else:
+            billmachineuntil = billing_statement.untilTime
+
+        billmachinefrom = max(billing_statement.fromTime, machinebillingstatement.creationTime)
+        number_of_billable_hours = (billmachineuntil - billmachinefrom) / 3600.0
+        if (number_of_billable_hours < 1.0): #minimum one hour
+            if not machinebillingstatement.deletionTime is 0:
+                number_of_billable_hours = 1.0
+                #Don't charge double if the machine was partially billed in the previous period
+                if (machinebillingstatement.creationTime < billing_statement.fromTime):
+                    number_of_billable_hours -= (billing_statement.fromTime * 3600.0)
+
+        price_per_hour = self._get_price_per_hour()
+        machinebillingstatement.cost = number_of_billable_hours * price_per_hour
+
     def _update_usage(self, billing_statement):
 
         query = {'fields': ['id', 'name', 'accountId']}
@@ -65,43 +85,32 @@ class billingengine_billingengine(j.code.classGetBase()):
 
             queryresult = self.cloudbrokermodels.vmachine.find(ujson.dumps(query))['result']
             machines = [res['fields'] for res in queryresult]
-            cloudspacebillingstatement = None
+            
+            if len(machines) is 0:
+                continue
+            
+            cloudspacebillingstatement = next((space for space in billing_statement.cloudspaces if space.cloudspaceId == cloudspace['id']), None)
+
+            if cloudspacebillingstatement is None:
+                cloudspacebillingstatement = billing_statement.new_cloudspace()
+                cloudspacebillingstatement.name = cloudspace['name']
+                cloudspacebillingstatement.cloudspaceId = cloudspace['id']
+            
             for machine in machines:
-                cloudspacebillingstatement = next((space for space in billing_statement.cloudspaces if space.cloudspaceId == cloudspace['id']), None)
-
-                if cloudspacebillingstatement is None:
-                    cloudspacebillingstatement = billing_statement.new_cloudspace()
-                    cloudspacebillingstatement.name = cloudspace['name']
-                    cloudspacebillingstatement.cloudspaceId = cloudspace['id']
-
+                
                 machinebillingstatement = next((machinebs for machinebs in cloudspacebillingstatement.machines if machinebs.machineId==machine['id']),None)
                 if machinebillingstatement is None:
                     machinebillingstatement = cloudspacebillingstatement.new_machine()
                     machinebillingstatement.machineId = machine['id']
                     machinebillingstatement.name = machine['name']
                     machinebillingstatement.creationTime = machine['creationTime']
-                    machinebillingstatement.deletionTime = machine['deletionTime']
+                
+                self._update_machine_billingstatement(machinebillingstatement, machine)
+                
 
-                if not machinebillingstatement.deletionTime is 0:
-                    billmachineuntil = machinebillingstatement.deletionTime
-                else:
-                    billmachineuntil = billing_statement.untilTime
-
-                billmachinefrom = max(billing_statement.fromTime, machinebillingstatement.creationTime)
-                number_of_billable_hours = (billmachineuntil - billmachinefrom) / 3600.0
-                if (number_of_billable_hours < 1.0): #minimum one hour
-                    if not machinebillingstatement.deletionTime is 0:
-                        number_of_billable_hours = 1.0
-                        if (machinebillingstatement.creationTime < billing_statement.fromTime):
-                          number_of_billable_hours -= (billing_statement.fromTime * 3600.0)
-
-                price_per_hour = self._get_price_per_hour()
-                machinebillingstatement.cost = number_of_billable_hours * price_per_hour
-
-            if not cloudspacebillingstatement is None:
-                cloudspacebillingstatement.totalCost = 0.0
-                for machinebillingstatement in cloudspacebillingstatement.machines:
-                    cloudspacebillingstatement.totalCost += machinebillingstatement.cost
+            cloudspacebillingstatement.totalCost = 0.0
+            for machinebillingstatement in cloudspacebillingstatement.machines:
+                cloudspacebillingstatement.totalCost += machinebillingstatement.cost
 
         for cloudspacebillingstatement in billing_statement.cloudspaces:
             billing_statement.totalCost += cloudspacebillingstatement.totalCost
