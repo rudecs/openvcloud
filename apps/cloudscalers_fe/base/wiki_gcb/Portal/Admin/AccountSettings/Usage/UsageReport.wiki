@@ -49,9 +49,9 @@
 				        <tr ng-repeat="machine in cloudspace.machines | orderBy:orderByField:reverseSort">
 				            <td>{[ machine.name ]}</td>
 				            <td>{[ machine.cost | currency:"$" ]}</td>
-				            <td>{[ machine.creationTime * 1000 | date:'dd/MM/yyyy h:mma' ]}</td>
+				            <td>{[ machine.creationTime * 1000 | date:'medium' ]}</td>
 				            <td>
-				            	<span ng-show="machine.deletionTime > 0">{[ machine.deletionTime * 1000 | date:'dd/MM/yyyy h:mma' ]}</span>
+				            	<span ng-show="machine.deletionTime > 0">{[ machine.deletionTime * 1000 | date:'medium' ]}</span>
 				            </td>
 					     </tr>
 					</tbody>
