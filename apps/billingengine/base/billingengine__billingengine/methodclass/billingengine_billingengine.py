@@ -33,21 +33,21 @@ class billingengine_billingengine(j.code.classGetBase()):
         self.base_machine_prices = {
                                     'Linux':
                                         {
-                                         '512':0.0083,
-                                         '1024':0.0153,
-                                         '2048':0.0278,
-                                         '4096':0.0500,
-                                         '8192':0.0889,
-                                         '16384':0.1556
+                                         512:0.0083,
+                                         1024:0.0153,
+                                         2048:0.0278,
+                                         4096:0.0500,
+                                         8192:0.0889,
+                                         16384:0.1556
                                          },
                                     'Windows':
                                         {
-                                         '512':0.0167,
-                                         '1024':0.0306,
-                                         '2048':0.0556,
-                                         '4096':0.1000,
-                                         '8192':0.1778,
-                                         '16384':0.3111
+                                         512:0.0167,
+                                         1024:0.0306,
+                                         2048:0.0556,
+                                         4096:0.1000,
+                                         8192:0.1778,
+                                         16384:0.3111
                                          }
                                     }
         self._machine_sizes = None
@@ -67,17 +67,17 @@ class billingengine_billingengine(j.code.classGetBase()):
         if not self._machine_images:
             query = {'fields': ['id', 'type','name']}
             results  = self.cloudbrokermodels.image.find(ujson.dumps(query))['result']
-            self._machine_sizes = dict([(res['fields']['id'], res['fields']) for res in results])
-        return self._machine_sizes
+            self._machine_images = dict([(res['fields']['id'], res['fields']) for res in results])
+        return self._machine_images
     
     
     def _get_machine_price_per_hour(self, machine):
         machine_imageid = machine['imageId']
         machine_sizeId = machine['sizeId']
-        machine_memory = self.machine_sizes['memory']
+        machine_memory = self.machine_sizes[machine_sizeId]['memory']
         machine_type = 'Linux'
         if self.machine_images.has_key(machine_imageid):
-            machine_type = self.machine_images[machine_imageid]
+            machine_type = self.machine_images[machine_imageid]['type']
         if not self.base_machine_prices.has_key(machine_type):
             machine_type = 'Linux'
 
@@ -94,22 +94,22 @@ class billingengine_billingengine(j.code.classGetBase()):
         else:
             return None
 
-    def _update_machine_billingstatement(self, machinebillingstatement, machine):
+    def _update_machine_billingstatement(self, machinebillingstatement, machine, fromTime, untilTime):
         machinebillingstatement.deletionTime = machine['deletionTime']
 
         if not machinebillingstatement.deletionTime is 0:
             billmachineuntil = machinebillingstatement.deletionTime
         else:
-            billmachineuntil = billing_statement.untilTime
+            billmachineuntil = untilTime
 
-        billmachinefrom = max(billing_statement.fromTime, machinebillingstatement.creationTime)
+        billmachinefrom = max(fromTime, machinebillingstatement.creationTime)
         number_of_billable_hours = (billmachineuntil - billmachinefrom) / 3600.0
         if (number_of_billable_hours < 1.0): #minimum one hour
             if not machinebillingstatement.deletionTime is 0:
                 number_of_billable_hours = 1.0
                 #Don't charge double if the machine was partially billed in the previous period
-                if (machinebillingstatement.creationTime < billing_statement.fromTime):
-                    number_of_billable_hours -= (billing_statement.fromTime * 3600.0)
+                if (machinebillingstatement.creationTime < fromTime):
+                    number_of_billable_hours -= (fromTime * 3600.0)
 
         price_per_hour = self._get_machine_price_per_hour(machine)
         machinebillingstatement.cost = number_of_billable_hours * price_per_hour
@@ -155,7 +155,7 @@ class billingengine_billingengine(j.code.classGetBase()):
                     machinebillingstatement.name = machine['name']
                     machinebillingstatement.creationTime = machine['creationTime']
                 
-                self._update_machine_billingstatement(machinebillingstatement, machine)
+                self._update_machine_billingstatement(machinebillingstatement, machine, billing_statement.fromTime, billing_statement.untilTime)
                 
 
             cloudspacebillingstatement.totalCost = 0.0
