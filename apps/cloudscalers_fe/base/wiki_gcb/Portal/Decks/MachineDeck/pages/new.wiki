@@ -48,12 +48,7 @@ h1. Create Machine
     </div>
     
 }}
-    {{div: class=msg alert alert-warning}}
-    *Fair use policy for Unlimited Transfer:*
-        * Small machines: &lt;= 4 cores = 1 Mbit/s average usage per month
-        * Large machines: &gt;= 5 cores = 5 Mbit/s average usage per month
-    _This fits 99% of our customers. If you need more bandwidth, we have special plans, contact us._
-    {{div}}
 
+(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section
 
 {{html: </div>}}

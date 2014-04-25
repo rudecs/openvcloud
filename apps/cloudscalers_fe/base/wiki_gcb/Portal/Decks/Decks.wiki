@@ -35,7 +35,7 @@ The defense shields provide privacy, security & secure access to your cloud spac
            }}
 [Desktop Deck (Alfa)|DesktopDeck]
 
-                [!/$$space/.files/img/icon3.png! | DesktopDeck]
+                [!/$$space/.files/img/icon1.png! | DesktopDeck]
     {{html:        
             <div class="prn">
             <h2>

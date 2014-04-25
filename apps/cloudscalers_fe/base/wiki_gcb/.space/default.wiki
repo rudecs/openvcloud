@@ -75,7 +75,7 @@
     </div>
     <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav man">
-        <li><a href="../$$space/Decks">Home</a></li>
+        <li><a href="../$$space/Decks">Home</a>&nbsp;&nbsp;</li>
         <li class="dropdown dropdown-accordion">
           <a id="drop1" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
@@ -198,7 +198,7 @@
           </li>
         </ul>
       </li>
-      <li class="header orange">
+      <li class="header darkOrange">
         <a href="StorageDeck">Storage Deck <span>3</span></a>
         <ul class="body">
           <li>
@@ -206,7 +206,7 @@
           </li>
         </ul>
       </li>
-      <li class="header yellow">
+      <li class="header orange">
         <a href="ApplicationDeck">Application Deck <span>3</span></a>
         <ul class="body">
           <li>
@@ -215,7 +215,7 @@
         </ul>
       </li>
       <li class="header red">
-        <a href="NetworkDeck">Defense Shield <span>2</span></a>
+        <a href="NetworkDeck">Defense Shields <span>2</span></a>
         <ul class="body">
           <li>
             <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
