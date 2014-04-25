@@ -75,7 +75,7 @@
     </div>
     <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav man">
-        <li><a href="../$$space/Decks">Home</a>&nbsp;&nbsp;</li>
+        <li><a href="../$$space/Decks">Home</a></li>
         <li class="dropdown dropdown-accordion">
           <a id="drop1" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
