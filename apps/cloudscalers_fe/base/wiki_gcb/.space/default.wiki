@@ -75,6 +75,7 @@
     </div>
     <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav man">
+        <li><a href="../$$space/Decks">Home</a></li>
         <li class="dropdown dropdown-accordion">
           <a id="drop1" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
@@ -184,10 +185,16 @@
         </ul>
       </li>
       <li class="header green">
-        <a href="NetworkDeck">Network Deck <span>2</span></a>
+        <a href="DesktopDeck">Desktop Deck <span>1</span></a>
         <ul class="body">
           <li>
-            <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Virtual Firewall</a>
+            <a href="DesktopDeck" menu-link-active-location="(DesktopDeck$|DesktopDeck.*list)">Desktop Deck</a>
+          </li>
+          <li>
+            <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
+          </li>
+          <li>
+            <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
           </li>
         </ul>
       </li>
@@ -195,7 +202,23 @@
         <a href="StorageDeck">Storage Deck <span>3</span></a>
         <ul class="body">
           <li>
-            <a href="StorageDeck" menu-link-active-location="StorageDeck">S3 Buckets</a>
+            <a href="StorageDeck" menu-link-active-location="StorageDeck">S3 Storage</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header yellow">
+        <a href="ApplicationDeck">Application Deck <span>3</span></a>
+        <ul class="body">
+          <li>
+            <a href="ApplicationDeck" menu-link-active-location="ApplicationDeck">Applications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header red">
+        <a href="NetworkDeck">Defense Shield <span>2</span></a>
+        <ul class="body">
+          <li>
+            <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
           </li>
         </ul>
       </li>
