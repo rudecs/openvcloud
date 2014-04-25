@@ -173,7 +173,9 @@ class billingengine_billingengine(j.code.classGetBase()):
         return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['fields']['id'])
 
     def _save_billing_statement(self,billing_statement):
-        self.billingenginemodels.billingstatement.set(billing_statement)
+        result = self.billingenginemodels.billingstatement.set(billing_statement)
+        if billing_statement.id is 0:
+            billing_statement.id = result[0]
         creditTransaction = self._get_credit_transaction('USD', billing_statement.id)
         if creditTransaction is None:
             creditTransaction = self.cloudbrokermodels.credittransaction.new()
@@ -181,7 +183,10 @@ class billingengine_billingengine(j.code.classGetBase()):
             creditTransaction.accountId = billing_statement.accountId
             creditTransaction.reference = str(billing_statement.id)
             creditTransaction.status = 'DEBIT'
-            creditTransaction.time = billing_statement.untilTime - (3600 * 24)
+        
+        creditTransaction.time = billing_statement.untilTime - (3600 * 24)
+        if creditTransaction.time > time.time():
+            creditTransaction.time = int(time.time())
 
         creditTransaction.amount = -billing_statement.totalCost
         creditTransaction.credit = -billing_statement.totalCost
