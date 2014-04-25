@@ -167,9 +167,9 @@ class cloudapi_accounts(object):
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
-    
-    
-    
+        import time
+        return {'credit':balance, 'time':int(time.time())}
+
     @authenticator.auth(acl='R')
     def getCreditHistory(self, accountId, **kwargs):
         """
