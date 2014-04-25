@@ -28,7 +28,7 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_VirtualDisks.jpg!
       h3. Virtual Disks
-      Virtual Disks  of 10 GB up to to 2 TB, seamless attached to your VMs
+      Virtual Disks  of 10 GB up to to 2 TB, seamlessly attached to your VMs
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_Fileserver.jpg!
