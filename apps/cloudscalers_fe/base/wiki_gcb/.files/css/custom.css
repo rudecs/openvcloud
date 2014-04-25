@@ -105,25 +105,28 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .sideNav .header a{ text-align: center; }
 .sideNav .header span{font-size: 11px; top: 3px; position: absolute; margin-left: 5px;}
 .sideNav .header{ position: relative; }
+
+.blue h4 > a, .sideNav .header.blue > a{ background: #cdedf9; }
 .green h4 > a, .sideNav .header.green > a{ background: #80bd01; }
 .orange h4 > a , .sideNav .header.orange > a{ background: #f6b332; }
-.red h4 > a , .sideNav .header.orange > a{ background: #ff0000; }
+.red h4 > a , .sideNav .header.red > a{ background: #ff0000; }
 .darkOrange h4 > a , .sideNav .header.darkOrange > a{ background: #d97804; }
+
 .blue + .panel-collapse, .sideNav .blue.header { background: #cdedf9; }
-.green + .panel-collapse, .sideNav .header.green{ background: #edffc9; }
+.green + .panel-collapse, .sideNav .green.header { background: #edffc9; }
 .orange + .panel-collapse, .sideNav .orange.header { background: #ffeecc; }
 .red + .panel-collapse, .sideNav .red.header { background: #ff0000; }
-.darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #ffe3c2; }
+.darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #d97804; }
+
 .panel { background-color: initial; border: 0; border-radius: 0 !important; -webkit-box-shadow: none; box-shadow: none; }
 .panel-group .panel { border-radius: 0; }
 .panel-group .panel+.panel { margin-top: 0; }
 .panel-body { color: #77777b; font-size: 13px; background: #FFF;}
 
-
 .blue h4 > a, .sideNav .header.blue > a:hover{ background: #21C3FF; }
 .green h4 > a, .sideNav .header.green > a:hover{ background: #8ED300; }
 .orange h4 > a , .sideNav .header.orange > a:hover{ background: #FFC75C; }
-.red h4 > a , .sideNav .header.red > a:hover{ background: #ff6b6b; }
+.red h4 > a , .sideNav .header.red > a:hover{ background: #ff1e1e; }
 .darkOrange h4 > a , .sideNav .header.darkOrange > a:hover{ background: #d97804; }
 
 
