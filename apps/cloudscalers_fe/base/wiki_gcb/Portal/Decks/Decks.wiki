@@ -3,7 +3,7 @@
     <div class="span11 newDecks newDecks2">
         <div class="col-md-4 boxes font color1 leftIcon">
         }} 
-[Cloud Space|MachineDeck]
+[Cloud Space|AccountSettings]
 
             
                 [!/$$space/.files/img/icon6.png! | MachineDeck]
