@@ -185,7 +185,7 @@
         </ul>
       </li>
       <li class="header green">
-        <a href="DesktopDeck">Desktop Deck <span>1</span></a>
+        <a href="DesktopDeck">Desktop Deck <span>2</span></a>
         <ul class="body">
           <li>
             <a href="DesktopDeck" menu-link-active-location="(DesktopDeck$|DesktopDeck.*list)">Desktop Deck</a>
@@ -207,7 +207,7 @@
         </ul>
       </li>
       <li class="header orange">
-        <a href="ApplicationDeck">Application Deck <span>3</span></a>
+        <a href="ApplicationDeck">Application Deck <span>4</span></a>
         <ul class="body">
           <li>
             <a href="ApplicationDeck" menu-link-active-location="ApplicationDeck">Applications</a>
@@ -215,7 +215,7 @@
         </ul>
       </li>
       <li class="header red">
-        <a href="NetworkDeck">Defense Shields <span>2</span></a>
+        <a href="NetworkDeck">Defense Shields</a>
         <ul class="body">
           <li>
             <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
