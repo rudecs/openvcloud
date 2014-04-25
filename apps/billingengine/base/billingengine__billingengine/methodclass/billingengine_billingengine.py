@@ -174,8 +174,8 @@ class billingengine_billingengine(j.code.classGetBase()):
 
     def _save_billing_statement(self,billing_statement):
         result = self.billingenginemodels.billingstatement.set(billing_statement)
-        if billing_statement.id is 0:
-            billing_statement.id = result[0]
+        if billing_statement.id is '':
+            billing_statement.id = str(result[0])
         creditTransaction = self._get_credit_transaction('USD', billing_statement.id)
         if creditTransaction is None:
             creditTransaction = self.cloudbrokermodels.credittransaction.new()
