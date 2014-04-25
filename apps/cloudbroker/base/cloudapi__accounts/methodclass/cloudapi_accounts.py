@@ -150,14 +150,25 @@ class cloudapi_accounts(object):
         param:accountId id of the account
         result:dict A json dict containing the available credit
         """
-        query = {'fields': ['time', 'credit']}
-        query['query'] = {'term': {"accountId": accountId}}
-        query['size'] = 1
-        query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
-        results = self.models.creditbalance.find(ujson.dumps(query))['result']
-        balance = [res['fields'] for res in results]
+        # For now, don't get the balance statement, just calculate it
+        #query = {'fields': ['time', 'credit']}
+        #query['query'] = {'term': {"accountId": accountId}}
+        #query['size'] = 1
+        #query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
+        #results = self.models.creditbalance.find(ujson.dumps(query))['result']
+        #balance = [res['fields'] for res in results]
         
-        return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
+        #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
+    
+        query = {'fields': ['time', 'credit', 'status']}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        results = self.models.credittransaction.find(ujson.dumps(query))['result']
+        history = [res['fields'] for res in results]
+        balance = 0.0
+        for transaction in history:
+            balance += float(transaction['credit'])
+    
+    
     
     @authenticator.auth(acl='R')
     def getCreditHistory(self, accountId, **kwargs):

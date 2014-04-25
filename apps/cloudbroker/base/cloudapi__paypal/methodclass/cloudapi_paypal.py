@@ -89,8 +89,9 @@ class cloudapi_paypal(j.code.classGetBase()):
         credittransaction = self.models.credittransaction.new()
         credittransaction.time = int(time.time())
         credittransaction.amount = amount
+        credittransaction.credit = amount
         credittransaction.currency = 'USD'
-        credittransaction.status = 'NOT PAYED'
+        credittransaction.status = 'UNCONFIRMED'
         credittransaction.accountId = accountId
         credittransaction.id = self.models.credittransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
