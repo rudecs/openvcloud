@@ -4,6 +4,7 @@ Activate your early access to your Office Deck and access desktop applications o
 
 
 {{ contact_form: receiver_email:support@mothership1.com | custom | subject: Evaluation Request Desktop Deck }}
+    {{html: <input type="hidden" value="{[currentAccount.name]}" /> }}
     {{div3: class=form-group}}
         {{html: <label class="control-label col-md-2" for="sender_email">Email</label>}}
         {{div4: class=col-md-4}}
