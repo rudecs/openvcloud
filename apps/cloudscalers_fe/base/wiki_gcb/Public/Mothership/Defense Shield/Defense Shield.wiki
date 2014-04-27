@@ -23,7 +23,7 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DS_Hybrid.jpg!
       h3. Hybrid
-      Connect your office seamless to your cloud
+      Connect your office seamlessly to your cloud
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DS_Enterprise.jpg!

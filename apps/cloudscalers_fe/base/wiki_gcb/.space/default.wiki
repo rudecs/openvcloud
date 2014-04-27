@@ -190,12 +190,6 @@
           <li>
             <a href="DesktopDeck" menu-link-active-location="(DesktopDeck$|DesktopDeck.*list)">Desktop Deck</a>
           </li>
-          <li>
-            <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
-          </li>
-          <li>
-            <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
-          </li>
         </ul>
       </li>
       <li class="header darkOrange">

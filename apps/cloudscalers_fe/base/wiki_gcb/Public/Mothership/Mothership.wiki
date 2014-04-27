@@ -45,7 +45,7 @@ An innovative new way to deliver IT including private and secure cloud storage. 
         </div>
         <div class="col-md-6 boxes font color2">
           <div class="col-md-4">
-            <img src="/$$space/.files/img/icon2.png" alt=""/>
+            <img src="/$$space/.files/img/icon3.png" alt=""/>
           </div>
           <div class="col-md-8 prn">
             <h2>
@@ -60,7 +60,7 @@ Ultra reliable storage thanks to secure distributed storage platform. Attach as 
         </div>
         <div class="col-md-6 boxes font color3">
             <div class="col-md-4">
-                <img src="/$$space/.files/img/icon3.png" alt=""/>
+                <img src="/$$space/.files/img/icon2.png" alt=""/>
             </div>
             <div class="col-md-8 prn">
             <h2>

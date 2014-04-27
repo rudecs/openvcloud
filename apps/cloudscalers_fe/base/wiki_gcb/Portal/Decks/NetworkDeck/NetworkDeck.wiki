@@ -1,17 +1,16 @@
-h1. Shield
+h1. Defense Shield
 
-The Shield your personal firewall that handles all incoming and outgoing traffic for your cloud space, your routing, port fowards and firewall settings.
+The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your cloud space, your routing, port fowards and firewall settings.
 
-The Shield provides tons of possibilities to offer more flexibility and enhanced security compared to other public clouds. By default we provide one public IP address for each Cloud Space.
+The Defense Shield provides tons of possibilities to offer more flexibility and enhanced security compared to other public clouds. By default we provide one public IP address for each Cloud Space.
 
 {{html:
 <style>
 .modal 
 {
 	width: 100%;
-	left: 22%;
 	height: 100%;
-	margin: -25% 0 0 -280px;
+	margin: -25% 0 0 -50%;
 }
 </style>
 	<div ng-controller="NetworkController">
