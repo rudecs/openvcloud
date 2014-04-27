@@ -7,20 +7,20 @@ Activate your early access to your Office Deck and access desktop applications o
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_email">Email</label>}}
 #        {{div4: class=col-md-4}}
-#            {{ email: name=sender_email | required | class=form-control}}
+            {{html: <input type="hidden" value="{[ currentUser.emailaddresses ]}" />}}
 #        {{div4}}
 #    {{div3}}
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_name">Name</label>}}
 #        {{div4: class=col-md-4}}
-#            {{ text: name=sender_name | required=true | class=form-control}}
+            {{html: <input type="hidden" value="{[ currentUser.username ]}" /> }}
 #        {{div4}}
 #    {{div3}}
 #
 #    {{div3: class=form-group }}
 #        {{html: <label class="control-label col-md-2" for="body">Message</label>}}
 #        {{div4: class=col-md-4}}
-#            {{ textarea: rows=10 | cols=20 | required | name=body | class=form-control}}
+            {{html: <input type="hidden" value="Activate Desktop Decks" /> }}
 #        {{div4}}
 #    {{div3}}
 
