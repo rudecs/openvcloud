@@ -98,8 +98,10 @@
             <img src="/$$space/.files/img/icon1.png" alt=""/>
             <h2>
 }}
-[Desktop Deck]
 {{html:
+<p>
+    <a href="/$$space/Desktop Deck">Desktop Deck</a>
+</p>
 </h2>
             <p class="font">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.</p>
         </div>
@@ -107,8 +109,10 @@
             <img src="/$$space/.files/img/icon2.png" alt=""/>
             <h2>
 }}
-[Storage Deck]
 {{html:
+<p>
+    <a href="/$$space/Storage Deck">Storage Deck</a> 
+</p>
 </h2>
             <p class="font">Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</p>
         </div>
@@ -116,8 +120,10 @@
             <img src="/$$space/.files/img/icon3.png" alt=""/>
             <h2>
 }}
-[Machine Deck]
 {{html:
+<p>
+    <a href="/$$space/Machine Deck">Machine Deck</a> 
+</p>
 </h2>
             <p class="font">Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.</p>
         </div>
@@ -125,8 +131,10 @@
             <img src="/$$space/.files/img/icon4.png" alt=""/>
             <h2>
 }}
-[Application Deck]
 {{html:
+<p>
+    <a href="/$$space/Application Deck">Application Deck</a> 
+</p>
 </h2>
             <p class="font">Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks</p>
         </div>
