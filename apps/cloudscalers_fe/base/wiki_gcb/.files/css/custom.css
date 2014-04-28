@@ -203,7 +203,7 @@ body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;b
 	.grey .panel-heading .panel-title>a {background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	.grey .panel-heading.open .panel-title>a {background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important;padding: 8px 25px;color: #4f4f4f !important;}
 	
-	.user-name {font-size: 11px !important;}
+	.user-name {font-size: 12px !important;}
 	.nameField23 {width: 9% !important;}
 	.account-container.stacked {width: 544px !important;}
 	.signUpForm .inputWrap {width: 69% !important;}
@@ -348,7 +348,7 @@ body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;b
 	.grey .panel-body {background: inherit !important; border-top: 0 !important;}
 	.grey a {color: #FFF !important;}
 	.grey a:hover { color: #000 !important; }
-	.accordionInside {min-width: auto; margin-left: 17px;}
+	.accordionInside {min-width: auto; /*margin-left: 17px;*/}
 	.justBorder { background: #06a7e2 !important;}
 	.create-cloudspace { color: #FFF;}
 	.create-cloudspace:hover { color: #000;}
@@ -366,6 +366,8 @@ body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;b
 	.upMargin {margin: 30px auto 0 !important;}
 	.inputWrap {width: 98% !important;}
 	.myNav ul li {text-align: left;}
+	.nav.navbar-nav.man li:first-child { margin: 0; padding: 0; }
+	.nav.navbar-nav.man li:first-child a { margin-left: 0; padding-left: 0; }
 
 }
 
@@ -483,8 +485,10 @@ table.table td{
     left: 50%;
 
 
-    margin-left: -160px;
-	margin-top: -200px;
+    margin-left: -250px;
+	
+
+    margin-top: -250px;
     padding: 10px 40px;
     position: fixed;
     top: 50%;
@@ -501,7 +505,7 @@ table.table td{
 .loader h2 {
     font-size: 27px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     z-index: 20000000000;
     position: relative;
 
@@ -518,8 +522,7 @@ table.table td{
     position: fixed;
     top: 0;
     width: 100%;
-    background: #3A3A3A;
-    opacity: 0.9;
+    background: rgba(0,0,0,.870);
 
 }
 .primaryMine.btn-primary[disabled]{
@@ -548,7 +551,7 @@ border-bottom: 1px solid #06a7e2;
 }
 
 .nav-tabs>li>a { font-size: 17px; }
-.nav-tabs>li>a:hover { color: #06a7e2; background: #FFF; padding-bottom: 11px;}
+.nav-tabs>li>a:hover { color: #06a7e2; background: #FFF; padding-bottom: 11px; border-bottom: 0;}
 a {
 color: #06a7e2;
 text-decoration: none;
@@ -559,6 +562,7 @@ text-decoration: none;
 
     padding: 10px 20px;
     font-size: 16px;
+    margin: 0 10px 0 0;
 }
 #tabbable .tab-pane ul{ padding-left: 0; }
 #tabbable .tab-pane ul .mainButton:active{ outline: 5px auto -webkit-focus-ring-color !important; outline-offset: -2px !important; }
@@ -1329,7 +1333,7 @@ padding: 0;
 
 
 
-
+/*
 .panel
 {
     text-align: center;
@@ -1340,7 +1344,7 @@ padding: 0;
     padding: 0px;
     text-align: center;
 }
-
+*/
 .the-price
 {
     background-color: rgba(220,220,220,.17);
@@ -1516,3 +1520,29 @@ clear: left;
 .why-page ul{
 	list-style: initial;
 }
+
+
+.btn:active, .btn.active {
+outline: 0;
+background-image: none;
+-webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.4);
+box-shadow: inset 0 3px 5px rgba(0,0,0,0.4);
+}
+
+canvas {
+	display: block;
+  float: left;
+  
+  /* uncomment to test overlay */
+  
+  /*
+  position: absolute;
+  left: 0;
+  opacity: .5;
+  top: 0;
+  */  
+  
+}
+
+.absolute1 {position: absolute;right: 16px;top: 6px;}
+.absolutePad0 {padding: 0;margin: 0;display: block;}
