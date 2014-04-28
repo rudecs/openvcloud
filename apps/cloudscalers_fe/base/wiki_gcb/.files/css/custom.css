@@ -16,7 +16,7 @@ textarea {
 
 }
 
-.jumbotron { background-color: initial; margin: 0;}
+.jumbotron { background-color: rgba(0, 0, 0, 0); margin: 0;}
 .signUp { background: #80bd01; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
 .login { background: #06a7e2; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
