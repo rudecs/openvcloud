@@ -1015,6 +1015,9 @@ display: inline-block;
 .mbl{
 	margin-bottom: 20px;
 }
+.mbll{
+	margin-bottom: 30px;
+}
 .mtl{
 	margin-top: 20px;
 }
@@ -1062,6 +1065,9 @@ display: inline-block;
 }
 .prn{
 	padding-right: 0;
+}
+.justify{
+	text-align: justify;
 }
 #terms{
 	height: 150px;
