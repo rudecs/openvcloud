@@ -124,8 +124,8 @@ h1. Pricing
         <td class="column-divider"></td>
         <td class="full-span">
         <ul>
-        <li>Extra Primary Storage </li>
-        <li>Extra Secondary Storage attached to VM </li>
+        <li>Extra SSD Storage (up to 100GB)</li>
+        <li>Extra HDD Storage attached to VM (up to 2TB)</li>
         <li>Snapshots</li>
         <li>Templates</li>
         <li>Extra cloudspace</li>
