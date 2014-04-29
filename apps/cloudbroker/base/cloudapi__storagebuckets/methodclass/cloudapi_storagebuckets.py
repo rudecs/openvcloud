@@ -1,4 +1,5 @@
 from JumpScale import j
+from cloudbrokerlib import authenticator, enums
 import ujson
 
 class cloudapi_storagebuckets(j.code.classGetBase()):
@@ -30,6 +31,7 @@ class cloudapi_storagebuckets(j.code.classGetBase()):
             self._models = self.cb.extensions.imp.getModel()
         return self._models
 
+    @authenticator.auth(acl='R')
     def list(self, cloudspaceId, storagebuckettype, **kwargs):
         """
         List the storage buckets in a space.
