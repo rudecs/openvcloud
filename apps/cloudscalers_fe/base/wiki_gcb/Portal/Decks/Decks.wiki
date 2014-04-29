@@ -31,7 +31,7 @@
 Your private Defense Shield providing privacy, security & secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3 mbll">
+        <div class="col-md-4 boxes font color1 mbll">
            }}
 [Desktop Deck (Alfa)|DesktopDeck]
 
@@ -44,11 +44,11 @@ Your private Defense Shield providing privacy, security & secure access to your 
 Your Desktop Deck provides you an innovative way to deliver critical applications from the Cloud to your laptop, tablet and smartphone.
         </div>
         </div>
-        <div class="col-md-4 boxes font color2 color5 mbll">
+        <div class="col-md-4 boxes font color3 color5 mbll">
           }}
 [Storage Deck|StorageDeck]
 
-            [!/$$space/.files/img/icon2.png! | StorageDeck]
+            [!/$$space/.files/img/icon3.png! | StorageDeck]
    {{html:       
           <div class="prn justify">
             <h2>
@@ -57,11 +57,11 @@ Your Desktop Deck provides you an innovative way to deliver critical application
 Your Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3 mbll">
+        <div class="col-md-4 boxes font color2 mbll">
            }}
 [Machine Deck|MachineDeck]
 
-                [!/$$space/.files/img/icon3.png! | MachineDeck]
+                [!/$$space/.files/img/icon2.png! | MachineDeck]
       {{html:      
             <div class="prn justify">
             <h2>

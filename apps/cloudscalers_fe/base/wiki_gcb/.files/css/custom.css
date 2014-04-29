@@ -33,6 +33,8 @@ input, button, select, textarea { font-family: arial, sans-serif; }
 .color2 h2 { color: #d97804; }
 .color3 h2 { color: #06a7e2; }
 .color4 h2 { color: #f6b332; }
+.color5 h2 { color: #ff0000; }
+.color6 h2 { color: #c714d2; }
 .leftIcon { margin: 0 0 50px 215px; }
 /*.color3, .color4 { margin: 50px 0 0 0; }*/
 .color3 { clear: left; }
@@ -695,6 +697,8 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .color2 h2 p a { color: #d97804; }
 .color3 h2 p a { color: #06a7e2; }
 .color4 h2 p a { color: #f6b332; }
+.color5 h2 p a { color: #ff0000; }
+.color6 h2 p a { color: #c714d2; }
 .boxes h2 p a { font-size: 22px; }
 .boxes h2 p a:hover { color: inherit; }
 .form-horizontal.ng-scope h2 { color: #000; }
@@ -808,6 +812,8 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 .color2 p a { color: #d97804; }
 .color3 p a { color: #06a7e2; }
 .color4 p a { color: #f6b332; }
+.color5 p a { color: #ff0000; }
+.color6 p a { color: #c714d2; }
 .boxes p a { font-size: 22px; }
 .newDecks2 .boxes ul { margin: 0; padding: 0; }
 .newDecks2 .color3 { clear: none; }
