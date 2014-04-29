@@ -1,6 +1,6 @@
 h1. Desktop Deck
 
-Activate your early access to your Office Deck and access desktop applications on any of your html devices.
+Activate your early access to your Office Deck and access desktop applications on any of your html5 compatible devices.
 
 
 {{ contact_form: receiver_email:support@mothership1.com | custom | subject: Evaluation Request Desktop Deck }}

@@ -9,7 +9,7 @@
 
 h1. $$page
 
-{{html: <p class="niceHead">The Machines Deck offers a renewing and powerful IAAS stack</p>}}
+{{html: <p class="niceHead">The Machine Deck enables users to configure and launch VMs from a powerful IaaS stack.</p>}}
 
 {{div}}
 
@@ -22,36 +22,36 @@ h1. $$page
 
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/MD_UltraFast.jpg!
-      h3. Ultra Fast
-      Almost instant creation of virtual machines
+      h3. Ultra-Fast
+      Almost instant creation of virtual machines.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/MD_AnyOS.png!
       h3. Any OS
-      Windows, Linux and custom x86 templates
+      Windows, Linux and custom x86 templates.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/MD_ChooseSSD.jpg!
-      h3. Choose SSD
-      Select your preferred SSD drive size
+      h3. Flexible SSD Capacity
+      Select your preferred SSD drive size.
 {{div}}
 
 {{div: class=seperateDecks}}{{div}}
 
 {{div: class=col-md-4 boxDecks clearL}}
       !/$$space/.files/img/features/MD_PowerfullSnapshotting.jpg!
-      h3. Powerfull Snapshotting
-      Discover the ultra fast snapshotting and rollback
+      h3. Powerful Snapshotting
+      Discover the ultra fast snapshotting and rollback.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/MD_ PayPerHour.jpg!
       h3. Pay per hour
-      Pay for deployed resources per hour only
+      Pay for deployed resources per hour only.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/MD_API.png!
       h3. API 
-      Automate using the simple API
+      Automate using the simple API.
 {{div}}
 
 

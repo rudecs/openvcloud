@@ -9,7 +9,7 @@
 
 h1. $$page
 
-{{html: <p class="niceHead">An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.</p>}}
+{{html: <p class="niceHead">The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce.</p>}}
 
 {{div}}
 
@@ -23,17 +23,17 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DD_PrivatePortal.jpg!
       h3. Private Portal
-      A private portal and secure cloud storage delivering access to familiar Microsoft Windows, Linux and legacy applications
+      -	Access your familiar Microsoft Windows, Linux and Legacy applications from a private portal with secure cloud storage included.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DD_HTML5.png!
       h3. HTML5
-      Use preferred device including laptops, tablets and smartphones, no local client needed, just html5 capable browser
+      Use any html5-capable browser on your preferred device (laptops, tablets & smartphones) to access your Desktop Deck.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DD_CloudDrive.jpg!
       h3. Cloud Drive
-      Private cloud drive integrated with sharing capabilities
+      Private cloud drive integrated with sharing capabilities.
 {{div}}
 
 {{div: class=seperateDecks}}{{div}}
@@ -41,17 +41,17 @@ h1. $$page
 {{div: class=col-md-4 boxDecks clearL}}
       !/$$space/.files/img/features/DD_Collaboration.jpg!
       h3. Collaboration
-      Collaboration features like screen sharing and chatting fully integrated
+      Collaboration features like screen sharing and chatting are fully integrated.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DD_Secure.jpg!
       h3. Secure
-      Enterprise-grade security, control and auditing
+      Enterprise-grade security, controls and auditing capabilities included.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/DD_EasyRollOut.jpg!
       h3. Easy roll out
-      Zero-config secure access for mobile workforce.
+      Zero-config secure access for mobile or remote workforce.
 {{div}}
 
 

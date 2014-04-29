@@ -9,7 +9,7 @@
 
 h1. $$page
 
-{{html: <p class="niceHead">Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.</p>}}
+{{html: <p class="niceHead">Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users.</p>}}
 
 {{div}}
 
@@ -23,17 +23,17 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/CS_PrivateCloud.jpg!
       h3. Private cloud
-      Cloudspace = a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+      The Cloud Space is a private cloud resource pool including compute, storage, applications, desktop & networking capacity.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/CS_Organize.jpg!
       h3. Organize
-      Its up to you to organize your cloud workloads over cloudspaces.
+      Organize and distribute your cloud workloads over Cloud Spaces.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/CS_Credits.jpg!
       h3. Credits
-      Each CloudSpace is owned by an account owner uploading the credit
+      Payments & Credits for each Cloud Space are managed and provisioned by a dedicated account owner.
 {{div}}
 
 {{div: class=seperateDecks}}{{div}}
@@ -41,17 +41,17 @@ h1. $$page
 {{div: class=col-md-4 boxDecks clearL}}
       !/$$space/.files/img/features/CS_Collaborate.jpg!
       h3. Collaborate
-      Each CloudSpace has strictly defined permission scheme to allow people to use it, independent from who pays for it.
+      Each Cloud Space has a strictly defined permission scheme that enables account owners to provide various levels of accessibility to different users.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/CS_MultipleDatacenters.jpg!
       h3. Multiple Datacenters
-      Each CloudSpace is hosted in a datacenter of choice.
+      Each Cloud Space is hosted in a datacenter of choice.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/CS_UsageBased.jpg!
       h3. Usage Based
-      Overview of usage based consumption per space.
+      You only pay for what you use when you use it. Monitor and manage your usage-based consumption per Cloud Space.
 {{div}}
 
 

@@ -14,7 +14,7 @@
 [Cloud Space|Cloud Space]
 {{html:
 </h2>
-        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform tailored for technical & non technical users.
+        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users.
         </div>
         </div>
         <div class="col-md-6 boxes font color2">
@@ -27,7 +27,7 @@
 [Defense Shields|Defense Shield]
 {{html:
 </h2>
-        The defense shields provide privacy, security & secure access to your cloud spaces. Each space has a private defense shield owned by only you.
+        Defense Shields provide privacy, security & secure access to your [Cloud Spaces|Cloud Space]. Each Cloud Space has a private defense shield owned and managed by only you.
         </div>
         </div>
         <div class="col-md-6 boxes font color3">
@@ -37,10 +37,10 @@
             <div class="col-md-8 prn">
             <h2>
 }}
-[Desktop Deck (Alfa)|Desktop Deck]
+[Desktop Deck|Desktop Deck]
 {{html:
 </h2>
-An innovative new way to deliver IT including private and secure cloud storage. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Use built-in cloud drive and cloud collaboration tools.
+The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce.
         </div>
         </div>
         <div class="col-md-6 boxes font color2">
@@ -54,7 +54,7 @@ An innovative new way to deliver IT including private and secure cloud storage. 
 {{html:
 </h2>
 
-Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API
+The Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
 
         </div>
         </div>
@@ -68,7 +68,7 @@ Ultra reliable storage thanks to secure distributed storage platform. Attach as 
 [Machine Deck|Machine Deck]
 {{html:
 </h2>
-Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+The Machine Deck enables users to configure and launch VMs from the Mothership{{html:<sup>1</sup>}} IaaS stack. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
         </div>
         </div>
         <div class="col-md-6 boxes font color4">
@@ -82,7 +82,7 @@ Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SS
 [Application Deck (Q4)|Application Deck]
 {{html:
 </h2>
-              Private applications ready to go, sized to your project and flexible to fit your needs, using the best of all Decks
+              The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
         </div>
         </div>
     </div>

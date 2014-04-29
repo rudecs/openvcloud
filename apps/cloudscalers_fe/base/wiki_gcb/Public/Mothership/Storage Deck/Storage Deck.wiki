@@ -9,7 +9,7 @@
 
 h1. $$page
 
-{{html: <p class="niceHead">The Storage Deck provides ultra reliable & scalable storage</p>}}
+{{html: <p class="niceHead">The Storage Deck provides ultra-reliable & scalable storage.</p>}}
 
 {{div}}
 
@@ -23,17 +23,17 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD-S3.jpg!
       h3. S3
-      Object Based storage using S3 compatible API
+      Object Based storage using S3 compatible API.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_VirtualDisks.jpg!
       h3. Virtual Disks
-      Virtual Disks  of 10 GB up to to 2 TB, seamlessly attached to your VMs
+      Virtual Disks  of 10 GB up to 2 TB, seamlessly attached to your VMs.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_Fileserver.jpg!
       h3. Fileserver
-      Virtual Fileserver up to Petabytes per space (Roadmap)
+      Virtual Fileserver up to Petabytes per Cloud Space. (Roadmap)
 {{div}}
 
 {{div: class=seperateDecks}}{{div}}
@@ -41,7 +41,7 @@ h1. $$page
 {{div: class=col-md-4 boxDecks clearL}}
       !/$$space/.files/img/features/SD_VeryReliable.jpg!
       h3. Very Reliable
-      Distributed storage ensuring data reliability
+      Distributed storage ensuring data reliability.
 {{div}}
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_Backup.jpg!
@@ -51,7 +51,7 @@ h1. $$page
 {{div: class=col-md-4 boxDecks}}
       !/$$space/.files/img/features/SD_Integrated.jpg!
       h3. Integrated
-      All integrated in your personal cloud portal
+      All storage is integrated into your personal Cloud Space.
 {{div}}
 
 
