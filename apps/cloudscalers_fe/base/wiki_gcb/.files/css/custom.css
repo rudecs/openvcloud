@@ -812,7 +812,7 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 .well li a.list-group-item { color: #555; }
 .newDecks2 .boxes img { float: none; margin: 10px 0; }
 .newDecks2 .boxes { text-align: center; }
-.newDecks2 .boxes { list-style-type: none; }
+.newDecks2 .boxes { list-style-type: none; clear: none !important; margin: 20px 0 !important;}
 .color1 p a { color: #80bd01; }
 .color2 p a { color: #d97804; }
 .color3 p a { color: #06a7e2; }
