@@ -29,7 +29,7 @@ input, button, select, textarea { font-family: arial, sans-serif; }
 .boxes img { float: left; margin: 25px 18px 0 0; }
 .boxes h2 + p { float: left; width: 279px; color: #FFF; letter-spacing: 1px; font-family: arial, sans-serif; }
 .boxes h2 { font-size: 22px; }
-.color1 h2 { color: #06a7e2; }
+.color1 h2 { color: #80bd01; }
 .color2 h2 { color: #d97804; }
 .color3 h2 { color: #06a7e2; }
 .color4 h2 { color: #f6b332; }
@@ -693,7 +693,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000; }
 .boxes h2 + .font.andP { float: left; width: 400px; color: #FFF; letter-spacing: 1px; font-family: arial, sans-serif; list-style: inherit; }
 .newDecks .leftIcon { margin-left: 0; }
-.color1 h2 p a { color: #06a7e2; }
+.color1 h2 p a { color: #80bd01; }
 .color2 h2 p a { color: #d97804; }
 .color3 h2 p a { color: #06a7e2; }
 .color4 h2 p a { color: #f6b332; }
@@ -810,7 +810,7 @@ box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 .newDecks2 .boxes { list-style-type: none; }
 .color1 p a { color: #06a7e2; }
 .color2 p a { color: #d97804; }
-.color3 p a { color: #06a7e2; }
+.color3 p a { color: #80bd01; }
 .color4 p a { color: #f6b332; }
 .color5 p a { color: #ff0000; }
 .color6 p a { color: #c714d2; }

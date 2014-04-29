@@ -31,7 +31,7 @@
 Your private Defense Shield providing privacy, security & secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3 mbll">
+        <div class="col-md-4 boxes font color1 mbll">
            }}
 [Desktop Deck (Alfa)|DesktopDeck]
 
