@@ -53,9 +53,7 @@ The Desktop Deck provides an innovative way to deliver critical applications fro
 [Storage Deck|Storage Deck]
 {{html:
 </h2>
-
 The Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
-
         </div>
         </div>
         <div class="col-md-6 boxes font color3">
@@ -68,7 +66,7 @@ The Storage Deck provides ultra-reliable & scalable storage. Attach as disk to t
 [Machine Deck|Machine Deck]
 {{html:
 </h2>
-The Machine Deck enables users to configure and launch VMs from the Mothership{{html:<sup>1</sup>}} IaaS stack. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+The Machine Deck enables users to configure and launch VMs from the Mothership<sup>1</sup> IaaS stack. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
         </div>
         </div>
         <div class="col-md-6 boxes font color4">
