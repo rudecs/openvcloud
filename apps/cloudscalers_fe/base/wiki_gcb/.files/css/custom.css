@@ -3,7 +3,7 @@
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer; }
 .jumbotron { padding-top: 60px; }
 .navbar-inverse { background-color: rgba(3,0,0,0.4); border: 0; margin: 0 0 0 0; }
-body { background: url(../img/images/bg.jpg) no-repeat center top #000; font-family: arial, sans-serif; color: #666; background-size: 100%; background-position: center -344px; }
+body { /*background: url(../img/images/bg.jpg) no-repeat center top #000;*/ font-family: arial, sans-serif; color: #666; background-size: 100%; background-position: center -344px; }
 input, button, select, textarea { font-family: arial, sans-serif; }
 .navbar-search .search-query { font-family: arial, sans-serif; }
 
@@ -695,7 +695,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 #openTerms:hover { color: #06a7e2; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000; }
 .boxes h2 + .font.andP { float: left; width: 400px; color: #FFF; letter-spacing: 1px; font-family: arial, sans-serif; list-style: inherit; }
-.newDecks .leftIcon { margin-left: 0; }
+.newDecks .leftIcon { margin-left: 0; margin-bottom: 37px;}
 .color1 h2 p a { color: #80bd01; }
 .color2 h2 p a { color: #d97804; }
 .color3 h2 p a { color: #06a7e2; }
