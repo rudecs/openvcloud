@@ -4,7 +4,7 @@
 {{html:
 <div class="container">
     <div class="span11 newDecks">
-        <div class="col-md-6 boxes font color1 leftIcon">
+        <div class="col-md-6 boxes font color6 leftIcon">
             <div class="col-md-4">
                 <img src="/$$space/.files/img/icon6.png" alt=""/>
             </div>
@@ -17,7 +17,7 @@
         Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users.
         </div>
         </div>
-        <div class="col-md-6 boxes font color2">
+        <div class="col-md-6 boxes font color5">
           <div class="col-md-4">
             <img src="/$$space/.files/img/icon5.png" alt=""/>
           </div>
@@ -30,7 +30,7 @@
         Defense Shields provide privacy, security & secure access to your [Cloud Spaces|Cloud Space]. Each Cloud Space has a private defense shield owned and managed by only you.
         </div>
         </div>
-        <div class="col-md-6 boxes font color3">
+        <div class="col-md-6 boxes font color1">
             <div class="col-md-4">
                 <img src="/$$space/.files/img/icon1.png" alt=""/>
             </div>
@@ -43,7 +43,7 @@
 The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce.
         </div>
         </div>
-        <div class="col-md-6 boxes font color2">
+        <div class="col-md-6 boxes font color3">
           <div class="col-md-4">
             <img src="/$$space/.files/img/icon3.png" alt=""/>
           </div>
@@ -56,7 +56,7 @@ The Desktop Deck provides an innovative way to deliver critical applications fro
 The Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
         </div>
         </div>
-        <div class="col-md-6 boxes font color3">
+        <div class="col-md-6 boxes font color2">
             <div class="col-md-4">
                 <img src="/$$space/.files/img/icon2.png" alt=""/>
             </div>
