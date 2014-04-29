@@ -28,7 +28,6 @@ angular.module('cloudscalers.directives', [])
 
         		var connect = function(data){
         			var rfb = new RFB({'target': $D('noVNC_canvas'),
-			   'focusContainer': elem[0], //$D('console'),
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
                            'true_color': true,
