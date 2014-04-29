@@ -836,7 +836,7 @@ canvas { display: block; float: left;/* uncomment to test overlay */
   
 }
 .absolute1 { position: absolute; right: 16px; top: 6px; }
-.absolutePad0 { padding: 0; margin: 0; display: block; }
+.absolutePad0 { padding: 0; display: block; }
 .bottomFooter .col-md-3 { display: inline-block; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
 .billWrap { margin-bottom: 23px; display: inline-block;}
