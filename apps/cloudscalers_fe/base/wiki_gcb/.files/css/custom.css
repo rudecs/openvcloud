@@ -363,7 +363,7 @@ body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;b
 	.create-cloudspace:hover { color: #000;}
 	.grey .panel-body ul li {margin: 5px 9px !important;}
 	.navbar-header + .navbar-collapse .navbar-right { text-align: right;}
-	.navbar-right.clearR.myNav ul { text-align: right; margin: 13px 0; padding: 0;}
+	.navbar-right.clearR.myNav ul { text-align: right; margin: 13px 0; padding: 0; float: none;}
 	.myNav ul { float: right;}
 	.form-horizontal .control-label { text-align: left !important;}
 	.nav.navbar-nav.navbar-right { text-align: left;}
@@ -374,10 +374,11 @@ body {background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;b
 	.signUpForm .inputWrap input {width: 100% !important;}
 	.upMargin {margin: 30px auto 0 !important;}
 	.inputWrap {width: 98% !important;}
-	.myNav ul li {text-align: left;}
+	.myNav ul li {text-align: left;float: none;}
 	.nav.navbar-nav.man li:first-child { margin: 0; padding: 0; }
 	.nav.navbar-nav.man li:first-child a { margin-left: 0; padding-left: 0; }
 	.bottomFooter ul {margin-left: -56px;}
+	.navbar-collapse.in {overflow-x: hidden;}
 
 }
 
@@ -1269,7 +1270,7 @@ color: #06a7e2 !important;
 
 .motherShipSub ul li a {color: #000;font-size: 14px;display: inline-block;padding: 4px 0 4px 15px;font-weight: inherit;width: 174px;}
 
-.motherShipSub ul { background: rgba(255, 255, 255, 1); margin: 12px 10px 0 0; border: 2px solid #06a7e2;      left: 6px !important;}
+.motherShipSub ul { background: rgba(255, 255, 255, 1); margin: 12px 10px 0 0; border: 1px solid #06a7e2;      left: 6px !important;}
 
 .carousel-control.left { background: none;}
 .carousel-control.right { background: none;}
