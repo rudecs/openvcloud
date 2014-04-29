@@ -3,13 +3,12 @@
 
 <div ng-controller="BillingController">
 
-<div class="row" style="height: 100%;">
-    <div class="row" style="height: 30%;" >
+    <div class="billWrap">
         <div class="span3" align="center">
             <br/><br/>
             <h1 ng-model="availableCredit">{[credit | currency:"$"]}</h1>
         </div>
-        <div class="span6" style="border-left: thin;border-left-style: dotted; border-left-color: gray; height: 100%">
+        <div class="span6">
             <form class="form-horizontal" role="form">
                 <div class="control-group">
                     <label for="creditToAddInput" class="control-label">Add Credit</label>
@@ -37,7 +36,7 @@
 
         </div>
     </div>
-</div>
+    
 }}
 
 

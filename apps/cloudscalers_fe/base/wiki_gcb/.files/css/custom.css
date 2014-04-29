@@ -9,7 +9,7 @@ input, button, select, textarea { font-family: arial, sans-serif; }
 
 /*bootestrap edit*/
 @media (max-width: 992px) {
-.span1, .span2, .span3, .span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11, .span12 { width: 100%; clear: both; }
+.span1, .span2, .span3, .span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11, .span12 { width: 100%; clear: both;}
 }
 /*End of bootestrap edit*/
 
@@ -124,7 +124,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a:hover { background: #ffa131; }
 /*sideNav*/
 p { color:#77777b; }
-body { background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000; background-size: 100%; }
+body { background: url(../img/images/bg-mask3.jpg) no-repeat center -310px #000; background-size: 100%; }
  @media (max-width: 1376px) {
 .boxes p { width: 340px !important; }
 .mainText { font-size: 40px !important; }
@@ -151,7 +151,7 @@ body { background: url(../img/images/bg-mask2.jpg) no-repeat center -310px #000;
 	.contact { background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important; }
 .navbar-right.clearR { margin: 33px 0 0 0; }
 .contact:hover { background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important; background-size: 11px auto !important; }
-body { background-size: 1376px auto; background: url(../img/images/bg-mask2.jpg) no-repeat center -200px #000; }
+body { background-size: 1376px auto; background: url(../img/images/bg-mask3.jpg) no-repeat center -200px #000; }
 .boxes img { width: 100px; }
 .white ul li { font-size: 13px !important; line-height: 30px; }
 h4, .h4 { font-size: 18px; }
@@ -284,6 +284,7 @@ footer .container { width: auto; }
 .bottomFooter ul { margin-left: -56px; }
 .tabOfPrice { clear: both; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
+.billWrap .span6 {border-left: 0 !important; }
 }
  @media (max-width: 768px) {
 .boxes p { width: 79% !important; }
@@ -406,6 +407,8 @@ footer .container { width: auto; }
 .marginTop { margin-top: 50px; margin-bottom: 0 }
 .bottomFooter ul li:last-child { height: auto; padding-right: 0; }
 .bottomFooter ul { margin-left: -56px; }
+body {overflow-x: hidden;}
+.nav-tabs>li>a {padding: 5px 7px !important;}
 }
 .form-horizontal .control-label { text-align: left !important; }
 .blueBar { background: #06a7e2; height: 48px; }
@@ -737,6 +740,8 @@ table.table td { color: #000; }
 .well li a { position: relative; display: block; padding: 10px 15px; margin-bottom: -1px; background-color: #fff; border: 1px solid #ddd; color: #555; }
 .tabOfPrice.nav-tabs>li>a:hover { padding-bottom: 9px; }
 .tabOfPrice + .tab-content>.tab-pane { padding: 29px 12px; }
+.well li:first-child a {-webkit-border-top-left-radius: 5px;-webkit-border-top-right-radius: 5px;-moz-border-radius-topleft: 5px;-moz-border-radius-topright: 5px;border-top-left-radius: 5px;border-top-right-radius: 5px; }
+.well li:last-child a {-webkit-border-bottom-right-radius: 5px;-webkit-border-bottom-left-radius: 5px;-moz-border-radius-bottomright: 5px;-moz-border-radius-bottomleft: 5px;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px; }
 /*
 .tabOfPrice + .tab-content .panel {
 margin-bottom: 20px;
@@ -834,3 +839,5 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .absolutePad0 { padding: 0; margin: 0; display: block; }
 .bottomFooter .col-md-3 { display: inline-block; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
+.billWrap { margin-bottom: 23px; display: inline-block;}
+.billWrap .span6 {border-left: thin;border-left-style: dotted; border-left-color: gray; height: 100%;}
