@@ -841,3 +841,6 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .half.copy.col-md-6 + .justOne { text-align: center; }
 .billWrap { margin-bottom: 23px; display: inline-block;}
 .billWrap .span6 {border-left: thin;border-left-style: dotted; border-left-color: gray; height: 100%;}
+.newDecks .color2 { clear: left;}
+.newDecks .color3 { clear:none;}
+.newDecks .boxes { margin: 10px 0;}
