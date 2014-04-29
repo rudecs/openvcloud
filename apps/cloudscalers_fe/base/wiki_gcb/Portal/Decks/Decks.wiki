@@ -44,7 +44,7 @@ Your private Defense Shield providing privacy, security & secure access to your 
 Your Desktop Deck provides you an innovative way to deliver critical applications from the Cloud to your laptop, tablet and smartphone.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3 color5 mbll">
+        <div class="col-md-4 boxes font color3 mbll">
           }}
 [Storage Deck|StorageDeck]
 
