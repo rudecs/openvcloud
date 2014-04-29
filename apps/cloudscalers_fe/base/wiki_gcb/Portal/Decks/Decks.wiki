@@ -1,7 +1,7 @@
 {{html:
 <div class="container">
     <div class="span11 newDecks newDecks2">
-        <div class="col-md-4 boxes font color1 leftIcon mbll">
+        <div class="col-md-4 boxes font color6 leftIcon mbll">
         }} 
 [Cloud Space|AccountSettings]
 
@@ -31,7 +31,7 @@
 Your private Defense Shield providing privacy, security & secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes font color1 mbll">
+        <div class="col-md-4 boxes font color3 mbll">
            }}
 [Desktop Deck (Alfa)|DesktopDeck]
 
