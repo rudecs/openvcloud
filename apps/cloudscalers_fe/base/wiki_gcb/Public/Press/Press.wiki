@@ -6,16 +6,13 @@
 
 h1. Press Center
 
-Logo's:
+h2. Logos and Product Shots
 
+{{explorer}}
 
-Product shots:
+h2. Download Press releases
 
-
-
-Press releases:
-* 
-
+Coming soon
 
 @divend
 @divend
