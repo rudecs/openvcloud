@@ -1,5 +1,21 @@
 @template public
 {{div: class=white}}
+{{div: class=container why-page}}
+
+@col12
+
+h1. Press Center
+
+Logo's:
 
 
+Product shots:
+
+
+
+Press releases:
+* 
+
+
+@divend
 @divend

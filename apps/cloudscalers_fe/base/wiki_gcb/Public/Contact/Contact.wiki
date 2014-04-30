@@ -26,7 +26,7 @@
         {{html: <label class="control-label col-md-1"></label>}}
         {{div4: class=col-md-4}}
             {{ submit: class=btn btn-primary | data-loading-text=Sending... }}
-                {{html: Send the big email}}
+                {{html: Send}}
             {{submit}}
 
             {{ reset }}

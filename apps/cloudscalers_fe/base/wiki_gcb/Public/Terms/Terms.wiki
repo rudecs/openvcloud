@@ -9,6 +9,4 @@ h1. General Terms & Conditions
 {{include:Disclaimer}}
 
 @divend
-
-@divend
 @divend

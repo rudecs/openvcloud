@@ -22,25 +22,27 @@
                 </div>
                 <div class="field">
                   <div class="loginField">
-                    <label class="loginFieldName loginFieldName2" for="company">Company:</label>
+                    <label class="loginFieldName loginFieldName2" for="name">Name:</label>
                     <div class="inputWrap">
               
                       <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="company" name="company" value=""  ng-model="user.company" />
                  </div>
                 </div>
                 </div>
-                <div class="field">
-                  <div class="loginField">
-                    <label class="loginFieldName loginFieldName2" for="vat">VAT:</label>
-                    <div class="inputWrap">
-              
-                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="vat" name="vat" value=""  ng-model="user.vat" />
-                 </div>
-                </div>
-                </div>
+}}
+#                <div class="field">
+#                  <div class="loginField">
+#                   <label class="loginFieldName loginFieldName2" for="vat">VAT:</label>
+#                    <div class="inputWrap">
+#              
+#                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="vat" name="vat" value=""  ng-model="user.vat" />
+#                 </div>
+#                </div>
+#                </div>
+{{html:
           <div class="field">
           <div class="loginField">
-                    <label class="loginFieldName loginFieldName2" for="username">Email address:</label>
+                    <label class="loginFieldName loginFieldName2" for="username">E-mail address:</label>
                     <div class="input-prepend">
   						      <div class="inputWrap">
                     	<input class="inputLogin ng-pristine ng-valid" type="text" id="email" value=""  ng-model="email" />
@@ -72,7 +74,7 @@
                    	</div>
                 </div>
                 </div>
-            <a id="openTerms" ng-click="openTerms()">You need to accept Term & Conditions to proceed</a>
+            <a id="openTerms" ng-click="openTerms()">You need to accept the General Terms & Conditions to proceed</a>
             <script type="text/ng-template" id="termsDialog.html">
                 <div class="modal-header">
                     <h2>General Terms & Conditions</h2>
