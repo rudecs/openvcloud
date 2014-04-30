@@ -518,8 +518,8 @@ label + .controls { display: table-cell; margin: 0 0 0 0; }
 .content.clearfix.padding h1 { font-family: arial, sans-serif; font-size: 26px; font-weight: bold; color: #FFF; text-align: center; margin: 16px 0 24px 0; }
 .loginFieldName { color: #FFF; font-size: 19px; float: left; width: 113px; padding: 6px 0 0 0; }
 .loginField { clear: both; display: inline-block; width: 100%; margin: 8px 0; }
-.inputLogin { width: 100%; background-color: transparent !important; border: 0 !important; border-bottom: 1px solid #FFF !important; box-shadow: none !important; border-radius: 0 !important; color: #FFF !important; font-size: 20px !important; padding: 5px 0 7px 5px !important; }
-.inputWrap { float: left; width: 78%; }
+.inputLogin { width: 100%; /* background-color: transparent !important; */ /* border: 0 !important; */ /* border-bottom: 1px solid #FFF !important; */ box-shadow: none !important; border-radius: 0 !important; color: #000 !important; font-size: 20px !important; padding: 5px 0 7px 5px !important; }
+.inputWrap { float: left; width: 74%; }
 
 ::-webkit-input-placeholder { /* WebKit browsers */
  color:    #FFF;
@@ -666,7 +666,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .modal-body.ng-scope > div { display: inline-block; width: 100%; }
 .row-fluid.ng-pristine.ng-valid { margin: 10px 0; }
 html, body { height: 100%; }
-.sticky { min-height: 100%; background-color: #FFF }
+.sticky { min-height: 100%; background-color: #FFF; height: auto;margin: 0 auto -50px;padding: 0 0 50px; }
 #main { overflow:auto; padding-bottom: 150px; }  /* must be same height as the footer */
 #footer { position: relative; margin-top: -150px; /* negative value of footer height */ height: 150px; clear:both; }
 /*Opera Fix*/
@@ -867,7 +867,13 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .multiple_selection { margin: 0; padding: 0;}
 .multiple_selection li input {margin: 0 10px 0 0;}
 .areaStyle textarea {border: 1px solid #77777b;outline: none;padding: 5px 5px;color: #77777b;float: right;font-size: 16px;box-shadow: none;border-radius: 0;}
-.areaStyle textarea:focus {border: 0;border-bottom: 1px solid #77777b;outline: none;padding: 5px 5px;color: #77777b;float: right;font-size: 17px !important;box-shadow: none;border-radius: 0;}
+.areaStyle textarea:focus {border: 1px solid #77777b;outline: none;padding: 5px 5px;color: #77777b;float: right;font-size: 17px !important;box-shadow: none;border-radius: 0;}
 #console .span2 + .span4 {width: 376px;float: right;}
-
 .nav.navbar-nav.man > li:first-child a {padding-left:0;}
+.sticky2 > .navbar.navbar-inverse { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%;}
+.sticky2 {  min-height: 100%;height: auto;margin: 0 auto -50px;padding: 0 0 50px;}
+#gallery a { margin: 10px 20px; display: inline-block;}
+.nameField h2 {display: inline-block;margin-right: 15px;vertical-align: top;margin-top: 0;}
+.justFormButton { display: inline-block;} 
+.floatR { float: right;}
+.imageWhy {margin: 18px 0;width: 250px;}
