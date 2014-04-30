@@ -8,7 +8,7 @@ h1. Press Center
 
 h2. Logos and Product Shots
 
-{{explorer}}
+{{gallery}}
 
 h2. Download Press releases
 

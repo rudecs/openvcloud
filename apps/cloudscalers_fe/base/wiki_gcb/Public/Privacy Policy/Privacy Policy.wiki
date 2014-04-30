@@ -31,15 +31,13 @@ You are furthermore entitled to request free of charge, in writing or via the co
 Finally, you are entitled to request free of charge, in writing or via the contact information provided below, that Mothership{{html:<sup>1</sup>}} \(i) stops processing or using, or (ii) deletes, your Personal Data which are incomplete or not relevant in view of the purpose of the processing of such Personal Data.
 
 To exercise your privacy rights, please send a written request to Mothership{{html:<sup>1</sup>}} to this end, duly dated and signed, with proof of your identity, to the address provided below.
-{{html:
-<blockquote>
-CloudScalers BVBA<br>
-Antwerpsesteenweg 19<br>
-B-9080 Lochristi<br>
-Belgium<br>
-info@mothership1.com<br>
-</blockquote>
-}}
+
+CloudScalers BVBA\\
+Antwerpsesteenweg 19\\>
+B-9080 Lochristi\\
+Belgium\\
+info@mothership1.com
+
 Please note that in certain cases, your personal data may be transferred to processors, affiliated companies or third parties, exclusively for the purposes described above. Please note that subject to applicable data protection legislation, we will also disclose your personal data if we believe we are required to do so to comply with any law, regulation, court order, or legal or government request. In the event that all or part of our business is acquired by a third party, your information may be transferred to the new corporate owner. Without assuming any obligation to do so, we also reserve the right to collect and share any information we deem necessary to investigate or take action in connection with suspected fraud, illegal activities, possible harm to persons or property, to protect ourselves or one or more of our users or their heirs, or as otherwise required or permitted by law.
 
 Any claims resulting from or relating to the processing of Personal Data by Mothership{{html:<sup>1</sup>}} shall be brought to the Chairman of the Court of first instance of \(i) your place of residence if residing in Belgium, or (ii) Ghent, Belgium, in any other case, in accordance to article 14 of the Privacy Act.
