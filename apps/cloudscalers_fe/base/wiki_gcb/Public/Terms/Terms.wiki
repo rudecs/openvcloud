@@ -2,7 +2,7 @@
 {{div: class=white}}
 {{div: class=container why-page}}
 
-@col 9
+@col 12
 
 h1. General Terms & Conditions
 

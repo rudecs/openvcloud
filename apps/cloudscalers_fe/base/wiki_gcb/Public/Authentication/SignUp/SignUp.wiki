@@ -89,7 +89,7 @@
                 </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary ok" ng-click="cancel()">Accept</button>
+                    <button type="submit" class="btn btn-primary ok">Accept</button>
                 </div>
             </script>
             </div>

@@ -2,7 +2,8 @@
 {{div: class=white}}
 {{div: class=container}}
 
-@col 9
+@col 12
+
 h1. Machine Decks API Documentation
 {{html:
 <!-- <img class="internaIcon" src="/$$space/.files/img/icon2.png" alt=""/> -->
