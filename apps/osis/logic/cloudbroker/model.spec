@@ -193,3 +193,4 @@
     prop:name str,, bucketname
     prop:location str,, the location this buckets is at
     prop:accesskey str,, the key for accessing this S3 bucket
+    prop:secretkey str,, the secret key for access this S3 bucket

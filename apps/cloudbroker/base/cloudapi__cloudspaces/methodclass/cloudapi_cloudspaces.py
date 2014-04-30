@@ -150,8 +150,7 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-        self._unassignCloudspaceStorage(cloudspaceId)
-        
+            
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)

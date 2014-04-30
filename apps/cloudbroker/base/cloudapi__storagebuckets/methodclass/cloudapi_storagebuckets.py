@@ -41,7 +41,7 @@ class cloudapi_storagebuckets(j.code.classGetBase()):
         """
         
         term = dict()
-        query = {'fields':['id','cloudspaceId','url','name','location','accesskey']}
+        query = {'fields':['id','cloudspaceId','url','name','location','accesskey','secretkey']}
         query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
         results = self.models.s3bucket.find(ujson.dumps(query))['result']
         storagebuckets = [res['fields'] for res in results]

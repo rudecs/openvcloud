@@ -8,12 +8,14 @@ The Storage Deck provides you with a secure, distributed storage solution with a
 	    <tr>
 	      <th>S3 Bucket</th>
 	      <th>Access Key</th>
+	      <th>Secret Key</th>
 	      <th>Size</th>
 	    </tr>
 	    <tbody>
 	      <tr ng-repeat="storage in storages">
 	        <td><a href="{[ storage.url ]}">{[ storage.url ]}</a></td>
 	        <td>{[ storage.accesskey ]}</td>
+	        <td>{[storage.secretkey]}</td>
 	        <td>{[ numeral(storage.size * 1024 * 1024 * 1024).format('0 b') ]}</td>
 	      </tr>
 	    </tbody>
