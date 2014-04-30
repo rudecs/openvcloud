@@ -78,7 +78,38 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.networkId = networkid
         cs.publicipaddress = publicipaddress
-        return self.models.cloudspace.set(cs)[0]
+        cloudspace_id = self.models.cloudspace.set(cs)[0]
+        self._assignCloudspaceStorage(cloudspace_id)
+        return cloudspace_id
+
+    def _assignCloudspaceStorage(self, cloudspaceId):
+        """
+        Assigns 10 storagebuckets to the specific cloudspace.
+        """
+        term = dict()
+        query = {'fields':['id']}
+        query['query'] = {'term':{'cloudspaceId':0}}
+        results = self.models.s3bucket.find(ujson.dumps(query))['result']
+        storagebuckets = [res['fields'] for res in results]
+        for i in range(0,10):
+            if i >= len(storagebuckets):
+                break
+            stb = self.models.s3bucket.get(storagebuckets[i]['id'])
+            stb.cloudspaceId = cloudspaceId
+            self.models.s3bucket.set(stb)
+        return True
+
+    def _unassignCloudspaceStorage(self, cloudspaceId):
+        term = dict()
+        query = {'fields':['id']}
+        query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
+        results = self.models.s3bucket.find(ujson.dumps(query))['result']
+        storagebuckets = [res['fields'] for res in results]
+        for stb in storagebuckets:
+            stb = self.models.s3bucket.get(stb['id'])
+            stb.cloudspaceId = 0
+            self.models.s3bucket.set(stb)
+        return True
 
     @authenticator.auth(acl='A')
     def delete(self, cloudspaceId, **kwargs):
@@ -119,7 +150,8 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-
+        self._unassignCloudspaceStorage(cloudspaceId)
+        
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)
