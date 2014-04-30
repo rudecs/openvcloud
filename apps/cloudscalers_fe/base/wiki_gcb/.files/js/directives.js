@@ -26,7 +26,10 @@ angular.module('cloudscalers.directives', [])
 
 
 
-        		var connect = function(data){
+        		var connect = function(){
+				if (scope.rfb)
+					{return;}
+				scope.showPlaceholder = false;
         			var rfb = new RFB({'target': $D('noVNC_canvas'),
                            'encrypt': window.location.protocol === "https:",
                            'repeaterID': '',
@@ -36,18 +39,28 @@ angular.module('cloudscalers.directives', [])
                            'view_only':    false,
                            'updateState':  updateState,
                            });
-            		rfb.connect(window.location.host, data.port, '', data.path);
+            		rfb.connect(window.location.host, scope.connectioninfo.port, '', scope.connectioninfo.path);
             		scope.rfb = rfb;
     			}
 
+			var disconnect = function(){
+                       		if (scope.rfb){
+		            		scope.rfb.disconnect();
+                            		scope.rfb.get_keyboard().set_focused(false);
+			    		delete(scope.rfb);
+				}
+				scope.showPlaceholder = true;
+			}
+
         		scope.$watch(attrs.connectioninfo, function(newValue, oldValue) {
-                    if (newValue && newValue.host) {
-                        connect(newValue);
-                        scope.showPlaceholder = false;
-                    }
-                    else
-                        scope.showPlaceholder = true;
-        		}, true);
+	                    	if (newValue && newValue.host) {
+        	                	scope.connectioninfo = newValue;
+					connect();
+                    		}
+                    		else {
+					disconnect();
+        			}
+			}, true);
 
 
 	        },

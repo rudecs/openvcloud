@@ -3,16 +3,20 @@ angular.module('cloudscalers.controllers')
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
-        $scope.tabactive = {};
+
+        $scope.tabactive = {actions: true, console: false, snapshots: false, changelog: false};
 
         var changeSelectedTab = function(tab){
         	if (tab){
-        		$scope.tabactive = {actions: tab=='actions', console: tab == 'console', snapshots: tab=='snapshots', changelog: tab=='changelog'};
+        		$scope.tabactive.actions = (tab=='actions');
+        		$scope.tabactive.console = (tab == 'console');
+        		$scope.tabactive.snapshots = (tab=='snapshots');
+        		$scope.tabactive.changelog = (tab=='changelog');
         	}
         }
 
         changeSelectedTab($routeParams.activeTab);
-
+        
         var retrieveMachineHistory = function() {
             if (!$scope.machineHistory)
                 $scope.machineHistory = {};
