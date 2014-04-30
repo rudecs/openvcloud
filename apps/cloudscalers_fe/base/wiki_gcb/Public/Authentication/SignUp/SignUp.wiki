@@ -75,10 +75,10 @@
             <a id="openTerms" ng-click="openTerms()">You need to accept Term & Conditions to proceed</a>
             <script type="text/ng-template" id="termsDialog.html">
                 <div class="modal-header">
-                    <h2>Terms & Conditions</h2>
+                    <h2>General Terms & Conditions</h2>
                 </div>
                 <div class="modal-body">
-                  <div style="width: 20em; height: 15em; overflow: auto;">
+                  <div id="terms" style="width: 100%; height: 100%; overflow: auto; overflow-x: hidden; -ms-overflow-x: hidden;">
 }}
 {{include:Disclaimer}}
 {{html:

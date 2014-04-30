@@ -1,5 +1,3 @@
-h1. General Terms & Conditions
-
 1. *General - Scope*
 
 The following terms and conditions apply to all business relationships between the customer, following named also as "you", "Customer" or "User(s)"; and CloudScalers BVBA, a Belgian limited liability company having its registered offices at Antwerpsesteenweg 19, B-9080 Lochristi, Belgium, enterprise number 0835.566.611 (RLP Gent), following named as "we", "us" or "*Mothership{{html:<sup>1</sup>}}*".

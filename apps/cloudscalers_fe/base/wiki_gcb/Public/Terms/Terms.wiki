@@ -4,6 +4,8 @@
 
 @col 9
 
+h1. General Terms & Conditions
+
 {{include:Disclaimer}}
 
 @divend
