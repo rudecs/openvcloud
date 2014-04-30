@@ -84,12 +84,12 @@
 {{html:
                   </div>
                   <div class="mtl">
-                    <input id="accept-terms" type="checkbox" style="float: left; margin-right: 5px;" disabled="disabled" onClick="acceptTermsChanged(this);">
+                    <input id="accept-terms" type="checkbox" style="float: left; margin-right: 5px;" onClick="acceptTermsChanged(this);">
                     <label for="accept-terms" style="font-style: italic; font-size: 12px;">I have read and understood the above General Terms and Conditions</label>
                 </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary ok">Accept</button>
+                    <button type="submit" class="btn btn-primary ok" ng-click="cancel()">Accept</button>
                 </div>
             </script>
             </div>

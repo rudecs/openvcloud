@@ -2,7 +2,7 @@
 {{div: class=white}}
 {{div: class=container}}
 
-@col 12
+@col 9
 
 h1. Machine Decks API Documentation
 {{html:
