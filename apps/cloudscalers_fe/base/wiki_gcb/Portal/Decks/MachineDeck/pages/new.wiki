@@ -8,7 +8,7 @@ h1. Create Machine
     </div>
     <div class="nameField">
         <h2>Description:</h2>
-            <textarea ng-model="machine.description" type="text" class="input-xxlarge" />
+            <textarea style="font-size: 16px;" ng-model="machine.description" type="text" class="input-xxlarge" />
     </div>
     <div class="nameField nameField23">
         <h2>OS Image</h2>

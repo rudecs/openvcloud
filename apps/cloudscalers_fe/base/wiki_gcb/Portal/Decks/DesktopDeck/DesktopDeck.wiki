@@ -6,41 +6,41 @@ Activate your early access to your Office Deck and access desktop applications o
 {{ contact_form: receiver_email:support@mothership1.com | custom | subject: Evaluation Request Desktop Deck }}
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_email">Email</label>}}
-#        {{div4: class=col-md-4}}
+#        {{div4: class=col-md-5}}
             {{html: <input type="hidden" value="{[ currentUser.emailaddresses ]}" />}}
 #        {{div4}}
 #    {{div3}}
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_name">Name</label>}}
-#        {{div4: class=col-md-4}}
+#        {{div4: class=col-md-5}}
             {{html: <input type="hidden" value="{[ currentUser.username ]}" /> }}
 #        {{div4}}
 #    {{div3}}
 #
 #    {{div3: class=form-group }}
 #        {{html: <label class="control-label col-md-2" for="body">Message</label>}}
-#        {{div4: class=col-md-4}}
+#        {{div4: class=col-md-5}}
             {{html: <input type="hidden" value="Activate Desktop Decks" /> }}
 #        {{div4}}
 #    {{div3}}
 
     {{div3: class=form-group }}
         {{html: <label class="control-label col-md-2" for="num_users">Number of users</label>}}
-        {{div4: class=col-md-4}}
-            {{html: <input type="number" required class="form-control" name="num_users" />}}
+        {{div4: class=col-md-5}}
+            {{html: <input type="number" required class="form-control inputStyle" name="num_users" />}}
         {{div4}}
     {{div3}}
 
     {{div3: class=form-group }}
         {{html: <label class="control-label col-md-2" for="capacity">Data capacity needed per user in GB</label>}}
-        {{div4: class=col-md-4}}
-            {{html: <input type="number" required class="form-control" name="capacity" />}}
+        {{div4: class=col-md-5}}
+            {{html: <input type="number" required class="form-control inputStyle" name="capacity" />}}
         {{div4}}
     {{div3}}
 
     {{div3: class=form-group }}
         {{html: <label class="control-label col-md-2" for="interests">Interested to use for</label>}}
-        {{div4: class=col-md-4}}
+        {{div4: class=col-md-5}}
             {{dropdown: name=interests | id=multiple_options | multiple
                 * MS Office
                 * Free Office Tools
@@ -53,28 +53,28 @@ Activate your early access to your Office Deck and access desktop applications o
 
     {{div3: class=form-group }}
         {{html: <label class="control-label col-md-2" for="other_interests">Other applications I am looking for</label>}}
-        {{div4: class=col-md-4}}
+        {{div4: class=col-md-5 areaStyle}}
             {{ textarea: rows=10 | cols=20 | required | name=other_interests | class=form-control}}
         {{div4}}
     {{div3}}
 
 #    {{div3: class=form-group }}
 #        {{html: <label class="control-label col-md-2" for="username">Prefered Evaluation username</label>}}
-#        {{div4: class=col-md-4}}
+#        {{div4: class=col-md-5}}
 #            {{html: <input type="text" name="username" required class="form-control" />}}
 #        {{div4}}
 #    {{div3}}
 
 #    {{div3: class=form-group }}
 #        {{html: <label class="control-label col-md-2" for="body">Prefered Evaluation password</label>}}
-#        {{div4: class=col-md-4}}
+#        {{div4: class=col-md-5}}
 #            {{html: <input type="password" name="password" required class="form-control" />}}
 #        {{div4}}
 #    {{div3}}
 
     {{div3: class=form-group}}
         {{html: <label class="control-label col-md-2"></label>}}
-        {{div4: class=col-md-4}}
+        {{div4: class=col-md-5}}
             {{ submit: class=btn btn-primary | data-loading-text=Sending... }}
                 {{html: Activate}}
             {{submit}}

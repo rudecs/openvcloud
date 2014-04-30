@@ -190,6 +190,9 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .signUpForm .inputWrap { width: 69% !important; }
 .marginTop { margin-top: 0px; margin-bottom: 80px; }
 .jumbotron .container { margin-top: 0px !important; }
+.form-horizontal.contact_form.ng-pristine.ng-valid label {font-size: 12px !important}
+.inputStyle {font-size: 12px !important}
+.areaStyle textarea {font-size: 12px !important}
 }
  @media (max-width: 1290px) {
 .boxes p { width: 340px !important; }
@@ -267,7 +270,7 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
  @media (max-width: 992px) {
 .boxes p { width: 77% !important; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
-.white h2 { font-size: 17px; }
+.white h2 { /* font-size: 17px; */ }
 .nameField { width: 84%; }
 footer .container { width: auto; }
 .midFooter { padding: 0; }
@@ -286,6 +289,7 @@ footer .container { width: auto; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
 .billWrap .span6 {border-left: 0 !important; }
 .span3.actions { border-left: 0 !important; }
+.form-horizontal.contact_form.ng-pristine.ng-valid label {width: 100%;}
 }
  @media (max-width: 768px) {
 .boxes p { width: 79% !important; }
@@ -296,10 +300,10 @@ footer .container { width: auto; }
 .justOpen { width: 100%; }
 .navbar-collapse { max-height: inherit !important; }
 .signUp { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-.white h2 { font-size: 17px; }
+.white h2 { /* font-size: 17px; */ }
 .nameField { width: 100%; }
 .nameField textarea { font-size: 16px; width: 100% !important; }
-.nameField input { width: 100%; font-size: 16px !important; }
+.nameField input { width: 100%; }
 .navbar-inverse .navbar-nav .open .dropdown-menu>li>a { color: #FFF; }
 .navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover { color: #000; }
 .modal { width:100%; }
@@ -357,10 +361,10 @@ footer .container { width: auto; }
 .justOpen { width: 100%; }
 .navbar-collapse { max-height: inherit !important; }
 .signUp { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-.white h2 { font-size: 17px; }
+.white h2 { /* font-size: 17px; */ }
 .nameField { width: 100%; }
 .nameField textarea { font-size: 16px; width: 100% !important; }
-.nameField input { width: 100%; font-size: 16px !important; }
+.nameField input { width: 100%; }
 .navbar-inverse .navbar-nav .open .dropdown-menu>li>a { color: #FFF; }
 .navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover { color: #000; }
 .modal { width:100%; }
@@ -477,7 +481,7 @@ table.table td { word-break: break-all; }
 /*4.1.2014*/
 
 
-.nameField textarea { border: 0; border: 1px solid #77777b; outline: none; padding: 5px 5px; color: #77777b; width: 500px; float: right; font-size: 17px !important; }
+.nameField textarea { border: 0; border: 1px solid #77777b; outline: none; padding: 5px 5px; color: #77777b; width: 500px; float: right; font-size: 17px; }
 .tab-content>.tab-pane { padding: 29px 0; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { border: 1px solid #06a7e2; border-bottom-color: transparent; font-size: 17px; border-bottom: 3px solid transparent; padding-bottom: 9px; }
 .nav-tabs { border-bottom: 1px solid #06a7e2; }
@@ -854,5 +858,12 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .list .span3 { width: 151px; clear: none; }
 .list .span9 { width: 343px;  clear: none; display: inline-block;} 
 .span9.mtm.ng-binding { margin-top: 0;}
-
-
+.inputStyle {border: 0;border-bottom: 1px solid #77777b;outline: none;padding: 0px 5px 5px;font-size: 16px;color: #77777b;float: right;box-shadow: none;border-radius: 0;}
+.inputStyle:focus, .inputStyle:active {border: 0;border-bottom: 1px solid #77777b;outline: none;padding: 0px 5px 5px;font-size: 17px;color: #77777b;float: right;box-shadow: none;border-radius: 0;}
+.form-horizontal.contact_form.ng-pristine.ng-valid label {color: #000;font-weight: lighter;font-size: 16px;}
+.form-horizontal.contact_form.ng-pristine.ng-valid .form-group { margin: 26px -15px;}
+.multiple_selection { margin: 0; padding: 0;}
+.multiple_selection li input {margin: 0 10px 0 0;}
+.areaStyle textarea {border: 1px solid #77777b;outline: none;padding: 5px 5px;color: #77777b;float: right;font-size: 16px;box-shadow: none;border-radius: 0;}
+.areaStyle textarea:focus {border: 0;border-bottom: 1px solid #77777b;outline: none;padding: 5px 5px;color: #77777b;float: right;font-size: 17px !important;box-shadow: none;border-radius: 0;}
+#console .span2 + .span4 {width: 376px;float: right;}
