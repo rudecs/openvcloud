@@ -10,7 +10,7 @@ organization = "cloudscalers"
 author = "vscalers.com"
 license = "bsd"
 version = "1.0"
-roles = ["*"]
+roles = []
 async = True
 
 
