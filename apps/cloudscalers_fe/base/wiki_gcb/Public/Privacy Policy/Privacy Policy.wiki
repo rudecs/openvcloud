@@ -1,5 +1,50 @@
 @template public
 {{div: class=white}}
+{{div: class=container why-page}}
 
+@col 9
 
+h1. Privacy Policy
+
+CloudScalers BVBA, a Belgian limited liability company having its registered offices at Antwerpsesteenweg 19, B-9080 Lochristi, Belgium, enterprise number 0835.566.611 (RLP Gent), hereinafter: “*Mothership{*}{*}{^}1{^}*”, will act as the controller and processor of any personal data (as defined in the Data Protection Directive 95/46EC and the Belgian Act of 8 December 1992 relating to privacy protection regarding the processing of personal data, hereafter the ‘Privacy Act’) that is collected or otherwise processed through this Website.
+
+As a visitor or user of this Website, you explicitly agree that certain personal data may be collected and processed by or on behalf of Mothership{^}1^, either in Belgium or any other country of the European Union, or in the United States of America or Canada, for the following purposes:
+* identifying and registering you as a User of certain Services;
+* in order to back-up any information that you have provided to us;
+* customizing and enhancing your experience on our Website and any offerings we make to you on the Website;
+* keeping you informed of any developments in relation to the Services
+* preventing abuse and fraud;
+* creating statistics and running tests;
+* monitoring the quality of the Services; and
+* implementing further updates.
+
+The personal data that are collected by us (the “Personal Data”) include your IP address, cookies, and technical information on the device you’re using to access the Website.
+
+If there are purposes other than those identified above, we will identify these purposes at or before the time the information is collected or before using your personal information for a purpose not previously identified.
+
+We will retain your personal information only as long as necessary for fulfillment of the purposes described above or as required by law.
+
+You are entitled to request free of charge, in writing or via the contact information provided below, to access, review and to amend your Personal Data.
+
+You are furthermore entitled to request free of charge, in writing or via the contact information provided below, that Mothership{^}1^ stops processing or using your Personal Data for information purposes, including direct marketing.
+
+Finally, you are entitled to request free of charge, in writing or via the contact information provided below, that Mothership{^}1^ \(i) stops processing or using, or (ii) deletes, your Personal Data which are incomplete or not relevant in view of the purpose of the processing of such Personal Data.
+
+To exercise your privacy rights, please send a written request to Mothership{^}1^ to this end, duly dated and signed, with proof of your identity, to the address provided below.
+
+Contact information:
+
+CloudScalers BVBA
+Antwerpsesteenweg 19
+B-9080 Lochristi
+Belgium
+info@mothership1.com
+
+Please note that in certain cases, your personal data may be transferred to processors, affiliated companies or third parties, exclusively for the purposes described above. Please note that subject to applicable data protection legislation, we will also disclose your personal data if we believe we are required to do so to comply with any law, regulation, court order, or legal or government request. In the event that all or part of our business is acquired by a third party, your information may be transferred to the new corporate owner. Without assuming any obligation to do so, we also reserve the right to collect and share any information we deem necessary to investigate or take action in connection with suspected fraud, illegal activities, possible harm to persons or property, to protect ourselves or one or more of our users or their heirs, or as otherwise required or permitted by law.
+
+Any claims resulting from or relating to the processing of Personal Data by Mothership{^}1^ shall be brought to the Chairman of the Court of first instance of \(i) your place of residence if residing in Belgium, or (ii) Ghent, Belgium, in any other case, in accordance to article 14 of the Privacy Act.
+
+@divend
+
+@divend
 @divend
