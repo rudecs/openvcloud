@@ -8,7 +8,7 @@ h1. Press Center
 
 h2. Logos and Product Shots
 
-{{gallery}}
+* [AI Mothership_Logo_Black|../$$space/Press/Mothership_Logo_Black_1.ai]
 
 h2. Download Press releases
 

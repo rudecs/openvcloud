@@ -152,12 +152,14 @@ h1 { margin-bottom: 20px; }
                                 </div>
                             </script>
                         </li>
-                        <li>
-                            <a>
-                                <i class="fa fa-download"></i>
-                                Export
-                            </a>
-                        </li>
+}}
+#                        <li>
+#                            <a>
+#                                <i class="fa fa-download"></i>
+#                                Export
+#                            </a>
+#                        </li>
+{{html:
                         <li>
                             <a ng-click="destroy()">
                                 <i class=" fa fa-times-circle-o"></i>
@@ -206,8 +208,8 @@ h1 { margin-bottom: 20px; }
       <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
-                <em style="display: block;" ng-show="machine.status == 'RUNNING'">Use the control buttons below to get access to the screen. In case of a black screen, 
-                select the Keyboard button and hit any key to disable the screen saving mode.</em>
+                <em style="display: block;" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
+                hit any key to disable the screen saving mode of your virtual machine.</em>
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine is not running.
                 </div>

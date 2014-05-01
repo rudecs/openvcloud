@@ -48,7 +48,8 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
-                    <tr><td>Backup & Snapshots</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>Backup</td></tr>
                     <tr><td>Firewall & VPN</td></tr>
                     <tr><td>Unlimited Transfer*</td></tr>
                 </table>
@@ -95,7 +96,8 @@ h1. Pricing
                         <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
                     </td></tr>
                     <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
-                    <tr><td>Backup & Snapshots</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>Backup</td></tr>
                     <tr><td>Firewall & VPN</td></tr>
                     <tr><td>Unlimited Transfer*</td></tr>
                 </table>
@@ -128,7 +130,7 @@ h1. Pricing
         <li>Extra HDD Storage attached to VM (up to 2TB)</li>
         <li>Snapshots</li>
         <li>Templates</li>
-        <li>Extra cloudspace</li>
+        <li>Extra Cloud Space</li>
         </ul>
         
 

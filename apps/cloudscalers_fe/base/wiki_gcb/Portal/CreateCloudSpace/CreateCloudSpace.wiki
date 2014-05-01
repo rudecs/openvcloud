@@ -1,0 +1,7 @@
+h1. Create Cloud Space
+
+Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
+
+Organize your capacity over different Cloud Spaces! Each Cloud Space has its own credit capacity, a separate Defense Shield and separate user management.
+
+Contact [support|http://support.mothership1.com/open.php] to activate one or more additional spaces! See the [pricing page|Pricing] for the cost of creating an additional Cloud Space.

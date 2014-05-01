@@ -103,8 +103,11 @@
               </div>
               <ul class="justBorder">
                   <li>
-                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New CloudSpace...</a>
-                      <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
+                      <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New CloudSpace...</a>
+}}
+#                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New CloudSpace...</a>
+#                      <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
+{{html:
                   </li>
               </ul>
             <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
