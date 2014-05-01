@@ -9,17 +9,16 @@ h1. Cloud Computing Today
 
 At Mothership{{html:<sup>1</sup>}} we are not new to cloud. For the last 15 years, the Mothership{{html:<sup>1</sup>}} team has been on a quest to make things better in IT by automating the datacenter and its resources. We see that many public clouds are still struggling with features like: Scalability, as they tend to offer fixed instances; A time consuming implementation of snapshotting where taking snapshots and rolling them back helps to solve most critical issues; The uncertainty of data, as providers are not offering out of the box backup; The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
 @LF
-{{html:
-<img class="imageWhy" src="/$$space/.files/img/images/logo-black1.png"/>
-}}
 
+h1. Mothership{{html:<sup>1</sup>}}
 
 Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
 
 {{div3}}
 
 {{div3: class=half col-md-4 justOne}}
-  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
+ {{html: <img class="appMargin" src="/$$space/.files/images/logo-black1.png">}}
+#  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
 {{div3}}
 
 
@@ -27,17 +26,17 @@ Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoint
 {{div3}}
 
 {{div3: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/why/why_Anywhere.png!
+#      !/$$space/.files/img/why/why_Anywhere.png!
       h3. Everyware Anyware
       Mothership{{html:<sup>1</sup>}} integrates multiple functions in one portal, called 'Decks' and combines virtual machines, with storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
 {{div3}}
 {{div3: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/why/why_warpspeed.jpg!
+#      !/$$space/.files/img/why/why_warpspeed.jpg!
       h3. Warp Speed
       Speed is what Mothership{{html:<sup>1</sup>}} values. Our new cloud offering brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots in a matter of just seconds, immediate rollbacks, faster start and stop, and the use of PRO SSD drives with high performance and reliability.
 {{div3}}
 {{div3: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/why/why_DefenseShield.jpg!
+#      !/$$space/.files/img/why/why_DefenseShield.jpg!
       h3. Ultimate Defense
       An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable-class firewall and router. VPN functions allow seamless and secure 2-way integration with your local offices.
 {{div3}}
@@ -53,7 +52,7 @@ Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT
 * [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
 @LF
-h1. Why choose for {{html:<img class="imageWhy" src="/$$space/.files/img/images/logo-black1.png"/>}}?
+h1. Why choose for Mothership{{html:<sup>1</sup>}}?
 
 So why choose for Mothership{{html:<sup>1</sup>}}? Here our value proposition:
 
