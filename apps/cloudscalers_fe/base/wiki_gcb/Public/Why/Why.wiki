@@ -17,7 +17,7 @@ Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoint
 {{div3}}
 
 {{div3: class=half col-md-4 justOne}}
- {{html: <img class="appMargin" src="/$$space/.files/img/images/logo-black1.png">}}
+ {{html: <img class="appMargin" src="/$$space/.files/img/images/logo-colored2.png">}}
 #  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
 {{div3}}
 
