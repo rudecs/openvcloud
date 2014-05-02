@@ -13,7 +13,7 @@ The Defense Shield is your personal firewall that handles all incoming and outgo
 </style>
 	<div ng-controller="NetworkController">
 		<div>
-			<a ng-click="routeros()">Advanced Shield configuration</a> (Use the same credentials as for the MotherShip1 portal)
+			<a ng-click="routeros()">Advanced Shield configuration</a> (Username is admin and password is the the one you have used to log in into this portal)
 		</div>
 		<script type="text/ng-template" id="routerosDialog.html">
                 <div class="modal-header">
