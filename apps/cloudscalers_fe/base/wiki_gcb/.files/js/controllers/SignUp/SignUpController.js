@@ -23,7 +23,7 @@ angular.module('cloudscalers.controllers')
                 // $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub" ,$scope.user.company , $scope.user.vat);
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub" ,$scope.user.company , $scope.user.name);
                 // , $scope.user.password
             }
         };
