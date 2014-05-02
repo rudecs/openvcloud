@@ -123,7 +123,7 @@ class cloudapi_machines(object):
         image = self.models.image.new()
         image.name = templatename
         image.referenceId = ""
-        image.type = 'custom templates'
+        image.type = 'Custom Templates'
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
