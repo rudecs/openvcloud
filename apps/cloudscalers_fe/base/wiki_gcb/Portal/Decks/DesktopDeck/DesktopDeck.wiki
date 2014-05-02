@@ -2,7 +2,7 @@ h1. Desktop Deck
 
 Activate your early access trial to your Desktop Deck and access desktop applications on any of your html5 compatible devices.
 
-Go to [Support|http://support.mothership1.com/open.php] and choose the Service Deck to activate your free Desktop Deck trial! (Note that costs for the virtual machines will be charged using your account credit, but no charge applies for the Desktop Deck software license).
+Go to [Support|http://support.mothership1.com/open.php] and choose the Service Deck to activate your free Desktop Deck trial!
 
 #{{ contact_form: receiver_email:info@mothership1.com | custom | subject: About Mothership1 }}
 #    {{div3: class=form-group}}
