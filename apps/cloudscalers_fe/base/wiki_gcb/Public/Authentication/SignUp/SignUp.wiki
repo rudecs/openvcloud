@@ -53,7 +53,8 @@
                     <label class="loginFieldName loginFieldName2" for="email">E-mail address:</label>
                     <div class="input-prepend">
                     <div class="inputWrap">
-                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="email" name="email" value=""  ng-model="user.email" />
+                    	<input class="inputLogin ng-pristine ng-valid" type="text" id="email" value=""  ng-model="email" />
+                        <input style="display: none;" type="text" id="email" value=""  ng-model="user.email" />
                     </div>
                     </div>
                   </div>
