@@ -103,9 +103,9 @@
               </div>
               <ul class="justBorder">
                   <li>
-                      <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New CloudSpace...</a>
+                      <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New Cloud Space...</a>
 }}
-#                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New CloudSpace...</a>
+#                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
 #                      <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
 {{html:
                   </li>
@@ -113,7 +113,7 @@
             <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
                 <form name="form" class="form-horizontal" ng-submit="submit()">
                     <div class="modal-header">
-                        <h2>New CloudSpace</h2>
+                        <h2>New Cloud Space</h2>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -146,7 +146,7 @@
           <a href="../$$space/Profile" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li role="presentation"><a role="menuitem" tabindex="-1" href="AccountSettings">Account Settings</a></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="CloudSpaceSettings">CloudSpace Settings</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="CloudSpaceSettings">Cloud Space Settings</a></li>
           </ul>
         </li>
       </ul>
