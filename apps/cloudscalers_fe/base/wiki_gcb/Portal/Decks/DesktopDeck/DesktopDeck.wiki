@@ -6,20 +6,20 @@ Activate your early access to your Desktop Deck and access desktop applications 
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_email">Email</label>}}
 #        {{div4: class=col-md-5}}
-            {{html: <input type="hidden" value="{[ currentUser.emailaddresses ]}" />}}
+            {{html: <input type="hidden" name="sender_email" value="{[ currentUser.emailaddresses ]}" />}}
 #        {{div4}}
 #    {{div3}}
 #    {{div3: class=form-group}}
 #        {{html: <label class="control-label col-md-2" for="sender_name">Name</label>}}
 #        {{div4: class=col-md-5}}
-            {{html: <input type="hidden" value="{[ currentUser.username ]}" /> }}
+            {{html: <input type="hidden" name ="sender_name" value="{[ currentUser.username ]}" /> }}
 #        {{div4}}
 #    {{div3}}
 #
 #    {{div3: class=form-group }}
 #        {{html: <label class="control-label col-md-2" for="body">Message</label>}}
 #        {{div4: class=col-md-5}}
-            {{html: <input type="hidden" value="Activate Desktop Decks" /> }}
+            {{html: <input type="hidden" name="body" value="Activate Desktop Decks" /> }}
 #        {{div4}}
 #    {{div3}}
 
