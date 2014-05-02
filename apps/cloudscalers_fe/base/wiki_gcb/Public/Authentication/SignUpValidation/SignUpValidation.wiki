@@ -1,13 +1,12 @@
 @template public
+{{div: class=white}}
+{{div: class=container why-page}}
 
-@col 12 | white
-h3. Thank you for signing up!
-{{cssstyle
-    h3 { margin-left: 30px;  }
-}}
-{{html:
-	<div class="span12">
-		As we are currently in a limited beta, we will confirm your registration after review.
-	</div>
-}}
+@col12
+
+h1. Thank you for signing up!
+
+We will review your signup request and validate it within 24 hours. Note that of current high demands, there might be some additional waiting time before we activate your account.
+
+@divend
 @divend
