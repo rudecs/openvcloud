@@ -17,7 +17,7 @@
         Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
         </div>
-        <div class="col-md-4 boxes font color2 mbll">
+        <div class="col-md-4 boxes font color5 mbll">
          }}
 [Defense Shields|NetworkDeck]
 
