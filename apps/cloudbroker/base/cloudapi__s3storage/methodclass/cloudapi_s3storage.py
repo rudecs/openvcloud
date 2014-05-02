@@ -31,16 +31,17 @@ class cloudapi_s3storage(j.code.classGetBase()):
             self._models = self.cb.extensions.imp.getModel()
         return self._models
 
-    @authenticator.auth(acl='R')
-    def listbuckets(self, cloudspaceId, **kwargs):
-        
-        """
-        List the storage buckets in a space.
-        param:cloudspaceId id of the space
-        result list
-        """
-        return []
-    
+
+    def _get(self, cloudspaceId):
+        term = dict()
+
+        query = {'fields':['id','cloudspaceId','s3url','name','location','accesskey','secretkey']}
+        query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
+        results = self.models.s3user.find(ujson.dumps(query))['result']
+        s3storagebuckets = [res['fields'] for res in results]
+        if len(s3storagebuckets) == 0:
+            return None
+        return s3storagebuckets[0]
 
     @authenticator.auth(acl='R')
     def get(self, cloudspaceId, **kwargs):
@@ -50,13 +51,31 @@ class cloudapi_s3storage(j.code.classGetBase()):
         result list
         """
         ctx = kwargs['ctx'] 
-        term = dict()
-        
-        query = {'fields':['id','cloudspaceId','s3url','name','location','accesskey','secretkey']}
-        query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
-        results = self.models.s3user.find(ujson.dumps(query))['result']
-        s3storagebuckets = [res['fields'] for res in results]
-        if len(s3storagebuckets) == 0:
+        connectiondetails = self._get(cloudspaceId)
+        if connectiondetails is None:
             ctx.start_response('404 Not Found', [])
             return 'No S3 Credentials found for this CloudSpace.'
-        return s3storagebuckets[0]
+        return connectiondetails
+
+    @authenticator.auth(acl='R')
+    def listbuckets(self, cloudspaceId, **kwargs):
+        """
+        List the storage buckets in a space.
+        param:cloudspaceId id of the space
+        result list
+        """
+        import boto
+        import boto.s3.connection
+
+        connectiondetails = self._get(cloudspaceId)
+        if connectiondetails is None:
+            return []
+
+	access_key = connectiondetails['accesskey']
+        secret_key = connectiondetails['secretkey']
+        s3server = connectiondetails['s3url']
+        conn = boto.connect_s3(access_key,secret_key,is_secure=True,host=s3server,calling_format = boto.s3.connection.OrdinaryCallingFormat())
+        result = conn.get_all_buckets()
+        buckets = [{'name':bucket.name, 's3url':s3server} for bucket in result]
+        return buckets
+
