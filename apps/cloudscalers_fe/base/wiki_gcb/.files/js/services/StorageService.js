@@ -1,6 +1,6 @@
 
 angular.module('cloudscalers.services')
-	 .factory('Storagebuckets',function ($http, $q) {
+	 .factory('StorageService',function ($http, $q) {
     	return {
     		getS3info: function(cloudSpaceId){
     			return $http.get(cloudspaceconfig.apibaseurl + '/s3storage/get?cloudspaceId=' + cloudSpaceId).then(
@@ -8,7 +8,7 @@ angular.module('cloudscalers.services')
     						return result.data;
     					},
     					function(reason){
-    						return $q.defer(reason);
+    						return $q.reject(reason);
     					}
     					);
     		},
@@ -18,7 +18,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            return $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             }

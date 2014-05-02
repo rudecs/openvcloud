@@ -49,11 +49,14 @@ class cloudapi_s3storage(j.code.classGetBase()):
         param:cloudspaceId id of the space
         result list
         """
-        
+        ctx = kwargs['ctx'] 
         term = dict()
         
         query = {'fields':['id','cloudspaceId','s3url','name','location','accesskey','secretkey']}
         query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
-        results = self.models.s3bucket.find(ujson.dumps(query))['result']
+        results = self.models.s3user.find(ujson.dumps(query))['result']
         s3storagebuckets = [res['fields'] for res in results]
-        return s3storagebuckets
+        if len(s3storagebuckets) == 0:
+            ctx.start_response('404 Not Found', [])
+            return 'No S3 Credentials found for this CloudSpace.'
+        return s3storagebuckets[0]
