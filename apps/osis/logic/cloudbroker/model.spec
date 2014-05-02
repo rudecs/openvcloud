@@ -169,8 +169,6 @@
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
 
-
-
 [rootmodel:Size] @dbtype:osis
     """
     Size is a combination of memory and cores
@@ -183,14 +181,14 @@
     prop:vcpus int,, Number of vcpus assigned to the machine
     prop:description str,,Description of the size
 
-[rootmodel:S3Bucket] @dbtype:osis
+[rootmodel:S3user]
     """
-    An S3 Bucket is a kind of storagebucket
+    A user on S3
     """
-    prop:id int,, id of the bucket
-    prop:cloudspaceId int,, the cloudspace this bucket belongs to
-    prop:url str,, the url of this S3 bucket
-    prop:name str,, bucketname
-    prop:location str,, the location this buckets is at
-    prop:accesskey str,, the key for accessing this S3 bucket
-    prop:secretkey str,, the secret key for access this S3 bucket
+    prop:id int,, id of the S3 user
+    prop:name str,, the uid of the S3 user
+    prop:cloudspaceId int,, the cloudspace this S3 is assigned to
+    prop:s3url str,, the url of the S3 api for this region
+    prop:location str,, the region of the S3 api for this user
+    prop:accesskey str,, the accesskey to access the S3 interface
+    prop:secretkey str,, the secretkey to access the S3 interface

@@ -2,7 +2,7 @@ from JumpScale import j
 from cloudbrokerlib import authenticator, enums
 import ujson
 
-class cloudapi_storagebuckets(j.code.classGetBase()):
+class cloudapi_s3storage(j.code.classGetBase()):
     """
     API Actor api, this actor is the final api a enduser uses to manage storagebuckets
     
@@ -10,7 +10,7 @@ class cloudapi_storagebuckets(j.code.classGetBase()):
     def __init__(self):
         
         self._te={}
-        self.actorname="storagebuckets"
+        self.actorname="s3storage"
         self.appname="cloudapi"
         self._cb = None
         self._models = None
@@ -32,18 +32,28 @@ class cloudapi_storagebuckets(j.code.classGetBase()):
         return self._models
 
     @authenticator.auth(acl='R')
-    def list(self, cloudspaceId, storagebuckettype, **kwargs):
+    def listbuckets(self, cloudspaceId, **kwargs):
+        
         """
         List the storage buckets in a space.
-        param:cloudspaceId id of space in which machine exists
-        param:storagebuckettype when not empty will filter on type types are (S3)
+        param:cloudspaceId id of the space
+        result list
+        """
+        return []
+    
+
+    @authenticator.auth(acl='R')
+    def get(self, cloudspaceId, **kwargs):
+        """
+        Gets the S3 details for a specific cloudspace
+        param:cloudspaceId id of the space
         result list
         """
         
         term = dict()
-        query = {'fields':['id','cloudspaceId','url','name','location','accesskey','secretkey']}
+        
+        query = {'fields':['id','cloudspaceId','s3url','name','location','accesskey','secretkey']}
         query['query'] = {'term':{'cloudspaceId':cloudspaceId}}
         results = self.models.s3bucket.find(ujson.dumps(query))['result']
-        storagebuckets = [res['fields'] for res in results]
-        return storagebuckets
-    
+        s3storagebuckets = [res['fields'] for res in results]
+        return s3storagebuckets
