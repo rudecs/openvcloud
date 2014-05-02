@@ -877,3 +877,6 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .justFormButton { display: inline-block;} 
 .floatR { float: right;}
 .imageWhy {margin: 18px 0;width: 250px;}
+#console .span2 + .span4 {width: 501px;float: right;text-align: right;}
+#noVNC_buttons { display: inline-block;}
+#capturekeyboardbutton { float:none !important;}
