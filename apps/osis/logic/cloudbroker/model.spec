@@ -85,6 +85,7 @@
     prop:status str,, status of the image, e.g DISABLED/ENABLED/CREATING/DELETING
     prop:accountId int,,id of account to which this image belongs
     prop:acl list(ACE),,access control list
+    prop:username str,, specific username for this image
 
 
 
