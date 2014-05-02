@@ -350,8 +350,13 @@ class CSLibvirtNodeDriver():
         return self._execute_agent_job('rebootmachine', queue='hypervisor', machineid = machineid)
 
     def ex_start(self, node):
-        xml = ''
+        backendnode = self.backendconnection.getNode(node.id)
+        networkid = backendnode.networkid
+        xml = self._get_persistent_xml(node)
         machineid = node.id 
+        result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
+        if not result or result == -1:
+            return -1
         return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)    
  
     def ex_get_console_info(self, node):
