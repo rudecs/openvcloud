@@ -24,7 +24,7 @@ angular.module('cloudscalers.controllers')
                             $scope.loadSpaces();
                             LoadingDialog.hide();
                             var uri = new URI($window.location);
-                			uri.filename('MachineBuckets');
+                			uri.filename('Decks');
                             $window.location = uri.toString();
                         }, 1000);
                     }, function(reason) {
