@@ -1,10 +1,10 @@
 @template public_with_left_nav
-
-{{div: class=half copy col-md-6}}
-
 {{html:
  <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
 }}
+{{div: class=half copy col-md-6 StorageDeckColor}}
+
+
 
 
 h1. $$page
@@ -17,39 +17,43 @@ h1. $$page
   {{html: <img class="storagMargin" src="/$$space/.files/img/images/storage-pic.jpg">}}
 {{div}}
 
-{{div: class=seperateDecks}}
-{{div}}
 
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/SD-S3.jpg!
+
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. S3
       Object Based storage using S3 compatible API.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/SD_VirtualDisks.jpg!
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Virtual Disks
       Virtual Disks  of 10 GB up to 2 TB, seamlessly attached to your VMs.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/SD_Fileserver.jpg!
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Fileserver
       Virtual Fileserver up to Petabytes per Cloud Space. (Roadmap)
 {{div}}
 
-{{div: class=seperateDecks}}{{div}}
 
-{{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/features/SD_VeryReliable.jpg!
+
+{{div: class=col-md-12 boxDecks clearL StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
       h3. Very Reliable
       Distributed storage ensuring data reliability.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/SD_Backup.jpg!
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Backup
       Your virtual machines are backed up to your private storage deck.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/SD_Integrated.jpg!
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Integrated
       All storage is integrated into your personal Cloud Space.
 {{div}}

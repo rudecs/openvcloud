@@ -1,10 +1,10 @@
 @template public_with_left_nav
-
-{{div: class=half copy col-md-6}}
-
 {{html:
  <img class="smallIcon" src="/$$space/.files/img/icon1.png" alt=""/>
 }}
+{{div: class=half copy col-md-6 DesktopDeckColor}}
+
+
 
 
 h1. $$page
@@ -17,39 +17,43 @@ h1. $$page
   {{html: <img class="appMargin" src="/$$space/.files/img/images/desk-pic.jpg">}}
 {{div}}
 
-{{div: class=seperateDecks}}
-{{div}}
 
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/DD_PrivatePortal.jpg!
+
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Private Portal
       -	Access your familiar Microsoft Windows, Linux and Legacy applications from a private portal with secure cloud storage included.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/DD_HTML5.png!
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. HTML5
       Use any html5-capable browser on your preferred device (laptops, tablets & smartphones) to access your Desktop Deck.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/DD_CloudDrive.jpg!
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Cloud Drive
       Private cloud drive integrated with sharing capabilities.
 {{div}}
 
-{{div: class=seperateDecks}}{{div}}
 
-{{div: class=col-md-4 boxDecks clearL}}
-      !/$$space/.files/img/features/DD_Collaboration.jpg!
+
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
       h3. Collaboration
       Collaboration features like screen sharing and chatting are fully integrated.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/DD_Secure.jpg!
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Secure
       Enterprise-grade security, controls and auditing capabilities included.
 {{div}}
-{{div: class=col-md-4 boxDecks}}
-      !/$$space/.files/img/features/DD_EasyRollOut.jpg!
+{{div: class=col-md-12 boxDecks DesktopDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
       h3. Easy roll out
       Zero-config secure access for mobile or remote workforce.
 {{div}}
