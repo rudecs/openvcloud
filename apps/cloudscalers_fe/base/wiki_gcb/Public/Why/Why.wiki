@@ -16,8 +16,8 @@ Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoint
 
 {{div3}}
 
-{{div3: class=half col-md-4 justOne}}
- {{html: <img class="appMargin" src="/$$space/.files/img/images/logo-colored2.png">}}
+{{div3: class=half col-md-4 justOne centerPic}}
+ {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
 #  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
 {{div3}}
 
@@ -25,17 +25,17 @@ Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoint
 {{div3: class=seperateDecks}}
 {{div3}}
 
-{{div3: class=col-md-4 boxDecks}}
+{{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_Anywhere.png!
       h3. Everyware Anyware
       Mothership{{html:<sup>1</sup>}} integrates multiple functions in one portal, called 'Decks' and combines virtual machines, with storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
 {{div3}}
-{{div3: class=col-md-4 boxDecks}}
+{{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_warpspeed.jpg!
       h3. Warp Speed
       Speed is what Mothership{{html:<sup>1</sup>}} values. Our new cloud offering brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots in a matter of just seconds, immediate rollbacks, faster start and stop, and the use of PRO SSD drives with high performance and reliability.
 {{div3}}
-{{div3: class=col-md-4 boxDecks}}
+{{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_DefenseShield.jpg!
       h3. Ultimate Defense
       An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable-class firewall and router. VPN functions allow seamless and secure 2-way integration with your local offices.

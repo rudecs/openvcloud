@@ -914,4 +914,9 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .ApplicationDeckColor h3 { color: #f6b332;}
 .ApplicationDeckColor i { color: #f6b332;}
 .ApplicationDeckColor + .half.col-md-6 { margin: -16px 0 0 0;}
+.appMargin2 { margin: 53px 0 0 0;}
 
+.centerPic { text-align: center;}
+
+.boxDecks2 h3 {padding-left: 18px;}
+.boxDecks2 {text-align: center;margin: 0px 0 25px;}
