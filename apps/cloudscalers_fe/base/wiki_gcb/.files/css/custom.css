@@ -872,7 +872,7 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 #console .span2 + .span4 {width: 376px;float: right;}
 .nav.navbar-nav.man > li:first-child a {padding-left:0;}
 .sticky2 > .navbar.navbar-inverse { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%;}
-.sticky2 {  min-height: 100%;height: auto;margin: 0 auto -50px;padding: 0 0 50px;}
+.sticky2 {  min-height: 100%;height: auto;margin: 0 auto -50px;padding: 0 0 50px; background: #FFF;}
 #gallery a { margin: 10px 20px; display: inline-block;}
 .nameField h2 {display: inline-block;margin-right: 15px;vertical-align: top;margin-top: 0;}
 .justFormButton { display: inline-block;} 

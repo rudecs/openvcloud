@@ -30,7 +30,7 @@
 
 
 {{html:
-<div id="wrap" ng-app="cloudscalers">
+<div id="wrap" class="sticky2" ng-app="cloudscalers">
 }}
 
 {{include:menu}}
