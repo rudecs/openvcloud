@@ -260,6 +260,7 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .bottomFooter ul { margin-left: -56px; }
 .color3 { margin: 0 0 0 90px; }
 .newDecks .boxes h2 { float: none; }
+.boxDecks2 {width: 29.333333% !important;}
 }
  @media (max-width: 1290px) and (min-width: 992px) {
 .boxes h2 { float: left; clear: both; }
@@ -293,6 +294,7 @@ footer .container { width: auto; }
 .mainButton { margin-bottom: 10px;}
 .refresh-page.mtl.right.mTxt.ng-scope {z-index: 99999999;position: absolute;right: 15px;top: 19px;}
 .well { padding: 0 0px !important;}
+.boxDecks2 {width: auto !important;min-height: auto !important;}
 }
  @media (max-width: 768px) {
 .boxes p { width: 79% !important; }
@@ -872,7 +874,7 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 #console .span2 + .span4 {width: 376px;float: right;}
 .nav.navbar-nav.man > li:first-child a {padding-left:0;}
 .sticky2 > .navbar.navbar-inverse { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%;}
-.sticky2 {  min-height: 100%;height: auto;margin: 0 auto -50px;padding: 0 0 50px;}
+.sticky2 {  min-height: 100%;height: auto;margin: 0 auto -50px;padding: 0 0 50px; background: #FFF;}
 #gallery a { margin: 10px 20px; display: inline-block;}
 .nameField h2 {display: inline-block;margin-right: 15px;vertical-align: top;margin-top: 0;}
 .justFormButton { display: inline-block;} 
@@ -914,4 +916,12 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .ApplicationDeckColor h3 { color: #f6b332;}
 .ApplicationDeckColor i { color: #f6b332;}
 .ApplicationDeckColor + .half.col-md-6 { margin: -16px 0 0 0;}
+.appMargin2 { margin: 53px 0 0 0;}
+
+.centerPic { text-align: center;}
+
+.boxDecks2 h3 {padding: 10px 15px 10px 20px;  border-bottom: 1px solid transparent;    color: #fff;  background-color: #428bca;  border-color: #428bca;margin: 0;text-align: left;font-size: 21px;}
+.boxDecks2 {text-align: center;margin: 15px 18px 35px;border: 1px solid #428bca;padding: 0;-webkit-border-radius: 3px;  -moz-border-radius: 3px;  border-radius: 3px;width: 30.333333%;min-height: 286px;  }
+.boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left;}
+.mrl.ng-binding + .ng-binding {font-family: verdana !important;}
 
