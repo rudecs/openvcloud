@@ -76,6 +76,6 @@
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
-
+    <script src="/cloudscalers_fe/.files/js/controllers/Machines/MachinePricingController.js" type="text/javascript"></script>
 }}
 

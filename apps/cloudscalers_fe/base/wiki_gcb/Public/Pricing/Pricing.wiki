@@ -224,6 +224,3 @@ h1. Pricing
 @divend
 @divend
 
-{{html:
-<script src="/$$space/.files/js/controllers/Machines/MachinePricingController.js" type="text/javascript"></script>
-}}
