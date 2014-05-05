@@ -17,14 +17,12 @@ h1. Account Details
 {{html:
         </div>
       </tab>
-      <tab id="templatemanagment" heading="Template Management">
-        <div id="templatemanagement" class="tab-pane">
+      <!-- <tab id="templatemanagment" heading="Template Management"> -->
+        <!-- <div id="templatemanagement" class="tab-pane"> -->
+          <!-- include:AccountTemplateManagement -->
 }}
-
-{{include:AccountTemplateManagement}}
-
 {{html:
-        </div>
-      </tab>
+        <!-- </div> -->
+      <!-- </tab> -->
   </tabset>
 }}
