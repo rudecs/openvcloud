@@ -4,4 +4,28 @@ Your private cloud resource pool including compute, storage, applications, deskt
 
 Organize your capacity over different Cloud Spaces! Each Cloud Space has its own credit capacity, a separate Defense Shield and separate user management.
 
-Go to [Support|http://support.mothership1.com/open.php] and choose the Service Deck to activate one or more additional spaces! See the [pricing page|Pricing] for the cost of creating an additional Cloud Space.
+See the [pricing page|Pricing] for the cost of creating an additional Cloud Space.
+
+{{ contact_form: receiver_email:support@mothership1.com | custom | subject: About Mothership1 }}
+    {{html: <input type="hidden" name="sender_email" required value="{[ currentUser.emailaddresses[0] ]}" />}}
+    {{html: <input type="hidden" name="sender_name" required value="{[ currentUser.username ]}" />}}
+    {{html: <input type="hidden" name="body" required value="Create New Cloud Space" />}}
+
+    {{div3: class=form-group }}
+        {{html: <label class="control-label col-md-2" for="num_users">Cloud Space Name</label>}}
+        {{div4: class=col-md-5}}
+            {{html: <input type="text" required class="form-control inputStyle" name="cloudspace_name" />}}
+        {{div4}}
+    {{div3}}
+
+    {{div3: class=form-group}}
+        {{html: <label class="control-label col-md-2"></label>}}
+        {{div4: class=col-md-5}}
+            {{ submit: class=btn btn-primary | data-loading-text=Sending... }}
+                {{html: Request Create}}
+            {{submit}}
+
+            {{ reset }}
+        {{div4}}
+    {{div3}}
+{{ contact_form }}
