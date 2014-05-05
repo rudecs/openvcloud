@@ -9,7 +9,7 @@
 
 h1. $$page
 
-{{html: <p class="niceHead">Defense Shields provide privacy, security & secure access to your [Cloud Spaces|Cloud Space]. Each Cloud Space has a private defense shield owned and managed by only you.</p>}}
+{{html: <p class="niceHead">Defense Shields provide privacy, security & secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.</p>}}
 
 {{div}}
 
