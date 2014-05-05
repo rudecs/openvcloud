@@ -1,6 +1,6 @@
 @template public
 {{div: class=white}}
-{{div: class=container why-page}}
+{{div2: class=container why-page}}
 
 @col12
 
@@ -13,6 +13,7 @@ h1. Press Center
 #h2. Download Press releases
 
 Coming soon
-
+{{div2}}
+{{div}}
 @divend
 @divend

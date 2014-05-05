@@ -38,7 +38,7 @@ h1. $$page
       Select your preferred SSD drive size.
 {{div}}
 
-{{div: class=seperateDecks}}{{div}}
+
 
 {{div: class=col-md-12 boxDecks clearL MachineDeckColor}}
       {{html: <i class="fa fa-arrow-right"></i>}}
