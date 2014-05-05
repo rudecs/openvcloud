@@ -2,7 +2,7 @@ h1. Desktop Deck
 
 Activate your early access trial to your Desktop Deck and access desktop applications on any of your html5 compatible devices.
 
-{{ contact_form: receiver_email:support@mothership1.com | custom | subject: About Mothership1 }}
+{{ contact_form: receiver_email:support@mothership1.com | custom | subject: Activation Desktop Deck Request  }}
     {{html: <input type="hidden" name="sender_email" required value="{[currentUser.emailaddresses[0] ]}" />}}
     {{html: <input type="hidden" name="sender_name" required value="{[currentUser.username]}" />}}
     {{html: <input type="hidden" name="body" required value="Activate Desktop Decks" />}}
