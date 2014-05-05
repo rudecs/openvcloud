@@ -54,17 +54,21 @@ class pricing(object):
         return self._machine_images
     
     
-    def get_machine_price_per_hour(self, machine):
-        machine_imageid = machine['imageId']
-        machine_sizeId = machine['sizeId']
-        machine_memory = self.machine_sizes[machine_sizeId]['memory']
+    def get_price_per_hour(self, imageId, sizeId):
+        machine_memory = self.machine_sizes[sizeId]['memory']
         machine_type = 'Linux'
-        if self.machine_images.has_key(machine_imageid):
-            machine_type = self.machine_images[machine_imageid]['type']
+        if self.machine_images.has_key(imageid):
+            machine_type = self.machine_images[imageid]['type']
         if not self.base_machine_prices.has_key(machine_type):
             machine_type = 'Linux'
 
         return self.base_machine_prices[machine_type][machine_memory]
+    
+    def get_machine_price_per_hour(self, machine):
+        machine_imageid = machine['imageId']
+        machine_sizeId = machine['sizeId']
+        
+        return self.get_price_per_hour(machine_imageId, machine_sizeId)
     
     def get_burn_rate(self, accountId):
         burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
@@ -104,4 +108,3 @@ class pricing(object):
         
         return burn_rate_report
         
-
