@@ -2,7 +2,7 @@
 {{div: class=white}}
 {{div2: class=container}}
 
-{{ contact_form: receiver_email:info@mothership1.com | custom | subject: About Mothership1 }}
+{{ contact_form: receiver_email:info@mothership1.com | custom | subject: Contact Form Mothership1 }}
     {{div3: class=form-group}}
         {{html: <label class="control-label col-md-1" for="sender_email">Email</label>}}
         {{div4: class=col-md-4}}
