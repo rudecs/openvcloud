@@ -21,6 +21,9 @@
 	    var:username str,,unique username for the account
 	    var:emailaddress str,,unique emailaddress for the account
 	    var:password str,,unique password for the account
+	    var:user str,,name for the account
+	    var:company str,,name of the company
+	    var:companyurl str,,url of the main website
 	    result:bool
 
 	method:get

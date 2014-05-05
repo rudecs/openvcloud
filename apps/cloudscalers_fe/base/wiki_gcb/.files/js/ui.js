@@ -21,9 +21,6 @@ var Application = function () {
 		enableNavigationHighlight();
 		enablePopups();
 
-		setInterval(function() {
-			angular.element('a:has(.icon-undo), a:has(.icon-download)').css('pointer-events', 'none').css('cursor', 'default').css('color', 'gray')
-		}, 100);
 	}
 
 	function enableCirque () {

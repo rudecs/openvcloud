@@ -1,4 +1,4 @@
-h1. Cloudspace Access Management
+h1. Cloud Space Access Management
 
 
 
@@ -6,16 +6,20 @@ h1. Cloudspace Access Management
 	<tabset style="clear:both;">
 			<tab id="details" heading="General">
 				<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
+
+Delete here your Cloud Space. Note that deleting a Cloud Space is irreversible and all data and authorizations to it will be removed!
+<br><br>
+
 					<button class="btn btn-danger" ng-click="deleteCloudspace()"><i class="fa fa-trash"></i> Delete</button>
 
 	<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 														<form name="destroyform" ng-submit="cancelDeletion()">
 																<div class="modal-header">
-																		<h3>Delete CloudSpace?</h3>
+																		<h3>Delete Cloud Space?</h3>
 																</div>
 																<div class="modal-body">
 																		<input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-																		Deleting a CloudSpace is irreversible and <br/>
+																		Deleting a Cloud Space is irreversible and <br/>
 																		all data and authorizations to it will be removed.
 																</div>
 																<div class="modal-footer">

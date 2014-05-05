@@ -1,13 +1,18 @@
 
 angular.module('cloudscalers.controllers')
     .controller('ConsoleController', ['$scope','$routeParams', 'Machine', function($scope, $routeParams, Machine) {
-        $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
+        $scope.machineConsoleUrlResult = {}
         $scope.novnc_connectioninfo = {}
         
-        $scope.$watch('$parent.machine.status', function(newvalue, oldvalue) {
-            if (newvalue == 'RUNNING')
-            	$scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
-        }, true);
+
+        $scope.$watch('tabactive.console+$parent.machine.status',function(){
+		if ($scope.tabactive.console && $scope.$parent.machine.status == "RUNNING"){
+        		$scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
+		}
+		else {
+			$scope.machineConsoleUrlResult = {};
+		}
+	});
         
         $scope.$watch('machineConsoleUrlResult',function(newvalue, oldvalue){
         	if (newvalue.url){
@@ -33,6 +38,10 @@ angular.module('cloudscalers.controllers')
             	
             	$scope.novnc_connectioninfo = new_connection_info;
         	}
+		else
+		{
+			$scope.novnc_connectioninfo = {}
+		}
         	
         }, true);
         

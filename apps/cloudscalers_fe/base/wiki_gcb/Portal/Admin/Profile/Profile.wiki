@@ -1,7 +1,7 @@
 h1. Profile
 
 {{html:
-<hr>
+
 <form class="form-horizontal" ng-controller="SettingsController" ng-app="myApp">
   <fieldset>
     <div class="nameField">
@@ -17,9 +17,9 @@ h1. Profile
         <h2>Password:</h2>
         <input id="passwordinput" name="passwordinput" type="password" placeholder="xxxxxxx" class="input-xlarge" ng-model="password">
     </div>
-    <hr>
-    <div class="form-actions">
-      <button class="btn btn-info btn-large " ng-click="save()" >Save</button> 
+    
+    <div class="form-actions justFormButton nameField">
+      <button class="btn btn-info btn-large floatR" ng-click="save()" >Save</button> 
     </div>
 
   </fieldset>

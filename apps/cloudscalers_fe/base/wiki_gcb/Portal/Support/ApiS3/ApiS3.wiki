@@ -1,7 +1,7 @@
 {{html: 
 <div class="section" id="ceph-object-gateway-s3-api">
-<h1>Storage Buckets Object Gateway S3 API<a class="headerlink" href="#ceph-object-gateway-s3-api" title="Permalink to this headline"></a></h1>
-<p>Storage Buckets supports a RESTful API that is compatible with the the basic data access model of the Amazon S3 API.</p>
+<h1>Storage Deck Object Gateway S3 API<a class="headerlink" href="#ceph-object-gateway-s3-api" title="Permalink to this headline"></a></h1>
+<p>Storage Deck supports a RESTful API that is compatible with the the basic data access model of the Amazon S3 API.</p>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">

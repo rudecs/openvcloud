@@ -81,13 +81,16 @@ class cloudapi_users(object):
   <body>
     <p><h1>New customer</h1><br>
        Account Id: %s<br/>
-       Account Name: %s<br/>
+       Account username: %s<br/>
+       Account name: %s<br/>
        Email Address: %s<br/>
+       Company: %s <br/>
+       Company Url: %s <br/>
        Environment: %s
     </p>
   </body>
 </html>
-""" % (kwargs['accountid'],kwargs['username'],kwargs['emailaddress'],kwargs['portalurl'])
+""" % (kwargs['accountid'],kwargs['username'],kwargs['user'], kwargs['emailaddress'],kwargs['company'], kwargs['companyurl'], kwargs['portalurl'])
 
         # Record the MIME types of both parts - text/plain and text/html.
         part1 = MIMEText(text, 'plain')
@@ -109,7 +112,7 @@ class cloudapi_users(object):
         server.sendmail(fromaddr, toaddrs, msg.as_string())
         server.quit()
 
-    def register(self, username, emailaddress, password, **kwargs):
+    def register(self, username, user, emailaddress, password, company, companyurl, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
         param:username unique username for the account
@@ -137,7 +140,7 @@ class cloudapi_users(object):
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-            self._send_signup_mail(accountid=accountid, username=username, emailaddress=emailaddress, portalurl=portalurl)
+            self._send_signup_mail(accountid=accountid, username=username, name=user, emailaddress=emailaddress, portalurl=portalurl, company=company, companyurl=companyurl)
             #networkid = self.libvirt_actor.getFreeNetworkId()
             #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
             #cs = self.models.cloudspace.new()

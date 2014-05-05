@@ -6,7 +6,7 @@
 
 Welcome to the Machine Deck. When you have uploaded credit, hit Create Machine and 5 seconds later it will be starting!
 
-Start now and create your Machine:
+Start now and create your Machine!
 
 {{html:
 </div>
@@ -20,9 +20,9 @@ Start now and create your Machine:
     <fieldset>
 
     <!-- Button -->
-    <div class="control-group">
+    <div class="control-group absolutePad0">
       <div class="">
-        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large ">Create Machine</button>
+        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute1">Create Machine</button>
       </div>
     </div>
 

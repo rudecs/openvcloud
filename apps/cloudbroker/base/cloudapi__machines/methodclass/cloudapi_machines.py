@@ -123,7 +123,7 @@ class cloudapi_machines(object):
         image = self.models.image.new()
         image.name = templatename
         image.referenceId = ""
-        image.type = 'custom templates'
+        image.type = 'Custom Templates'
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
@@ -485,6 +485,7 @@ class cloudapi_machines(object):
         #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
+    @authenticator.auth(acl='R')
     def getConsoleUrl(self, machineId, **kwargs):
         """
         get url to connect to console
@@ -498,6 +499,7 @@ class cloudapi_machines(object):
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)
 
+    @authenticator.auth(acl='C')
     def clone(self, machineId, name, **kwargs):
         """
         clone a machine
@@ -548,6 +550,7 @@ class cloudapi_machines(object):
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
 
+    @authenticator.auth(acl='R')
     def getHistory(self, machineId, size, **kwargs):
         """
         Gets the machine actions history

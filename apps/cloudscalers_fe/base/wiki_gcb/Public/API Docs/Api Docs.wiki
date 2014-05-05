@@ -3,6 +3,7 @@
 {{div: class=container}}
 
 @col 9
+
 h1. Machine Decks API Documentation
 {{html:
 <!-- <img class="internaIcon" src="/$$space/.files/img/icon2.png" alt=""/> -->
@@ -21,12 +22,12 @@ h1. Machine Decks API Documentation
     <script src='/lib/swagger/lib/backbone-min.js' type='text/javascript'></script>
     <script src='/lib/swagger/lib/swagger.js' type='text/javascript'></script>
     <script src='/lib/swagger/swagger-ui.js' type='text/javascript'></script>
+    <script src="/$$space/.files/js/swaggerdirective.js" type="text/javascript"></script>
     <script src='/lib/swagger/lib/highlight.7.3.pack.js' type='text/javascript'></script>
     
 
 
     
-    <script src="/$$space/.files/js/swaggerdirective.js" type="text/javascript"></script>
 
     <div id="message-bar" class="swagger-ui-wrap">
         &nbsp;

@@ -54,7 +54,10 @@
 
 {{div2:class=loader | style=display: none }} 
 h2. loading
-!loading_cropped.gif! 
+{{html:
+<canvas id="c"></canvas>
+}}
+
 {{div2}}
 {{div2:class=loading | style=display: none}} {{div2}}
 

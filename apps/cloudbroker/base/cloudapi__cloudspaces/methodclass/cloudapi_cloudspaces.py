@@ -78,7 +78,8 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.networkId = networkid
         cs.publicipaddress = publicipaddress
-        return self.models.cloudspace.set(cs)[0]
+        cloudspace_id = self.models.cloudspace.set(cs)[0]
+        return cloudspace_id
 
     @authenticator.auth(acl='A')
     def delete(self, cloudspaceId, **kwargs):
@@ -119,7 +120,7 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-
+            
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)

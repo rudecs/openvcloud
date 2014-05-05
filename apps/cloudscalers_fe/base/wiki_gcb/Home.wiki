@@ -1,4 +1,4 @@
-@template public
+@template homepage_template
 
 
 {{html: 
@@ -22,9 +22,9 @@
                 Everyware Anyware<br>
                 
                 <ul class="arrow">
-                    <li>VMs, Cloud Desktops, Applications & Storage</li>
-                    <li>Connect your local office securely to your cloud</li>
-                    <li>Designed to be simple and easy to use</li>
+                    <li>VMs, Cloud Desktops, Applications & Storage.</li>
+                    <li>Connect your local office securely to your cloud.</li>
+                    <li>Designed to be simple and easy to use.</li>
 
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Mothership'">Read more</button>
@@ -34,9 +34,9 @@
           <p class="font mainText">
                 Powerful Defense Shield<br>
              <ul class="arrow">   
-                <li>Your Private Cloud Space</li>
-                <li>Integrated VPN, Firewall</li>
-                <li>Integrated Backup,Replication</li>
+                <li>Your Private Cloud Space.</li>
+                <li>Integrated VPN, Firewall.</li>
+                <li>Integrated Backup,Replication.</li>
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Cloud Space'">Read more</button>
             </p>
@@ -45,9 +45,9 @@
           <p class="font mainText">
                 Warp Speed<br>
               <ul class="arrow">  
-                <li>A New Machine In Less Than 10 seconds</li>
-                <li>Immediate Snapshots</li>
-                <li>Dedicated Compute Capacity</li>
+                <li>A New Machine In Less Than 10 seconds.</li>
+                <li>Immediate Snapshots.</li>
+                <li>Dedicated Compute Capacity.</li>
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>
             </p>
@@ -56,9 +56,9 @@
           <p class="font mainText">
                 Designed to fit your needs<br>
                <ul class="arrow"> 
-                <li>Usage based</li>
-                <li>Mirosoft Windows and Linux</li>
-                <li>Flexible disk sizes</li>
+                <li>Usage based.</li>
+                <li>Mirosoft Windows and Linux.</li>
+                <li>Flexible disk sizes.</li>
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>
             </p>
@@ -146,7 +146,10 @@
 
 {{div2:class=loader | style=display: none }} 
 h2. loading
-!loading_cropped.gif! 
+{{html:
+<canvas id="c"></canvas>
+}}
+
 {{div2}}
 
 {{div2:class=loading | style=display: none}} 
