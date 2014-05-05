@@ -57,7 +57,7 @@
                 Designed to fit your needs<br>
                <ul class="arrow"> 
                 <li>Usage based.</li>
-                <li>Mirosoft Windows and Linux.</li>
+                <li>Microsoft Windows and Linux.</li>
                 <li>Flexible disk sizes.</li>
                 </ul>
                 <button type="button" class="btn btn-selector btn-info btn-large mainButton" onclick="location.href='/$$space/Machine Deck'">Read more</button>
