@@ -6,7 +6,7 @@ Organize your capacity over different Cloud Spaces! Each Cloud Space has its own
 
 See the [pricing page|Pricing] for the cost of creating an additional Cloud Space.
 
-{{ contact_form: receiver_email:support@mothership1.com | custom | subject: About Mothership1 }}
+{{ contact_form: receiver_email:support@mothership1.com | custom | subject: New CloudSpace Request }}
     {{html: <input type="hidden" name="sender_email" required value="mothership1_user@mothership1.com" />}}
     {{html: <input type="hidden" name="sender_name" required value="{[ currentUser.username ]}" />}}
     {{html: <input type="hidden" name="body" required value="Create New Cloud Space" />}}
