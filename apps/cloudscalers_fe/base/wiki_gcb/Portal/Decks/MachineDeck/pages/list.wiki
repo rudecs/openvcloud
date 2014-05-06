@@ -6,7 +6,7 @@
 
 Welcome to the Machine Deck. When you have uploaded credit, hit Create Machine and 5 seconds later it will be starting!
 
-Start now and create your Machine!
+New users can find useful info about the Machine Deck in our [Quick Tutorial Guide|Getting Started].
 
 {{html:
 </div>

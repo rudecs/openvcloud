@@ -1,3 +1,5 @@
+{{div2: class=container why-page}}
+
 h1. Quick Tutorial Guide
 
 Welcome to your Mothership{{html:<sup>1</sup>}} Cloud Space!
@@ -11,6 +13,11 @@ The Cloud Space provides access to 4 different Cloud Decks:
 * Application Deck: Ready to go private applications, available in Q4
 
 The Cloud Space is protected by the Defense Shield, your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
+
+h2. Cloud Space
+
+*# Go to Settings > Account Settings to view your balance and upload credit using Paypal
+*# Optionally provide access to other registered users in the Mothership{{html:<sup>1</sup>}} cloud.
 
 h2. Machine Deck
 
@@ -38,3 +45,5 @@ h2. Defense Shield
 *# For more simple tasks, use the Port Fowards in the Machine Deck submenu
 
 Good luck! In case of any questions, go to our [Documentation Center|FAQ] or contact [Customer Service|http://support.mothership1.com]
+
+@divend

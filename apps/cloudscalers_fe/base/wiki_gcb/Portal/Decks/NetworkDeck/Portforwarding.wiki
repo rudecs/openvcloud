@@ -1,6 +1,9 @@
 @usedefault
 
 h1. Port Forwards
+
+Easily configure your port forwards to your Virtual Machines! Please take a small waiting period into account on a new deployed virtual machine, as it can still be starting or that your Defense Shield might still be in the process of assigning the IP address.
+
 {{html:
 	<div class="portMargin" ng-controller="PortforwardingController">
 		<div>
