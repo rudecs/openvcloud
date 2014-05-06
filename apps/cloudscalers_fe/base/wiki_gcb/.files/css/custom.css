@@ -426,6 +426,7 @@ body {overflow-x: hidden;}
 .mrl.ng-binding + .ng-binding { display: inline-block; position: absolute; left: 16px; top: 25px;}
 .initial { height: 57px !important; display: inline-block;}
 .tabbable.ng-isolate-scope > ul  li { float: inherit;}
+.account-container.stacked {width: 262px !important;}
 }
 .form-horizontal .control-label { text-align: left !important; }
 .blueBar { background: #06a7e2; height: 48px; }
