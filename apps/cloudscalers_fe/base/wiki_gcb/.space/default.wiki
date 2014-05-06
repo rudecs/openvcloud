@@ -10,12 +10,7 @@
         [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
             display: none !important;
         }
-    </style>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    </style>    
 }}
 
 
@@ -24,6 +19,7 @@
 {{projectname:Mothership1}}
 
 {{favicon:.files/img/favicon.jpg}}
+{{css:/$$space/.files/css/font-awesome.min.css}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/css/custom.css}}
 
@@ -291,6 +287,9 @@ h2. loading
 
 
 {{html:
+	<!--[if lt IE 9]>
+      <script src="/$$space/.files/js/html5.js"></script>
+    <![endif]-->
     <script src="/$$space/.files/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
