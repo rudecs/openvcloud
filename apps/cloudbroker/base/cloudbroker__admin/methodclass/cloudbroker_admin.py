@@ -1,6 +1,7 @@
 from JumpScale import j
 import time,string
 from random import sample, choice
+from cloudbrokerlib import authenticator, enums
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
 
