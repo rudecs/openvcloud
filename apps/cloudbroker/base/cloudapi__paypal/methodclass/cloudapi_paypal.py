@@ -11,9 +11,15 @@ class cloudapi_paypal(j.code.classGetBase()):
     """
     def __init__(self):
 
-        self.paypal_user = 'AR3m7BDSytnZsBY_dSQr23VJ1E_63LQrHr7jZ6OIchco3RmoFjhNRDhLuuUT'
-        self.paypal_secret = 'EKcPPRDv9IBNQ6g0io06kO1GvSZtWRA0WdM3BGOMRp4qqSRfNiZ4eqLaq8g1'
+        self.paypal_user = j.application.config.get('mothership1.cloudbroker.paypal.apiuser')
+        self.paypal_secret = j.application.config.get('mothership1.cloudbroker.paypal.apisecret')
+
         self.paypal_url = 'https://api.sandbox.paypal.com'
+        usesandbox = j.application.config.get('mothership1.cloudbroker.paypal.sandbox')
+        if usesandbox is not '1':
+            self.paypal_url = 'https://api.paypal.com'
+        else:
+            self.paypal_url = 'https://api.sandbox.paypal.com'
 
 
         osiscl = j.core.osis.getClient(user='root')
