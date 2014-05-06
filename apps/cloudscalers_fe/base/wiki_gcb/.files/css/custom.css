@@ -1,4 +1,5 @@
 @charset "utf-8";
+html {-ms-overflow-style: scrollbar;/*auto | none | scrollbar | -ms-autohiding-scrollbar*/}
 * { font-family: arial, sans-serif; }
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer; }
 .jumbotron { padding-top: 60px; }
@@ -493,7 +494,7 @@ table.table td { word-break: break-all; }
 .nav-tabs>li>a { font-size: 17px; }
 .nav-tabs>li>a:hover { color: #06a7e2; background: #FFF; padding-bottom: 11px; border-bottom: 0; }
 a { color: #06a7e2; text-decoration: none; }
-.mainButton { background-color: #06a7e2; padding: 10px 20px; font-size: 16px; margin: 0 10px 0 0; }
+.mainButton { background-color: #06a7e2; padding: 10px 20px; font-size: 16px; margin: 5px 10px 5px 0; }
 #tabbable .tab-pane ul { padding-left: 0; }
 #tabbable .tab-pane ul .mainButton:active { outline: 5px auto -webkit-focus-ring-color !important; outline-offset: -2px !important; }
 .machineList ul li a.active { background: url(../img/images/machine-hover.jpg); color: #FFF; }
@@ -924,4 +925,5 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .boxDecks2 {text-align: center;margin: 15px 18px 35px;border: 1px solid #428bca;padding: 0;-webkit-border-radius: 3px;  -moz-border-radius: 3px;  border-radius: 3px;width: 30.333333%;min-height: 286px;  }
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left;}
 .mrl.ng-binding + .ng-binding {font-family: verdana !important;}
+h4.machine-label.mvn + .ng-binding {  font-family: verdana !important;  font-size: 14px;}
 
