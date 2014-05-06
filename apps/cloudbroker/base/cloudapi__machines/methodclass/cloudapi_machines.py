@@ -211,12 +211,12 @@ class cloudapi_machines(object):
         #Check if there is enough credit
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
         available_credit = self._getCreditBalance(accountId)
-        burnrate = self._pricing.get_burn_rate(accountId);
+        burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId)
         new_burnrate = burnrate + hourly_price_new_machine
         if available_credit < (new_burnrate * 24 * 14):
             ctx.start_response('409 Conflict', [])
-            return 'Enough credit needs to be available for this machine to run for 2 weeks'
+            return 'Not enough credit for this machine to run for 2 weeks'
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
