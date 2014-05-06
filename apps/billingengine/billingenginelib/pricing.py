@@ -34,6 +34,9 @@ class pricing(object):
                                          16384:0.3111
                                          }
                                     }
+        
+        self.primary_storage_price = 0.00042
+        
         self._machine_sizes = None
         self._machine_images = None
     
@@ -55,7 +58,7 @@ class pricing(object):
         return self._machine_images
     
     
-    def get_price_per_hour(self, imageId, sizeId):
+    def get_price_per_hour(self, imageId, sizeId, diskSize):
         machine_memory = self.machine_sizes[sizeId]['memory']
         machine_type = 'Linux'
         if self.machine_images.has_key(imageid):
@@ -63,13 +66,17 @@ class pricing(object):
         if not self.base_machine_prices.has_key(machine_type):
             machine_type = 'Linux'
 
-        return self.base_machine_prices[machine_type][machine_memory]
+        base_price = self.base_machine_prices[machine_type][machine_memory]
+        storage_price = (diskSize - 10) * self.primary_storage_price
     
     def get_machine_price_per_hour(self, machine):
         machine_imageid = machine['imageId']
         machine_sizeId = machine['sizeId']
+        diskId = machine['disks'][0]
+        disk = self.cloudbrokermodels.disk.get(diskId)
+        diskSize = disk.maxSize
         
-        return self.get_price_per_hour(machine_imageId, machine_sizeId)
+        return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
     
     def get_burn_rate(self, accountId):
         burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
@@ -81,7 +88,7 @@ class pricing(object):
         account_hourly_cost = 0.0
 
         for cloudspace in cloudspaces:
-            query = {'fields':['id','deletionTime','name','cloudspaceId','imageId','sizeId']}
+            query = {'fields':['id','deletionTime','name','cloudspaceId','imageId','sizeId','disks']}
 
             query['query'] = {'filtered':{
                           "query" : {"term" : { "cloudspaceId" : cloudspace['id'] }},
