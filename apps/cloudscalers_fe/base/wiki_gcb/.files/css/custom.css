@@ -927,4 +927,5 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left;}
 .mrl.ng-binding + .ng-binding {font-family: verdana !important;}
 h4.machine-label.mvn + .ng-binding {  font-family: verdana !important;  font-size: 14px;}
+.portMargin {margin: 20px 0;}
 

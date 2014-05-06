@@ -2,7 +2,7 @@
 
 h1. Port Forwards
 {{html:
-	<div ng-controller="PortforwardingController">
+	<div class="portMargin" ng-controller="PortforwardingController">
 		<div>
 				<div style="margin-bottom: 5px;">
 					<button class="btn btn-info btn-large absolute1" ng-click="portForwardPopup()">Add</button>
