@@ -8,7 +8,7 @@ angular.module('cloudscalers.controllers')
             disksize: ''
         };
 
-        $scope.sizepredicate = 'vcpus'
+        $scope.sizepredicate = 'memory'
         $scope.groupedImages = [];
         $scope.availableDiskSizes = [10 ,20, 30, 40, 50, 100, 250, 500, 1000]        
 
