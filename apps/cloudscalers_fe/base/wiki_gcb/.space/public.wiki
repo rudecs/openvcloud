@@ -50,6 +50,7 @@
 	<!--[if lt IE 9]>
       <script src="/$$space/.files/js/html5.js"></script>
     <![endif]-->
+    <script src="/$$space/.files/js/general.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-route.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-resource.min.js"></script>

@@ -1,5 +1,6 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator
+from billingenginelib import pricing
 
 class cloudapi_consumption(j.code.classGetBase()):
     """
@@ -21,7 +22,9 @@ class cloudapi_consumption(j.code.classGetBase()):
         self.actorname="consumption"
         self.appname="cloudapi"
         #cloudapi_consumption_osis.__init__(self)
-        pass
+        
+        self._pricing = pricing.pricing()
+        
 
     @authenticator.auth(acl='R')
     def get(self, accountId, reference, **kwargs):
@@ -37,3 +40,12 @@ class cloudapi_consumption(j.code.classGetBase()):
             ctx.start_response('401 Unauthorized', [])
             return ""
         return billingstatement.dump()
+
+    @authenticator.auth(acl='R')
+    def getBurnRate(self, accountId, **kwargs):
+        """
+        Get the hourly cost of the resources currently in use
+        param:accountId id of the account
+        result bool
+        """
+        return self._pricing.get_burn_rate(accountId)

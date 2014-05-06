@@ -426,6 +426,7 @@ body {overflow-x: hidden;}
 .mrl.ng-binding + .ng-binding { display: inline-block; position: absolute; left: 16px; top: 25px;}
 .initial { height: 57px !important; display: inline-block;}
 .tabbable.ng-isolate-scope > ul  li { float: inherit;}
+.account-container.stacked {width: 262px !important;}
 }
 .form-horizontal .control-label { text-align: left !important; }
 .blueBar { background: #06a7e2; height: 48px; }
@@ -926,4 +927,6 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left;}
 .mrl.ng-binding + .ng-binding {font-family: verdana !important;}
 h4.machine-label.mvn + .ng-binding {  font-family: verdana !important;  font-size: 14px;}
+.portMargin {margin: 20px 0;}
+#extra { background-color: #06a7e2 !important; }
 

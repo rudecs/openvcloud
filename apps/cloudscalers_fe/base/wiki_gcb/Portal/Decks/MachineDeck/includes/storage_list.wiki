@@ -1,22 +1,22 @@
 <ul class="storage-size-list">
  <li>
     <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(10) ng-model="machine.disksize" btn-radio="10">
-      10GB at SSD speed<br>0 USD/month
+      10GB at SSD speed<br>Included
     </button>
   </li>
   <li>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
-    20GB at SSD speed<br>2.5 USD/month
+    20GB at SSD speed<br>3 USD/month
   </button>
   </li>
   <li>
   <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
-    30GB at SSD speed<br>5 USD/month
+    30GB at SSD speed<br>6 USD/month
   </button>
   </li>
   <li>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
-    40GB at SSD speed<br>7.5 USD/month
+    40GB at SSD speed<br>9 USD/month
   </button>
   </li>
   <li>

@@ -5,6 +5,7 @@ import string, time
 from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
+from billingenginelib import pricing
 
 ujson = j.db.serializers.ujson
 
@@ -26,6 +27,8 @@ class cloudapi_machines(object):
 
         self.osisclient = j.core.osis.getClient(user='root')
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
+        
+        self._pricing = pricing.pricing()     
 
     @property
     def cb(self):
@@ -169,6 +172,22 @@ class cloudapi_machines(object):
         firstdisk = self.models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
 
+
+    def _getCreditBalance(self, accountId):
+        """
+        Get the current available credit
+
+        param:accountId id of the account
+        """
+        query = {'fields': ['time', 'credit', 'status']}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        results = self.models.credittransaction.find(ujson.dumps(query))['result']
+        history = [res['fields'] for res in results]
+        balance = 0.0
+        for transaction in history:
+            balance += float(transaction['credit'])
+        return balance
+
     @authenticator.auth(acl='C')
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
@@ -182,12 +201,22 @@ class cloudapi_machines(object):
         result bool
 
         """
+        ctx = kwargs['ctx']
         if not self._assertName(cloudspaceId, name, **kwargs):
-            ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'Selected name already exists'
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
+
+        #Check if there is enough credit
+        accountId = self.models.cloudspace.get(cloudspaceId).accountId
+        available_credit = self._getCreditBalance(accountId)
+        burnrate = self._pricing.get_burn_rate(accountId);
+        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId)
+        new_burnrate = burnrate + hourly_price_new_machine
+        if available_credit < (new_burnrate * 24 * 14):
+            ctx.start_response('409 Conflict', [])
+            return 'Enough credit needs to be available for this machine to run for 2 weeks'
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
