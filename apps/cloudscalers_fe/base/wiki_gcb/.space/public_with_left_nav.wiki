@@ -90,6 +90,7 @@ jQuery.fn.modal.defaults = {};
 
 
 {{html:
+    <script src="/$$space/.files/js/general.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-route.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular-resource.min.js"></script>

@@ -928,4 +928,5 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 .mrl.ng-binding + .ng-binding {font-family: verdana !important;}
 h4.machine-label.mvn + .ng-binding {  font-family: verdana !important;  font-size: 14px;}
 .portMargin {margin: 20px 0;}
+#extra { background-color: #06a7e2 !important; }
 
