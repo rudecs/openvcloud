@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale import portal    
+import ujson
 
 class pricing(object):
     def __init__(self):
@@ -59,22 +60,23 @@ class pricing(object):
     
     
     def get_price_per_hour(self, imageId, sizeId, diskSize):
-        machine_memory = self.machine_sizes[sizeId]['memory']
+        machine_memory = self.machine_sizes[int(sizeId)]['memory']
         machine_type = 'Linux'
-        if self.machine_images.has_key(imageid):
-            machine_type = self.machine_images[imageid]['type']
+        if self.machine_images.has_key(int(imageId)):
+            machine_type = self.machine_images[int(imageId)]['type']
         if not self.base_machine_prices.has_key(machine_type):
             machine_type = 'Linux'
 
         base_price = self.base_machine_prices[machine_type][machine_memory]
-        storage_price = (diskSize - 10) * self.primary_storage_price
+        storage_price = (int(diskSize) - 10) * self.primary_storage_price
+        return base_price + storage_price
     
     def get_machine_price_per_hour(self, machine):
-        machine_imageid = machine['imageId']
+        machine_imageId = machine['imageId']
         machine_sizeId = machine['sizeId']
         diskId = machine['disks'][0]
         disk = self.cloudbrokermodels.disk.get(diskId)
-        diskSize = disk.maxSize
+        diskSize = disk.sizeMax
         
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
     
