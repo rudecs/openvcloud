@@ -1,4 +1,5 @@
-    
+from JumpScale import j
+from JumpScale import portal    
 
 class pricing(object):
     def __init__(self):
