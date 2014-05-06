@@ -212,7 +212,7 @@ class cloudapi_machines(object):
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
         available_credit = self._getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
-        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId)
+        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine
         if available_credit < (new_burnrate * 24 * 14):
             ctx.start_response('409 Conflict', [])
