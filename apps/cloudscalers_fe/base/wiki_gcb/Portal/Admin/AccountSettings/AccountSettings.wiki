@@ -9,14 +9,14 @@ h1. Account Details
 {{html:
         </div>
       </tab>
-      <tab id="access" heading="Access">
-        <div id="access" class="tab-pane">
+      <!-- <tab id="access" heading="Access">
+        <div id="access" class="tab-pane"> -->
+          <!-- {{include:AccountAccessManagement}} -->
 }}
-          {{include:AccountAccessManagement}}
 
 {{html:
-        </div>
-      </tab>
+        <!-- </div>
+      </tab> -->
       <!-- <tab id="templatemanagment" heading="Template Management"> -->
         <!-- <div id="templatemanagement" class="tab-pane"> -->
           <!-- include:AccountTemplateManagement -->
