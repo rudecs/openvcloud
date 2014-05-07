@@ -1,0 +1,50 @@
+#!/usr/bin/env jspython
+from JumpScale import j
+from JumpScale.baselib import cmdutils
+import JumpScale.grid.osis
+
+try:
+    import ujson as json
+except:
+    import json
+
+import sys,time
+
+j.application.start("cbgrid")
+
+parser = cmdutils.ArgumentParser()
+parser.add_argument("action", choices=['listnodes', 'listimages', 'disablenode', 'enablenode', 'vminfo'], help='Command to perform')
+parser.add_argument("-v", '--vmid', required=False, help='ID of vmachine')
+parser.add_argument("-n", '--nodeid', required=False, help='ID of computenode in cb')
+parser.add_argument("-i", '--showimages', action='store_true', required=False, help='Show images for compute nodes')
+
+opts = parser.parse_args()
+
+ocl = j.core.osis.getClient(user='root')
+
+if opts.action == 'listnodes':
+    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
+    images = dict()
+    if opts.showimages:
+        images = { x['id']:x for x in icl.simpleSearch({}) }
+    for provider in scl.simpleSearch({}):
+        print "%(id)-20s %(cloudUnitType)5s" % provider
+        if opts.showimages:
+            for image in provider['images']:
+                print "%(name)40s %(size)3s" % images[image]
+
+elif opts.action == 'listimages':
+    icl = j.core.osis.getClientForCategory(ocl, 'libvirt', 'image')
+    rcl = j.core.osis.getClientForCategory(ocl, 'libvirt', 'resourceprovider')
+    imagedict = dict()
+    for provider in rcl.simpleSearch({}):
+        for image in provider['images']:
+            imagedict.setdefault(image, list()).append(provider)
+    for image in icl.simpleSearch({}):
+        cpus = [ x['id'] for x in imagedict.get(image['id'], list()) ]
+        cpus = ', '.join(cpus)
+        image['cpus'] = cpus
+        print "%(name)-40s %(size)3s %(cpus)40s" % image
+
+j.application.stop()
