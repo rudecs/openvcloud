@@ -25,10 +25,13 @@ angular.module('cloudscalers.controllers')
                 // $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                if($scope.user.company == ""){
+                var isempty = function(val){
+                    return (val === undefined || val == null || val.length <= 0) ? true : false;
+                }
+                if(isempty($scope.user.company){
                     $scope.user.company = " ";
                 }
-                if($scope.user.companyurl == ""){
+                if(isempty($scope.user.companyurl)){
                     $scope.user.companyurl = " ";
                 }
                 $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, "stub" ,$scope.user.company , $scope.user.companyurl
