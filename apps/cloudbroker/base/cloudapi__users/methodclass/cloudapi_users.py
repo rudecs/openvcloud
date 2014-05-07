@@ -140,7 +140,7 @@ class cloudapi_users(object):
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-            self._send_signup_mail(accountid=accountid, username=username, name=user, emailaddress=emailaddress, portalurl=portalurl, company=company, companyurl=companyurl)
+            self._send_signup_mail(accountid=accountid, username=username, user=user, emailaddress=emailaddress, portalurl=portalurl, company=company, companyurl=companyurl)
             #networkid = self.libvirt_actor.getFreeNetworkId()
             #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
             #cs = self.models.cloudspace.new()
