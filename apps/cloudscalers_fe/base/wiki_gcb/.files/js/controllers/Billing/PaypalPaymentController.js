@@ -14,7 +14,7 @@ angular.module('cloudscalers.controllers')
                     );
         }
         else{
-            $alert("Sorry, Payment shouldn't be lower than 50$!");
+            $alert("A minimum of 50$ is required");
         }
         
     }
