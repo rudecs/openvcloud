@@ -54,7 +54,7 @@ Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT
 @LF
 h1. Why choose for Mothership{{html:<sup>1</sup>}}?
 
-So why choose for Mothership{{html:<sup>1</sup>}}? Here our value proposition:
+So why choose Mothership{{html:<sup>1</sup>}}? Here our value proposition:
 
 * Secure Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
 * High performance thanks to storage delivered at SSD speeds
