@@ -45,13 +45,24 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway' 
         fw_id = fw[0]['guid']
+        
         machine = self.models.vmachine.get(vmid)
-        if machine.nics:
-            if machine.nics[0].ipAddress != 'Undefined':
-                localIp = machine.nics[0].ipAddress
+        localIp = None
+         if machine.nics:
+            if machine.nics[0].ipAddress == 'Undefined':
+                provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
+                n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
+                ipaddress = provider.client.ex_getIpAddress(n)
+                if ipaddress:
+                    machine.nics[0].ipAddress= ipaddress
+                    self.models.vmachine.set(machine)
+                    localIp = ipAddress
             else:
-                ctx.start_response('404 Not Found', [])
-                return 'No correct ipaddress found for machine with id %s' % vmid
+                 localIp = machine.nics[0].ipAddress
+            if not localIp:
+                 ctx.start_response('404 Not Found', [])
+                return 'No correct ipaddress found for this machine' 
+        
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
