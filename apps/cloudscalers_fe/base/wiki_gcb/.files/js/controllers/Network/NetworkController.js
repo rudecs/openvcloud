@@ -5,7 +5,7 @@ angular.module('cloudscalers.controllers')
             $scope.portforwardbyID = "";
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
-                    $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
+                    $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + ":9080/webfig/";
                     Machine.list($scope.currentSpace.id).then(function(data) {
                       $scope.currentSpace.machines = data;
                     });
