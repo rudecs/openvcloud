@@ -82,6 +82,19 @@
                    	</div>
                 </div>
                 </div>
+                <div id="flags-container" class="field mtl center">
+                  <label class="label-location mbm txt-center display-block row">Preferred CloudSpace Location</label>
+                  <ul class="flags-list mtl mll row inline-block">
+                      <li class="mrl" ng-class="{ 'selected': selectedLocation == 3 }" ng-click="itemClicked(3)">
+                          <a href="" ng-model="preferredDataLocation" class="canada"></a>
+                          <span class="mts display-block cursor-default">Canada</span>
+                      </li>
+                      <li class="mrm" ng-class="{ 'selected': selectedLocation == 2 }" ng-click="itemClicked(2)">
+                          <a href="" ng-model="preferredDataLocation" class="united states"></a>
+                          <span class="mts display-block cursor-default">United States</span>
+                      </li>
+                  </ul>
+                </div>
             <a id="openTerms" ng-click="openTerms()">You need to accept the General Terms & Conditions to proceed</a>
             <script type="text/ng-template" id="termsDialog.html">
                 <div class="modal-header">

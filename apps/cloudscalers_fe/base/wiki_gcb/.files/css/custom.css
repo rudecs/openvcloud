@@ -932,3 +932,43 @@ body body #extra { background-color: #06a7e2 !important; }
 .no-background{
 	background: none !important;
 }
+.flags-list{
+	margin: 20px 0 0 37%;
+}
+.flags-list li{
+    list-style: none;
+    float: left;
+    text-align: center;
+    padding: 4px 4px 0 4px;
+    cursor: pointer;
+}
+.flags-list li:hover, .flags-list li.selected{
+    background-color: rgb(234, 235, 245);
+    border-radius: 5px;
+}
+.flags-list li:hover span, .flags-list li.selected span{
+	color: #3E4753;
+}
+.flags-list a{
+    display: block;
+    width: 64px;
+    height: 32px;
+    margin: 0 auto;
+    outline: 0;
+}
+.label-location{
+    margin-left: 55px;
+    font-weight: bold;
+}
+.flags-list .canada{
+    background: url("../img/flags/canada.png") no-repeat center;
+}
+.flags-list .united.kingdom{
+    background: url("../img/flags/uk.png") no-repeat center;
+}
+.flags-list .united.states{
+    background: url("../img/flags/usa.png") no-repeat center;
+}
+.txt-center{
+	text-align: center;
+}

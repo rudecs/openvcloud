@@ -6,8 +6,10 @@ angular.module('cloudscalers.controllers')
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
+        $scope.preferredDataLocation = 3;
         $scope.user.password = " ";
         $scope.passwordConfirmation = " ";
+
         var acceptTerms = '';
         var acceptBelgian = '';
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
@@ -23,7 +25,8 @@ angular.module('cloudscalers.controllers')
                 // $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, "stub" ,$scope.user.company , $scope.user.companyurl);
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, "stub" ,$scope.user.company , $scope.user.companyurl
+                    ,$scope.preferredDataLocation);
                 // , $scope.user.password
             }
         };

@@ -126,7 +126,7 @@ angular.module('cloudscalers.services')
         	SessionData.setUser(undefined);
         };
 
-        user.signUp = function(username, name, email, password, company, companyurl) {
+        user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation) {
             var signUpResult = {};
             $http({
                 method: 'POST',
@@ -136,7 +136,8 @@ angular.module('cloudscalers.services')
                     emailaddress: email,
                     password: password,
                     company: company,
-                    companyurl: companyurl
+                    companyurl: companyurl,
+                    location: preferredDataLocation
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/register'
             })

@@ -24,6 +24,7 @@
 	    var:user str,,name for the account
 	    var:company str,,name of the company
 	    var:companyurl str,,url of the main website
+	    var:location str,,location
 	    result:bool
 
 	method:get
