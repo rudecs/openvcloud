@@ -28,7 +28,7 @@ angular.module('cloudscalers.controllers')
                 var isempty = function(val){
                     return (val === undefined || val == null || val.length <= 0) ? true : false;
                 }
-                if(isempty($scope.user.company){
+                if(isempty($scope.user.company)){
                     $scope.user.company = " ";
                 }
                 if(isempty($scope.user.companyurl)){
