@@ -97,14 +97,17 @@
                 </div>
             <a id="openTerms" ng-click="openTerms()">You need to accept the General Terms & Conditions to proceed</a>
             <script type="text/ng-template" id="termsDialog.html">
-                <div class="modal-header">
-                    <h2>General Terms & Conditions (Scroll Down)</h2>
+                <div class="modal-header modal-header2">
+                    <h2>General Terms & Conditions <br>
+                        <span class="note1">Scroll down and check the "I have read ..." box before hitting accept.</span>
+                    </h2>
+            
                 </div>
                 <div class="modal-body">
                   <div id="terms" style="width: 100%; height: 100%; overflow: auto; overflow-x: hidden; -ms-overflow-x: hidden;">
-}}
-{{include:Disclaimer}}
-{{html:
+                }}
+                {{include:Disclaimer}}
+                {{html:
                   </div>
                   <div class="mtl">
                     <input id="accept-terms" type="checkbox" style="float: left; margin-right: 5px;" onClick="acceptTermsChanged(this);">
