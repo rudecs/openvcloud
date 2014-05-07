@@ -54,6 +54,6 @@ Promotion: For a limited time, Windows packages will be charged like Linux packa
     
 }}
 
-(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section
+(*) Unlimited Transfer is subject to fair use policy as descibed in the [FAQ section|FAQ]
 
 {{html: </div>}}
