@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout',
-        function ($scope, Networks, Machine, $modal, $timeout) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert'
+        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
             $scope.search = "";
             $scope.portforwardbyID = "";
             $scope.$watch('currentSpace.id',function(){
@@ -36,13 +36,15 @@ angular.module('cloudscalers.controllers')
                 };
 
                 $scope.submit = function () {
-                    Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, $scope.newRule.VM.id, $scope.newRule.localPort).then(
-                        function (result) {
-                            $scope.portforwarding.push({publicIp: $scope.currentSpace.publicipaddress, publicPort: $scope.newRule.publicPort,
-                            vmName: $scope.newRule.VM.name, vmid: $scope.newRule.VM.id, localPort: $scope.newRule.localPort});
-                            $modalInstance.close({});
-                        }
-                    );
+                    
+                    $modalInstance.close({
+                    	cloudspaceId: $scope.currentSpace.id,
+                    	publicipaddress: $scope.currentSpace.publicipaddress,
+                    	publicport: $scope.newRule.publicPort,
+                    	vmid: $scope.newRule.VM.id,
+                    	localport: $scope.newRule.localPort,
+                    	vmname: $scope.newRule.VM.name
+                    });
                 };
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
@@ -54,6 +56,17 @@ angular.module('cloudscalers.controllers')
                     controller: addRuleController,
                     resolve: {},
                     scope: $scope
+                });
+                modalInstance.result.then(function(data){
+                	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, data.vmid, data.localport).then(
+                            function (result) {
+                                $scope.portforwarding.push({publicIp: data.publicipaddress, publicPort: data.publicport,
+                                vmName: data.vmname, vmid: data.vmid, localPort: data.localport});
+                            },
+                            function(reason){
+                            	$ErrorResponseAlert(reason);
+                            }
+                        );
                 });
             };
             $scope.tableRowClicked = function (index) {
