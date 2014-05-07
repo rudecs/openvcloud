@@ -4,7 +4,7 @@ html {-ms-overflow-style: scrollbar;/*auto | none | scrollbar | -ms-autohiding-s
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer; }
 .jumbotron { padding-top: 60px; }
 .navbar-inverse { background-color: rgba(3,0,0,0.4); border: 0; margin: 0 0 0 0; }
-body { /*background: url(../img/images/bg.jpg) no-repeat center top #000;*/ font-family: arial, sans-serif; color: #666; background-size: 100%; background-position: center -344px; }
+body {font-family: arial, sans-serif; color: #666; background-size: 100%; background-position: center 0; }
 input, button, select, textarea { font-family: arial, sans-serif; }
 .navbar-search .search-query { font-family: arial, sans-serif; }
 
@@ -125,10 +125,10 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a:hover { background: #ffa131; }
 /*sideNav*/
 p { color:#77777b; }
-body { background: url(../img/images/bg-mask3.jpg) no-repeat center -310px #000; background-size: 100%; }
+body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; }
  @media (max-width: 1376px) {
 .boxes p { width: 340px !important; }
-.mainText { font-size: 40px !important; }
+.mainText { font-size: 36px !important; }
 .nameField { width: 57%; }
 .white h2 { font-size: 13px; }
 .machineList ul li a, .storage-size-list button { font-size: 13px; font-weight: normal; }
@@ -152,7 +152,7 @@ body { background: url(../img/images/bg-mask3.jpg) no-repeat center -310px #000;
 	.contact { background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important; }
 .navbar-right.clearR { margin: 33px 0 0 0; }
 .contact:hover { background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important; background-size: 11px auto !important; }
-body { background-size: 1376px auto; background: url(../img/images/bg-mask3.jpg) no-repeat center -200px #000; }
+body { background-size: 1376px auto; background: url(../img/images/earth4.jpg) no-repeat center 0 #000; }
 .boxes img { width: 100px; }
 .white ul li { font-size: 13px !important; line-height: 30px; }
 h4, .h4 { font-size: 18px; }
