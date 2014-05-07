@@ -75,6 +75,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .white h2 { color: #06a7e2; font-size: 17px; font-family: arial, sans-serif; }
 .white p { color: #000; font-size: 16px; font-family: arial, sans-serif; line-height: 32px; }
 .white ul li { color: #000; font-size: 16px; font-family: arial, sans-serif; line-height: 30px; }
+.white ol li { color: #000; font-size: 16px; font-family: arial, sans-serif; line-height: 30px; }
 .body a { line-height: 1.3em; }
 .marginTop + .container { margin-bottom: 100px; }
 .nameField { font-size: 26px; color: #06a7e2; width: 60%; margin: 21px 0; display: inline-block; }/**/
