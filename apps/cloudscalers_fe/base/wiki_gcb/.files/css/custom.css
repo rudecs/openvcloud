@@ -49,7 +49,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .nextBold li a { font-size: 14px !important; }
 .bottomFooter .first-list li { list-style: none; float: left; padding: 0 11px; background: url(../img/images/seperat.png) no-repeat right 50%; }
 .bottomFooter .second-list li { list-style: none; float: left; padding: 0 16px; /*background: url(../img/images/seperat.png) no-repeat right 50%;*/ color: #fff; }
-.bottomFooter ul li a { color: #fff; font-family: arial, sans-serif; font-size: 16px; }
+.bottomFooter ul li a. .bottomFooter ul li { color: #fff; font-family: arial, sans-serif; font-size: 16px; }
 .bottomFooter ul { margin-left: -65px; line-height: 39px; }
 .bottonFooter ul li { height: 40px; }
 .bottomFooter ul li:last-child { height: 40px; background: none; }
@@ -174,7 +174,7 @@ table.table th { font-size: 13px !important; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; background-size: 900px auto; }
 .arrow { font-size: 24px; }
 .midFooter { padding: 0; }
-.bottomFooter ul li a { color: #FFF; font-family: arial, sans-serif; font-size: 13px; }
+.bottomFooter ul li a, .bottomFooter ul li { color: #FFF; font-family: arial, sans-serif; font-size: 13px; }
 table.table th, table.table td, table.table tbody th, table.table tbody td { font-size: 13px !important; }
 .table.users-table .header .btn { font-size: 13px; padding: 3px 5px; }
 .control-label { font-size: 13px; }
@@ -245,7 +245,7 @@ table.table th { font-size: 12px !important; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; background-size: 900px auto; }
 .arrow { font-size: 24px; }
 .midFooter { padding: 0; }
-.bottomFooter ul li a { color: #FFF; font-family: arial, sans-serif; font-size: 13px; }
+.bottomFooter ul li a, .bottomFooter ul li { color: #FFF; font-family: arial, sans-serif; font-size: 13px; }
 table.table th, table.table td, table.table tbody th, table.table tbody td { font-size: 12px !important; }
 .table.users-table .header .btn { font-size: 12px; padding: 3px 5px; }
 .control-label { font-size: 12px; }
@@ -706,7 +706,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .grayTxt { color: rgb(102, 102, 102) !important; }
 .line-height { line-height: 1.6em !important; }
 .plm { padding-left: 15px; }
-.prn { padding-right: 0; display: inline-block; }
+.prn { padding-right: 0 !important; display: inline-block; }
 .justify { text-align: justify; }
 #terms { height: 150px; width: 490px; overflow-y: scroll; }
 #openTerms { color: #fff; text-decoration: underline; margin-top: 20px; display: block; font-size: 16px; text-align: center; }
@@ -929,4 +929,6 @@ canvas { display: block; float: left;/* uncomment to test overlay */
 h4.machine-label.mvn + .ng-binding {  font-family: verdana !important;  font-size: 14px;}
 .portMargin {margin: 20px 0;}
 body body #extra { background-color: #06a7e2 !important; }
-
+.no-background{
+	background: none !important;
+}
