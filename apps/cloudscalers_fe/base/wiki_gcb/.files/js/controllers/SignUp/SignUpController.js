@@ -6,7 +6,7 @@ angular.module('cloudscalers.controllers')
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
-        $scope.preferredDataLocation = '';
+        $scope.preferredDataLocation = 3;
         $scope.user.password = " ";
         $scope.passwordConfirmation = " ";
 
