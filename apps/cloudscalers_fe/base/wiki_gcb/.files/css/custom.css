@@ -49,7 +49,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .nextBold li a { font-size: 14px !important; }
 .bottomFooter .first-list li { list-style: none; float: left; padding: 0 11px; background: url(../img/images/seperat.png) no-repeat right 50%; }
 .bottomFooter .second-list li { list-style: none; float: left; padding: 0 16px; /*background: url(../img/images/seperat.png) no-repeat right 50%;*/ color: #fff; }
-.bottomFooter ul li a. .bottomFooter ul li { color: #fff; font-family: arial, sans-serif; font-size: 16px; }
+.bottomFooter ul li a, .bottomFooter ul li { color: #fff; font-family: arial, sans-serif; font-size: 16px; }
 .bottomFooter ul { margin-left: -65px; line-height: 39px; }
 .bottonFooter ul li { height: 40px; }
 .bottomFooter ul li:last-child { height: 40px; background: none; }

@@ -29,7 +29,7 @@
         
             <div class="bottomFooter">
                 
-                <div class="col-md-9">
+                <div class="col-md-10">
                     <ul class="first-list ">
                         <li><a href="/$$space/">Copyright © 2014 Mothership<sup>1</sup></a></li>
                         <li><a href="/$$space/Terms">General Term & Conditions</a></li>
@@ -41,11 +41,11 @@
                         <li><a href="https://twitter.com/mothershipware" target="_blank"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
+                <!-- <div class="col-md-3">
                     <ul class="second-list">
-                        <!-- <li><a href="/$$space/Contact">Contact</a></li> -->
+                        <li><a href="/$$space/Contact">Contact</a></li>
                     </ul>
-                </div>
+                </div> -->
             </div>
         </div>
 
