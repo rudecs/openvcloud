@@ -14,7 +14,7 @@
 }}
 
 
-{{title:Mothership1}}
+{{title:Mothership1.com}}
 
 {{projectname:Mothership<sup>1</sup>}}
 

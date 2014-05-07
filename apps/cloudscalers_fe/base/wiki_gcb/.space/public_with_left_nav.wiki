@@ -14,7 +14,7 @@
 }}
 
 
-{{title:Mothership1}}
+{{title:Mothership1.com - $$page}}
 
 {{projectname:Mothership<sup>1</sup>}}
 

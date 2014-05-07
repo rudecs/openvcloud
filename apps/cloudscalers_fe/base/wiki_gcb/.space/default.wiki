@@ -16,7 +16,7 @@
 
 {{title:Mothership1}}
 
-{{projectname:Mothership1}}
+{{projectname:Mothership1.com - $$page}}
 
 {{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/font-awesome.min.css}}
