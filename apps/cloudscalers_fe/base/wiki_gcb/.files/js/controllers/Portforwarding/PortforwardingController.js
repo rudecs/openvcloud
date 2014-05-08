@@ -9,9 +9,19 @@ angular.module('cloudscalers.controllers')
                     });
                 }
             });
-            Networks.listPortforwarding($scope.currentSpace.id).then(function(data) {
-                $scope.portforwarding = data;
-            });
+            
+            $scope.updatePortforwardList = function(){
+            	Networks.listPortforwarding($scope.currentSpace.id).then(
+            			function(data) {
+            				$scope.portforwarding = data;
+            			},
+            			function(reason) {
+            				$ErrorResponseAlert(reason);
+            			}
+            	);
+            };
+            
+            $scope.updatePortforwardList();
 
             Networks.commonports().then(function(data) {
                 $scope.commonports = data;
@@ -115,6 +125,7 @@ angular.module('cloudscalers.controllers')
             		if (data.action=='delete'){
                         Networks.deletePortforward($scope.currentSpace.id, data.id).then(
                             function (result) {
+                            	$scope.updatePortforwardList();
                             	LoadingDialog.hide();
                                 $scope.portforwarding = result.data;
                                 $scope.message = true;
@@ -133,6 +144,7 @@ angular.module('cloudscalers.controllers')
             			LoadingDialog.show('Updating');
                         Networks.updatePortforward($scope.currentSpace.id, data.id, data.ip, data.publicPort, data.VM.id, data.localPort).then(
                             function (result) {
+                            	$scope.updatePortforwardList();
                             	LoadingDialog.hide();
                                 $scope.portforwarding = result.data;
                                 $scope.message = true;
