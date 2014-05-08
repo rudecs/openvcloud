@@ -6,7 +6,7 @@
 [Cloud Space|AccountSettings]
 
             
-                [!/$$space/.files/img/icon6.png! | MachineDeck]
+                [!/$$space/.files/img/icon6.png! | AccountSettings]
 
           {{html:
             
