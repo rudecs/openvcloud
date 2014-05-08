@@ -77,7 +77,7 @@ angular.module('cloudscalers.controllers')
                         publicPort: $scope.portforwardbyID[index.id].publicPort,
                         VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
                         localPort: $scope.portforwardbyID[index.id].localPort
-                    };
+                };
             	
             	
 
@@ -100,9 +100,9 @@ angular.module('cloudscalers.controllers')
                 $scope.updateCommonPorts = function () {
                       $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
                       $scope.editRule.localPort = $scope.editRule.commonPort.port;
-                  };
+                };
                   
-                  $scope.update = function () {
+                $scope.update = function () {
                       Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
                           function (result) {
                               $scope.portforwarding = result.data;
@@ -115,20 +115,21 @@ angular.module('cloudscalers.controllers')
                               }, 3000);
                           }
                       );
-                  };
-              }
+                };
+            }
             	
-            };
+    
             
             
             $scope.tableRowClicked = function (index) {
             	 
-              var modalInstance = $modal.open({
+            	var modalInstance = $modal.open({
             	  templateUrl: 'editPortForwardDialog.html',
             	  controller: editRuleController,
             	  scope: $scope , 
-            	  resolve: {}});
-              
+            	  resolve: {}
+            	});
+            }
 
         }
     ]).filter('groupBy', function(){
