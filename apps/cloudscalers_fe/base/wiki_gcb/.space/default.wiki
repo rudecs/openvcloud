@@ -140,7 +140,11 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="../$$space/FAQ">Docs</a></li>
+        <li><a href="../$$space/Getting Started">Getting Started</a></li>
+        <li><a href="../$$space/ApiDocs">Machine API</a></li>
+        <li><a href="../$$space/ApiS3">Storage API</a></li>
+        <li><a href="http://support.mothership1.com/kb/index.php">Knowledge Base</a></li>
+        <li><a href="http://support.mothership1.com">Support</a></li>
         <li class="dropdown">
           <a href="../$$space/Profile" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
           <ul class="dropdown-menu">
