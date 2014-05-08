@@ -15,7 +15,7 @@ j.application.start("cbgrid")
 parser = cmdutils.ArgumentParser()
 parser.add_argument("action", choices=['listnodes', 'listimages', 'disablenode', 'enablenode', 'vminfo'], help='Command to perform')
 parser.add_argument("-v", '--vmid', required=False, help='ID of vmachine')
-parser.add_argument("-n", '--nodeid', required=False, help='ID of computenode in cb')
+parser.add_argument("-n", '--nodename', required=False, help='Name of computenode in cb')
 parser.add_argument("-i", '--showimages', action='store_true', required=False, help='Show images for compute nodes')
 
 opts = parser.parse_args()
@@ -29,7 +29,7 @@ if opts.action == 'listnodes':
     if opts.showimages:
         images = { x['id']:x for x in icl.simpleSearch({}) }
     for provider in scl.simpleSearch({}):
-        print "%(id)-20s %(cloudUnitType)5s" % provider
+        print "%(id)-20s %(referenceid)20s %(enabled)s" % provider
         if opts.showimages:
             for image in provider['images']:
                 print "%(name)40s %(size)3s" % images[image]
@@ -46,5 +46,43 @@ elif opts.action == 'listimages':
         cpus = ', '.join(cpus)
         image['cpus'] = cpus
         print "%(name)-40s %(size)3s %(cpus)40s" % image
+
+elif opts.action == 'disablenode':
+    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    nodename = opts.nodename
+    stacks = scl.simpleSearch({'referenceId': nodename})
+    if not stacks:
+        print 'There is no node named %s in this cloudbroker grid' % nodename
+    else:
+        stack = stacks[0]
+        stackobj = scl.get(stack['id'])
+        stackobj.enabled = False
+        scl.set(stackobj)
+        print 'Node %s was disabled successfully' % nodename
+
+elif opts.action == 'enablenode':
+    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    nodename = opts.nodename
+    stacks = scl.simpleSearch({'referenceId': nodename})
+    if not stacks:
+        print 'There is no node named %s in this cloudbroker grid' % nodename
+    else:
+        stack = stacks[0]
+        stackobj = scl.get(stack['id'])
+        stackobj.enabled = True
+        scl.set(stackobj)
+        print 'Node %s was enabled successfully' % nodename
+
+elif opts.action == 'deletenode':
+    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    nodename = opts.nodename
+    stacks = scl.simpleSearch({'referenceId': nodename})
+    if not stacks:
+        print 'There is no node named %s in this cloudbroker grid' % nodename
+    else:
+        stack = stacks[0]
+        scl.delete(stack['id'])
+        print 'Node %s was deleted successfully' % nodename
+
 
 j.application.stop()

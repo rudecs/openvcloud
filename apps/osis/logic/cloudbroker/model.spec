@@ -104,6 +104,7 @@
     prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
+    prop:enabled bool,True,Indicates whether stack is enabled
 
 
 [rootmodel:Disk] @dbtype:osis
