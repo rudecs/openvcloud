@@ -594,18 +594,18 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 
     var portforwarding = [
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 8080, localPort: 80},
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
-       {ip: '125.85.7.1', vmName: 'CloudScalers Jenkins', puplicPort: 7070, localPort: 70},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 9090, localPort: 90},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
-       {ip: '125.85.7.1', vmName: 'CloudBroker', puplicPort: 8080, localPort: 80},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 2020, localPort: 20},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 4040, localPort: 40},
-       {ip: '126.84.3.9', vmName: 'CloudScalers Jenkins', puplicPort: 6060, localPort: 60},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 1010, localPort: 10},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 3030, localPort: 30},
-       {ip: '126.84.3.9', vmName: 'CloudBroker', puplicPort: 5050, localPort: 50},
+       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 8080, localPort: 80},
+       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 2020, localPort: 20},
+       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 7070, localPort: 70},
+       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 9090, localPort: 90},
+       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 3030, localPort: 30},
+       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 8080, localPort: 80},
+       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 2020, localPort: 20},
+       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 4040, localPort: 40},
+       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 6060, localPort: 60},
+       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 1010, localPort: 10},
+       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 3030, localPort: 30},
+       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 5050, localPort: 50},
     ];
     $httpBackend.whenGET(/^\/portforwarding\/list.*cloudspaceid.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
