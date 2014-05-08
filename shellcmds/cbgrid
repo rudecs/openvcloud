@@ -23,6 +23,7 @@ opts = parser.parse_args()
 ocl = j.core.osis.getClient(user='root')
 
 if opts.action == 'listnodes':
+    print "%(id)-40s %(referenceid)3s %(enabled)40s" % {'id': 'ID', 'referenceid': 'Node', 'enabled': 'Enabled'}
     scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
     icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
     images = dict()
@@ -35,17 +36,21 @@ if opts.action == 'listnodes':
                 print "%(name)40s %(size)3s" % images[image]
 
 elif opts.action == 'listimages':
-    icl = j.core.osis.getClientForCategory(ocl, 'libvirt', 'image')
-    rcl = j.core.osis.getClientForCategory(ocl, 'libvirt', 'resourceprovider')
+    print "%(name)-40s %(size)3s %(cpus)40s" % {'name': 'Name', 'size': 'Size', 'cpus': 'CPU Nodes'}
+    icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
+    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    nodename = opts.nodename if opts.nodename else None
     imagedict = dict()
-    for provider in rcl.simpleSearch({}):
+    stacks = scl.simpleSearch({'referenceId': nodename})
+    for provider in stacks:
         for image in provider['images']:
             imagedict.setdefault(image, list()).append(provider)
     for image in icl.simpleSearch({}):
-        cpus = [ x['id'] for x in imagedict.get(image['id'], list()) ]
-        cpus = ', '.join(cpus)
-        image['cpus'] = cpus
-        print "%(name)-40s %(size)3s %(cpus)40s" % image
+        if image['id'] in imagedict:
+            cpus = [ x['referenceId'] for x in imagedict.get(image['id'], list())]
+            cpus = ', '.join(cpus)
+            image['cpus'] = cpus
+            print "%(name)-40s %(size)3s %(cpus)40s" % image
 
 elif opts.action == 'disablenode':
     scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
