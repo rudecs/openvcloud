@@ -3,6 +3,7 @@ angular.module('cloudscalers.controllers')
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
             $scope.search = "";
             $scope.portforwardbyID = "";
+            $scope.portforwarding = [];
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
                     $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";

@@ -8,7 +8,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
                 }
@@ -18,7 +18,7 @@ angular.module('cloudscalers.services')
                             return result.data;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
                 }
@@ -31,7 +31,7 @@ angular.module('cloudscalers.services')
                             return result;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             },
@@ -41,7 +41,7 @@ angular.module('cloudscalers.services')
                             return result;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             },
@@ -51,7 +51,7 @@ angular.module('cloudscalers.services')
                             return result;
                         },
                         function(reason){
-                            $q.defer(reason);
+                            return $q.reject(reason);
                         }
                     );
             },
