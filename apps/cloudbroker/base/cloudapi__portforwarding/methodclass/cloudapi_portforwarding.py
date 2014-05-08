@@ -48,7 +48,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         
         machine = self.models.vmachine.get(vmid)
         localIp = None
-         if machine.nics:
+        if machine.nics:
             if machine.nics[0].ipAddress == 'Undefined':
                 provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
                 n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
@@ -56,12 +56,12 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 if ipaddress:
                     machine.nics[0].ipAddress= ipaddress
                     self.models.vmachine.set(machine)
-                    localIp = ipAddress
+                    localIp = ipaddress
             else:
                  localIp = machine.nics[0].ipAddress
-            if not localIp:
-                 ctx.start_response('404 Not Found', [])
-                return 'No correct ipaddress found for this machine' 
+        if not localIp:
+            ctx.start_response('404 Not Found', [])
+            return 'No correct ipaddress found for this machine' 
         
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort):
             ctx.start_response('403 Forbidden', [])
