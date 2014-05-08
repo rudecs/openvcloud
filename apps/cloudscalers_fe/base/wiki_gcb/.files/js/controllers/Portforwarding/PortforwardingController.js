@@ -1,11 +1,9 @@
 angular.module('cloudscalers.controllers')
     .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert',
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
-            $scope.portforwardbyID = "";
             $scope.portforwarding = [];
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
-                    $scope.managementui = "http://" + $scope.currentSpace.publicipaddress + "/webfig/";
                     Machine.list($scope.currentSpace.id).then(function(data) {
                       $scope.currentSpace.machines = data;
                     });
@@ -70,22 +68,14 @@ angular.module('cloudscalers.controllers')
                 });
             };
             
-            var editRuleController = function ($scope, $modalInstance) {
-            	$scope.editRule = {
-                        id: index.id,
-                        ip: $scope.portforwardbyID[index.id].publicIp,
-                        publicPort: $scope.portforwardbyID[index.id].publicPort,
-                        VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
-                        localPort: $scope.portforwardbyID[index.id].localPort
-                };
-            	
-            	
+            var editRuleController = function ($scope, $modalInstance, editRule) {
+		$scope.editRule = editRule;
 
                 $scope.delete = function () {
                     Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
                         function (result) {
                             $scope.portforwarding = result.data;
-                            modalInstance.close({});
+                            $modalInstance.close({});
                             $scope.message = true;
                             $scope.statusMessage = "Removed";
                             $timeout(function() {
@@ -95,7 +85,7 @@ angular.module('cloudscalers.controllers')
                     );
                 };
                 $scope.cancel = function () {
-                      modalInstance.dismiss('cancel');
+                      $modalInstance.dismiss('cancel');
                 };
                 $scope.updateCommonPorts = function () {
                       $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
@@ -106,8 +96,7 @@ angular.module('cloudscalers.controllers')
                       Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
                           function (result) {
                               $scope.portforwarding = result.data;
-                              $scope.search = $scope.portforwarding[0];
-                              modalInstance.close({});
+                              $modalInstance.close({});
                               $scope.message = true;
                               $scope.statusMessage = "Updated";
                               $timeout(function() {
@@ -122,12 +111,19 @@ angular.module('cloudscalers.controllers')
             
             
             $scope.tableRowClicked = function (index) {
-            	 
+		var selectForwardRule = $scope.portforwarding[index.id];
+            	var editRule = {
+                         id: index.id,
+                         ip: selectForwardRule.publicIp,
+                         publicPort: selectForwardRule.publicPort,
+                         VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.vmid},
+                         localPort: selectForwardRule.localPort
+                 };
             	var modalInstance = $modal.open({
             	  templateUrl: 'editPortForwardDialog.html',
             	  controller: editRuleController,
             	  scope: $scope , 
-            	  resolve: {}
+            	  resolve: {editRule: function(){ return editRule;}}
             	});
             }
 
