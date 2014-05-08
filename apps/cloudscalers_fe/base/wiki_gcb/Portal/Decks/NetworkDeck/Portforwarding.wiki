@@ -197,7 +197,8 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+							<!-- ///////// -->
+							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
 					</div>
