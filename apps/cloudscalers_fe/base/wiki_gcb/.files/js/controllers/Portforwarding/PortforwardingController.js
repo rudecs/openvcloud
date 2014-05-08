@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert'
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert',
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
             $scope.search = "";
             $scope.portforwardbyID = "";
