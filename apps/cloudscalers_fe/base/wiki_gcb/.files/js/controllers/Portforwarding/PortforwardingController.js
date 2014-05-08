@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert',
-        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog',
+        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog) {
             $scope.portforwarding = [];
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
@@ -56,12 +56,15 @@ angular.module('cloudscalers.controllers')
                     scope: $scope
                 });
                 modalInstance.result.then(function(data){
+                	LoadingDialog.show('Creating');
                 	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, data.vmid, data.localport).then(
                             function (result) {
+                            	LoadingDialog.hide();
                                 $scope.portforwarding.push({publicIp: data.publicipaddress, publicPort: data.publicport,
                                 vmName: data.vmname, vmid: data.vmid, localPort: data.localport});
                             },
                             function(reason){
+                            	LoadingDialog.hide();
                             	$ErrorResponseAlert(reason);
                             }
                         );
@@ -108,9 +111,11 @@ angular.module('cloudscalers.controllers')
             	  resolve: {editRule: function(){ return editRule;}}
             	});
             	modalInstance.result.then(function(data){
+            		LoadingDialog.show('Deleting');
             		if (data.action=='delete'){
                         Networks.deletePortforward($scope.currentSpace.id, data.id).then(
                             function (result) {
+                            	LoadingDialog.hide();
                                 $scope.portforwarding = result.data;
                                 $scope.message = true;
                                 $scope.statusMessage = "Removed";
@@ -119,14 +124,16 @@ angular.module('cloudscalers.controllers')
                                 }, 3000);
                             },
                             function(reason){
+                            	LoadingDialog.hide();
                             	$ErrorResponseAlert(reason);
                             }
                         );
             		}
             		else{
-
+            			LoadingDialog.show('Updating');
                         Networks.updatePortforward($scope.currentSpace.id, data.id, data.ip, data.publicPort, data.VM.id, data.localPort).then(
                             function (result) {
+                            	LoadingDialog.hide();
                                 $scope.portforwarding = result.data;
                                 $scope.message = true;
                                 $scope.statusMessage = "Updated";
@@ -135,6 +142,7 @@ angular.module('cloudscalers.controllers')
                                 }, 3000);
                             }, 
                             function(reason){
+                            	LoadingDialog.hide();
                             	$ErrorResponseAlert(reason);
                             }
                         );
