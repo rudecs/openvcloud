@@ -133,7 +133,7 @@ angular.module('cloudscalers.controllers')
                                 $timeout(function() {
                                     $scope.message = false;
                                 }, 3000);
-                            },
+                            }, 
                             function(reason){
                             	$ErrorResponseAlert(reason);
                             }
