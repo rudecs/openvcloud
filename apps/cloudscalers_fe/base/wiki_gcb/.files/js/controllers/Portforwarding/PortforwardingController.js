@@ -69,20 +69,11 @@ angular.module('cloudscalers.controllers')
             };
             
             var editRuleController = function ($scope, $modalInstance, editRule) {
-		$scope.editRule = editRule;
+            	$scope.editRule = editRule;
 
                 $scope.delete = function () {
-                    Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
-                        function (result) {
-                            $scope.portforwarding = result.data;
-                            $modalInstance.close({});
-                            $scope.message = true;
-                            $scope.statusMessage = "Removed";
-                            $timeout(function() {
-                                $scope.message = false;
-                            }, 3000);
-                        }
-                    );
+                	$scope.editRule.action = 'delete';
+                    $modalInstance.close($scope.editRule);
                 };
                 $scope.cancel = function () {
                       $modalInstance.dismiss('cancel');
@@ -93,17 +84,8 @@ angular.module('cloudscalers.controllers')
                 };
                   
                 $scope.update = function () {
-                      Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
-                          function (result) {
-                              $scope.portforwarding = result.data;
-                              $modalInstance.close({});
-                              $scope.message = true;
-                              $scope.statusMessage = "Updated";
-                              $timeout(function() {
-                                  $scope.message = false;
-                              }, 3000);
-                          }
-                      );
+                	$scope.editRule.action = 'update';
+                    $modalInstance.close($scope.editRule);
                 };
             }
             	
@@ -111,7 +93,7 @@ angular.module('cloudscalers.controllers')
             
             
             $scope.tableRowClicked = function (index) {
-		var selectForwardRule = $scope.portforwarding[index.id];
+            	var selectForwardRule = $scope.portforwarding[index.id];
             	var editRule = {
                          id: index.id,
                          ip: selectForwardRule.publicIp,
@@ -124,6 +106,39 @@ angular.module('cloudscalers.controllers')
             	  controller: editRuleController,
             	  scope: $scope , 
             	  resolve: {editRule: function(){ return editRule;}}
+            	});
+            	modalInstance.result.then(function(data){
+            		if (data.action=='delete'){
+                        Networks.deletePortforward($scope.currentSpace.id, data.id).then(
+                            function (result) {
+                                $scope.portforwarding = result.data;
+                                $scope.message = true;
+                                $scope.statusMessage = "Removed";
+                                $timeout(function() {
+                                    $scope.message = false;
+                                }, 3000);
+                            },
+                            function(reason){
+                            	$ErrorResponseAlert(reason);
+                            }
+                        );
+            		}
+            		else{
+
+                        Networks.updatePortforward($scope.currentSpace.id, data.id, data.ip, data.publicPort, data.VM.id, data.localPort).then(
+                            function (result) {
+                                $scope.portforwarding = result.data;
+                                $scope.message = true;
+                                $scope.statusMessage = "Updated";
+                                $timeout(function() {
+                                    $scope.message = false;
+                                }, 3000);
+                            },
+                            function(reason){
+                            	$ErrorResponseAlert(reason);
+                            }
+                        );
+            		}
             	});
             }
 
