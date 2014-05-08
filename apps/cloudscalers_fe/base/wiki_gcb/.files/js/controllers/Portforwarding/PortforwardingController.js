@@ -83,6 +83,7 @@ angular.module('cloudscalers.controllers')
                 };
               });
               $scope.update = function () {
+                console.log($scope.editRule.VM.id);
                   Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
                       function (result) {
                           $scope.portforwarding = result.data;

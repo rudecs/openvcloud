@@ -94,7 +94,7 @@ defineApiStub = function ($httpBackend) {
     var MachinesList = LocalStorageItem('gcb:machines');
     if (!MachinesList.get()) {
         MachinesList.set([{
-        	"cloudspaceId":1,
+            "cloudspaceId":1,
             "status": "RUNNING",
             "hostname": "jenkins.cloudscalers.com",
             "accounts":[{"password":"xGuiyrRp","login":"cloudscalers","guid":""}],
@@ -105,7 +105,7 @@ defineApiStub = function ($httpBackend) {
             "imageId": 0,
             "id": 0,
         }, {
-        	"cloudspaceId":1,
+            "cloudspaceId":1,
             "status": "HALTED",
             "hostname": "cloudbroker.cloudscalers.com",
             "accounts":[{"password":"nGGuqMKJrRp","login":"cloudscalers","guid":""}],
@@ -219,11 +219,11 @@ defineApiStub = function ($httpBackend) {
     });
 
     $httpBackend.whenGET(/^\/machines\/list\?cloudspaceId=(\d+).*/).respond(function (method, url, data) {
-    	var params = new URI(url).search(true);
+        var params = new URI(url).search(true);
         var cloudspaceId = params.cloudspaceId;
-    	return [200, _.values(_.filter(MachinesList.get(), function(machine){
-    		return machine.cloudspaceId == cloudspaceId;
-    	}))];
+        return [200, _.values(_.filter(MachinesList.get(), function(machine){
+            return machine.cloudspaceId == cloudspaceId;
+        }))];
     });
     $httpBackend.whenGET(/^\/images\/list\b.*/).respond(images);
     $httpBackend.whenGET(/^\/sizes\/list\b.*/).respond(sizes);
@@ -594,18 +594,18 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 
     var portforwarding = [
-       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 8080, localPort: 80},
-       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 2020, localPort: 20},
-       {publicIp: '125.85.7.1', vmName: 'CloudScalers Jenkins', publicPort: 7070, localPort: 70},
-       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 9090, localPort: 90},
-       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 3030, localPort: 30},
-       {publicIp: '125.85.7.1', vmName: 'CloudBroker', publicPort: 8080, localPort: 80},
-       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 2020, localPort: 20},
-       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 4040, localPort: 40},
-       {publicIp: '126.84.3.9', vmName: 'CloudScalers Jenkins', publicPort: 6060, localPort: 60},
-       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 1010, localPort: 10},
-       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 3030, localPort: 30},
-       {publicIp: '126.84.3.9', vmName: 'CloudBroker', publicPort: 5050, localPort: 50},
+       {id: 0, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0 , publicPort: 8080, localPort: 80},
+       {id: 1, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
+       {id: 2, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 7070, localPort: 70},
+       {id: 3, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 9090, localPort: 90},
+       {id: 4, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
+       {id: 5, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 8080, localPort: 80},
+       {id: 6, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
+       {id: 7, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 4040, localPort: 40},
+       {id: 8, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 6060, localPort: 60},
+       {id: 9, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 1010, localPort: 10},
+       {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
+       {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50},
     ];
     $httpBackend.whenGET(/^\/portforwarding\/list.*cloudspaceid.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
@@ -638,6 +638,16 @@ defineApiStub = function ($httpBackend) {
         return [200, params.ip];
     });
 
+    $httpBackend.whenGET(/^\/portforwarding\/list.*authkey.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        if(params.id == undefined){
+            return [200, portforwarding];
+        }else{
+            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            return[200, filteredPorts];
+        }
+    });
+
 
     var usageReport = [
         {"totalCost":82719671.0,"untilTime":1398902400,"fromTime":1396310400,"_meta":["osismodel","billing","billingstatement",1],"lastupdatedTime":0,"cloudspaces":[{"totalCost":82719671.0,"cloudspaceId":1,"_meta":["osismodel","billing","cloudspaceusage",1],"guid":"","id":1,"machines":[{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwer","machineId":2,"sizeId":0,"hostName":"","creationTime":1394633526,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":1,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"polle","machineId":6,"sizeId":0,"hostName":"","creationTime":1394635758,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":2,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwertyuio","machineId":12,"sizeId":0,"hostName":"","creationTime":1394637633,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":3,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwertyui","machineId":19,"sizeId":0,"hostName":"","creationTime":1395064418,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":4,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwertysdfghjkmnmnmnmnmnmn","machineId":25,"sizeId":0,"hostName":"","creationTime":1395137411,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":5,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"enableagain3","machineId":36,"sizeId":0,"hostName":"","creationTime":1396352244,"cpus":0,"imageId":0,"cost":2550156.0,"networkGatewayIPv4":"","guid":"","id":6,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"testbeforedisable1","machineId":31,"sizeId":0,"hostName":"","creationTime":1396345372,"cpus":0,"imageId":0,"cost":2557028.0,"networkGatewayIPv4":"","guid":"","id":7,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"poikl","machineId":8,"sizeId":0,"hostName":"","creationTime":1394636069,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":8,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"asdfgvbhnjkpoiuytre","machineId":21,"sizeId":0,"hostName":"","creationTime":1395072740,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":9,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwertyu","machineId":23,"sizeId":0,"hostName":"","creationTime":1395134529,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":10,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"enableagain2","machineId":35,"sizeId":0,"hostName":"","creationTime":1396351690,"cpus":0,"imageId":0,"cost":2550710.0,"networkGatewayIPv4":"","guid":"","id":11,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"adsf","machineId":4,"sizeId":0,"hostName":"","creationTime":1394634750,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":12,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"mnnsdfgsdfg","machineId":14,"sizeId":0,"hostName":"","creationTime":1394695096,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":13,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"asdasd","machineId":17,"sizeId":0,"hostName":"","creationTime":1395047689,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":14,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwefvbcxzasd","machineId":16,"sizeId":0,"hostName":"","creationTime":1394696141,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":15,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"sdjhgfjhgfjhgf","machineId":22,"sizeId":0,"hostName":"","creationTime":1395073761,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":16,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"testafterdisable","machineId":32,"sizeId":0,"hostName":"","creationTime":1396345476,"cpus":0,"imageId":0,"cost":2556924.0,"networkGatewayIPv4":"","guid":"","id":17,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"trew","machineId":3,"sizeId":0,"hostName":"","creationTime":1394634332,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":18,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"asdfqwer","machineId":5,"sizeId":0,"hostName":"","creationTime":1394634990,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":19,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"iuykj","machineId":10,"sizeId":0,"hostName":"","creationTime":1394637466,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":20,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwefvbcxz","machineId":15,"sizeId":0,"hostName":"","creationTime":1394696064,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":21,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"testhendriki","machineId":18,"sizeId":0,"hostName":"","creationTime":1395048010,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":22,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"karim-test","machineId":20,"sizeId":0,"hostName":"","creationTime":1395064988,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":23,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"qwerty","machineId":24,"sizeId":0,"hostName":"","creationTime":1395135590,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":24,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"afterdisable","machineId":33,"sizeId":0,"hostName":"","creationTime":1396345958,"cpus":0,"imageId":0,"cost":2556442.0,"networkGatewayIPv4":"","guid":"","id":25,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"adf","machineId":1,"sizeId":0,"hostName":"","creationTime":1394633125,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":26,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"zxcvb","machineId":7,"sizeId":0,"hostName":"","creationTime":1394635902,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":27,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"hgjjhgghj","machineId":9,"sizeId":0,"hostName":"","creationTime":1394637348,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":28,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"asdfadsf","machineId":11,"sizeId":0,"hostName":"","creationTime":1394637539,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":29,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"polkmnhg","machineId":13,"sizeId":0,"hostName":"","creationTime":1394638208,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":30,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"sadflaksdfmsdf","machineId":26,"sizeId":0,"hostName":"","creationTime":1395150376,"cpus":0,"imageId":0,"cost":2592000.0,"networkGatewayIPv4":"","guid":"","id":31,"deletionTime":0},{"status":"","cloudspaceId":0,"disks":[],"_meta":["osismodel","billing","vmachine",1],"name":"enableagain","machineId":34,"sizeId":0,"hostName":"","creationTime":1396345989,"cpus":0,"imageId":0,"cost":2556411.0,"networkGatewayIPv4":"","guid":"","id":32,"deletionTime":0}],"name":"default"}],"guid":2,"id":2,"_ckey":"","accountId":1}
@@ -646,12 +656,15 @@ defineApiStub = function ($httpBackend) {
     
     $httpBackend.whenGET(/^\/portforwarding\/update.*/).respond(function(method, url, data) {
             var params = new URI(url).search(true);
+            console.log(params);
             for (var i = 0, l = portforwarding.length; i < l; i++) {
                 if (portforwarding[i].id === parseInt(params.id)) {
-                    portforwarding[i].ip = params.ip;
-                    portforwarding[i].puplicPort = params.puplicPort;
-                    portforwarding[i].vmName = params.vmName;
+                    portforwarding[i].publicIp = params.ip;
+                    portforwarding[i].publicPort = params.puplicPort;
+                    // portforwarding[i].vmName = params.vmName;
+                    portforwarding[i].vmid = params.vmid;
                     portforwarding[i].localPort = params.localPort;
+                    console.log(portforwarding[i]);
                     break;
                 }
             }
@@ -660,7 +673,7 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/portforwarding\/delete.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1)
+        portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
         return [200, portforwarding];
     });
 };

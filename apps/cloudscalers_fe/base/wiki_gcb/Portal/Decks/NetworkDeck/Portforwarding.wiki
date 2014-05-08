@@ -197,8 +197,13 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
-		                    </select>
+							<!-- ///////// -->
+							<!-- <select ng-model="editRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+		                    </select> -->
+		                    <select ng-model="editRule.VM.name">
+								<option ng-repeat="portforward in portforwarding | unique: 'vmName'">{[ portforward.vmName ]}</option>
+							</select>
+		                    {[ editRule.VM ]}
 		                </div>
 					</div>
 					<div class="control-group">
