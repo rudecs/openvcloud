@@ -6,17 +6,17 @@
   </li>
   <li>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
-    20GB at SSD speed<br>3 USD/month
+    20GB at SSD speed<br>
   </button>
   </li>
   <li>
   <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
-    30GB at SSD speed<br>6 USD/month
+    30GB at SSD speed<br>
   </button>
   </li>
   <li>
   <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
-    40GB at SSD speed<br>9 USD/month
+    40GB at SSD speed<br>
   </button>
   </li>
   <li>
