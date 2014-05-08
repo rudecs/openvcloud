@@ -1,7 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert',
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert) {
-            $scope.search = "";
             $scope.portforwardbyID = "";
             $scope.portforwarding = [];
             $scope.$watch('currentSpace.id',function(){
@@ -70,56 +69,66 @@ angular.module('cloudscalers.controllers')
                         );
                 });
             };
+            
+            var editRuleController = function ($scope, $modalInstance) {
+            	$scope.editRule = {
+                        id: index.id,
+                        ip: $scope.portforwardbyID[index.id].publicIp,
+                        publicPort: $scope.portforwardbyID[index.id].publicPort,
+                        VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
+                        localPort: $scope.portforwardbyID[index.id].localPort
+                    };
+            	
+            	
+
+                $scope.delete = function () {
+                    Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
+                        function (result) {
+                            $scope.portforwarding = result.data;
+                            modalInstance.close({});
+                            $scope.message = true;
+                            $scope.statusMessage = "Removed";
+                            $timeout(function() {
+                                $scope.message = false;
+                            }, 3000);
+                        }
+                    );
+                };
+                $scope.cancel = function () {
+                      modalInstance.dismiss('cancel');
+                };
+                $scope.updateCommonPorts = function () {
+                      $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
+                      $scope.editRule.localPort = $scope.editRule.commonPort.port;
+                  };
+                  
+                  $scope.update = function () {
+                      Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
+                          function (result) {
+                              $scope.portforwarding = result.data;
+                              $scope.search = $scope.portforwarding[0];
+                              modalInstance.close({});
+                              $scope.message = true;
+                              $scope.statusMessage = "Updated";
+                              $timeout(function() {
+                                  $scope.message = false;
+                              }, 3000);
+                          }
+                      );
+                  };
+              }
+            	
+            };
+            
+            
             $scope.tableRowClicked = function (index) {
-              var modalInstance = $modal.open({templateUrl: 'editPortForwardDialog.html', scope: $scope , resolve: {}});
-              $scope.editRule = [];
-              Networks.listPortforwarding($scope.currentSpace.id).then(function(data) {
-                $scope.portforwardbyID = data;
-                $scope.editRule = {
-                    id: index.id,
-                    ip: $scope.portforwardbyID[index.id].publicIp,
-                    publicPort: $scope.portforwardbyID[index.id].publicPort,
-                    VM: {'name': $scope.portforwardbyID[index.id].vmName , 'id': $scope.portforwardbyID[index.id].vmid},
-                    localPort: $scope.portforwardbyID[index.id].localPort
-                };
-              });
-              $scope.update = function () {
-                console.log($scope.editRule.VM.id);
-                  Networks.updatePortforward($scope.currentSpace.id, $scope.editRule.id, $scope.editRule.ip, $scope.editRule.publicPort, $scope.editRule.VM.id, $scope.editRule.localPort).then(
-                      function (result) {
-                          $scope.portforwarding = result.data;
-                          $scope.search = $scope.portforwarding[0];
-                          modalInstance.close({});
-                          $scope.message = true;
-                          $scope.statusMessage = "Saved!";
-                          $timeout(function() {
-                              $scope.message = false;
-                          }, 3000);
-                      }
-                  );
-              };
-              $scope.delete = function () {
-                  Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
-                      function (result) {
-                          $scope.portforwarding = result.data;
-                          $scope.search = $scope.portforwarding[0];
-                          modalInstance.close({});
-                          $scope.message = true;
-                          $scope.statusMessage = "Removed!";
-                          $timeout(function() {
-                              $scope.message = false;
-                          }, 3000);
-                      }
-                  );
-              };
-              $scope.cancel = function () {
-                    modalInstance.dismiss('cancel');
-              };
-              $scope.updateCommonPorts = function () {
-                    $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
-                    $scope.editRule.localPort = $scope.editRule.commonPort.port;
-                };
-            }
+            	 
+              var modalInstance = $modal.open({
+            	  templateUrl: 'editPortForwardDialog.html',
+            	  controller: editRuleController,
+            	  scope: $scope , 
+            	  resolve: {}});
+              
 
         }
     ]).filter('groupBy', function(){
