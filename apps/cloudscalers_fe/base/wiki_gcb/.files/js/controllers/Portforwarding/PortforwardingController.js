@@ -70,8 +70,7 @@ angular.module('cloudscalers.controllers')
                 	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, data.vmid, data.localport).then(
                             function (result) {
                             	LoadingDialog.hide();
-                                $scope.portforwarding.push({publicIp: data.publicipaddress, publicPort: data.publicport,
-                                vmName: data.vmname, vmid: data.vmid, localPort: data.localport});
+                            	$scope.updatePortforwardList();
                             },
                             function(reason){
                             	LoadingDialog.hide();
