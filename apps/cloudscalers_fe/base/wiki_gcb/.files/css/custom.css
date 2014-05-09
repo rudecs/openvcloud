@@ -12,8 +12,8 @@ input, button, select, textarea { font-family: arial, sans-serif; }
 .btn-large, .btn-group-lg>.btn { padding: 10px 25px; font-size: 16px; line-height: 1.33; border-radius: 6px; }
 .btn-info { color: #fff; background-color: #5bc0de; border-color: #46b8da; }
 .btn { display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.modal-footer.ng-scope .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] { color: #fff; background-color: #39b3d7; border-color: #269abc; }
-.modal-footer.ng-scope .mainButton { padding: 5px 10px; }
+.modal-footer .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] { color: #fff; background-color: #39b3d7; border-color: #269abc; }
+.modal-footer .mainButton { padding: 5px 10px; }
  @media (max-width: 992px) {
 .span1, .span2, .span3, .span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11, .span12 { width: 100%; clear: both; }
 }
@@ -184,7 +184,7 @@ table.table th { font-size: 13px !important; }
 table.table th, table.table td, table.table tbody th, table.table tbody td { font-size: 13px !important; }
 .table.users-table .header .btn { font-size: 13px; padding: 3px 5px; }
 .control-label { font-size: 13px; }
-.form-control.ng-pristine.ng-valid.ng-valid-number { padding: 0 10px; }
+.form-control { padding: 0 10px; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px; }
 .nav-tabs>li>a { padding: 5px 10px !important; }
 .nav-tabs { margin:  10p 0; }
@@ -197,7 +197,7 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .signUpForm .inputWrap { width: 69% !important; }
 .marginTop { margin-top: 0px; margin-bottom: 80px; }
 .jumbotron .container { margin-top: 0px !important; }
-.form-horizontal.contact_form.ng-pristine.ng-valid label { font-size: 12px !important }
+.form-horizontal.contact_form label { font-size: 12px !important }
 .inputStyle { font-size: 12px !important }
 .areaStyle textarea { font-size: 12px !important }
 }
@@ -255,7 +255,7 @@ table.table th { font-size: 12px !important; }
 table.table th, table.table td, table.table tbody th, table.table tbody td { font-size: 12px !important; }
 .table.users-table .header .btn { font-size: 12px; padding: 3px 5px; }
 .control-label { font-size: 12px; }
-.form-control.ng-pristine.ng-valid.ng-valid-number { padding: 0 10px; }
+.form-control { padding: 0 10px; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px; }
 .nav-tabs>li>a { padding: 5px 10px !important; }
 .nav-tabs { margin:  10p 0; }
@@ -297,9 +297,9 @@ footer .container { width: auto; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
 .billWrap .span6 { border-left: 0 !important; }
 .span3.actions { border-left: 0 !important; }
-.form-horizontal.contact_form.ng-pristine.ng-valid label { width: 100%; }
+.form-horizontal.contact_form label { width: 100%; }
 .mainButton { margin-bottom: 10px; }
-.refresh-page.mtl.right.mTxt.ng-scope { z-index: 99999999; position: absolute; right: 15px; top: 19px; }
+.refresh-page.mtl.right.mTxt { z-index: 99999999; position: absolute; right: 15px; top: 19px; }
 .well { padding: 0 0px !important; }
 .boxDecks2 { width: auto !important; min-height: auto !important; }
 }
@@ -428,8 +428,7 @@ body { overflow-x: hidden; }
 .nav-tabs>li>a { padding: 5px 7px !important; }
 .list .span3 { width: 104px !important; clear: none; }
 .list .span9 { width: 178px; clear: none; display: inline-block; position: absolute; }
-.mrl.ng-binding { }
-.mrl.ng-binding + .ng-binding { display: inline-block; position: absolute; left: 16px; top: 25px; }
+.mrl { display: inline-block; position: absolute; left: 16px; top: 25px; }
 .initial { height: 57px !important; display: inline-block; }
 .tabbable.ng-isolate-scope > ul li { float: inherit; }
 .account-container.stacked { width: 262px !important; }
@@ -508,7 +507,7 @@ a { color: #06a7e2; text-decoration: none; }
 .table { font-size: 12px; }
 .control-label { float: left; margin: 0 14px 0 0; }
 .input-group-addon { background-color: #06a7e2; color: #FFF; border-radius: 0 !important; }
-.form-control.ng-pristine.ng-valid.ng-valid-number { border-radius: 0 !important; }
+.form-control { border-radius: 0 !important; }
 .control-group { margin: 15px 0; display: inline-block; width: 100%; color: #000; font-size: 16px; }
 .controls .btn.btn-small { float: left; border: 1px solid #06a7e2; border-radius: 0; margin: 0 0 0 20px; }
 label + .controls { display: table-cell; margin: 0 0 0 0; }
@@ -645,10 +644,10 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 /*
 #paymentbuttons img { width: 50px; height: auto;}*/
 
-.row-fluid.ng-pristine.ng-valid .ng-binding { display: inline-block; margin: 0 15px 0; }
-.modal-body.ng-scope { display: inline-block; /*width: 100%;*/ }
-.modal-body.ng-scope > div { display: inline-block; width: 100%; }
-.row-fluid.ng-pristine.ng-valid { margin: 10px 0; }
+.row-fluid.ng-pristine.ng-valid { display: inline-block; margin: 0 15px 0; }
+.modal-body { display: inline-block; /*width: 100%;*/ }
+.modal-body > div { display: inline-block; width: 100%; }
+.row-fluid { margin: 10px 0; }
 html, body { height: 100%; }
 .sticky { min-height: 100%; background-color: #FFF; height: auto; margin: 0 auto -50px; padding: 0 0 50px; }
 #main { overflow:auto; padding-bottom: 150px; }  /* must be same height as the footer */
@@ -656,7 +655,7 @@ html, body { height: 100%; }
 /*Opera Fix*/
 body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px; /
 }
-.sticky > .navbar.navbar-inverse.ng-scope > .subnavbar-inner { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%; }
+.sticky > .navbar.navbar-inverse > .subnavbar-inner { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%; }
 .modal-header h3 { color: #06a7e2; }
 /*.modal .col-md-3 {margin: 0 30px;}*/
 .marginB { margin: 0 0 5px 0; display: inline-block; }
@@ -700,14 +699,14 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .color6 h2 p a { color: #af45c3; }
 .boxes h2 p a { font-size: 22px; }
 .boxes h2 p a:hover { color: inherit; }
-.form-horizontal.ng-scope h2 { color: #000; }
+.form-horizontal h2 { color: #000; }
 table.table td { color: #000; }
 .grey .panel-title>a:hover { background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; }
-.tab-pane.active.active2.ng-scope ul li { font-size: 13px; height: 28px; line-height: 23px; }
+.tab-pane.active.active2 ul li { font-size: 13px; height: 28px; line-height: 23px; }
 .span3.actions .actions { margin: 0; padding: 0; }
 .span3.actions { border-left: 1px solid #77777b; padding-left: 30px; margin: 0 0 0 20px; }
 .tab-pane.tab-pane2 .snap2 { margin: 0 0 5px 0; display: inline-block; }
-.tab-pane.tab-pane2.ng-scope { margin-top: -10px; }
+.tab-pane.tab-pane2 { margin-top: -10px; }
 .btn-large, .btn-group-lg>.btn { padding: 7px 20px; border: 0; }
 .footer2 { background: #FFF !important; }
 .alert { margin: 20px 0; }
@@ -834,7 +833,7 @@ canvas { display: block; float: left;/* uncomment to test overlay *//*
 .newDecks .boxes { margin: 10px 0; }
 .list .span3 { width: 151px; clear: none; }
 .list .span9 { width: 343px; clear: none; display: inline-block; }
-.span9.mtm.ng-binding { margin-top: 0; }
+.span9.mtm { margin-top: 0; }
 .inputStyle { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 16px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .inputStyle:focus, .inputStyle:active { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 17px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .form-horizontal.contact_form.ng-pristine.ng-valid label { color: #000; font-weight: lighter; font-size: 16px; }
@@ -886,8 +885,8 @@ canvas { display: block; float: left;/* uncomment to test overlay *//*
 .boxDecks2 h3 { padding: 10px 15px 10px 20px; border-bottom: 1px solid transparent; color: #fff; background-color: #06a7e2; border-color: #06a7e2; margin: 0; text-align: left; font-size: 21px; }
 .boxDecks2 { text-align: center; margin: 15px 18px 35px; border: 1px solid #06a7e2; padding: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; width: 30.333333%; min-height: 286px; }
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left; }
-.mrl.ng-binding + .ng-binding { font-family: verdana !important; }
-h4.machine-label.mvn + .ng-binding { font-family: verdana !important; font-size: 14px; }
+.mrl { font-family: verdana !important; }
+h4.machine-label.mvn { font-family: verdana !important; font-size: 14px; }
 .portMargin { margin: 20px 0; }
 body body #extra { background-color: #06a7e2 !important; }
 .no-background { background: none !important; }
