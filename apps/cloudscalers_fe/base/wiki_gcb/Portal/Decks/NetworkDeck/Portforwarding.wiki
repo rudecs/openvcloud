@@ -181,11 +181,12 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-					         	<div class="left">
+					         	<!-- <div class="left">
 						        <select id="common-port-menu" ng-model="editRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
 						        </select>
-						      </div>
-						      <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
+						      </div> -->
+						      <!-- <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"> -->
+						      <autocomplete ng-model="editRule.publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>

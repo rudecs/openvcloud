@@ -55,7 +55,7 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            commonports: function() {
+            commonports: function(port) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/listcommonports').then(
                         function(result){
                             return result.data;
