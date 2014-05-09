@@ -121,6 +121,64 @@ h1. Pricing
 </div>
 <table class="techspecs">
     <tr>
+        <th  class="title">Options:</th>
+
+        <td class="column-divider"></td>
+        <td class="full-span">
+        <ul>
+        <li>Extra SSD Storage (up to 100GB)</li>
+        <li>Extra HDD Storage attached to VM (up to 2TB)</li>
+        <li>Snapshots</li>
+        <li>Templates</li>
+        <li>Extra Cloud Space</li>
+        </ul>
+        
+
+        <td class="justSeperat"></td>
+
+        </td>
+        <td class="full-span half-span">
+        <ul>
+        <li>$0.30/month   </li>
+        <li>$0.15/month   </li>
+        <li>$0.15/month    </li>
+        <li>$0.30/month    </li>
+       <li>$10.00/month   </li>
+        </ul>
+        
+
+        
+
+        </td>
+        <td class="full-span half-span">
+        <ul>
+        <li>$0.00042/hour</li>
+        <li>$0.00021/hour</li>
+        <li>$0.00021/hour</li>
+        <li>$0.00042/hour</li>
+        <li>$0.01389/hour</li>
+        </ul>
+        
+
+        
+
+        </td>
+        <td class="full-span half-span">
+        <ul>
+        <li>Per GB</li>
+        <li>Per GB </li>
+        <li>Based on drive size per GB </li>
+        <li>Based on drive size per GB  </li>
+       <li>Per extra space</li>
+        </ul>
+        
+
+        
+
+        </td>
+
+    </tr>
+    <tr>
         <th  class="title">All Plans Include:</th>
 
         <td class="column-divider"></td>
