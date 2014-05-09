@@ -903,3 +903,41 @@ body body #extra { background-color: #06a7e2 !important; }
 .txt-center { text-align: center; }
 .note1 { font-size: 13px; }
 .modal-header2 { padding: 0 15px; }
+.autocomplete{
+  width: 100%;
+  position: relative;
+}
+
+.autocomplete ul{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-left: 1px solid #888;
+  border-right: 1px solid #888;
+  border-bottom: 1px solid #888;
+  z-index: 1;
+  padding-left: 0;
+  font-size: 12px;
+}
+
+.autocomplete li{
+  text-align: left;
+  list-style:none;
+  width: 100%;
+  padding:0.4em;
+  background-color: #fff;
+}
+
+.autocomplete li.active{
+  width: 100%;
+  background-color: #C3E5F8;
+}
+
+.autocomplete .highlight {
+  background-color: #E2E2E2;
+}
+
+.autocomplete li.active .highlight {
+  background: #666;
+  color: #fff;
+}

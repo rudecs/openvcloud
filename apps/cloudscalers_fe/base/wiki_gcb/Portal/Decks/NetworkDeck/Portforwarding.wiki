@@ -63,9 +63,9 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				width: 102px;
 				float: left;
 			}
-			.form-horizontal .controls{
+			/*.form-horizontal .controls{
 				display: block;
-			}
+			}*/
 			#inputNewPublicPort{
 				width: 50%;
 				border-top-left-radius: 0;
@@ -87,11 +87,12 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-					         	<div class="left">
+					         	<!-- <div class="left">
 						        <select id="common-port-menu" ng-model="newRule.commonPort" ng-change="updateCommonPorts()" ng-options="commonport.port + ' - ' + commonport.name for commonport in commonports" class="form-control">
 						        </select>
 						      </div>
-						      <input type="text" class="form-control left" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only">
+						      <input type="text" class="form-control left" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"> -->
+						      <autocomplete ng-model="newRule.publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>

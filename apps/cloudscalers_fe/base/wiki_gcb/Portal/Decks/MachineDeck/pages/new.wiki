@@ -2,8 +2,6 @@ h1. Create Machine
 
 Configure your virtual machine by choosing your package, server OS and additional SSD storage.
 
-Promotion: For a limited time, Windows packages will be charged like Linux packages during the first month!
-
 {{html:
     
 <div class="form-horizontal">
