@@ -48,9 +48,7 @@ Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT
 * [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
 @LF
-h1. Why choose Mothership{{html:<sup>1</sup>}}?
-
-So why choose Mothership{{html:<sup>1</sup>}}? Here our value proposition:
+h1. Value Proposition
 
 * Private virtual machines, cloud desktops and cloud applications (deployed behind enterprise capable firewall)
 * High performance thanks to storage delivered at SSD speeds
