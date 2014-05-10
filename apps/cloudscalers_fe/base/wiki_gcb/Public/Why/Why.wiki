@@ -65,22 +65,22 @@ So why choose Mothership{{html:<sup>1</sup>}}? Here our value proposition:
 h1. Comparison Table
 
 || Description (*) || MS1 || RS || AM || DO ||
-| vmachines are by default private & protected on private lan | V | | | |
-| integrated enterprise capable virtual firewall/router/vpn | V | | | |
-| ultra reliable storage (integrated backup, redundant storage) | V | V | V | V |
-| integrated S3 compatible storage cloud | V | V | V | |
-| warp speed vmachine creation & snapshots | <10s | ? | ? | 60s |
-| lower TCO & ultra transparent metering & billing model (ask for our TCO white paper) | V | | | V |
+| Vmachines are by default private & protected on private lan | V | | | |
+| Integrated enterprise capable virtual firewall/router/vpn | V | | | |
+| Ultra reliable storage (integrated backup, redundant storage) | V | V | V | V |
+| Integrated S3 compatible storage cloud | V | V | V | |
+| Warp speed vmachine creation & snapshots | <10s | ? | ? | 60s |
+| Lower TCO & ultra transparent metering & billing model (ask for our TCO white paper) | V | | | V |
 | KIS : get rid of the complexity | V | | | V |
 | Integrated PAAS | | ? | V | |
-| Amount of enabled datacenters (**) | 3 | many | many | +5? |
+| Nr of enabled datacenters (**) | 3 | many | many | +5? |
 | Windows support | V | V | V | |
 | 1 click application install | Q3 | ? | ? | V |
-| cloud is powered by own developed opensource framework | V | V | | |
+| Cloud is powered by own developed opensource framework | V | V | | |
 ||||||
 |MS1 = monthership1, RS = RackSpace,  AM = Amazon, DO = DigitalOcean|||||
-|(*) we tried to make an objective comparison, please send any remarks to info@mothership1.com |||||
-|(**) we will be enabling more datacenters soon. |||||
+|(*) We tried to make an objective comparison, please send any remarks to info@mothership1.com |||||
+|(**) We will be enabling more datacenters soon. |||||
 
 
 
