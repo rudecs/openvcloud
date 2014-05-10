@@ -64,7 +64,7 @@ So why choose Mothership{{html:<sup>1</sup>}}? Here our value proposition:
 @LF
 h1. Comparison Table
 
-|| Description || MS1 || RS || AM || DO ||
+|| Description (*) || MS1 || RS || AM || DO ||
 | vmachines are by default private & protected on private lan | V | | | |
 | integrated enterprise capable virtual firewall/router/vpn | V | | | |
 | ultra reliable storage (integrated backup, redundant storage) | V | V | V | V |
@@ -73,12 +73,14 @@ h1. Comparison Table
 | lower TCO & ultra transparent metering & billing model (ask for our TCO white paper) | V | | | V |
 | KIS : get rid of the complexity | V | | | V |
 | Integrated PAAS | | ? | V | |
-| Amount of enabled datacenters (*) | 3 | many | many | +5? |
+| Amount of enabled datacenters (**) | 3 | many | many | +5? |
 | Windows support | V | V | V | |
 | 1 click application install | Q3 | ? | ? | V |
 | cloud is powered by own developed opensource framework | V | V | | |
 ||||||
 |MS1 = monthership1, RS = RackSpace,  AM = Amazon, DO = DigitalOcean|||||
+|(*) we tried to make an objective comparison, please send any remarks to info@mothership1.com |||||
+|(**) we will be enabling more datacenters soon. |||||
 
 
 
