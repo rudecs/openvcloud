@@ -209,9 +209,18 @@ angular.module('cloudscalers.directives', [])
         if(suggestion){
           $scope.searchParam = suggestion;
           $scope.searchFilter = suggestion;
-          if($('#inputNewLocalPort').val() == ""){
-            $('#inputNewLocalPort').val(suggestion);
+
+          if( $element.hasClass('publicPort') && $('.modal').find('.localPort').find('input').val() == ""){
+            $('.modal').find('.localPort').find('input').val($scope.searchFilter);
           }
+          if( $element.hasClass('localPort') && $('.modal').find('.publicPort').find('input').val() == ""){
+            $('.modal').find('.publicPort').find('input').val($scope.searchFilter);
+          }
+
+
+        }
+        else{
+          $scope.searchFilter = "";
         }
         watching = false;
         $scope.completing = false;
@@ -219,7 +228,6 @@ angular.module('cloudscalers.directives', [])
         $scope.setIndex(-1);
 
       }
-
 
     },
     link: function(scope, element, attrs){
@@ -243,8 +251,12 @@ angular.module('cloudscalers.directives', [])
       }
 
       if(attrs["clickActivation"]=="true"){
-        element[0].onclick = function(e){
+        element[0].onclick = function(e){          
           if(!scope.searchParam){
+            scope.completing = true;
+            scope.$apply();
+          }
+          else{
             scope.completing = true;
             scope.$apply();
           }
@@ -255,7 +267,6 @@ angular.module('cloudscalers.directives', [])
 
       document.addEventListener("keydown", function(e){
         var keycode = e.keyCode || e.which;
-
         switch (keycode){
           case key.esc:
             scope.select();
@@ -264,7 +275,7 @@ angular.module('cloudscalers.directives', [])
             e.preventDefault();
         }
       }, true);
-      
+
       element[0].addEventListener("blur", function(e){
         setTimeout(function() {
           scope.select();
@@ -274,6 +285,7 @@ angular.module('cloudscalers.directives', [])
       }, true);
 
       element[0].addEventListener("keydown",function (e){
+
         var keycode = e.keyCode || e.which;
         var l = angular.element(this).find('li').length;
         switch (keycode){
@@ -297,6 +309,7 @@ angular.module('cloudscalers.directives', [])
 
             break;
           case key.down:
+
             index = scope.getIndex()+1;
             if(index<-1){
               index = l-1;
@@ -340,8 +353,7 @@ angular.module('cloudscalers.directives', [])
       });
     },
     template: '<div class="autocomplete {{attrs.class}}" id="{{attrs.id}}">'+
-                // <span class="fa fa-sort-asc" style="position: absolute; top: 15%; right: 10%; color: rgb(156, 156, 156);"></span>
-                '<input type="text" id="pupblicPortInput" ng-model="searchParam" placeholder="{{attrs.placeholder}}" class="form-control" id="{{attrs.inputid}}" style="width: 173px; position:relative;"></input>' +
+                '<input type="text" ng-model="searchParam" placeholder="{{attrs.placeholder}}" class="form-control" id="{{attrs.inputid}}" style="width: 173px; position:relative;"></input>' +
                 '<ul ng-show="completing">' +
                   '<li suggestion ng-repeat="suggestion in suggestions | filter:searchFilter | orderBy:\'toString()\' track by $index"'+
                   'index="{{$index}}" val="{{suggestion.port}}" ng-class="{active: '+

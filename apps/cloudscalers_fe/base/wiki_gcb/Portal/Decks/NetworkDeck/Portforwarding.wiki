@@ -92,7 +92,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 						        </select>
 						      </div>
 						      <input type="text" class="form-control left" placeholder="Port" ng-model="newRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"> -->
-						      <autocomplete ng-model="newRule.publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						      <autocomplete ng-model="newRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>
@@ -111,7 +111,8 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<input ng-model="newRule.localPort" id="inputNewLocalPort" type="text" class="form-control" placeholder="Port" required numbers-only="numbers-only"/>
+					         	<!-- <input ng-model="newRule.localPort" id="inputNewLocalPort" type="text" class="form-control" placeholder="Port" required numbers-only="numbers-only"/> -->
+					         	<autocomplete ng-model="newRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>
@@ -187,7 +188,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 						        </select>
 						      </div> -->
 						      <!-- <input type="text" class="form-control" placeholder="Port" ng-model="editRule.publicPort" id="inputNewPublicPort" required numbers-only="numbers-only"> -->
-						      <autocomplete ng-model="editRule.publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						      <autocomplete ng-model="editRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>
@@ -207,7 +208,8 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" placeholder="Port" required numbers-only="numbers-only"/>
+					         	<!-- <input ng-model="editRule.localPort" id="inputNewLocalPort" type="text" class="form-control" placeholder="Port" required numbers-only="numbers-only"/> -->
+					         	<autocomplete ng-model="editRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 		       			</div>
 					</div>
 				</div>

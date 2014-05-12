@@ -102,7 +102,6 @@ angular.module('cloudscalers.controllers')
                       $modalInstance.dismiss('cancel');
                 };
                 $scope.updateCommonPorts = function () {
-                  alert('sssaddas')
                       $scope.editRule.publicPort  = $scope.editRule.commonPort.port;
                       $scope.editRule.localPort = $scope.editRule.commonPort.port;
                 };
@@ -112,9 +111,6 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.close($scope.editRule);
                 };
             }
-            	
-    
-            
             
             $scope.tableRowClicked = function (index) {
             	var selectForwardRule = $scope.portforwarding[index.id];
