@@ -104,7 +104,7 @@ Outside of the Cooling-Off Period, no refunds shall be made.
 
 Mothership1 reserves the right to refuse a refund request if it reasonably believes \(i) that you are trying to unfairly exploit this refund policy, for example, by making repetitive refund requests in respect of the same Service; (ii) if you are in breach of these Terms and Conditions or (iii) if Mothership1 reasonably suspects that you are using our Services fraudulently or that your User account is being used by a third party fraudulently.
 
-*10.* *Warranty disclaimer*
+10. *Warranty disclaimer*
 
 The warranties described in the present Section are the only warranties provided by Mothership1 under this Agreement, and are in lieu of all other warranties, including but not limited to implied warranties of merchantability and fitness for a particular purpose.
 
@@ -118,11 +118,11 @@ To the extent permissible under the applicable law, and without prejudice to the
 
 No action in any form arising out of or in connection with this Agreement may be brought by User more than one (1) year after the cause of action has accrued.
 
-*11.* *Indemnification*
+11. *Indemnification*
 
 User shall defend, indemnify, and hold harmless us, our affiliates, parents, subsidiaries, any related companies, licensors and partners, and each of our and their respective employees, officers, directors, agents, contractors, directors, suppliers and representatives from all liabilities, claims, and expenses, including reasonable attorneys' fees, that arise from or relate to your (or any third party using your account or identity in the Services) use or misuse of, or access to, the Services, violation of these Terms and Conditions or of any law, or infringement of any intellectual property or other right of any person or entity. We reserve the right to assume the exclusive defense and control of any matter otherwise subject to indemnification by you, in which event you will assist and cooperate with us in asserting any available defenses.
 
-*12.* *Term and termination*
+12. *Term and termination*
 
 Where not otherwise contractually agreed, the Agreement shall be in place for an indefinite period of time beginning on the date that the User signs up electronically for the Services by creating an account with an e-mail address.
 
@@ -152,7 +152,7 @@ Upon termination, any and all rights granted to User by this Agreement will imme
 
 All provisions of these Terms and Conditions which by their nature should survive termination shall survive termination, including, without limitation, licenses of User Content, ownership provisions, warranty disclaimers, indemnity and limitations of liability.
 
-*13.* *Miscellaneous*
+13. *Miscellaneous*
 
 You agree to the use of electronic communication in order to enter into contracts, place orders, and create other records and to the electronic delivery of notices, policies and changes thereto and records of transactions with Mothership1.
 
