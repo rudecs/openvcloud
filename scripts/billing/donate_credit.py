@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from argparse import ArgumentParser
-import sys
+import sys, time
 
 from JumpScale import j
 from JumpScale import portal
@@ -25,23 +25,23 @@ def main(args):
     credittransaction.currency = 'USD'
     credittransaction.comment = args.comment
     credittransaction.status = 'CREDIT'
-    
+    credittransaction.time = int(time.time())
+
     credittransactionclient.set(credittransaction)
     return 0
 
 if __name__ == '__main__':
-    
+
     try:
-        
+
         parser = ArgumentParser()
         parser.add_argument('-a', '--accountname')
         parser.add_argument('-u','--usd')
         parser.add_argument('-c', '--comment')
         args = parser.parse_args()
         sys.exit(main(args))
-        
+
 
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         sys.exit(0)
-    
