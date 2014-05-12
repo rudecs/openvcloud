@@ -154,13 +154,13 @@ body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; backgr
 .midFooter ul li a { font-size: 13px; }
 .bottomFooter .first-list li a { font-size: 13px; }
 .myNav ul li a { font-size: 14px; background-size: 11px auto !important; }
-/*.Why {background: url(../img/images/menu-icon1.png) no-repeat 83% 6px !important;}*/
-	.contact { background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important; }
+.contact { background: url(../img/images/contact-pic.png) no-repeat 93% 8px !important; }
 .navbar-right.clearR { margin: 33px 0 0 0; }
 .contact:hover { background: url(../img/images/contact-pic-hover.png) no-repeat 93% 8px !important; background-size: 11px auto !important; }
 body { background-size: 1376px auto; background: url(../img/images/earth4.jpg) no-repeat center 0 #000; }
 .boxes img { width: 100px; }
 .white ul li { font-size: 13px !important; line-height: 30px; }
+.white ol li {font-size: 13px !important;line-height: 30px;}
 h4, .h4 { font-size: 18px; }
 .sideNav .header a { text-align: center; font-size: 13px !important; }
 .sideNav .header > a { font-size: 13px !important; }
