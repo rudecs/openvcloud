@@ -912,12 +912,14 @@ body body #extra { background-color: #06a7e2 !important; }
   position: absolute;
   left: 0;
   width: 100%;
-  border-left: 1px solid #888;
-  border-right: 1px solid #888;
-  border-bottom: 1px solid #888;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   z-index: 1;
   padding-left: 0;
   font-size: 12px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .autocomplete li{

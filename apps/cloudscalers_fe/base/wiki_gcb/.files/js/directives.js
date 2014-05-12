@@ -209,7 +209,9 @@ angular.module('cloudscalers.directives', [])
         if(suggestion){
           $scope.searchParam = suggestion;
           $scope.searchFilter = suggestion;
-          $('#inputNewLocalPort').val(suggestion);
+          if($('#inputNewLocalPort').val() == ""){
+            $('#inputNewLocalPort').val(suggestion);
+          }
         }
         watching = false;
         $scope.completing = false;
@@ -263,7 +265,7 @@ angular.module('cloudscalers.directives', [])
         }
       }, true);
       
-      document.addEventListener("blur", function(e){
+      element[0].addEventListener("blur", function(e){
         setTimeout(function() {
           scope.select();
           scope.setIndex(-1);
@@ -273,7 +275,6 @@ angular.module('cloudscalers.directives', [])
 
       element[0].addEventListener("keydown",function (e){
         var keycode = e.keyCode || e.which;
-
         var l = angular.element(this).find('li').length;
         switch (keycode){
           case key.up:    
