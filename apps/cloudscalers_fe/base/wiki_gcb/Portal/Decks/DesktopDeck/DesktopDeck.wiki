@@ -38,7 +38,7 @@ Complete the form below to receive by the end of May your early access trial to 
     {{div3: class=form-group }}
         {{html: <label class="control-label col-md-2" for="other_interests">Other applications I am looking for</label>}}
         {{div4: class=col-md-5 areaStyle}}
-            {{ textarea: rows=10 | cols=20 | required | name=other_interests | class=form-control}}
+            {{ textarea: rows=10 | cols=20 | name=other_interests | class=form-control}}
         {{div4}}
     {{div3}}
 
