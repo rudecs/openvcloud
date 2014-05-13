@@ -686,7 +686,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .plm { padding-left: 15px; }
 .prn { padding-right: 0 !important; display: inline-block; }
 .justify { text-align: justify; }
-#terms { height: 150px; width: 490px; overflow-y: scroll; }
+#terms { height: 250px !important; width: 490px; overflow-y: scroll; }
 #openTerms { color: #fff; text-decoration: underline; margin-top: 20px; display: block; font-size: 16px; text-align: center; }
 #openTerms:hover { color: #06a7e2; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000; }
