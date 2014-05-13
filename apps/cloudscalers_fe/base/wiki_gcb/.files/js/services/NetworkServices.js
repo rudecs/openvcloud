@@ -60,9 +60,9 @@ angular.module('cloudscalers.services')
                         function(result){
                            return [
                                 {port: '80', name: 'HTTP'},
-                                {port: '22', name: 'SSH'},
                                 {port: '443', name: 'HTTPS'},
                                 {port: '21', name: 'FTP'},
+                                {port: '22', name: 'SSH'},
                                 {port: '3389', name: 'RDP'}
                             ];
                         },
