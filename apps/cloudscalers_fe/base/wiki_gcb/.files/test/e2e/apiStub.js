@@ -620,7 +620,7 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/portforwarding\/listcommonports/).respond([
         {port: '80', name: 'HTTP'},
         {port: '22', name: 'SSH'},
-        {port: '403', name: 'HTTPS'},
+        {port: '443', name: 'HTTPS'},
         {port: '21', name: 'FTP'}
     ]);
 
