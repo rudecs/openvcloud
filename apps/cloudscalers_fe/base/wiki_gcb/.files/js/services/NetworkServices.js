@@ -58,7 +58,13 @@ angular.module('cloudscalers.services')
             commonports: function(port) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/listcommonports').then(
                         function(result){
-                            return result.data;
+                           return [
+                                {port: '80', name: 'HTTP'},
+                                {port: '22', name: 'SSH'},
+                                {port: '443', name: 'HTTPS'},
+                                {port: '21', name: 'FTP'},
+                                {port: '3389', name: 'RDP'}
+                            ];
                         },
                         function(reason){
                             $q.defer(reason);
