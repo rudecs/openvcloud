@@ -71,6 +71,9 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
 			}
+			.modal-footer{
+				padding: 19px 20px 30px;
+			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="submit()">
             <div class="modal-header">
@@ -166,6 +169,9 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				width: 50%;
 				border-top-left-radius: 0;
 				border-bottom-left-radius: 0;
+			}
+			.modal-footer{
+				padding: 19px 20px 30px;
 			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="update()">

@@ -816,7 +816,6 @@ body body #extra { background-color: #06a7e2 !important; }
   width: 100%;
   position: relative;
 }
-
 .autocomplete ul{
   position: absolute;
   left: 0;
@@ -831,7 +830,6 @@ body body #extra { background-color: #06a7e2 !important; }
   border-bottom-left-radius: 5px;
   background: #fff;
 }
-
 .autocomplete li{
   text-align: left;
   list-style:none;
@@ -840,20 +838,16 @@ body body #extra { background-color: #06a7e2 !important; }
   background-color: #fff;
   cursor: default;
 }
-
 .autocomplete li:last-child{
 	margin-bottom: 3px;
 }
-
 .autocomplete li.active{
   width: 100%;
   background-color: #C3E5F8;
 }
-
 .autocomplete .highlight {
   background-color: #E2E2E2;
 }
-
 .autocomplete li.active .highlight {
   background: #666;
   color: #fff;
