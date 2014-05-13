@@ -920,14 +920,20 @@ body body #extra { background-color: #06a7e2 !important; }
   font-size: 12px;
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
+  background: #fff;
 }
 
 .autocomplete li{
   text-align: left;
   list-style:none;
   width: 100%;
-  padding:0.4em;
+  padding: 3px;
   background-color: #fff;
+  cursor: default;
+}
+
+.autocomplete li:last-child{
+	margin-bottom: 3px;
 }
 
 .autocomplete li.active{
