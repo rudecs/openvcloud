@@ -5,21 +5,17 @@
 
 {{div3: class=half copy col-md-8}}
 
-h1. Cloud Computing Today
-
-At Mothership{{html:<sup>1</sup>}} we are not new to cloud. For the last 15 years, the Mothership{{html:<sup>1</sup>}} team has been on a quest to make things better in IT by automating the datacenter and its resources. We see that many public clouds are still struggling with features like: Snapshotting; Keeping Things Simple, The crisp and fast execution of actions that technologically can be done on the fly, like machine creations; And a clear need to address the security of your online virtual datacenter.
-@LF
 
 h1. Mothership{{html:<sup>1</sup>}}
 
-Mothership{{html:<sup>1</sup>}} brings a solution that addresses these painpoints, with a simple solution built on 3 pillars:
+#Mothership{{html:<sup>1</sup>}} brings a solution built on 3 pillars:
 
 {{div3}}
 
-{{div3: class=half col-md-4 justOne centerPic}}
- {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
+#{{div3: class=half col-md-4 justOne centerPic}}
+# {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
 #  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
-{{div3}}
+#{{div3}}
 
 
 {{div3: class=seperateDecks}}
@@ -52,19 +48,39 @@ Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT
 * [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
 @LF
-h1. Why choose Mothership{{html:<sup>1</sup>}}?
+h1. Value Proposition
 
-So why choose Mothership{{html:<sup>1</sup>}}? Here our value proposition:
-
-* Secure Cloud Portal to Deploy and manage virtual machines, cloud desktops and cloud applications
+* Private virtual machines, cloud desktops and cloud applications (deployed behind enterprise capable firewall)
 * High performance thanks to storage delivered at SSD speeds
-* Highly flexible in instance creation
+* Highly flexible in instance creation (launch < 10 seconds for most machines)
 * No lock in thanks to built in import and export functions
 * Extended management functions facilitating cloud management like improved snapshotting, template creation, ...
 * Intuitive and easy to understand billing model
 * Straightforward API
 * Support for all Operating Systems including Windows
 * A far better TCO compared to major cloud providers
+@LF
+h1. Comparison Table
+
+|| Description (*) || MS1 || RS || AM || DO ||
+| Vmachines are by default private & protected on private lan | V | | | |
+| Integrated enterprise capable virtual firewall/router/vpn | V | | | |
+| Ultra reliable storage (integrated backup, redundant storage) | V | V | V | V |
+| Integrated S3 compatible storage cloud | V | V | V | |
+| Warp speed vmachine creation & snapshots | <10s | ? | ? | 60s |
+| Lower TCO & ultra transparent metering & billing model (ask for our TCO white paper) | V | | | V |
+| KIS : get rid of the complexity | V | | | V |
+| Integrated PAAS | | ? | V | |
+| Nr of enabled datacenters (**) | 3 | many | many | +5? |
+| Windows support | V | V | V | |
+| 1 click application install | Q3 | ? | ? | V |
+| Cloud is powered by own developed opensource framework | V | V | | |
+||||||
+|MS1 = monthership1, RS = RackSpace,  AM = Amazon, DO = DigitalOcean|||||
+|(*) We tried to make an objective comparison, please send any remarks to info@mothership1.com |||||
+|(**) We will be enabling more datacenters soon. |||||
+
+
 
 @divend
 @divend

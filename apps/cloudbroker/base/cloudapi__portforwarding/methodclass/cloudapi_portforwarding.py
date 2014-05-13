@@ -30,6 +30,21 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             self._models = self.cb.extensions.imp.getModel()
         return self._models
 
+    def _getLocalIp(self, machine):
+        localIp = None
+        if machine.nics:
+            if machine.nics[0].ipAddress == 'Undefined':
+                provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
+                n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
+                ipaddress = provider.client.ex_getIpAddress(n)
+                if ipaddress:
+                    machine.nics[0].ipAddress= ipaddress
+                    self.models.vmachine.set(machine)
+                    localIp = ipaddress
+            else:
+                 localIp = machine.nics[0].ipAddress
+        return localIp
+
     def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, **kwargs):
         """
         Create a portforwarding rule
@@ -45,28 +60,30 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway' 
         fw_id = fw[0]['guid']
-        
+
         machine = self.models.vmachine.get(vmid)
-        localIp = None
-        if machine.nics:
-            if machine.nics[0].ipAddress == 'Undefined':
-                provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
-                n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
-                ipaddress = provider.client.ex_getIpAddress(n)
-                if ipaddress:
-                    machine.nics[0].ipAddress= ipaddress
-                    self.models.vmachine.set(machine)
-                    localIp = ipaddress
-            else:
-                 localIp = machine.nics[0].ipAddress
+        localIp = self._getLocalIp(machine)
         if not localIp:
             ctx.start_response('404 Not Found', [])
             return 'No correct ipaddress found for this machine' 
-        
+
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
         return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort)
+
+    def deleteByVM(self, machine, **kwargs):
+        cloudspaceid = str(machine.cloudspaceId)
+        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        if not fw:
+            return True
+        fw_id = fw[0]['guid']
+        localIp = self._getLocalIp(machine)
+        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        for idx, fw in enumerate(forwards):
+            if fw['localIp'] == localIp:
+                self._delete(cloudspaceid, idx)
+        return True
 
     
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort):
@@ -76,7 +93,6 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 return True
         return False
 
-
     def delete(self, cloudspaceid, id, **kwargs):
         """
         Delete a specific portforwarding rule
@@ -85,16 +101,25 @@ class cloudapi_portforwarding(j.code.classGetBase()):
   
         """
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
-        if len(fw)  == 0:
+        result = self._delete(cloudspaceid, id)
+        if result == -1:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
+        elif result == -2:
+            ctx.start_response('404 Not Found', [])
+            return 'Cannot find the rule with id %s' % str(id)
+        return result
+
+
+    def _delete(self, cloudspaceid, id, **kwargs):
+        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        if len(fw)  == 0:
+            return -1
         fw_id = fw[0]['guid']
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
         id = int(id)
         if not id < len(forwards):
-            ctx.start_response('404 Not Found', [])
-            return 'Cannot find the rule with id %s' % str(id)
+            return -2
         forward = forwards[id]
         self.netmgr.fw_forward_delete(fw_id, self.gridid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)

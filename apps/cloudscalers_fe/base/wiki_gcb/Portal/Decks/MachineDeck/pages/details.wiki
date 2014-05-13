@@ -194,7 +194,7 @@ h1 { margin-bottom: 20px; }
                                     <div class="control-group">
                                         <label class="control-label" for="inputNewCloudSpaceName">Description</label>
                                         <div class="controls">
-                                            <textarea style="min-height: 80px;" ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description"></textarea>
+                                            <textarea style="min-height: 80px; width: 330px;" ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description"></textarea>
                                         </div>
                                     </div>
                                 </div>

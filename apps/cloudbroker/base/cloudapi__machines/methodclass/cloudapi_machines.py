@@ -327,6 +327,10 @@ class cloudapi_machines(object):
 
         tags = str(machineId)
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
+        try:
+            j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
+        except Exception, e:
+            j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         provider, node = self._getProviderAndNode(machineId)
         if provider:
@@ -448,9 +452,9 @@ class cloudapi_machines(object):
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
         snapshots = provider.client.ex_listsnapshots(node)
-        if len(snapshots) > 10:
+        if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
-            return 'Max 10 snapshots allowed'
+            return 'Max 5 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_snapshot(node, name)

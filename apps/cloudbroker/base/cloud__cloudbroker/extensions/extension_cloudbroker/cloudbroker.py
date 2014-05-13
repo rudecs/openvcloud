@@ -5,22 +5,20 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
-class Class():
-    pass
+osiscl = j.core.osis.getClient(user='root')
+class Models(object):
+    def __getattr__(self, name):
+        attrib = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', name)
+        attrib.find = attrib.search
+        setattr(self, name, attrib)
+        return attrib
 
 cloudbroker = j.apps.cloud.cloudbroker
 
 ujson = j.db.serializers.ujson
 
 
-osiscl = j.core.osis.getClient(user='root')
-
-models = Class()
-for ns in osiscl.listNamespaceCategories('cloudbroker'):
-    models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
-    models.__dict__[ns].find = models.__dict__[ns].search
-
-
+models = Models()
 
 class Dummy(object):
     def __init__(self, **kwargs):
