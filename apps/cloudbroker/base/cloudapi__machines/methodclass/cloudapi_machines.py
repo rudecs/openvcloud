@@ -327,6 +327,10 @@ class cloudapi_machines(object):
 
         tags = str(machineId)
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
+        try:
+            j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
+        except Exception, e:
+            j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         provider, node = self._getProviderAndNode(machineId)
         if provider:
