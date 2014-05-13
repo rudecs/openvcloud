@@ -280,7 +280,10 @@ class CSLibvirtNodeDriver():
             if disk.attrib['device'] == 'disk':
                 source = disk.find('source')
                 if source != None:
-                    diskfiles.append(source.attrib['dev'])
+                    if 'dev' in source.attrib:
+                        diskfiles.append(source.attrib['dev'])
+                    if 'file' in source.attrib:
+                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def _get_snapshot_disk_file_names(self, xml):
