@@ -2,6 +2,7 @@ angular.module('cloudscalers.controllers')
     .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog',
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog) {
             $scope.portforwarding = [];
+            $scope.commonPortVar = "";
             $scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
                     Machine.list($scope.currentSpace.id).then(function(data) {
@@ -27,6 +28,16 @@ angular.module('cloudscalers.controllers')
                 $scope.commonports = data;
             });
 
+            // commonports auto suggest
+            Networks.commonports("...").then(function(data) {
+              $scope.commonPorts = data;
+            });
+
+            $scope.suggestCommonPorts = function(typedport){
+              Networks.commonports(typedport).then(function(data) {
+                $scope.commonPorts = data;
+              });
+            };
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
                     ip: $scope.currentSpace.publicipaddress,
@@ -84,7 +95,7 @@ angular.module('cloudscalers.controllers')
             	$scope.editRule = editRule;
 
                 $scope.delete = function () {
-                	$scope.editRule.action = 'delete';
+                  $scope.editRule.action = 'delete';
                     $modalInstance.close($scope.editRule);
                 };
                 $scope.cancel = function () {
@@ -100,9 +111,6 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.close($scope.editRule);
                 };
             }
-            	
-    
-            
             
             $scope.tableRowClicked = function (index) {
             	var selectForwardRule = $scope.portforwarding[index.id];
@@ -218,4 +226,44 @@ angular.module('cloudscalers.controllers')
        });
      }
    };
-});
+}).filter('groupBy', function(){
+        return function(list, group_by) {
+        var filtered = [];
+        var prev_item = null;
+        var group_changed = false;
+        var new_field = group_by + '_CHANGED';
+        angular.forEach(list, function(item) {
+            group_changed = false;
+            if (prev_item !== null) {
+                if (prev_item[group_by] !== item[group_by]) {
+                    group_changed = true;
+                }
+            } else {
+                group_changed = true;
+            }
+            if (group_changed) {
+                item[new_field] = true;
+            } else {
+                item[new_field] = false;
+            }
+            filtered.push(item);
+            prev_item = item;
+        });
+        return filtered;
+        };
+    }).filter('unique', function() {
+       return function(collection, keyname) {
+          var output = [],
+              keys = [];
+
+          angular.forEach(collection, function(item) {
+              var key = item[keyname];
+              if(keys.indexOf(key) === -1) {
+                  keys.push(key);
+                  output.push(item);
+              }
+          });
+
+          return output;
+       };
+    });

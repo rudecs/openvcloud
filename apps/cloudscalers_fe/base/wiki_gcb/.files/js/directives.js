@@ -122,17 +122,262 @@ angular.module('cloudscalers.directives', [])
             }
         };
     })
-		.directive('menuLinkActiveLocation',function($window) {
-			return {
-				restrict: 'A',
-				scope: {},
-				link: function(scope, element, attrs) {
-					var currentlocation = $window.location;
-					if (currentlocation.toString().search(attrs.menuLinkActiveLocation) > -1){
-							element.addClass('active');
-							element.parents('ul.body')[0].classList.add('active');
-						}
-				}
-			};
-		})
+	.directive('menuLinkActiveLocation',function($window) {
+		return {
+			restrict: 'A',
+			scope: {},
+			link: function(scope, element, attrs) {
+				var currentlocation = $window.location;
+				if (currentlocation.toString().search(attrs.menuLinkActiveLocation) > -1){
+						element.addClass('active');
+						element.parents('ul.body')[0].classList.add('active');
+					}
+			}
+		};
+	}).directive('numbersOnly', function(){
+   return {
+     require: 'ngModel',
+     link: function(scope, element, attrs, modelCtrl) {
+       modelCtrl.$parsers.push(function (inputValue) {
+           if (inputValue == undefined) return ''
+           var transformedInput = inputValue.replace(/[^0-9]/g, '');
+           if (transformedInput!=inputValue) {
+              modelCtrl.$setViewValue(transformedInput);
+              modelCtrl.$render();
+           }
+
+           return transformedInput;
+       });
+     }
+   };
+}).directive('autocomplete', function(){
+  var index = -1;
+
+  return {
+    restrict: 'E',
+    scope: {
+      searchParam: '=ngModel',
+      suggestions: '=data',
+      onType: '=onType'
+    },
+    controller: function($scope, $element, $attrs){
+      $scope.searchParam;
+      $scope.searchFilter;
+      $scope.selectedIndex = -1;
+      $scope.setIndex = function(i){
+        $scope.selectedIndex = parseInt(i);
+      }
+      this.setIndex = function(i){
+        $scope.setIndex(i);
+        $scope.$apply();
+      }
+      $scope.getIndex = function(i){
+        return $scope.selectedIndex;
+      }
+      var watching = true;
+      $scope.completing = false;
+      $scope.$watch('searchParam', function(newValue, oldValue){
+        if (oldValue === newValue) {
+          return;
+        }
+
+        if(watching && $scope.searchParam) {
+          $scope.completing = true;
+          $scope.searchFilter = $scope.searchParam;
+          $scope.selectedIndex = -1;
+        }
+        if($scope.onType)
+          $scope.onType($scope.searchParam);
+      });
+      this.preSelect = function(suggestion){
+
+        watching = false;
+        $scope.$apply();
+        watching = true;
+
+      }
+
+      $scope.preSelect = this.preSelect;
+
+      this.preSelectOff = function(){
+        watching = true;
+      }
+
+      $scope.preSelectOff = this.preSelectOff;
+
+      $scope.select = function(suggestion){
+        if(suggestion){
+          $scope.searchParam = suggestion;
+          $scope.searchFilter = suggestion;
+
+          if( $element.hasClass('publicPort') && $('.modal').find('.localPort').find('input').val() == ""){
+            $('.modal').find('.localPort').find('input').val($scope.searchFilter);
+          }
+          if( $element.hasClass('localPort') && $('.modal').find('.publicPort').find('input').val() == ""){
+            $('.modal').find('.publicPort').find('input').val($scope.searchFilter);
+          }
+
+
+        }
+        else{
+          $scope.searchFilter = "";
+        }
+        watching = false;
+        $scope.completing = false;
+        setTimeout(function(){watching = true;},1000);
+        $scope.setIndex(-1);
+
+      }
+
+    },
+    link: function(scope, element, attrs){
+
+      var attr = '';
+
+      // Default atts
+      scope.attrs = {
+        "placeholder": "Port",
+        "class": "",
+        "id": "",
+        "inputclass": "",
+        "inputid": ""
+      };
+
+      for (var a in attrs) {
+        attr = a.replace('attr', '').toLowerCase();
+        if (a.indexOf('attr') === 0) {
+          scope.attrs[attr] = attrs[a];
+        }
+      }
+
+      if(attrs["clickActivation"]=="true"){
+        element[0].onclick = function(e){          
+          if(!scope.searchParam){
+            scope.completing = true;
+            scope.$apply();
+          }
+          else{
+            scope.completing = true;
+            scope.$apply();
+          }
+        };
+      }
+
+      var key = {left: 37, up: 38, right: 39, down: 40 , enter: 13, esc: 27};
+
+      document.addEventListener("keydown", function(e){
+        var keycode = e.keyCode || e.which;
+        switch (keycode){
+          case key.esc:
+            scope.select();
+            scope.setIndex(-1);
+            scope.$apply();
+            e.preventDefault();
+        }
+      }, true);
+
+      element[0].addEventListener("blur", function(e){
+        setTimeout(function() {
+          scope.select();
+          scope.setIndex(-1);
+          scope.$apply();
+        }, 200);
+      }, true);
+
+      element[0].addEventListener("keydown",function (e){
+
+        var keycode = e.keyCode || e.which;
+        var l = angular.element(this).find('li').length;
+        switch (keycode){
+          case key.up:    
+ 
+            index = scope.getIndex()-1;
+            if(index<-1){
+              index = l-1;
+            } else if (index >= l ){
+              index = -1;
+              scope.setIndex(index);
+              scope.preSelectOff();
+              break;
+            }
+            scope.setIndex(index);
+
+            if(index!==-1)
+              scope.preSelect(angular.element(angular.element(this).find('li')[index]).text());
+
+            scope.$apply();
+
+            break;
+          case key.down:
+
+            index = scope.getIndex()+1;
+            if(index<-1){
+              index = l-1;
+            } else if (index >= l ){
+              index = -1;
+              scope.setIndex(index);
+              scope.preSelectOff();
+              scope.$apply();
+              break;
+            }
+            scope.setIndex(index);
+            
+            if(index!==-1)
+              scope.preSelect(angular.element(angular.element(this).find('li')[index]).text());
+
+            break;
+          case key.left:    
+            break;
+          case key.right:  
+          case key.enter:  
+
+            index = scope.getIndex();
+            if(index !== -1)
+              scope.select(angular.element(angular.element(this).find('li')[index]).context.attributes.val.value);
+            scope.setIndex(-1);     
+            scope.$apply();
+
+            break;
+          case key.esc:
+            scope.select();
+            scope.setIndex(-1);
+            scope.$apply();
+            e.preventDefault();
+            break;
+          default:
+            return;
+        }
+
+        if(scope.getIndex()!==-1 || keycode == key.enter)
+          e.preventDefault();
+      });
+    },
+    template: '<div class="autocomplete {{attrs.class}}" id="{{attrs.id}}">'+
+                '<input type="text" ng-model="searchParam" required numbers-only="numbers-only" placeholder="{{attrs.placeholder}}" class="form-control" id="{{attrs.inputid}}" style="width: 173px; position:relative;"></input>' +
+                '<ul ng-show="completing">' +
+                  '<li suggestion ng-repeat="suggestion in suggestions | filter:searchFilter | orderBy:\'toString()\' track by $index"'+
+                  'index="{{$index}}" val="{{suggestion.port}}" ng-class="{active: '+
+                  '($index == selectedIndex)}" ng-click="select(suggestion.port)"> '+
+                    '{{suggestion.name}} / {{suggestion.port}}' +
+                  '</li>'+
+                '</ul>'+
+              '</div>'
+  }
+}).directive('suggestion', function(){
+  return {
+    restrict: 'A',
+    require: '^autocomplete', // ^look for controller on parents element
+    link: function(scope, element, attrs, autoCtrl){
+      element.bind('mouseenter', function() {
+        autoCtrl.preSelect(attrs['val']);
+        autoCtrl.setIndex(attrs['index']);
+      });
+
+      element.bind('mouseleave', function() {
+        autoCtrl.preSelectOff();
+      });
+    }
+  }
+})
+    
 ;
