@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
             },
 
            'responseError': function(rejection) {
-        	   if (rejection.status == 401){
+        	   if (rejection.status == 401 || rejection.status == 419){
         		   var uri = new URI($window.location);
 
        				uri.filename('Login');
