@@ -116,7 +116,7 @@ class cloudapi_users(object):
         server.quit()
 
     def _isValidUserName(self, username):
-        r = re.compile('^[a-zA-Z0-9]{1,20}$')
+        r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
         
 
@@ -132,8 +132,8 @@ class cloudapi_users(object):
         ctx = kwargs['ctx']
         if not self._isValidUserName(username):
             ctx.start_response('400 Bad Request', [])
-            return '''An account name can not exceed 20 characters
-             and can only contain a-z, A-Z and 0-9'''
+            return '''An account name may not exceed 20 characters
+             and may only contain a-z and 0-9'''
         
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
