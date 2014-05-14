@@ -126,6 +126,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 p { color:#77777b; }
 body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; }
  @media (max-width: 1376px) {
+.creditMargin .form-control {font-size: 13px !important;}
 .expires {width: 39% !important;margin: 0 3px;}
 .creditForm .nameField {width: 60% !important;}
 .creditForm .nameField h2 {max-width: 102px !important;}
