@@ -74,14 +74,14 @@ h1 { margin-bottom: 20px; }
 
                         <li ng-show="machine.status == 'HALTED' && machine.locked == false">
                             <a ng-click="start()">
-                                <i class="fa fa-play-circle-o"></i>
+                                <i class="fa fa-play-circle"></i>
                                 Start
                             </a>
                         </li>
 
                         <li ng-show="machine.status == 'PAUSED'">
                             <a ng-click="resume()">
-                                <i class="fa fa-play-circle-o"></i>
+                                <i class="fa fa-play-circle"></i>
                                 Resume
                             </a>
                         </li>
