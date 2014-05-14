@@ -4,7 +4,7 @@ h1. Checkout
 
 {{html:
 
-<form class="form-horizontal">
+<form class="form-horizontal creditForm">
   <fieldset>
     <div class="nameField">
         <h2>*First Name:</h2>
@@ -302,7 +302,7 @@ h1. Checkout
 </select>
     </div>
     <hr>
-    <div class="visa">
+    <div class="visa nameField">
      <img src="/$$space/.files/img/images/visa.jpg" />
     </div>
    

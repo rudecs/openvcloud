@@ -77,7 +77,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 .marginTop + .container { margin-bottom: 100px; }
 .nameField { font-size: 26px; color: #06a7e2; width: 60%; margin: 21px 0; display: inline-block; }/**/
 .nameField input { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 0 5px; font-size: 17px !important; color: #77777b; width: 500px; float: right; }/**/
-.nameField select { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 0 5px; font-size: 17px !important; color: #77777b; width: 500px; float: right; }/**/
+.nameField select { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 0 5px; font-size: 17px !important; color: #77777b; float: right; }/**/
 .machineBox { }
 .machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0; }/**/
 .machineList ul li, .storage-size-list li { float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px; }/**/
@@ -126,6 +126,9 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 p { color:#77777b; }
 body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; }
  @media (max-width: 1376px) {
+.expires {width: 39% !important;margin: 0 3px;}
+.creditForm .nameField {width: 60% !important;}
+.creditForm .nameField h2 {max-width: 102px !important;}
 .nameField h2 {max-width: 73px !important;}
 .boxes p { width: 340px !important; }
 .mainText { font-size: 36px !important; }
@@ -197,6 +200,8 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .areaStyle textarea { font-size: 12px !important }
 }
  @media (max-width: 1290px) {
+.creditForm .nameField {width: 64% !important;}
+.creditForm .nameField h2 {max-width: 69px !important;}
 .boxes p { width: 340px !important; }
 .mainText { font-size: 40px !important; }
 .nameField { width: 76%; }
@@ -270,6 +275,7 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .newDecks .color3 { margin: 10px 0; }
 }
  @media (max-width: 992px) {
+.creditForm .nameField {width: 70% !important;}
 .boxes p { width: 77% !important; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
 .nameField { width: 84%; }
@@ -297,6 +303,7 @@ footer .container { width: auto; }
 .boxDecks2 { width: auto !important; min-height: auto !important; }
 }
  @media (max-width: 768px) {
+.creditForm .nameField {width: 100% !important;}
 .nameField h2 { max-width: 100% !important;}
 .boxes p { width: 79% !important; }
 .boxes.font { display: inline-block; width: 100%; margin: 20px 0; }
@@ -818,6 +825,8 @@ body body #extra { background-color: #06a7e2 !important; }
 hr { clear: both;margin-top: 20px !important;margin-bottom: 20px !important; border-top: 1px solid #E3E3E3;}
 .sectionSeperat { clear: both;}
 .borderAll { border: 1px solid #C3C3C3 !important;padding: 3px 6px !important;margin: -3px 0;}
-.expires { width: 41% !important;margin: 0 3px;}
-.visa { margin: 0 0 0 -10px;}
+.expires { width: 37%;margin: 0 3px;}
+.visa { margin: 0 0 0 5px;text-align: right;}
 .ver { margin: -10px 0 0 0;}
+.creditForm .nameField { width: 64%;}
+.creditForm .nameField  h2 { max-width: 127px;}
