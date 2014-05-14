@@ -16,7 +16,9 @@
                   <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="username">Username:</label>
                     <div class="inputWrap">
-                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" />
+                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" ng-pattern="/^[a-z0-9]{0,20}$/"/>
+
+			<div class="alert alert-error ng-hide" ng-show="reg.username.$error.pattern">The username may not exceed 20 characters and may only contain lowercase a-z and 0-9</div>
                     </div>
                   </div>
                 </div>
