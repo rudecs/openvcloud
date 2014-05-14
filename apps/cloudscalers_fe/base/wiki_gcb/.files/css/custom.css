@@ -826,7 +826,11 @@ hr { clear: both;margin-top: 20px !important;margin-bottom: 20px !important; bor
 .sectionSeperat { clear: both;}
 .borderAll { border: 1px solid #C3C3C3 !important;padding: 3px 6px !important;margin: -3px 0;}
 .expires { width: 37%;margin: 0 3px;}
-.visa { margin: 0 0 0 5px;text-align: right;}
+.visa { margin: -8px 0 0 -7px;}
 .ver { margin: -10px 0 0 0;}
 .creditForm .nameField { width: 64%;}
 .creditForm .nameField  h2 { max-width: 127px;}
+.creditMargin { margin: 15px 0;}
+.creditMargin .form-control { margin: 10px 0; border: 1px solid #06a7e2; box-shadow: none; border-radius: 0; color: #000;}
+.discRow { margin: 10px 15px;color: #06a7e2;}
+.creditMargin .form-control::-webkit-input-placeholder { color: #000; }
