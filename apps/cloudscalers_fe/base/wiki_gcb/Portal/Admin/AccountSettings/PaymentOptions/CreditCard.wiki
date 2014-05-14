@@ -456,7 +456,7 @@ h1. Checkout
     </div>
     
     <div class="form-actions justFormButton nameField">
-    <img class="ver" src="/$$space/.files/img/images/ver.jpg" />
+    <!--<img class="ver" src="/$$space/.files/img/images/ver.jpg" />-->
       <button class="btn btn-info btn-large floatR" >Pay Now Button</button> 
     </div>
 
