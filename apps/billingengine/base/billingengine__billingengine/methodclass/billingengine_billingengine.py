@@ -61,7 +61,7 @@ class billingengine_billingengine(j.code.classGetBase()):
                 if (machinebillingstatement.creationTime < fromTime):
                     number_of_billable_hours -= (fromTime * 3600.0)
 
-        price_per_hour = self._pricing._get_machine_price_per_hour(machine)
+        price_per_hour = self._pricing.get_machine_price_per_hour(machine)
         machinebillingstatement.cost = number_of_billable_hours * price_per_hour
 
     def _update_usage(self, billing_statement):
@@ -74,7 +74,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         billing_statement.totalCost = 0.0
 
         for cloudspace in cloudspaces:
-            query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId','imageId','sizeId']}
+            query = {'fields':['id','creationTime','deletionTime','name','cloudspaceId','imageId','sizeId','disks']}
 
             query['query'] = {'filtered':{
                           "query" : {"term" : { "cloudspaceId" : cloudspace['id'] }},
