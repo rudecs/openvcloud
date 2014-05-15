@@ -218,7 +218,7 @@ class cloudapi_machines(object):
         new_burnrate = burnrate + hourly_price_new_machine
         if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
             ctx.start_response('409 Conflict', [])
-            return 'Not enough credit for this machine to run for 2 weeks'
+            return 'Not enough credit for this machine to run for %s days' % self._minimum_days_of_credit_required
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
