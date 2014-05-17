@@ -5,9 +5,14 @@ def installFreshComputeNode(nocps_url, macaddress, hostname, ip):
     print 'Installing Ubuntu 13.10 on the compute node'
     
     ps = xmlrpclib.ServerProxy(nocps_url)
-    if not macaddress:
+    if not macaddress or not ip:
+        hosts = ps.PXE_API.searchHosts({'query': hostname})['data']
+        for host in hosts:
+            if host['hostname'] == hostname:
+                macaddress = host['mac']
+                break
+    elif not macaddress:
         macaddress = ps.PXE_API.getServerByIP(ip)
-    
     serverdetails = {
                      'adminuser': 'cs',
                      'hostname': hostname,
