@@ -1,10 +1,12 @@
 import xmlrpclib
 import time
 
-def installFreshComputeNode(nocps_url, macaddress, hostname):
+def installFreshComputeNode(nocps_url, macaddress, hostname, ip):
     print 'Installing Ubuntu 13.10 on the compute node'
     
     ps = xmlrpclib.ServerProxy(nocps_url)
+    if not macaddress:
+        macaddress = ps.PXE_API.getServerByIP(ip)
     
     serverdetails = {
                      'adminuser': 'cs',
@@ -38,8 +40,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-u','--url',required=True, help='Url of nocps xmlrpc server like https://user:password@nocps.incubaid.com/xmlrpc.php')
-    parser.add_argument('-m','--mac',required=True, help='MAC address of the server to be reinstalled')
+    parser.add_argument('-m','--mac',required=False, help='MAC address of the server to be reinstalled')
+    parser.add_argument('-i','--ip',required=False, help='IP address of the server to be reinstalled')
     parser.add_argument('--hostname', required=True, help='Hostname of the server to be reinstalled')
     args = parser.parse_args()
     
-    installFreshComputeNode(args.url, args.mac, args.hostname)
+    installFreshComputeNode(args.url, args.mac, args.hostname, args.ip)
