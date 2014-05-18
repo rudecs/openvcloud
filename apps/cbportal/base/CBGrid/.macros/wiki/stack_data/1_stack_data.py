@@ -1,0 +1,21 @@
+
+def main(j, args, params, tags, tasklet):
+    import JumpScale.baselib.units
+
+    stid = args.getTag('id')
+    if not stid:
+        out = 'Missing Stack id param "id"'
+        params.result = (out, args.doc)
+        return params
+
+    ccl = j.core.osis.getClientForNamespace('cloudbroker')
+
+    def objFetchManipulate(id):
+        return ccl.stack.get(stid).dump()
+
+    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
+
+    return push2doc(args,params,objFetchManipulate)
+
+def match(j, args, params, tags, tasklet):
+    return True
