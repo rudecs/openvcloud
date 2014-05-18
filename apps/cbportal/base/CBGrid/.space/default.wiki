@@ -1,28 +1,28 @@
 
-{{title:QWiki}}
+{{title:CBGrid}}
 
-{{projectname:TestSpace}}
+{{projectname:CloudBroker Grid}}
 
 {{find}}
 
 {{menu:
-System:/System
-RestInterface:/rest
-Explorer:/System/Explorer
 }}
 
-@block
-@row
+{{menuadmin_cbgrid}}
 
-@col 3
-{{navigation}}
-@divend
-
-@col 9
+@col 10
 
 {content}
 
 @divend
-@divend
+
+{{cssstyle
+td {
+    max-width:500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;}
+}}
+
 
 

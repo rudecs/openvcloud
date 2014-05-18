@@ -1,0 +1,10 @@
+@usedefault
+
+{{Account id:$$id}}
+
+h2. Account
+
+h3. Details
+|*Account ID*|$$id|
+|*Name*|$$name|
+|*Access Control List*|$$acl|
