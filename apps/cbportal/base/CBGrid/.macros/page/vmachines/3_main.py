@@ -15,10 +15,13 @@ def main(j, args, params, tags, tasklet):
         return time
 
     def stackLinkify(row, field):
-        return '[%s|cbgrid/stack?id=%s]' % (row[field], row[field])
+        return '[%s|stack?id=%s]' % (row[field], row[field])
+
+    def nameLinkify(row, field):
+        return '[%s|vmachine?id=%s]' % (row[field], row['id'])
 
     fieldids = ['name', 'descr', 'status', 'creationTime', 'stackId']
-    fieldvalues = ['name', 'descr', 'status', makeTime, stackLinkify]
+    fieldvalues = [nameLinkify, 'descr', 'status', makeTime, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

@@ -1,0 +1,7 @@
+@usedefaults
+
+h3. VMachine
+
+{{vmachine: id:$$id}}
+
+h2. VMachine $$name
