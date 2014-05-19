@@ -1,7 +1,22 @@
 @usedefaults
 
-h3. VMachine
-
 {{vmachine: id:$$id}}
 
-h2. VMachine $$name
+h2. VMachine '$$name'
+
+* *ID*: $$id
+* *Description*: $$descr
+* *Created at*: $$createdat
+* *Size*: $$size
+* *Image*: [$$image|image?id=$$imageid]
+* *Status*: $$status
+* *Host Name*: $$hostname
+* *Hypervisor Type*: $$hypervisortype
+* *Stack*: [$$stackname|stack?id=$$stackid]
+* *Cloudspace*: [$$spacename|cloudspace?id=$$cloudspaceid]
+* *NICs*:
+$$nics
+* *Disks*:
+$$disks
+
+
