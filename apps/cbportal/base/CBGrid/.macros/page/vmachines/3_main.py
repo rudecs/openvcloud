@@ -4,11 +4,15 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
     stackid = args.getTag("stackid")
+    cloudspaceId = args.getTag("cloudspaceId")
     filters = dict()
+
     if stackid:
         filters['stackId'] = stackid
+    if cloudspaceId:
+        filters['cloudspaceId'] = cloudspaceId
 
-    fieldnames = ['Name', 'Status', 'Created at', 'Stack']
+    fieldnames = ['Name', 'Status', 'Created at', 'Cloud Space', 'Stack']
 
     def makeTime(row, field):
         time = datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
@@ -20,8 +24,11 @@ def main(j, args, params, tags, tasklet):
     def nameLinkify(row, field):
         return '[%s|vmachine?id=%s]' % (row[field], row['id'])
 
-    fieldids = ['name', 'status', 'creationTime', 'stackId']
-    fieldvalues = [nameLinkify, 'status', makeTime, stackLinkify]
+    def spaceLinkify(row, field):
+        return '[%s|cloudspace?id=%s]' % (row[field], row[field])
+
+    fieldids = ['name', 'status', 'creationTime', 'cloudspaceId', 'stackId']
+    fieldvalues = [nameLinkify, 'status', makeTime, spaceLinkify, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
