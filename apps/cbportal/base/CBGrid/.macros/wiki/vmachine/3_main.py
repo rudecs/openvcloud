@@ -37,6 +37,7 @@ def main(j, args, params, tags, tasklet):
             data['disks'] += '|%s|%s|%s|\n' % (disk.diskPath or 'N/A', disk.order or 'N/A', '%s GB used of %s GB' % (disk.sizeUsed, disk.sizeMax))
 
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
+        data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
         data['size'] = '%s vCPUs, %s Memory, %s' % (size.vcpus, size.memory, size.description)
         data['image'] = image.name
         data['stackname'] = stack.name

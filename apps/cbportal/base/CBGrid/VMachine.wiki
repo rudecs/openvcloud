@@ -7,6 +7,7 @@ h2. VMachine '$$name'
 * *ID*: $$id
 * *Description*: $$descr
 * *Created at*: $$createdat
+* *Deleted at*: $$deletedat
 * *Size*: $$size
 * *Image*: [$$image|image?id=$$imageid]
 * *Status*: $$status
