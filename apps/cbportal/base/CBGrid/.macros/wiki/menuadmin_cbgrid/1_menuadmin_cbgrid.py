@@ -31,6 +31,7 @@ Tests:/tests
 --------------
 Accounts:/cbgrid/accounts
 Cloud Spaces:/cbgrid/cloudspaces
+Credit Information:/cbgrid/creditInfo
 Images:/cbgrid/images
 Networks:/cbgrid/networks
 Stacks:/cbgrid/stacks
