@@ -13,10 +13,11 @@ def main(j, args, params, tags, tasklet):
 
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
-    space = cbclient.cloudspace.get(id)
-    if not space:
+    if not cbclient.cloudspace.exists(id):
         params.result = ('CloudSpace with id %s not found' % id, args.doc)
         return params
+
+    space = cbclient.cloudspace.get(id)
 
     def objFetchManipulate(id):
         obj = space.dump()

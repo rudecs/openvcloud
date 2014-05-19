@@ -13,11 +13,12 @@ def main(j, args, params, tags, tasklet):
 
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
-    accountobj = cbclient.account.get(id)
-    if not accountobj:
+    if not cbclient.account.exists(id):
         params.result = ('Account with id %s not found' % id, args.doc)
         return params
 
+    accountobj = cbclient.account.get(id)
+    
     def objFetchManipulate(id):
         account = accountobj.dump()
         account['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in account['acl']]))

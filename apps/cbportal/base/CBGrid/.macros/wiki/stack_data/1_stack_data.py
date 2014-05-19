@@ -10,6 +10,10 @@ def main(j, args, params, tags, tasklet):
 
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
+    if not ccl.stack.exists(stid):
+        params.result = ('Stack with id %s not found' % stid, args.doc)
+        return params
+
     def objFetchManipulate(id):
         return ccl.stack.get(stid).dump()
 

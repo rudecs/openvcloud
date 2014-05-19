@@ -34,6 +34,7 @@ Cloud Spaces:/cbgrid/cloudspaces
 Images:/cbgrid/images
 Networks:/cbgrid/networks
 Stacks:/cbgrid/stacks
+Users:/cbgrid/users
 Virtual Machines:/cbgrid/vmachines
 """
     # C+=spacestxt
