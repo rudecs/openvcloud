@@ -1,9 +1,5 @@
 @usedefault
 
-h2. CloudBroker Grid
+h3. Accounts
 
-h3. Cloudbroker Account
 {{cbgrid.accounts}}
-
-h3. Cloudbroker Spaces
-{{cbgrid.spaces}}
