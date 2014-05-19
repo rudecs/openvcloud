@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     if stackid:
         filters['stackId'] = stackid
 
-    fieldnames = ['Name', 'Description', 'Status', 'Created at', 'Stack']
+    fieldnames = ['Name', 'Status', 'Created at', 'Stack']
 
     def makeTime(row, field):
         time = datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
@@ -20,8 +20,8 @@ def main(j, args, params, tags, tasklet):
     def nameLinkify(row, field):
         return '[%s|vmachine?id=%s]' % (row[field], row['id'])
 
-    fieldids = ['name', 'descr', 'status', 'creationTime', 'stackId']
-    fieldvalues = [nameLinkify, 'descr', 'status', makeTime, stackLinkify]
+    fieldids = ['name', 'status', 'creationTime', 'stackId']
+    fieldvalues = [nameLinkify, 'status', makeTime, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
