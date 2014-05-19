@@ -1,0 +1,38 @@
+@template public
+{{div: class=white}}
+{{div: class=container why-page}}
+
+@col12
+
+h1. Account activation
+
+{{html:
+<div ng-controller="AccountActivationController" ng-cloak>
+
+    <div ng-show="verificationStatus=='PENDING'">
+}}
+
+Verifying...
+
+{{html:
+    </div>
+    <div ng-show="verificationStatus=='EXPIRED'">
+}}
+Your activation link expired, you have to [SignUp | sign up] again.
+
+{{html:
+    </div>
+    <div ng-show="verificationStatus=='ACCEPTED'">
+}}
+Successfully activated your account, you will be redirected to the [Login | login page].
+
+{{html:
+    </div>
+</div>
+}}
+
+
+
+@divend
+@divend
+@divend

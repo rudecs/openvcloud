@@ -149,6 +149,17 @@ angular.module('cloudscalers.services')
             });
             return signUpResult;
         };
+        
+        user.activateAccount = function(activationToken){
+        	return $http(cloudspaceconfig.apibaseurl + '/users/activate?activationtoken=' +  + encodeURIComponent(activationToken)).then(
+        			function(result){
+        				return result.data;
+        			},
+        			function(reason){
+        				return $q.reject(reason);
+        			}
+        	);
+        };
 
         return user;
 
