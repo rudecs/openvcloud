@@ -10,4 +10,4 @@ h3. Details
 |*Access Control List*|$$acl|
 
 h3. Spaces
-{{cbgrid.spaces: accountId:$$id}}
+{{cbspaces: accountId:$$id}}

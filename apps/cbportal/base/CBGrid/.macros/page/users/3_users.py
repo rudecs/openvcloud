@@ -13,14 +13,11 @@ def main(j, args, params, tags, tasklet):
 
     fieldnames = ['ID', 'Domain', 'Roles', 'Groups', 'Description', 'Active', 'Last Checked']
 
-    def makeTime(row, field):
-        return datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
-
     def makeLink(row, field):
-        return '[%s|CBGrid/user?id=%s]' % (row[field], row[field])
+        return '[%s|/CBGrid/user?id=%s]' % (row[field], row[field])
 
     fieldids = ['id', 'domain', 'roles', 'groups', 'description', 'active', 'lastcheck']
-    fieldvalues = [makeLink, 'domain', 'roles', 'groups', 'description', 'active', makeTime]
+    fieldvalues = [makeLink, 'domain', 'roles', 'groups', 'description', 'active', modifier.makeTime]
     tableid = modifier.addTableForModel('system', 'user', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

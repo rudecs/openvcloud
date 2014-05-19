@@ -11,16 +11,15 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    import JumpScale.grid.osis
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
-    space = cbclient.cloudspace.simpleSearch({'id':id})
+    space = cbclient.cloudspace.get(id)
     if not space:
         params.result = ('CloudSpace with id %s not found' % id, args.doc)
         return params
 
     def objFetchManipulate(id):
-        obj = space[0]
+        obj = space.dump()
         
         resourceLimits = list()
         for k, v in obj['resourceLimits'].iteritems():

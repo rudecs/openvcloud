@@ -19,23 +19,17 @@ def main(j, args, params, tags, tasklet):
             resourceLimits.append('%s: %s'% (k, str(v)))
         return str('<br>'.join(resourceLimits))
 
-    def makeID(row, field):
-        return '[%s|CBGrid/cloudspace?id=%s]' % (row[field], row[field])
-
-    def makeNW(row, field):
-        return '[%s|CBGrid/network?id=%s]' % (row[field], row[field])
-
-    def makeACC(row, field):
-        return '[%s|CBGrid/account?id=%s]' % (row[field], row[field])
-
     def makeRPS(row, field):
-        links = [' ']
+        links = list()
         for rps in row[field]:
-            links.append('[%s|CBGrid/stack?id=%s]' % (rps, rps))
+            links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
         return ', '.join(links)
 
     fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'status', 'acl', 'descr', 'publicipaddress', 'resourceLimits']
-    fieldvalues = [makeID, 'name', makeACC, makeNW, makeRPS, 'status', makeACL, 'descr', 'publicipaddress', makeRL]
+    fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
+                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
+                   '[%(networkId)s|/CBGrid/network?id=%(networkId)s]', makeRPS, 'status', 
+                   makeACL, 'descr', 'publicipaddress', makeRL]
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

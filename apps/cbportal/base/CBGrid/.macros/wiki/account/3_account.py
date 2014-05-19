@@ -11,19 +11,18 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    import JumpScale.grid.osis
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
-    account = cbclient.account.simpleSearch({'id':id})
-    if not account:
+    accountobj = cbclient.account.get(id)
+    if not accountobj:
         params.result = ('Account with id %s not found' % id, args.doc)
         return params
 
     def objFetchManipulate(id):
-        obj = account[0]
-        obj['acl'] = str(', '.join(['*%s*:%s' % (acl['userGroupId'], acl['right']) for acl in obj['acl']]))
+        account = accountobj.dump()
+        account['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in account['acl']]))
 
-        return obj
+        return account
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
 

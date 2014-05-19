@@ -7,11 +7,10 @@ h2. Cloud Space
 h3. Details
 |*CloudSpace ID*|$$id|
 |*Name*|$$name|
-|*Account ID*|[$$accountId|account?id=$$accountId]|
-|*Network ID*|[$$networkId|netword?id=$$networkId]|
-|*Stack ID*|[$$resourceProviderStacks|stack?id=$$resourceProviderStacks]|
+|*Account ID*|[$$accountid|account?id=$$accountid]|
+|*Network ID*|[$$networkid|netword?id=$$networkid]|
+|*Stack ID*|$$resourceproviderstacks|
 |*Status*|$$status|
 |*Access Control List*|$$acl|
 |*Description*|$$descr|
-|*Account ID*|[$$accountId|account?id=$$accountId]|
 |*Public IP Adress*|$$publicipaddress|

@@ -2,4 +2,4 @@
 
 h2. CloudSpaces
 
-{{cbgrid.spaces}}
+{{cbspaces}}

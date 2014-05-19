@@ -8,9 +8,9 @@ h3. Details
 |*Network ID*|$$id|
 |*Name*|$$name|
 |*Name Servers*|$$nameservers|
-|*VLAN ID*|[$$vlanId|vlan?id=$$vlanId]|
-|*Stack ID*|[$$resourceProviderStacks|stack?id=$$resourceProviderStacks]|
+|*VLAN ID*|[$$vlanid|vlan?id=$$vlanid]|
+|*Stack ID*|[$$resourceproviderstacks|stack?id=$$resourceproviderstacks]|
 |*Subnet*|$$subnet|
 |*Net Mask*|$$netmask|
 |*Description*|$$descr|
-|*CloudSpace ID*|[$$cloudspaceId|cloudspace?id=$$cloudspaceId]|
+|*CloudSpace ID*|[$$cloudspaceid|cloudspace?id=$$cloudspaceid]|
