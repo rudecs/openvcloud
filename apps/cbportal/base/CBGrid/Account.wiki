@@ -8,3 +8,6 @@ h3. Details
 |*Account ID*|$$id|
 |*Name*|$$name|
 |*Access Control List*|$$acl|
+
+h3. Spaces
+{{cbgrid.spaces: accountId:$$id}}

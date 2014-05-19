@@ -2,8 +2,8 @@
 
 h2. CloudBroker Grid
 
-h3. Cloudbroker users
-{{cbgrid.users}}
+h3. Cloudbroker Account
+{{cbgrid.accounts}}
 
 h3. Cloudbroker Spaces
 {{cbgrid.spaces}}
