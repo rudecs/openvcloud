@@ -12,7 +12,7 @@ h2. VMachine '$$name'
 * *Status*: $$status
 * *Host Name*: $$hostname
 * *Hypervisor Type*: $$hypervisortype
-* *Stack*: [$$stackname|stack?id=$$stackid]
+* *Stack*: [$$stackname|stack?id=$$stackid] ($$stackrefid)
 * *Cloudspace*: [$$spacename|cloudspace?id=$$cloudspaceid]
 * *NICs*:
 $$nics
