@@ -4,9 +4,9 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
-    for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        filters[tag] = val
+    accountId = args.getTag('accountId')
+    if accountId:
+        filters['accountId'] = accountId
 
     fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Resource Provider Stacks', 'Status', 'Access Control List', 'Description', 'Public IP Address', 'Resource Limits']
 
