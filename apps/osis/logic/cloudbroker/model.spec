@@ -42,6 +42,21 @@
     prop:id int,,
     prop:name str,,Name of account
     prop:acl list(ACE),, access control list
+    prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED)
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deactivationTime int,, epoch time of the deactivation, in seconds
+    prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
+    prop:company str,, Company holding the account
+    prop:companyurl str,, Website of the company holding the account
+
+[rootmodel:AccountActivationToken]
+    """
+    Token for accountactivation
+    """
+    prop:id str,, The activation token the user will user
+    prop:accountId int,, Account this token is for
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deletionTime int,, epoch time of deletion (inactivation), in seconds
 
 [model:ACE]
     """

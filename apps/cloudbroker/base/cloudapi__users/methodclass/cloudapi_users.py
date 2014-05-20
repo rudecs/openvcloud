@@ -1,5 +1,6 @@
 from JumpScale import j
-import re
+import JumpScale.baselib.mailclient
+import re, string, random, time
 
 class cloudapi_users(object):
     """
@@ -59,66 +60,43 @@ class cloudapi_users(object):
             ctx = kwargs['ctx']
             ctx.start_response('404 Not Found', [])
             return 'User not found'
-    
+
     def _send_signup_mail(self, **kwargs):
         shouldsendmail = j.application.config.get("mothership1.cloudbroker.sendmail")
         if shouldsendmail is not '1':
             return
-        import smtplib
-        from email.mime.multipart import MIMEMultipart
-        from email.mime.text import MIMEText
-        
+
         fromaddr = 'support@mothership1.com'
-        toaddrs  = 'support@mothership1.com'
-        
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = "New customer on %s" % kwargs['portalurl']
-        msg['From'] = fromaddr
-        msg['To'] = toaddrs
-        text = "A new customer registration needs to be handled.\nCustomer Id: \nYours sincerely,\nThe CloudBroker"
+        toaddrs  = kwargs['emailaddress']
+
+
         html = """
 <html>
-  <head></head>
-  <body>
-    <p><h1>New customer</h1><br>
-       Account Id: %s<br/>
-       Account username: %s<br/>
-       Account name: %s<br/>
-       Password: %s<br/>
-       Email Address: %s<br/>
-       Company: %s <br/>
-       Company Url: %s <br/>
-       Preferred location: %s <br/>
-       Environment: %s
-    </p>
-  </body>
+    <head></head>
+    <body>
+        Dear %s,<br>
+        <br>
+        Thank you for registering %s at Mothership<sup>1</sup>!<br>
+        <br>
+        Please confirm your e-mail address by following the activation link: <a href="%s/AccountActivation?activationtoken=%s">%s/AccountActivation?activationtoken=%s</a><br>
+        If you are unable to follow the link, please copy and paste it in your favourite browser.
+        <br>
+        After your validation, you will be able to log in with your username and chosen password.<br>
+        <br>
+        Best Regards,<br>
+        <br>
+        The Mothership<sup>1</sup> Team<br>
+        <a href="%s">www.mothership1.com</a><br>
+    </body>
 </html>
-""" % (kwargs['accountid'],kwargs['username'],kwargs['user'], kwargs['password'], kwargs['emailaddress'],kwargs['company'], kwargs['companyurl'], kwargs['portalurl'], kwargs['location'])
+""" % (kwargs['user'], kwargs['username'] , kwargs['portalurl'], kwargs['activationtoken'],kwargs['portalurl'], kwargs['activationtoken'], kwargs['portalurl'])
 
-        # Record the MIME types of both parts - text/plain and text/html.
-        part1 = MIMEText(text, 'plain')
-        part2 = MIMEText(html, 'html')
-
-        msg.attach(part1)
-        msg.attach(part2)
-
-        # Credentials (if needed)
-        username = j.application.config.get("mothership1.cloudbroker.mailfrom") 
-        password = j.application.config.get("mothership1.cloudbroker.mailpassword") 
-
-        # The actual mail send
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-        server.login(username,password)
-        server.sendmail(fromaddr, toaddrs, msg.as_string())
-        server.quit()
+        j.clients.mail.send(fromaddr, toaddrs, html, "Mothership1 account activation", files=None)
 
     def _isValidUserName(self, username):
         r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
-        
+
 
     def register(self, username, user, emailaddress, password, company, companyurl, location, **kwargs):
         """
@@ -128,43 +106,65 @@ class cloudapi_users(object):
         param:password unique password for the account
         result bool
         """
-        
+
         ctx = kwargs['ctx']
         if not self._isValidUserName(username):
             ctx.start_response('400 Bad Request', [])
             return '''An account name may not exceed 20 characters
              and may only contain a-z and 0-9'''
-        
+
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
             return 'User already exists'
         else:
-            #During beta, generate a random password
-            import string, random
-            password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(12))
-            
+            now = int(time.time())
+
+            if not location in ('US1',):
+                location = 'CA1'
+
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.models.account.new()
             account.name = username
+            account.creationTime = now
+            account.DCLocation = location
+            account.company = company
+            account.companyurl = companyurl
+            account.status = 'UNCONFIRMED'
+
             ace = account.new_acl()
             ace.userGroupId = username
             ace.type = 'U'
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
+
+            #Create CloudSpace
+            networkid = self.libvirt_actor.getFreeNetworkId()
+            publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
+            cs = self.models.cloudspace.new()
+            cs.name = 'default'
+            cs.accountId = accountid
+            cs.networkId = networkid
+            cs.publicipaddress = publicipaddress
+            ace = cs.new_acl()
+            ace.userGroupId = username
+            ace.type = 'U'
+            ace.right = 'CXDRAU'
+            self.models.cloudspace.set(cs)
+
+            #TODO: create vfw
+
+            #create activationtoken
+            actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
+            activation_token = self.models.activationtoken.new()
+            activation_token.id = actual.token()
+            activation_token.creationTime = now
+            self.models.activationtoken.set(activation_token)
+
+            #Send email to verify the email address
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-            self._send_signup_mail(accountid=accountid, username=username, user=user, emailaddress=emailaddress, portalurl=portalurl, company=company, companyurl=companyurl, location=location, password=password)
-            #networkid = self.libvirt_actor.getFreeNetworkId()
-            #publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-            #cs = self.models.cloudspace.new()
-            #cs.name = 'default'
-            #cs.accountId = accountid
-            #cs.networkId = networkid
-            #cs.publicipaddress = publicipaddress
-            #ace = cs.new_acl()
-            #ace.userGroupId = username
-            #ace.type = 'U'
-            #ace.right = 'CXDRAU'
-            #self.models.cloudspace.set(cs)
+
+            self._send_signup_mail(username=username, user=user, emailaddress=emailaddress, portalurl=portalurl, activationtoken=actual_token)
+
             return True
