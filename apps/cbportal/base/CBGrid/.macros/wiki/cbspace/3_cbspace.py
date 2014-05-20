@@ -22,17 +22,26 @@ def main(j, args, params, tags, tasklet):
     def objFetchManipulate(id):
         obj = space.dump()
         
+        accountid = obj['accountId']
+        account = cbclient.account.get(accountid).dump() if cbclient.account.exists(accountid) else {'name':'N/A'}
+        obj['accountname'] = account['name']
+
+        networkid = obj['networkId']
+        network = cbclient.network.get(networkid).dump() if cbclient.network.exists(networkid) else {'name':'N/A'}
+        obj['networkname'] = network['name']
+
         resourceLimits = list()
         for k, v in obj['resourceLimits'].iteritems():
-            resourceLimits.append('%s: %s'% (k, str(v)))
-        obj['resourceLimits'] = str('<br>'.join(resourceLimits))
+            resourceLimits.append(' *%s*: %s'% (k, str(v)))
+        obj['resourceLimits'] = str(', '.join(resourceLimits))
     
         links = list()
         for rps in obj['resourceProviderStacks']:
-            links.append('[%s|CBGrid/stack?id=%s]' % (rps, rps))
+            stack = cbclient.stack.get(rps).dump() if cbclient.stack.exists(rps) else {'name':'N/A'}
+            links.append('[%s|CBGrid/stack?id=%s]' % (stack['name'], rps))
         obj['resourceProviderStacks'] = ', '.join(links)
 
-        obj['acl'] = str(', '.join(['%s:%s' % (acl['userGroupId'], acl['right']) for acl in obj['acl']]))
+        obj['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in obj['acl']]))
 
         return obj
 
