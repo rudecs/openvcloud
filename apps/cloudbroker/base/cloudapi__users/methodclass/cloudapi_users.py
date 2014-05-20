@@ -168,3 +168,13 @@ class cloudapi_users(object):
             self._send_signup_mail(username=username, user=user, emailaddress=emailaddress, portalurl=portalurl, activationtoken=actual_token)
 
             return True
+
+    def validate(self, validationtoken, **kwargs):
+        activation_token = self.models.activationtoken.get(activationtoken)
+        accountId = activation_token.accountId
+        account = self.models.account.get(accountId)
+        account.status = 'CONFIRMED'
+        self.models.account.set(account)
+        
+        return True
+        
