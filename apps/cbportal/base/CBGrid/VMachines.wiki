@@ -2,4 +2,4 @@
 
 h3. VMachines
 
-{{vmachines: stackid:$$stackid}}
+{{vmachines: stackid:$$stackid cloudspaceid:$$cloudspaceid}}

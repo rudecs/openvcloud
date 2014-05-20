@@ -15,3 +15,7 @@ h3. Details
 |*Description*|$$descr|
 |*Public IP Adress*|$$publicipaddress|
 |*Resource Limits*|$$resourcelimits|
+
+
+h3. Virtual Machines
+{{vmachines cloudspaceid:$$id}}
