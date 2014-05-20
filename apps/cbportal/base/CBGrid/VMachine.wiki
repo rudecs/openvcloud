@@ -6,6 +6,8 @@ h2. VMachine '$$name'
 
 * *ID*: $$id
 * *Description*: $$descr
+* *Stack*: [$$stackname|stack?id=$$stackid] ($$stackrefid)
+* *Cloudspace*: [$$spacename|cloudspace?id=$$cloudspaceid]
 * *Created at*: $$createdat
 * *Deleted at*: $$deletedat
 * *Size*: $$size
@@ -13,11 +15,7 @@ h2. VMachine '$$name'
 * *Status*: $$status
 * *Host Name*: $$hostname
 * *Hypervisor Type*: $$hypervisortype
-* *Stack*: [$$stackname|stack?id=$$stackid] ($$stackrefid)
-* *Cloudspace*: [$$spacename|cloudspace?id=$$cloudspaceid]
 * *NICs*:
 $$nics
 * *Disks*:
 $$disks
-
-
