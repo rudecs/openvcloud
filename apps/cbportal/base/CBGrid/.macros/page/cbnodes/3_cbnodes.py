@@ -9,6 +9,11 @@ def main(j, args, params, tags, tasklet):
         args.tags.tags.pop('space')
         cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
+        if not cbclient.cloudspace.exists(cloudspaceid):
+            page.addMessage('could not find cloudspace with id "%s"' % cloudspaceid)
+            params.result = page
+            return params
+
         stackids = cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks
         stacks = cbclient.stack.simpleSearch({}, nativequery={'query': {'bool': {'must': [{'terms': {'id': set(stackids)}}]}}})
         nodenames = [str(stack['referenceId']) for stack in stacks]
