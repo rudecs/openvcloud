@@ -48,6 +48,7 @@
     prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
     prop:company str,, Company holding the account
     prop:companyurl str,, Website of the company holding the account
+    prop:displayname str,, The name as the account should be displayed
 
 [rootmodel:AccountActivationToken]
     """

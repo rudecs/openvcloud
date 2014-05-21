@@ -7,8 +7,7 @@
         <h1>Sign Up</h1>
 
         <div class="login-fields">
-        <!-- remove autocomplete="off" when password fields back to make sure browser save passwords -->
-            <form name="reg" ng-submit="signUp()" autocomplete="off"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
+            <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
 
@@ -16,16 +15,15 @@
                   <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="username">Username:</label>
                     <div class="inputWrap">
-                      <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" ng-pattern="/^[a-z0-9]{0,20}$/"/>
-
-			<div class="alert alert-error ng-hide" ng-show="reg.username.$error.pattern">The username may not exceed 20 characters and may only contain lowercase a-z and 0-9</div>
+                          <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="username" name="username" value=""  ng-model="user.username" ng-pattern="/^[a-z0-9]{0,20}$/"/>
+                        <div class="alert alert-error ng-hide" ng-show="reg.username.$error.pattern">The username may not exceed 20 characters and may only contain lowercase a-z and 0-9</div>
                     </div>
                   </div>
                 </div>
 
                 <div class="field">
                   <div class="loginField">
-                    <label class="loginFieldName loginFieldName2" for="name">Name:</label>
+                    <label class="loginFieldName loginFieldName2" for="name">Display name:</label>
                     <div class="inputWrap">
                       <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="text" id="name" name="name" value=""  ng-model="user.name" />
                     </div>
@@ -88,11 +86,11 @@
                   <label class="label-location mbm txt-center display-block row">Preferred CloudSpace Location</label>
                   <ul class="flags-list mtl mll row inline-block">
                       <li class="mrl" ng-class="{ 'selected': selectedLocation == 'CA1' }" ng-click="itemClicked('CA1')">
-                          <a href="" ng-model="preferredDataLocation" class="canada"></a>
+                          <a href="" class="canada"></a>
                           <span class="mts display-block cursor-default">Canada</span>
                       </li>
                       <li class="mrm" ng-class="{ 'selected': selectedLocation == 'US1' }" ng-click="itemClicked('US1')">
-                          <a href="" ng-model="preferredDataLocation" class="united states"></a>
+                          <a href="" class="united states"></a>
                           <span class="mts display-block cursor-default">United States</span>
                       </li>
                   </ul>

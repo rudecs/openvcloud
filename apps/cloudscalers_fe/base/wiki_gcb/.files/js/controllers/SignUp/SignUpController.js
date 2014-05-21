@@ -6,8 +6,8 @@ angular.module('cloudscalers.controllers')
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
-        $scope.user.password = " ";
-        $scope.passwordConfirmation = " ";
+        //$scope.user.password = '';
+        //$scope.passwordConfirmation = '';
 
         var acceptTerms = '';
         var acceptBelgian = '';
@@ -18,8 +18,7 @@ angular.module('cloudscalers.controllers')
         $scope.signUp = function() {
             $scope.signUpResult = {};
 
-            $scope.isPasswordConfirmed = $scope.user.password == $scope.passwordConfirmation;
-             &&  $scope.user.password &&  $scope.passwordConfirmation;
+            $scope.isPasswordConfirmed = $scope.user.password == $scope.passwordConfirmation  &&  $scope.user.password &&  $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
                 var isempty = function(val){
@@ -56,7 +55,7 @@ angular.module('cloudscalers.controllers')
                 $('#accept-terms').prop('checked' , true);
             }
         };
-            
+
         acceptTermsChanged = function(checkboxElem) {
           if (checkboxElem.checked) {
             $scope.acceptTerms = "accept";
@@ -64,7 +63,7 @@ angular.module('cloudscalers.controllers')
             $scope.acceptTerms = "";
           }
         }
-                
+
         $scope.openTerms = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'termsDialog.html',

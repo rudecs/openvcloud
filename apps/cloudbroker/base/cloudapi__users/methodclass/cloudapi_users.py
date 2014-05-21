@@ -78,7 +78,7 @@ class cloudapi_users(object):
         <br>
         Thank you for registering %s at Mothership<sup>1</sup>!<br>
         <br>
-        Please confirm your e-mail address by following the activation link: <a href="%s/AccountActivation?activationtoken=%s">%s/AccountActivation?activationtoken=%s</a><br>
+        Please confirm your e-mail address by following the activation link: <a href="%s/wiki_gcb/AccountActivation?activationtoken=%s">%s/AccountActivation?activationtoken=%s</a><br>
         If you are unable to follow the link, please copy and paste it in your favourite browser.
         <br>
         After your validation, you will be able to log in with your username and chosen password.<br>
@@ -86,12 +86,12 @@ class cloudapi_users(object):
         Best Regards,<br>
         <br>
         The Mothership<sup>1</sup> Team<br>
-        <a href="%s">www.mothership1.com</a><br>
+        <a href="http://www.mothership1.com">www.mothership1.com</a><br>
     </body>
 </html>
-""" % (kwargs['user'], kwargs['username'] , kwargs['portalurl'], kwargs['activationtoken'],kwargs['portalurl'], kwargs['activationtoken'], kwargs['portalurl'])
+""" % (kwargs['user'], kwargs['username'] , kwargs['portalurl'], kwargs['activationtoken'],kwargs['portalurl'], kwargs['activationtoken'])
 
-        j.clients.mail.send(fromaddr, toaddrs, html, "Mothership1 account activation", files=None)
+        j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
 
     def _isValidUserName(self, username):
         r = re.compile('^[a-z0-9]{1,20}$')
@@ -130,6 +130,7 @@ class cloudapi_users(object):
             account.company = company
             account.companyurl = companyurl
             account.status = 'UNCONFIRMED'
+            account.displayname = user
 
             ace = account.new_acl()
             ace.userGroupId = username
@@ -155,10 +156,10 @@ class cloudapi_users(object):
 
             #create activationtoken
             actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
-            activation_token = self.models.activationtoken.new()
-            activation_token.id = actual.token()
+            activation_token = self.models.accountactivationtoken.new()
+            activation_token.id = actual_token
             activation_token.creationTime = now
-            self.models.activationtoken.set(activation_token)
+            self.models.accountactivationtoken.set(activation_token)
 
             #Send email to verify the email address
             import urlparse
@@ -170,11 +171,12 @@ class cloudapi_users(object):
             return True
 
     def validate(self, validationtoken, **kwargs):
-        activation_token = self.models.activationtoken.get(activationtoken)
+        activation_token = self.models.accountactivationtoken.get(activationtoken)
         accountId = activation_token.accountId
+        activation_token.deletionTime = int(time.time())
         account = self.models.account.get(accountId)
         account.status = 'CONFIRMED'
         self.models.account.set(account)
-        
+        self.models.accountactivationtoken.set(activation_token)
+
         return True
-        
