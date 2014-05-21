@@ -1,8 +1,5 @@
-@template public
-{{div: class=white}}
-{{div2: class=container why-page}}
+@template public_with_left_nav
 
-@col12
 
 h1. Press Center
 
@@ -12,8 +9,13 @@ h1. Press Center
 #
 #h2. Download Press releases
 
-Coming soon
-{{div2}}
-{{div}}
+{{ blog_index:
+<div class="blogDesign">
+<h2 class="floatR">{blog_date}</h2>
+<h2>{blog_title}</h2>
+</div>
+{blog_content}
+}}
+
 @divend
 @divend

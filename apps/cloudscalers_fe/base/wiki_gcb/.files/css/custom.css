@@ -174,7 +174,7 @@ h4, .h4 { font-size: 18px; }
 .question-symbol i { font-size: 18px !important; }
 table.table th { font-size: 13px !important; }
 .sideNav { width: 138px; }
-.white p { font-size: 13px; }
+.white p { font-size: 13px; line-height: 24px;}
 .dropdown-menu>li>a { font-size: 13px; }
 .topFooter { height: 191px; background: url(../img/images/footer-bg.jpg) no-repeat center top; background-size: 900px auto; }
 .arrow { font-size: 24px; }
@@ -913,3 +913,5 @@ hr { clear: both;margin-top: 20px !important;margin-bottom: 20px !important; bor
 /*  /////////////\\\\\\\\\\  */
 /*   	   End of oocss   	 */
 /*  \\\\\\\\\\\\\//////////  */
+
+.blogDesign {display: inline-block;width: 100%;}
