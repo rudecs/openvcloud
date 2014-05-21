@@ -62,36 +62,36 @@
                   </div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                   <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="password">Password:</label>
                     <div class="input-prepend">
-  		      <div class="inputWrap">
-                        <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password"/>
-                      </div>
+  		              <div class="inputWrap">
+                            <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password"/>
+                        </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="field" style="display: none;">
+                <div class="field">
                 <div class="loginField">
                     <label class="loginFieldName loginFieldName2" for="password">Password Confirmation:</label>
                     <div class="input-prepend">
   						<div class="inputWrap">
-                      <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field_confirmation" name="password_confirmation" value="" 
-                        	ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
+                              <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field_confirmation" name="password_confirmation" value=""
+                        	        ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
                           </div>
-                   	</div>
+                     </div>
                 </div>
                 </div>
                 <div id="flags-container" class="field mtl center">
                   <label class="label-location mbm txt-center display-block row">Preferred CloudSpace Location</label>
                   <ul class="flags-list mtl mll row inline-block">
-                      <li class="mrl" ng-class="{ 'selected': selectedLocation == 3 }" ng-click="itemClicked(3)">
+                      <li class="mrl" ng-class="{ 'selected': selectedLocation == 'CA1' }" ng-click="itemClicked('CA1')">
                           <a href="" ng-model="preferredDataLocation" class="canada"></a>
                           <span class="mts display-block cursor-default">Canada</span>
                       </li>
-                      <li class="mrm" ng-class="{ 'selected': selectedLocation == 2 }" ng-click="itemClicked(2)">
+                      <li class="mrm" ng-class="{ 'selected': selectedLocation == 'US1' }" ng-click="itemClicked('US1')">
                           <a href="" ng-model="preferredDataLocation" class="united states"></a>
                           <span class="mts display-block cursor-default">United States</span>
                       </li>
@@ -103,7 +103,7 @@
                     <h2>General Terms & Conditions <br>
                         <span class="note1">Scroll down and check the "I have read ..." box before hitting accept.</span>
                     </h2>
-            
+
                 </div>
                 <div class="modal-body">
                   <div id="terms" style="width: 100%; height: 100%; overflow: auto; overflow-x: hidden; -ms-overflow-x: hidden;">
@@ -127,12 +127,12 @@
           <span class="mrs">Already a member?</span>
           <a href="/$$space/login" class="btn btn-default btn-lg btn-block defaultMine">Login</a>
         </div>
-            
+
         </form>
 
         </div>
     </div>
 </div>
-        
+
 
 }}
