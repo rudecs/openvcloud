@@ -19,3 +19,6 @@ h3. Details
 
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
+
+h3. Cloudspace Nodes
+{{cbnodes space:$$id}}
