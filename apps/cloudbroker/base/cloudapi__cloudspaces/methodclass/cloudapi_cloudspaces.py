@@ -67,7 +67,12 @@ class cloudapi_cloudspaces(object):
 
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
+        if not networkid:
+            raise RuntimeError("Failed to get networkid")
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
+        if not publicipaddress:
+            self.libvirt_actor.releaseNetworkId(networkid)
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
