@@ -834,3 +834,9 @@ hr { clear: both;margin-top: 20px !important;margin-bottom: 20px !important; bor
 .creditMargin .form-control { margin: 10px 0; border: 1px solid #06a7e2; box-shadow: none; border-radius: 0; color: #000;}
 .discRow { margin: 10px 15px;color: #06a7e2;}
 .creditMargin .form-control::-webkit-input-placeholder { color: #000; }
+.panel-primary>.panel-heading { background-color: #06a7e2;border-color: #06a7e2;}
+.panel-primary {border: 1px solid #06a7e2 !important;}
+.btn-group.btn-group-sm .btn.btn-primary { background-color: #06a7e2;}
+.btn-group.btn-group-sm .btn.btn-primary:hover { background-color: #32C8FF;border-color: #51AEFF;}
+.btn-group.btn-group-sm .btn.btn-primary.active { background-color: #0784B2;}
+.btn-group.btn-group-sm .btn.btn-primary.active:hover { background-color: #0784B2;}
