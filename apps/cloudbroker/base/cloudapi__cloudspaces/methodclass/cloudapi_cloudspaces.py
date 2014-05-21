@@ -16,6 +16,7 @@ class cloudapi_cloudspaces(object):
         self._models = None
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
+        self.gridid = j.application.config.get('grid.id')
 
     @property
     def cb(self):
@@ -67,7 +68,12 @@ class cloudapi_cloudspaces(object):
 
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
+        if not networkid:
+            raise RuntimeError("Failed to get networkid")
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
+        if not publicipaddress:
+            self.libvirt_actor.releaseNetworkId(networkid)
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -131,7 +137,13 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-            
+        #delete routeros
+        fws = self.netmgr.fw_list(self.gridid, str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
+        if cloudspace.networkId:
+            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
+        cloudspace.networkId = None
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)
