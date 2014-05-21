@@ -1,0 +1,104 @@
+@template public
+{{div: class=white}}
+{{div2: class=container | ng-app | ng-controller=MachinePricingController}}
+
+@col 12
+
+h1. Pricing
+
+
+{{div: class=row}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash | ng-show=plan.recommended}}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Firewall & VPN</td></tr>
+                    <tr><td>Unlimited Transfer*</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+
+
+
+{{div}}
+
+
+
+
+
+{{html:
+
+
+<table class="techspecs">
+    <tr>
+        <th  class="title">All Plans Include:</th>
+
+        <td class="column-divider"></td>
+        <td class="full-span full-span2">
+            <ul>
+                <li>Cloud Space with defense shield</li>
+                <li>Choice of standard Linux and Windows templates</li>
+                <li>All functions as described in the Machine Deck</li>
+                <li class="motherShipSub">Disaster Recovery Backup (managed by Mothership<sup>1</sup>)</li>
+                <li>Monitoring by Mothership Operations</li>
+                <li>99.99% Uptime SLA</li>
+            </ul>
+
+        </td>
+        <td class="justBorder2">
+            
+
+        </td>
+        <td class="justBorder2">
+            
+
+        </td>
+        <td class="justBorder2">
+            
+
+        </td>
+        <td class="justBorder2">
+            
+
+        </td>
+
+
+    </tr>
+
+
+</table>
+
+}}
+
+(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section
+
+@divend
+@divend
+@divend
+
