@@ -95,7 +95,7 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason); }
             );
         };
-        
+
         user.get = function(username){
         	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
         	var currentUser = SessionData.getUser();
@@ -149,9 +149,9 @@ angular.module('cloudscalers.services')
             });
             return signUpResult;
         };
-        
+
         user.activateAccount = function(activationToken){
-        	return $http(cloudspaceconfig.apibaseurl + '/users/activate?activationtoken=' +  + encodeURIComponent(activationToken)).then(
+        	return $http.get(cloudspaceconfig.apibaseurl + '/users/validate?validationtoken=' + encodeURIComponent(activationToken)).then(
         			function(result){
         				return result.data;
         			},

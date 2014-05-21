@@ -1,14 +1,14 @@
 angular.module('cloudscalers.controllers')
-    .controller('AccountActivationController', ['$scope', 'User','$alert', '$ErrorResponseAlert','$window', '$timeout', function($scope, User,$alert, $ErrorResponseAlert, $window, $timeout) {
-        
+    .controller('AccountActivationController', ['$scope', 'User','$window', '$timeout', function($scope, User, $window, $timeout) {
+
     	$scope.verificationStatus = 'PENDING';
-    	
+
     	var uri = new URI($window.location);
     	queryparams = URI.parseQuery(uri.query());
     	activationtoken = queryparams.activationtoken;
-    	
+
     	User.activateAccount(activationtoken).then(function(result){
-    		
+
     		$scope.verificationStatus = 'ACCEPTED';
     		$timeout(function(){
     			var uri = new URI($window.location);
@@ -20,8 +20,8 @@ angular.module('cloudscalers.controllers')
     			$scope.verificationStatus = 'EXPIRED';
     		}
     		else {
-    			$ErrorResponseAlert(reason);
+    			$scope.verificationStatus = 'ERROR';
     		}
     	});
-    	
+
     }]);

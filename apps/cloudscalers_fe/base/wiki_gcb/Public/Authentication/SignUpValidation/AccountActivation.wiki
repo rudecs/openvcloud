@@ -18,17 +18,24 @@ Verifying...
     </div>
     <div ng-show="verificationStatus=='EXPIRED'">
 }}
-Your activation link expired, you have to [SignUp | sign up] again.
+Your activation link is invalid or expired, you have to [ sign up | SignUp] again.
 
 {{html:
     </div>
     <div ng-show="verificationStatus=='ACCEPTED'">
 }}
-Successfully activated your account, you will be redirected to the [Login | login page].
+Successfully activated your account, you will be redirected to the [login page| Login].
 
 {{html:
     </div>
+    <div ng-show="verificationStatus=='ERROR'">
+}}
+An unexpected error occurred while verifying your account.
+{{html:
+    </div>
 </div>
+
+<script src="/$$space/.files/js/controllers/SignUp/AccountActivationController.js" type="text/javascript"></script>
 }}
 
 

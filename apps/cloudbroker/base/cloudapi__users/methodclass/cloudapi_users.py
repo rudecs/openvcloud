@@ -159,6 +159,7 @@ class cloudapi_users(object):
             activation_token = self.models.accountactivationtoken.new()
             activation_token.id = actual_token
             activation_token.creationTime = now
+            activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
             #Send email to verify the email address
@@ -171,7 +172,7 @@ class cloudapi_users(object):
             return True
 
     def validate(self, validationtoken, **kwargs):
-        activation_token = self.models.accountactivationtoken.get(activationtoken)
+        activation_token = self.models.accountactivationtoken.get(validationtoken)
         accountId = activation_token.accountId
         activation_token.deletionTime = int(time.time())
         account = self.models.account.get(accountId)
