@@ -23,14 +23,14 @@ opts = parser.parse_args()
 ocl = j.core.osis.getClient(user='root')
 
 if opts.action == 'listnodes':
-    print "%(id)-40s %(referenceid)3s %(enabled)40s" % {'id': 'ID', 'referenceid': 'Node', 'enabled': 'Enabled'}
+    print "%(id)-40s %(referenceid)-3s %(status)40s" % {'id': 'ID', 'referenceid': 'Node', 'status': 'Enabled'}
     scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
     icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
     images = dict()
     if opts.showimages:
         images = { x['id']:x for x in icl.simpleSearch({}) }
     for provider in scl.simpleSearch({}):
-        print "%(id)-20s %(referenceid)20s %(enabled)s" % provider
+        print "%(id)-40s %(referenceId)-40s %(status)s" % provider
         if opts.showimages:
             for image in provider['images']:
                 print "%(name)40s %(size)3s" % images[image]
@@ -61,7 +61,7 @@ elif opts.action == 'disablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = False
+        stackobj.status = 'DISABLED'
         scl.set(stackobj)
         print 'Node %s was disabled successfully' % nodename
 
@@ -74,7 +74,7 @@ elif opts.action == 'enablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = True
+        stackobj.status = 'ENABLED'
         scl.set(stackobj)
         print 'Node %s was enabled successfully' % nodename
 
