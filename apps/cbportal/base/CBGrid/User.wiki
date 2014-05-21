@@ -1,0 +1,16 @@
+@usedefault
+
+{{user id:$$id}}
+
+h2. User
+
+h3. Details
+|*User ID*|$$id|
+|*Domain*|$$domain|
+|*Roles*|$$roles|
+|*Groups*|$$groups|
+|*Emails*|$$emails|
+|*Last Checked*|$$lastcheck|
+|*Grid ID*|[$$gid|/Grid/grid?id=$$gid]|
+|*Active*|$$active|
+|*Description*|$$description|

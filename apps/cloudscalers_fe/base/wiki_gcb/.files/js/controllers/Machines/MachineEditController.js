@@ -43,7 +43,9 @@ angular.module('cloudscalers.controllers')
         }, true);
 
         $scope.oldMachine = {};
-        $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
+        
+        
+        
 
         $scope.imagesList = [];
         $scope.machineinfo = {};
@@ -94,6 +96,11 @@ angular.module('cloudscalers.controllers')
             });
         };
 
+        var updatesnapshots = function(){
+            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
+        }
+        updatesnapshots();
+        
     	var CreateSnapshotController = function ($scope, $modalInstance) {
 
     		$scope.snapshotname= '';
@@ -106,9 +113,6 @@ angular.module('cloudscalers.controllers')
             	$modalInstance.dismiss('cancel');
             };
     	};
-        var updatesnapshots = function(){
-            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
-        }
 
         $scope.$watch('tabactive.snapshots', function() {
             if (!$scope.tabactive.snapshots)
@@ -135,6 +139,7 @@ angular.module('cloudscalers.controllers')
     			Machine.createSnapshot($scope.machine.id, snapshotname).then(
 					function(result){
 						LoadingDialog.hide();
+						updatesnapshots();
 					},
 					function(reason){
 						LoadingDialog.hide();

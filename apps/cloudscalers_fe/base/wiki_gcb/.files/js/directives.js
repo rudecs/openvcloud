@@ -210,14 +210,6 @@ angular.module('cloudscalers.directives', [])
           $scope.searchParam = suggestion;
           $scope.searchFilter = suggestion;
 
-          if( $element.hasClass('publicPort') && $('.modal').find('.localPort').find('input').val() == ""){
-            $('.modal').find('.localPort').find('input').val($scope.searchFilter);
-          }
-          if( $element.hasClass('localPort') && $('.modal').find('.publicPort').find('input').val() == ""){
-            $('.modal').find('.publicPort').find('input').val($scope.searchFilter);
-          }
-
-
         }
         else{
           $scope.searchFilter = "";

@@ -29,6 +29,8 @@ class cloudapi_machines(object):
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
         
         self._pricing = pricing.pricing()     
+         
+        self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
     def cb(self):
@@ -214,9 +216,9 @@ class cloudapi_machines(object):
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine
-        if available_credit < (new_burnrate * 24 * 14):
+        if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
             ctx.start_response('409 Conflict', [])
-            return 'Not enough credit for this machine to run for 2 weeks'
+            return 'Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)

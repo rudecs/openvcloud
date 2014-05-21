@@ -1,0 +1,5 @@
+@usedefault
+
+h2. CloudSpaces
+
+{{cbspaces}}

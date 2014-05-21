@@ -1,0 +1,17 @@
+@usedefault
+
+{{cbspace id:$$id}}
+
+h2. Cloud Space
+
+h3. Details
+|*CloudSpace ID*|$$id|
+|*Name*|$$name|
+|*Account*|[$$accountname|account?id=$$accountid]|
+|*Network ID*|[$$networkname|network?id=$$networkid]|
+|*Stack*|$$resourceproviderstacks|
+|*Status*|$$status|
+|*Access Control List*|$$acl|
+|*Description*|$$descr|
+|*Public IP Adress*|$$publicipaddress|
+|*Resource Limits*|$$resourcelimits|

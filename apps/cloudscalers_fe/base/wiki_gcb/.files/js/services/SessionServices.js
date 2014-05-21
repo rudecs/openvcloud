@@ -132,7 +132,7 @@ angular.module('cloudscalers.services')
                 method: 'POST',
                 data: {
                     username: username,
-                    user:user,
+                    user:name,
                     emailaddress: email,
                     password: password,
                     company: company,

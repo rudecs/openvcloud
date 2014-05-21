@@ -1,0 +1,16 @@
+@usedefault
+
+{{network id:$$id}}
+
+h2. Network
+
+h3. Details
+|*Network ID*|$$id|
+|*Name*|$$name|
+|*Name Servers*|$$nameservers|
+|*VLAN ID*|[$$vlanid|vlan?id=$$vlanid]|
+|*Stack ID*|[$$resourceproviderstacks|stack?id=$$resourceproviderstacks]|
+|*Subnet*|$$subnet|
+|*Net Mask*|$$netmask|
+|*Description*|$$descr|
+|*CloudSpace ID*|[$$cloudspaceid|cloudspace?id=$$cloudspaceid]|
