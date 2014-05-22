@@ -30,7 +30,7 @@ angular.module('cloudscalers.controllers')
                 if(isempty($scope.user.companyurl)){
                     $scope.user.companyurl = " ";
                 }
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, "stub" ,$scope.user.company , $scope.user.companyurl
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, $scope.user.password ,$scope.user.company , $scope.user.companyurl
                     ,$scope.selectedLocation, $scope.user.password);
             }
         };
