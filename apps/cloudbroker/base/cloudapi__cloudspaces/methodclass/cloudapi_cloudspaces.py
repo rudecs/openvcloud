@@ -57,7 +57,7 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     @authenticator.auth(acl='A')
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
         """
         Create a extra cloudspace
         param:name name of space to create
@@ -84,10 +84,11 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.networkId = networkid
+        cs.status = 'UNCONFIRMED'
         cs.publicipaddress = publicipaddress
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         try:
-            self.netmgr.fw_create(str(cloudspace_id), 'admin', 'password', publicipaddress, 'routeros', str(networkid))
+            self.netmgr.fw_create(str(cloudspaceid), 'admin', password, publicipaddress, 'routeros', networkid)
         except:
             self.libvirt_actor.releaseNetworkId(networkid)
             self.models.cloudspace.delete(cloudspace_id)
@@ -95,7 +96,7 @@ class cloudapi_cloudspaces(object):
 
         cs = self.models.cloudspace.get(cloudspace_id)
         cs.status = 'CREATED'
-        cloudspace_id = self.models.cloudspace.set(cs)[0]
+        self.models.cloudspace.set(cs)
         return cloudspace_id
 
     @authenticator.auth(acl='A')
