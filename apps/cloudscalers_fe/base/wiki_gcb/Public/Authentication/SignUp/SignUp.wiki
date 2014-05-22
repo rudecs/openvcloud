@@ -65,7 +65,7 @@
                     <label class="loginFieldName loginFieldName2" for="password">Password:</label>
                     <div class="input-prepend">
   		              <div class="inputWrap">
-                            <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password"/>
+                            <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="password" id="password_field" name="" value=""  ng-model="user.password"/>
                         </div>
                     </div>
                   </div>
@@ -73,27 +73,29 @@
 
                 <div class="field">
                 <div class="loginField">
-                    <label class="loginFieldName loginFieldName2" for="password">Password Confirmation:</label>
+                    <label class="loginFieldName loginFieldName2" for="password">Confirm password:</label>
                     <div class="input-prepend">
   						<div class="inputWrap">
-                              <input class="inputLogin ng-pristine ng-valid" type="password" id="password_field_confirmation" name="password_confirmation" value=""
+                              <input style="background-color: transparent !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px;" class="inputLogin ng-pristine ng-valid" type="password" id="password_field_confirmation" name="password_confirmation" value=""
                         	        ng-model="passwordConfirmation" ng-blur="validatePasswordConfirmation()"/>
                           </div>
                      </div>
                 </div>
                 </div>
-                <div id="flags-container" class="field mtl center">
-                  <label class="label-location mbm txt-center display-block row">Preferred CloudSpace Location</label>
-                  <ul class="flags-list mtl mll row inline-block">
-                      <li class="mrl" ng-class="{ 'selected': selectedLocation == 'CA1' }" ng-click="itemClicked('CA1')">
-                          <a href="" class="canada"></a>
-                          <span class="mts display-block cursor-default">Canada</span>
-                      </li>
-                      <li class="mrm" ng-class="{ 'selected': selectedLocation == 'US1' }" ng-click="itemClicked('US1')">
-                          <a href="" class="united states"></a>
-                          <span class="mts display-block cursor-default">United States</span>
-                      </li>
-                  </ul>
+                <div id="flags-container" class="field">
+                  <label class="loginFieldName loginFieldName2">Preferred Location:</label>
+                  <div class="mtl center">
+                        <ul class="flags-list mtl mll row inline-block">
+                          <li class="mrl" ng-class="{ 'selected': selectedLocation == 'CA1' }" ng-click="itemClicked('CA1')">
+                              <a href="" class="canada"></a>
+                              <span class="mts display-block cursor-default">Canada</span>
+                          </li>
+                          <li class="mrm" ng-class="{ 'selected': selectedLocation == 'US1' }" ng-click="itemClicked('US1')">
+                              <a href="" class="united states"></a>
+                              <span class="mts display-block cursor-default">United States</span>
+                          </li>
+                      </ul>
+                    </div>
                 </div>
             <a id="openTerms" ng-click="openTerms()">You need to accept the General Terms & Conditions to proceed</a>
             <script type="text/ng-template" id="termsDialog.html">
@@ -122,8 +124,8 @@
               <input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" ng-disabled="!canSignUp" value="Sign Up" />
 
               <div class="center txt-right mtm mTxt">
-          <span class="mrs">Already a member?</span>
-          <a href="/$$space/login" class="btn btn-default btn-lg btn-block defaultMine">Login</a>
+          <span class="mrs">Already a member? <a href="/$$space/login" style="color: #0087b9;">Login</a></span>
+
         </div>
 
         </form>
