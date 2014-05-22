@@ -11,9 +11,11 @@ h1. Pricing
 <br>
 <ul class="nav nav-tabs tabOfPrice">
   <li class="active"><a href="#CloudSpace" data-toggle="tab">Cloud Space</a></li>
-  <li><a href="#DefenseShields" data-toggle="tab">Defense Shields</a></li>
-  <li><a href="#DesktopDeck" data-toggle="tab">Desktop Deck</a></li>
+  <li><a href="#MachineDeck" data-toggle="tab">Machine Deck</a></li>
   <li><a href="#StorageDeck" data-toggle="tab">Storage Deck</a></li>
+  <li><a href="#DesktopDeck" data-toggle="tab">Desktop Deck</a></li>
+  <li><a href="#ApplicationDeck" data-toggle="tab">Application Deck</a></li>
+  
 </ul>
 
 
@@ -21,19 +23,12 @@ h1. Pricing
   <div class="tab-pane fade in active" id="CloudSpace">
       <div class="col-md-12 mB15">
         <div class="row operationWrap">
-            <label class="col-sm-2 control-label">Operation System: </label>
-            <div class="col-md-3">
-                <select name="country" class="form-control">
-                    <option value="">Linux</option>
-                    <option value="">Windows</option>
-                </select>
-            </div>
             <div class="btn-group btn-group-sm priceHM floatR">
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
             </div>
         </div>
-      </div>
+   </div>
 
 
 }}
@@ -82,7 +77,73 @@ h1. Pricing
 
   </div>
 
-  <div class="tab-pane fade in" id="DefenseShields">
+  <div class="tab-pane fade in" id="MachineDeck">
+  <div class="col-md-12 mB15">
+        <div class="row operationWrap">
+            <label class="col-sm-2 control-label">Operation System: </label>
+            <div class="col-md-3">
+                <select name="country" class="form-control">
+                    <option value="">Linux</option>
+                    <option value="">Windows</option>
+                </select>
+            </div>
+            <div class="btn-group btn-group-sm priceHM floatR">
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+            </div>
+        </div>
+      </div>
+  
+}}
+{{div: class=row}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash | ng-show=plan.recommended}}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Firewall & VPN</td></tr>
+                    <tr><td>Unlimited Transfer*</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+
+
+
+{{div}}
+
+{{html:
+
+  </div>
+
+
+
+
+  <div class="tab-pane fade in" id="StorageDeck">
   <div class="col-md-12 mB15">
         <div class="row operationWrap">
             <div class="btn-group btn-group-sm priceHM floatR">
@@ -136,7 +197,6 @@ h1. Pricing
 {{html:
 
   </div>
-
 
 
 
@@ -197,7 +257,7 @@ h1. Pricing
 
 
 
-  <div class="tab-pane fade in" id="StorageDeck">
+  <div class="tab-pane fade in" id="ApplicationDeck">
   <div class="col-md-12 mB15">
         <div class="row operationWrap">
             <div class="btn-group btn-group-sm priceHM floatR">
