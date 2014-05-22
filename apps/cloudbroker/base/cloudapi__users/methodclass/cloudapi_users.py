@@ -1,5 +1,6 @@
 from JumpScale import j
 import JumpScale.baselib.mailclient
+import JumpScale.grid.agentcontroller
 import re, string, random, time
 
 class cloudapi_users(object):
@@ -15,6 +16,7 @@ class cloudapi_users(object):
         self._cb = None
         self._models = None
         self.libvirt_actor = j.apps.libcloud.libvirt
+        self.acl = j.clients.agentcontroller.get()
 
 
     @property
@@ -61,38 +63,6 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
-    def _send_signup_mail(self, **kwargs):
-        shouldsendmail = j.application.config.get("mothership1.cloudbroker.sendmail")
-        if shouldsendmail is not '1':
-            return
-
-        fromaddr = 'support@mothership1.com'
-        toaddrs  = kwargs['emailaddress']
-
-
-        html = """
-<html>
-    <head></head>
-    <body>
-        Dear %s,<br>
-        <br>
-        Thank you for registering %s at Mothership<sup>1</sup>!<br>
-        <br>
-        Please confirm your e-mail address by following the activation link: <a href="%s/wiki_gcb/AccountActivation?activationtoken=%s">%s/AccountActivation?activationtoken=%s</a><br>
-        If you are unable to follow the link, please copy and paste it in your favourite browser.
-        <br>
-        After your validation, you will be able to log in with your username and chosen password.<br>
-        <br>
-        Best Regards,<br>
-        <br>
-        The Mothership<sup>1</sup> Team<br>
-        <a href="http://www.mothership1.com">www.mothership1.com</a><br>
-    </body>
-</html>
-""" % (kwargs['user'], kwargs['username'] , kwargs['portalurl'], kwargs['activationtoken'],kwargs['portalurl'], kwargs['activationtoken'])
-
-        j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
-
     def _isValidUserName(self, username):
         r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
@@ -138,21 +108,6 @@ class cloudapi_users(object):
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
 
-            #Create CloudSpace
-            networkid = self.libvirt_actor.getFreeNetworkId()
-            publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-            cs = self.models.cloudspace.new()
-            cs.name = 'default'
-            cs.accountId = accountid
-            cs.networkId = networkid
-            cs.publicipaddress = publicipaddress
-            ace = cs.new_acl()
-            ace.userGroupId = username
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
-            self.models.cloudspace.set(cs)
-
-            #TODO: create vfw
 
             #create activationtoken
             actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
@@ -162,12 +117,12 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
-            #Send email to verify the email address
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-
-            self._send_signup_mail(username=username, user=user, emailaddress=emailaddress, portalurl=portalurl, activationtoken=actual_token)
+            
+            args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
+            self.acl.executeJumpScript('cloudbroker', 'cloudbroker_acountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
 
