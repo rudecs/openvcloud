@@ -41,13 +41,12 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         accounts = self.models.account.simpleSearch({'name':username.lower()})
-        if len(accounts) > 0:
-            if not accounts[0].has_key('status') or accounts[0]['status'] != 'UNCONFIRMED':
-                if j.core.portal.active.auth.authenticate(username, password):
-                    session = ctx.env['beaker.get_session']() #create new session
-                    session['user'] = username
-                    session.save()
-                    return session.id
+        if accounts and accounts[0].get('status','CONFIRMED'] != 'UNCONFIRMED':
+            if j.core.portal.active.auth.authenticate(username, password):
+                session = ctx.env['beaker.get_session']() #create new session
+                session['user'] = username
+                session.save()
+                return session.id
 
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
