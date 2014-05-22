@@ -41,7 +41,7 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         accounts = self.models.account.simpleSearch({'name':username.lower()})
-        if accounts and accounts[0].get('status','CONFIRMED'] != 'UNCONFIRMED':
+        if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session
                 session['user'] = username
@@ -127,6 +127,8 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
+            import ipdb; ipdb.set_trace()
+
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
@@ -137,16 +139,35 @@ class cloudapi_users(object):
             return True
 
     def validate(self, validationtoken, **kwargs):
+        ctx = kwargs['ctx']
+        now = int(time.time())
         if not self.models.accountactivationtoken.exists(validationtoken):
-            ctx = kwargs['ctx']
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
+
         activation_token = self.models.accountactivationtoken.get(validationtoken)
+
+        if activation_token.deletionTime > 0:
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
         accountId = activation_token.accountId
-        activation_token.deletionTime = int(time.time())
+        activation_token.deletionTime = now
         account = self.models.account.get(accountId)
         account.status = 'CONFIRMED'
         self.models.account.set(account)
         self.models.accountactivationtoken.set(activation_token)
+
+        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+        credittransaction = self.models.credittransaction.new()
+        credittransaction.accountId = accountId
+        credittransaction.amount = signupcredit
+        credittransaction.credit = signupcredit
+        credittransaction.currency = 'USD'
+        credittransaction.comment = 'Getting you started'
+        credittransaction.status = 'CREDIT'
+        credittransaction.time = now
+
+        self.models.credittransaction.set(credittransaction)
 
         return True
