@@ -126,6 +126,10 @@ class cloudapi_users(object):
             return True
 
     def validate(self, validationtoken, **kwargs):
+        if not self.models.accountactivationtoken.exists(validationtoken):
+            ctx = kwargs['ctx']
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
         activation_token = self.models.accountactivationtoken.get(validationtoken)
         accountId = activation_token.accountId
         activation_token.deletionTime = int(time.time())
