@@ -66,6 +66,10 @@ class cloudapi_users(object):
         r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
 
+    def _isValidPassword(self, password):
+        if len(password) < 8 or len (password) > 80:
+            return False
+        return re.search(r"\s",password) is None
 
     def register(self, username, user, emailaddress, password, company, companyurl, location, **kwargs):
         """
@@ -81,6 +85,10 @@ class cloudapi_users(object):
             ctx.start_response('400 Bad Request', [])
             return '''An account name may not exceed 20 characters
              and may only contain a-z and 0-9'''
+        if not self._isValidPassword(password):
+            ctx.start_response('400 Bad Request', [])
+            return '''A password must be at least 8 and maximum 80 characters long
+                      and may not contain whitespace'''
 
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
@@ -119,7 +127,7 @@ class cloudapi_users(object):
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-            
+
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
             self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
 
