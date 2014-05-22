@@ -1,7 +1,7 @@
 [actor] @dbtype:mem,osis
 	"""
 	User management
-	"""    
+	"""
 
 	method:authenticate @noauth
 	    """
@@ -33,3 +33,10 @@
 	    """
         var:username str,,username of the user
         result:dict,,user information.
+
+    method:validate @noauth
+        """
+        Validates a newly registered user
+        """
+        var:validationtoken str,, token generated at usercreation and sent via email
+        result:bool

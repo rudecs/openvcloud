@@ -1,7 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator
 import ujson
-
+import gevent
 
 class cloudapi_cloudspaces(object):
     """
@@ -15,6 +15,8 @@ class cloudapi_cloudspaces(object):
         self._cb = None
         self._models = None
         self.libvirt_actor = j.apps.libcloud.libvirt
+        self.netmgr = j.apps.jumpscale.netmgr
+        self.gridid = j.application.config.get('grid.id')
 
     @property
     def cb(self):
@@ -55,7 +57,7 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     @authenticator.auth(acl='A')
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
         """
         Create a extra cloudspace
         param:name name of space to create
@@ -66,7 +68,12 @@ class cloudapi_cloudspaces(object):
 
         """
         networkid = self.libvirt_actor.getFreeNetworkId()
+        if not networkid:
+            raise RuntimeError("Failed to get networkid")
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
+        if not publicipaddress:
+            self.libvirt_actor.releaseNetworkId(networkid)
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -77,8 +84,19 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.networkId = networkid
+        cs.status = 'UNCONFIRMED'
         cs.publicipaddress = publicipaddress
         cloudspace_id = self.models.cloudspace.set(cs)[0]
+        try:
+            self.netmgr.fw_create(str(cloudspaceid), 'admin', password, publicipaddress, 'routeros', networkid)
+        except:
+            self.libvirt_actor.releaseNetworkId(networkid)
+            self.models.cloudspace.delete(cloudspace_id)
+            raise
+
+        cs = self.models.cloudspace.get(cloudspace_id)
+        cs.status = 'CREATED'
+        self.models.cloudspace.set(cs)
         return cloudspace_id
 
     @authenticator.auth(acl='A')
@@ -120,7 +138,13 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-            
+        #delete routeros
+        fws = self.netmgr.fw_list(self.gridid, str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
+        if cloudspace.networkId:
+            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
+        cloudspace.networkId = None
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)

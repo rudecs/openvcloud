@@ -6,7 +6,8 @@
 
 h1. Thank you for signing up!
 
-We will review your signup request and validate it within 24 hours. Note that of current high demands, there might be some additional waiting time before we activate your account.
+Please validate your email address by following the link in the email we sent you.
+After confirmation your account will be enabled.
 
 @divend
 @divend
