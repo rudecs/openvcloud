@@ -88,7 +88,7 @@ class cloudapi_cloudspaces(object):
         cs.publicipaddress = publicipaddress
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         try:
-            self.netmgr.fw_create(str(cloudspaceid), 'admin', password, publicipaddress, 'routeros', networkid)
+            self.netmgr.fw_create(str(cloudspace_id), 'admin', password, publicipaddress, 'routeros', networkid)
         except:
             self.libvirt_actor.releaseNetworkId(networkid)
             self.models.cloudspace.delete(cloudspace_id)

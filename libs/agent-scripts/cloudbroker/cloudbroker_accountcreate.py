@@ -15,12 +15,12 @@ queue = "hypervisor"
 async = True
 
 
-def _send_signup_mail(self, **kwargs):
+def _send_signup_mail(**kwargs):
     notifysupport = j.application.config.get("mothership1.cloudbroker.notifysupport")
     fromaddr = 'support@mothership1.com'
     toaddrs  =  [kwargs['email']]
-    if notifysupport:
-        notifysupport.append('support@mothership1.com')
+    if notifysupport == '1':
+        toaddrs.append('support@mothership1.com')
 
 
     html = """
@@ -44,7 +44,7 @@ def _send_signup_mail(self, **kwargs):
 </html>
 """ % kwargs
 
-    j.clients.email.send(fromaddr, toaddrs, html, "Mothership1 account activation", files=None)
+    j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
 
 
 def action(accountid, password, email, now, portalurl, token, username, user):
@@ -59,6 +59,6 @@ def action(accountid, password, email, now, portalurl, token, username, user):
     cl = j.core.portal.getClient('127.0.0.1', port, secret)
     cloudspaceapi = cl.getActor('cloudapi','cloudspaces')
 
-    cloudspaceapi.create(accountid, 'default', user, password=password)
+    cloudspaceapi.create(accountid, 'default', username, password=password)
     _send_signup_mail(username=username, user=user, email=email, portalurl=portalurl, activationtoken=token)
 

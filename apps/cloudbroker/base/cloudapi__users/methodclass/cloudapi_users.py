@@ -1,5 +1,4 @@
 from JumpScale import j
-import JumpScale.baselib.mailclient
 import JumpScale.grid.agentcontroller
 import re, string, random, time
 
@@ -122,7 +121,7 @@ class cloudapi_users(object):
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
             
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
-            self.acl.executeJumpScript('cloudbroker', 'cloudbroker_acountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
+            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
 
