@@ -157,15 +157,16 @@ class cloudapi_users(object):
         self.models.accountactivationtoken.set(activation_token)
 
         signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
-        credittransaction = self.models.credittransaction.new()
-        credittransaction.accountId = accountId
-        credittransaction.amount = signupcredit
-        credittransaction.credit = signupcredit
-        credittransaction.currency = 'USD'
-        credittransaction.comment = 'Getting you started'
-        credittransaction.status = 'CREDIT'
-        credittransaction.time = now
+        if signupcredit > 0.0:
+            credittransaction = self.models.credittransaction.new()
+            credittransaction.accountId = accountId
+            credittransaction.amount = signupcredit
+            credittransaction.credit = signupcredit
+            credittransaction.currency = 'USD'
+            credittransaction.comment = 'Getting you started'
+            credittransaction.status = 'CREDIT'
+            credittransaction.time = now
 
-        self.models.credittransaction.set(credittransaction)
+            self.models.credittransaction.set(credittransaction)
 
         return True
