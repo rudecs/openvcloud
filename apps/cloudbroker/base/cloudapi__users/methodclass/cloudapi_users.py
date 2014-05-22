@@ -1,5 +1,4 @@
 from JumpScale import j
-import JumpScale.baselib.mailclient
 import JumpScale.grid.agentcontroller
 import re, string, random, time
 
@@ -41,14 +40,17 @@ class cloudapi_users(object):
         result str,,session
         """
         ctx = kwargs['ctx']
-        if j.core.portal.active.auth.authenticate(username, password):
-            session = ctx.env['beaker.get_session']() #create new session
-            session['user'] = username
-            session.save()
-            return session.id
-        else:
-            ctx.start_response('401 Unauthorized', [])
-            return 'Unauthorized'
+        accounts = self.models.account.simpleSearch({'name':username.lower()})
+        if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
+            if j.core.portal.active.auth.authenticate(username, password):
+                session = ctx.env['beaker.get_session']() #create new session
+                session['user'] = username
+                session.save()
+                return session.id
+
+        ctx.start_response('401 Unauthorized', [])
+        return 'Unauthorized'
+
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
@@ -67,6 +69,10 @@ class cloudapi_users(object):
         r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
 
+    def _isValidPassword(self, password):
+        if len(password) < 8 or len (password) > 80:
+            return False
+        return re.search(r"\s",password) is None
 
     def register(self, username, user, emailaddress, password, company, companyurl, location, **kwargs):
         """
@@ -82,6 +88,10 @@ class cloudapi_users(object):
             ctx.start_response('400 Bad Request', [])
             return '''An account name may not exceed 20 characters
              and may only contain a-z and 0-9'''
+        if not self._isValidPassword(password):
+            ctx.start_response('400 Bad Request', [])
+            return '''A password must be at least 8 and maximum 80 characters long
+                      and may not contain whitespace'''
 
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
@@ -117,22 +127,47 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
+            import ipdb; ipdb.set_trace()
+
             import urlparse
             urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-            
+
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
-            self.acl.executeJumpScript('cloudbroker', 'cloudbroker_acountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
+            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
 
     def validate(self, validationtoken, **kwargs):
+        ctx = kwargs['ctx']
+        now = int(time.time())
+        if not self.models.accountactivationtoken.exists(validationtoken):
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
         activation_token = self.models.accountactivationtoken.get(validationtoken)
+
+        if activation_token.deletionTime > 0:
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
         accountId = activation_token.accountId
-        activation_token.deletionTime = int(time.time())
+        activation_token.deletionTime = now
         account = self.models.account.get(accountId)
         account.status = 'CONFIRMED'
         self.models.account.set(account)
         self.models.accountactivationtoken.set(activation_token)
+
+        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+        credittransaction = self.models.credittransaction.new()
+        credittransaction.accountId = accountId
+        credittransaction.amount = signupcredit
+        credittransaction.credit = signupcredit
+        credittransaction.currency = 'USD'
+        credittransaction.comment = 'Getting you started'
+        credittransaction.status = 'CREDIT'
+        credittransaction.time = now
+
+        self.models.credittransaction.set(credittransaction)
 
         return True
