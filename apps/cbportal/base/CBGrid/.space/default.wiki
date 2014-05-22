@@ -10,11 +10,17 @@
 
 {{menuadmin_cbgrid}}
 
+@block
+@row
+
 @col 10
 
+{{breadcrumbs}}
 {content}
 
 @divend
+@divend
+
 
 {{cssstyle
 td {
@@ -23,6 +29,5 @@ td {
     text-overflow: ellipsis;
     white-space: nowrap;}
 }}
-
 
 

@@ -7,10 +7,18 @@ h2. Cloud Space
 h3. Details
 |*CloudSpace ID*|$$id|
 |*Name*|$$name|
-|*Account ID*|[$$accountid|account?id=$$accountid]|
-|*Network ID*|[$$networkid|netword?id=$$networkid]|
-|*Stack ID*|$$resourceproviderstacks|
+|*Account*|[$$accountname|account?id=$$accountid]|
+|*Network ID*|[$$networkname|network?id=$$networkid]|
+|*Stack*|$$resourceproviderstacks|
 |*Status*|$$status|
 |*Access Control List*|$$acl|
 |*Description*|$$descr|
 |*Public IP Adress*|$$publicipaddress|
+|*Resource Limits*|$$resourcelimits|
+
+
+h3. Virtual Machines
+{{vmachines cloudspaceid:$$id}}
+
+h3. Cloudspace Nodes
+{{cbnodes space:$$id}}

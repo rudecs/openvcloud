@@ -4,20 +4,18 @@
 
 h2. VMachine '$$name'
 
-* *ID*: $$id
-* *Description*: $$descr
-* *Created at*: $$createdat
-* *Deleted at*: $$deletedat
-* *Size*: $$size
-* *Image*: [$$image|image?id=$$imageid]
-* *Status*: $$status
-* *Host Name*: $$hostname
-* *Hypervisor Type*: $$hypervisortype
-* *Stack*: [$$stackname|stack?id=$$stackid] ($$stackrefid)
-* *Cloudspace*: [$$spacename|cloudspace?id=$$cloudspaceid]
-* *NICs*:
+|*ID*| $$id|
+|*Description*| $$descr|
+|*CPU Node*| [$$stackrefid|stack?id=$$stackid]|
+|*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
+|*Created at*| $$createdat|
+|*Deleted at*| $$deletedat|
+|*Size*| $$size|
+|*Image*| [$$image|image?id=$$imageid]|
+|*Status*| $$status|
+|*Host Name*| $$hostname|
+|*Hypervisor Type*| $$hypervisortype|
+*NICs*
 $$nics
-* *Disks*:
+*Disks*
 $$disks
-
-

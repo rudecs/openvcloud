@@ -11,16 +11,15 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    import JumpScale.grid.osis
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
-    network = cbclient.network.simpleSearch({'id':id})
-    if not network:
+    if not cbclient.network.exists(id):
         params.result = ('Network with id %s not found' % id, args.doc)
         return params
 
+    network = cbclient.network.get(id)
     def objFetchManipulate(id):
-        obj = network[0]
+        obj = network.dump()
         obj['nameservers'] = str(', '.join(obj['nameservers'])) or ' '
         return obj
 

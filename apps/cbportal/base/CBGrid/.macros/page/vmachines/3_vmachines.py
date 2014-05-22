@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
     stackid = args.getTag("stackid")
-    cloudspaceId = args.getTag("cloudspaceId")
+    cloudspaceId = args.getTag("cloudspaceid")
     filters = dict()
 
     if stackid:

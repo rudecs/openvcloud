@@ -4,20 +4,11 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
-    for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        filters[tag] = val
+    accountId = args.getTag('accountId')
+    if accountId:
+        filters['accountId'] = accountId
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Resource Provider Stacks', 'Status', 'Access Control List', 'Description', 'Public IP Address', 'Resource Limits']
-
-    def makeACL(row, field):
-        return str('<br>'.join(['%s:%s' % (acl['userGroupId'], acl['right']) for acl in row[field]]))
-
-    def makeRL(row, field):
-        resourceLimits = list()
-        for k, v in row[field].iteritems():
-            resourceLimits.append('%s: %s'% (k, str(v)))
-        return str('<br>'.join(resourceLimits))
+    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Resource Provider Stacks', 'Status', 'Public IP Address']
 
     def makeRPS(row, field):
         links = list()
@@ -25,11 +16,11 @@ def main(j, args, params, tags, tasklet):
             links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
         return ', '.join(links)
 
-    fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'status', 'acl', 'descr', 'publicipaddress', 'resourceLimits']
+    fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'status', 'publicipaddress']
     fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
                    '[%(networkId)s|/CBGrid/network?id=%(networkId)s]', makeRPS, 'status', 
-                   makeACL, 'descr', 'publicipaddress', makeRL]
+                   'publicipaddress']
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
