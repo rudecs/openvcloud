@@ -141,9 +141,9 @@ h1. Pricing
         <div class="row operationWrap">
             <label class="col-sm-2 control-label">Operation System: </label>
             <div class="col-md-3">
-                <select name="country" class="form-control">
-                    <option value="">Linux</option>
-                    <option value="">Windows</option>
+                <select name="country" class="form-control" ng-model="os">
+                    <option value="linux">Linux</option>
+                    <option value="windows">Windows</option>
                 </select>
             </div>
             <div class="btn-group btn-group-sm priceHM floatR">
@@ -155,7 +155,7 @@ h1. Pricing
   
 }}
 {{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -169,7 +169,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
+                    {{html:<h1>${[plan[os][pricingModel]]}<span class=subscript>/{[pricingModel]}</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -259,7 +259,7 @@ h1. Pricing
    </div>
 }}
 {{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -316,7 +316,7 @@ h1. Pricing
    </div>
 }}
 {{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -373,7 +373,7 @@ h1. Pricing
    </div>
 }}
 {{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in linuxPlans}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
