@@ -1,6 +1,6 @@
 @template public
 {{div: class=white}}
-{{div2: class=container | ng-app | ng-controller=MachinePricingController}}
+{{div2: class=container why-page | ng-app | ng-controller=MachinePricingController}}
 
 @col 12
 
@@ -365,23 +365,280 @@ h1. Pricing
 
 
   <div class="tab-pane fade in" id="DesktopDeck">
+  <div class="col-md-12 mB15">
+        <div class="row operationWrap">
+            <div class="btn-group btn-group-sm priceHM floatR">
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+            </div>
+        </div>
+   </div>
+}}
 {{div: class=row}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash }}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> Plane 1 </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.03</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>First 1 TB </td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> Plane 2 </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0295</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Next 49 TB / month</td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> Plane 3 </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.029</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Next 450 TB / month</td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> Plane 4</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0285</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Next 500 TB / month</td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> Plane 5 </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.028</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Next 4000 TB / month</td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-2}}
+        {{div3: class=panel panel-primary}}
+            
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice">Plane 6  </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0275</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Over 5000 TB / month</td></tr>
+                    
+                    <tr><td></td></tr>
+                    
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
 
-Free Trials can be requested now! Sign Up and complete the Desktop Trial Form in your account.
-	
-The cost of your Machine Deck will consist of:	
-	
-* Infrastructure sized to your needs: Machine Deck Prices per hour
-* License for the Desktop Deck: Per user per month
-* Licensed end user applications: Per user per month per application
-* Open source/free end user applications: Free
 
-Your requirements:
-* Any html 5 capabale browser: laptops, chromebooks, tablets, smartphones, thin clients	
-* No local client software	
-* No local client costs	
+
 
 {{div}}
+
+{{html:
+<br />
+<br />
+
+<div class="table-responsive">
+    <table class="table table-hover pricingTable">
+      
+      <thead>
+        <tr>
+          <th width="40%">Request Pricing</th>
+          <th width="20%">USD/GB/month</th>
+          <th>USD/GB/hour</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            PUT, COPY, POST, or LIST Requests
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Delete Requests
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            GET and all other Requests first 10,000 requests
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            GET and all other Requests next 10,000 requests
+          </td>
+          <td>$0.004 </td>
+          <td>per 10,000 requests</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover pricingTable">
+      
+      <thead>
+        <tr>
+          <th width="40%">Data Transfer Pricing</th>
+          <th width="20%">USD/GB/month</th>
+          <th>USD/GB/hour</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Data Transfer IN To Mothership1
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Data Transfer within Mothership1 Decks
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Data Transfer OUT to internet first 10 TB
+          </td>
+          <td>Free</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Next 40 TB / month
+          </td>
+          <td>$0.09</td>
+          <td>/GB</td>
+        </tr>
+        <tr>
+          <td>
+            Next 100 TB / month
+          </td>
+          <td>$0.07</td>
+          <td>/GB</td>
+        </tr>
+        <tr>
+          <td>
+            Next 350 TB / month
+          </td>
+          <td>$0.05</td>
+          <td>/GB</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+
+    
+
 
   </div>
 
@@ -393,10 +650,53 @@ Your requirements:
 
 
   <div class="tab-pane fade in" id="ApplicationDeck">
-
+  <div class="col-md-12 mB15">
+        <div class="row operationWrap">
+            <div class="btn-group btn-group-sm priceHM floatR">
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+            </div>
+        </div>
+   </div>
+}}
 {{div: class=row}}
+    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash | ng-show=plan.recommended}}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>{[plan.mem]} Memory</td></tr>
+                    <tr><td>{[plan.cores]} 
+                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
+                    </td></tr>
+                    <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Firewall & VPN</td></tr>
+                    <tr><td>Unlimited Transfer*</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
 
-Coming in Q3 2014!
+
 
 {{div}}
 
