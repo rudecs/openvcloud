@@ -31,7 +31,7 @@ def _send_signup_mail(**kwargs):
     <br>
     Thank you for registering %(username)s at Mothership<sup>1</sup>!<br>
     <br>
-    Please confirm your e-mail address by following the activation link: <a href="%(portalurl)s/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/AccountActivation?activationtoken=%(activationtoken)s</a><br>
+    Please confirm your e-mail address by following the activation link: <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
     If you are unable to follow the link, please copy and paste it in your favourite browser.
     <br>
     After your validation, you will be able to log in with your username and chosen password.<br>
