@@ -84,6 +84,7 @@ h1. Pricing
                     <tr><td>Private Cloud Space</td></tr>
                     <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -128,7 +129,8 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Extra Public IPv4 address for use in one of the Decks</td></tr>
-                    
+                   
+                    <tr><td></td></tr>
                     
                     
                 </table>
@@ -286,15 +288,15 @@ h1. Pricing
 
 
   <div class="tab-pane fade in" id="StorageDeck">
-  <div class="col-md-12 mB15">
-        <div class="row operationWrap">
-            <div class="btn-group btn-group-sm priceHM floatR">
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-            </div>
-        </div>
-   </div>
 }}
+#  <div class="col-md-12 mB15">
+#        <div class="row operationWrap">
+#            <div class="btn-group btn-group-sm priceHM floatR">
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+#            </div>
+#        </div>
+#   </div>
 {{div: class=row}}
     {{div2: class=col-md-2}}
         {{div3: class=panel panel-primary}}
@@ -378,7 +380,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Keep on going </h3>}}
+                {{html: <h3 class="headPrice"> Keep going </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
