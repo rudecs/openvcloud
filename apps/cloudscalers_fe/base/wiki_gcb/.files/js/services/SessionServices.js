@@ -128,24 +128,36 @@ angular.module('cloudscalers.services')
 
         user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation) {
             var signUpResult = {};
+			var querystring = '?username='
+					+ encodeURIComponent(username)
+					+ '&user=' + encodeURIComponent(user)
+					+ '&emailaddress=' + encodeURIComponent(email)
+					+ '&password=' + encodeURIComponent(password)
+					+ '&company=' + encodeURIComponent(company)
+					+ '&companyurl=' + encodeURIComponent(companyurl)
+					+ '&location=' + encodeURIComponent(preferredDataLocation);
             $http({
-                method: 'POST',
-                data: {
-                    username: username,
-                    user:name,
-                    emailaddress: email,
-                    password: password,
-                    company: company,
-                    companyurl: companyurl,
-                    location: preferredDataLocation
-                },
-                url: cloudspaceconfig.apibaseurl + '/users/register'
+                method: 'GET',
+                url: cloudspaceconfig.apibaseurl + '/users/register' + querystring
             })
             .success(function(data, status, headers, config) {
                 signUpResult.success = true;
             })
             .error(function(data, status, headers, config) {
-                signUpResult.error = data;
+                if (status == 451) {
+					$http({
+						method: 'JSONP',
+						url: headers('Location') + querystring
+					})
+					.success(function(data, status, headers, config) {
+						signUpResult.success = true;
+					})
+					.error(function(data, status, headers, config) {
+						signUpResult.error = "An unexpected error has occurred";
+					});
+				}
+				else {signUpResult.error = data;}
+
             });
             return signUpResult;
         };
