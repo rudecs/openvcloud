@@ -9,6 +9,15 @@ class mainclass(OSISStore):
     Default object implementation
     """
 
+    def init(self, path, namespace,categoryname):
+        """
+        gets executed when catgory in osis gets loaded by osiscmds.py (.init method)
+        """
+        self.initall( path, namespace,categoryname,db=True)
+        self.db=j.db.keyvaluestore.getRedisStore(namespace='', host='localhost', port=7771, password='', masterdb=masterdb)
+        self.db.osis[self.dbprefix]=self
+
+
     def set(self, key, value, waitIndex=False):
         id = value.get('id')
         if id and self.db.exists(self.dbprefix, id):
