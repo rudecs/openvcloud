@@ -67,6 +67,7 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        #TODO: redirect to different location if necessary
         networkid = self.libvirt_actor.getFreeNetworkId()
         if not networkid:
             raise RuntimeError("Failed to get networkid")
@@ -77,6 +78,7 @@ class cloudapi_cloudspaces(object):
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
+        cs.location = self.cb.extensions.imp.whereAmI()
         ace = cs.new_acl()
         ace.userGroupId = access
         ace.type = 'U'
