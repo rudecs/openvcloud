@@ -13,7 +13,6 @@
 
 h1. Pricing
 
-
 {{html:
 <br>
 <ul class="nav nav-tabs tabOfPrice">
@@ -50,7 +49,7 @@ h1. Pricing
             {{div4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plan 1</h3>}}
+                {{html: <h3 class="headPrice center">First Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -58,7 +57,8 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>First Cloud Space with Port Forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
                     
@@ -73,7 +73,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plan 2</h3>}}
+                {{html: <h3 class="headPrice center">Basic Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -81,12 +81,9 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>Extra Cloud Space with Port forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
-                    
-                    
-                    
-                    
                 </table>
                 }}
             {{div4}}
@@ -98,7 +95,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plan 3</h3>}}
+                {{html: <h3 class="headPrice center">Advanced Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -106,7 +103,8 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>Extra Cloud Space with Port forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
                     
@@ -121,7 +119,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plan 4</h3>}}
+                {{html: <h3 class="headPrice center">Extra Public IPv4</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -153,12 +151,12 @@ h1. Pricing
   <div class="tab-pane fade in" id="MachineDeck">
   <p>Mothership<sup>1</sup> delivers plans that include a lot more than other clouds and with more flexibility to the choice of your storage!:</p>
     <ul class="bulletStyle">
-        <li>Advanced Cloud Space with defense shield</li>
-        <li>Choice of standard Linux and Windows templates</li>
-        <li>All functions needed to manage your virtual machines</li>
+        <li>Advanced Cloud Space providing a pool of secured private resources</li>
+        <li>Private defense shield providing an extremely configurale firewall and router</li>
+        <li>Instant snapshots and immediately snapshot rollback</li>
+        <li>Deployment of new virtual machines in seconds</li>
         <li>Disaster Recovery Backup (managed by Mothership<sup>1</sup>)</li>
-        <li>Monitoring by Mothership Operations</li>
-        <li>99.99% Uptime SLA</li>
+        <li>Secured integration possible with your local office IT through a secured tunnel: no public exposure of virtual machines on the internet!</li>
     </ul>
     <br />
   <div class="col-md-12 mB15">
@@ -308,7 +306,7 @@ h1. Pricing
                 {{div5}}
             {{div4}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plan 1 </h3>}}
+                {{html: <h3 class="headPrice"> Welcome </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -332,7 +330,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plan 2 </h3>}}
+                {{html: <h3 class="headPrice"> Activated </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -356,7 +354,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plan 3 </h3>}}
+                {{html: <h3 class="headPrice"> On track </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -380,7 +378,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plan 4</h3>}}
+                {{html: <h3 class="headPrice"> Keep on going </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -404,7 +402,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plan 5 </h3>}}
+                {{html: <h3 class="headPrice"> One to go </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -428,7 +426,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice">Plan 6  </h3>}}
+                {{html: <h3 class="headPrice">Target reached </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -569,7 +567,7 @@ h1. Pricing
 
 <div class="tab-pane fade in" id="DesktopDeck">
     <div class="row">
-    <p class="col-md-3">Free Trials can be requested now</p><a href="/wiki_gcb/SignUp" class="btn btn-success col-md-2" role="button">Sign Up</a>
+    <p class="col-md-3">The Desktop Deck is opening soon. Free Trials can be requested now!</p> <a href="/wiki_gcb/SignUp" class="btn btn-success col-md-2" role="button">Sign Up</a>
     </div>
   
   <br /> 
