@@ -74,6 +74,10 @@ class CloudBroker(object):
     def __init__(self):
         self.Dummy = Dummy
 
+        locationkeys = j.application.config.getKeysFromPrefix('cloudbroker.location')
+        self._locations = dict([(locationkey.split('.')[-1],j.application.config.getDict(locationkey)) for locationkey in locationkeys])
+        self._where_am_i = j.application.config.get('cloudbroker.where_am_i')
+
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)
 
@@ -98,13 +102,13 @@ class CloudBroker(object):
             return ids[0]
         else:
             return None
-        
+
     def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
             raise RuntimeError('No Providers available')
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
-        if not capacityinfo: 
+        if not capacityinfo:
             return -1
         #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
         l = len(capacityinfo)
@@ -179,3 +183,8 @@ class CloudBroker(object):
         else:
             return None
 
+    def getLocations(self):
+        return self._locations
+
+    def whereAmI(self):
+        return self._where_am_i

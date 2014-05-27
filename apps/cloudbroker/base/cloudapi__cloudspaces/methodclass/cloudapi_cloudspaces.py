@@ -2,6 +2,8 @@ from JumpScale import j
 from cloudbrokerlib import authenticator
 import ujson
 import gevent
+import urlparse
+
 
 class cloudapi_cloudspaces(object):
     """
@@ -67,6 +69,7 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        #TODO: redirect to different location if necessary
         networkid = self.libvirt_actor.getFreeNetworkId()
         if not networkid:
             raise RuntimeError("Failed to get networkid")
@@ -77,6 +80,7 @@ class cloudapi_cloudspaces(object):
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
+        cs.location = self.cb.extensions.imp.whereAmI()
         ace = cs.new_acl()
         ace.userGroupId = access
         ace.type = 'U'
@@ -150,13 +154,13 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cloudspace)
 
 
+    @authenticator.auth(acl='R')
     def get(self, cloudspaceId, **kwargs):
         """
         get cloudspaces.
         param:cloudspaceId id of the cloudspace
         result dict
         """
-        #put your code here to implement this method
         cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
 
         cloudspace = { "accountId": cloudspaceObject.accountId,
@@ -193,10 +197,20 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress']}
+        query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress','location']}
         query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
+        #during the transitions phase, not all locations might be filled in
+        for cloudspace in cloudspaces:
+            if not 'location' in cloudspace:
+                cloudspace['location'] = self.cb.extensions.imp.whereAmI()
+
+        urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+
+        for cloudspace in cloudspaces:
+            cloudspace['locationurl'] = "%s://%s" % (urlparts.scheme,self.cb.extensions.imp.getLocations()[cloudspace['location'].lower()]['url'])
+
         return cloudspaces
 
     @authenticator.auth(acl='A')

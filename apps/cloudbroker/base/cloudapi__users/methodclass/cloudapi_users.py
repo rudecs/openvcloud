@@ -17,7 +17,6 @@ class cloudapi_users(object):
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.acl = j.clients.agentcontroller.get()
 
-
     @property
     def cb(self):
         if not self._cb:
@@ -99,8 +98,19 @@ class cloudapi_users(object):
         else:
             now = int(time.time())
 
-            if not location in ('US1',):
-                location = 'CA1'
+            location = location.lower()
+
+            if not location in self.cb.extensions.imp.getLocations():
+                location = self.cb.extensions.imp.whereAmI()
+
+
+            import urlparse
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+
+            if location != self.cb.extensions.imp.whereAmI():
+                correctlocation = "%s://%s/restmachine/cloudapi/users/register" % (urlparts.scheme, self.cb.extensions.imp.getLocations()[location]['url'])
+                ctx.start_response('451 Redirect', [('Location', correctlocation)])
+                return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
 
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.models.account.new()
@@ -127,8 +137,6 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
-            import urlparse
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
 
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
