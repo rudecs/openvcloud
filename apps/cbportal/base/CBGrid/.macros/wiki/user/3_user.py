@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
 
     def objFetchManipulate(id):
         #u'domain', u'description', u'roles', u'emails', u'authkey', u'lastcheck', u'gid', u'groups', u'active', u'guid', u'id'
-        obj = user[0]
+        obj = user.__dict__
         obj['lastcheck'] = j.base.time.epoch2HRDateTime(obj['lastcheck']) if obj['lastcheck'] else 'Never'
 
         for attr in ['roles', 'groups']:

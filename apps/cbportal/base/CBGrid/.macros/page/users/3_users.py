@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
     fieldnames = ['ID', 'Domain', 'Roles', 'Groups', 'Description', 'Active', 'Last Checked']
 
     def makeLink(row, field):
-        return '[%s|/CBGrid/user?id=%s]' % (row[field], row[field])
+        return '[%s|/CBGrid/user?id=%s_%s]' % (row[field], j.application.whoAmI.gid, row[field])
 
     fieldids = ['id', 'domain', 'roles', 'groups', 'description', 'active', 'lastcheck']
     fieldvalues = [makeLink, 'domain', 'roles', 'groups', 'description', 'active', modifier.makeTime]

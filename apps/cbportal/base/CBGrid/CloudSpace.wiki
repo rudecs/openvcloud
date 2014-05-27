@@ -9,7 +9,7 @@ h3. Details
 |*Name*|$$name|
 |*Account*|[$$accountname|account?id=$$accountid]|
 |*Network ID*|[$$networkname|network?id=$$networkid]|
-|*Stack*|$$resourceproviderstacks|
+|*Stack(s)*|$$resourceproviderstacks|
 |*Status*|$$status|
 |*Access Control List*|$$acl|
 |*Description*|$$descr|
@@ -20,5 +20,5 @@ h3. Details
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
 
-h3. Cloudspace Nodes
+h3. CPU Nodes
 {{cbnodes space:$$id}}
