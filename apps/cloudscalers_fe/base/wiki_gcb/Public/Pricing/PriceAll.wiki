@@ -128,8 +128,8 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>Extra Public IPv4 address for use in one of the Decks</td></tr>
-                    <tr><td></td></tr>
+                    <tr><td>Extra Public IPv4 address</td></tr>
+                    <tr><td>For use in one of the Decks</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                 </table>
@@ -152,12 +152,12 @@ h1. Pricing
   <div class="tab-pane fade in" id="MachineDeck">
   <p>Mothership<sup>1</sup> delivers *virtual machine plans that include a lot more than other clouds* and with more flexibility to the choice of your storage!:</p>
     <ul class="bulletStyle">
-        <li>*Advanced Cloud Space* providing a pool of secured private resources</li>
-        <li>Private defense shield providing an *extremely configurale firewall and router*</li>
-        <li>*Instant snapshots* and immediately snapshot rollback</li>
-        <li>*Deployment* of new virtual machines *in seconds*</li>
-        <li>Disaster recovery *backup included* (managed by Mothership<sup>1</sup>)</li>
-        <li>*Secured integration with your local office IT* through a secured tunnel: no public exposure of virtual machines on the internet!</li>
+        <li>Advanced Cloud Space providing a pool of secured private resources</li>
+        <li>Private defense shield providing an extremely configurale firewall and router</li>
+        <li>Instant snapshots and immediately snapshot rollback</li>
+        <li>Deployment of new virtual machines in seconds</li>
+        <li>Disaster recovery backup included (managed by Mothership<sup>1</sup>)</li>
+        <li>Secured integration with your local office IT through a secured tunnel: no public exposure of virtual machines on the internet!</li>
     </ul>
     <br />
   <div class="col-md-12 mB15">
