@@ -1,11 +1,17 @@
 @template public
+{{html:
+<style type="text/css">
+.bulletStyle { list-style-type: disc;}
+</style>
+
+}}
+
 {{div: class=white}}
 {{div2: class=container | ng-app | ng-controller=MachinePricingController}}
 
 @col 12
 
 h1. Pricing
-
 
 {{html:
 <br>
@@ -28,7 +34,7 @@ h1. Pricing
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
             </div>
         </div>
-   </div>
+      </div>
 
 
 }}
@@ -43,7 +49,7 @@ h1. Pricing
             {{div4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plane 1</h3>}}
+                {{html: <h3 class="headPrice center">First Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -51,7 +57,8 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>First Cloud Space with Port Forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
                     
@@ -66,7 +73,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plane 2</h3>}}
+                {{html: <h3 class="headPrice center">Basic Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -74,12 +81,10 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>Extra Cloud Space with Port forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
-                    
-                    
-                    
-                    
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -91,7 +96,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plane 3</h3>}}
+                {{html: <h3 class="headPrice center">Advanced Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -99,7 +104,8 @@ h1. Pricing
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>Extra Cloud Space with Port forwarding</td></tr>
+                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
                     
@@ -114,7 +120,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Plane 4</h3>}}
+                {{html: <h3 class="headPrice center">Extra Public IPv4</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -123,7 +129,8 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Extra Public IPv4 address for use in one of the Decks</td></tr>
-                    
+                   
+                    <tr><td></td></tr>
                     
                     
                 </table>
@@ -144,6 +151,16 @@ h1. Pricing
   </div>
 
   <div class="tab-pane fade in" id="MachineDeck">
+  <p>Mothership<sup>1</sup> delivers plans that include a lot more than other clouds and with more flexibility to the choice of your storage!:</p>
+    <ul class="bulletStyle">
+        <li>Advanced Cloud Space providing a pool of secured private resources</li>
+        <li>Private defense shield providing an extremely configurale firewall and router</li>
+        <li>Instant snapshots and immediately snapshot rollback</li>
+        <li>Deployment of new virtual machines in seconds</li>
+        <li>Disaster Recovery Backup (managed by Mothership<sup>1</sup>)</li>
+        <li>Secured integration possible with your local office IT through a secured tunnel: no public exposure of virtual machines on the internet!</li>
+    </ul>
+    <br />
   <div class="col-md-12 mB15">
         <div class="row operationWrap">
             <label class="col-sm-2 control-label">Operation System: </label>
@@ -204,124 +221,82 @@ h1. Pricing
 
 {{html:
 
+<br />
+<div class="table-responsive">
+    <table class="table table-hover pricingTable">
+      
+      <thead>
+        <tr>
+          <th width="40%">Options available on plans:</th>
+          <th width="20%">Month</th>
+          <th>Hour</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Extra SSD Storage (up to 100GB)
+          </td>
+          <td>$0.30</td>
+          <td>$0.00042</td>
+          <td>Per GB</td>
+        </tr>
+       <tr>
+          <td>
+            Extra HDD Storage attached to VM (up to 2TB)
+          </td>
+          <td>$0.15</td>
+          <td>$0.00021</td>
+          <td>Per GB</td>
+        </tr>
+        <tr>
+          <td>
+            Snapshots
+          </td>
+          <td>$0.15</td>
+          <td>$0.00021</td>
+          <td>Based on drive size per GB</td>
+        </tr>
+        <tr>
+          <td>
+            Templates
+          </td>
+          <td>$0.30</td>
+          <td>$0.00042</td>
+          <td>Based on drive size per GB</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
 
-<table class="techspecs">
-    <tr>
-        <th  class="title">All Plans Include:</th>
-
-        <td class="column-divider"></td>
-        <td class="full-span full-span2">
-            <ul>
-                <li>Cloud Space with defense shield</li>
-                <li>Choice of standard Linux and Windows templates</li>
-                <li>All functions as described in the Machine Deck</li>
-                <li class="motherShipSub">Disaster Recovery Backup (managed by Mothership<sup>1</sup>)</li>
-                <li>Monitoring by Mothership Operations</li>
-                <li>99.99% Uptime SLA</li>
-            </ul>
-
-        </td>
-        <td class="justBorder2">
-            
-
-        </td>
-        <td class="justBorder2">
-            
-
-        </td>
-        <td class="justBorder2">
-            
-
-        </td>
-        <td class="justBorder2">
-            
-
-        </td>
 
 
-    </tr>
+
+<p>(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section</p>
 
 
-</table>
-
-
-}}
-(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section
-
-{{html:
 
   </div>
 
+
+
+
+  
 
 
 
   <div class="tab-pane fade in" id="StorageDeck">
-  <div class="col-md-12 mB15">
-        <div class="row operationWrap">
-            <div class="btn-group btn-group-sm priceHM floatR">
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-            </div>
-        </div>
-   </div>
 }}
-{{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
-        {{div3: class=panel panel-primary}}
-            {{div4: class=cnrflash | ng-show=plan.recommended}}
-                {{div5: class=cnrflash-inner}}
-                    {{span: class=cnrflash-label}}
-                        MOST @LF POPULAR
-                    {{span}}
-                {{div5}}
-            {{div4}}
-            {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
-            {{div4}}
-            {{div4: class=panel-body}}
-                {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
-                {{div5}}
-                {{html:
-                <table class="table">
-                    <tr><td>{[plan.mem]} Memory</td></tr>
-                    <tr><td>{[plan.cores]} 
-                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
-                    </td></tr>
-                    <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
-                    <tr><td>Snapshots</td></tr>
-                    <tr><td>Backup</td></tr>
-                    <tr><td>Firewall & VPN</td></tr>
-                    <tr><td>Unlimited Transfer*</td></tr>
-                </table>
-                }}
-            {{div4}}
-            {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
-            {{div4}}
-        {{div3}}
-    {{div2}}
-
-
-
-{{div}}
-
-{{html:
-
-  </div>
-
-
-
-  <div class="tab-pane fade in" id="DesktopDeck">
-  <div class="col-md-12 mB15">
-        <div class="row operationWrap">
-            <div class="btn-group btn-group-sm priceHM floatR">
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-            </div>
-        </div>
-   </div>
-}}
+#  <div class="col-md-12 mB15">
+#        <div class="row operationWrap">
+#            <div class="btn-group btn-group-sm priceHM floatR">
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+#            </div>
+#        </div>
+#   </div>
 {{div: class=row}}
     {{div2: class=col-md-2}}
         {{div3: class=panel panel-primary}}
@@ -333,7 +308,7 @@ h1. Pricing
                 {{div5}}
             {{div4}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plane 1 </h3>}}
+                {{html: <h3 class="headPrice"> Welcome </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -357,7 +332,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plane 2 </h3>}}
+                {{html: <h3 class="headPrice"> Activated </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -381,7 +356,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plane 3 </h3>}}
+                {{html: <h3 class="headPrice"> On track </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -405,7 +380,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plane 4</h3>}}
+                {{html: <h3 class="headPrice"> Keep going </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -429,7 +404,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> Plane 5 </h3>}}
+                {{html: <h3 class="headPrice"> One to go </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -453,7 +428,7 @@ h1. Pricing
         {{div3: class=panel panel-primary}}
             
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice">Plane 6  </h3>}}
+                {{html: <h3 class="headPrice">Target reached </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -592,58 +567,68 @@ h1. Pricing
 
 
 
+<div class="tab-pane fade in" id="DesktopDeck">
+    <div class="row">
+    <p class="col-md-3">The Desktop Deck is opening soon. Free Trials can be requested now!</p> <a href="/wiki_gcb/SignUp" class="btn btn-success col-md-2" role="button">Sign Up</a>
+    </div>
+  
+  <br /> 
+  <p>The cost of your Machine Deck will consist of:</p>
+ 
+  <div class="table-responsive">
+   
+    <table class="table table-hover pricingTable">
+      
+      <tbody>
+        <tr>
+          <td>
+            Infrastructure sized to your needs
+          </td>
+          <td>Machine Deck Prices per hour</td>
+          
+        </tr>
+        <tr>
+          <td>
+            License for the Desktop Deck
+          </td>
+          <td>Per user per month</td>
+          
+        </tr>
+        <tr>
+          <td>
+            Licensed end user applications
+          </td>
+          <td>Per user per month per application</td>
+          
+        </tr>
+        <tr>
+          <td>
+            Open source/free end user applications
+          </td>
+          <td>Free</td>
+          
+        </tr>
+        
+        
+      </tbody>
+    </table>
+  </div>
+ <br /> 
+<p>Your requirements:</p>
+<ul class="bulletStyle">
+        <li>Any html 5 capabale browser: laptops, chromebooks, tablets, smartphones, thin clients</li>
+        <li>No local client software</li>
+        <li>No local client costs</li>
+       
+        </ul>
+  </div>
+
+
+
+
   <div class="tab-pane fade in" id="ApplicationDeck">
-  <div class="col-md-12 mB15">
-        <div class="row operationWrap">
-            <div class="btn-group btn-group-sm priceHM floatR">
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-            </div>
-        </div>
-   </div>
-}}
-{{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
-        {{div3: class=panel panel-primary}}
-            {{div4: class=cnrflash | ng-show=plan.recommended}}
-                {{div5: class=cnrflash-inner}}
-                    {{span: class=cnrflash-label}}
-                        MOST @LF POPULAR
-                    {{span}}
-                {{div5}}
-            {{div4}}
-            {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice"> {[plan.name]} </h3>}}
-            {{div4}}
-            {{div4: class=panel-body}}
-                {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>/{[pricingModel]}</span></h1>}}
-                {{div5}}
-                {{html:
-                <table class="table">
-                    <tr><td>{[plan.mem]} Memory</td></tr>
-                    <tr><td>{[plan.cores]} 
-                        <ng-pluralize count="plan.cores" when="{'one': 'Core', 'other': 'Cores'}">
-                    </td></tr>
-                    <tr><td>{[plan.primary]}GB SSD Storage<br>Scale to 100GB</td></tr>
-                    <tr><td>Snapshots</td></tr>
-                    <tr><td>Backup</td></tr>
-                    <tr><td>Firewall & VPN</td></tr>
-                    <tr><td>Unlimited Transfer*</td></tr>
-                </table>
-                }}
-            {{div4}}
-            {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
-            {{div4}}
-        {{div3}}
-    {{div2}}
-
-
-
-{{div}}
-
-{{html:
+  
+  <p>Coming in Q3 2014.</p>
 
   </div>
 
