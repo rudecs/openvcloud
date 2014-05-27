@@ -7,12 +7,13 @@ angular.module('cloudscalers.controllers')
         username = queryparams.username;
         spaceId = queryparams.space;
 
-        SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
+        SessionData.setUser({username: username, api_key: api_key});
         CloudSpace.setCurrent({id:spaceId});
 
         var uri = new URI($window.location);
         uri.filename('Decks');
         uri.fragment('');
+        uri.search('');
         $window.location = uri.toString();
 
     }]);
