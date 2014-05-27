@@ -5,6 +5,17 @@ angular.module('cloudscalers.controllers')
         $scope.currentAccount = {id:$scope.currentSpace ? $scope.currentSpace.accountId : ''};
 
         $scope.setCurrentCloudspace = function(space) {
+            if (space.locationurl != null){
+                var currentlocation = $window.location;
+                if (currentlocation.origin != space.locationurl){
+                    $window.location = space.locationurl + '/wiki_gcb/SwitchSpace'
+                            + '?username=' + encodeURIComponent($scope.currentUser.username)
+                            + '&token=' + encodeURIComponent($scope.currentUser.api_key)
+                            + '&spaceId=' + encodeURIComponent(space.id);
+                    return
+                }
+            }
+
             CloudSpace.setCurrent(space);
             $scope.currentSpace = space;
             $scope.setCurrentAccount();
@@ -12,6 +23,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.setCurrentAccount = function(){
             if ($scope.currentSpace && $scope.accounts){
+
                 $scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
             }
         };
