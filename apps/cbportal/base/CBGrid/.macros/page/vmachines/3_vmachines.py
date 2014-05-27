@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
     if cloudspaceId:
         filters['cloudspaceId'] = cloudspaceId
 
-    fieldnames = ['Name', 'Status', 'Created at', 'Cloud Space', 'Stack']
+    fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
     def makeTime(row, field):
         time = datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
@@ -27,8 +27,8 @@ def main(j, args, params, tags, tasklet):
     def spaceLinkify(row, field):
         return '[%s|cloudspace?id=%s]' % (row[field], row[field])
 
-    fieldids = ['name', 'status', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'status', makeTime, spaceLinkify, stackLinkify]
+    fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
+    fieldvalues = [nameLinkify, 'status', 'hostName', makeTime, spaceLinkify, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

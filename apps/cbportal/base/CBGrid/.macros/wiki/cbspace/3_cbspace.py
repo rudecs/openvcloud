@@ -36,7 +36,7 @@ def main(j, args, params, tags, tasklet):
         obj['resourceLimits'] = str(', '.join(resourceLimits))
     
         links = list()
-        for rps in obj['resourceProviderStacks']:
+        for rps in set(obj['resourceProviderStacks']):
             stack = cbclient.stack.get(rps).dump() if cbclient.stack.exists(rps) else {'name':'N/A'}
             links.append('[%s|CBGrid/stack?id=%s]' % (stack['name'], rps))
         obj['resourceProviderStacks'] = ', '.join(links)

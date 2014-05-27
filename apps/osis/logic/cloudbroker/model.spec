@@ -185,6 +185,7 @@
     prop:networkId int,, Id of the used network
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
+    prop:location str,, datacenterlocation
 
 [rootmodel:Size] @dbtype:osis
     """

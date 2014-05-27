@@ -29,10 +29,15 @@ def _send_signup_mail(**kwargs):
 <body>
     Dear %(user)s,<br>
     <br>
-    Thank you for registering %(username)s at Mothership<sup>1</sup>!<br>
+    Thank you for registering at Mothership<sup>1</sup>!<br>
     <br>
-    Please confirm your e-mail address by following the activation link: <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
-    If you are unable to follow the link, please copy and paste it in your favourite browser.
+    We have now prepared your account %(username)s and we have applied a welcoming credit of $5 so you can start right away!<br>
+    <br>
+    Please confirm your e-mail address by following the activation link: <br>
+    <br>
+    <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
+    <br>
+    If you are unable to follow the link, please copy and paste it in your favourite browser.<br>
     <br>
     After your validation, you will be able to log in with your username and chosen password.<br>
     <br>

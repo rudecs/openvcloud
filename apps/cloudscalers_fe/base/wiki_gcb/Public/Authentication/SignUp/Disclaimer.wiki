@@ -17,6 +17,7 @@ You may use the Services provided that you are of legal age to form a binding co
 In order to access any Services, you are required to provide current and accurate identification, contact, and other details as part of the registration process. You are responsible for maintaining the confidentiality and accuracy of your account information, and you are responsible for all activities that occur under your account. You are solely responsible for all content on your account. You agree to immediately notify Mothership1 of any unauthorized use of your account or any other breach of security. Mothership1 will not be liable for any loss or damage arising from your failure to provide us with accurate information or to keep your account secure.
 
 Mothership1 reserves the right, at any time and from time to time, to amend or to modify these Terms and Conditions subject to reasonable prior notification by posting an announcement on the Website. By continuing to access or use the Services after any such amendments or modifications take effect, you agree to be bound by such amended or modified Terms and Conditions. If you do not agree to any change to these Terms and Conditions, then you must immediately stop using the Services.
+
 3. *Licensing*
 
 Subject to these Terms and Conditions, we grant each User of the Services a worldwide, non-exclusive, non-sublicensable and non-transferable license to use the software made accessible on or through the Services, solely for the purposes of using the Services. Any use for purposes other than of using the Services is expressly prohibited, unless you have obtained our prior explicit permission.
@@ -30,9 +31,10 @@ You shall not (directly or indirectly): \(i) decipher, decompile, disassemble, r
 All content, data or information added, created, uploaded, submitted, distributed, or posted to the Services by users (collectively "User Content"), whether publicly posted or privately transmitted, is the sole responsibility of the person who originated such User Content. You represent that all User Content provided by you is accurate, complete, up-to-date, and in compliance with all applicable laws, rules and regulations. You acknowledge that all content, including User Content, accessed by you using the Services is at your own risk and you will be solely responsible for any damage or loss to you or any other party resulting therefrom. We do not guarantee that any content you access on or through the Services is or will continue to be accurate.
 
 By submitting any User Content to the Services to the Services, you hereby grant us a worldwide, non-exclusive, perpetual, royalty-free, fully paid, sublicensable and transferable license to use, aggregate, reproduce, distribute, prepare derivative works of, display, and perform such User Content in connection with the Services and our (and our successors' and assigns') businesses, including without limitation for promoting and redistributing part or all of the Website or the Services (and derivative works thereof) in any media formats and through any media channels (including, without limitation, third party websites and feeds), and including after your termination of your account or the Services. You also hereby do and shall grant each user of the Website and/or the Services a non-exclusive, perpetual license to access any of your User Content that is available to such user on the Website, and to use, reproduce, distribute, prepare derivative works of, display and perform such User Content, including after your termination of your account or the Services.You represent and warrant that you have all rights to grant such licenses to us without infringement or violation of any third party rights, including without limitation, any privacy rights, publicity rights, copyrights, trademarks, contract rights, or any other intellectual property or proprietary rights.
+
 4. *Scope of Services*
 
-We guarantee an annual average of 99% network availability for the infrastructure of our computer center. If the security of the power supply network or the maintenance of network integrity is in jeopardy, we can temporarily restrict access to the service as required.
+We will take all means to provide for an annual average of 99,99% network availability for the infrastructure of our computer center. If the security of the power supply network or the maintenance of network integrity is in jeopardy, we can temporarily restrict access to the service as required.
 
 The Services are offered subject to certain limitations as regulated by the following Acceptable Use of Service:
 * The User shall be solely responsible for all of his activity in connection with the Services.
@@ -57,6 +59,7 @@ The Services are offered subject to certain limitations as regulated by the foll
 Technical support services are not included in the offers. If needed or desired the user will be charged separately. The effective prices are available at any time at: [Pricing].
 
 Subscribers are restricted from registering multiple accounts with the same billing details without first notifying Mothership1 of that intent. Mothership1 shall have the right to automatically flag such accounts as fraudulent or abusive, and Mothership1 may take any measures as set forth under Section 12 hereinafter.
+
 5. *Data integrity*
 
 Where data is transmitted to us, User is to back up their data regularly. The servers will be backed up regularly by us only when this is part of the offer. In the case of data loss, User must reload the data. Mothership1 shall have no liability for any data that may be lost, or unrecoverable, by reason of User's failure to backup its data.
@@ -64,6 +67,7 @@ Where data is transmitted to us, User is to back up their data regularly. The se
 We are not responsible for any damage direct or indirect caused by a data loss. User is solely responsible for the preservation of User's data which User saves onto its virtual server. Even with respect to data as to which User contracts for backup services provided by Mothership1, Mothership1 shall have no responsibility to preserve data.
 
 User will receive a user ID and password for security purposes. This must be kept confidential. User will be held liable for any malpractice resulting from the unauthorized use of the password.
+
 6. *Privacy*
 
 Mothership1 is committed to respecting your privacy and the confidentiality of your personal information. We will process your personal information, the traffic data and the content of your communication(s) in accordance with the applicable law and our [Privacy Policy]
@@ -74,7 +78,8 @@ Mothership1 assumes no responsibility as to the use of the Services by the User 
 
 In using the Services, Users must comply with, and refrain from violations of, any right of any other person, entity, or law, or any contractual duty. In particular, User shall not process any content \(i) which is illegal, unlawful, provoking, defamatory, impendent or detrimental or in any other way reprehensible; (ii) which he is not allowed to process pursuant to any laws, regulations, or contractual or fiduciary obligations; (iii) which constitutes a breach of the rights of any third parties, including, without being limitative, intellectual property rights and trade or business secrets.
 
-Please note the following sites are strictly prohibited: sites which contain copyrighted material; porn sites; warez, hacker, pirated, torrent or leech sites; sites which promote bulk email software or spamming; sites that promote illegal activity; sites with content that may be damaging to the servers. Any sites that are brought to our attention because they are spamming will be immediately deleted from the root directory without advanced notice without refund. We reserve the right to remove any account without advanced notice for any reason we see fit.
+Please note that the following sites are strictly prohibited: warez, hacker, pirated, torrent or leech sites; sites which promote spamming email software or services; sites that promote illegal activity; sites with content that may be damaging to the servers. Any sites that are brought to our attention because they are spamming will be immediately deleted from the root directory without advanced notice without refund. We reserve the right to remove any account without advanced notice for any reason we see fit.
+
 8. *Terms of payment*
 
 Mothership1 accepts such forms of payment as indicated on the Website. Please note that any payment terms presented to you in the process of using or signing up for paid Services are deemed part of this Agreement.
@@ -96,6 +101,7 @@ The Mothership1 Credit consumption is calculated on an hourly basis and can be c
 When all outstanding Mothership1 Credits have been consumed -- i.e. when User's Mothership1 Credits have decreased to zero or have become negative, and User does not re-charge sufficient Mothership1 Credits to his account in order to obtain a positive balance, either through the Auto-Recharge feature or otherwise -- all relevant Services will be suspended during a maximum term of two (2) weeks (the "Suspension Period"). As long as the Suspension Period has not been terminated, the User can re-activate his account and the corresponding Services by paying the then outstanding Price for all the Services, i.e. the Price relating to the Suspension Period, plus at least two weeks' Price for such Services. For the avoidance of doubt, please note that if the User wants to recover a certain Service he shall pay the Price for all the Services that have not been paid for during the Suspension Period, even if User wants to re-activate only one specific Service. Upon due payment of the Price for all the Services, the User may then terminate those Services which are no longer requested.
 
 When the Suspension Period expires, the Services will be automatically terminated and all data (including User Content) will be permanently and irrevocably deleted.
+
 9. *Refund Policy*
 
 When you purchase Services directly from Mothership1 you will be entitled to a cancellation period of fifteen (15) days (a "Cooling-Off Period") unless you have made use of the Services in any way, in which case the Cooling-Off Period will be extinguished and your purchase cannot be cancelled or refunded.
@@ -156,7 +162,7 @@ All provisions of these Terms and Conditions which by their nature should surviv
 
 You agree to the use of electronic communication in order to enter into contracts, place orders, and create other records and to the electronic delivery of notices, policies and changes thereto and records of transactions with Mothership1.
 
-For your convenience, Mothership1 may provide you with a translation of the English language version of these Terms upon your request. In the event of any inconsistency between a non-English version of these Terms and the English version, the English version shall govern your relationship with Mothership1.
+For your convenience, Mothership1 may provide you with a French/Dutch/German of the English language version of these Terms upon your request. In the event of any inconsistency between a non-English version of these Terms and the English version, the English version shall govern your relationship with Mothership1.
 
 These Terms and Conditions constitute the entire agreement between you and Mothership1 with respect to your use of the Services and replace any prior agreements between you and Mothership1 with respect to same.
 
