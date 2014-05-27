@@ -133,7 +133,8 @@ class cloudapi_machines(object):
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
-        image.size = self._getStorage(m).id
+        firstdisk = self.models.disk.get(machine.disks[0])
+        image.size = firstdisk.sizeMax
         image.username = ""
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
