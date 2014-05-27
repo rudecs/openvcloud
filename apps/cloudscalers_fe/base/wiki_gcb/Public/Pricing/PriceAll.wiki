@@ -28,12 +28,14 @@ h1. Pricing
 <div class="tab-content">
   <div class="minCloud tab-pane fade in active" id="CloudSpace">
       <div class="col-md-12 mB15">
-        <div class="row operationWrap">
-            <div class="btn-group btn-group-sm priceHM floatR">
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-            </div>
-        </div>
+}}
+#        <div class="row operationWrap">
+#            <div class="btn-group btn-group-sm priceHM floatR">
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
+#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
+#            </div>
+#        </div>
+{{html:
       </div>
 
 
