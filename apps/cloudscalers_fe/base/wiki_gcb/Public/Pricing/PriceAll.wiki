@@ -7,7 +7,7 @@
 }}
 
 {{div: class=white}}
-{{div2: class=container | ng-app | ng-controller=MachinePricingController}}
+{{div2: class=container | ng-app | ng-controller=PricingAllController}}
 
 @col 12
 
