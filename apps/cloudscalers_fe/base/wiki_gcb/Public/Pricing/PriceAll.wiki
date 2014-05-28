@@ -220,7 +220,8 @@ h1. Pricing
             <div class="col-md-3">
                 <select name="country" class="form-control" ng-model="os">
                     <option value="linux">Linux</option>
-                    <option value="windows">Windows</option>
+                    <option value="windows">Windows Standard</option>
+                    <option value="windows_essentials">Windows Essentials</option>
                 </select>
             </div>
             <div class="btn-group btn-group-sm priceHM floatR">
@@ -246,7 +247,8 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan[os][pricingModel]]}<span class=subscript>/{[pricingModel]}</span></h1>}}
+                    {{html: <h1 ng-show="plan[os][pricingModel] == '-'">-</h1>}}
+                    {{html:<h1 ng-show="plan[os][pricingModel] != '-'">${[plan[os][pricingModel]]}<span class=subscript ng-show="plan[os][pricingModel] != '-'">/{[pricingModel]}</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
