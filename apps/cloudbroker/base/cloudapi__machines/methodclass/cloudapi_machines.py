@@ -239,17 +239,21 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        if hasattr(image, 'username') and image.username:
-            account.login = image.username
+        if image.type == 'Custom Templates':
+            account.login = 'Custom login'
+            account.password = 'Custom password'
         else:
-            account.login = 'cloudscalers'
-        length = 6
-        chars = string.letters + string.digits
-        letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-        passwd = ''.join(choice(chars) for _ in xrange(length))
-        passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
-        account.password = passwd
-        auth = NodeAuthPassword(passwd)
+            if hasattr(image, 'username') and image.username:
+                account.login = image.username
+            else:
+                account.login = 'cloudscalers'
+            length = 6
+            chars = string.letters + string.digits
+            letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+            passwd = ''.join(choice(chars) for _ in xrange(length))
+            passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
+            account.password = passwd
+        auth = NodeAuthPassword(account.password)
         machine.id = self.models.vmachine.set(machine)[0]
 
         try:
