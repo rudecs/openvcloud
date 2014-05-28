@@ -20,10 +20,10 @@ h1. Pricing
   <li><a href="#MachineDeck" data-toggle="tab">Machine Deck</a></li>
   <li><a href="#StorageDeck" data-toggle="tab">Storage Deck</a></li>
   <li><a href="#DesktopDeck" data-toggle="tab">Desktop Deck</a></li>
-  <li><a href="#ApplicationDeck" data-toggle="tab">Application Deck</a></li>
-  
+}}
+#  <li><a href="#ApplicationDeck" data-toggle="tab">Application Deck</a></li>
+{{html:  
 </ul>
-
 
 <div class="tab-content">
   <div class="minCloud tab-pane fade in active" id="CloudSpace">
@@ -38,10 +38,28 @@ h1. Pricing
 {{html:
       </div>
 
-
+  <p>Mothership<sup>1</sup>  offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users:</p>
+  <div class="col-md-12">
+    <div class="col-md-6">
+      <ul class="bulletStyle">
+        <li>Your pool of secured private resources</li>
+        <li>Protected by a private Defense Shield</li>
+        <li>Organize and distribute your cloud workloads over Cloud Spaces</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <ul class="bulletStyle">
+        <li>Monitor and manage your usage-based consumption per Cloud Space</li>
+        <li>Share a Cloud Space with other users, get access to multiple Cloud Spaces</li>
+        <li>Each Cloud Space is hosted in a datacenter of choice</li>
+      </ul>
+    </div>
+  </div>
+    <br />
 }}
+
 {{div: class=row}}
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
     {{div4: class=cnrflash }}
                 {{div5: class=cnrflash-inner}}
                     {{span: class=cnrflash-label}}
@@ -63,7 +81,8 @@ h1. Pricing
                     <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
-                    
+                    <tr><td>+ Unlimited Data Transfer in Datacenter</td></tr>
+                    <tr><td>+ 100GB from/to internet</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -72,37 +91,14 @@ h1. Pricing
             {{div4}}
         {{div3}}
     {{div2}}
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Basic Cloud Space</h3>}}
+                {{html: <h3 class="headPrice center">Next Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0</span></h1>}}
-                {{div5}}
-                {{html:
-                <table class="table">
-                    <tr><td>Private Cloud Space</td></tr>
-                    <tr><td>+ Port Forwarding</td></tr>
-                    <tr><td>+ Public IPv4</td></tr>
-                    <tr><td></td></tr>
-                </table>
-                }}
-            {{div4}}
-            {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
-            {{div4}}
-        {{div3}}
-    {{div2}}
-    {{div2: class=col-md-3}}
-        {{div3: class=panel panel-primary}}
-            {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Advanced Cloud Space</h3>}}
-            {{div4}}
-            {{div4: class=panel-body}}
-                {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>10</span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>5</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -110,7 +106,8 @@ h1. Pricing
                     <tr><td>+ Port Forwarding</td></tr>
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4</td></tr>
-                    
+                    <tr><td>+ Unlimited Data Transfer in Datacenter</td></tr>
+                    <tr><td>+ 100GB from/to internet</td></tr>                    
                 </table>
                 }}
             {{div4}}
@@ -119,7 +116,7 @@ h1. Pricing
             {{div4}}
         {{div3}}
     {{div2}}
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
                 {{html: <h3 class="headPrice center">Extra Public IPv4</h3>}}
@@ -134,6 +131,8 @@ h1. Pricing
                     <tr><td>For use in one of the Decks</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -143,9 +142,54 @@ h1. Pricing
         {{div3}}
     {{div2}}
 
-
-
 {{div}}
+
+{{html:
+<div class="table-responsive">
+    <table class="table table-hover pricingTable">
+      
+      <thead>
+        <tr>
+          <th width="40%">Cloud Space Bandwidth:</th>
+          <th width="20%">Month</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <b>Data Transfer In Datacenter</b>
+          </td>
+          <td>$0.00</td>
+          <td>Per GB</td>
+        </tr>
+       <tr>
+          <td valign=top>
+            <b>Data Transfer from/to internet</b><br>
+            Up to 10 TB<br>
+            Next 40 TB<br>
+            Next 100 TB<br>
+            Additional TB<br>
+          </td>
+          <td><br>
+            $0.12
+            $0.09
+            $0.07
+            $0.05
+          </td>
+          <td><br>
+            Per GB<br>
+            Per GB<br>
+            Per GB<br>
+            Per GB<br>
+          </td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+}}
+
 
 {{html:
 
@@ -157,7 +201,7 @@ h1. Pricing
     <div class="col-md-6">
       <ul class="bulletStyle">
         <li>Advanced Cloud Space providing a pool of secured private resources</li>
-        <li>Private defense shield providing an extremely configurale firewall and router</li>
+        <li>Private defense provides enterprise capable firewall and VPN</li>
         <li>Instant snapshots and immediately snapshot rollback</li>
       </ul>
     </div>
@@ -214,7 +258,6 @@ h1. Pricing
                     <tr><td>Snapshots</td></tr>
                     <tr><td>Backup</td></tr>
                     <tr><td>Firewall & VPN</td></tr>
-                    <tr><td>Unlimited Transfer*</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -236,7 +279,7 @@ h1. Pricing
       
       <thead>
         <tr>
-          <th width="40%">Options available on plans:</th>
+          <th width="40%">Machine storage:</th>
           <th width="20%">Month</th>
           <th>Hour</th>
           <th></th>
@@ -253,7 +296,7 @@ h1. Pricing
         </tr>
        <tr>
           <td>
-            Extra HDD Storage attached to VM (up to 2TB)
+            Virtual SAN HDD Disk Storage (up to 2TB) / Snapshot Storage / Templates
           </td>
           <td>$0.15</td>
           <td>$0.00021</td>
@@ -261,30 +304,16 @@ h1. Pricing
         </tr>
         <tr>
           <td>
-            Snapshots
+            Backup
           </td>
-          <td>$0.15</td>
-          <td>$0.00021</td>
-          <td>Based on drive size per GB</td>
+          <td>Storage Deck Pricing</td>
+          <td>Storage Deck Pricing</td>
+          <td></td>
         </tr>
-        <tr>
-          <td>
-            Templates
-          </td>
-          <td>$0.30</td>
-          <td>$0.00042</td>
-          <td>Based on drive size per GB</td>
-        </tr>
-        
+       
       </tbody>
     </table>
   </div>
-
-
-
-
-<p>(*) Unlimited Transfer is subject to fair use policy as descibed in the FAQ section</p>
-
 
 
   </div>
@@ -494,154 +523,154 @@ h1. Pricing
         </tr>
         <tr>
           <td>
-            GET and all other Requests first 10,000 requests
+            GET and all other Requests
           </td>
           <td>Free</td>
           <td></td>
         </tr>
-        <tr>
-          <td>
-            GET and all other Requests next 10,000 requests
-          </td>
-          <td>$0.004 </td>
-          <td>per 10,000 requests</td>
-        </tr>
-        
       </tbody>
     </table>
   </div>
-  <div class="table-responsive">
-    <table class="table table-hover pricingTable">
-      
-      <thead>
-        <tr>
-          <th width="40%">Data Transfer Pricing</th>
-          <th width="20%">USD/GB/month</th>
-          <th>USD/GB/hour</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            Data Transfer IN To Mothership1
-          </td>
-          <td>Free</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            Data Transfer within Mothership1 Decks
-          </td>
-          <td>Free</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            Data Transfer OUT to internet first 10 TB
-          </td>
-          <td>Free</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            Next 40 TB / month
-          </td>
-          <td>$0.09</td>
-          <td>/GB</td>
-        </tr>
-        <tr>
-          <td>
-            Next 100 TB / month
-          </td>
-          <td>$0.07</td>
-          <td>/GB</td>
-        </tr>
-        <tr>
-          <td>
-            Next 350 TB / month
-          </td>
-          <td>$0.05</td>
-          <td>/GB</td>
-        </tr>
-        
-      </tbody>
-    </table>
-  </div>
-
-
-    
-
 
   </div>
 
 
 
 <div class="tab-pane fade in" id="DesktopDeck">
-    <div class="row">
-    <p class="col-md-3">The Desktop Deck is opening soon. Free Trials can be requested now!</p> <a href="/wiki_gcb/SignUp" class="btn btn-success col-md-2" role="button">Sign Up</a>
-    </div>
-  
-  <br /> 
-  <p>The cost of your Machine Deck will consist of:</p>
- 
-  <div class="table-responsive">
-   
-    <table class="table table-hover pricingTable">
-      
-      <tbody>
-        <tr>
-          <td>
-            Infrastructure sized to your needs
-          </td>
-          <td>Machine Deck Prices per hour</td>
-          
-        </tr>
-        <tr>
-          <td>
-            License for the Desktop Deck
-          </td>
-          <td>Per user per month</td>
-          
-        </tr>
-        <tr>
-          <td>
-            Licensed end user applications
-          </td>
-          <td>Per user per month per application</td>
-          
-        </tr>
-        <tr>
-          <td>
-            Open source/free end user applications
-          </td>
-          <td>Free</td>
-          
-        </tr>
-        
-        
-      </tbody>
-    </table>
-  </div>
- <br /> 
-<p>Your requirements:</p>
-<ul class="bulletStyle">
-        <li>Any html 5 capabale browser: laptops, chromebooks, tablets, smartphones, thin clients</li>
-        <li>No local client software</li>
-        <li>No local client costs</li>
-       
-        </ul>
-  </div>
+
+{{div: class=row}}
+    {{div2: class=col-md-3}}
+    {{div4: class=cnrflash }}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Starter</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>10</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Full remote Cloud Desktop</td></tr>
+                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>For any html5-capable device</td></tr>
+                    <tr><td>File Sharing</td></tr>
+                    <tr><td>Screen Sharing</td></tr>
+                    <tr><td>Pre-installed Free Apps</td></tr>
+                    <tr><td>5GB storage per user</td></tr>
+                    <tr><td>+5 users</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-3}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Starter Office</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>15</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Full remote Cloud Desktop</td></tr>
+                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>For any html5-capable device</td></tr>
+                    <tr><td>File Sharing</td></tr>
+                    <tr><td>Screen Sharing</td></tr>
+                    <tr><td>Pre-installed Free Apps</td></tr>
+                    <tr><td>Pre-installed Office Apps</td></tr>
+                    <tr><td>25GB storage per user</td></tr>
+                    <tr><td>+10 users</td></tr>            
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-3}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Professional</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>50</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Full remote Cloud Desktop</td></tr>
+                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>For any html5-capable device</td></tr>
+                    <tr><td>File Sharing</td></tr>
+                    <tr><td>Screen Sharing</td></tr>
+                    <tr><td>Pre-installed Free Apps</td></tr>
+                    <tr><td>Pre-installed Office Apps</td></tr>
+                    <tr><td>MS Office</td></tr>
+                    <tr><td>Auditing capabilities</td></tr>
+                    <tr><td>50GB storage per user</td></tr>
+                    <tr><td>+25 users</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+    {{div2: class=col-md-3}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Enterprise</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>100</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Full remote Cloud Desktop</td></tr>
+                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>For any html5-capable device</td></tr>
+                    <tr><td>File Sharing</td></tr>
+                    <tr><td>Screen Sharing</td></tr>
+                    <tr><td>Pre-installed Free Apps</td></tr>
+                    <tr><td>Pre-installed Office Apps</td></tr>
+                    <tr><td>MS Office Professional</td></tr>
+                    <tr><td>Auditing capabilities</td></tr>
+                    <tr><td>AD Integration</td></tr>
+                    <tr><td>100GB storage per user</td></tr>
+                    <tr><td>+100 users</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
+{{div}}
 
 
-
-
-  <div class="tab-pane fade in" id="ApplicationDeck">
-  
-  <p>Coming in Q3 2014.</p>
-
-  </div>
-
-
+#  <div class="tab-pane fade in" id="ApplicationDeck">
+#  
+#  <p>Coming in Q3 2014.</p>
+#
+#  </div>
+{{html:
 
 </div>
 
