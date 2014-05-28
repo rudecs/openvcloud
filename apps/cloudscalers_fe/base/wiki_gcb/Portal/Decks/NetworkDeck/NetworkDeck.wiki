@@ -15,7 +15,7 @@ New users can find useful info about the Defense Shield in our [Quick Tutorial G
 </style>
 	<div ng-controller="NetworkController">
 		<div>
-			<a ng-href="{[ managementui ]}" target="_blank">Advanced Shield configuration</a> (Username is admin and password is the the one you have used to log in into this portal)
+			<a ng-href="{[ managementui ]}" target="_blank">Advanced Shield configuration</a> (<b>Username is <u>admin</u></b> and password is the one you have used to log in into this portal)
 		</div>
 		<script type="text/ng-template" id="routerosDialog.html">
                 <div class="modal-header">

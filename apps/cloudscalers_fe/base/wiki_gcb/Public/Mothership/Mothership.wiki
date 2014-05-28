@@ -53,7 +53,7 @@ The Desktop Deck provides an innovative way to deliver critical applications fro
 [Storage Deck|Storage Deck]
 {{html:
 </h2>
-The Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
+The Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
         <div class="col-md-6 boxes font color2">

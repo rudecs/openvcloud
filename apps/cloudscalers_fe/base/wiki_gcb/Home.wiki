@@ -114,7 +114,7 @@
     <a href="/$$space/Storage Deck">Storage Deck</a> 
 </p>
 </h2>
-            <p class="font">Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API</p>
+            <p class="font">The Storage Deck provides ultra-reliable & scalable S3 compatible storage API.</p>
         </div>
         <div class="col-md-5 boxes font color3">
             <img src="/$$space/.files/img/icon3.png" alt=""/>

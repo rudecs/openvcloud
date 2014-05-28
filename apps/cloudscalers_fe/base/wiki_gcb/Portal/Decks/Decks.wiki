@@ -54,7 +54,7 @@ Your Desktop Deck provides you an innovative way to deliver critical application
             <h2>
 
 </h2>
-Your Storage Deck provides ultra-reliable & scalable storage. Attach as disk to the VM or use with the S3 compatible storage API.
+Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
         <div class="col-md-4 boxes font color2 mbll">

@@ -132,28 +132,28 @@ h1 { margin-bottom: 20px; }
                                 Rebuild
                             </a>
                         </li>
-}}
-#                        <li>
-#                            <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
-#                                <i class="fa fa-copy"></i>
-#                                Create Template
-#                            </a>
-#							<script type="text/ng-template" id="createTemplateDialog.html">
-#                                <div class="modal-header">
-#                                    <h3>Create Template</h3>
-#                                </div>
-#                                <div class="modal-body">
-#                                    <ul>
-#                                        Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
-#                                    </ul>
-#                                </div>
-#                                <div class="modal-footer">
-#                                    <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
-#                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
-#                                </div>
-#                            </script>
-#                        </li>
 
+                        <li>
+                            <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
+                                <i class="fa fa-copy"></i>
+                                Create Template
+                            </a>
+							<script type="text/ng-template" id="createTemplateDialog.html">
+                                <div class="modal-header">
+                                    <h3>Create Template</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <ul>
+                                        Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
+                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
+                                </div>
+                            </script>
+                        </li>
+}}
 #                        <li>
 #                            <a>
 #                                <i class="fa fa-download"></i>

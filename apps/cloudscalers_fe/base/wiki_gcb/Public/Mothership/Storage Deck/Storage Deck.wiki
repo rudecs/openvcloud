@@ -28,17 +28,9 @@ h1. $$page
 {{div: class=col-md-12 boxDecks StorageDeckColor}}
       {{html: <i class="fa fa-arrow-right"></i>}}
       
-      h3. Virtual Disks
-      Virtual Disks  of 10 GB up to 2 TB, seamlessly attached to your VMs.
-{{div}}
-{{div: class=col-md-12 boxDecks StorageDeckColor}}
-      {{html: <i class="fa fa-arrow-right"></i>}}
-      
       h3. Fileserver
       Virtual Fileserver up to Petabytes per Cloud Space. (Roadmap)
 {{div}}
-
-
 
 {{div: class=col-md-12 boxDecks clearL StorageDeckColor}}
       {{html: <i class="fa fa-arrow-right"></i>}}

@@ -312,20 +312,10 @@ h1. Pricing
 
 
 
-  
-
-
-
   <div class="tab-pane fade in" id="StorageDeck">
+<p>The Storage Deck provides ultra-reliable & scalable S3 compatible storage API.</p>
 }}
-#  <div class="col-md-12 mB15">
-#        <div class="row operationWrap">
-#            <div class="btn-group btn-group-sm priceHM floatR">
-#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-#            </div>
-#        </div>
-#   </div>
+
 {{div: class=row}}
     {{div2: class=col-md-2}}
         {{div3: class=panel panel-primary}}
@@ -528,6 +518,7 @@ h1. Pricing
 
 
 <div class="tab-pane fade in" id="DesktopDeck">
+<p>The Machine Deck enables users to configure and launch VMs from the Mothership<sup>1</sup> IaaS stack. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.</p>
 }}
 
 {{div: class=row}}
