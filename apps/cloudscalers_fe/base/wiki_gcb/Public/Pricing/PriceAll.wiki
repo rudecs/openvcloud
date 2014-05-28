@@ -27,18 +27,7 @@ h1. Pricing
 
 <div class="tab-content">
   <div class="minCloud tab-pane fade in active" id="CloudSpace">
-      <div class="col-md-12 mB15">
-}}
-#        <div class="row operationWrap">
-#            <div class="btn-group btn-group-sm priceHM floatR">
-#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
-#            <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
-#            </div>
-#        </div>
-{{html:
-      </div>
-
-  <p>Mothership<sup>1</sup>  offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users:</p>
+  <p>The Mothership<sup>1</sup> Cloud Space offers you a Private Virtual Datacenter:</p>
   <div class="col-md-12">
     <div class="col-md-6">
       <ul class="bulletStyle">
@@ -196,7 +185,7 @@ h1. Pricing
   </div>
 
   <div class="tab-pane fade in" id="MachineDeck">
-  <p>Mothership<sup>1</sup> delivers virtual machine plans that include a lot more than other clouds and with more flexibility to the choice of your storage!:</p>
+  <p>The Mothership<sup>1</sup> Machine Deck includes a lot more than packages of other cloud providers:</p>
   <div class="col-md-12">
     <div class="col-md-6">
       <ul class="bulletStyle">
@@ -340,13 +329,7 @@ h1. Pricing
 {{div: class=row}}
     {{div2: class=col-md-2}}
         {{div3: class=panel panel-primary}}
-            {{div4: class=cnrflash }}
-                {{div5: class=cnrflash-inner}}
-                    {{span: class=cnrflash-label}}
-                        MOST @LF POPULAR
-                    {{span}}
-                {{div5}}
-            {{div4}}
+
             {{div4: class=panel-heading}}
                 {{html: <h3 class="headPrice"> Welcome </h3>}}
             {{div4}}
@@ -370,7 +353,13 @@ h1. Pricing
     {{div2}}
     {{div2: class=col-md-2}}
         {{div3: class=panel panel-primary}}
-            
+            {{div4: class=cnrflash }}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}            
             {{div4: class=panel-heading}}
                 {{html: <h3 class="headPrice"> Activated </h3>}}
             {{div4}}
@@ -543,13 +532,7 @@ h1. Pricing
 
 {{div: class=row}}
     {{div2: class=col-md-3}}
-    {{div4: class=cnrflash }}
-                {{div5: class=cnrflash-inner}}
-                    {{span: class=cnrflash-label}}
-                        MOST @LF POPULAR
-                    {{span}}
-                {{div5}}
-            {{div4}}
+
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
                 {{html: <h3 class="headPrice center">Starter</h3>}}
@@ -613,6 +596,13 @@ h1. Pricing
     {{div2}}
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
+            {{div4: class=cnrflash }}
+                {{div5: class=cnrflash-inner}}
+                    {{span: class=cnrflash-label}}
+                        MOST @LF POPULAR
+                    {{span}}
+                {{div5}}
+            {{div4}}
             {{div4: class=panel-heading}}
                 {{html: <h3 class="headPrice center">Professional</h3>}}
             {{div4}}
