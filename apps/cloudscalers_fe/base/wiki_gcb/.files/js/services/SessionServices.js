@@ -130,7 +130,7 @@ angular.module('cloudscalers.services')
             var signUpResult = {};
 			var querystring = '?username='
 					+ encodeURIComponent(username)
-					+ '&user=' + encodeURIComponent(user)
+					+ '&user=' + encodeURIComponent(name)
 					+ '&emailaddress=' + encodeURIComponent(email)
 					+ '&password=' + encodeURIComponent(password)
 					+ '&company=' + encodeURIComponent(company)
