@@ -147,7 +147,7 @@ angular.module('cloudscalers.services')
                 if (status == 451) {
 					$http({
 						method: 'JSONP',
-						url: headers('Location') + querystring
+						url: headers('Location') + querystring + '&_jsonp=JSON_CALLBACK'
 					})
 					.success(function(data, status, headers, config) {
 						signUpResult.success = true;
