@@ -126,6 +126,7 @@ footer { background: #06a7e2; margin: 0 0 0 0; width: 100%; }
 p { color:#77777b; }
 body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; }
  @media (max-width: 1376px) {
+ .headPrice {font-size: 13px !important;}
 .creditMargin .form-control { font-size: 13px !important; }
 .expires { width: 39% !important; margin: 0 3px; }
 .creditForm .nameField { width: 60% !important; }
@@ -779,7 +780,7 @@ canvas { display: block; float: left; }
 .boxDecks2 h3 { padding: 10px 15px 10px 20px; border-bottom: 1px solid transparent; color: #fff; background-color: #06a7e2; border-color: #06a7e2; margin: 0; text-align: left; font-size: 21px; }
 .boxDecks2 { text-align: center; margin: 15px 18px 35px; border: 1px solid #06a7e2; padding: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; width: 30.333333%; min-height: 286px; }
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left; }
-.mrl.ng-binding + .ng-binding { font-family: verdana !important; }
+.mrl.ng-binding + .ng-binding { font-family: "Lucida Console","Courier New",Monaco,"Nimbus Mono L",monospace; }
 h4.machine-label.mvn + .ng-binding { font-family: verdana !important; font-size: 14px; }
 .portMargin { margin: 20px 0; }
 body body #extra { background-color: #06a7e2 !important; }
@@ -869,4 +870,6 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 .the-price + table.table td { font-size: 12px; word-break: break-word; height: 34px;}
 .headPrice.center { padding-left: 0;}
 .minCloud .panel-body {min-height: 218px;}
-table.table.pricingTable th, table.table th a {background: #FFF !important;color: #000;font-weight: bold;}
+table.table.pricingTable th {background: #FFF !important;color: #000;font-weight: bold;}
+table.table th a {color: #FFF;}
+table.table th a:hover {color: #FFF;}
