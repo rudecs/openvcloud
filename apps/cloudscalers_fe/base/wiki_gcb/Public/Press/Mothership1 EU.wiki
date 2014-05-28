@@ -1,6 +1,9 @@
-
+@template blog_post
 @date 2014-03-01
 @title Mothership<sup>1</sup> to change the economics of cloud building
+
+{{html:
+<h1> Mothership<sup>1</sup> to change the economics of cloud building</h1>
 
 <p>Mothership<sup>1</sup> enables developers to effectively build the next generation of cloud-based applications and services. <br />
 
@@ -22,3 +25,4 @@ Full pricing and feature information is available on the Mothership1 website www
 About Mothership1:<br />
 Mothership1 (www.mothership1.com), a joint venture between CentriLogic Inc. & Incubaid, is an innovative Cloud development and deployment platform that delivers IT resources at unprecedented speeds. By integrating multiple functions within a single Cloud Space portal that is available ‘everyware anyware,’ users can easily access, provision, and manage virtual machines running on SSD storage, S3 compatible storage buckets, cloud desktops, and ready-to-go applications.  Built with speed, security, and simplicity in mind, Mothership1 challenges the status quo and promises to set a new industry standard – globally and beyond. Mothership1 is headquartered in Toronto, Canada, & Lochristi, Belgium.<br /><br />
 </p>
+}}

@@ -3,18 +3,12 @@
 
 h1. Press Center
 
-#h2. Logos and Product Shots
-#
-#* [AI Mothership_Logo_Black|../$$space/Press/Mothership_Logo_Black_1.ai]
-#
-#h2. Download Press releases
 
+    
 {{ blog_index:
 <div class="blogDesign">
-<h2 class="floatR">{blog_date}</h2>
-<h2>{blog_title}</h2>
+<h2><a href="{blog_url}">{blog_title}</a></h2>
 </div>
-{blog_content}
 }}
 
 @divend
