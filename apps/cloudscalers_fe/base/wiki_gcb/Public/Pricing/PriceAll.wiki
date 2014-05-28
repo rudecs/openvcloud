@@ -172,10 +172,10 @@ h1. Pricing
             Additional TB<br>
           </td>
           <td><br>
-            $0.12
-            $0.09
-            $0.07
-            $0.05
+            $0.12<br>
+            $0.09<br>
+            $0.07<br>
+            $0.05<br>
           </td>
           <td><br>
             Per GB<br>
@@ -512,21 +512,21 @@ h1. Pricing
             PUT, COPY, POST, or LIST Requests
           </td>
           <td>Free</td>
-          <td></td>
+          <td>Free</td>
         </tr>
         <tr>
           <td>
             Delete Requests
           </td>
           <td>Free</td>
-          <td></td>
+          <td>Free</td>
         </tr>
         <tr>
           <td>
             GET and all other Requests
           </td>
           <td>Free</td>
-          <td></td>
+          <td>Free</td>
         </tr>
       </tbody>
     </table>
@@ -537,6 +537,7 @@ h1. Pricing
 
 
 <div class="tab-pane fade in" id="DesktopDeck">
+}}
 
 {{div: class=row}}
     {{div2: class=col-md-3}}
@@ -564,7 +565,11 @@ h1. Pricing
                     <tr><td>Screen Sharing</td></tr>
                     <tr><td>Pre-installed Free Apps</td></tr>
                     <tr><td>5GB storage per user</td></tr>
-                    <tr><td>+5 users</td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -592,7 +597,10 @@ h1. Pricing
                     <tr><td>Pre-installed Free Apps</td></tr>
                     <tr><td>Pre-installed Office Apps</td></tr>
                     <tr><td>25GB storage per user</td></tr>
-                    <tr><td>+10 users</td></tr>            
+                    <tr><td>+10 users</td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -623,6 +631,7 @@ h1. Pricing
                     <tr><td>Auditing capabilities</td></tr>
                     <tr><td>50GB storage per user</td></tr>
                     <tr><td>+25 users</td></tr>
+                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
