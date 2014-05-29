@@ -1,0 +1,58 @@
+@template public
+
+{{html:
+
+<head>
+
+<link href="/$$space/.files/css/owl.carousel.css" rel="stylesheet">
+<style type="text/css">
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open .dropdown-toggle.btn-info {color: #fff !important;background-color: #39b3d7;border-color: #269abc;}
+</style>
+</head>
+}}
+{{div: class=white}}
+{{div2: class=container | ng-app | ng-controller=PricingAllController}}
+
+@col 12
+
+h1. Logos
+{{html:
+<div id="owl-demo">
+          
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Black_1-download.png" download><img src="/images/$$space/Mothership_Logo_Black_1.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Black_2-download.png" download><img src="/images/$$space/Mothership_Logo_Black_2.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Colour_1-download.png" download><img src="/images/$$space/Mothership_Logo_Colour_1.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Colour_2-download.png" download><img src="/images/$$space/Mothership_Logo_Colour_2.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Black_1-inverted-download.png" download><img src="/images/$$space/Mothership_Logo_Black_1-inverted.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Black_2-inverted-download.png" download><img src="/images/$$space/Mothership_Logo_Black_2-inverted.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Colour_1-inverted-download.png" download><img src="/images/$$space/Mothership_Logo_Colour_1-inverted.png" alt=""></a></div>
+  <div class="item"><a href="/images/$$space/Mothership_Logo_Colour_2-inverted-download.png" download><img src="/images/$$space/Mothership_Logo_Colour_2-inverted.png" alt=""></a></div>
+ 
+</div>
+<br />
+<br />
+Click on any logo to download it or click here to download the source files <a style="margin-left:15px;" href="/images/$$space/Mothership_All_Logo_ai.rar" class="btn btn-selector btn-info btn-large mainButton" download>Download</a>
+}}
+{{div2}}
+{{div}}
+@divend
+@divend
+@divend
+{{html:
+ <script src="/$$space/.files/js/owl.carousel.min.js"></script>
+ <script language="javascript">
+ $(document).ready(function() {
+
+  $("#owl-demo").owlCarousel({
+
+      autoPlay: 3000, //Set AutoPlay to 3 seconds
+
+      items : 4,
+      itemsDesktop : [1199,3],
+      itemsDesktopSmall : [979,3]
+
+  });
+
+});
+</script>
+ }}
