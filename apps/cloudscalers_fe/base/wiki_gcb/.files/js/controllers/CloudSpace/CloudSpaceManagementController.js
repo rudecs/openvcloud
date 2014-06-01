@@ -1,5 +1,11 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceManagementController', ['$scope', 'CloudSpace', 'LoadingDialog','$ErrorResponseAlert','$modal','$window', '$timeout', function($scope, CloudSpace, LoadingDialog, $ErrorResponseAlert, $modal, $window, $timeout) {
+
+        $scope.$parent.$watch('currentSpace', function(){
+            $scope.clodSpaceLocation = CloudSpace.current().dataLocationId;
+        });
+        
+
         $scope.deleteCloudspace = function() {
             var modalInstance = $modal.open({
                 templateUrl: 'deleteCloudSpaceDialog.html',

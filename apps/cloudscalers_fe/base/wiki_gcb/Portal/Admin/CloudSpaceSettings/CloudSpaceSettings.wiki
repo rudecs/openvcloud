@@ -4,40 +4,43 @@ h1. Cloud Space Access Management
 
 {{html:
 	<tabset style="clear:both;">
-			<tab id="details" heading="General">
-				<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
-
-Delete here your Cloud Space. Note that deleting a Cloud Space is irreversible and all data and authorizations to it will be removed!
-<br><br>
-
-					<button class="btn btn-danger" ng-click="deleteCloudspace()"><i class="fa fa-trash"></i> Delete</button>
-
-	<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
-														<form name="destroyform" ng-submit="cancelDeletion()">
-																<div class="modal-header">
-																		<h3>Delete Cloud Space?</h3>
-																</div>
-																<div class="modal-body">
-																		<input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-																		Deleting a Cloud Space is irreversible and <br/>
-																		all data and authorizations to it will be removed.
-																</div>
-																<div class="modal-footer">
-																		<button type="button" class="btn ok" ng-click="ok()">Ok</button>
-																		<button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
-																</div>
-														</form>
-						</script>
-
-				</div>
-			</tab>
-			<tab id="access" heading="Access">
-				<div id="access" class="tab-pane">
+		<tab id="details" heading="General">
+			<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
+                <label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
+				<div ng-switch="clodSpaceLocation" style="margin-bottom: 10px;">
+                  <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
+                  <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
+                </div>
+                
+				<br/>
+				Delete here your Cloud Space. Note that deleting a Cloud Space is irreversible and all data and authorizations to it will be removed!
+				<br>
+				<button class="btn btn-danger" ng-click="deleteCloudspace()" style="margin-top: 5px;"><i class="fa fa-trash"></i> Delete</button>
+				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
+					<form name="destroyform" ng-submit="cancelDeletion()">
+						<div class="modal-header">
+								<h3>Delete Cloud Space?</h3>
+						</div>
+						<div class="modal-body">
+								<input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+								Deleting a Cloud Space is irreversible and <br/>
+								all data and authorizations to it will be removed.
+						</div>
+						<div class="modal-footer">
+								<button type="button" class="btn ok" ng-click="ok()">Ok</button>
+								<button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
+						</div>
+					</form>
+				</script>
+			</div>
+		</tab>
+		<tab id="access" heading="Access">
+			<div id="access" class="tab-pane">
 }}
-					{{include:CloudSpaceAccessManagement}}
+			{{include:CloudSpaceAccessManagement}}
 {{html:
-				</div>
-			</tab>
+			</div>
+		</tab>
 	</tabset>
 }}
 

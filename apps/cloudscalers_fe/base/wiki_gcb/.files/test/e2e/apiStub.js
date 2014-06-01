@@ -390,14 +390,20 @@ defineApiStub = function ($httpBackend) {
         {id: '4', name: 'Incubaid'},
     ]);
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40'},
-       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40'},
-       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40'},
-       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40'},
-       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40'},
-       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40'},
-       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40'},
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', dataLocationId: "US1"},
+       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
+       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', dataLocationId: "US1"},
+       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
+       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
+       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', dataLocationId: "US1"},
     ];
+
+    $httpBackend.whenGET(/^\/datalocations\/list.*/).respond([
+        {id: 'US1', name: 'United States'},
+        // {id: '2', name: 'United Kingdom'},
+        {id: 'CA1', name: 'Canada'},
+    ]);
 
     var cloudSpace = {
         name: 'Development',
