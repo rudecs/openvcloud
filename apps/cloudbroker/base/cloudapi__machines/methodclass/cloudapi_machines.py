@@ -298,7 +298,9 @@ class cloudapi_machines(object):
         self.models.vmachine.set(machine)
 
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        cloudspace.resourceProviderStacks.append(stackId)
+        providerstacks = set(cloudspace.resourceProviderStacks)
+        providerstacks.add(stackId)
+        cloudspace.resourceProviderStacks = list(providerstacks)
         self.models.cloudspace.set(cloudspace)
 
     @authenticator.auth(acl='D')

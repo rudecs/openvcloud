@@ -18,18 +18,18 @@ def action():
     import JumpScale.grid.osis
     import JumpScale.grid.agentcontroller
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
-    cloudspaces = { x['id']: x for x in ccl.cloudspace.simpleSearch({}) }
+    stacks = { x['id']: x for x in ccl.stacks.simpleSearch({}) }
     acl = j.clients.agentcontroller.get()
     failedvms = list()
-    for stack in ccl.stack.simpleSearch({}):
-        role = stack['referenceId']
-        for vm in ccl.vmachine.simpleSearch({'stackId': stack['id']}):
+    whereami = j.application.config.get('cloudbroker.where.am.i')
+    for cloudspace in ccl.cloudspace.simpleSearch({'location': whereami}):
+        for vm in ccl.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
             name = 'vm-%s' % vm['id']
+            role = stacks[vm['stackId']]['referenceId']
             try:
                 if vm['status'] == 'RUNNING':
-                    cloudspace = cloudspaces[vm['cloudspaceId']]
                     args = {'name': name, 'networkId': cloudspace['networkId']}
-                    acl.executeJumpScript('cloudbroker', 'vm_start', role=role, args=args, wait=False)
+                    acl.executeJumpScript('cloudscalers', 'vm_start', role=role, args=args, wait=False)
             except Exception, e:
                 failedvms.append((name, e))
     if failedvms:
