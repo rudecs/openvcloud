@@ -2,11 +2,12 @@
 
 {{vmachine: id:$$id}}
 
-h2. VMachine '$$name'
+h2. vMachine: $$name
 
 |*ID*| $$id|
 |*Description*| $$descr|
 |*CPU Node*| [$$stackrefid|stack?id=$$stackid]|
+|*Account*| [$$accountname|account?id=$$accountid]|
 |*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
 |*Created at*| $$createdat|
 |*Deleted at*| $$deletedat|

@@ -1,7 +1,7 @@
 @usedefault
 
 {{image_data id:$$id}}
-h3. Image $$name
+h3. Image: $$name
 
 * *Type*: $$type
 * *Size*: $$size

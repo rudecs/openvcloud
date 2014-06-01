@@ -33,8 +33,17 @@ def main(j, args, params, tags, tasklet):
             image = {'name':'N/A'}
         try:
             space = cbosis.cloudspace.get(obj.cloudspaceId).dump()
+            data['accountId'] = space['accountId']
         except Exception:
+            data['accountId'] = 0
             space = {'name': 'N/A'}
+        data['accountName'] = 'N/A'
+        if data['accountId']:
+            try:
+                account = cbosis.account.get(space['accountId']).dump()
+                data['accountName'] = account['name']
+            except:
+                pass
 
         fields = ('name', 'id', 'descr', 'imageId', 'stackId', 'status', 'hostName', 'hypervisorType', 'cloudspaceId')
         for field in fields:

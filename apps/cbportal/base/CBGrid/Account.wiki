@@ -2,11 +2,10 @@
 
 {{Account id:$$id}}
 
-h2. Account
+h2. Account: $$name
 
 h3. Details
 |*Account ID*|$$id|
-|*Name*|$$name|
 |*Access Control List*|$$acl|
 
 h3. Spaces

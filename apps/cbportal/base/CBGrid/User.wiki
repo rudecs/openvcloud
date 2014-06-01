@@ -2,10 +2,9 @@
 
 {{user id:$$id}}
 
-h2. User
+h2. User: $$id
 
 h3. Details
-|*User ID*|$$id|
 |*Domain*|$$domain|
 |*Roles*|$$roles|
 |*Groups*|$$groups|

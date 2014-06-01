@@ -2,11 +2,10 @@
 
 {{cbspace id:$$id}}
 
-h2. Cloud Space
+h2. CloudSpace: $$name
 
 h3. Details
 |*CloudSpace ID*|$$id|
-|*Name*|$$name|
 |*Account*|[$$accountname|account?id=$$accountid]|
 |*Network ID*|[$$networkname|network?id=$$networkid]|
 |*Stack(s)*|$$resourceproviderstacks|

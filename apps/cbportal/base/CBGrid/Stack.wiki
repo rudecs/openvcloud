@@ -2,7 +2,7 @@
 
 {{stack_data: id:$$id}}
 
-h3. $$name
+h3. Stack: $$name
 
 * *ApiURL*: $$apiurl
 * *Description*: $$descr

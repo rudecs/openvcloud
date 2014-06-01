@@ -2,11 +2,10 @@
 
 {{network id:$$id}}
 
-h2. Network
+h2. Network: $$name
 
 h3. Details
 |*Network ID*|$$id|
-|*Name*|$$name|
 |*Name Servers*|$$nameservers|
 |*VLAN ID*|[$$vlanid|vlan?id=$$vlanid]|
 |*Stack ID*|[$$resourceproviderstacks|stack?id=$$resourceproviderstacks]|
