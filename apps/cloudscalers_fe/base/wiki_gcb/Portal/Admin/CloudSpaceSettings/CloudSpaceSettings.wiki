@@ -6,8 +6,8 @@ h1. Cloud Space Access Management
 	<tabset style="clear:both;">
 		<tab id="details" heading="General">
 			<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
-                <label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
-				<div ng-switch="clodSpaceLocation" style="margin-bottom: 10px;">
+				<div ng-switch="clodSpaceLocation" ng-show="clodSpaceLocation" style="margin-bottom: 10px;">
+                  <label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
                   <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
                   <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
                 </div>

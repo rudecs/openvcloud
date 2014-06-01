@@ -385,9 +385,9 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/machines\/clone\?machineId=\d+.*/).respond('OK');
 
     $httpBackend.whenGET(/^\/accounts\/list.*/).respond([
-        {id: '1', name: 'Lenny Miller'},
-        {id: '2', name: 'Awingu'},
-        {id: '4', name: 'Incubaid'},
+        {id: '1', name: 'Lenny Miller', preferredDataLocation: "US1"},
+        {id: '2', name: 'Awingu', preferredDataLocation: "CA1"},
+        {id: '4', name: 'Incubaid', preferredDataLocation: "US1"},
     ]);
     var cloudspaces = [
        {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
@@ -398,12 +398,6 @@ defineApiStub = function ($httpBackend) {
        {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', dataLocationId: "CA1"},
        {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', dataLocationId: "US1"},
     ];
-
-    $httpBackend.whenGET(/^\/datalocations\/list.*/).respond([
-        {id: 'US1', name: 'United States'},
-        // {id: '2', name: 'United Kingdom'},
-        {id: 'CA1', name: 'Canada'},
-    ]);
 
     var cloudSpace = {
         name: 'Development',
@@ -486,6 +480,7 @@ defineApiStub = function ($httpBackend) {
     var account = {
         name: 'Linny Miller',
         descr: 'Mr. Linny Miller',
+        preferredDataLocation: "US1",
         acl: [{
                 "type": "U",
                 "guid": "",
