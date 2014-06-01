@@ -1,0 +1,15 @@
+@usedefault
+
+{{vm_status id:$$id}}
+
+h2. VMachine: $$id
+
+h3. Details
+|*Status*|$$status|
+|*Ping*|$$ping|
+|*HardDrive Test*|$$hdtest|
+|*CPU Node*|[$$cpu_node_name|/Grid/node?id=$$cpu_node_id]|
+|*Last Checked*|$$epoch|
+
+
+{{include:vmachine id:$$id}}

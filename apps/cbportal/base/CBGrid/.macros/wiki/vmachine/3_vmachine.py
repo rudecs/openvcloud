@@ -61,15 +61,18 @@ def main(j, args, params, tags, tasklet):
             data['nics'] = 'NIC information is not available'
 
         data['disks'] = '||Path||Order||Space||\n'
-        for diskid in obj.disks:
-            try:
-                disk = cbosis.disk.get(diskid)
-                data['disks'] += '|%s|%s|%s|\n' % (disk.diskPath or 'N/A', disk.order or 'N/A', '%s GB used of %s GB' % (disk.sizeUsed, disk.sizeMax))
-            except Exception:
-                data = {'disks': 'Disks info is not available'}
+        if hasattr(obj, 'disks'):
+            for diskid in obj.disks:
+                try:
+                    disk = cbosis.disk.get(diskid)
+                    data['disks'] += '|%s|%s|%s|\n' % (disk.diskPath or 'N/A', disk.order or 'N/A', '%s GB used of %s GB' % (disk.sizeUsed, disk.sizeMax))
+                except Exception:
+                    data = {'disks': 'Disks info is not available'}
 
-        data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
-        data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
+        if hasattr(obj, 'creationTime'):
+            data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
+        if hasattr(obj, 'deletionTime'):
+            data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
         data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
         data['image'] = image['name']
         data['stackname'] = stack['name']
