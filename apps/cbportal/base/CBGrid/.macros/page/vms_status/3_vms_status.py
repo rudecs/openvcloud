@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
             itemdata = ['<a href=vmachine?id=%s>%s</a>' % (vmachine, vmachine)]
             for field in ["state", "ping", "hdtest"]:
                 itemdata.append(str(data[field]))
-            itemdata.append('<a href=node?id=%s>%s</a>' % (data['cpu_node_id'], data['cpu_node_name']))
+            itemdata.append(str('<a href=node?id=%s>%s</a>' % (data['cpu_node_id'], data['cpu_node_name'])))
             itemdata.append(j.base.time.epoch2HRDateTime(data["epoch"]))
             aaData.append(itemdata)
         aaData = str(aaData)

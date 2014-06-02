@@ -21,6 +21,10 @@ def action():
     import JumpScale.lib.routeros
     import JumpScale.baselib.redis
     import JumpScale.grid.agentcontroller
+    try:
+        import ujson as json
+    except:
+        import json
 
     REDIS_PORT = j.application.config.get('redis.port.redisp')
     WHERE_AM_I = j.application.config.get('cloudbroker.where.am.i')
@@ -59,4 +63,4 @@ def action():
                 vm_data['parent_image'] = result['backing file']
                 vm_data['disk_size'] = result['disk size']
 
-            rediscl.hset('vmachines.status', vm['id'], vm_data)
+            rediscl.hset('vmachines.status', vm['id'], json.dumps(vm_data))
