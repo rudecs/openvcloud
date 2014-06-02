@@ -1,5 +1,10 @@
 import datetime
 import JumpScale.grid.osis
+import JumpScale.baselib.units
+try:
+    import ujson as json
+except Exception:
+    import json
 
 def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
@@ -16,6 +21,13 @@ def main(j, args, params, tags, tasklet):
         out = 'Could not find VMachine Object with id %s'  % id
         params.result = (out, args.doc)
         return params
+
+    cl=j.clients.redis.getGeventRedisClient("localhost", int(j.application.config.get('redis.port.redisp')))
+
+    stats = dict()
+    if cl.hexists("vmachines.status", id):
+        vm = cl.hget("vmachines.status", id)
+        stats = json.loads(vm)
 
     def objFetchManipulate(id):
         data = dict()
@@ -78,6 +90,15 @@ def main(j, args, params, tags, tasklet):
         data['stackname'] = stack['name']
         data['spacename'] = space['name']
         data['stackrefid'] = stack['referenceId'] or 'N/A'
+
+        for k, v in stats.iteritems():
+            if k == 'epoch':
+                v = j.base.time.epoch2HRDateTime(stats['epoch'])
+            if k == 'disk_size':
+                size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
+                v = '%.2f %siB' % (size, unit)
+            data['stats_%s' % k] = v
+
         return data
 
     push2doc = j.apps.system.contentmanager.extensions.macrohelper.push2doc
