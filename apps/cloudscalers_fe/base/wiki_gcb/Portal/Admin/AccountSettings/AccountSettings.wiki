@@ -9,13 +9,34 @@ h1. Account Details
 {{html:
         </div>
       </tab>
-      <tab id="account" heading="Account">
-        <div class="tab-pane" ng-switch="preferredDataLocation" ng-controller="AccountController" ng-show="preferredDataLocation">
-          <label class="left control-group" style="margin: 0 10px 0 0; width: auto; height: 30px; line-height: 30px;">Preferred Data Location:</label>
-          <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
-          <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
+      <tab id="account" heading="Account" ng-controller="AccountController">
+      <form name="form" ng-submit="updatePassword()">
+        <div class="tab-pane row" style="margin-bottom: 40px; margin-left: 15px;">
+          <div style="margin-bottom: 20px;" ng-switch="preferredDataLocation" ng-show="preferredDataLocation">
+            <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">Preferred Location:</label>
+            <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
+            <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
+          </div>
+          <div class="nameField" style="margin-bottom: 10px;">
+             <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">Current Password:</label>
+            <input required ng-model="oldPassword" type="password" class="input-xxlarge" style="width: 30%; float: left; margin-right: 10px;">
+            <span style="color: rgb(160, 14, 14); font-size: 13px;">{[ currentPasswordMessage ]}</span>
+          </div>
+          <div class="nameField" style="margin-bottom: 10px;">
+             <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">New Password:</label>
+            <input required ng-model="newPassword" type="password" class="input-xxlarge" style="width: 30%; float: left; margin-right: 10px;">
+            <span style="color: rgb(160, 14, 14); font-size: 13px;">{[ newPasswordMessage ]}</span>
+          </div>
+          <div class="nameField" style="margin-bottom: 10px;">
+             <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">Retype Password:</label>
+            <input required ng-model="retypePassword" type="password" class="input-xxlarge" style="width: 30%; float: left;">
+          </div>
         </div>
-        
+          <button type="submit" class="btn btn-info btn-large">Update Password</button>
+          <div style="text-align: center;">
+            <div class="alert alert-success" ng-show="updateResultMessage" style="margin-top: 20px !important; width: 40%; text-align: center;">{[ updateResultMessage ]}</div>
+          </div>
+        </form>
       </tab>
       <!-- <tab id="access" heading="Access">
         <div id="access" class="tab-pane"> -->

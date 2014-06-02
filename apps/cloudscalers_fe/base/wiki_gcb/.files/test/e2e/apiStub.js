@@ -32,6 +32,19 @@ defineApiStub = function ($httpBackend) {
                 this.set(items);
             },
 
+            saveUser: function(item) {
+                var items = this.get();
+                for (var i = 0; i < items.length; i++) {
+                    console.log(items[i]);
+                    if(items[i] != null){
+                        if (items[i].username == item.username) {
+                            items[i] = item;
+                        }
+                    }
+                }
+                this.set(items);
+            },
+
             set: function(items) {
                 localStorage.setItem(key, JSON.stringify(items));
             },
@@ -69,6 +82,17 @@ defineApiStub = function ($httpBackend) {
             return [403, 'Unauthorized'];
         }
         return [200, '"yep123456789"'];
+    });
+    $httpBackend.whenGET(/^\/users\/updatePassword\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var user = _.findWhere(UsersList.get(), {username: params.username});
+        if (user.password == params.oldPassword){
+            user.password = params.newPassword;
+            UsersList.saveUser(user);
+            return [200, "Success"];
+        }else{
+            return [203, "Your current password dosen't match!"];
+        }
     });
 
     $httpBackend.whenPOST('/users/register').respond(function(method, url, data) {
