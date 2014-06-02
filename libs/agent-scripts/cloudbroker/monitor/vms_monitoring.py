@@ -62,6 +62,6 @@ def action():
         if not_reachable_vfws:
             message += '<br/><br/>The following VFWs are not reachable:<br/><br/>'
             for vfw in not_reachable_vfws:
-                message += '* %s: %s, %s<br/>' % (vfw['name'], vfw['internalip'], ', '.join(vfw['pubips']))
+                message += '* %s: %s, %s<br/>' % (vfw['name'] or 'N/A', vfw['internalip'] or 'N/A', ', '.join(vfw['pubips']))
 
         j.clients.email.send('support@mothership1.com', 'monitoring@mothership1.com', 'VMachines Status', message)
