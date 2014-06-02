@@ -21,10 +21,7 @@ def action():
     import JumpScale.lib.routeros
     import JumpScale.baselib.redis
     import JumpScale.grid.agentcontroller
-    try:
-        import ujson as json
-    except:
-        import json
+    import ujson as json
 
     REDIS_PORT = j.application.config.get('redis.port.redisp')
     WHERE_AM_I = j.application.config.get('cloudbroker.where.am.i')
@@ -39,6 +36,9 @@ def action():
     stacks = dict([(s['id'], s) for s in cbcl.stack.simpleSearch({})])
     nodes = dict([(n['name'], n) for n in nodecl.simpleSearch({})])
 
+    ping_jobs = dict()
+    disk_check_jobs = dict()
+    vmachines_data = dict()
     cloudspaces = cbcl.cloudspace.simpleSearch({'location': WHERE_AM_I})
 
     for cloudspace in cloudspaces:
@@ -48,19 +48,28 @@ def action():
             cpu_node_id = nodes[cpu_node_name]['id']
             vm_data = {'state': vm['status'], 'ping': False, 'hdtest': False, 'cpu_node_name': cpu_node_name,
                        'cpu_node_id': cpu_node_id, 'epoch': j.base.time.getTimeEpoch()}
+            vmachines_data[vm['id']] = vm_data
             if vm['status'] == 'RUNNING':
                 args = {'vm_ip_address': vm['nics'][0]['ipAddress'], 'vm_cloudspace_id': cloudspace['id']}
-                result = accl.executeJumpScript('jumpscale', 'vm_ping', role='admin', args=args, wait=True)
-                if result['state'] == 'OK':
-                    result = result['result']
-                    vm_data['ping'] = result
+                job = accl.scheduleCmd(j.application.whoAmI.gid, None, 'monitor.vms', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['admin'], wait=True)
+                ping_jobs[vm['id']] = job
 
-            result = accl.executeJumpScript('jumpscale', 'vm_disk_check', nid=cpu_node_id, args={'vm_id': vm['id']}, wait=True)
-            if result['state'] == 'OK':
-                result = result['result']
-                vm_data['hdtest'] = True
-                vm_data['image'] = result['image']
-                vm_data['parent_image'] = result['backing file']
-                vm_data['disk_size'] = result['disk size']
+            job = accl.scheduleCmd(j.application.whoAmI.gid, cpu_node_id, 'monitor.vms', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
+            disk_check_jobs[vm['id']] = job
 
-            rediscl.hset('vmachines.status', vm['id'], json.dumps(vm_data))
+    for vm_id, job in ping_jobs.iteritems():
+        result = accl.waitJumpscript(job=job)
+        if result['result']:
+            vmachines_data[vm_id]['ping'] = result['result']
+
+    for vm_id, job in disk_check_jobs.iteritems():
+        result = accl.waitJumpscript(job=job)
+        if result['result']:
+            result = result['result']
+            vmachines_data[vm_id]['hdtest'] = True
+            vmachines_data[vm_id]['image'] = result['image']
+            vmachines_data[vm_id]['parent_image'] = result['backing file']
+            vmachines_data[vm_id]['disk_size'] = result['disk size']
+
+    for vm_id, vm_data in vmachines_data.iteritems():
+        rediscl.hset('vmachines.status', vm_id, json.dumps(vm_data))
