@@ -12,6 +12,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
+    sclient = j.core.osis.getClientForNamespace('system')
 
     if not cbclient.account.exists(id):
         params.result = ('Account with id %s not found' % id, args.doc)
@@ -19,15 +20,26 @@ def main(j, args, params, tags, tasklet):
 
     accountobj = cbclient.account.get(id)
     
-    def objFetchManipulate(id):
-        account = accountobj.dump()
-        account['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in account['acl']]))
+    account = accountobj.dump()
 
-        return account
+    users = list()
+    for acl in account['acl']:
+        if acl['type'] == 'U':
+            eusers = sclient.user.simpleSearch({'id': acl['userGroupId']})
+            if eusers:
+                user = eusers[0]
+                user['acl'] = acl['right']
+            else:
+                user = dict()
+                user['id'] = acl['userGroupId']
+                user['emails'] = 'N/A'
+            users.append(user)
+    
+    account['users'] = users
+    args.doc.applyTemplate(account)
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
-
-    return push2doc(args,params,objFetchManipulate)
+    params.result = (args.doc, args.doc)
+    return params
 
 def match(j, args, params, tags, tasklet):
     return True
