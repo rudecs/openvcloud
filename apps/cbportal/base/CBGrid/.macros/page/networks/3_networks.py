@@ -8,18 +8,18 @@ def main(j, args, params, tags, tasklet):
         val = args.getTag(tag)
         filters[tag] = val
 
-    fieldnames = ['ID', 'Name', 'Name Servers', 'VLan ID', 'CloudSpace ID', 'Stack ID', 'Subnet', 'NetMask', 'Description']
+    fieldnames = ['ID', 'CloudSpace', 'Public IPs', 'Management IP' ]
 
     def makeNS(row, field):
         return str(', '.join(row[field]))
 
-    fieldids = ['id', 'name', 'nameservers', 'vlanId', 'cloudspaceId', 'stackId', 'subnet', 'netmask', 'descr']
-    fieldvalues = ['[%(id)s|/CBGrid/network?id=%(id)s]', 'name', makeNS, 
-                   '[%(vlanId)s|/CBGrid/vlan?id=%(vlanId)s]', 
-                   '[%(cloudspaceId)s|/CBGrid/cloudspace?id=%(cloudspaceId)s]',
-                   '[%(stackId)s|/CBGrid/stack?id=%(stackId)s]', 
-                   'subnet', 'netmask', 'descr']
-    tableid = modifier.addTableForModel('cloudbroker', 'network', fieldids, fieldnames, fieldvalues, filters)
+    fieldids = ['id', 'domain', 'pubips', 'host']
+    fieldvalues = ['[%(id)s|/CBGrid/network?id=%(id)s]',
+                   '[%(domain)s|/CBGrid/cloudspace?id=%(domain)s]',
+                   makeNS,
+                   'host'
+                   ]
+    tableid = modifier.addTableForModel('vfw', 'virtualfirewall', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
