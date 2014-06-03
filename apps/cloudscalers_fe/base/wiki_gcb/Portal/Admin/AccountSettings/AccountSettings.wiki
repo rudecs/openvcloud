@@ -11,7 +11,7 @@ h1. Account Details
       </tab>
       <tab id="account" heading="Account">
         <div class="tab-pane" ng-switch="preferredDataLocation" ng-controller="AccountController" ng-show="preferredDataLocation">
-          <label class="left control-group" style="margin: 0 10px 0 0; width: auto; height: 30px; line-height: 30px;">Preferred Data Location:</label>
+          <label class="left control-group" style="margin: 0 10px 0 0; width: auto; height: 30px; line-height: 30px;">Preferred Location:</label>
           <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
           <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
         </div>
