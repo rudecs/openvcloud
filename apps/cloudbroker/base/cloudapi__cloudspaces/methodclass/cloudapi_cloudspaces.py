@@ -201,9 +201,10 @@ class cloudapi_cloudspaces(object):
         query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
+        
         #during the transitions phase, not all locations might be filled in
         for cloudspace in cloudspaces:
-            if not 'location' in cloudspace:
+            if not 'location' in cloudspace or len(cloudspace['location']) == 0:
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
         urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
