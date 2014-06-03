@@ -24,6 +24,7 @@
                     <div class="controls" id="paymentbuttons">
 }}
 {{include:PayPal}}
+{{include:WireTransfer}}
 {{html:
 
 
