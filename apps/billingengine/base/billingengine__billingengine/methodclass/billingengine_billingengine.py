@@ -215,6 +215,7 @@ class billingengine_billingengine(j.code.classGetBase()):
             next_billing_statement_time = now
 
         for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now, accountId):
+            billing_statement.untilTime = min(now,self._addMonth(billing_statement.fromTime))
             self._update_usage(billing_statement)
             self._save_billing_statement(billing_statement)
 
