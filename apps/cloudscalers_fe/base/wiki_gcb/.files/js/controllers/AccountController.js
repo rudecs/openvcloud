@@ -1,29 +1,31 @@
 angular.module('cloudscalers.controllers')
     .controller('AccountController', ['$scope', 'Account', 'LoadingDialog','$ErrorResponseAlert', '$timeout',
     	function($scope, Account, LoadingDialog, $ErrorResponseAlert, $timeout) {
+    	$scope
       	$scope.$parent.$watch('currentAccount', function(){
-	      	// console.log($scope);
 	      	$scope.accountNames = $scope.$parent.currentAccount.name;
 	      	$scope.preferredDataLocation = $scope.$parent.currentAccount.preferredDataLocation;
 	    });
 
 
       	$scope.updatePassword = function() {
+      		$scope.updateResultMessage = "";
       		if($scope.newPassword == $scope.retypePassword){
 				LoadingDialog.show();
 		      	Account.updatePassword($scope.$parent.currentUser.username, $scope.oldPassword ,$scope.newPassword).then(
-		        	function(code){
-						if(code == 203){
+		        	function(passwordResponse){
+						if(passwordResponse.status == 203){
 							LoadingDialog.hide();
-							$scope.currentPasswordMessage = "Your current password dosen't match!";
+							$scope.currentPasswordMessage = passwordResponse.data;
 							console.log($scope.currentPasswordMessage);
 							$timeout(function() {
 	                            $scope.currentPasswordMessage = "";
 	                        }, 3000);
 						}
-						if(code == 200){
+						if(passwordResponse.status == 200){
 							LoadingDialog.hide();
-							$scope.updateResultMessage = "Congratulations, Your password changed successfully.";
+							$scope.alertStatus = "success";
+							$scope.updateResultMessage = passwordResponse.data;
 							$timeout(function() {
 	                            $scope.updateResultMessage = "";
 	                        }, 3000);
@@ -33,12 +35,17 @@ angular.module('cloudscalers.controllers')
 						}
 					},
 			        function(reason){
-			          	$ErrorResponseAlert(reason);
-			          	console.log(reason);
+			        	if(reason.status == 400){
+							LoadingDialog.hide();
+							$scope.alertStatus = "error";
+							$scope.updateResultMessage = reason.data;
+						}else{
+			          		$ErrorResponseAlert(reason.data);
+						}
 			        }
 			    );
 	      	}else{
-	      		$scope.newPasswordMessage = "New password fileds dosen't match!";
+	      		$scope.newPasswordMessage = "Your new password dosen't match.";
 				$timeout(function() {
                     $scope.newPasswordMessage = "";
                 }, 3000);

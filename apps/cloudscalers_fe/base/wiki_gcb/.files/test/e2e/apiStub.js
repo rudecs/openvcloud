@@ -86,12 +86,16 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/users\/updatePassword\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var user = _.findWhere(UsersList.get(), {username: params.username});
-        if (user.password == params.oldPassword){
-            user.password = params.newPassword;
-            UsersList.saveUser(user);
-            return [200, "Success"];
+        if( params.newPassword.length < 8 || params.newPassword.length > 80 || params.newPassword.indexOf(' ') >= 0 || params.newPassword == "undefined" ){
+            return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
         }else{
-            return [203, "Your current password dosen't match!"];
+            if (user.password == params.oldPassword){
+                    user.password = params.newPassword;
+                    UsersList.saveUser(user);
+                    return [200, "Congratulations, Your password changed successfully."];
+            }else{
+                return [203, "Your current password dosen't match."];
+            }
         }
     });
 

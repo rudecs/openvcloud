@@ -79,7 +79,7 @@ angular.module('cloudscalers.services')
                     '&newPassword=' + newPassword
                     ).then(
                         function(result){
-                            return result.status;
+                            return result;
                         },
                         function(reason){
                             return $q.reject(reason);
