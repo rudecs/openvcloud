@@ -536,12 +536,12 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Full remote Cloud Desktop</td></tr>
-                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>Private Small Business Server</td></tr>
                     <tr><td>Access via any HTML5-capable device</td></tr>
                     <tr><td>File Sharing</td></tr>
                     <tr><td>Screen Sharing</td></tr>
-                    <tr><td>Pre-installed Free Apps</td></tr>
-                    <tr><td>5GB storage per user</td></tr>
+                    <tr><td>5 Office Apps</td></tr>
+                    <tr><td>1GB storage per user</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
@@ -566,13 +566,13 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Full remote Cloud Desktop</td></tr>
-                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>Private Small Business Server</td></tr>
                     <tr><td>Access via any HTML5-capable device</td></tr>
                     <tr><td>File Sharing</td></tr>
                     <tr><td>Screen Sharing</td></tr>
-                    <tr><td>Pre-installed Free Apps</td></tr>
-                    <tr><td>Pre-installed Office Apps</td></tr>
-                    <tr><td>25GB storage per user</td></tr>
+                    <tr><td>5 Office Apps</td></tr>
+                    <tr><td>100% MS Ofice Compatible</td></tr>
+                    <tr><td>5GB storage per user</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
@@ -603,14 +603,14 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Full remote Cloud Desktop</td></tr>
-                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>Private Small Business Server</td></tr>
                     <tr><td>Access via any HTML5-capable device</td></tr>
                     <tr><td>File Sharing</td></tr>
                     <tr><td>Screen Sharing</td></tr>
-                    <tr><td>Pre-installed Free Apps</td></tr>
-                    <tr><td>Pre-installed Office Apps</td></tr>
-                    <tr><td>MS Office</td></tr>
-                    <tr><td>50GB storage per user</td></tr>
+                    <tr><td>5 Office Apps</td></tr>
+                    <tr><td>Microsoft Office Professional</td></tr>
+                    <tr><td>Private MailSystem</td></tr>
+                    <tr><td>25GB storage per user</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                 </table>
@@ -633,16 +633,16 @@ h1. Pricing
                 {{html:
                 <table class="table">
                     <tr><td>Full remote Cloud Desktop</td></tr>
-                    <tr><td>Private Cloud Drive</td></tr>
+                    <tr><td>Private Small Business Server</td></tr>
                     <tr><td>Access via any HTML5-capable device</td></tr>
                     <tr><td>File Sharing</td></tr>
                     <tr><td>Screen Sharing</td></tr>
-                    <tr><td>Pre-installed Free Apps</td></tr>
-                    <tr><td>Pre-installed Office Apps</td></tr>
-                    <tr><td>MS Office Professional</td></tr>
+                    <tr><td>5 Office Apps</td></tr>
+                    <tr><td>Microsoft Office Professional</td></tr>
+                    <tr><td>Integration With Any MailSystem</td></tr>
                     <tr><td>Auditing capabilities</td></tr>
                     <tr><td>AD Integration</td></tr>
-                    <tr><td>100GB storage per user</td></tr>
+                    <tr><td>50GB storage per user</td></tr>
                 </table>
                 }}
             {{div4}}
