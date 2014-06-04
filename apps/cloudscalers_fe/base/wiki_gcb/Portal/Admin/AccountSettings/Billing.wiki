@@ -43,7 +43,9 @@
 
 {{html:
 <br/>
+}}
 h1. Billing History
+{{html:
 <table class="table table-striped table-bordered" ng-cloak ng-show="transactions">
     <thead>
         <tr>

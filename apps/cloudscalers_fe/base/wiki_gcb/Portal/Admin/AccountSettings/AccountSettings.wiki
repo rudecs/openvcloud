@@ -25,7 +25,7 @@ h1. Balance & Usage
 #      </tab>
 #      <!-- <tab id="access" heading="Access">
 #        <div id="access" class="tab-pane"> -->
-#          <!-- {{include:AccountAccessManagement}} -->
+#          <!-- include:AccountAccessManagement -->
 #}}
 
 #{{html:
