@@ -722,7 +722,7 @@ canvas { display: block; float: left; }
 .absolutePad0 { padding: 0; display: block; }
 .bottomFooter .col-md-3 { display: inline-block; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
-.billWrap { margin-bottom: 23px; display: inline-block; }
+.billWrap { margin-bottom: 23px; }
 .billWrap .span6 { border-left: thin; border-left-style: dotted; border-left-color: gray; height: 100%; }
 .newDecks .color2 { clear: left; }
 .newDecks .color3 { clear:none; }
