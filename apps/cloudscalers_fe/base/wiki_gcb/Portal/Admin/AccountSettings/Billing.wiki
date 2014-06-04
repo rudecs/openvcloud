@@ -8,7 +8,7 @@
             <br/><br/>
             <h1 ng-model="availableCredit">{[credit | currency:"$"]}</h1>
         </div>
-        <div class="span6" style="margin-bottom: 25px;">
+        <div class="span9" style="margin-bottom: 25px;">
             <form class="form-horizontal" role="form">
                 <div class="control-group">
                     <label for="creditToAddInput" class="control-label">Add Credit</label>
