@@ -7,6 +7,7 @@ h2. Account: ${name}
 h3. Details
 |*Account ID*|$$id|
 |*Real Name*|${displayname}|
+|*Location*|${DCLocation}|
 |*Company*|${company}|
 |*Company Site*|${companyurl}|
 
