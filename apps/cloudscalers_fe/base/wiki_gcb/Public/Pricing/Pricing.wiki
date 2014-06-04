@@ -288,7 +288,7 @@ h1. Pricing
         </tr>
        <tr>
           <td>
-            Virtual SAN HDD Disk Storage (up to 2TB) / Snapshot Storage / Templates
+            Virtual HDD Disk Storage (up to 2TB) / Snapshots / Templates
           </td>
           <td>$0.15</td>
           <td>$0.00021</td>
@@ -656,14 +656,8 @@ h1. Pricing
 
 {{html:
 <p>(*) Pricing mentioned is for minimum 10 users, if less users per order please contact us.</p>
+</div>
 }}
-
-
-#  <div class="tab-pane fade in" id="ApplicationDeck">
-#  
-#  <p>Coming in Q3 2014.</p>
-#
-#  </div>
 
 @divend
 @divend
