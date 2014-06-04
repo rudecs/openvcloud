@@ -10,6 +10,7 @@ h3. Details
 |*Network ID*|[$$networkid|network?id=$$networkid]|
 |*Stack(s)*|$$resourceproviderstacks|
 |*Status*|$$status|
+|*Location*|$$location|
 |*Access Control List*|$$acl|
 |*Description*|$$descr|
 |*Public IP Adress*|$$publicipaddress|
