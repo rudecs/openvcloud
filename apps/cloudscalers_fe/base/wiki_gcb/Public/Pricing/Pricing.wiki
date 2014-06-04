@@ -3,6 +3,10 @@
 <style type="text/css">
 .bulletStyle { list-style-type: disc;}
 .fontSmaller { font-size: 14px;}
+@media (max-width: 1290px) and (min-width: 992px) {
+ .the-price h1 { font-size: 16px !important; }
+ .the-price h1 span {font-size: 16px !important; }
+}
 </style>
 
 }}
