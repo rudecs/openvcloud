@@ -716,6 +716,7 @@ table.table td { color: #000; }
 .newDecks2 .color5 { clear: left; }
 .why-page ul { list-style: initial; }
 .btn:active, .btn.active { outline: 0; background-image: none; -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.4); box-shadow: inset 0 3px 5px rgba(0,0,0,0.4); }
+.btn:active[disabled], .btn.active[disabled]{ -webkit-box-shadow: none; box-shadow: none;  }
 canvas { display: block; float: left; }
 .absolute1 { position: absolute; right: 16px; top: 6px; }
 .absolutePad0 { padding: 0; display: block; }
