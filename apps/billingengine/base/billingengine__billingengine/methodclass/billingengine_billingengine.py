@@ -55,11 +55,11 @@ class billingengine_billingengine(j.code.classGetBase()):
         billmachinefrom = max(fromTime, machinebillingstatement.creationTime)
         number_of_billable_hours = (billmachineuntil - billmachinefrom) / 3600.0
         if (number_of_billable_hours < 1.0): #minimum one hour
-            if not machinebillingstatement.deletionTime == 0:
-                number_of_billable_hours = 1.0
+            if not machinebillingstatement.deletionTime == 0: #but only if it is destroyed
                 #Don't charge double if the machine was partially billed in the previous period
-                if (machinebillingstatement.creationTime < fromTime):
-                    number_of_billable_hours -= (fromTime * 3600.0)
+                number_of_hours_in_previous_calculations = max(0.0,(fromTime - machinebillingstatement.creationTime) / 3600.0)
+                if (number_of_hours_in_previous_calculations < 1.0):
+                    number_of_billable_hours = 1.0 - number_of_hours_in_previous_calculations
 
         price_per_hour = self._pricing.get_machine_price_per_hour(machine)
         machinebillingstatement.cost = number_of_billable_hours * price_per_hour
@@ -187,7 +187,7 @@ class billingengine_billingengine(j.code.classGetBase()):
 
     def _addMonth(self, timestamp):
         timestampdatetime = datetime.utcfromtimestamp(timestamp)
-        monthbeginning = timestampdatetime.replace(day=1,minute=0,second=0,microsecond=0)
+        monthbeginning = timestampdatetime.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
         if monthbeginning.month == 12:
             nextmonthbeginning = monthbeginning.replace(year=monthbeginning.year + 1, month=1)
         else:
