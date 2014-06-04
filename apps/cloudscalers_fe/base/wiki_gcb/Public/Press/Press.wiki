@@ -1,15 +1,5 @@
-@template public_with_left_nav
-
+@template public
 
 h1. Press Center
 
-
-    
-{{ blog_index:
-<div class="blogDesign">
-<h2><a href="{blog_url}">{blog_title}</a></h2>
-</div>
-}}
-
-@divend
-@divend
+Coming Soon

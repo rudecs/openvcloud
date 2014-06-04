@@ -29,7 +29,7 @@ h1. $$page
       {{html: <i class="fa fa-arrow-right"></i>}}
       
       h3. Size to needs
-      Number of users, storage needs, number of expected database items will determine how big the provisioned backend will be for your each application.
+      Number of users, storage needs and number of expected database items will determine how big the provisioned backend will be for your each application.
 {{div}}
 {{div: class=col-md-12 boxDecks ApplicationDeckColor}}
       {{html: <i class="fa fa-arrow-right"></i>}}

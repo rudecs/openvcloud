@@ -546,7 +546,6 @@ h1. Pricing
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
-                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -574,7 +573,6 @@ h1. Pricing
                     <tr><td>Pre-installed Free Apps</td></tr>
                     <tr><td>Pre-installed Office Apps</td></tr>
                     <tr><td>25GB storage per user</td></tr>
-                    <tr><td>+10 users</td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
@@ -613,7 +611,7 @@ h1. Pricing
                     <tr><td>Pre-installed Office Apps</td></tr>
                     <tr><td>MS Office</td></tr>
                     <tr><td>50GB storage per user</td></tr>
-                    <tr><td>+25 users</td></tr>
+                    <tr><td></td></tr>
                     <tr><td></td></tr>
                 </table>
                 }}
@@ -645,7 +643,6 @@ h1. Pricing
                     <tr><td>Auditing capabilities</td></tr>
                     <tr><td>AD Integration</td></tr>
                     <tr><td>100GB storage per user</td></tr>
-                    <tr><td>+100 users</td></tr>
                 </table>
                 }}
             {{div4}}

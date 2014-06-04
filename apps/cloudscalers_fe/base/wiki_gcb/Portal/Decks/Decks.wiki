@@ -28,7 +28,7 @@
             <h2>
 
 </h2>
-Your private Defense Shield providing privacy, security & secure access to your Cloud Space.
+Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
         <div class="col-md-4 boxes font color1 mbll">
