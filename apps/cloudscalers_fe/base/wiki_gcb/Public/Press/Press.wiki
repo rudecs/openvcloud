@@ -2,13 +2,35 @@
 {{div: class=white}}
 {{div2: class=container why-page}}
 
+<<<<<<< local
+{{html:
+<head>
+<style type="text/css">
+.well { padding-top: 0; margin: 0;}
+</style>
+=======
 @col12
+>>>>>>> other
 
+<<<<<<< local
+</head>
+}}
+=======
 h1. Press Centet
+>>>>>>> other
 
+<<<<<<< local
+=======
 Coming Soon
+>>>>>>> other
 
+<<<<<<< local
+Welcome to the Mothership1 press section.
+Find here information about press releases, product images and logos:
+{{children}}
+
+=======
 {{div2}}
 {{div}}
 @divend
-@divend
+@divend>>>>>>> other
