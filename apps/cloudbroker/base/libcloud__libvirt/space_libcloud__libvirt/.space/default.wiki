@@ -1,0 +1,28 @@
+
+{{title:QWiki}}
+
+{{projectname:TestSpace}}
+
+{{find}}
+
+{{menu:
+System:/System
+RestInterface:/rest
+Explorer:/System/Explorer
+}}
+
+@block
+@row
+
+@col 3
+{{navigation}}
+@divend
+
+@col 9
+
+{content}
+
+@divend
+@divend
+
+

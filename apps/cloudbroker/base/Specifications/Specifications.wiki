@@ -1,0 +1,8 @@
+h1. Specifiations
+
+h2. Introduction
+
+This space contains the main informatoin for the JumpScaleCloudBroker project.
+
+Please keep this space up-to-date.
+

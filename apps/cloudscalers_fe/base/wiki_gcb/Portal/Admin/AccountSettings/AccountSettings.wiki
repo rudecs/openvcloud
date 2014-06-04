@@ -1,0 +1,46 @@
+h1. Account Details
+
+{{html:
+  <tabset style="clear:both;">
+      <tab id="credit" heading="Credit">
+        <div id="credit" class="tab-pane active">
+}}
+          {{include:Billing}}
+{{html:
+        </div>
+      </tab>
+      <tab id="account" heading="Account">
+        <div class="tab-pane" ng-switch="preferredDataLocation" ng-controller="AccountController" ng-show="preferredDataLocation">
+          <label class="left control-group" style="margin: 0 10px 0 0; width: auto; height: 30px; line-height: 30px;">Preferred Location:</label>
+            <div ng-switch-when="ca1" style="float: left; text-align: center;">
+              <img src="/$$space/.files/img/flags/canada.png">
+              <span style="display: block; margin-top: 5px; font-size: 13px;">Canada</span>
+            </div>
+            <div ng-switch-when="us1" style="float: left; text-align: center;">
+              <img src="/$$space/.files/img/flags/usa.png">
+              <span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
+            </div>
+        </div>
+        
+      </tab>
+      <!-- <tab id="access" heading="Access">
+        <div id="access" class="tab-pane"> -->
+          <!-- {{include:AccountAccessManagement}} -->
+}}
+
+{{html:
+        <!-- </div>
+      </tab> -->
+      <!-- <tab id="templatemanagment" heading="Template Management"> -->
+        <!-- <div id="templatemanagement" class="tab-pane"> -->
+          <!-- include:AccountTemplateManagement -->
+}}
+{{html:
+        <!-- </div> -->
+      <!-- </tab> -->
+  </tabset>
+}}
+
+{{html:
+<script src="/$$space/.files/js/controllers/AccountController.js" type="text/javascript"></script>
+}}

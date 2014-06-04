@@ -1,0 +1,13 @@
+@template public
+{{div: class=white}}
+	{{div2: class=container why-page}}
+
+	@col 12
+
+	h1. General Terms & Conditions
+
+	{{include:Disclaimer}}
+	{{div2}}
+{{div}}
+@divend
+@divend

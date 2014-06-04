@@ -1,0 +1,43 @@
+@template public_with_left_nav
+{{html:
+ <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+}}
+{{div: class=half copy col-md-6 ApplicationDeckColor}}
+
+
+
+
+h1. $$page
+
+{{html: <p class="niceHead">The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.</p>}}
+
+{{div}}
+
+{{div: class=half col-md-6 justOne}}
+  {{html: <img class="appMargin" src="/$$space/.files/img/images/application-pic.jpg">}}
+{{div}}
+
+
+
+{{div: class=col-md-12 boxDecks ApplicationDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Non technical setup
+      Choose and size applications without the need for a technical background.
+{{div}}
+{{div: class=col-md-12 boxDecks ApplicationDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Size to needs
+      Number of users, storage needs and number of expected database items will determine how big the provisioned backend will be for your each application.
+{{div}}
+{{div: class=col-md-12 boxDecks ApplicationDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Scale
+      Upscale your applications seamlessly by adjusting your requirements, resulting in an upgraded infrastructure backend.
+{{div}}
+
+#{{gallery}}
+
+@divend

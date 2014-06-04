@@ -1,0 +1,27 @@
+
+{{title:Specifications}}
+
+{{projectname:Specifications}}
+
+{{find}}
+
+{{menu:
+System:/System
+Specifications:/Specifications
+}}
+
+@block
+@row
+
+@col 3
+{{navigation}}
+@divend
+
+@col 9
+
+{content}
+
+@divend
+@divend
+
+

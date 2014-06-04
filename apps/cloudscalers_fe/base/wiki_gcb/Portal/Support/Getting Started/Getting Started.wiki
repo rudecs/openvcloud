@@ -1,0 +1,58 @@
+{{div2: class=container why-page}}
+
+h1. Quick Tutorial Guide
+
+Welcome to your Mothership{{html:<sup>1</sup>}} Cloud Space!
+
+Before you start, maybe some things that are good to know:
+
+The Cloud Space provides access to 4 different Cloud Decks:
+* Machine Deck: Virtual Machines creation and management via the web portal or API.
+* Storage Deck: S3 compatible storage buckets
+* Desktop Deck: Complete Desktop in the cloud solution, available in trial mode
+* Application Deck: Ready to go private applications, available in Q4
+
+The Cloud Space is protected by the Defense Shield, your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
+
+h2. Cloud Space
+
+*# Go to Settings > Account Settings to view your balance and upload credit using Paypal
+*# Optionally provide access to other registered users in the Mothership{{html:<sup>1</sup>}} cloud.
+
+h2. Machine Deck
+
+*# Click on Machine Deck, hit Create Machine
+*# Set the name for your Virtual Machine
+*# Choose one of the packages, delivering CPU, RAM and 10GB SSD
+*# Expand your SSD size
+*# Hit Create
+*# Go to Console tab
+*# Login and take control (Windows Images need to load some minutes to finish all initalisations before you can login)
+*# After maximum a few minutes you will see the IP address that will be provisioned by your Defense Shield. By default this is a private IP address
+*# Use the Port Fowards in the Machine Deck submenu page to quickly enable public access to a specific port of your virtual machine
+*# Your virtual machine is charged once created per hour, for minimal an hour. You can delete anytime and the charging stops.
+
+h2. Storage Deck
+
+*# Go to Storage Deck
+*# You will have pre-provisioned a 1GB S3 bucket. For larger buckets, you can contact support.
+*# Everything is ready to use, click on Show S3 to see your Access Key, Secret Key and S3 Server
+
+h2. Defense Shield
+
+*# Go to Defense Shield
+*# Login with admin + your portal password
+*# Configure what you lik, it`s private it`s yours
+*# For more simple tasks, use the Port Fowards in the Machine Deck submenu
+
+h2. Cloud Credits
+
+The Cloud Space handles no commitments or built-in limits to the number of services you can create, but uses a minimal credit balance policy. Your created services or actions taken on active services should be able to last for at least 2 weeks with your remaining credit.
+
+For example, you have a credit balance of 15 USD. When you want to create a virtual machine with a cost of 20 USD/month, the system requires a minimal credit balance of about 10 USD. At this time, it will not be possible to create an additional virtual machine with a cost of 20 USD/month. The charging is always hourly, so when the virtual machine is deleted, the machine is charged only for its duration in hours and the credit reservation is immediately released. At the time the first created machine is destroyed, you can create again machines, as long as the system can set a credit reservation for 2 weeks.
+
+h2. Questions?
+
+Good luck! In case of any questions, go to our [Documentation Center|FAQ] or contact [Customer Service|http://support.mothership1.com]
+
+@divend

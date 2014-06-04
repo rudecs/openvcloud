@@ -1,0 +1,17 @@
+@usedefault
+
+{{network id:$$id}}
+
+h2. Network: $$id
+
+h3. Details
+|*Management IP*|${host}|
+|*Public IPs*|${pubips}|
+|*CloudSpace ID*|[${domain}|cloudspace?id=${domain}]|
+
+h3. Port Fowardings
+
+||Source IP||Source Port||Destination IP||Destination Port||
+{% for rule in tcpForwardRules -%}
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
+{% endfor %}

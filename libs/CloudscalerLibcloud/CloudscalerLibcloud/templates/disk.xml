@@ -1,0 +1,24 @@
+<volume>
+                <name>{{diskname}}</name>
+                <source>
+                    <device path='/dev/sdb1'>
+                    </device>
+                </source>
+                <capacity unit='GB'>{{disksize}}</capacity>
+                <allocation unit='GB'>{{disksize}}</allocation>
+                <target>
+                    <path>{{diskname}}</path>
+                    <format type='qcow2'/>
+                    <permissions>
+                        <mode>0660</mode>
+                        <owner>106</owner>
+                        <group>112</group>
+                    </permissions>
+                    <compat>1.1</compat>
+                </target>
+                <backingStore>
+                    <format type='qcow2'/>
+                    <path>{{diskbasevolume}}</path>
+                </backingStore>
+ </volume> 
+

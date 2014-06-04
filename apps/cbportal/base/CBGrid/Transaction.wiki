@@ -1,0 +1,14 @@
+@usedefault
+
+h2. Credit Transaction Details
+
+{{transaction id:$$id}}
+
+|*ID*|$$id|
+|*Account ID*|[$$accountid|/cbgrid/account?id=$$accountid]|
+|*Amount*|$$amount|
+|*Currency*|$$currency|
+|*Status*|$$status|
+|*Transaction Time*|$$time|
+|*Comment*|$$comment|
+|*Credit*|$$credit|
