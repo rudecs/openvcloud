@@ -9,7 +9,7 @@ angular.module('cloudscalers.controllers')
                 windows: {mo: '-',  hr: '-'},
                 windows_essentials: { mo: '-', hr: '-'}
             },
-            {name: 'Mothership 2', mem: '1GB',   cores: 1, primary: 10, recommended: true,
+            {name: 'Mothership 2', mem: '1GB',   cores: 1, primary: 10, recommended: false,
                 linux:   {mo: 10,  hr: 0.0153},
                 windows: {mo: '-',  hr: '-'},
                 windows_essentials: { mo: '-', hr: '-'}
@@ -19,7 +19,7 @@ angular.module('cloudscalers.controllers')
                 windows: {mo: 33,  hr: 0.0556},
                 windows_essentials: { mo: '-', hr: '-'}
             },
-            {name: 'Mothership 4', mem: '4GB',   cores: 2, primary: 10, recommended: false, 
+            {name: 'Mothership 4', mem: '4GB',   cores: 2, primary: 10, recommended: true, 
                 linux:   {mo: 36,  hr: 0.0500},
                 windows: {mo: 62,  hr: 0.1000},
                 windows_essentials: { mo: 72, hr: 0.1}

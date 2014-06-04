@@ -1,7 +1,5 @@
 h1. Cloud Space Access Management
 
-
-
 {{html:
 	<tabset style="clear:both;">
 		<tab id="details" heading="General">
@@ -17,6 +15,8 @@ h1. Cloud Space Access Management
                   		<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
                   	</div>
                 </div>
+
+                                Delete here your Cloud Space. Note this deletion is irreversible and all data and authorizations to it will be removed.<br><br>
 				<button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
