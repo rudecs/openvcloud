@@ -26,7 +26,7 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
-        $scope.selectedLocation = 'CA1';
+        $scope.selectedLocation = 'ca1';
         $scope.itemClicked = function (location) {
             $scope.selectedLocation = location;
         };
