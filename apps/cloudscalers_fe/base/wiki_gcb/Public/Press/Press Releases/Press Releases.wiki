@@ -1,0 +1,22 @@
+@template public_with_left_nav
+
+{{html: 
+<head>
+	<style type="text/css">
+	.well { padding-top: 0; margin: 0;}
+	</style>
+</head>
+
+ }}
+h1. Press Center
+
+
+    
+{{ blog_index:
+<div class="blogDesign">
+<h2><a href="{blog_url}">{blog_title}</a></h2>
+</div>
+}}
+
+@divend
+@divend
