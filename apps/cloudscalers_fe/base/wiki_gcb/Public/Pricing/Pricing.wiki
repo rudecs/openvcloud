@@ -227,7 +227,7 @@ h1. Pricing
   
 }}
 {{div: class=row}}
-    {{div2: class=col-xs-12 col-md-2 | ng-repeat=plan in plans}}
+    {{html: <div ng-class="'col-md-' + (12/activePlansCount)" ng-repeat="plan in plans" ng-show="plan[os][pricingModel] != '-'">}}
         {{div3: class=panel panel-primary}}
             {{div4: class=cnrflash | ng-show=plan.recommended}}
                 {{div5: class=cnrflash-inner}}
@@ -261,7 +261,7 @@ h1. Pricing
                 {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
             {{div4}}
         {{div3}}
-    {{div2}}
+    @divend
 
 
 

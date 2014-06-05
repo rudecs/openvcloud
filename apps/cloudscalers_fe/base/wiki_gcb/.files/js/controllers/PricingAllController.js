@@ -2,6 +2,7 @@ angular.module('cloudscalers.controllers')
     .controller('PricingAllController', ['$scope', function($scope) {
         $scope.pricingModel = 'mo';
         $scope.os = 'linux';
+        $scope.activePlansCount = 6;
 
         $scope.plans = [
             {name: 'Mothership 1', mem: '512MB', cores: 1, primary: 10, recommended: false, 
@@ -35,4 +36,8 @@ angular.module('cloudscalers.controllers')
                 windows_essentials: { mo: 224, hr: 0.3111}
             }
         ];
+
+        $scope.$watch('pricingModel + os', function() {
+            $scope.activePlansCount = _.countBy($scope.plans, function(plan) { return plan[$scope.os][$scope.pricingModel] != '-'; })[true];
+        }, true);
     }]);
