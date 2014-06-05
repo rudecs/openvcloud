@@ -8,10 +8,10 @@ class cloudbroker_iaas(j.code.classGetBase()):
     """
     def __init__(self):
         self._te={}
-        self.actorname = "cloudbroker"
-        self.appname = "iaas"
+        self.actorname = "iaas"
+        self.appname = "cloudbroker"
+        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self._cb = None
-        self._models = None
 
     @property
     def cb(self):
@@ -19,18 +19,12 @@ class cloudbroker_iaas(j.code.classGetBase()):
             self._cb = j.apps.cloudbroker.iaas
         return self._cb
 
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
     def updateImages(self, **kwargs):
         """
         Update the local images of the cloudbroker
         result 
         """
-        stacks = self.models.stack.list()
+        stacks = self.cbcl.stack.list()
         for stack in stacks:
             self.cb.extensions.imp.stackImportImages(stack)
 
@@ -41,10 +35,10 @@ class cloudbroker_iaas(j.code.classGetBase()):
         param:status status e.g ENABLED, DISABLED, or OFFLINE
         result 
         """
-        if self.models.stack.exists(statckid):
-            stack = self.models.stack.get(statckid)
+        if self.cbcl.stack.exists(statckid):
+            stack = self.cbcl.stack.get(statckid)
             stack.status = status
-            self.models.stack.set(stack)
+            self.cbcl.stack.set(stack)
         else:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]

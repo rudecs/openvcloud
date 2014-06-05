@@ -14,8 +14,8 @@ angular.module('cloudscalers.controllers')
                     {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 112 }
                 ],
                 hr: [
-                    {mem: '512MB', cores: 1, primary: 10, recommended: false, price: 0.0083 },
-                    {mem: '1GB',   cores: 1, primary: 10, recommended: false, price: 0.0153 },
+                    {mem: '512MB', cores: 1, primary: 10, recommended: false, price: 0.0069 },
+                    {mem: '1GB',   cores: 1, primary: 10, recommended: false, price: 0.0139 },
                     {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 0.0278 },
                     {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.0500 },
                     {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.0889 },
@@ -30,10 +30,10 @@ angular.module('cloudscalers.controllers')
                     {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 217 }
                 ],
                 hr: [
-                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 0.0556 },
-                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.1000 },
-                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.1778 },
-                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 0.3111 }
+                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 0.0458 },
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.0861 },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.1611 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 0.3014 }
                 ]
             },
             'Windows Essentials': {
