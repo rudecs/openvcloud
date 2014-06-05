@@ -8,8 +8,8 @@ class cloudbroker_iaas(j.code.classGetBase()):
     """
     def __init__(self):
         self._te={}
-        self.actorname = "cloudbroker"
-        self.appname = "iaas"
+        self.actorname = "iaas"
+        self.appname = "cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self._cb = None
 

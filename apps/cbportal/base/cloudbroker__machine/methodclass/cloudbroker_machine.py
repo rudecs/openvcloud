@@ -7,7 +7,7 @@ import JumpScale.grid.osis
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
         self._te={}
-        self.actorname="finance"
+        self.actorname="machine"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self._cb = None
