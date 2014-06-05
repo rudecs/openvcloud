@@ -1,16 +1,17 @@
-h1. Cloud Space Access Management
+h1. Cloud Space Settings
 
 {{html:
+<br>
 	<tabset style="clear:both;">
 
-		<tab id="access" heading="Cloud Space Access">
+		<tab id="access" heading="Access Management">
 			<div id="access" class="tab-pane">
 }}
 			{{include:CloudSpaceAccessManagement}}
 {{html:
 			</div>
 		</tab>
-		<tab id="details" heading="Delete Cloud Space">
+		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
 				<div ng-switch="clodSpaceLocation" ng-show="clodSpaceLocation" style="margin-bottom: 10px;">
                   			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
@@ -23,7 +24,7 @@ h1. Cloud Space Access Management
                   				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
                   			</div>
                 		</div>
-				<button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
+				<br><button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
 						<div class="modal-header">
