@@ -1,4 +1,12 @@
 @template blog_post
+{{html:
+<head>
+<style type="text/css">
+.well { padding-left: 0;margin: 0;padding-top: 0;}
+</style>
+
+</head>
+}}
 @date 2014-03-01
 @title Mothership<sup>1</sup> to change the economics of cloud building
 
