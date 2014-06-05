@@ -130,7 +130,18 @@ class billingengine_billingengine(j.code.classGetBase()):
         transactions = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
         return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['fields']['id'])
 
-    def _save_billing_statement(self,billing_statement):
+
+    def _addMonth(self, timestamp):
+        timestampdatetime = datetime.utcfromtimestamp(timestamp)
+        monthbeginning = timestampdatetime.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+        if monthbeginning.month == 12:
+            nextmonthbeginning = monthbeginning.replace(year=monthbeginning.year + 1, month=1)
+        else:
+            nextmonthbeginning = monthbeginning.replace(month=monthbeginning.month+1)
+
+        return calendar.timegm(nextmonthbeginning.timetuple())
+
+    def _save_billing_statement(self,billing_statement, now):
         result = self.billingenginemodels.billingstatement.set(billing_statement)
         if billing_statement.id == '':
             billing_statement.id = str(result[0])
@@ -142,9 +153,11 @@ class billingengine_billingengine(j.code.classGetBase()):
             creditTransaction.reference = str(billing_statement.id)
             creditTransaction.status = 'DEBIT'
 
-        creditTransaction.time = billing_statement.untilTime - (3600 * 24)
-        if creditTransaction.time > time.time():
-            creditTransaction.time = int(time.time())
+        creditTransaction.time = self._addMonth(billing_statement.fromTime)
+        if creditTransaction.time > now:
+            creditTransaction.time = now
+        else:
+            creditTransaction.time -= (3600 * 24)
 
         creditTransaction.amount = -billing_statement.totalCost
         creditTransaction.credit = -billing_statement.totalCost
@@ -185,16 +198,6 @@ class billingengine_billingengine(j.code.classGetBase()):
 
         return billingstatements
 
-    def _addMonth(self, timestamp):
-        timestampdatetime = datetime.utcfromtimestamp(timestamp)
-        monthbeginning = timestampdatetime.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
-        if monthbeginning.month == 12:
-            nextmonthbeginning = monthbeginning.replace(year=monthbeginning.year + 1, month=1)
-        else:
-            nextmonthbeginning = monthbeginning.replace(month=monthbeginning.month+1)
-
-        return calendar.timegm(nextmonthbeginning.timetuple())
-
     def createTransactionStaments(self, accountId, **kwargs):
         """
         Generates the missing billing statements and debit transactions for an account
@@ -206,7 +209,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         if not last_billing_statement is None:
             last_billing_statement.untilTime = min(now,self._addMonth(last_billing_statement.fromTime))
             self._update_usage(last_billing_statement)
-            self._save_billing_statement(last_billing_statement)
+            self._save_billing_statement(last_billing_statement, now)
             next_billing_statement_time = self._addMonth(last_billing_statement.fromTime)
         else:
             next_billing_statement_time = self._find_earliest_billable_action_time(accountId)
@@ -217,7 +220,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         for billing_statement in self._create_empty_billing_statements(next_billing_statement_time, now, accountId):
             billing_statement.untilTime = min(now,self._addMonth(billing_statement.fromTime))
             self._update_usage(billing_statement)
-            self._save_billing_statement(billing_statement)
+            self._save_billing_statement(billing_statement, now)
 
         self.updateBalance(accountId)
 
