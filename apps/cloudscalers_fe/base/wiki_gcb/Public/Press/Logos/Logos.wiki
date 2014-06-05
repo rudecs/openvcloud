@@ -2,20 +2,9 @@
 
 {{html:
 <head>
-<style type="text/css">
-.well { padding-top: 0; margin: 0;}
-</style>
-
-</head>
-}}
-
-
-{{html:
-
-<head>
-
 <link href="/$$space/.files/css/owl.carousel.css" rel="stylesheet">
 <style type="text/css">
+.well { padding-left: 0;margin: 0;padding-top: 0;}
 .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open .dropdown-toggle.btn-info {color: #fff !important;background-color: #39b3d7;border-color: #269abc;}
 </style>
 </head>
@@ -23,6 +12,8 @@
 
 
 h1. Logos
+
+Click on any logo in the gallery to download it 
 {{html:
 <div id="owl-demo">
           
@@ -39,17 +30,18 @@ h1. Logos
 </div>
 <br />
 <br />
-<p>Click on any logo to download it or download the EPS version below</p>
+<p>Download the EPS version of the above logos:</p>
 
 <ul style="padding: 0;">
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_1-download.ai" download>Mothership_Logo_Revised_DR_1.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_2-download.ai" download>Mothership_Logo_Revised_DR_2.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_1-download.ai" download>Mothership_Logo_Revised_DR_Black_1.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_2-download.ai" download>Mothership_Logo_Revised_DR_Black_2.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_Blue_1-download.ai" download>Mothership_Logo_Revised_DR_Black_Blue_1.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_Blue_2-download.ai" download>Mothership_Logo_Revised_DR_Black_Blue_2.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Colour_1-download.ai" download>Mothership_Logo_Revised_DR_Colour_1.ai</a></li>
-  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Colour_2-download.ai" download>Mothership_Logo_Revised_DR_Colour_2.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_1-download.ai" download>Mothership<sup>1</sup> logo wide.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_2-download.ai" download>Mothership<sup>1</sup> logo compact.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Colour_1-download.ai" download>Mothership<sup>1</sup> logo wide color.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Colour_2-download.ai" download>Mothership<sup>1</sup> logo compact color.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_1-download.ai" download>Mothership<sup>1</sup> logo wide inverted.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_2-download.ai" download>Mothership<sup>1</sup> logo compact inverted.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_Blue_1-download.ai" download>Mothership<sup>1</sup> logo wide color inverted.ai</a></li>
+  <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Black_Blue_2-download.ai" download>Mothership<sup>1</sup> logo compact color inverted.ai</a></li>
+  
 </ul>
 }}
 
