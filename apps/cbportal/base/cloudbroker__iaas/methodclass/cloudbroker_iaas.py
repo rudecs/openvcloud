@@ -1,5 +1,6 @@
 from JumpScale import j
 import JumpScale.grid.osis
+import JumpScale.grid.agentcontroller
 json = j.db.serializers.ujson
 
 class cloudbroker_iaas(j.code.classGetBase()):
@@ -10,29 +11,14 @@ class cloudbroker_iaas(j.code.classGetBase()):
         self._te={}
         self.actorname = "cloudbroker"
         self.appname = "iaas"
-        self._cb = None
-        self._models = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def updateImages(self, **kwargs):
         """
         Update the local images of the cloudbroker
         result 
         """
-        stacks = self.models.stack.list()
-        for stack in stacks:
-            self.cb.extensions.imp.stackImportImages(stack)
+        acc = j.clients.agentcontroller.get()
+        acc.executeJumpScript('cloudscalers', 'cloudbroker_updateimages', role='cloudbroker', wait=False)
 
     def setStackStatus(self, statckid, status, **kwargs):
         """
@@ -41,10 +27,11 @@ class cloudbroker_iaas(j.code.classGetBase()):
         param:status status e.g ENABLED, DISABLED, or OFFLINE
         result 
         """
-        if self.models.stack.exists(statckid):
-            stack = self.models.stack.get(statckid)
+        cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        if cbcl.stack.exists(statckid):
+            stack = cbcl.stack.get(statckid)
             stack.status = status
-            self.models.stack.set(stack)
+            cbcl.stack.set(stack)
         else:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]

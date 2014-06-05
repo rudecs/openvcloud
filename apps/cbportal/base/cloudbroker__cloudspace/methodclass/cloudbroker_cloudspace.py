@@ -1,27 +1,15 @@
 from JumpScale import j
+import JumpScale.grid.osis
 
 class cloudbroker_cloudspace(j.code.classGetBase()):
     def __init__(self):
         self._te={}
         self.actorname="cloudspace"
         self.appname="cloudbroker"
-        self._cb = None
-        self._models = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
+        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
-        accounts = self.models.account.simpleSearch({'name':accountname})
+        accounts = self.cbcl.account.simpleSearch({'name':accountname})
         if not accounts:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -30,7 +18,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         accountid = accounts[0]['id']
 
-        cloudspaces = self.models.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
+        cloudspaces = self.cbcl.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -46,4 +34,5 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             return 'Cloudspace is not in this location. In %s.' % cloudspace['location']
 
         cloudspace['status'] = 'DESTROYED'
-        self.models.cloudspace.set(cloudspace)
+        self.cbcl.cloudspace.set(cloudspace)
+        #DESTROY ROUTER OS

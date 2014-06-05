@@ -7,20 +7,6 @@ class cloudbroker_account(j.code.classGetBase()):
         self._te={}
         self.actorname="account"
         self.appname="cloudbroker"
-        self._cb = None
-        self._models = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def disable(self, accountname, reason, **kwargs):
         """
@@ -30,7 +16,8 @@ class cloudbroker_account(j.code.classGetBase()):
         result
 
         """
-        account = self.models.account.simpleSearch({'name':accountname})
+        cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        account = cbcl.account.simpleSearch({'name':accountname})
         if not account:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -40,4 +27,4 @@ class cloudbroker_account(j.code.classGetBase()):
             account = account[0]
             account['deactivationTime'] = time.time()
             account['status'] = 'DISABLED'
-            self.models.account.set(account)
+            cbcl.account.set(account)
