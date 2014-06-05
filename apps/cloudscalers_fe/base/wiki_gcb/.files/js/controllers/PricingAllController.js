@@ -1,43 +1,52 @@
 angular.module('cloudscalers.controllers')
     .controller('PricingAllController', ['$scope', function($scope) {
         $scope.pricingModel = 'mo';
-        $scope.os = 'linux';
-        $scope.activePlansCount = 6;
+        $scope.os = 'Linux';
 
-        $scope.plans = [
-            {name: 'Mothership 1', mem: '512MB', cores: 1, primary: 10, recommended: false, 
-                linux:   {mo: 5,   hr: 0.0083},
-                windows: {mo: '-',  hr: '-'},
-                windows_essentials: { mo: '-', hr: '-'}
+        $scope.plans = {
+            'Linux': {
+                mo: [
+                    {mem: '512MB', cores: 1, primary: 10, recommended: false, price: 5   },
+                    {mem: '1GB',   cores: 1, primary: 10, recommended: false, price: 10  },
+                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 20  },
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 36  },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 64  },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 112 }
+                ],
+                hr: [
+                    {mem: '512MB', cores: 1, primary: 10, recommended: false, price: 0.0083 },
+                    {mem: '1GB',   cores: 1, primary: 10, recommended: false, price: 0.0153 },
+                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 0.0278 },
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.0500 },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.0889 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 0.1556 }
+                ]
             },
-            {name: 'Mothership 2', mem: '1GB',   cores: 1, primary: 10, recommended: false,
-                linux:   {mo: 10,  hr: 0.0153},
-                windows: {mo: '-',  hr: '-'},
-                windows_essentials: { mo: '-', hr: '-'}
+            'Windows Standard': {
+                mo: [
+                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 33  },
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 62  },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 116 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 217 }
+                ],
+                hr: [
+                    {mem: '2GB',   cores: 2, primary: 10, recommended: false, price: 0.0556 },
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.1000 },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.1778 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 0.3111 }
+                ]
             },
-            {name: 'Mothership 3', mem: '2GB',   cores: 2, primary: 10, recommended: false, 
-                linux:   {mo: 20,  hr: 0.0278},
-                windows: {mo: 33,  hr: 0.0556},
-                windows_essentials: { mo: '-', hr: '-'}
+            'Windows Essentials': {
+                mo: [
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 72  },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 128 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 224 }
+                ],
+                hr: [
+                    {mem: '4GB',   cores: 2, primary: 10, recommended: true,  price: 0.1    },
+                    {mem: '8GB',   cores: 4, primary: 10, recommended: false, price: 0.1778 },
+                    {mem: '16GB',  cores: 8, primary: 10, recommended: false, price: 0.3111 }
+                ]
             },
-            {name: 'Mothership 4', mem: '4GB',   cores: 2, primary: 10, recommended: true, 
-                linux:   {mo: 36,  hr: 0.0500},
-                windows: {mo: 62,  hr: 0.1000},
-                windows_essentials: { mo: 72, hr: 0.1}
-            },
-            {name: 'Mothership 5', mem: '8GB',   cores: 4, primary: 10, recommended: false, 
-                linux:   {mo: 64,  hr: 0.0889},
-                windows: {mo: 116, hr: 0.1778},
-                windows_essentials: { mo: 128, hr: 0.1778}
-            },
-            {name: 'Mothership 6', mem: '16GB',  cores: 8, primary: 10, recommended: false, 
-                linux:   {mo: 112, hr: 0.1556},
-                windows: {mo: 217, hr: 0.3111} ,
-                windows_essentials: { mo: 224, hr: 0.3111}
-            }
-        ];
-
-        $scope.$watch('pricingModel + os', function() {
-            $scope.activePlansCount = _.countBy($scope.plans, function(plan) { return plan[$scope.os][$scope.pricingModel] != '-'; })[true];
-        }, true);
+        };
     }]);
