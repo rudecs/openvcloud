@@ -35,4 +35,4 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         cloudspace['status'] = 'DESTROYED'
         self.cbcl.cloudspace.set(cloudspace)
-        #DESTROY ROUTER OS
+        #DESTROY ROUTER OS + release networkId and publicip

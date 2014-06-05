@@ -7,6 +7,7 @@ class cloudbroker_account(j.code.classGetBase()):
         self._te={}
         self.actorname="account"
         self.appname="cloudbroker"
+        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
     def disable(self, accountname, reason, **kwargs):
         """
@@ -16,8 +17,7 @@ class cloudbroker_account(j.code.classGetBase()):
         result
 
         """
-        cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-        account = cbcl.account.simpleSearch({'name':accountname})
+        account = self.cbcl.account.simpleSearch({'name':accountname})
         if not account:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -27,4 +27,4 @@ class cloudbroker_account(j.code.classGetBase()):
             account = account[0]
             account['deactivationTime'] = time.time()
             account['status'] = 'DISABLED'
-            cbcl.account.set(account)
+            self.cbcl.account.set(account)
