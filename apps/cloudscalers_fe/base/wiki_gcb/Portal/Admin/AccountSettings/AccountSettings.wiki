@@ -10,7 +10,7 @@ h1. Balance & Usage
 #        </div>
 #      </tab>
 #      <tab id="account" heading="Account">
-#        <div class="tab-pane" ng-switch="preferredDataLocation" ng-controller="AccountController" ng-show="preferredDataLocation">
+#        <div class="tab-pane" ng-switch="preferredLocation" ng-controller="AccountController" ng-show="preferredLocation">
 #          <label class="left control-group" style="margin: 0 10px 0 0; width: auto; height: 30px; line-height: 30px;">Preferred Location:</label>
 #            <div ng-switch-when="ca1" style="float: left; text-align: center;">
 #              <img src="/$$space/.files/img/flags/canada.png">
@@ -21,7 +21,7 @@ h1. Balance & Usage
 #              <span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
 #            </div>
 #        </div>
-#        
+#
 #      </tab>
 #      <!-- <tab id="access" heading="Access">
 #        <div id="access" class="tab-pane"> -->
