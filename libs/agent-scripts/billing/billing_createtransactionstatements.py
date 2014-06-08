@@ -10,10 +10,10 @@ organization = "cloudscalers"
 author = "development@mothership1.com"
 license = "bsd"
 version = "1.0"
-roles = []
-queue = "hypervisor"
+roles = ['billing']
+queue = "io"
 async = True
-
+period = 3600 * 2 # 2 hrs
 
 
 
