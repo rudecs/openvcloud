@@ -1,6 +1,8 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+import urlparse
+import urllib
 
 class cloudbroker_cloudspace(j.code.classGetBase()):
     def __init__(self):
@@ -41,9 +43,13 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         if str(cloudspace['location']) != j.application.config.get('cloudbroker.where.am.i'):
             ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ('Location', '')]
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            params = {'accountname': accountname, 'cloudspaceName': cloudspaceName, 'cloudspaceId': cloudspaceId, 'reason': reason}
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))['url']
+            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
-            return "Cloudspace can not be destroyed. It's on a different location %s" % cloudspace['location']
+            return url
 
         cloudspace['status'] = 'DESTROYED'
         self.cbcl.cloudspace.set(cloudspace)
