@@ -55,6 +55,19 @@ class CloudProvider(object):
 
 
 class CloudBroker(object):
+    def __init__(self):
+        self._actors = None
+
+    @property
+    def actors(self):
+        if not self._actors:
+            cbip = j.application.config.get('cloudbroker.ip')
+            cbport = j.application.config.getInt('cloudbroker.port')
+            cbsecret = j.application.config.get('cloudbroker.secret')
+            cl = j.core.portal.getClient(cbip, cbport, cbsecret)
+            self._actors = cl.actors
+        return self._actors
+
     def stackImportImages(self, stackId):
         provider = CloudProvider(stackId)
         if not provider:

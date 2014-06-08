@@ -8,6 +8,16 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.actorname="cloudspace"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.vfwcl = j.core.osis.getClientForNamespace('vfw')
+        self._cb = None
+        self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
+        self.libvirt_actor = self.cb.extensions.imp.actors.libcloud.libvirt
+
+    @property
+    def cb(self):
+        if not self._cb:
+            self._cb = j.apps.cloudbroker.iaas
+        return self._cb
 
     @auth(['level1', 'level2'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
@@ -37,4 +47,16 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         cloudspace['status'] = 'DESTROYED'
         self.cbcl.cloudspace.set(cloudspace)
-        #DESTROY ROUTER OS + release networkId and publicip
+
+        #delete routeros
+        gid = str(j.application.whoAmI.gid)
+        fws = self.netmgr.fw_list(gid, str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], gid)
+        if cloudspace['networkId']:
+            self.libvirt_actor.releaseNetworkId(cloudspace['networkId'])
+
+        cloudspace['networkId'] = None
+        self.cbcl.cloudspace.set(cloudspace)
+        return True
+
