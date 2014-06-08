@@ -15,7 +15,6 @@ class cloudbroker_account(j.code.classGetBase()):
         param:acountname name of the account
         param:reason reason of disabling
         result
-
         """
         account = self.cbcl.account.simpleSearch({'name':accountname})
         if not account:
@@ -28,3 +27,29 @@ class cloudbroker_account(j.code.classGetBase()):
             account['deactivationTime'] = time.time()
             account['status'] = 'DISABLED'
             self.cbcl.account.set(account)
+            return True
+
+    def enable(self, accountname, reason, **kwargs):
+        """
+        Enable an account
+        param:acountname name of the account
+        param:reason reason of enabling
+        result
+        """
+        account = self.cbcl.account.simpleSearch({'name':accountname})
+        if not account:
+            ctx = kwargs["ctx"]
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Account name not found'
+        else:
+            account = account[0]
+            if account['status'] != 'DISABLED':
+                ctx = kwargs["ctx"]
+                headers = [('Content-Type', 'application/json'), ]
+                ctx.start_response("400", headers)
+                return 'Account is not disabled'
+
+            account['status'] = 'CONFIRMED'
+            self.cbcl.account.set(account)
+            return True
