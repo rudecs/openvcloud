@@ -1,6 +1,7 @@
 from JumpScale import j
 import time
 import JumpScale.grid.osis
+from JumpScale.portal.portal.auth import auth
 
 class cloudbroker_finance(j.code.classGetBase()):
     """
@@ -15,7 +16,7 @@ class cloudbroker_finance(j.code.classGetBase()):
         self.acclient = j.core.osis.getClientForCategory(cl,'cloudbroker','account')
         self.credittransactionclient = j.core.osis.getClientForCategory(cl,'cloudbroker','credittransaction')
 
-
+    @auth(['finance',])
     def addCredit(self, accountname, amount, message, **kwargs):
         accounts = self.acclient.simpleSearch({'name': accountname})
         if not accounts:
