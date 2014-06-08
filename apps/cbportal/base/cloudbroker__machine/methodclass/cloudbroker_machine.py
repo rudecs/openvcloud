@@ -4,6 +4,8 @@ from random import choice
 from libcloud.compute.base import NodeAuthPassword
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+import urllib
+import urlparse
 
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
@@ -39,9 +41,14 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         if str(cloudspace.location) != location:
             ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ('Location', '')]
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            params = {'cloudspaceId': cloudspaceId, 'name': name, 'description': description, 'sizeId': sizeId, 
+                     'imageId': imageId, 'disksize': disksize, 'stackid': stackid}
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))['url']
+            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
-            return 'Cloudspace is not in this location. In %s.' % cloudspace['location']            
+            return url
         
         networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
