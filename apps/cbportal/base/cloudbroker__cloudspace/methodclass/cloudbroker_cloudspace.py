@@ -1,5 +1,6 @@
 from JumpScale import j
 import JumpScale.grid.osis
+from JumpScale.portal.portal.auth import auth
 
 class cloudbroker_cloudspace(j.code.classGetBase()):
     def __init__(self):
@@ -8,6 +9,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
+    @auth(['level1', 'level2'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
         accounts = self.cbcl.account.simpleSearch({'name':accountname})
         if not accounts:
@@ -29,9 +31,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         if str(cloudspace['location']) != j.application.config.get('cloudbroker.where.am.i'):
             ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'),]
+            headers = [('Content-Type', 'application/json'), ('Location', '')]
             ctx.start_response("302", headers)
-            return 'Cloudspace is not in this location. In %s.' % cloudspace['location']
+            return "Cloudspace can not be destroyed. It's on a different location %s" % cloudspace['location']
 
         cloudspace['status'] = 'DESTROYED'
         self.cbcl.cloudspace.set(cloudspace)
