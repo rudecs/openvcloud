@@ -3,6 +3,7 @@ import time, string
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
 import JumpScale.grid.osis
+from JumpScale.portal.portal.auth import auth
 
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
@@ -18,6 +19,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             self._cb = j.apps.cloudbroker.iaas
         return self._cb
 
+    @auth(['level1',])
     def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, **kwargs):
         """
         Create a machine on a specific stackid
@@ -37,7 +39,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         if str(cloudspace.location) != location:
             ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'),]
+            headers = [('Content-Type', 'application/json'), ('Location', '')]
             ctx.start_response("302", headers)
             return 'Cloudspace is not in this location. In %s.' % cloudspace['location']            
         
