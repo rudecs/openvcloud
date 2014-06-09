@@ -13,4 +13,13 @@
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:stackid int,, id of the stack
-        result:bool  
+        result:bool
+
+    method:destroy
+        """
+        Destroys a machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason

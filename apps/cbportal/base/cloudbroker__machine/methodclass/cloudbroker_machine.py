@@ -14,6 +14,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self._cb = None
+        self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
 
     @property
     def cb(self):
@@ -115,3 +116,40 @@ class cloudbroker_machine(j.code.classGetBase()):
         providerstacks.add(stackId)
         cloudspace.resourceProviderStacks = list(providerstacks)
         self.cbcl.cloudspace.set(cloudspace)
+
+    @auth(['level1','level2'])
+    def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        location = j.application.config.get('cloudbroker.where.am.i')
+        if not cloudspace.location == location:
+            ctx = kwargs['ctx']
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            params = {'accountName': accountName, 'spaceName': spaceName, 'machineId': machineId, 'reason': reason}
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
+            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            headers = [('Content-Type', 'application/json'), ('Location', url)]
+            ctx.start_response('302', headers)
+            return url
+
+        self.machines_actor.delete(vmachine.id)
+        return True
