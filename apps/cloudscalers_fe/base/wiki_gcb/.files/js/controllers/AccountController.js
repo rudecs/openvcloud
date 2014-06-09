@@ -8,24 +8,25 @@ angular.module('cloudscalers.controllers')
 	    });
 
 
-      	$scope.updatePassword = function() {
+        $scope.updatePassword = function() {
       		$scope.updateResultMessage = "";
       		if($scope.newPassword == $scope.retypePassword){
 				LoadingDialog.show();
 		      	Account.updatePassword($scope.$parent.currentUser.username, $scope.oldPassword ,$scope.newPassword).then(
 		        	function(passwordResponse){
-						if(passwordResponse.status == 203){
+		        		var passwordResponseCode = passwordResponse.data[0];
+		        		var passwordResponseMsg = passwordResponse.data[1];
+						if(passwordResponseCode == 203){
 							LoadingDialog.hide();
-							$scope.currentPasswordMessage = passwordResponse.data;
-							console.log($scope.currentPasswordMessage);
+							$scope.currentPasswordMessage = passwordResponseMsg;
 							$timeout(function() {
 	                            $scope.currentPasswordMessage = "";
 	                        }, 3000);
 						}
-						if(passwordResponse.status == 200){
+						if(passwordResponseCode == 200){
 							LoadingDialog.hide();
 							$scope.alertStatus = "success";
-							$scope.updateResultMessage = passwordResponse.data;
+							$scope.updateResultMessage = passwordResponseMsg;
 							$timeout(function() {
 	                            $scope.updateResultMessage = "";
 	                        }, 3000);
@@ -33,15 +34,14 @@ angular.module('cloudscalers.controllers')
 	                        $scope.newPassword = "";
 	                        $scope.retypePassword = "";
 						}
-					},
-			        function(reason){
-			        	if(reason.status == 400){
+						if(passwordResponseCode == 400){
 							LoadingDialog.hide();
 							$scope.alertStatus = "error";
-							$scope.updateResultMessage = reason.data;
-						}else{
-			          		$ErrorResponseAlert(reason.data);
+							$scope.updateResultMessage = passwordResponseMsg;
 						}
+					},
+			        function(reason){
+			          	$ErrorResponseAlert(reason.data);
 			        }
 			    );
 	      	}else{
