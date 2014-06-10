@@ -19,6 +19,7 @@
         var:publicPort int,, public port
         var:vmid int,, id of the vm
         var:localPort int,, local port
+        var:protocol str,, protocol udp or tcp
 
     method:update
         """
@@ -30,6 +31,7 @@
         var:publicPort int,, public port
         var:vmid int,, id of the vm
         var:localPort int,, local port
+        var:protocol str,, protocol udp or tcp
 
     method:delete
         """

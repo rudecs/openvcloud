@@ -24,9 +24,9 @@ angular.module('cloudscalers.services')
                 }
 
             },
-            createPortforward: function(id, ip, publicPort, vmid, localPort) {
+            createPortforward: function(id, ip, publicPort, vmid, localPort, protocol) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + '&publicIp=' + encodeURIComponent(ip) + "&publicPort="+ encodeURIComponent(publicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
-                    encodeURIComponent(localPort)).then(
+                    encodeURIComponent(localPort) + '&protocol=' + encodeURIComponent(protocol)).then(
                         function(result){
                             return result;
                         },
@@ -35,8 +35,9 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            updatePortforward: function(cloudspaceid, id, ip, publicPort, vmid, localPort) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id) + "&publicIp=" + encodeURIComponent(ip) + "&publicPort=" + encodeURIComponent(publicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +encodeURIComponent(localPort)).then(
+            updatePortforward: function(cloudspaceid, id, ip, publicPort, vmid, localPort, protocol) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id) + "&publicIp=" + encodeURIComponent(ip) + "&publicPort=" + encodeURIComponent(publicPort) + "&vmid=" +
+                    encodeURIComponent(vmid) + "&localPort=" +encodeURIComponent(localPort) + '&protocol=' + encodeURIComponent(protocol)).then(
                         function(result){
                             return result;
                         },
