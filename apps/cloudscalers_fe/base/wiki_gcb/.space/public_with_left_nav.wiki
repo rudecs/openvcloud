@@ -22,7 +22,7 @@
 {{css:/$$space/.files/css/font-awesome.min.css}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/css/custom.css}}
-{{css:/$$space/.files/css/new-custom.css}}
+{{css:/$$space/.files/css/mothership1.css}}
 
 {{html:
     <script src="/$$space/.files/js/bootstrap.min.js" type="text/javascript"></script>
