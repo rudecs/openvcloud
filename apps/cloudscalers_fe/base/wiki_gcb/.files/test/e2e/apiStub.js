@@ -124,7 +124,7 @@ defineApiStub = function ($httpBackend) {
             "UNCPath": "",
             "description": "",
             "type": "Windows",
-            "id": 2,
+            "id": 0,
             "size": 50
         },
         {
@@ -133,6 +133,22 @@ defineApiStub = function ($httpBackend) {
             "description": "",
             "type": "Ubuntu",
             "id": 1,
+            "size": 50
+        },
+        {
+            "name": "first template",
+            "UNCPath": "",
+            "description": "description for first template",
+            "type": "custom templates",
+            "id": 2,
+            "size": 50
+        },
+        {
+            "name": "ssssss template",
+            "UNCPath": "",
+            "description": "",
+            "type": "custom templates",
+            "id": 3,
             "size": 50
         }
     ];
@@ -669,5 +685,16 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
         return [200, portforwarding];
+    });
+
+    $httpBackend.whenGET(/^\/template\/delete\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);
+        var imageTemplate = _.where(images, {type: "custom templates"});
+        if(imageTemplate.length > 0){
+            imageTemplate.splice( params.templateIndex , 1);
+            return [200, true];
+        }else{
+            return [500, "Templates couldn't found!"];
+        }
     });
 };
