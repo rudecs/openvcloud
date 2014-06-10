@@ -1,6 +1,6 @@
 h1. Machine Deck API Documentation
 {{css:/$$space/.files/css/custom.css}}
-{{css:/$$space/.files/css/new-custom.css}}
+{{css:/$$space/.files/css/mothership1.css}}
 
 @col9
 
@@ -10,7 +10,7 @@ h1. Machine Deck API Documentation
     <link href='/lib/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/lib/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/$$space/.files/css/custom.css' media='screen' rel='stylesheet' type='text/css'/>
-    <link href='/$$space/.files/css/new-custom.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/$$space/.files/css/mothership1.css' media='screen' rel='stylesheet' type='text/css'/>
 
     <script src='/lib/swagger/lib/jquery.slideto.min.js' type='text/javascript'></script>
     <script src='/lib/swagger/lib/jquery.wiggle.min.js' type='text/javascript'></script>
