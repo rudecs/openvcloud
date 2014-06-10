@@ -1,7 +1,7 @@
-h1. Cloud Space Settings
-
 {{html:
-<br>
+<div ng-controller="CloudSpaceManagementController">
+	<h1>Settings for Cloud Space {[cloudSpace]}</h1>
+	<br>
 	<tabset style="clear:both;">
 
 		<tab id="access" heading="Access Management">
@@ -12,7 +12,7 @@ h1. Cloud Space Settings
 			</div>
 		</tab>
 		<tab id="details" heading="Details">
-			<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
+			<div id="details" class="tab-pane active" >
 				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
                   			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
                   			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
@@ -44,6 +44,7 @@ h1. Cloud Space Settings
 			</div>
 		</tab>
 	</tabset>
+</div>
 }}
 
 
