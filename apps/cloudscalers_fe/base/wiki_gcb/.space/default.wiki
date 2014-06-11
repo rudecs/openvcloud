@@ -56,10 +56,7 @@
                             <span>Logout</span>
                         </a>
                     </li>
-                    <li class="right"><span class="user-name" ng-cloak>{[currentUser.username]}</span> </li>
-}}
-#                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
-{{html:
+                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
                 </ul>
             </div>
         </div>
