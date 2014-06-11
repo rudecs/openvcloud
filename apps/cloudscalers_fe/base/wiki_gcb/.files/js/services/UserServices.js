@@ -1,7 +1,7 @@
 
 angular.module('cloudscalers.services')
 
-	.factory('User', function ($http, $q, SessionData) {
+	.factory('Users', function ($http, $q, SessionData) {
     	return {
             updatePassword: function(username, oldPassword, newPassword) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/users/updatePassword?username=' + username + '&oldPassword=' + oldPassword +

@@ -1,12 +1,12 @@
 angular.module('cloudscalers.controllers')
-    .controller('UserController', ['$scope', 'User', 'LoadingDialog','$ErrorResponseAlert', '$timeout',
-    	function($scope, User, LoadingDialog, $ErrorResponseAlert, $timeout) {
+    .controller('UsersController', ['$scope', 'Users', 'LoadingDialog','$ErrorResponseAlert', '$timeout',
+    	function($scope, Users, LoadingDialog, $ErrorResponseAlert, $timeout) {
 
         $scope.updatePassword = function() {
       		$scope.updateResultMessage = "";
       		if($scope.newPassword == $scope.retypePassword){
 				LoadingDialog.show();
-		      	User.updatePassword($scope.$parent.currentUser.username, $scope.oldPassword ,$scope.newPassword).then(
+		      	Users.updatePassword($scope.$parent.currentUser.username, $scope.oldPassword ,$scope.newPassword).then(
 		        	function(passwordResponse){
 		        		var passwordResponseCode = passwordResponse.data[0];
 		        		var passwordResponseMsg = passwordResponse.data[1];

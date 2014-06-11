@@ -1,7 +1,7 @@
 h1. Profile
 
 {{html:
-  <div ng-controller="UserController">
+  <div ng-controller="UsersController">
     <form name="form" ng-submit="updatePassword()">
       <div class="tab-pane row" style="margin-bottom: 40px; margin-left: 15px;">
         <div class="nameField" style="margin-bottom: 10px; width: 100%;">
