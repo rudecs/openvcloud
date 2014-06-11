@@ -7,36 +7,33 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 {{html:
 	<div class="portMargin" ng-controller="PortforwardingController">
 		<div>
-				<div style="margin-bottom: 5px;">
-					<button class="btn btn-info btn-large absolute1" ng-click="portForwardPopup()">Add</button>
-	      </div>
-				<table class="table table-striped table-bordered">
-				    <tr>
-				      <th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
-				      <th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
-				      <th style=""><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
-				      <th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
-				    </tr>
-				    <tbody>
-				    <!--  | filter:search.ip -->
-				      <tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
-				      <td style="display: none;">{[portforward.id]}</td>
-				      	<td style=" cursor: pointer;">{[portforward.publicIp]}</td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
-				        <td style=" cursor: pointer;" ng-click="portForwardPopupEdit()">{[portforward.vmName]}</td>
-				        <td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
-				      </tr>
-				    </tbody>
-			  </table>
+			<div style="margin-bottom: 5px;">
+				<button class="btn btn-info btn-large absolute1" ng-click="portForwardPopup()">Add</button>
+			</div>
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
+					<th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
+					<th style=""><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
+					<th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
+					<th><a href="" ng-click="predicate = 'protocol'; reverse=!reverse">Protocol</a></th>
+				</tr>
+				<tbody>
+					<tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
+						<td style="display: none;">{[portforward.id]}</td>
+						<td style=" cursor: pointer;">{[portforward.publicIp]}</td>
+						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
+						<td style=" cursor: pointer;" ng-click="portForwardPopupEdit()">{[portforward.vmName]}</td>
+						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
+						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.protocol]}</td>
+					</tr>
+				</tbody>
+			</table>
 			  <p ng-show="message" class="alert alert-success span2 center txt-center">{[statusMessage]}</p>
 		</div>
 	</div>
 	<script type="text/ng-template" id="portForwardDialog.html">
 		<style type="text/css">
-			.modal{
-				width: 800px;
-				left: 41%;
-			}
 			.form-horizontal .control-label{
 				width: 105px;
 			}
@@ -54,7 +51,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 			}
 			.modal-body{
 				overflow: visible;
-				min-height: 222px;
+				min-height: 240px;
 			}
 			#common-port-menu{
 				padding: 4px 3px;
@@ -63,9 +60,6 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				width: 102px;
 				float: left;
 			}
-			/*.form-horizontal .controls{
-				display: block;
-			}*/
 			#inputNewPublicPort{
 				width: 50%;
 				border-top-left-radius: 0;
@@ -81,36 +75,37 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             </div>
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
+					<h4>Source</h4>
 	            	<div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 					         {[currentSpace.publicipaddress]}
-		       			</div>
-					</div>
-					<div class="control-group">
+		       		</div>
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-						      <autocomplete ng-model="newRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
-		       			</div>
+							<autocomplete ng-model="newRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						</div>
+						<label class="control-label" for="inputProtocol">Protocol</label>
+						<div class="controls">
+							<select ng-model="newRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control" style="width: 173px;">
+							</select>
+						</div>
 					</div>
 				</div>
 				<div class="col-md-3">
-					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
 				</div>
 				<div class="col-md-4">
+					<h4>Destination</h4>
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
-					</div>
-					<div class="control-group">
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<autocomplete ng-model="newRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
-		       			</div>
+							<autocomplete ng-model="newRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						</div>
 					</div>
 				</div>
             </div>
@@ -121,18 +116,8 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
          </form>
 	</script>
 
-
-
-
-
-
-
 	<script type="text/ng-template" id="editPortForwardDialog.html">
 		<style type="text/css">
-			.modal{
-				width: 800px;
-				left: 41%;
-			}
 			.form-horizontal .control-label{
 				width: 105px;
 			}
@@ -149,8 +134,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				top: 28px;
 			}
 			.modal-body{
-				overflow: visible;
-				min-height: 222px;
+				min-height: 240px;
 			}
 			#common-port-menu{
 				padding: 4px 3px;
@@ -174,36 +158,39 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             </div>
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
+					<h4>Source</h4>
 	            	<div class="control-group" style="min-height: 63px;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls">
 							{[currentSpace.publicipaddress]}
-		       			       </div>
-					</div>
-					<div class="control-group">
+		       		</div>
+
 						<label class="control-label" for="inputNewPublicPort">Port</label>
 						<div class="controls">
-						      <autocomplete ng-model="editRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
-		       			</div>
+							<autocomplete ng-model="editRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						</div>
+						<label class="control-label" for="inputProtocol">Protocol</label>
+						<div class="controls">
+							<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control" style="width: 173px;">
+							</select>
+						</div>
 					</div>
 				</div>
-				<div class="col-md-3">
-					<h4 style="margin-top: 54%;">Forward to</h4>
-					<img src="/wiki_gcb/.files/img/icons/right-arrow2.png">
+				<div class="col-md-2">
 				</div>
 				<div class="col-md-4">
+					<h4>Destination</h4>
 					<div class="control-group">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control">
 		                    </select>
 		                </div>
-					</div>
-					<div class="control-group">
+
 						<label class="control-label" for="inputNewLocalPort">Port</label>
 						<div class="controls">
-					         	<autocomplete ng-model="editRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
-		       			</div>
+							<autocomplete ng-model="editRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
+						</div>
 					</div>
 				</div>
             </div>
