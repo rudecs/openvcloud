@@ -226,11 +226,13 @@ defineApiStub = function ($httpBackend) {
 
 
     $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+).*/).respond(function (method, url, data) {
-        var params = new URI(url).search(true);
+         var params = new URI(url).search(true);
         if (!_.find(MachinesList.get(), function(m) { return m.id == params.machineId; })) {
             return [500, 'Not found']
         }
         var matchedMachine = MachinesList.getById(params.machineId);
+        var osImage = _.where(images, {id: matchedMachine.imageId});
+        matchedMachine.osImage = osImage[0].name;
         return [200, matchedMachine];
     });
 
