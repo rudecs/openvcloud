@@ -73,18 +73,6 @@ angular.module('cloudscalers.services')
                             return result.data;},
 						function(reason){return $q.reject(reason);}
 					);
-			},
-            updatePassword: function(username, oldPassword, newPassword) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/users/updatePassword?username=' + username + '&oldPassword=' + oldPassword +
-                    '&newPassword=' + newPassword
-                    ).then(
-                        function(result){
-                            return result;
-                        },
-                        function(reason){
-                            return $q.reject(reason);
-                        }
-                    );
-            }
+			}
         };
     });
