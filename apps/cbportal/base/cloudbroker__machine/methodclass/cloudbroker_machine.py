@@ -7,6 +7,7 @@ from JumpScale.portal.portal.auth import auth
 import urllib
 import urlparse
 
+
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
         self._te={}
@@ -153,3 +154,52 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         self.machines_actor.delete(vmachine.id)
         return True
+
+
+    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        system_cl = j.core.osis.getClientForNamespace('system')
+        machine = self.cbcl.vmachine.get(machineId)
+        if not machine:
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        stack = self.cbcl.stack.get(machine.stackId)
+        storageparameters  = {}
+        if storage == 'S3':
+            if not aws_access_key or not aws_secret_key or not host:
+                  ctx.start_response('400', headers)
+                  return 'S3 parameters are not provided'
+            storageparameters['aws_access_key'] = aws_access_key
+            storageparameters['aws_secret_key'] = aws_secret_key
+            storageparameters['host'] = host
+            storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = storage
+        storageparameters['backup_type'] = backuptype
+        storageparameters['bucket'] = 'backup'
+        storageparameters['mdbucketname'] = 'export_md'
+
+        storagepath = '/mnt/vmstor/vm-%s' % machineId
+        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        if len(nodes) != 1:
+            ctx.start_response('409', headers)
+            return 'Incorrect model structure'
+        nid = nodes[0]['id']
+        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
+        agentcontroller = j.clients.agentcontroller.get()
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, queue='io', wait=False)['id']
+        return id
+
+
+
+    def listExports(self):
+        return []
+
+
+
+
+
+
+
+        

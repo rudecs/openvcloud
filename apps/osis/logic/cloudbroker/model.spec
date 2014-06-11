@@ -210,3 +210,19 @@
     prop:location str,, the region of the S3 api for this user
     prop:accesskey str,, the accesskey to access the S3 interface
     prop:secretkey str,, the secretkey to access the S3 interface
+
+[rootmodel:vmexport]
+    """
+    A export of a vm. Contains one or multiple files.
+    """
+    prop:id int,, id of the export
+    prop:vmachineId int,, id of the vmachine
+    prop:type str,, type e.g Raw, condensed, ...
+    prop:bucket str,, name of the bucket
+    prop:server str,, hostname of the server(for rados None)
+    prop:storagetype str,, type of the storage(e.g S3 or RADOS)
+    prop:size int,, size of the machine in Mb
+    prop:timestamp int,, epochtime of the machine
+    prop:config str,,json representation machine model
+    prop:location str,, original machine location
+    prop:files str,,json representation of backup content

@@ -23,3 +23,25 @@
         var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
+
+    method:export
+        """
+        Create a export/backup of a machine
+        """
+        var:machineId int,, id of the machine to backup
+        var:name str,, Usefull name for this backup
+        var:backuptype str,, Type e.g raw, condensed
+        var:storage str,, Type of storage used. e.g S3 or RADOS.
+        var:host str,, host to export(if s3) @tags: optional 
+        var:aws_access_key str,,s3 access key @tags: optional 
+        var:aws_secret_key str,,s3 secret key @tags: optional 
+        result:jobid
+
+
+    method:listExports
+        """
+        List of created exports
+        """
+        result: list of created exports
+
+
