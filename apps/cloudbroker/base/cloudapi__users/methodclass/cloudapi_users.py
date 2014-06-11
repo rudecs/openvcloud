@@ -56,11 +56,16 @@ class cloudapi_users(object):
         param:username username of the user
         result:
         """
+        ctx = kwargs['ctx']
+        logedinuser = ctx.env['beaker.session']['user']
+        if logedinuser != username:
+            ctx.start_response('403 Forbidden', [])
+            return 'Forbidden'
+
         user = j.core.portal.active.auth.getUserInfo(username)
         if user:
             return {'username':user.id, 'emailaddresses':user.emails}
         else:
-            ctx = kwargs['ctx']
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
