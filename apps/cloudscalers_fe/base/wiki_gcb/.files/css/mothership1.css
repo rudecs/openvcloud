@@ -1,0 +1,29 @@
+@charset "utf-8";
+.btn.mainButton.wireButton:hover {color: #fff !important;}
+.btn.mainButton.wireButton { margin: 10px 0 20px 20px; padding: 7px 16px !important;border: 0;}
+.errorSpan { font-size: 30px; color: #2d2d2d;}
+.errorSpan + p {font-size: 15px;}
+.bgError { background: url(../img/images/error-pic.jpg) 0 0 no-repeat; height: 290px;}
+.bgError span { margin: 150px 0 0 107px; display: inline-block; font-size: 51px;}
+
+
+
+ @media (max-width: 1376px) {
+ 	.btn.mainButton.wireButton:hover {color: #fff !important;}
+	.btn.mainButton.wireButton { margin: 10px 0 20px 20px;padding: 9px 21px !important;border: 0; font-size: 13px !important;}
+ }
+
+ @media (max-width: 1290px) {
+ }
+
+ @media (max-width: 1290px) and (min-width: 992px) {
+ }
+
+ @media (max-width: 992px) {
+ }
+
+ @media (max-width: 768px) {
+ }
+
+ @media (max-width: 580px) {
+ }

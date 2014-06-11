@@ -1,8 +1,46 @@
 {{html:
-    <div>
-        <a href="WireTransferInfo" class="btn btn-small margin-top-small border-radius-small padding-all-small">
-            <img src="/$$space/.files/img/payment/wiretransfer_logo.gif" class="padding-horizontal-medium" alt="Wire Transfer" style="height: 25px;"/>
-        </a>
+<head>
+<style type="text/css">
+	.modal-body {display: inline-block;max-height: 400px;padding: 15px;overflow-y: auto;}
+	.terms p { font-size: 12px !important;}
+	.modal-header h2 {margin: 16px 0;font-size: 18px;}
+</style>
+	
+</head>
+	 <div>
+        <button class="btn mainButton wireButton btn-info" data-toggle="modal" data-target=".bs-example-modal-lg">
+            Wire Transfer
+        </button>
     </div>
+
+    
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-header modal-header2">
+                    <h2>Pay with Wire Transfer<br>
+                        
+                    </h2>
+
+                </div>
+
+  
+    <div class="modal-body">
+                  <div id="terms" style="width: 100%; height: 100%; overflow: auto; overflow-x: hidden; -ms-overflow-x: hidden;">
+
+    }}
+
+{{include:WireTransferInfo}}
+
+
+{{html:
+	</div>
+    </div>
+
+<div class="modal-footer">
+                    <button type="submit" class="btn btn-primary ok mainButton" data-dismiss="modal" aria-hidden="true">OK</button>
+</div>
+
+  
+</div>
 
 }}
