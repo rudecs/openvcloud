@@ -72,7 +72,7 @@ class cloudapi_users(object):
     def _isValidPassword(self, password):
         if len(password) < 8 or len (password) > 80:
             return False
-        return re.search(r"^[^\s]+$",password) is None
+        return re.search(r"\s",password) is None
 
     def updatePassword(self, username, oldPassword, newPassword, **kwargs):
         """
