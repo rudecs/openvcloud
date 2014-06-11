@@ -35,7 +35,7 @@ class cloudapi_consumption(j.code.classGetBase()):
         result bool
         """
         billingstatement = self.models.billingstatement.get(reference)
-        if str(billingstatement.accountId) is not accountId:
+        if str(billingstatement.accountId) != accountId:
             ctx = kwargs['ctx']
             ctx.start_response('401 Unauthorized', [])
             return ""

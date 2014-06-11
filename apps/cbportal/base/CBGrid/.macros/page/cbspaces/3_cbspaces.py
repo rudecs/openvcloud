@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = accountId
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Resource Provider Stacks', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
 
     def makeRPS(row, field):
         links = list()
@@ -16,10 +16,10 @@ def main(j, args, params, tags, tasklet):
             links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
         return ', '.join(links)
 
-    fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'status', 'publicipaddress']
+    fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'location', 'status', 'publicipaddress']
     fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
-                   '[%(networkId)s|/CBGrid/network?id=%(networkId)s]', makeRPS, 'status', 
+                   '[%(networkId)s|/CBGrid/network?id=%(networkId)s]', makeRPS, 'location', 'status', 
                    'publicipaddress']
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)

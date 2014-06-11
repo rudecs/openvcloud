@@ -1,5 +1,10 @@
 import datetime
 import JumpScale.grid.osis
+import JumpScale.baselib.units
+try:
+    import ujson as json
+except Exception:
+    import json
 
 def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
@@ -16,6 +21,13 @@ def main(j, args, params, tags, tasklet):
         out = 'Could not find VMachine Object with id %s'  % id
         params.result = (out, args.doc)
         return params
+
+    cl=j.clients.redis.getGeventRedisClient("localhost", int(j.application.config.get('redis.port.redisp')))
+
+    stats = dict()
+    if cl.hexists("vmachines.status", id):
+        vm = cl.hget("vmachines.status", id)
+        stats = json.loads(vm)
 
     def objFetchManipulate(id):
         data = dict()
@@ -61,20 +73,32 @@ def main(j, args, params, tags, tasklet):
             data['nics'] = 'NIC information is not available'
 
         data['disks'] = '||Path||Order||Space||\n'
-        for diskid in obj.disks:
-            try:
-                disk = cbosis.disk.get(diskid)
-                data['disks'] += '|%s|%s|%s|\n' % (disk.diskPath or 'N/A', disk.order or 'N/A', '%s GB used of %s GB' % (disk.sizeUsed, disk.sizeMax))
-            except Exception:
-                data = {'disks': 'Disks info is not available'}
+        if hasattr(obj, 'disks'):
+            for diskid in obj.disks:
+                try:
+                    disk = cbosis.disk.get(diskid)
+                    data['disks'] += '|%s|%s|%s|\n' % (disk.diskPath or 'N/A', disk.order or 'N/A', '%s GB used of %s GB' % (disk.sizeUsed, disk.sizeMax))
+                except Exception:
+                    data = {'disks': 'Disks info is not available'}
 
-        data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
-        data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
+        if hasattr(obj, 'creationTime'):
+            data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
+        if hasattr(obj, 'deletionTime'):
+            data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
         data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
         data['image'] = image['name']
         data['stackname'] = stack['name']
         data['spacename'] = space['name']
         data['stackrefid'] = stack['referenceId'] or 'N/A'
+
+        for k, v in stats.iteritems():
+            if k == 'epoch':
+                v = j.base.time.epoch2HRDateTime(stats['epoch'])
+            if k == 'disk_size':
+                size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
+                v = '%.2f %siB' % (size, unit)
+            data['stats_%s' % k] = v
+
         return data
 
     push2doc = j.apps.system.contentmanager.extensions.macrohelper.push2doc

@@ -7,9 +7,10 @@ h2. CloudSpace: $$name
 h3. Details
 |*CloudSpace ID*|$$id|
 |*Account*|[$$accountname|account?id=$$accountid]|
-|*Network ID*|[$$networkname|network?id=$$networkid]|
+|*Network ID*|[$$networkid|network?id=$$networkid]|
 |*Stack(s)*|$$resourceproviderstacks|
 |*Status*|$$status|
+|*Location*|$$location|
 |*Access Control List*|$$acl|
 |*Description*|$$descr|
 |*Public IP Adress*|$$publicipaddress|

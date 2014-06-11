@@ -1,0 +1,8 @@
+{{html:
+    <div>
+        <a href="WireTransferInfo" class="btn btn-small margin-top-small border-radius-small padding-all-small">
+            <img src="/$$space/.files/img/payment/wiretransfer_logo.gif" class="padding-horizontal-medium" alt="Wire Transfer" style="height: 25px;"/>
+        </a>
+    </div>
+
+}}

@@ -4,13 +4,14 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
+    fieldids = ['id', 'accountId', 'credit', 'time']
     for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        filters[tag] = val
+        if tag in fieldids:
+            val = args.getTag(tag)
+            filters[tag] = val
 
     fieldnames = ['ID', 'Account ID', 'Credit', 'Transaction Time']
 
-    fieldids = ['id', 'accountId', 'credit', 'time']
     fieldvalues = ['id', '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 'credit', 
                    modifier.makeTime]
     tableid = modifier.addTableForModel('cloudbroker', 'creditbalance', fieldids, fieldnames, fieldvalues, filters)

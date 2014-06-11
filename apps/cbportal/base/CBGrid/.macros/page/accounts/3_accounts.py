@@ -8,13 +8,13 @@ def main(j, args, params, tags, tasklet):
         val = args.getTag(tag)
         filters[tag] = val
 
-    fieldnames = ['ID', 'Name', 'Access Control List']
+    fieldnames = ['ID', 'Name', 'Location', 'Access Control List']
 
     def makeACL(row, field):
         return str('<br>'.join(['%s:%s' % (acl['userGroupId'], acl['right']) for acl in row[field]]))
 
-    fieldids = ['id', 'name', 'acl']
-    fieldvalues = ['[%(id)s|/CBGrid/account?id=%(id)s]', 'name', makeACL]
+    fieldids = ['id', 'name', 'DCLocation', 'acl']
+    fieldvalues = ['[%(id)s|/CBGrid/account?id=%(id)s]', 'name', 'DCLocation', makeACL]
     tableid = modifier.addTableForModel('cloudbroker', 'account', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

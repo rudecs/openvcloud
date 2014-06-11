@@ -26,10 +26,6 @@ def main(j, args, params, tags, tasklet):
         account = cbclient.account.get(accountid).dump() if cbclient.account.exists(accountid) else {'name':'N/A'}
         obj['accountname'] = account['name']
 
-        networkid = obj['networkId']
-        network = cbclient.network.get(networkid).dump() if cbclient.network.exists(networkid) else {'name':'N/A'}
-        obj['networkname'] = network['name']
-
         resourceLimits = list()
         for k, v in obj['resourceLimits'].iteritems():
             resourceLimits.append(' *%s*: %s'% (k, str(v)))

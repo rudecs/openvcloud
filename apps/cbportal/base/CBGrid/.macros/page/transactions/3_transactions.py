@@ -4,14 +4,15 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
+    fieldids = ['id', 'accountId', 'amount', 'currency', 'status', 'time', 'comment']
     for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        filters[tag] = val
+        if tag in fieldids:
+            val = args.getTag(tag)
+            filters[tag] = val
 
     #[u'comment', u'status', u'reference', u'currency', u'credit', u'amount', u'time', u'guid', u'id', u'accountId']
     fieldnames = ['ID', 'Account ID', 'Amount', 'Currency', 'Status', 'Transaction Time', 'Comment']
 
-    fieldids = ['id', 'accountId', 'amount', 'currency', 'status', 'time', 'comment']
     fieldvalues = ['[%(id)s|/CBGrid/transaction?id=%(id)s]', 
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 'amount', 'currency', 
                    'status', modifier.makeTime, 'comment']

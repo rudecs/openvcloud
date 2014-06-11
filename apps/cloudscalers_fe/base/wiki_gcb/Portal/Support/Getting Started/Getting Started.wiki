@@ -16,8 +16,9 @@ The Cloud Space is protected by the Defense Shield, your personal firewall that 
 
 h2. Cloud Space
 
-*# Go to Settings > Account Settings to view your balance and upload credit using Paypal
-*# Optionally provide access to other registered users in the Mothership{{html:<sup>1</sup>}} cloud.
+*# Go to Billing to view your balance and upload credit
+*# Optionally Go to Cloud Space Settings to provide access to other registered users in the Mothership{{html:<sup>1</sup>}} cloud.
+*# Optionally create an additional Cloud Space, allowing you to divide your resources into 2 private networks, managed fron the same portal!
 
 h2. Machine Deck
 
@@ -41,15 +42,16 @@ h2. Storage Deck
 h2. Defense Shield
 
 *# Go to Defense Shield
-*# Login with admin + your portal password
-*# Configure what you lik, it`s private it`s yours
+*# Login with user 'admin' and your portal password
+*# Configure what you like, it`s private it`s yours
+*# Each Cloud Space has its own Defense Shield
 *# For more simple tasks, use the Port Fowards in the Machine Deck submenu
 
 h2. Cloud Credits
 
-The Cloud Space handles no commitments or built-in limits to the number of services you can create, but uses a minimal credit balance policy. Your created services or actions taken on active services should be able to last for at least 2 weeks with your remaining credit.
+The Cloud Space handles no commitments or built-in limits to the number of services you can create, but uses a minimal credit balance policy. Your created services or actions taken on active services should be able to last for at least 4 days with your remaining credit. For example, you have a credit balance of 5 USD, that will allow you to create either several small Linux virtual machines up to one 4GB Linux package.
 
-For example, you have a credit balance of 15 USD. When you want to create a virtual machine with a cost of 20 USD/month, the system requires a minimal credit balance of about 10 USD. At this time, it will not be possible to create an additional virtual machine with a cost of 20 USD/month. The charging is always hourly, so when the virtual machine is deleted, the machine is charged only for its duration in hours and the credit reservation is immediately released. At the time the first created machine is destroyed, you can create again machines, as long as the system can set a credit reservation for 2 weeks.
+Charges are done hourly if indicated so in the [pricing|Pricing]. Charges for virtual machines are per minute, except the first hour is always charged.
 
 h2. Questions?
 

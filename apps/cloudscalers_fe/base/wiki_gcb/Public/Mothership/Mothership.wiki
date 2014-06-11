@@ -27,7 +27,7 @@
 [Defense Shields|Defense Shield]
 {{html:
 </h2>
-        Defense Shields provide privacy, security & secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.
+        Defense Shields provide privacy and secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.
         </div>
         </div>
         <div class="col-md-6 boxes font color1">

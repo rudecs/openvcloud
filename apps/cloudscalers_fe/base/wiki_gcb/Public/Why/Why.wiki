@@ -24,28 +24,28 @@ h1. Mothership{{html:<sup>1</sup>}}
 {{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_Anywhere.png!
       h3. Everyware Anyware
-      Mothership{{html:<sup>1</sup>}} integrates multiple functions in one portal, called 'Decks' and combines virtual machines, with storage, cloud desktops and ready to go applications into a single easy to use interface. Organize your IT resources in private 'Cloud Spaces', assign credits and easily give access to users.
+      Mothership{{html:<sup>1</sup>}} integrates multiple functions into one portal, called "Decks", combining virtual machines, storage, cloud desktops and applications into an easy to use interface. Organize your IT resources in private "Cloud Spaces", assign credits and easily give access to users.
 {{div3}}
 {{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_warpspeed.jpg!
       h3. Warp Speed
-      Speed is what Mothership{{html:<sup>1</sup>}} values. Our new cloud offering brings unseen speeds at several levels: new server deployment in less 5 seconds, snapshots in a matter of just seconds, immediate rollbacks, faster start and stop, and the use of PRO SSD drives with high performance and reliability.
+      Speed is what Mothership{{html:<sup>1</sup>}} values. Our new cloud offering brings unseen speeds at several levels: new server deployment in less than 5 seconds, snapshots in a matter of seconds, immediate rollbacks, faster start and stop, and the use of PRO SSD drives with high performance and reliability.
 {{div3}}
 {{div3: class=col-md-4 boxDecks2}}
 #      !/$$space/.files/img/why/why_DefenseShield.jpg!
       h3. Ultimate Defense
-      An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise capable-class firewall and router. VPN functions allow seamless and secure 2-way integration with your local offices.
+      An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise-class firewall and router. VPN functions allow seamless and secure two-way integration with your local offices.
 {{div3}}
 
 {{div3: class=seperateDecks}}
 
 h1. Select your Cloud Deck
 
-Mothership{{html:<sup>1</sup>}} brings a unified Cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
+Mothership{{html:<sup>1</sup>}} brings a unified cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
 
 * [Desktop Deck]: The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce. 
 * [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API.
-* [Machine Deck]: Powerful IAAS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+* [Machine Deck]: Powerful IaaS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the fast snapshotting and rollback snapshots. Automate using the simple API.
 * [Application Deck]: The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
 @LF
 h1. Value Proposition
@@ -53,11 +53,11 @@ h1. Value Proposition
 * Private virtual machines, cloud desktops and cloud applications (deployed behind enterprise capable firewall)
 * High performance thanks to storage delivered at SSD speeds
 * Highly flexible in instance creation (launch < 10 seconds for most machines)
-* No lock in thanks to built in import and export functions
-* Extended management functions facilitating cloud management like improved snapshotting, template creation, ...
-* Intuitive and easy to understand billing model
+* No lock-in, thanks to built-in import and export functions
+* Extended management functions facilitating cloud management including improved snapshotting and template creation
+* Intuitive billing model
 * Straightforward API
-* Support for all Operating Systems including Windows
+* Support for all operating systems including Windows
 * A far better TCO compared to major cloud providers
 @LF
 h1. Comparison Table

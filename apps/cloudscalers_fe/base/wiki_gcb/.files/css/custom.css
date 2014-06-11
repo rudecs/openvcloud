@@ -716,12 +716,13 @@ table.table td { color: #000; }
 .newDecks2 .color5 { clear: left; }
 .why-page ul { list-style: initial; }
 .btn:active, .btn.active { outline: 0; background-image: none; -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.4); box-shadow: inset 0 3px 5px rgba(0,0,0,0.4); }
+.btn:active[disabled], .btn.active[disabled]{ -webkit-box-shadow: none; box-shadow: none;  }
 canvas { display: block; float: left; }
 .absolute1 { position: absolute; right: 16px; top: 6px; }
 .absolutePad0 { padding: 0; display: block; }
 .bottomFooter .col-md-3 { display: inline-block; }
 .half.copy.col-md-6 + .justOne { text-align: center; }
-.billWrap { margin-bottom: 23px; display: inline-block; }
+.billWrap { margin-bottom: 23px; }
 .billWrap .span6 { border-left: thin; border-left-style: dotted; border-left-color: gray; height: 100%; }
 .newDecks .color2 { clear: left; }
 .newDecks .color3 { clear:none; }

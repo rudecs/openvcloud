@@ -52,6 +52,4 @@ Configure your virtual machine by choosing your package, server OS and additiona
     
 }}
 
-(*) Unlimited Transfer is subject to fair use policy as descibed in the [FAQ section|FAQ]
-
 {{html: </div>}}

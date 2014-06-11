@@ -1,21 +1,30 @@
-h1. Cloud Space Access Management
-
-
-
 {{html:
+<div ng-controller="CloudSpaceManagementController">
+	<h1>Settings for Cloud Space {[cloudSpace]}</h1>
+	<br>
 	<tabset style="clear:both;">
-		<tab id="details" heading="General">
-			<div id="details" class="tab-pane active" ng-controller="CloudSpaceManagementController">
-				<div ng-switch="clodSpaceLocation" ng-show="clodSpaceLocation" style="margin-bottom: 10px;">
-                  <label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
-                  <img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="CA1">
-                  <img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="US1">
-                </div>
-                
-				<br/>
-				Delete here your Cloud Space. Note that deleting a Cloud Space is irreversible and all data and authorizations to it will be removed!
-				<br>
-				<button class="btn btn-danger" ng-click="deleteCloudspace()" style="margin-top: 5px;"><i class="fa fa-trash"></i> Delete</button>
+
+		<tab id="access" heading="Access Management">
+			<div id="access" class="tab-pane">
+}}
+			{{include:CloudSpaceAccessManagement}}
+{{html:
+			</div>
+		</tab>
+		<tab id="details" heading="Details">
+			<div id="details" class="tab-pane active" >
+				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
+                  			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
+                  			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
+                  				<img src="/$$space/.files/img/flags/canada.png">
+                  				<span style="display: block; margin-top: 5px; font-size: 13px;">Canada</span>
+                  			</div>
+                  			<div ng-switch-when="us1" style="float: left; text-align: center; margin-bottom: 20px;">
+                  				<img src="/$$space/.files/img/flags/usa.png">
+                  				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
+                  			</div>
+                		</div>
+				<br><button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
 						<div class="modal-header">
@@ -34,14 +43,8 @@ h1. Cloud Space Access Management
 				</script>
 			</div>
 		</tab>
-		<tab id="access" heading="Access">
-			<div id="access" class="tab-pane">
-}}
-			{{include:CloudSpaceAccessManagement}}
-{{html:
-			</div>
-		</tab>
 	</tabset>
+</div>
 }}
 
 
