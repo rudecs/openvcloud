@@ -3,8 +3,8 @@ angular.module('cloudscalers.controllers')
       $scope.filteredTemplates = []
       $scope.templates =  Image.list($scope.currentAccount.id);
       $scope.$watch('templates',  function(){
-              $scope.filteredTemplates = _.where($scope.templates, {"type": "custom templates"});
-              // console.log($scope.filteredTemplates);
+              $scope.filteredTemplates = _.where($scope.templates, {"type": "Custom Templates"});
+	     // console.log($scope.filteredTemplates);
             }, true);
       $scope.deleteTemplate = function(templateIndex) {
             var modalInstance = $modal.open({

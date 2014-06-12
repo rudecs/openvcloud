@@ -139,7 +139,7 @@ defineApiStub = function ($httpBackend) {
             "name": "first template",
             "UNCPath": "",
             "description": "description for first template",
-            "type": "custom templates",
+            "type": "Custom Templates",
             "id": 2,
             "size": 50
         },
@@ -147,7 +147,7 @@ defineApiStub = function ($httpBackend) {
             "name": "ssssss template",
             "UNCPath": "",
             "description": "",
-            "type": "custom templates",
+            "type": "Custom Templates",
             "id": 3,
             "size": 50
         }
@@ -691,7 +691,7 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/template\/delete\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var imageTemplate = _.where(images, {type: "custom templates"});
+        var imageTemplate = _.where(images, {type: "Custom Templates"});
         if(imageTemplate.length > 0){
             imageTemplate.splice( params.templateIndex , 1);
             return [200, true];
