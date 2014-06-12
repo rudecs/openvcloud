@@ -223,8 +223,17 @@ class cloudbroker_machine(j.code.classGetBase()):
         return id
 
         
-    def listExports(self):
-        return []
+    def listExports(self, status, **kwargs):
+        if not status:
+            exports = self.cbcl.vmexport.simpleSearch({})
+        else:
+            exports = self.cbcl.vmexport.simpleSearch({'status':status})
+        exportresult = []
+        for exp in exports:
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+
+
+        return exportresult
 
 
 

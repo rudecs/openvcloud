@@ -10,6 +10,8 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     
         self._P_vmachineId=0
     
+        self._P_name=""
+    
         self._P_type=""
     
         self._P_bucket=""
@@ -23,6 +25,8 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
         self._P_timestamp=0
     
         self._P_config=""
+    
+        self._P_status=""
     
         self._P_location=""
     
@@ -75,6 +79,26 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     @vmachineId.deleter
     def vmachineId(self):
         del self._P_vmachineId
+
+
+    @property
+    def name(self):
+        return self._P_name
+    @name.setter
+    def name(self, value):
+        
+        if not isinstance(value, str) and value is not None:
+            if isinstance(value, basestring) and j.basetype.string.checkString(value):
+                value = j.basetype.string.fromString(value)
+            else:
+                msg="property name input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                raise RuntimeError(msg)
+    
+
+        self._P_name=value
+    @name.deleter
+    def name(self):
+        del self._P_name
 
 
     @property
@@ -215,6 +239,26 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     @config.deleter
     def config(self):
         del self._P_config
+
+
+    @property
+    def status(self):
+        return self._P_status
+    @status.setter
+    def status(self, value):
+        
+        if not isinstance(value, str) and value is not None:
+            if isinstance(value, basestring) and j.basetype.string.checkString(value):
+                value = j.basetype.string.fromString(value)
+            else:
+                msg="property status input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                raise RuntimeError(msg)
+    
+
+        self._P_status=value
+    @status.deleter
+    def status(self):
+        del self._P_status
 
 
     @property

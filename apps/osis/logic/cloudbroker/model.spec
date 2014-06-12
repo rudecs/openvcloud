@@ -217,6 +217,7 @@
     """
     prop:id int,, id of the export
     prop:vmachineId int,, id of the vmachine
+    prop:name str,, name of the export
     prop:type str,, type e.g Raw, condensed, ...
     prop:bucket str,, name of the bucket
     prop:server str,, hostname of the server(for rados None)
@@ -224,5 +225,6 @@
     prop:size int,, size of the machine in Mb
     prop:timestamp int,, epochtime of the machine
     prop:config str,,json representation machine model
+    prop:status str,,status of the vm
     prop:location str,, original machine location
     prop:files str,,json representation of backup content

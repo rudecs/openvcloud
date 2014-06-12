@@ -53,6 +53,7 @@
         """
         List of created exports
         """
-        result: list of created exports
+        var:status str,,status of the backup @tags: optional
+        result: list of created exports 
 
 
