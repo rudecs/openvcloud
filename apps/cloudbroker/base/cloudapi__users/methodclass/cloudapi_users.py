@@ -74,13 +74,13 @@ class cloudapi_users(object):
             return False
         return re.search(r"\s",password) is None
 
-    def updatePassword(self, username, oldPassword, newPassword, **kwargs):
+    def updatePassword(self, oldPassword, newPassword, **kwargs):
         """
         Change user password 
         result:
         """
-        user = j.core.portal.active.auth.getUserInfo(username)
         ctx = kwargs['ctx']
+        user = j.core.portal.active.auth.getUserInfo(ctx.env['beaker.session']['user'])
         if user:
               if user.passwd == md5.new(oldPassword).hexdigest():
                  if not self._isValidPassword(newPassword):
@@ -90,9 +90,9 @@ class cloudapi_users(object):
                     usercl = j.core.osis.getClientForCategory(cl, 'system', 'user')
                     user.passwd =  md5.new(newPassword).hexdigest()
                     usercl.set(user)
-                    return [200, "Congratulations, Your password changed successfully."]
+                    return [200, "Your password has been changed."]
               else:
-                 return [203, "Your current password dosen't match."]
+                 return [400, "Your current password doesn't match."]
         else:
             ctx = kwargs['ctx']
             ctx.start_response('404 Not Found', [])

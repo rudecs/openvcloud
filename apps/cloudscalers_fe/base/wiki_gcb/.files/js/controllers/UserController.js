@@ -10,20 +10,11 @@ angular.module('cloudscalers.controllers')
 		        	function(passwordResponse){
 		        		var passwordResponseCode = passwordResponse.data[0];
 		        		var passwordResponseMsg = passwordResponse.data[1];
-						if(passwordResponseCode == 203){
-							LoadingDialog.hide();
-							$scope.currentPasswordMessage = passwordResponseMsg;
-							$timeout(function() {
-	                            $scope.currentPasswordMessage = "";
-	                        }, 3000);
-						}
 						if(passwordResponseCode == 200){
 							LoadingDialog.hide();
 							$scope.alertStatus = "success";
 							$scope.updateResultMessage = passwordResponseMsg;
-							$timeout(function() {
-	                            $scope.updateResultMessage = "";
-	                        }, 3000);
+
 	                        $scope.oldPassword = "";
 	                        $scope.newPassword = "";
 	                        $scope.retypePassword = "";
@@ -39,10 +30,8 @@ angular.module('cloudscalers.controllers')
 			        }
 			    );
 	      	}else{
-	      		$scope.newPasswordMessage = "Your new password dosen't match.";
-				$timeout(function() {
-                    $scope.newPasswordMessage = "";
-                }, 3000);
+			$scope.alertStatus = "error";
+	      		$scope.updateResultMessage = "The given passwords do not match.";
 	      	}
        }
     }]);
