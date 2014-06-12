@@ -24,9 +24,9 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
 
-    method:moveToComputeNode
+    method:moveToDifferentComputeNode
         """
-        Live-migrates a machine to a specific CPU node.
+        Live-migrates a machine to a different CPU node.
         If no targetnode is given, the normal capacity scheduling is used to determine a targetnode
         """
         var:accountName str,,Account name
