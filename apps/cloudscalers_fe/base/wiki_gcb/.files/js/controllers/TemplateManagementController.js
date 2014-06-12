@@ -6,33 +6,33 @@ angular.module('cloudscalers.controllers')
               $scope.filteredTemplates = _.where($scope.templates, {"type": "Custom Templates"});
 	     // console.log($scope.filteredTemplates);
             }, true);
-      $scope.deleteTemplate = function(templateIndex) {
-            var modalInstance = $modal.open({
-                templateUrl: 'deleteTemplateDialog.html',
-                controller: function($scope, $modalInstance){
-                    $scope.ok = function () {
-                        $modalInstance.close('ok');
-                    };
-                    $scope.cancelDeletion = function () {
-                        $modalInstance.dismiss('cancel');
-                    };
-                },
-                resolve: {
-                }
-            });
+      // $scope.deleteTemplate = function(templateIndex) {
+      //       var modalInstance = $modal.open({
+      //           templateUrl: 'deleteTemplateDialog.html',
+      //           controller: function($scope, $modalInstance){
+      //               $scope.ok = function () {
+      //                   $modalInstance.close('ok');
+      //               };
+      //               $scope.cancelDeletion = function () {
+      //                   $modalInstance.dismiss('cancel');
+      //               };
+      //           },
+      //           resolve: {
+      //           }
+      //       });
 
-            modalInstance.result.then(function (result) {
-                LoadingDialog.show('Deleting Template');
-                Machine.deleteTemplate(templateIndex)
-                    .then(function() {
-                        $timeout(function(){
-                            $scope.filteredTemplates.splice( templateIndex , 1);
-                            LoadingDialog.hide();
-                        }, 1000);
-                    }, function(reason) {
-                        LoadingDialog.hide();
-                        $ErrorResponseAlert(reason);
-                    });
-            });
-        }
+      //       modalInstance.result.then(function (result) {
+      //           LoadingDialog.show('Deleting Template');
+      //           Machine.deleteTemplate(templateIndex)
+      //               .then(function() {
+      //                   $timeout(function(){
+      //                       $scope.filteredTemplates.splice( templateIndex , 1);
+      //                       LoadingDialog.hide();
+      //                   }, 1000);
+      //               }, function(reason) {
+      //                   LoadingDialog.hide();
+      //                   $ErrorResponseAlert(reason);
+      //               });
+      //       });
+      //   }
     }]);
