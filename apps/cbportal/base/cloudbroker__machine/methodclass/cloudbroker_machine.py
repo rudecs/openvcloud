@@ -6,6 +6,7 @@ import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
 import urllib
 import urlparse
+import JumpScale.baselib.remote.cuisine
 
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
@@ -13,6 +14,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.actorname="machine"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
         self._cb = None
         self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
 
@@ -153,3 +155,99 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         self.machines_actor.delete(vmachine.id)
         return True
+
+    @auth(['level1','level2'])
+    def liveMigrate(self, accountName, machineId, cpuNodeName, stackId, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        # TODO: Check if space is on current grid
+
+        stacks = self.cbcl.stack.simpleSearch({'id': stackId, 'referenceId': cpuNodeName})
+        if not stacks:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Target node %s whose stackId %s was not found' % (cpuNodeName, stackId)
+
+        target_stack = stacks[0]
+        source_stack = self.cbcl.stack.get(vmachine.stackId)
+
+        # validate machine template is on target node
+        image = self.cbcl.image.get(vmachine.imageId)
+        libvirt_image = self.libvirtcl.image.get(image.referenceId)
+        image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
+
+        source_api = j.remote.cuisine.api
+        source_api.connect(source_stack.referenceId)
+
+        target_api = j.remote.cuisine.api
+        target_api.connect(target_stack['referenceId'])
+
+        if target_api.file_exists(image_path):
+            if not target_api.file_md5(image_path) == source_api.file_md5(image_path):
+                ctx = kwargs['ctx']
+                headers = [('Content-Type', 'application/json'), ]
+                ctx.start_response('400', headers)
+                return "Image's MD5sum on target node doesn't match machine base image MD5sum"
+        else:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return "Machine base image was not found on target node"
+
+        def _create_network():
+            from JumpScale.lib import ovsnetconfig
+            import libvirt
+            networkname = 'space_%s' % cloudspace.networkId
+            vxnet = j.system.ovsnetconfig.ensureVXNet(cloudspace.networkId, 'vxbackend')
+            bridgename = vxnet.bridge.name
+            networkxml = """<network>
+            <name>%s</name>
+                <forward mode='bridge'/>
+                <bridge name='%s'/>
+                <virtualport type='openvswitch'/>
+            </network>"""% (networkname, bridgename)
+            connection = libvirt.open(target_stack['apiUrl'])
+            connection.networkCreateXML(networkxml)
+
+        # REWORK: do not assume disks on same node, they are on remote cpu node
+        def _create_disks():
+            import JumpScale.lib.qemu_img
+            def _create_disk(disk):
+                disk_info = j.system.platform.qemu_img.info(disk)
+                if 'backing file' in disk_info:
+                    if target_api.file_exists(disk_info['backing file']):
+                        if not target_api.file_exists(disk_info['image']):
+                            disk_data = {'disk_image': disk_info['image'], 'size': disk_info['virtual size'], 'base': disk_info['backing file']}
+                            target_api.run('qemu-img create -f qcow2 %(disk_image)s %(size)s -b %(base)s' % disk_data)
+                    else:
+                        _create_disk(disk_info['backing file'])
+                        _create_disk(disk)
+
+            target_api.dir_ensure(j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id), True)
+            disks = j.system.fs.listFilesInDir(j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id))
+            for disk in disks:
+                _create_disk(disk)
+
+        _create_network()
+        _create_disks()
+
+        iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
+        target_api.file_upload(iso_file_path, iso_file_path, scp=True)
+
+        # TODO: Migrate snapshots
+
+        source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))

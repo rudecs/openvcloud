@@ -24,6 +24,15 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
 
+    method:liveMigrate
+        """
+        Live-migrates a machine to a specific CPU node
+        """
+        var:accountName str,,Account name
+        var:machineId int,,Machine id
+        var:cpuNodeName str,,Target CPU node name
+        var:stackId int,,ID of the target stack should match CPU node
+
     method:tag
         """
         Adds a tag to a machine, useful for indexing and following a (set of) machines
