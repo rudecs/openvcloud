@@ -44,6 +44,6 @@
         At least one of the criteria needs to be passed
         """
         var:tag str,, a specific tag @optional
-        var:computenode str,, name of a specific computenode
-        var:accountname str,, specific account
-        var:cloudspaceId int,, specific cloudspace
+        var:computenode str,, name of a specific computenode @optional
+        var:accountname str,, specific account @optional
+        var:cloudspaceId int,, specific cloudspace @optional
