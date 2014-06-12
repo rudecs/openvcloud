@@ -7,6 +7,7 @@ from JumpScale.portal.portal.auth import auth
 import urllib
 import urlparse
 import JumpScale.baselib.remote.cuisine
+import JumpScale.grid.agentcontroller
 
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
@@ -17,6 +18,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
         self._cb = None
         self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
+        self.acl = j.clients.agentcontroller.get()
 
     @property
     def cb(self):
@@ -157,7 +159,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         return True
 
     @auth(['level1','level2'])
-    def liveMigrate(self, accountName, machineId, cpuNodeName, stackId, **kwargs):
+    def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -167,20 +169,30 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine = self.cbcl.vmachine.get(machineId)
         cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
         account = self.cbcl.account.get(cloudspace.accountId)
-        if not account.name == accountName:
+        if account.name != accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        # TODO: Check if space is on current grid
-
-        stacks = self.cbcl.stack.simpleSearch({'id': stackId, 'referenceId': cpuNodeName})
+        stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
         if not stacks:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
-            return 'Target node %s whose stackId %s was not found' % (cpuNodeName, stackId)
+            return 'Target node %s was not found' % targetComputeNode
+
+        location = j.application.config.get('cloudbroker.where.am.i')
+        if cloudspace.location != location:
+            ctx = kwargs['ctx']
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            params = {'accountName': accountName, 'machineId': machineId, 'targetComputeNode': targetComputeNode,
+                      'withSnapshots': withSnapshots, 'collapseSnapshots': collapseSnapshots}
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
+            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            headers = [('Content-Type', 'application/json'), ('Location', url)]
+            ctx.start_response('302', headers)
+            return url
 
         target_stack = stacks[0]
         source_stack = self.cbcl.stack.get(vmachine.stackId)
@@ -197,7 +209,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         target_api.connect(target_stack['referenceId'])
 
         if target_api.file_exists(image_path):
-            if not target_api.file_md5(image_path) == source_api.file_md5(image_path):
+            if target_api.file_md5(image_path) != source_api.file_md5(image_path):
                 ctx = kwargs['ctx']
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response('400', headers)
@@ -208,45 +220,18 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('404', headers)
             return "Machine base image was not found on target node"
 
-        def _create_network():
-            from JumpScale.lib import ovsnetconfig
-            import libvirt
-            networkname = 'space_%s' % cloudspace.networkId
-            vxnet = j.system.ovsnetconfig.ensureVXNet(cloudspace.networkId, 'vxbackend')
-            bridgename = vxnet.bridge.name
-            networkxml = """<network>
-            <name>%s</name>
-                <forward mode='bridge'/>
-                <bridge name='%s'/>
-                <virtualport type='openvswitch'/>
-            </network>"""% (networkname, bridgename)
-            connection = libvirt.open(target_stack['apiUrl'])
-            connection.networkCreateXML(networkxml)
+        # create network on target node
+        self.acl.executeJumpScript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
 
-        # REWORK: do not assume disks on same node, they are on remote cpu node
-        def _create_disks():
-            import JumpScale.lib.qemu_img
-            def _create_disk(disk):
-                disk_info = j.system.platform.qemu_img.info(disk)
-                if 'backing file' in disk_info:
-                    if target_api.file_exists(disk_info['backing file']):
-                        if not target_api.file_exists(disk_info['image']):
-                            disk_data = {'disk_image': disk_info['image'], 'size': disk_info['virtual size'], 'base': disk_info['backing file']}
-                            target_api.run('qemu-img create -f qcow2 %(disk_image)s %(size)s -b %(base)s' % disk_data)
-                    else:
-                        _create_disk(disk_info['backing file'])
-                        _create_disk(disk)
+        # get disks info on source node
+        disks_info = self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': machineId}, role=source_stack.referenceId, wait=True)['result']
 
-            target_api.dir_ensure(j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id), True)
-            disks = j.system.fs.listFilesInDir(j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id))
-            for disk in disks:
-                _create_disk(disk)
+        # create disks on target node
+        self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': machineId, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
 
-        _create_network()
-        _create_disks()
-
+        # scp the .iso file
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
-        target_api.file_upload(iso_file_path, iso_file_path, scp=True)
+        source_api.file_upload('%s:%s' % (target_stack['referenceId'], iso_file_path), iso_file_path, scp=True)
 
         # TODO: Migrate snapshots
 
