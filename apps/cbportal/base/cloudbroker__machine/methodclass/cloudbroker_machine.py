@@ -224,14 +224,14 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.acl.executeJumpScript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
 
         # get disks info on source node
-        disks_info = self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': machineId}, role=source_stack.referenceId, wait=True)['result']
+        disks_info = self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, role=source_stack.referenceId, wait=True)['result']
 
         # create disks on target node
-        self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': machineId, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
 
         # scp the .iso file
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
-        source_api.file_upload('%s:%s' % (target_stack['referenceId'], iso_file_path), iso_file_path, scp=True)
+        source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['referenceId'], iso_file_path))
 
         # TODO: Migrate snapshots
 
