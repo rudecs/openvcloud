@@ -34,6 +34,19 @@
         var:targetComputeNode str,, Name of the compute node the machine has to be moved to @optional
         var:withSnapshots bool,, Defaults to true @optional
         var:collapseSnapshots bool,, Sanitize snapshots, defaults to false @optional
+    
+     method:export
+        """
+        Create a export/backup of a machine
+        """
+        var:machineId int,, id of the machine to backup
+        var:name str,, Usefull name for this backup
+        var:backuptype str,, Type e.g raw, condensed
+        var:storage str,, Type of storage used. e.g S3 or RADOS.
+        var:host str,, host to export(if s3) @tags: optional 
+        var:aws_access_key str,,s3 access key @tags: optional 
+        var:aws_secret_key str,,s3 secret key @tags: optional 
+        result:jobid
 
     method:tag
         """
@@ -41,6 +54,17 @@
         """
         var:machineId int,, id of the machine to tag
         var:tagname str,, tag
+       
+    method:importbackup
+        """
+        Import a existing backup on a cpu node
+        """
+        var:vmexportId int,, id of the exportd to backup
+        var:nid int,, node on which the bakcup is imported
+        var:destinationpath str,, location where the backup should be located
+        var:aws_access_key str,,s3 access key @tags: optional 
+        var:aws_secret_key str,,s3 secret key @tags: optional 
+        result:jobid
 
     method:untag
         """
@@ -49,6 +73,13 @@
         var:machineId int,, id of the machine to untag
         var:tagname str,, tag
 
+    method:listExports
+        """
+        List of created exports
+        """
+        var:status str,,status of the backup @tags: optional
+        result: list of created exports 
+    
     method:list
         """
         List the undestroyed machines based on specific criteria
@@ -58,7 +89,7 @@
         var:computenode str,, name of a specific computenode @optional
         var:accountname str,, specific account @optional
         var:cloudspaceId int,, specific cloudspace @optional
-
+    
     method:checkImageChain
         """
         Checks on the computenode the vm is on if the vm image is there

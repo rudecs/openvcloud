@@ -4,10 +4,11 @@ from random import choice
 from libcloud.compute.base import NodeAuthPassword
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
-import urllib
+import urllib,ujson
 import urlparse
 import JumpScale.baselib.remote.cuisine
 import JumpScale.grid.agentcontroller
+
 
 class cloudbroker_machine(j.code.classGetBase()):
     def __init__(self):
@@ -236,3 +237,91 @@ class cloudbroker_machine(j.code.classGetBase()):
         # TODO: Migrate snapshots
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
+
+
+    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        system_cl = j.core.osis.getClientForNamespace('system')
+        machine = self.cbcl.vmachine.get(machineId)
+        if not machine:
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        stack = self.cbcl.stack.get(machine.stackId)
+        storageparameters  = {}
+        if storage == 'S3':
+            if not aws_access_key or not aws_secret_key or not host:
+                  ctx.start_response('400', headers)
+                  return 'S3 parameters are not provided'
+            storageparameters['aws_access_key'] = aws_access_key
+            storageparameters['aws_secret_key'] = aws_secret_key
+            storageparameters['host'] = host
+            storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = storage
+        storageparameters['backup_type'] = backuptype
+        storageparameters['bucket'] = 'backup'
+        storageparameters['mdbucketname'] = 'export_md'
+
+        storagepath = '/mnt/vmstor/vm-%s' % machineId
+        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        if len(nodes) != 1:
+            ctx.start_response('409', headers)
+            return 'Incorrect model structure'
+        nid = nodes[0]['id']
+        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
+        agentcontroller = j.clients.agentcontroller.get()
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+
+    def importbackup(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        vmexport = self.cbcl.vmexport.get(vmexportId)
+        if not vmexport:
+            ctx.start_response('400', headers)
+            return 'Export definition with id %s not found' % vmexportId
+        storageparameters = {}
+
+        if vmexport.storagetype == 'S3':
+            if not aws_access_key or not aws_secret_key:
+                ctx.start_response('400', headers)
+                return 'S3 parameters are not provided'
+            storageparameters['aws_access_key'] = aws_access_key
+            storageparameters['aws_secret_key'] = aws_secret_key
+            storageparameters['host'] = vmexport.server
+            storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = vmexport.storagetype
+        storageparameters['bucket'] = vmexport.bucket
+
+        metadata = ujson.loads(vmexport.files)
+
+        args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
+
+        agentcontroller = j.clients.agentcontroller.get()
+
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+        
+    def listExports(self, status, **kwargs):
+        if not status:
+            exports = self.cbcl.vmexport.simpleSearch({})
+        else:
+            exports = self.cbcl.vmexport.simpleSearch({'status':status})
+        exportresult = []
+        for exp in exports:
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+
+
+        return exportresult
+
+
+
+
+
+
+
+        
