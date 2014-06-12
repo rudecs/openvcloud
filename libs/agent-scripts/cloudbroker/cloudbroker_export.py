@@ -11,7 +11,7 @@ author = "hendrik@mothership1.com"
 license = "bsd"
 version = "1.0"
 roles = []
-queue = "hypervisor"
+queue='default'
 async = True
 
 

@@ -4,7 +4,7 @@ from random import choice
 from libcloud.compute.base import NodeAuthPassword
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
-import urllib
+import urllib,ujson
 import urlparse
 
 
@@ -188,11 +188,41 @@ class cloudbroker_machine(j.code.classGetBase()):
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
         agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, queue='io', wait=False)['id']
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
 
+    def importbackup(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        vmexport = self.cbcl.vmexport.get(vmexportId)
+        if not vmexport:
+            ctx.start_response('400', headers)
+            return 'Export definition with id %s not found' % vmexportId
+        storageparameters = {}
 
+        if vmexport.storagetype == 'S3':
+            if not aws_access_key or not aws_secret_key:
+                ctx.start_response('400', headers)
+                return 'S3 parameters are not provided'
+            storageparameters['aws_access_key'] = aws_access_key
+            storageparameters['aws_secret_key'] = aws_secret_key
+            storageparameters['host'] = vmexport.server
+            storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = vmexport.storagetype
+        storageparameters['bucket'] = vmexport.bucket
+
+        metadata = ujson.loads(vmexport.files)
+
+        args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
+
+        agentcontroller = j.clients.agentcontroller.get()
+
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+        
     def listExports(self):
         return []
 
