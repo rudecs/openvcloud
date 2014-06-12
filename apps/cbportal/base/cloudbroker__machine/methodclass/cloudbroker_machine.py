@@ -155,6 +155,85 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.machines_actor.delete(vmachine.id)
         return True
 
+        @auth(['level1','level2'])
+    def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if account.name != accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
+        if not stacks:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Target node %s was not found' % targetComputeNode
+
+        location = j.application.config.get('cloudbroker.where.am.i')
+        if cloudspace.location != location:
+            ctx = kwargs['ctx']
+            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+            params = {'accountName': accountName, 'machineId': machineId, 'targetComputeNode': targetComputeNode,
+                      'withSnapshots': withSnapshots, 'collapseSnapshots': collapseSnapshots}
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
+            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            headers = [('Content-Type', 'application/json'), ('Location', url)]
+            ctx.start_response('302', headers)
+            return url
+
+        target_stack = stacks[0]
+        source_stack = self.cbcl.stack.get(vmachine.stackId)
+
+        # validate machine template is on target node
+        image = self.cbcl.image.get(vmachine.imageId)
+        libvirt_image = self.libvirtcl.image.get(image.referenceId)
+        image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
+
+        source_api = j.remote.cuisine.api
+        source_api.connect(source_stack.referenceId)
+
+        target_api = j.remote.cuisine.api
+        target_api.connect(target_stack['referenceId'])
+
+        if target_api.file_exists(image_path):
+            if target_api.file_md5(image_path) != source_api.file_md5(image_path):
+                ctx = kwargs['ctx']
+                headers = [('Content-Type', 'application/json'), ]
+                ctx.start_response('400', headers)
+                return "Image's MD5sum on target node doesn't match machine base image MD5sum"
+        else:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return "Machine base image was not found on target node"
+
+        # create network on target node
+        self.acl.executeJumpScript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
+
+        # get disks info on source node
+        disks_info = self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, role=source_stack.referenceId, wait=True)['result']
+
+        # create disks on target node
+        self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
+
+        # scp the .iso file
+        iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
+        source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['referenceId'], iso_file_path))
+
+        # TODO: Migrate snapshots
+
+        source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
+
 
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
