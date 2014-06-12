@@ -24,14 +24,16 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
 
-    method:liveMigrate
+    method:moveToComputeNode
         """
-        Live-migrates a machine to a specific CPU node
+        Live-migrates a machine to a specific CPU node.
+        If no targetnode is given, the normal capacity scheduling is used to determine a targetnode
         """
         var:accountName str,,Account name
         var:machineId int,,Machine id
-        var:cpuNodeName str,,Target CPU node name
-        var:stackId int,,ID of the target stack should match CPU node
+        var:targetComputeNode str,, Name of the compute node the machine has to be moved to @optional
+        var:withSnapshots bool,, Defaults to true @optional
+        var:collapseSnapshots bool,, Sanitize snapshots, defaults to false @optional
 
     method:tag
         """
