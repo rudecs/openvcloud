@@ -20,20 +20,22 @@ def action(path, name, machineId,storageparameters,nid,backup_type):
     import JumpScale.grid.osis
     import JumpScale.grid.agentcontroller
     import ujson, time
+    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    connection = LibvirtUtil()
     cloudbrokermodel = j.core.osis.getClientForNamespace('cloudbroker')
 
-
-    agentcontroller = j.clients.agentcontroller.get()
-    args = {'path':path, 'name':name, 'storageparameters': storageparameters}
-
     vm = cloudbrokermodel.vmachine.get(machineId)
+    agentcontroller = j.clients.agentcontroller.get()
+
+   
     vmobject = ujson.dumps(vm.obj2dict())
     vmexport = cloudbrokermodel.vmexport.new()
     vmexport.machineId = machineId
     vmexport.type = backup_type
     vmexport.config = vmobject
     vmexport.name = name 
-    vmexport.timestamp = time.time()
+    vmexport.timestamp = int(time.time())
+    TEMPSTORE = '/mnt/vmstor2/backups_temp'
 
     vmexport.status = 'CREATING'
 
@@ -46,9 +48,13 @@ def action(path, name, machineId,storageparameters,nid,backup_type):
 
 
     if backup_type == 'raw':
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, wait=True)
+        args = {'path':path, 'name':name, 'storageparameters': storageparameters}
+        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, queue='io', wait=True)
     elif backup_type == 'condensed':
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, wait=True)
+        domain = connection.connection.lookupByUUIDString(vm.referenceId)
+        domaindisks = connection._getDomainDiskFiles(domain)
+        args = {'files':domaindisks, 'temppath': TEMPSTORE, 'name':name, 'storageparameters': storageparameters}
+        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, queue='io', wait=True)
     else:
         raise 'Incorrect backup type'
 

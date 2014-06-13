@@ -78,7 +78,7 @@
         List of created exports
         """
         var:status str,,status of the backup @tags: optional
-        var:machineId int,,id of the machine @tags:optional
+        var:machineId int,,id of the machine @tags: optional
         result: list of created exports 
     
     method:list
