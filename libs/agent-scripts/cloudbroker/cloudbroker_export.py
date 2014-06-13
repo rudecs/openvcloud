@@ -49,12 +49,12 @@ def action(path, name, machineId,storageparameters,nid,backup_type):
 
     if backup_type == 'raw':
         args = {'path':path, 'name':name, 'storageparameters': storageparameters}
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, queue='io', wait=True)
+        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, wait=True)
     elif backup_type == 'condensed':
         domain = connection.connection.lookupByUUIDString(vm.referenceId)
         domaindisks = connection._getDomainDiskFiles(domain)
         args = {'files':domaindisks, 'temppath': TEMPSTORE, 'name':name, 'storageparameters': storageparameters}
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, queue='io', wait=True)
+        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, wait=True)
     else:
         raise 'Incorrect backup type'
 
