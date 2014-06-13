@@ -306,17 +306,65 @@ class cloudbroker_machine(j.code.classGetBase()):
         return id
 
         
-    def listExports(self, status, **kwargs):
-        if not status:
-            exports = self.cbcl.vmexport.simpleSearch({})
-        else:
-            exports = self.cbcl.vmexport.simpleSearch({'status':status})
+    def listExports(self, status, machineId ,**kwargs):
+        query = {}
+        if status:
+            query['status'] = status
+        if machineId:
+            query['machineId'] = machineId
+        exports = self.cbcl.vmexport.simpleSearch(query)
         exportresult = []
         for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
-
-
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
+
+
+    def tag(self, machineId, tagname, **kwargs):
+        """
+        Adds a tag to a machine, useful for indexing and following a (set of) machines
+        param:machineId id of the machine to tag
+        param:tagname tag
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method tag")
+    
+
+    def untag(self, machineId, tagname, **kwargs):
+        """
+        Removes a specific tag from a machine
+        param:machineId id of the machine to untag
+        param:tagname tag
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method untag")
+
+
+    def list(self, tag, computenode, accountname, cloudspaceId, **kwargs):
+        """
+        List the undestroyed machines based on specific criteria
+        At least one of the criteria needs to be passed
+        param:tag a specific tag
+        param:computenode name of a specific computenode
+        param:accountname specific account
+        param:cloudspaceId specific cloudspace
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method list")
+
+
+    def checkImageChain(self, machineId, **kwargs):
+        """
+        Checks on the computenode the vm is on if the vm image is there
+        Check the chain of the vmimage to see if parents are there (the template starting from)
+        (executes the vm.hdcheck jumpscript)
+        param:machineId id of the machine
+        result dict,,
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method checkImageChain")
+    
+    
+    
 
 
 

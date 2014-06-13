@@ -49,3 +49,21 @@ class cloudbroker_iaas(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
             return 'Stack ID not found'
+
+    
+    def addPublicIPv4Subnet(self, subnet, **kwargs):
+        """
+        Adds a public network range to be used for cloudspaces
+        param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method addPublicIPv4Subnet")
+    
+
+    def syncAvailableImagesToCloudbroker(self, **kwargs):
+        """
+        synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
+        result boolean
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method syncAvailableImagesToCloudbroker")
