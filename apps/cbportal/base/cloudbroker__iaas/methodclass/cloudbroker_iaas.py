@@ -20,37 +20,6 @@ class cloudbroker_iaas(j.code.classGetBase()):
             self._cb = j.apps.cloudbroker.iaas
         return self._cb
 
-    @auth(['level1', 'level2'])
-    def updateImages(self, **kwargs):
-        """
-        Update the local images of the cloudbroker
-        result 
-        """
-        stacks = self.cbcl.stack.list()
-        for stack in stacks:
-            self.cb.extensions.imp.stackImportImages(stack)
-        return True
-
-    @auth(['level1', 'level2'])
-    def setStackStatus(self, statckid, status, **kwargs):
-        """
-        Set different stack statusses, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'OFFLINE(Machine is not available'
-        param:statckid id of the stack to update
-        param:status status e.g ENABLED, DISABLED, or OFFLINE
-        result 
-        """
-        if self.cbcl.stack.exists(statckid):
-            stack = self.cbcl.stack.get(statckid)
-            stack.status = status
-            self.cbcl.stack.set(stack)
-            return True
-        else:
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Stack ID not found'
-
-    
     def addPublicIPv4Subnet(self, subnet, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
@@ -58,12 +27,14 @@ class cloudbroker_iaas(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method addPublicIPv4Subnet")
-    
 
+    @auth(['level1', 'level2'])
     def syncAvailableImagesToCloudbroker(self, **kwargs):
         """
         synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
         result boolean
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method syncAvailableImagesToCloudbroker")
+        stacks = self.cbcl.stack.list()
+        for stack in stacks:
+            self.cb.extensions.imp.stackImportImages(stack)
+        return True

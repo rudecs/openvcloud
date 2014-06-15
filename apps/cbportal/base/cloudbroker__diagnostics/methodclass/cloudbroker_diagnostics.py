@@ -12,7 +12,6 @@ class cloudbroker_diagnostics(j.code.classGetBase()):
         self.actorname="diagnostics"
         self.appname="cloudbroker"
         self._acl = None
-        #cloudbroker_diagnostics_osis.__init__(self)
     
     @property
     def acl(self):
