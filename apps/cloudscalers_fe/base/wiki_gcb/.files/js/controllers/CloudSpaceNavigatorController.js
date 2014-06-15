@@ -9,9 +9,6 @@ angular.module('cloudscalers.controllers')
                 var cloudspacesGroups = _.groupBy($scope.cloudspaces, 'accountId');
                 $scope.AccountCloudSpaceHierarchy = _.map($scope.accounts, function (account) {
                     account.cloudspaces = cloudspacesGroups[account.id];
-//			console.log($scope.cloudspaces);
-//			console.log($scope.accounts);
-//			console.log($scope);
                     return account;
                 });
             }
@@ -22,13 +19,6 @@ angular.module('cloudscalers.controllers')
 
             $scope.$watch('cloudspaces', function () {
                 buildAccountCloudSpaceHierarchy();
-            });
-
-	    $scope.$parent.$watch('currentAccount', function () {
-		if($scope.$parent.currentAccount){
-                    console.log($scope.$parent.currentAccount);
-//		    $scope.currentAccount = $scope.$parent.currentAccount;
-		}
             });
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
