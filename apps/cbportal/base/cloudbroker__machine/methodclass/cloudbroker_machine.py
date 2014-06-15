@@ -55,7 +55,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
             return url
-        
+
         networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
