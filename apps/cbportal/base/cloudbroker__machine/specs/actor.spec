@@ -87,8 +87,8 @@
         At least one of the criteria needs to be passed
         """
         var:tag str,, a specific tag @optional
-        var:computenode str,, name of a specific computenode @optional
-        var:accountname str,, specific account @optional
+        var:computeNode str,, name of a specific computenode @optional
+        var:accountName str,, specific account @optional
         var:cloudspaceId int,, specific cloudspace @optional
     
     method:checkImageChain

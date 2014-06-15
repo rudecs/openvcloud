@@ -349,7 +349,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method untag")
 
 
-    def list(self, tag, computenode, accountname, cloudspaceId, **kwargs):
+    def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
         """
         List the undestroyed machines based on specific criteria
         At least one of the criteria needs to be passed
@@ -358,9 +358,43 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:accountname specific account
         param:cloudspaceId specific cloudspace
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method list")
+        if not tag and not computeNode and not accountName and not cloudspaceId:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "At least one parameter must be passed"
+        params = dict()
+        native_query = dict() 
+        if tag:
+            # TODO
+            pass
+        if computeNode:
+            stacks = self.cbcl.stack.simpleSearch({'referenceId': computeNode})
+            if stacks:
+                stack_id = stacks[0]['id']
+                params['stackId'] = stack_id
+            else:
+                return list()
+        if accountName:
+            accounts = self.cbcl.account.simpleSearch({'name': accountName})
+            if accounts:
+                account_id = accounts[0]['id']
+                cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account_id})
+                if cloudspaces:
+                    cloudspaces_ids = [cs['id'] for cs in cloudspaces]
+                    native_query = {'query': {'bool': {'must': [{'terms': {'cloudspaceId': cloudspaces_ids}}]}}}
+                else:
+                    return list()
+            else:
+                return list()
+        if cloudspaceId:
+            params['cloudspaceId'] = cloudspaceId
 
+        if not native_query:
+            native_query = {'query': {'bool': {}}}
+
+        native_query['query']['bool']['must_not'] = [{'term': {'status': 'destroyed'}}]
+        return self.cbcl.vmachine.simpleSearch(params, nativequery=native_query)
 
     def checkImageChain(self, machineId, **kwargs):
         """
