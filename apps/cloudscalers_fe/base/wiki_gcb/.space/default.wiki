@@ -91,7 +91,7 @@
                   <div id="{[account.name | nospace]}" class="panel-collapse collapse">
                     <div class="panel-body">
                         <ul>
-                            <li ng-repeat="space in account.cloudspaces">
+                            <li ng-repeat="space in cloudspaces">
                                 <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
                             </li>
                         </ul>
