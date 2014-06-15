@@ -86,7 +86,7 @@ class cloudbroker_account(j.code.classGetBase()):
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response("403", headers)
                 return 'Can not remove account which still has cloudspaces'
-            self.cbcl.delete(result['id'])
+            self.cbcl.account.delete(result['id'])
             return True
 
 
