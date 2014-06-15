@@ -176,12 +176,16 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
-        if not stacks:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Target node %s was not found' % targetComputeNode
+        if targetComputeNode:
+            stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
+            if not stacks:
+                ctx = kwargs['ctx']
+                headers = [('Content-Type', 'application/json'), ]
+                ctx.start_response('404', headers)
+                return 'Target node %s was not found' % targetComputeNode
+            target_stack = stacks[0]
+        else:
+            target_stack = self.cb.extensions.imp.getBestProvider(vmachine.imageId)
 
         location = j.application.config.get('cloudbroker.where.am.i')
         if cloudspace.location != location:
@@ -195,7 +199,6 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('302', headers)
             return url
 
-        target_stack = stacks[0]
         source_stack = self.cbcl.stack.get(vmachine.stackId)
 
         # validate machine template is on target node
@@ -234,10 +237,20 @@ class cloudbroker_machine(j.code.classGetBase()):
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
         source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['referenceId'], iso_file_path))
 
-        # TODO: Migrate snapshots
+        if withSnapshots:
+            snapshots = self.machines_actor.listSnapshots(vmachine.id)
+            if snapshots:
+                source_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
+                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id, 'targethost': target_stack['referenceId']})
+                target_api.run('virsh define /tmp/vm-%s.xml' % vmachine.id)
+                for snapshot in snapshots:
+                    source_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
+                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['referenceId']})
+                    target_api.run('virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
-
+        vmachine.stackId = target_stack['id']
+        self.cbcl.vmachine.set(vmachine)
 
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
