@@ -283,8 +283,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return 'Incorrect model structure'
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
 
@@ -313,9 +312,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
 
-        agentcontroller = j.clients.agentcontroller.get()
-
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import_onnode', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
         
