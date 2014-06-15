@@ -27,7 +27,7 @@ class cloudbroker_account(j.code.classGetBase()):
         result
         """
         ctx = kwargs["ctx"]
-        check, result = self._checkAccount(self, accountname, ctx)
+        check, result = self._checkAccount(accountname, ctx)
         if not check:
             return result
         else:
@@ -46,7 +46,7 @@ class cloudbroker_account(j.code.classGetBase()):
         result
         """
         ctx = kwargs["ctx"]
-        check, result = self._checkAccount(self, accountname, ctx)
+        check, result = self._checkAccount(accountname, ctx)
         if not check:
             return result
         else:
@@ -67,11 +67,21 @@ class cloudbroker_account(j.code.classGetBase()):
         Complete delete an acount from the system
         """
         ctx = kwargs["ctx"]
-        check, result = self._checkAccount(self, accountname, ctx)
+        check, result = self._checkAccount(accountname, ctx)
         if not check:
             return result
         else:
-            cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': result['id']})
+            accountId = result['id']
+            query = dict()
+            query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}},
+                                              ]
+                                  }
+                          }
+            cloudspaces = self.cbcl.cloudspace.search(query)['result']
             if cloudspaces:
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response("403", headers)
