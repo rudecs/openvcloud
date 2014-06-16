@@ -329,24 +329,55 @@ class cloudbroker_machine(j.code.classGetBase()):
         return exportresult
 
 
-    def tag(self, machineId, tagname, **kwargs):
+    def tag(self, machineId, tagName, **kwargs):
         """
         Adds a tag to a machine, useful for indexing and following a (set of) machines
         param:machineId id of the machine to tag
-        param:tagname tag
+        param:tagName tag
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method tag")
-    
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'vMachine ID %s was not found' % machineId
 
-    def untag(self, machineId, tagname, **kwargs):
+        vmachine = self.cbcl.vmachine.get(machineId)
+        tags = j.core.tags.getObject(vmachine.tags)
+        if tags.labelExists(tagName):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Tag %s is already assigned to this vMachine' % tagName
+
+        tags.labelSet(tagName)
+        vmachine.tags = tags.tagstring
+        self.cbcl.vmachine.set(vmachine)
+        return True
+
+    def untag(self, machineId, tagName, **kwargs):
         """
         Removes a specific tag from a machine
         param:machineId id of the machine to untag
-        param:tagname tag
+        param:tagName tag
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method untag")
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'vMachine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        tags = j.core.tags.getObject(vmachine.tags)
+        if not tags.labelExists(tagName):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'vMachine does not have tag %s' % tagName
+
+        tags.labelDelete(tagName)
+        vmachine.tags = tags.tagstring
+        self.cbcl.vmachine.set(vmachine)
+        return True
 
 
     def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
@@ -362,12 +393,11 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
-            return "At least one parameter must be passed"
+            return 'At least one parameter must be passed'
         params = dict()
         native_query = dict() 
         if tag:
-            # TODO
-            pass
+            params['tags'] = tag
         if computeNode:
             stacks = self.cbcl.stack.simpleSearch({'referenceId': computeNode})
             if stacks:
@@ -406,14 +436,3 @@ class cloudbroker_machine(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method checkImageChain")
-    
-    
-    
-
-
-
-
-
-
-
-        

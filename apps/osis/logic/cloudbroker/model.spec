@@ -27,6 +27,7 @@
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:tags str,, A tags string
 
 [model:VMAccount] @dbtype:osis
     """

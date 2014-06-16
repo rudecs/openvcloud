@@ -53,7 +53,7 @@
         Adds a tag to a machine, useful for indexing and following a (set of) machines
         """
         var:machineId int,, id of the machine to tag
-        var:tagname str,, tag
+        var:tagName str,, tag
        
     method:importbackup
         """
@@ -71,7 +71,7 @@
         Removes a specific tag from a machine
         """
         var:machineId int,, id of the machine to untag
-        var:tagname str,, tag
+        var:tagName str,, tag
 
     method:listExports
         """
