@@ -83,6 +83,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         ctx.start_response('302 Found', [('location','/wiki_gcb/PaypalConfirmation')])
         return ""
 
+    @authenticator.auth(acl='R')
     def initiatepayment(self, accountId, amount, currency, **kwargs):
         """
         Starts a paypal payment flow.

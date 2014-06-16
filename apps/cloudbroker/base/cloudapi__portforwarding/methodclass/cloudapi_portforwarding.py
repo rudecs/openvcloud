@@ -1,17 +1,22 @@
 from JumpScale import j
+from cloudbrokerlib import authenticator
 import ujson
+
+
 class cloudapi_portforwarding(j.code.classGetBase()):
+
     """
     Portforwarding api
     uses actor /opt/code/jumpscale/unstable__jumpscale_grid/apps/vfw/actor/jumpscale__netmgr/
 
     """
+
     def __init__(self):
 
-        self._te={}
-        self.actorname="portforwarding"
-        self.appname="cloudapi"
-        #cloudapi_portforwarding_osis.__init__(self)
+        self._te = {}
+        self.actorname = "portforwarding"
+        self.appname = "cloudapi"
+        # cloudapi_portforwarding_osis.__init__(self)
         self._cb = None
         self._models = None
         self.netmgr = j.apps.jumpscale.netmgr
@@ -38,13 +43,14 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
                 ipaddress = provider.client.ex_getIpAddress(n)
                 if ipaddress:
-                    machine.nics[0].ipAddress= ipaddress
+                    machine.nics[0].ipAddress = ipaddress
                     self.models.vmachine.set(machine)
                     localIp = ipaddress
             else:
-                 localIp = machine.nics[0].ipAddress
+                localIp = machine.nics[0].ipAddress
         return localIp
 
+    @authenticator.auth(acl='C')
     def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, protocol=None, **kwargs):
         """
         Create a portforwarding rule
@@ -56,7 +62,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         """
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
-        if len(fw)  == 0:
+        if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
@@ -85,18 +91,18 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 self._delete(cloudspaceid, idx)
         return True
 
-
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol):
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
         for fw in forwards:
             if fw['localIp'] == localIp \
                and fw['localPort'] == localPort \
                and fw['publicIp'] == publicIp \
-               and fw['publicIp'] == publicIp \
+               and fw['publicPort'] == publicPort \
                and fw['protocol'] == protocol:
                 return True
         return False
 
+    @authenticator.auth(acl='D')
     def delete(self, cloudspaceid, id, **kwargs):
         """
         Delete a specific portforwarding rule
@@ -114,10 +120,9 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             return 'Cannot find the rule with id %s' % str(id)
         return result
 
-
     def _delete(self, cloudspaceid, id, **kwargs):
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
-        if len(fw)  == 0:
+        if len(fw) == 0:
             return -1
         fw_id = fw[0]['guid']
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
@@ -129,11 +134,11 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
         return self._process_list(forwards)
 
-
+    @authenticator.auth(acl='C')
     def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
-        if len(fw)  == 0:
+        if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
@@ -154,18 +159,18 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
             ctx.start_response('403 Forbidden', [])
             return "Forward for %s with port %s already exists" % (localIp, localPort)
-        self.netmgr.fw_forward_delete(fw_id, self.gridid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
+        self.netmgr.fw_forward_delete(fw_id, self.gridid,
+                                      forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
         return self._process_list(forwards)
-
 
     def _process_list(self, forwards):
         result = list()
         for index, f in enumerate(forwards):
             f['id'] = index
             query = {}
-            query['query'] = {'term': {'ipAddress':f['localIp']}}
+            query['query'] = {'term': {'ipAddress': f['localIp']}}
             machine = self.models.vmachine.find(ujson.dumps(query))
             if machine['total'] != 1:
                 f['vmName'] = f['localIp']
@@ -177,6 +182,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             result.append(f)
         return result
 
+    @authenticator.auth(acl='R')
     def list(self, cloudspaceid, **kwargs):
         """
         list all portforwarding rules.
@@ -184,17 +190,18 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         """
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
-        if len(fw)  == 0:
+        if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
         return self._process_list(forwards)
 
+    @authenticator.auth(acl='R')
     def listcommonports(self, **kwargs):
         """
         List a range of predifined ports
         """
-        return [{'name':'http','port':80, 'protocol': 'tcp'},
-                {'name':'ftp', 'port': 21, 'protocol': 'tcp'},
-                {'name':'ssh', 'port': 22, 'protocol': 'tcp'}]
+        return [{'name': 'http', 'port': 80, 'protocol': 'tcp'},
+                {'name': 'ftp', 'port': 21, 'protocol': 'tcp'},
+                {'name': 'ssh', 'port': 22, 'protocol': 'tcp'}]
