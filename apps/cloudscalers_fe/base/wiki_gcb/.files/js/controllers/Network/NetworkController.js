@@ -11,10 +11,14 @@ angular.module('cloudscalers.controllers')
             //        });
             //    }
             //});
-
+            //
             $scope.getDefenseShield = function() {
-                var result = CloudSpace.getDefenseShield($scope.currentSpace.id);
-                console.log(result);
+                CloudSpace.getDefenseShield($scope.currentSpace.id).then(function(shieldobj) {
+                    window.open(shieldobj.url, "autologin=" + shieldobj.user + "|" + shieldobj.password, "width=400, height=400");
+                },
+                function(reason){
+                    console.log(reason);
+                });
             };
 
             //var routerosController = function ($scope, $modalInstance) {
