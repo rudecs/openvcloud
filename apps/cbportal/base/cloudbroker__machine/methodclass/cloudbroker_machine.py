@@ -421,7 +421,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             params['cloudspaceId'] = cloudspaceId
 
         if not native_query:
-            native_query = {'query': {'bool': {}}}
+            native_query = {'query': {'bool': {'must': []}}}
 
         native_query['query']['bool']['must_not'] = [{'term': {'status': 'destroyed'}}]
         return self.cbcl.vmachine.simpleSearch(params, nativequery=native_query)
