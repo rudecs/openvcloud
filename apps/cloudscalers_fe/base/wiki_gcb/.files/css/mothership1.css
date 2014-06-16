@@ -5,7 +5,8 @@
 .errorSpan + p {font-size: 15px;}
 .bgError { background: url(../img/images/error-pic.jpg) 0 0 no-repeat; height: 290px;}
 .bgError span { margin: 150px 0 0 107px; display: inline-block; font-size: 51px;}
-
+.col-md-12.mB15 { margin-top: 10px;}
+body ul#resources li.resource div.heading ul.options {margin: 10px 10px 10px 0 !important;}
 
 
  @media (max-width: 1376px) {
@@ -14,6 +15,7 @@
  }
 
  @media (max-width: 1290px) {
+ 	.btn-group.btn-group-sm.priceHM.floatR { margin: 10px auto 0;float: none;width: 120px;display: block;}
  }
 
  @media (max-width: 1290px) and (min-width: 992px) {
@@ -23,7 +25,9 @@
  }
 
  @media (max-width: 768px) {
+ 	table { width: 100%; overflow-y: hidden; overflow-x: scroll; -ms-overflow-style: -ms-autohiding-scrollbar; border: 1px solid #ddd; -webkit-overflow-scrolling: touch;}
  }
 
  @media (max-width: 580px) {
+ 	.col-md-6 .bulletStyle { width: 260px;padding: 0;margin: 0 0 0 -31px; }
  }
