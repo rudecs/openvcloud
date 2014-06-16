@@ -3,6 +3,7 @@ from cloudbrokerlib import authenticator
 import ujson
 import gevent
 import urlparse
+import uuid
 
 
 class cloudapi_cloudspaces(object):
@@ -227,3 +228,18 @@ class cloudapi_cloudspaces(object):
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method update")
+
+    @authenticator.auth(acl='C')
+    def getDefenseShield(self, cloudspaceId, **kwargs):
+        """
+        Get informayion about the defense sheild
+        param:cloudspaceId id of the cloudspace
+        """
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fwid = "%s_%s" % (j.application.whoAmI.gid, cloudspace.networkId)
+        api = self.netmgr.fw_getapi(fwid)
+        pwd = str(uuid.uuid4())
+        api.executeScript('/user set admin password=%s' %  pwd)
+        result = {'user': 'admin', 'password': pwd, 'url': 'http://%s' % cloudspace.publicipaddress}
+
+        return result
