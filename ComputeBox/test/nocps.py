@@ -2,8 +2,8 @@ import xmlrpclib
 import time
 
 def installFreshComputeNode(nocps_url, macaddress, hostname, ip):
-    print 'Installing Ubuntu 13.10 on the compute node'
-    
+    print 'Installing Ubuntu 14.04 on the compute node'
+
     ps = xmlrpclib.ServerProxy(nocps_url)
     if not macaddress or not ip:
         hosts = ps.PXE_API.searchHosts({'query': hostname})['data']
@@ -23,11 +23,11 @@ def installFreshComputeNode(nocps_url, macaddress, hostname, ip):
                      'rootpassword2': 'R00t3r',
                      'userpassword': 'cs',
                      'userpassword2': 'cs'}
-    
+
     provisioning_result = ps.PXE_API.provisionHost(serverdetails)
     if not provisioning_result['success']:
         print provisioning_result
-    
+
     laststatus = ""
     while True:
         status = ps.PXE_API.getProvisioningStatusByServer(macaddress)
@@ -40,7 +40,7 @@ def installFreshComputeNode(nocps_url, macaddress, hostname, ip):
             print 'Done'
             break
         time.sleep(5)
-    
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
@@ -49,5 +49,5 @@ if __name__ == '__main__':
     parser.add_argument('-i','--ip',required=False, help='IP address of the server to be reinstalled')
     parser.add_argument('--hostname', required=True, help='Hostname of the server to be reinstalled')
     args = parser.parse_args()
-    
+
     installFreshComputeNode(args.url, args.mac, args.hostname, args.ip)
