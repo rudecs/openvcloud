@@ -6,7 +6,7 @@ angular.module('cloudscalers.controllers')
 
             $scope.getDefenseShield = function() {
                 CloudSpace.getDefenseShield($scope.currentSpace.id).then(function(shieldobj) {
-                    window.open(shieldobj.url, "autologin=" + shieldobj.user + "|" + shieldobj.password, "width=600, height=600");
+                    window.open(shieldobj.url, "autologin=" + shieldobj.user + "|" + shieldobj.password, "width=1100, height=700");
                     $scope.isDisabled = true;
                 },
                 function(reason){
