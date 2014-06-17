@@ -211,6 +211,7 @@ class cloudapi_cloudspaces(object):
 
         for cloudspace in cloudspaces:
             cloudspace['locationurl'] = "%s://%s" % (urlparts.scheme,self.cb.extensions.imp.getLocations()[cloudspace['location'].lower()]['url'])
+            cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
 
         return cloudspaces
 

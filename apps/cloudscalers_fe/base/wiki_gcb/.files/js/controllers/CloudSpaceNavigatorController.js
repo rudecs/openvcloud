@@ -12,7 +12,7 @@ angular.module('cloudscalers.controllers')
                // console.log($scope.accounts);
                 $scope.AccountCloudSpaceHierarchy = _.map($scope.accounts, function (account) {
                 account.cloudspaces = cloudspacesGroups;
-                console.log(cloudspacesGroups);
+//                console.log(cloudspacesGroups);
 		//console.log(account);
 //		console.log($scope.cloudspaces);
                     return account;
@@ -27,7 +27,7 @@ angular.module('cloudscalers.controllers')
             $scope.$watch('cloudspaces', function () {
                 buildAccountCloudSpaceHierarchy();
             });
-
+	    
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
                 $scope.newCloudSpace = {
                     name: '',

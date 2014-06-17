@@ -83,18 +83,16 @@
             <div class="accordionInside">
   <div class="panel-group grey" id="accordion" close-others="false">
     <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
-	
-	<div ng-repeat="space in account.cloudspaces">
-	{[ space[0].accountId ]}
+	<div ng-repeat="spaces in account.cloudspaces">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
+          <a data-toggle="collapse" data-parent="#accordion" href="#{[spaces[0].accountName | nospace]}">{[spaces[0].accountName]}</a>
         </h4>
       </div>
-      <div id="{[account.name | nospace]}" class="panel-collapse collapse">
+      <div id="{[spaces[0].accountName | nospace]}" class="panel-collapse collapse">
         <div class="panel-body">
             <ul>
-                <li ng-repeat="spacesssssssss in cloudspaces">
+                <li ng-repeat="space in spaces">
                     <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
                 </li>
             </ul>
