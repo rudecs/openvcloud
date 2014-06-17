@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout', '$sce', 'CloudSpace',
-        function ($scope, Networks, Machine, $modal, $timeout, $sce, CloudSpace) {
+    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout', '$sce', 'CloudSpace', '$ErrorResponseAlert',
+        function ($scope, Networks, Machine, $modal, $timeout, $sce, CloudSpace, $ErrorResponseAlert) {
             $scope.search = "";
             $scope.portforwardbyID = "";
             //$scope.$watch('currentSpace.id',function(){
@@ -14,12 +14,15 @@ angular.module('cloudscalers.controllers')
             //
             $scope.getDefenseShield = function() {
                 CloudSpace.getDefenseShield($scope.currentSpace.id).then(function(shieldobj) {
-                    window.open(shieldobj.url, "autologin=" + shieldobj.user + "|" + shieldobj.password, "width=400, height=400");
+                    window.open(shieldobj.url, "autologin=" + shieldobj.user + "|" + shieldobj.password, "width=600, height=600");
+                    $scope.isDisabled = true;
                 },
                 function(reason){
-                    console.log(reason);
+                    $ErrorResponseAlert(reason);
                 });
+		
             };
+
 
             //var routerosController = function ($scope, $modalInstance) {
             //    $scope.cancel = function () {
