@@ -7,15 +7,17 @@ angular.module('cloudscalers.controllers')
 
             var buildAccountCloudSpaceHierarchy = function () {
                 var cloudspacesGroups = _.groupBy($scope.cloudspaces, 'accountId');
-//		console.log($scope.cloudspaces);
-		console.log(cloudspacesGroups);
-		console.log($scope.accounts);
+               // console.log($scope.cloudspaces);
+               // console.log(cloudspacesGroups);
+               // console.log($scope.accounts);
                 $scope.AccountCloudSpaceHierarchy = _.map($scope.accounts, function (account) {
                 account.cloudspaces = cloudspacesGroups;
-//		    console.log(account.id);
+                console.log(cloudspacesGroups);
+		//console.log(account);
+//		console.log($scope.cloudspaces);
                     return account;
                 });
-//		console.log($scope.AccountCloudSpaceHierarchy);
+               // console.log($scope.AccountCloudSpaceHierarchy);
             }
 
             $scope.$watch('accounts', function () {

@@ -81,14 +81,29 @@
           <a id="drop1" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
-              <div class="panel-group grey" id="accordion" close-others="false">
-                <div ng-repeat="space in cloudspaces" class="panel panel-default">
-		{[space.accountId]}
-                {[space.name]}
-		<br />
-                </div>
-                </div>
-              </div>
+  <div class="panel-group grey" id="accordion" close-others="false">
+    <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
+	
+	<div ng-repeat="space in account.cloudspaces">
+	{[ space[0].accountId ]}
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
+        </h4>
+      </div>
+      <div id="{[account.name | nospace]}" class="panel-collapse collapse">
+        <div class="panel-body">
+            <ul>
+                <li ng-repeat="spacesssssssss in cloudspaces">
+                    <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
+                </li>
+            </ul>
+          </div>
+      </div>
+	</div>
+    </div>
+  </div>
+</div>
               <ul class="justBorder">
                   <li>
                       <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New Cloud Space...</a>
