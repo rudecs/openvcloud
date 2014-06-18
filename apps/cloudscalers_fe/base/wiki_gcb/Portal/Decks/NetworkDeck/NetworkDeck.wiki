@@ -7,7 +7,7 @@ New users can find useful info about the Defense Shield in our [Quick Tutorial G
 {{html:
 	<div ng-controller="NetworkController">
 		<div>
-			<button class="btn" ng-click="getDefenseShield()" ng-disabled="isDisabled">Advanced Shield configuration</button>
+			<button class="btn" ng-click="getDefenseShield()" ng-disabled="disableAdvancedShieldConfiguration" target="_tab">Advanced Shield configuration</button>
 		</div>
 	</div>
     <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>

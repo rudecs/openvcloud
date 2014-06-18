@@ -698,4 +698,15 @@ defineApiStub = function ($httpBackend) {
         portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
         return [200, portforwarding];
     });
+
+    var shieldobj = [
+       {url: "http://google.com", user: 'admin', password: '123456'}
+    ];
+
+    $httpBackend.whenGET(/^\/cloudspaces\/getDefenseShield\?cloudspaceId=(\d+).*/).respond(function (method, url, data) {
+        console.log(shieldobj);
+        var params = new URI(url).search(true);
+        var cloudspaceId = params.cloudspaceId;
+        return[200, shieldobj];
+    });
 };
