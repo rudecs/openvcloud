@@ -66,3 +66,40 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.cbcl.cloudspace.set(cloudspace)
         return True
 
+
+    def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
+        """
+        move the virtual firewall of a cloudspace to a different firewall node
+        param:cloudspaceId id of the cloudspace
+        param:targetNode name of the firewallnode the virtual firewall has to be moved to
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method moveVirtualFirewallToFirewallNode")
+    
+    def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
+        """
+        Adds an available public IP address
+        param:cloudspaceId id of the cloudspace
+        param:ipaddress only needed if a specific IP address needs to be assigned to this space
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method addExtraIP")
+
+    def removeIP(self, cloudspaceId, ipaddress, **kwargs):
+        """
+        Removed a public IP address from the cloudspace
+        param:cloudspaceId id of the cloudspace
+        param:ipaddress public IP address to remove from this cloudspace
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method removeIP")
+    
+
+    def restoreVirtualFirewall(self, cloudspaceId, **kwargs):
+        """
+        Restore the virtual firewall of a cloudspace on an available firewall node
+        param:cloudspaceId id of the cloudspace
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method restoreVirtualFirewall")
+    

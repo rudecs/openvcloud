@@ -112,7 +112,7 @@ class cloudapi_machines(object):
         self.models.vmachine.set(machine)
         return diskid
 
-
+    @authenticator.auth(acl='C')
     def createTemplate(self, machineId, templatename, basename, **kwargs):
         """
         Creates a template from the active machine
@@ -348,6 +348,7 @@ class cloudapi_machines(object):
                     provider.client.destroy_node(pnode)
                     break
 
+    @authenticator.auth(acl='C')
     def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
         """
         param:machineId id of machine to export
@@ -405,6 +406,7 @@ class cloudapi_machines(object):
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
+    @authenticator.auth(acl='C')
     def importtoremote(self, name, uncpath, **kwargs):
         """
         param:name name of machine
