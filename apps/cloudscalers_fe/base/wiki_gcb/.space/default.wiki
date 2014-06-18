@@ -192,6 +192,9 @@
             <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
           </li>
           <li>
+            <a href="TemplatesManagement" menu-link-active-location="TemplatesManagement">Templates</a>
+          </li>
+          <li>
             <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
           </li>
         </ul>

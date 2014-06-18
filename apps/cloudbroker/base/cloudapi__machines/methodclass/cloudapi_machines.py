@@ -392,6 +392,7 @@ class cloudapi_machines(object):
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
+        osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
         if machine.nics:
@@ -402,7 +403,7 @@ class cloudapi_machines(object):
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
+                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     @authenticator.auth(acl='C')

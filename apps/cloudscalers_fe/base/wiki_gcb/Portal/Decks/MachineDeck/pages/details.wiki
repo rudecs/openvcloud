@@ -42,6 +42,12 @@ h1 { margin-bottom: 20px; }
                         		<div class="span9 mtm">{[machine.interfaces[0].ipAddress]}</div>
                         	</div>
                         </li>
+                        <li>
+                            <div class="row">
+                                <div class="span3">OS Image</div>
+                                <div class="span9 mtm">{[machine.osImage]}</div>
+                            </div>
+                        </li>
                         <li class="initial">
                         	<div class="row">
                         		<div class="span3">Initial Credentials</div>
