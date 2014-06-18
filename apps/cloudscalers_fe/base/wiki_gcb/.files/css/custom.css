@@ -189,8 +189,8 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .nav-tabs>li>a { padding: 5px 10px !important; }
 .nav-tabs { margin:  10p 0; }
 .justBorder { padding: 0px 0 0px 39px; }
-.grey .panel-heading .panel-title>a { background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important; padding: 8px 25px; color: #4f4f4f !important; }
-.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important; padding: 8px 25px; color: #4f4f4f !important; }
+.grey .panel-heading .panel-title>a { background: url(../img/images/acc-arrow-close.png) 13px 10px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
+.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 11px 11px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
 .user-name { font-size: 12px !important; }
 .nameField23 { width: 9% !important; }
 .account-container.stacked { width: 544px !important; }
@@ -261,8 +261,8 @@ table.table th, table.table td, table.table tbody th, table.table tbody td { fon
 .nav-tabs>li>a { padding: 5px 10px !important; }
 .nav-tabs { margin:  10p 0; }
 .justBorder { padding: 0px 0 0px 39px; }
-.grey .panel-heading .panel-title>a { background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #BEE4F2 !important; padding: 8px 25px; color: #4f4f4f !important; }
-.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #BEE4F2 !important; padding: 8px 25px; color: #4f4f4f !important; }
+.grey .panel-heading .panel-title>a { background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
+.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
 .nameField23 { width: 12% !important; }
 #decks-list li { font-size: 13px !important; }
 .bottomFooter ul { margin-left: -56px; }
@@ -451,13 +451,13 @@ body { overflow-x: hidden; }
 .caret { border-top: 5px solid; border-right: 5px solid transparent; border-left: 5px solid transparent; }
 .navbar { margin-bottom: 0; border-radius: 0; }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: #000; }
-.accordionInside { min-width: 425px; box-shadow: none; border-bottom: 1px solid #06a7e2; }
+.accordionInside { min-width: 425px; box-shadow: none; padding: 5px 5px;}
 .noPad .dropdown-menu { padding: 0; border: 2px solid #06a7e2; border-top: 0 !important; border-radius: 0; }
 .grey h4 > a { background: #BEE4F2; padding: 14px 25px; }
 .grey a { color: #4f4f4f; font-family: arial, sans-serif; }
 .grey a:hover { color: #06a7e2; }
-.grey .panel-title>a { font-size: 14px; color: #000000 !important; font-weight: normal; background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #BEE4F2; }
-.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3; }
+.grey .panel-title>a { font-size: 14px; color: #000000 !important; font-weight: normal; background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; }
+.grey .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3;}
 .dropdown-menu { box-shadow: none; }
 .grey .panel.panel-default { margin: 0 0 2px 0; }
 .create-cloudspace { margin: 7px 0 10px -21px; display: inline-block; }
@@ -564,7 +564,7 @@ margin: : 10px 0; font-size: 18px; }
 .question-symbol:hover { color:inherit; }
 .question-symbol i { font-size: 22px; }
 .justBorder { background: #FFF; display: block; }
-.justOpen { padding: 0; border: 1px solid #06a7e2; border-top: 0; border-radius: 0 !important; }
+.justOpen { padding: 0; /* border: 1px solid #06a7e2; */ border-top: 0; border-radius: 0 !important; }
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background: inherit; color: #000 !important; }
 .grey .panel-body ul { padding: 0 0 0 15px; }
 .grey .panel-body ul li { margin: 5px 0; }
@@ -572,7 +572,7 @@ margin: : 10px 0; font-size: 18px; }
 .loader1 { display: block; float: left; margin: 0 1px 0 0; }
 canvas { display: block; float: left; }
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #06a7e2; background-color: inherit; outline: 0; }
-.navbar-nav>li>.dropdown-menu { border-color: #06a7e2; border-top: 0; }
+.navbar-nav>li>.dropdown-menu { /* border-color: #06a7e2; */ border-top: 0; }
 table.table td { font-size: 14px; }
 input:-webkit-autofill {
 -webkit-box-shadow:0 0 0 50px white inset !important;
@@ -858,13 +858,10 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 .bTxt { color: #000 !important; }
 .txt-center { text-align: center; }
 .sTxt { font-size: 10px; }
-.redTxt { }
 /*  /////////////\\\\\\\\\\  */
 /*   	   End of oocss   	 */
 /*  \\\\\\\\\\\\\//////////  */
-
 .blogDesign { display: inline-block; width: 100%; }
-.priceHM {}
 .mB15 { margin-bottom: 20px;}
 .operationWrap .form-control {border: 1px solid #06a7e2;box-shadow: none;border-radius: 0;color: #000;margin: -6px 0 0 0;}
 .operationWrap .control-label { margin: 0 -52px 0 0;padding: 0;}
@@ -874,3 +871,14 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 table.table.pricingTable th {background: #FFF !important;color: #000;font-weight: bold;}
 table.table th a {color: #FFF;}
 table.table th a:hover {color: #FFF;}
+.panel-group .panel-heading+.panel-collapse .panel-body { border-top: 0;}
+
+@media (max-width: 1376px) and (min-width: 992px) {
+	.open #drop1 {padding-left: 10px !important; padding-right: 10px !important;}
+	#drop1 {padding-left: 10px !important; }
+ } 
+@media (min-width: 992px) {
+ 	.open #drop1 { background-color: #FFF !important; padding-left: 15px !important; border-right: 1px solid rgba(0,0,0,.15); border-left: 1px solid rgba(0,0,0,.15);}
+ 	.grey .panel-title>a {border: 1px solid #ddd;}
+ 	#drop1 {padding-left: 15px !important; }
+ }
