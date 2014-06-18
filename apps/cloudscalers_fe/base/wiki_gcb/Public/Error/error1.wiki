@@ -11,22 +11,21 @@
 
 {{html:
 
-<div class="col-md-8">
+<div class="col-md-9">
 <br/>
 <br/>
-<h1> Oops 404!</h1>
+<h1> 404 - File or directory not found.</h1>
 
-<span class="errorSpan">The page you requested<br/>
-does not exist!</span>
+<!--<span class="errorSpan">The page you requested<br/>
+does not exist!</span>-->
 
 <p>
-“404! wufoo couldn`t find it! This file may have been <br/>
-moved or deleted.Be sure to check your spelling!”<br/>
-It might help to start from the   <a href="../wiki_gcb">home page</a><br/>
+“The resource you are looking for might have been removed, had its name changed, or is temporarily unavailable.”
+
 </p>
 </div>
 
-<div class="col-md-4 bgError">
+<div class="col-md-3 bgError">
 	<span>404!</span>
     
     

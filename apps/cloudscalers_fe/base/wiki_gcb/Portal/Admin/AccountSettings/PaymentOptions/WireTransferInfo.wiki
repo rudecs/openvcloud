@@ -8,7 +8,7 @@
 
 
 <p>We accept wire transfer payments as from 100 EUR.<br/>
-<br/>
+
 <strong>Send the payment to:</strong><br/>
 
 CloudScalers BVBA<br/>
@@ -24,7 +24,7 @@ Belgium<br/>
 
 <stong>Reference:</stong>  Add your Cloud Space name in the reference/description field.<br/><br/>
 
-Your account credit will be change as soon as we have received your payment.<br/><br/>
+Your account credit will be change as soon as we have received your payment.<br/>
 
 All costs for the wire transfer are to be covered by the customer. If Mothership1 is charged bank costs for the wire transfer, the costs will be deducted first from the uploaded funds and the remaining amount will be added to your Cloud Space. Wire Transfers in Europe are free if the IBAN/BIC codes are used correctly.<p>
 }}

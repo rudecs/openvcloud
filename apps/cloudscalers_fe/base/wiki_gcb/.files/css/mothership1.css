@@ -12,6 +12,8 @@ body ul#resources li.resource div.heading ul.options {margin: 10px 10px 10px 0 !
  @media (max-width: 1376px) {
  	.btn.mainButton.wireButton:hover {color: #fff !important;}
 	.btn.mainButton.wireButton { margin: 10px 0 20px 20px;padding: 9px 21px !important;border: 0; font-size: 13px !important;}
+	.bgError { background-size: 200px;}
+	.bgError span { margin: 114px 0 0 76px;font-size: 41px;}
  }
 
  @media (max-width: 1290px) {
