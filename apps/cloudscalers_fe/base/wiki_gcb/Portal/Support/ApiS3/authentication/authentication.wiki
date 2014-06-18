@@ -49,6 +49,7 @@ single field and separate the field values with a comma.</li>
 that specify which operations a user can perform on a bucket or on an object.
 Each grant has a different meaning when applied to a bucket versus applied to
 an object:</p>
+<div class="table-responsive">
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%">
@@ -84,6 +85,7 @@ an object:</p>
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 

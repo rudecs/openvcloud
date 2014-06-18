@@ -10,6 +10,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 			<div style="margin-bottom: 5px;">
 				<button class="btn btn-info btn-large absolute1" ng-click="portForwardPopup()">Add</button>
 			</div>
+			<div class="table-responsive">
 			<table class="table table-striped table-bordered">
 				<tr>
 					<th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
@@ -29,6 +30,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 					</tr>
 				</tbody>
 			</table>
+			</div>
 			  <p ng-show="message" class="alert alert-success span2 center txt-center">{[statusMessage]}</p>
 		</div>
 	</div>
