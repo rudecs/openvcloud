@@ -133,12 +133,9 @@ class cloudapi_users(object):
             if not location in self.cb.extensions.imp.getLocations():
                 location = self.cb.extensions.imp.whereAmI()
 
-
-            import urlparse
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
-
+            locationurl = self.cb.extensions.imp.getLocations()[location]
             if location != self.cb.extensions.imp.whereAmI():
-                correctlocation = "%s://%s/restmachine/cloudapi/users/register" % (urlparts.scheme, self.cb.extensions.imp.getLocations()[location]['url'])
+                correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
                 ctx.start_response('451 Redirect', [('Location', correctlocation)])
                 return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
 
@@ -167,9 +164,7 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
-            portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
-
-            args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': portalurl, 'token': actual_token, 'username':username, 'user': user}
+            args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': locationurl, 'token': actual_token, 'username':username, 'user': user}
             self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True

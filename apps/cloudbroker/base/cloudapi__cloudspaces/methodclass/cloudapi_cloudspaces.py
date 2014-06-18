@@ -208,10 +208,9 @@ class cloudapi_cloudspaces(object):
             if not 'location' in cloudspace or len(cloudspace['location']) == 0:
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
-        urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
-
+        locations = self.cb.extensions.imp.getLocations()
         for cloudspace in cloudspaces:
-            cloudspace['locationurl'] = "%s://%s" % (urlparts.scheme,self.cb.extensions.imp.getLocations()[cloudspace['location'].lower()]['url'])
+            cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
 
         return cloudspaces
 

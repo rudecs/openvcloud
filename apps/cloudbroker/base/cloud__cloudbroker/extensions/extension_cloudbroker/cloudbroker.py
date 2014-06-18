@@ -75,7 +75,7 @@ class CloudBroker(object):
         self.Dummy = Dummy
 
         locationkeys = j.application.config.getKeysFromPrefix('cloudbroker.location')
-        self._locations = dict([(locationkey.split('.')[-1],j.application.config.getDict(locationkey)) for locationkey in locationkeys])
+        self._locations = dict([(locationkey.split('.')[-1],j.application.config.get(locationkey)) for locationkey in locationkeys])
         self._where_am_i = j.application.config.get('cloudbroker.where_am_i')
 
     def getProviderByStackId(self, stackId):
