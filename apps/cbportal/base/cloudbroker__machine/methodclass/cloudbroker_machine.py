@@ -252,7 +252,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine.stackId = target_stack['id']
         self.cbcl.vmachine.set(vmachine)
 
-    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
+    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key,bucketname,**kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         system_cl = j.core.osis.getClientForNamespace('system')
@@ -273,8 +273,8 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         storageparameters['storage_type'] = storage
         storageparameters['backup_type'] = backuptype
-        storageparameters['bucket'] = 'backup'
-        storageparameters['mdbucketname'] = 'export_md'
+        storageparameters['bucket'] = bucketname
+        storageparameters['mdbucketname'] = bucketname
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
@@ -287,7 +287,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         return id
 
 
-    def importbackup(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
+    def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         vmexport = self.cbcl.vmexport.get(vmexportId)
@@ -307,12 +307,14 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         storageparameters['storage_type'] = vmexport.storagetype
         storageparameters['bucket'] = vmexport.bucket
+        storageparameters['mdbucketname'] = vmexport.bucket
+
 
         metadata = ujson.loads(vmexport.files)
 
         args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
 
-        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import_onnode', j.application.whoAmI.nid, args=args, wait=False)['result']
+        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
         

@@ -16,10 +16,12 @@ async = True
 
 
 
-def action(path, metadata ,storageparameters):
+def action(path, metadata ,storageparameters,qcow_only,filename):
     import ujson, time
     from JumpScale.baselib.backuptools import object_store
     from JumpScale.baselib.backuptools import backup
+
+    nodeid = j.application.config.get('cloudscalers.compute.nodeid')
     
 
     store = object_store.ObjectStore(storageparameters['storage_type'])
@@ -32,9 +34,14 @@ def action(path, metadata ,storageparameters):
         store.conn.connect()
     for f in metadata:
         filepath = j.system.fs.getBaseName(f['path'])
-        restorepath = j.system.fs.joinPaths(path, filepath)
+        if qcow_only and not filepath.endswith('qcow2'):
+            continue
+        if filename:
+            restorepath = j.system.fs.joinPaths(path, filename)
+        else:
+            restorepath = j.system.fs.joinPaths(path, filepath)
         if j.system.fs.exists(restorepath):
             raise Exception('%s already exists' % restorepath)
         restore = backup.restore(store, bucketname, restorepath, f['fileparts'])
-    return restorepath
+    return {'path':path, 'node_id': nodeid}
 
