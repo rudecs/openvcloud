@@ -348,26 +348,7 @@ class cloudapi_machines(object):
                     provider.client.destroy_node(pnode)
                     break
 
-    @authenticator.auth(acl='C')
-    def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
-        """
-        param:machineId id of machine to export
-        param:exportName give name to export action
-        param:uncpath unique path where to export machine to ()
-        param:emailaddress to this address the result of the export is send.
-        result boolean if export is successfully started
-        """
-        provider, node = self._getProviderAndNode(machineId)
-        elements = urlparse.urlparse(uncpath)
-        if not elements.scheme in ['cifs','smb','ftp','file','sftp','http']:
-            ctx = kwargs['ctx']
-            ctx.start_response('400 Bad Request', [])
-            return 'Incorrect uncpath format, only cifs, smb, ftp, file, sftp and http is supported'
-        started = provider.client.ex_export(node, exportName, uncpath, emailaddress)
-        if started:
-            return True
-        else:
-            return False
+
 
     def _getStorage(self, machine):
         if not machine['stackId']:
@@ -392,6 +373,7 @@ class cloudapi_machines(object):
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
+        osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
         if machine.nics:
@@ -402,19 +384,9 @@ class cloudapi_machines(object):
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
+                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-    @authenticator.auth(acl='C')
-    def importtoremote(self, name, uncpath, **kwargs):
-        """
-        param:name name of machine
-        param:uncpath unique path where to import machine from ()
-        result int
-
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method importtoremote")
 
     @authenticator.auth(acl='R')
     def list(self, cloudspaceId, status=None, **kwargs):
@@ -602,3 +574,96 @@ class cloudapi_machines(object):
         tags = str(machineId)
         query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
         return self.osis_logs.search(query)['hits']['hits']
+
+
+    def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
+        """
+        Create a export/backup of a machine
+        param:machineId id of the machine to backup
+        param:name Usefull name for this backup
+        param:backuptype Type e.g raw, condensed
+        param:host host to export(if s3)
+        param:aws_access_key s3 access key
+        param:aws_secret_key s3 secret key
+        result jobid
+        """
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        system_cl = j.core.osis.getClientForNamespace('system')
+        machine = self.models.vmachine.get(machineId)
+        if not machine:
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        stack = self.models.stack.get(machine.stackId)
+        storageparameters  = {}
+        if not aws_access_key or not aws_secret_key or not host:
+            ctx.start_response('400', headers)
+            return 'S3 parameters are not provided'
+        storageparameters['aws_access_key'] = aws_access_key
+        storageparameters['aws_secret_key'] = aws_secret_key
+        storageparameters['host'] = host
+        storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = 'S3'
+        storageparameters['backup_type'] = 'condensed'
+        storageparameters['bucket'] = bucket
+        storageparameters['mdbucketname'] = bucket
+
+        storagepath = '/mnt/vmstor/vm-%s' % machineId
+        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        if len(nodes) != 1:
+            ctx.start_response('409', headers)
+            return 'Incorrect model structure'
+        nid = nodes[0]['id']
+        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
+        agentcontroller = j.clients.agentcontroller.get()
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+
+    def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
+        """
+        restore export to a new machine
+        param:name name of the machine
+        param:cloudspaceId id of the exportd to backup
+        param:sizeId id of the specific size
+        param:description optional description
+        param:aws_access_key s3 access key
+        param:aws_secret_key s3 secret key
+        result jobid
+        """
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        vmexport = self.models.vmexport.get(vmexportId)
+        if not vmexport:
+            ctx.start_response('400', headers)
+            return 'Export definition with id %s not found' % vmexportId
+        host = vmexport.server
+        bucket = vmexport.bucket
+        import_name = vmexport.name
+
+
+        storageparameters = {}
+
+        if not aws_access_key or not aws_secret_key:
+            ctx.start_response('400', headers)
+            return 'S3 parameters are not provided'
+
+        storageparameters['aws_access_key'] = aws_access_key
+        storageparameters['aws_secret_key'] = aws_secret_key
+        storageparameters['host'] = host
+        storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = 'S3'
+        storageparameters['backup_type'] = 'condensed'
+        storageparameters['bucket'] = bucket
+        storageparameters['mdbucketname'] = bucket
+        storageparameters['import_name'] = import_name
+
+        args = {'name':name, 'cloudspaceId':cloudspaceId, 'vmexportId':vmexportId, 'sizeId':sizeId, 'description':description, 'storageparameters': storageparameters}
+
+        agentcontroller = j.clients.agentcontroller.get()
+
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+       

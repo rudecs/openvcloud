@@ -57,6 +57,7 @@ class CloudProvider(object):
 class CloudBroker(object):
     def __init__(self):
         self._actors = None
+        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
     @property
     def actors(self):
@@ -78,7 +79,7 @@ class CloudBroker(object):
         for pimage in provider.client.list_images():
             images = provider.cbcl.image.simpleSearch({'referenceId':pimage.id})
             if not images:
-                image = provider.cbcl.models.image.new()
+                image = provider.cbcl.image.new()
                 image.name = pimage.name
                 image.referenceId = pimage.id
                 image.type = pimage.extra['imagetype']
@@ -103,3 +104,26 @@ class CloudBroker(object):
 
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)
+
+    def getBestProvider(self, imageId, excludelist=[]):
+        capacityinfo = self.getCapacityInfo(imageId)
+        if not capacityinfo:
+            raise RuntimeError('No Providers available')
+        capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
+        if not capacityinfo:
+            return -1
+        #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
+        l = len(capacityinfo)
+        i = random.randint(0, l - 1)
+        provider = capacityinfo[i]
+        return provider
+
+
+    def getCapacityInfo(self, imageId):
+        # group all units per type
+        stacks = self.cbcl.stack.find(ujson.dumps({"query":{"term": {"images": imageId}}}))
+        resourcesdata = list()
+        for stack in stacks['result']:
+            stack = stack['_source']
+            resourcesdata.append(stack)
+        return resourcesdata

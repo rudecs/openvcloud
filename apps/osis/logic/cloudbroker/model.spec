@@ -27,6 +27,7 @@
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:tags str,, A tags string
 
 [model:VMAccount] @dbtype:osis
     """
@@ -223,6 +224,7 @@
     prop:server str,, hostname of the server(for rados None)
     prop:storagetype str,, type of the storage(e.g S3 or RADOS)
     prop:size int,, size of the machine in Mb
+    prop:original_size int,, original size of the machine in GB
     prop:timestamp int,, epochtime of the machine
     prop:config str,,json representation machine model
     prop:status str,,status of the vm

@@ -22,6 +22,8 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     
         self._P_size=0
     
+        self._P_original_size=0
+    
         self._P_timestamp=0
     
         self._P_config=""
@@ -199,6 +201,26 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     @size.deleter
     def size(self):
         del self._P_size
+
+
+    @property
+    def original_size(self):
+        return self._P_original_size
+    @original_size.setter
+    def original_size(self, value):
+        
+        if not isinstance(value, int) and value is not None:
+            if isinstance(value, basestring) and j.basetype.integer.checkString(value):
+                value = j.basetype.integer.fromString(value)
+            else:
+                msg="property original_size input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                raise RuntimeError(msg)
+    
+
+        self._P_original_size=value
+    @original_size.deleter
+    def original_size(self):
+        del self._P_original_size
 
 
     @property

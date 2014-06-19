@@ -42,6 +42,12 @@ h1 { margin-bottom: 20px; }
                         		<div class="span9 mtm">{[machine.interfaces[0].ipAddress]}</div>
                         	</div>
                         </li>
+                        <li>
+                            <div class="row">
+                                <div class="span3">OS Image</div>
+                                <div class="span9 mtm">{[machine.osImage]}</div>
+                            </div>
+                        </li>
                         <li class="initial">
                         	<div class="row">
                         		<div class="span3">Initial Credentials</div>
@@ -255,27 +261,30 @@ h1 { margin-bottom: 20px; }
                 <i class="fa fa-camera"></i>
                 Take Snapshot
             </a>
-            <table class="table table-bordered table-striped mtm" ng-show="snapshots.snapshots.length > 0">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="snapshot in snapshots.snapshots">
-                        <td width="45%">{[snapshot.name]}</td>
-                        <td style="white-space:nowrap" >
-                            {[snapshot.epoch * 1000 | date:'medium']}
-                        </td>
-                        <td>
-                            <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
-                            <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                
+                <table class="table table-bordered table-striped mtm" ng-show="snapshots.snapshots.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="snapshot in snapshots.snapshots">
+                            <td width="45%">{[snapshot.name]}</td>
+                            <td style="white-space:nowrap" >
+                                {[snapshot.epoch * 1000 | date:'medium']}
+                            </td>
+                            <td>
+                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
       </tab>
       <tab heading="Change Log" active="tabactive.changelog">

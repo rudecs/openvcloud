@@ -31,13 +31,8 @@ h1. Balance & Usage
 #{{html:
 #        <!-- </div>
 #      </tab> -->
-#      <!-- <tab id="templatemanagment" heading="Template Management"> -->
-#        <!-- <div id="templatemanagement" class="tab-pane"> -->
-#          <!-- include:AccountTemplateManagement -->
 #}}
 #{{html:
-#        <!-- </div> -->
-#      <!-- </tab> -->
 #  </tabset>
 #}}
 

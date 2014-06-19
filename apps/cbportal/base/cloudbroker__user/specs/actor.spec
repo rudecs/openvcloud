@@ -8,4 +8,3 @@
         This key can be used in a webbrowser to browse the cloud portal from the perspective of that specific user or to use the api in his/her authorization context
         """
         var:username str,,name of the user an authorization key is required for
-        var:reason str,,reason

@@ -1,8 +1,62 @@
 {{html:
-    <div>
-        <a href="WireTransferInfo" class="btn btn-small margin-top-small border-radius-small padding-all-small">
-            <img src="/$$space/.files/img/payment/wiretransfer_logo.gif" class="padding-horizontal-medium" alt="Wire Transfer" style="height: 25px;"/>
-        </a>
+<head>
+<style type="text/css">
+	.modal-body {display: inline-block;max-height: 400px;padding: 15px;overflow-y: auto;}
+	.terms p {font-size: 14px;line-height: 24px;}
+	.modal-body h2 {margin-top: 5px;font-size: 18px;}
+	.modal {margin: -265px 0 0 -408px;width: 754px;}
+	.modal-body {max-height: 500px;}
+
+	 @media (max-width: 1376px) {
+	.modal-body {display: inline-block;max-height: 400px;padding: 15px;overflow-y: auto;}
+	.terms p { font-size: 12px !important; line-height: 22px;}
+	.modal-body h2 {margin-top: 5px; font-size: 14px;}
+	.modal {margin: -265px 0 0 -338px;width: 674px;}
+	.modal-body {max-height: 470px;}
+	 }
+	 @media (max-width: 580px) {
+		.modal {left: 111% !important;}
+	 }
+</style>
+	
+</head>
+	 <div>
+        <button class="btn mainButton wireButton btn-info" data-toggle="modal" data-target=".bs-example-modal-lg">
+            Wire Transfer
+        </button>
     </div>
+
+    
+
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+                   
+
+                
+
+  
+    <div class="modal-body">
+     <h2>Pay with Wire Transfer<br>
+                        
+      </h2>
+
+                  <div class="terms"> 
+
+    }}
+
+{{include:WireTransferInfo}}
+
+
+{{html:
+	</div>
+
+	 <button type="submit" class="btn btn-primary ok mainButton floatR" data-dismiss="modal" aria-hidden="true">OK</button>
+    </div>
+
+
+                   
+
+  
+</div>
 
 }}

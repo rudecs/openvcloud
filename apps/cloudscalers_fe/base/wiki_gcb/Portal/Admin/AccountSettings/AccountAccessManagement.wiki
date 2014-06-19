@@ -1,5 +1,7 @@
 {{html:
 <form ng-submit="addUser()"  ng-controller="AccountAccessManagementController">
+<div class="table-responsive">
+    
     <table class="table users-table">
         <tr class="header">
             <th class="username-text-container">
@@ -19,6 +21,7 @@
             <td><a href="#" ng-click="deleteUser(currentAccount, user)" class="fa fa-times"></a></td>
         </tr>
     </table>
+</div>
 </form>
 
     <script src="/$$space/.files/js/controllers/AccountAccessManagementController.js" type="text/javascript"></script>
