@@ -11,6 +11,11 @@
 {{div3: class=half copy col-md-12}}
 h1. Your Ultra Secure Virtual Datacenter Starting From 50 USD
 
+Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
+* Limited Time Offer from Mothership{{html:<sup>1</sup>}}: choose your cloud credit package
+* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
+* Uploaded 50, 95 or 160 USD and your credit will be topped up immediately after successfull payment
+
 {{div: class=row}}
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
@@ -97,16 +102,6 @@ h1. Your Ultra Secure Virtual Datacenter Starting From 50 USD
     {{div2}}
 
 {{div}}
-
-Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* Limited Time Offer from Mothership{{html:<sup>1</sup>}}: choose your cloud credit package
-* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
-* Signup Now and Test - No Purchase Obligation
-* Uploaded amount is in credits and will be topped up immediately after successfull payment
-
-Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* For a limited time, we are offering you a $50 Free Credit
-* Signup now - No Obligation
 
 @divend
 @divend
