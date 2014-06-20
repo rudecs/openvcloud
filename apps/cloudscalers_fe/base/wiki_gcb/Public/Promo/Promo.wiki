@@ -33,9 +33,6 @@ Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existi
     {{div5}}
 {{div4}}
 @LF
-
- {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
-
 h1. Visit our Cloud Decks
 
 Mothership{{html:<sup>1</sup>}} brings a unified cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
