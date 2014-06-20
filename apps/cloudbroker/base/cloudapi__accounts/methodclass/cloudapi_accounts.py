@@ -97,6 +97,9 @@ class cloudapi_accounts(object):
         images = [res['fields'] for res in results]
         return images
 
+        
+
+
     @authenticator.auth(acl='A')
     def deleteUser(self, accountId, userId, **kwargs):
         """

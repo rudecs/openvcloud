@@ -78,9 +78,9 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px;">
+	            	<div class="control-group" style="min-height: 63px; margin-top: 0;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls">
+						<div class="controls" style="height: 33px; line-height: 31px;">
 					         {[currentSpace.publicipaddress]}
 		       		</div>
 						<label class="control-label" for="inputNewPublicPort">Port</label>
@@ -98,10 +98,10 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				</div>
 				<div class="col-md-4">
 					<h4>Destination</h4>
-					<div class="control-group">
+					<div class="control-group" style="margin-top: 0;">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control">
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
 		                    </select>
 		                </div>
 						<label class="control-label" for="inputNewLocalPort">Port</label>
@@ -161,9 +161,9 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px;">
+	            	<div class="control-group" style="min-height: 63px; margin-top: 0;">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls">
+						<div class="controls" style="height: 33px; line-height: 31px;">
 							{[currentSpace.publicipaddress]}
 		       		</div>
 
@@ -182,10 +182,10 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				</div>
 				<div class="col-md-4">
 					<h4>Destination</h4>
-					<div class="control-group">
+					<div class="control-group" style="margin-top: 0;">
 						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control">
+							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
 		                    </select>
 		                </div>
 

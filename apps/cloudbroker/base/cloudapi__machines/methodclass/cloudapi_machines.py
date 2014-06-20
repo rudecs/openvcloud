@@ -575,7 +575,7 @@ class cloudapi_machines(object):
         query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
         return self.osis_logs.search(query)['hits']['hits']
 
-
+    @authenticator.auth(acl='R')
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
         """
         Create a export/backup of a machine
@@ -620,7 +620,8 @@ class cloudapi_machines(object):
         id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-
+    
+    @authenticator.auth(acl='C')
     def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
         """
         restore export to a new machine
@@ -666,4 +667,24 @@ class cloudapi_machines(object):
 
         id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
+
+    @authenticator.auth(acl='R')
+    def listExports(self, machineId, status, **kwargs):
+        """
+        List exported images
+        param:machineId id of the machine
+        param:status filter on specific status
+        result dict
+        """
+        query = {}
+        if status:
+            query['status'] = status
+        if machineId:
+            query['machineId'] = machineId
+        exports = self.models.vmexport.simpleSearch(query)
+        exportresult = []
+        for exp in exports:
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+        return exportresult
+
        
