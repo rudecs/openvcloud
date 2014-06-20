@@ -13,8 +13,8 @@ h1. Your Ultra Secure Virtual Datacenter Starting From 50 USD
 
 Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
 * Limited Time Offer from Mothership{{html:<sup>1</sup>}}: choose your cloud credit package
-* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
-* Uploaded 50, 95 or 160 USD and your credit will be topped up immediately after successfull payment
+* This promotional offer provides you with cloud credit up to 70% more cost effective than Amazon EC2
+* Signup now and test - No Purchase Obligation
 
 {{div: class=row}}
     {{div2: class=col-md-4}}
@@ -24,7 +24,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>100</del> 50 USD</span></h1>}}
+                    {{html:<h1><span class=subscript>Buy $100 credit for only $50</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -52,7 +52,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>200</del> 95 USD</span></h1>}}
+                    {{html:<h1><span class=subscript>Buy $200 credit for only $95</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -80,7 +80,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>400</del> 160 USD</span></h1>}}
+                    {{html:<h1><span class=subscript>Buy $400 credit for only $160</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
