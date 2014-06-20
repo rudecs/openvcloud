@@ -12,7 +12,8 @@
 h1. Limited Time Offer from Mothership{{html:<sup>1</sup>}}
 
 Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean (*)
+* Choose your cloud credit package below (*)
+* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
 * Signup Now and Test - No Purchase Obligation
 
 {{div: class=row}}
