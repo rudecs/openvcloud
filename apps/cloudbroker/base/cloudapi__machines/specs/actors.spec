@@ -196,4 +196,12 @@
         var:size int,, result size
         result:list
 
+    method:listExports
+        """
+        List exported images
+        """
+        var:machineId str,, id of the machine
+        var:status str,, filter on specific status @tags: optional
+        result:dict a json list
+
     

@@ -63,6 +63,14 @@
 		"""
         var:accountId int,, id of the account
 		result:dict A json dict
+
+	method:listExports
+	    """
+	    List exported images
+	    """
+	    var:accountId int,, id of the account
+	    var:status str,, filter on specific status
+	    result:dict a json list
 		
 	method:getCreditBalance
 		"""
