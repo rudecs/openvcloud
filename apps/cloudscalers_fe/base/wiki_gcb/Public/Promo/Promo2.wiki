@@ -11,11 +11,6 @@
 {{div3: class=half copy col-md-12}}
 h1. Your Ultra Secure Virtual Datacenter Starting From 50 USD
 
-Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* Limited Time Offer from Mothership{{html:<sup>1</sup>}}: Choose your cloud credit package below (*)
-* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
-* Signup Now and Test - No Purchase Obligation
-
 {{div: class=row}}
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
@@ -35,10 +30,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
                     <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
                     <tr><td>Private enterprise-class firewall</td></tr>
-                    <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>100GB Data traffic included</td></tr>
-                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -66,10 +58,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
                     <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
                     <tr><td>Private enterprise-class firewall</td></tr>
-                    <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>100GB Data traffic included</td></tr>
-                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -97,10 +86,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
                     <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
                     <tr><td>Private enterprise-class firewall</td></tr>
-                    <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>100GB Data traffic included</td></tr>
-                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -112,7 +98,15 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
 
 {{div}}
 
-(*) Uploaded amount is in credits and will be topped up immediately after successfull payment
+Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
+* Limited Time Offer from Mothership{{html:<sup>1</sup>}}: choose your cloud credit package
+* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean
+* Signup Now and Test - No Purchase Obligation
+* Uploaded amount is in credits and will be topped up immediately after successfull payment
+
+Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
+* For a limited time, we are offering you a $50 Free Credit
+* Signup now - No Obligation
 
 @divend
 @divend
