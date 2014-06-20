@@ -18,7 +18,13 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
 * Test drive right away with some complimentary credit
 * For a limited time, we are offering you a big discount on every upload of 50, 75, 125 or 200 USD and we make it 100, 200, 400 or 800 USD.
 * This promotional launch offer provides you with a package 60% cheaper than Digital Ocean and up to 70% cheaper than Amazon EC2.
-* [CLICK HERE TO SIGN UP|Signup] - No Obligation
+* Signup Now - No Obligation
+
+{{div: class=row}}
+    {{div2: class=col-md-3}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up Now</a>}}
+    {{div2}}
+{{div}}
 
 Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
 * A Private enterprise-class firewall dedicated you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
@@ -145,8 +151,6 @@ You can use the credit as preferred, to give you an idea what you get for the du
         {{div3}}
     {{div2}}
 {{div}}
-
-(*) This is a limited time offer and will be granted on a first-come first-serve basis!
 
 @divend
 @divend
