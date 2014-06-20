@@ -22,7 +22,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
 @LF
 
 Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
-* A Private enterprise-class firewall dedicated you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
+* A Private enterprise-class firewall dedicated to you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
 * Virtual Machine deployment in under 5 seconds
 * Immediate Snapshots & Rollbacks
 * PRICE! Virtual Machines start at $5.00 USD/Month. SSD Storage starts at $0.03/GB/Month, [CLICK HERE FOR PRICING DETAILS|Pricing] 

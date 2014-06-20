@@ -9,33 +9,18 @@
 {{div: class=white}}
 {{div2: class=container why-page}}
 {{div3: class=half copy col-md-12}}
-h1. Limited Time Offer: Super Discount on year packages from Mothership{{html:<sup>1</sup>}}
+h1. Limited Time Offer from Mothership{{html:<sup>1</sup>}}
 
 Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
 * Test drive right away with some complimentary credit
-* For a limited time, we are offering you a big discount on every upload of 50, 75, 125 or 200 USD and we make it 100, 200, 400 or 800 USD.
-* This promotional launch offer provides you with a package 60% cheaper than Digital Ocean and up to 70% cheaper than Amazon EC2.
-* Signup Now - No Obligation
+* This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean (*)
+* Signup Now and Test - No Purchase Obligation
 
 {{div: class=row}}
-    {{div2: class=col-md-3}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up Now</a>}}
-    {{div2}}
-{{div}}
-@LF
-Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
-* A Private enterprise-class firewall dedicated you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
-* Virtual Machine deployment in under 5 seconds
-* Immediate Snapshots & Rollbacks
-* PRICE! Virtual Machines start at $5.00 USD/Month. SSD Storage starts at $0.03/GB/Month, [CLICK HERE FOR PRICING DETAILS|Pricing] 
-
-You can use the credit as preferred, to give you an idea what you get for the duration of a full year, we have compiled some examples:
-
-{{div: class=row}}
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center"></h3>}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Bronze</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -43,15 +28,17 @@ You can use the credit as preferred, to give you an idea what you get for the du
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>0,5GB RAM</td></tr>
-                    <tr><td>1 Core</td></tr>
-                    <tr><td>20GB SSD</td></tr>
-                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
-                    <tr><td>Private Defense Shield</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
                     <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>1.2TB from/to internet per year</td></tr>
+                    <tr><td>100GB Data traffic included</td></tr>
+                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -61,10 +48,10 @@ You can use the credit as preferred, to give you an idea what you get for the du
         {{div3}}
     {{div2}}
 
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center"></h3>}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Silver</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -72,15 +59,17 @@ You can use the credit as preferred, to give you an idea what you get for the du
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>1GB RAM</td></tr>
-                    <tr><td>1 Core</td></tr>
-                    <tr><td>30GB SSD</td></tr>
-                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
-                    <tr><td>Private Defense Shield</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
                     <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>1.2TB from/to internet per year</td></tr>
+                    <tr><td>100GB Data traffic included</td></tr>
+                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -90,10 +79,10 @@ You can use the credit as preferred, to give you an idea what you get for the du
         {{div3}}
     {{div2}}
 
-    {{div2: class=col-md-3}}
+    {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center"></h3>}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Gold</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -101,15 +90,17 @@ You can use the credit as preferred, to give you an idea what you get for the du
                 {{div5}}
                 {{html:
                 <table class="table">
-                    <tr><td>2GB RAM</td></tr>
-                    <tr><td>2 Cores</td></tr>
-                    <tr><td>50GB SSD</td></tr>
-                    <tr><td>Private Cloud Space</td></tr>
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
                     <tr><td>Port Forwarding</td></tr>
-                    <tr><td>Private Defense Shield</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
                     <tr><td>Public IPv4 Address</td></tr>
                     <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>1.2TB from/to internet per year</td></tr>
+                    <tr><td>100GB Data traffic included</td></tr>
+                    <tr><td>Hourly charging</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -119,37 +110,10 @@ You can use the credit as preferred, to give you an idea what you get for the du
         {{div3}}
     {{div2}}
 
-    {{div2: class=col-md-3}}
-        {{div3: class=panel panel-primary}}
-            {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center"></h3>}}
-            {{div4}}
-            {{div4: class=panel-body}}
-                {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>804</del> 200 USD/year</span></h1>}}
-                {{div5}}
-                {{html:
-                <table class="table">
-                    <tr><td>4GB RAM</td></tr>
-                    <tr><td>2 Cores</td></tr>
-                    <tr><td>100GB SSD</td></tr>
-                    <tr><td>Private Cloud Space</td></tr>
-                    <tr><td>Port Forwarding</td></tr>
-                    <tr><td>Private Defense Shield</td></tr>
-                    <tr><td>Public IPv4 Address</td></tr>
-                    <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>1.2TB from/to internet per year</td></tr>
-                </table>
-                }}
-            {{div4}}
-            {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
-            {{div4}}
-        {{div3}}
-    {{div2}}
 {{div}}
 
-@divend
-@divend
-@divend
+(*) Uploaded amount is in credits and will be topped up immediately after successfull payment
 
+@divend
+@divend
+@divend
