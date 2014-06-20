@@ -97,16 +97,7 @@ class cloudapi_accounts(object):
         images = [res['fields'] for res in results]
         return images
 
-    @authenticator.auth(acl='R')
-    def listExports(self, accountId, status, **kwargs):
-        """
-        List exported images
-        param:accountId id of the account
-        param:status filter on specific status
-        result dict
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listExports")
+        
 
 
     @authenticator.auth(acl='A')
