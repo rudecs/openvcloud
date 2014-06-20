@@ -12,7 +12,6 @@
 h1. Limited Time Offer from Mothership{{html:<sup>1</sup>}}
 
 Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* Test drive right away with some complimentary credit
 * This promotional launch offer provides you with cloud credit up to 70% cheaper than Amazon EC2 and Digital Ocean (*)
 * Signup Now and Test - No Purchase Obligation
 
@@ -24,7 +23,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>100</del> 75 USD/year</span></h1>}}
+                    {{html:<h1><span class=subscript><del>100</del> 75 USD</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -55,7 +54,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>200</del> 125 USD/year</span></h1>}}
+                    {{html:<h1><span class=subscript><del>200</del> 125 USD</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -86,7 +85,7 @@ Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtu
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1><span class=subscript><del>400</del> 200 USD/year</span></h1>}}
+                    {{html:<h1><span class=subscript><del>400</del> 200 USD</span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
