@@ -8,7 +8,7 @@ angular.module('cloudscalers.controllers')
 
 
     $scope.refreshCredit = function(){
-        Account.getCreditBalance($scope.currentAccount).then(
+        Account.getCreditBalance().then(
             function(result){
                 $scope.credit = result.credit;
             },

@@ -146,7 +146,7 @@ class cloudapi_accounts(object):
         raise NotImplementedError("not implemented method update")
     
     @authenticator.auth(acl='R')
-    def getCreditBalance(self, accountId, **kwargs):
+    def getCreditBalance(self, **kwargs):
         """
         Get the current available credit
 
@@ -163,8 +163,15 @@ class cloudapi_accounts(object):
         
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
     
+        ctx = kwargs['ctx']
+        currentUser = ctx.env['beaker.session']['user']
+        accountQuery = {'fields': ['id']}
+        accountQuery['query'] = {'term': {"userGroupId": currentUser}}
+        account = self.models.account.find(ujson.dumps(accountQuery))['result']
+        accountId = [res['fields']["id"] for res in account]
+
         query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId[0]}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
         results = self.models.credittransaction.find(ujson.dumps(query))['result']
         history = [res['fields'] for res in results]
         balance = 0.0
