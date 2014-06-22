@@ -8,41 +8,101 @@
 }}
 {{div: class=white}}
 {{div2: class=container why-page}}
-{{div3: class=half copy col-md-12}}
-h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
+{{div3: class=col-md-12}}
+h1. Your Ultra Secure Virtual Datacenter Starting From 50 USD
+
 Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-* For a limited time, we are offering you a $50 Free Credit
-* Signup now - No Obligation
+* Limited Time Offer from Mothership{{html:<sup>1</sup>}}: choose your cloud credit package
+* This promotional offer provides you with cloud credit up to 70% more cost effective than Amazon EC2
+* Signup now and test - No Purchase Obligation
 
-{{div4: class=row}}
-    {{div5: class=col-md-3}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up Now</a>}}
-    {{div5}}
-{{div4}}
-@LF
+{{div: class=row}}
+    {{div2: class=col-md-4}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Bronze</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1><span class=subscript>Buy $100 credit for only $50</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
+                    <tr><td>Port Forwarding</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
+                    <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
 
-Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
-* A Private enterprise-class firewall dedicated to you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
-* Virtual Machine deployment in under 5 seconds
-* Immediate Snapshots & Rollbacks
-* PRICE! Virtual Machines start at $5.00 USD/Month. SSD Storage starts at $0.03/GB/Month, [CLICK HERE FOR PRICING DETAILS|Pricing] 
+    {{div2: class=col-md-4}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Silver</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1><span class=subscript>Buy $200 credit for only $95</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
+                    <tr><td>Port Forwarding</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
+                    <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
 
-{{div4: class=row}}
-    {{div5: class=col-md-3}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up Now</a>}}
-    {{div5}}
-{{div4}}
-@LF
-h1. Visit our Cloud Decks
+    {{div2: class=col-md-4}}
+        {{div3: class=panel panel-primary}}
+            {{div4: class=panel-heading}}
+                {{html: <h3 class="headPrice center">Virtual Private Datacenter Gold</h3>}}
+            {{div4}}
+            {{div4: class=panel-body}}
+                {{div5: class=the-price}}
+                    {{html:<h1><span class=subscript>Buy $400 credit for only $160</span></h1>}}
+                {{div5}}
+                {{html:
+                <table class="table">
+                    <tr><td>Virtual Machines on SSD</td></tr>
+                    <tr><td>Backup</td></tr>
+                    <tr><td>Snapshots</td></tr>
+                    <tr><td>S3 Storage</td></tr>
+                    <tr><td>Private Networking</td></tr>
+                    <tr><td>Port Forwarding</td></tr>
+                    <tr><td>Private enterprise-class firewall</td></tr>
+                    <tr><td>Unlimited Data Transfer in Datacenter</td></tr>
+                </table>
+                }}
+            {{div4}}
+            {{div4: class=panel-footer}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+            {{div4}}
+        {{div3}}
+    {{div2}}
 
-Mothership{{html:<sup>1</sup>}} brings a unified cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
-
-* [Machine Deck]: Powerful IaaS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the fast snapshotting and rollback snapshots. Automate using the simple API.
-* [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API.
-* [Desktop Deck] (Alpha): The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce. 
-* [Application Deck] (Q4): The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
+{{div}}
 
 @divend
 @divend
 @divend
-
