@@ -74,5 +74,5 @@
 		"""
 		Get all the credit transactions (positive and negative) for this account.
 		"""
-		var:accountId int,, id of the account
 		result:[], A json list with the transactions details.
+

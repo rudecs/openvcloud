@@ -16,7 +16,7 @@ angular.module('cloudscalers.controllers')
                 $scope.credit = "Unavailable";
             }
         );
-        Account.getCreditHistory($scope.currentAccount).then(
+        Account.getCreditHistory().then(
             function(result){
                 $scope.transactions = result;
             }

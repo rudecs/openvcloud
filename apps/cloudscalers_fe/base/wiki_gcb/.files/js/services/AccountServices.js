@@ -58,8 +58,8 @@ angular.module('cloudscalers.services')
                       function(reason){return $q.reject(reason);}
                     );
             },
-            getCreditHistory: function(account) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory?accountId=' + account.id).
+            getCreditHistory: function() {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory').
                     then(
 											function(result){return result.data;},
                       function(reason){return $q.reject(reason);}
