@@ -11,7 +11,8 @@ angular.module('cloudscalers.controllers')
                 for (accountId in cloudspacesGroups){
                     var account = {id:accountId, name:cloudspacesGroups[accountId][0]['accountName']}
                     account.cloudspaces = cloudspacesGroups[accountId];
-                    accountCloudSpaceHierarchy.push(account)
+		    account.acl = cloudspacesGroups[accountId][0]['accountAcl'];
+                    accountCloudSpaceHierarchy.push(account);
                 }
                 $scope.AccountCloudSpaceHierarchy = accountCloudSpaceHierarchy;
             }

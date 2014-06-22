@@ -2,7 +2,7 @@ angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
-        $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName} : {id:''};
+        $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, acl: $scope.currentSpace.accountAcl} : {id:''};
 
         $scope.setCurrentCloudspace = function(space) {
             if (space.locationurl != null){
@@ -23,7 +23,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.setCurrentAccount = function(){
             if ($scope.currentSpace){
-                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName};
+                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, acl: $scope.currentSpace.accountAcl};
             }
         };
 
