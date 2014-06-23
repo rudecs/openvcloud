@@ -40,10 +40,10 @@ h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
 
     {{div4: class=col-md-6 borderL1}}
         Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
-        * A Private enterprise-class firewall dedicated to you only, offering superior security capabilities and extended control over traffic routing
-        * Virtual Machine deployment in under 5 seconds
-        * Immediate Snapshots & Rollbacks
-        * Cost effective! Virtual SSD Machines start at $5.00 USD/Month. Storage starts at $0.03/GB/Month. ([Check Pricing Details|Pricing]) 
+        * A Private enterprise-class firewall dedicated to you only
+        * Offering superior security capabilities and extended control over traffic routing
+        * Virtual Machine deployment in under 5 seconds, immediate Snapshots & Rollbacks
+        * Virtual Machines start at $5.00 USD/Month, S3 storage at $0.03/GB/Month ([Pricing]) 
             {{div5: class=row}}
                 {{div6: class=col-md-3}}
 
@@ -55,7 +55,7 @@ h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
 {{html:<hr>}}
 {{div3: class=col-md-12 mT15 forLeftPad}}
 {{div4: class=row}}
-h1. Visit our Cloud Decks
+h1. Enter the Mothership{{html:<sup>1</sup>}} Cloud Decks
 
 Mothership{{html:<sup>1</sup>}} brings a unified cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
 
