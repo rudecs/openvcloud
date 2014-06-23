@@ -53,7 +53,6 @@
 		"""
 		get account. 
 		"""
-        var:accountId int,, id of the account
 		result:dict A json dict
 
 

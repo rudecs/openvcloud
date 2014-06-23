@@ -74,14 +74,20 @@ class cloudapi_accounts(object):
         return self.models.account.delete(accountId)
 
     @authenticator.auth(acl='R')
-    def get(self, accountId, **kwargs):
+    def get(self, **kwargs):
         """
         get account.
-        param:accountId id of the account
         result dict
         """
         #put your code here to implement this method
-        return self.models.account.get(accountId)
+       
+        ctx = kwargs['ctx']
+        currentUser = ctx.env['beaker.session']['user']
+        accountQuery = {'fields': ['id']}
+        accountQuery['query'] = {'term': {"userGroupId": currentUser}}
+        account = self.models.account.find(ujson.dumps(accountQuery))['result']
+        accountId = [res['fields']["id"] for res in account]
+        return self.models.account.get(accountId[0])
 
 
     @authenticator.auth(acl='R')
