@@ -203,16 +203,22 @@ class cloudapi_cloudspaces(object):
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
         
+        accountQuery = {'fields': ['id']}
+        accountQuery['query'] = {'term': {"userGroupId": user}}
+        account = self.models.account.find(ujson.dumps(accountQuery))['result']
+        accountId = [res['fields']["id"] for res in account]  
+
         #during the transitions phase, not all locations might be filled in
         for cloudspace in cloudspaces:
             if not 'location' in cloudspace or len(cloudspace['location']) == 0:
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
         locations = self.cb.extensions.imp.getLocations()
+
         for cloudspace in cloudspaces:
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
-            cloudspace['accountAcl'] = self.models.account.get(cloudspace['accountId']).acl
+            cloudspace['accountAcl'] = self.models.account.get(accountId[0]).acl
 
         return cloudspaces
 
