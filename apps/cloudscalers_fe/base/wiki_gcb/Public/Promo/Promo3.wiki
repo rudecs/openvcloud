@@ -28,7 +28,6 @@ h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
         * To use for Virtual Machines and Storage
         * [Signup now|Sign Up] - No Obligation
         * No automatic credit card charges
-        \\
             {{div5: class=row mTButton}}
                 {{div6: class=col-md-3}}
 
