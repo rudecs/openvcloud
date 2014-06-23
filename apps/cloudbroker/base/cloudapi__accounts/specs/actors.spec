@@ -63,17 +63,16 @@
 		"""
         var:accountId int,, id of the account
 		result:dict A json dict
-		
+
 	method:getCreditBalance
 		"""
 		Get the current available credit
 		"""
-		var:accountId int,, id of the account
 		result:dict A json dict containing the available credit
 		
 	method:getCreditHistory
 		"""
 		Get all the credit transactions (positive and negative) for this account.
 		"""
-		var:accountId int,, id of the account
 		result:[], A json list with the transactions details.
+

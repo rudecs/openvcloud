@@ -89,8 +89,12 @@ def action(name, cloudspaceId, vmexportId, sizeId, description, storageparameter
     stack.images.append(imageId)
     cloudbrokermodel.stack.set(stack)
     disksize = vmexport.original_size
-
-    cl = j.core.portal.getClient('127.0.0.1', 80, '1234')
+    
+    portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'cloudbroker', 'cfg', 'portal')
+    portalcfg = j.config.getConfig(portalcfgpath).get('main', {})
+    port = int(portalcfg.get('webserverport', 9999))
+    secret = portalcfg.get('secret')
+    cl = j.core.portal.getClient('127.0.0.1', port, secret)
     cl.getActor('cloudapi', 'machines')
 
     machineid = j.apps.cloudapi.machines.create(cloudspaceId, name, description, sizeId, imageId, disksize)
