@@ -168,7 +168,8 @@ class cloudapi_cloudspaces(object):
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
-                        "publicipaddress": cloudspaceObject.publicipaddress}
+                        "publicipaddress": cloudspaceObject.publicipaddress,
+                        "location": cloudspaceObject.location}
         return cloudspace
 
     @authenticator.auth(acl='U')
