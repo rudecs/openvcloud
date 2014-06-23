@@ -22,11 +22,12 @@
 {{div2: class=container why-page}}
 h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
 {{div3: class=row}}
-    {{div4: class=col-md-5}}
-        Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications.
-        \\
+    {{div4: class=col-md-6}}
+        Mothership{{html:<sup>1</sup>}} is a new and innovative cloud platform for virtual machines, storage, and applications:
         * For a limited time, we are offering you a $50 Free Credit
-        * Signup now - No Obligation
+        * To use for Virtual Machines and Storage
+        * [Signup now|Sign Up] - No Obligation
+        * No automatic credit card charges
         \\
             {{div5: class=row mTButton}}
                 {{div6: class=col-md-3}}
@@ -37,12 +38,12 @@ h1. Limited Time Offer:  Free Cloud Hosting From Mothership{{html:<sup>1</sup>}}
 
     {{div4}}
 
-    {{div4: class=col-md-7 borderL1}}
+    {{div4: class=col-md-6 borderL1}}
         Mothership{{html:<sup>1</sup>}} offers many enhanced features compared to existing cloud offerings:
-        * A Private enterprise-class firewall dedicated to you only, offering superior security capabilities and extended control over traffic routing within your virtual infrastructure
+        * A Private enterprise-class firewall dedicated to you only, offering superior security capabilities and extended control over traffic routing
         * Virtual Machine deployment in under 5 seconds
         * Immediate Snapshots & Rollbacks
-        * PRICE! Virtual Machines start at $5.00 USD/Month. SSD Storage starts at $0.03/GB/Month, [CLICK HERE FOR PRICING DETAILS|Pricing] 
+        * Cost effective! Virtual SSD Machines start at $5.00 USD/Month. Storage starts at $0.03/GB/Month. ([Check Pricing Details|Pricing]) 
             {{div5: class=row}}
                 {{div6: class=col-md-3}}
 
