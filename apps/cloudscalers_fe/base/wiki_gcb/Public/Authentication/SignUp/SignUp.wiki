@@ -87,15 +87,15 @@
                 </div>
                 <div id="flags-container" class="field">
                   <label class="loginFieldName loginFieldName2">Preferred Location:</label>
-                  <div class="mtl center">
-                        <ul class="flags-list mtl mll row inline-block">
+                  <div class="mtl">
+                        <ul class="flags-list mtl mll row">
                           <li class="mrl" ng-class="{ 'selected': selectedLocation == 'ca1' }" ng-click="itemClicked('ca1')">
                               <a href="" class="canada"></a>
-                              <span class="mts display-block cursor-default">Canada</span>
+                              <span class="mts block cursor-default">Canada</span>
                           </li>
                           <li class="mrm" ng-class="{ 'selected': selectedLocation == 'us1' }" ng-click="itemClicked('us1')">
                               <a href="" class="united states"></a>
-                              <span class="mts display-block cursor-default">United States</span>
+                              <span class="mts block cursor-default">United States</span>
                           </li>
                       </ul>
                     </div>
