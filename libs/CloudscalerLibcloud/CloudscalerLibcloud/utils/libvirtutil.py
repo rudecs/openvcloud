@@ -97,9 +97,9 @@ class LibvirtUtil(object):
             if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
                 source = disk.find('source')
                 if source != None:
-                    if disk.attrib['device'] == 'disk':
+                    if 'dev' in source.attrib:
                         diskfiles.append(source.attrib['dev'])
-                    if disk.attrib['device'] == 'cdrom':
+                    if 'file' in source.attrib:
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 
@@ -412,7 +412,10 @@ class LibvirtUtil(object):
             if disk.attrib['device'] == 'disk':
                 source = disk.find('source')
                 if source != None:
-                    diskfiles.append(source.attrib['dev'])
+                    if 'dev' in source.attrib:
+                        diskfiles.append(source.attrib['dev'])
+                    if 'file' in source.attrib:
+                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def _getPool(self, domain):
