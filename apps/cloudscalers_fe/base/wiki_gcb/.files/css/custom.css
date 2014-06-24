@@ -430,7 +430,7 @@ footer .container { width: auto; }
 body { overflow-x: hidden; }
 .nav-tabs>li>a { padding: 5px 7px !important; }
 .list .span3 { width: 104px !important; clear: none; }
-.list .span9 { width: 178px; clear: none; display: inline-block; position: absolute; }
+.list .span9 { clear: none; display: inline-block; position: absolute; }
 .mrl.ng-binding { }
 .mrl.ng-binding + .ng-binding { display: inline-block; position: absolute; left: 16px; top: 25px; }
 .initial { height: 57px !important; display: inline-block; }
@@ -502,7 +502,7 @@ a { color: #06a7e2; text-decoration: none; }
 .control-group { margin: 15px 0; display: inline-block; width: 100%; color: #000; font-size: 16px; }
 .controls .btn.btn-small { float: left; border: 1px solid #06a7e2; border-radius: 0; margin: 0 0 0 20px; }
 label + .controls { display: table-cell; margin: 0 0 0 0; }
-.list li { clear: both; width: 100%; display: inline-block; border-bottom: 1px solid #77777b; height: 33px; }
+.list li { clear: both; width: 100%; display: inline-block; border-bottom: 1px solid #77777b; min-height: 33px; }
 .list .span3 { font-size: 14px; color: #77777b; margin: 5px 0; }
 .list { padding-left: 10px; }
 .dropdown.noPad.open .dropdown-toggle, .dropdown.open > a { background: transparent !important; color: #000 !important; }
@@ -629,7 +629,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .form-horizontal.ng-scope h2 { color: #000; }
 table.table td { color: #000; }
 .grey .panel-title>a:hover { background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; }
-.tab-pane.active.active2.ng-scope ul li { font-size: 13px; height: 28px; line-height: 23px; }
+.tab-pane.active.active2 ul li { font-size: 13px; min-height: 28px; line-height: 23px; }
 .span3.actions .actions { margin: 0; padding: 0; }
 .span3.actions { border-left: 1px solid #77777b; padding-left: 30px; margin: 0 0 0 20px; }
 .tab-pane.tab-pane2 .snap2 { margin: 0 0 5px 0; display: inline-block; }
@@ -728,7 +728,7 @@ canvas { display: block; float: left; }
 .newDecks .color3 { clear:none; }
 .newDecks .boxes { margin: 10px 0; }
 .list .span3 { width: 151px; clear: none; }
-.list .span9 { width: 343px; clear: none; display: inline-block; }
+.list .span9 { clear: none; display: inline-block; }
 .span9.mtm.ng-binding { margin-top: 0; }
 .inputStyle { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 16px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .inputStyle:focus, .inputStyle:active { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 17px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
