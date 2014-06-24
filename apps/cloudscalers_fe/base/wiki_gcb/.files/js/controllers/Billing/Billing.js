@@ -6,8 +6,6 @@ angular.module('cloudscalers.controllers')
     $scope.credit = "Unavailable";
     $scope.creditToAdd = 25;
 
-    $scope.userRights = _.findWhere($scope.$parent.currentSpace.acl,{ userGroupId: $scope.$parent.currentUser.username });
-
     $scope.refreshCredit = function(){
         Account.getCreditBalance($scope.currentAccount).then(
             function(result){

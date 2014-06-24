@@ -45,6 +45,8 @@ angular.module('cloudscalers.controllers')
             $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
         }, true);
 
+	$scope.userRights = _.findWhere($scope.currentSpace.acl,{ userGroupId: $scope.currentUser.username });
+
         $scope.logout = function() {
             User.logout();
 

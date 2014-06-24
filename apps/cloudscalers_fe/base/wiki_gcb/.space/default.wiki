@@ -140,7 +140,7 @@
         <li><a href="../$$space/ApiS3">Storage API</a></li>
         <li><a href="../kb/">Knowledge Base</a></li>
         <li><a href="http://support.mothership1.com">Support</a></li>
-        <li><a href="../$$space/AccountSettings">Billing</a></li>
+        <li ng-show="userRights"><a href="../$$space/AccountSettings">Billing</a></li>
         <li><a href="../$$space/CloudSpaceSettings">Cloud Space Settings</a></li>
 }}
 #        <li class="dropdown">
