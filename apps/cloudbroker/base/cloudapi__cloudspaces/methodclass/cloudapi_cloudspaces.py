@@ -58,18 +58,15 @@ class cloudapi_cloudspaces(object):
             acl.right = accesstype
             return self.models.cloudspace.set(cs)[0]
 
-    @authenticator.auth(acl='A')
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
-        """
-        Create a extra cloudspace
-        param:name name of space to create
-        param:access list of ids of users which have full access to this space
-        param:maxMemoryCapacity max size of memory in space (in GB)
-        param:maxDiskCapacity max size of aggregated disks (in GB)
-        result int
-
-        """
-        #TODO: redirect to different location if necessary
+    def _deploy(self, cloudspaceId):
+        cs = self.models.cloudspace.get(cloudspaceId)
+        if cs.status != 'VIRTUAL':
+            return
+        
+        #TODO: check location
+        cs.status = 'DEPLOYING'
+        self.models.cloudspace.set(cs)
+        
         networkid = self.libvirt_actor.getFreeNetworkId()
         if not networkid:
             raise RuntimeError("Failed to get networkid")
@@ -77,6 +74,31 @@ class cloudapi_cloudspaces(object):
         if not publicipaddress:
             self.libvirt_actor.releaseNetworkId(networkid)
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+        
+        cs.networkId = networkid
+        cs.publicipaddress = publicipaddress
+        
+        try:
+            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, publicipaddress, 'routeros', networkid)
+        except:
+            self.libvirt_actor.releaseNetworkId(networkid)
+            self.models.cloudspace.delete(cloudspaceId)
+            raise
+        
+        cs.status = 'DEPLOYED'
+        self.models.cloudspace.set(cs)
+
+    @authenticator.auth(acl='A')
+    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
+        """
+        Create an extra cloudspace
+        param:name name of space to create
+        param:access list of ids of users which have full access to this space
+        param:maxMemoryCapacity max size of memory in space (in GB)
+        param:maxDiskCapacity max size of aggregated disks (in GB)
+        result int
+
+        """
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -87,20 +109,11 @@ class cloudapi_cloudspaces(object):
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
-        cs.networkId = networkid
-        cs.status = 'UNCONFIRMED'
-        cs.publicipaddress = publicipaddress
+        cs.status = 'VIRTUAL'
         cloudspace_id = self.models.cloudspace.set(cs)[0]
-        try:
-            self.netmgr.fw_create(str(cloudspace_id), 'admin', password, publicipaddress, 'routeros', networkid)
-        except:
-            self.libvirt_actor.releaseNetworkId(networkid)
-            self.models.cloudspace.delete(cloudspace_id)
-            raise
-
-        cs = self.models.cloudspace.get(cloudspace_id)
-        cs.status = 'CREATED'
-        self.models.cloudspace.set(cs)
+        
+        self._deploy(cloudspace_id, kwargs['ctx'])
+        
         return cloudspace_id
 
     @authenticator.auth(acl='A')
