@@ -8,7 +8,7 @@ angular.module('cloudscalers.controllers')
 
 
     $scope.refreshCredit = function(){
-        Account.getCreditBalance().then(
+        Account.getCreditBalance($scope.currentAccount).then(
             function(result){
                 $scope.credit = result.credit;
             },
@@ -16,7 +16,7 @@ angular.module('cloudscalers.controllers')
                 $scope.credit = "Unavailable";
             }
         );
-        Account.getCreditHistory().then(
+        Account.getCreditHistory($scope.currentAccount).then(
             function(result){
                 $scope.transactions = result;
             }

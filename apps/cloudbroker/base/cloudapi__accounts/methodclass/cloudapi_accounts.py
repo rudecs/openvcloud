@@ -74,20 +74,15 @@ class cloudapi_accounts(object):
         return self.models.account.delete(accountId)
 
     @authenticator.auth(acl='R')
-    def get(self, **kwargs):
+    def get(self, accountId, **kwargs):
         """
         get account.
+        param:accountId id of the account
         result dict
         """
         #put your code here to implement this method
-       
-        ctx = kwargs['ctx']
-        currentUser = ctx.env['beaker.session']['user']
-        accountQuery = {'fields': ['id']}
-        accountQuery['query'] = {'term': {"userGroupId": currentUser}}
-        account = self.models.account.find(ujson.dumps(accountQuery))['result']
-        accountId = [res['fields']["id"] for res in account]
-        return self.models.account.get(accountId[0])
+
+        return self.models.account.get(accountId)
 
 
     @authenticator.auth(acl='R')
@@ -152,10 +147,10 @@ class cloudapi_accounts(object):
         raise NotImplementedError("not implemented method update")
 
     @authenticator.auth(acl='R')
-    def getCreditBalance(self, **kwargs):
+    def getCreditBalance(self, accountId, **kwargs):
         """
         Get the current available credit
-
+        param:accountId id of the account
         result:dict A json dict containing the available credit
         """
         # For now, don't get the balance statement, just calculate it
@@ -167,17 +162,9 @@ class cloudapi_accounts(object):
         #balance = [res['fields'] for res in results]
         
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
-        
-        # should be replaced with account.list call directly
-        ctx = kwargs['ctx']
-        currentUser = ctx.env['beaker.session']['user']
-        accountQuery = {'fields': ['id']}
-        accountQuery['query'] = {'term': {"userGroupId": currentUser}}
-        account = self.models.account.find(ujson.dumps(accountQuery))['result']
-        accountId = [res['fields']["id"] for res in account]
 
         query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId[0]}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
         results = self.models.credittransaction.find(ujson.dumps(query))['result']
         history = [res['fields'] for res in results]
         balance = 0.0
@@ -187,22 +174,15 @@ class cloudapi_accounts(object):
         return {'credit':balance, 'time':int(time.time())}
 
     @authenticator.auth(acl='R')
-    def getCreditHistory(self, **kwargs):
+    def getCreditHistory(self, accountId, **kwargs):
         """
         Get all the credit transactions (positive and negative) for this account.
-        
+        param:accountId id of the account
         result:[] A json list with the transactions details.
         """
-        # should be replaced with account.list call directly
-        ctx = kwargs['ctx']
-        currentUser = ctx.env['beaker.session']['user']
-        accountQuery = {'fields': ['id']}
-        accountQuery['query'] = {'term': {"userGroupId": currentUser}}
-        account = self.models.account.find(ujson.dumps(accountQuery))['result']
-        accountId = [res['fields']["id"] for res in account]        
 
         query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
-        query['query'] = {'term': {"accountId": accountId[0]}}
+        query['query'] = {'term': {"accountId": accountId}}
         results = self.models.credittransaction.find(ujson.dumps(query))['result']
         history = [res['fields'] for res in results]
         return history

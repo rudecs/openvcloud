@@ -51,15 +51,15 @@ angular.module('cloudscalers.services')
                     .then(function(result) { return result.data; },
                           function(reason) { return reason.data; });
             },
-            getCreditBalance: function() {
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance').
+            getCreditBalance: function(account) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance?accountId=' + account.id).
                     then(
 											function(result){return result.data;},
                       function(reason){return $q.reject(reason);}
                     );
             },
-            getCreditHistory: function() {
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory').
+            getCreditHistory: function(account) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory?accountId=' + account.id).
                     then(
 											function(result){return result.data;},
                       function(reason){return $q.reject(reason);}

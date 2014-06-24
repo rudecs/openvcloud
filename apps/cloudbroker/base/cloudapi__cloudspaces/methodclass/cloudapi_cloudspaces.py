@@ -202,11 +202,6 @@ class cloudapi_cloudspaces(object):
         query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
-        
-        accountQuery = {'fields': ['id']}
-        accountQuery['query'] = {'term': {"userGroupId": user}}
-        account = self.models.account.find(ujson.dumps(accountQuery))['result']
-        accountId = [res['fields']["id"] for res in account]  
 
         #during the transitions phase, not all locations might be filled in
         for cloudspace in cloudspaces:
@@ -218,7 +213,6 @@ class cloudapi_cloudspaces(object):
         for cloudspace in cloudspaces:
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
-            cloudspace['accountAcl'] = self.models.account.get(accountId[0]).acl
 
         return cloudspaces
 
