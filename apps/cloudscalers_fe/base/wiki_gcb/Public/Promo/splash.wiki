@@ -1,0 +1,87 @@
+@template promo_template
+{{html:
+<head>
+
+<style type="text/css">
+ @media (max-width: 1376px) {
+ .primaryMine {font-size: 14px !important; padding: 8px 10px !important;}
+}
+	 .logo {  margin-right: 30px;}
+	 .content.clearfix.padding center h1 { /*text-align:center !important;*/ /*color: #000 !important;*/font-weight: bolder !important;}
+	 .account-container.stacked { width: auto !important; margin-top: 0;}
+	 .login-symbol { background: none !important;}
+	 .white { background: none !important; padding-top:0 !important;}
+	 .content.clearfix.padding h1 { text-align:left; margin: 16px 0 19px 0;}
+	 ul {padding: 0 0 0 16px;}
+	 ul li { color: #FFF !important;list-style: initial;}
+	 .primaryMine { width: 500px !important;margin: 15px auto; display:block;}
+	 .content.clearfix.padding { color: #FFF; background: rgb(6,167,226); /* Old browsers */ background: -moz-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(6,167,226,0.6)), color-stop(100%, rgba(255,255,255,0.6))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* IE10+ */ background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%, rgba(167, 167, 167, 0.6) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff', GradientType=0 );} /* IE6-9 */
+  </style>
+</head>
+
+<div class="container white">
+
+<a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width="318" height="119"></a>
+	<div class="account-container stacked upMargin">
+		<div class="content clearfix padding">
+			<div class="login-symbol signUpForm">
+			<center><h1>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h1></center>
+				<h1>Mothership1 is a new and innovative cloud platform for virtual machines, storage, and applications.</h1>
+				<div class="row">
+				<div class="col-md-4">
+				Limited Time Offer: Free Cloud Hosting From Mothership1<br>
+				<ul>
+					<li>Get $50 Free Credit for 1 month</li>
+					<li>To use for Virtual Machines and Storage</li>
+					<li>Signup now - No renewal obligation</li>
+					<li>No automatic credit card charges</li>
+					
+				</ul>
+
+				
+				</div>
+				<div class="col-md-4">
+				Many enhanced features compared to existing clouds:<br>
+				<ul>
+					<li>Virtual Machine deployment in under 5 seconds</li>
+					<li>A private enterprise-class firewall</li>
+					<li>Superior security capabilities</li>
+					<li>Immediate Snapshots & Rollbacks</li>
+					
+				</ul>
+				</div>
+				<div class="col-md-4">
+				Very competitive prices:<br>
+				<ul>
+					<li>Virtual Machines start at $5.00 USD/Month</li>
+					<li>S3 storage at $0.03/GB/Month (Pricing)</li>
+					<li>Pay per hour</li>
+					<li>Up to 50% lower than major cloud providers</li>
+					
+				</ul>
+				
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-md-12">
+				<input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" value="Sign Up Now and use promo code dfjsafdksandfa!" />
+					<br>
+					<h1>What are customers say about Mothership1:</h1>
+					<ul>
+						<li>”Mothership1 is a lot more robust and powerful than other offerings out there”</li>
+						<li>”We clearly feel Mothership1 is set up for production purposes, customer service takes backups and live migrated our VMs when we had load issues”</li>
+						<li>”Mothership1 is made so simple, easy and fast, I quickly get addicted to create machines”</li>
+						
+					</ul>
+					
+					<input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" value="Sign Up Now and use promo code dfjsafdksandfa!" /><br>
+					<center>Go to<a href="../$$space"> Mothership1.com </a> </center>
+				</div>
+				</div>
+			
+			</div>
+		</div>
+	</div>
+</div>
+
+}}
