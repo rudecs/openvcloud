@@ -7,12 +7,12 @@
     .mT15 { margin-top: 0;}
     .minH { min-height: 258px;}
     .borderL1 {border-left: 1px solid #E6E6E6;padding-left: 23px; }
-    .forLeftPad .col-md-6 { padding-left: 76px;padding-right: 20px; margin: 5px 0;}
+    .forLeftPad .col-md-6 { padding-left: 86px;padding-right: 20px; margin: 5px 0;}
     .clearL { clear: left;}
-    .new-icon1 { background: url(/$$space/.files/img/images/new-icons1.png) 11px 0 no-repeat;}
-    .new-icon2 { background: url(/$$space/.files/img/images/new-icons4.png) 11px 0 no-repeat;}
-    .new-icon3 { background: url(/$$space/.files/img/images/new-icons3.png) 11px 0 no-repeat;}
-    .new-icon4 { background: url(/$$space/.files/img/images/new-icons2.png) 11px 0 no-repeat;}
+    .new-icon1 { background: url(/$$space/.files/img/images/new-icons1.png) 11px 4px no-repeat;}
+    .new-icon2 { background: url(/$$space/.files/img/images/new-icons4.png) 11px 4px no-repeat;}
+    .new-icon3 { background: url(/$$space/.files/img/images/new-icons3.png) 11px 4px no-repeat;}
+    .new-icon4 { background: url(/$$space/.files/img/images/new-icons2.png) 11px 4px no-repeat;}
     .minH2 {min-height: 69px;}
     /*.mTButton { margin-top: 85px;}*/
 </style>
