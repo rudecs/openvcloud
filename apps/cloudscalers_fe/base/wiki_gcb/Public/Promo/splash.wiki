@@ -11,17 +11,18 @@
 	}
 	 .logo {  margin-right: 30px;}
 	 .content.clearfix.padding center h1 { text-align:center !important;font-weight: bolder !important;}
-	 .account-container.stacked { width: auto !important; margin-top: 0;}
+	 .account-container.stacked { width: auto !important; margin-top: 0;position: relative;}
 	 .login-symbol { background: none !important;}
 	 .white { background: none !important; padding-top:0 !important;}
 	 .content.clearfix.padding h1 { text-align:left; margin: 16px 0 19px 0;}
-	 ul {padding: 0 0 0 16px;}
+	 .caption ul {padding: 0 0 0 32px;}
 	 ul li { color: #FFF !important;list-style: initial;}
 	 .btn.btn-primary.btn-lg.btn-block { width: 500px !important;margin: 15px auto; display:block;}
 	 
 	 .logo {margin: 0 auto;display: block;width: 370px;}
 	 .logo img { width: 370px;}
 	 h5 { color: #FFF; font-size: 16px;}
+	 .col-md-6 h5 { font-weight: bold;}
 	 .white p { color: #FFF;}
 	 .thumbnail h5, .thumbnail ul li { color: #000 !important;}
 	 .thumbnail { border: 0;background: rgb(255,255,255); /* Old browsers */
@@ -47,6 +48,13 @@
 	center { clear: both; }
 	.videoMain iframe {box-shadow: 0px 0px 15px #DFDFDF;}
 	.content.clearfix.padding { color: #FFF; background: rgb(6,167,226); /* Old browsers */ background: -moz-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(6,167,226,0.6)), color-stop(100%, rgba(255,255,255,0.6))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* IE10+ */ background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%, rgba(167, 167, 167, 0.6) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff', GradientType=0 );} /* IE6-9 */
+	.caption h5 { font-weight: bold;}
+	.signupSplash { background: url(/$$space/.files/img/images/signup-splash.png) no-repeat;display: block;width: 294px;height: 68px;margin: 33px 0 0 0;}
+	.promoPic { display: block;width: 106px; height: 98px; position: absolute;left: -12px;top: -9px;background: url(/$$space/.files/img/images/promo-pic.png) no-repeat;}
+	.freeBG { background: url(/wiki_gcb/.files/img/images/free-pic.png) 98% 83px no-repeat;}
+	.signupText {font-size: 13px;color: #FFF;margin: 9px 0 0 80px;display: inline-block;}
+	.codeText { font-size: 24px;margin: -2px 0 0 97px;display: inline-block;color: #FFF;}
+	.subTitle {padding-left: 13px;font-weight: normal !important;}
 
   </style>
 </head>
@@ -54,15 +62,17 @@
   <div class="account-container stacked upMargin">
     <div class="content clearfix padding">
       <div class="login-symbol signUpForm">
+      <div class="promoPic"></div>	
         <center>
           <h1>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h1>
         </center>
         <center><h5 style="margin-bottom: 20px;">Mothership1 is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
         <div class="row">
-          <div class="col-sm-6 col-md-4">
+          <div class="col-sm-6 col-md-6">
             <div class="thumbnail">
-              <div class="caption">
+              <div class="caption freeBG">
                 <h5>Limited Time Offer: Free Cloud Hosting From Mothership1</h5>
+                <h5 class="subTitle">Limited Time Offer: Free Cloud Hosting From Mothership1</h5>
                 <ul>
                   <li>Get $50 Free Credit for 1 month</li>
                   <li>To use for Virtual Machines and Storage</li>
@@ -72,23 +82,12 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <div class="caption">
-                <h5>Many enhanced features compared to existing clouds:</h5>
-                <ul>
-                  <li>Virtual Machine deployment in under 5 seconds</li>
-                  <li>A private enterprise-class firewall</li>
-                  <li>Superior security capabilities</li>
-                  <li>Immediate Snapshots & Rollbacks</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4">
+          
+          <div class="col-sm-6 col-md-6">
             <div class="thumbnail">
               <div class="caption">
                 <h5>Very competitive prices:</h5>
+                <h5 class="subTitle">Very competitive prices:</h5>
                 <ul>
                   <li>Virtual Machines start at $5.00 USD/Month</li>
                   <li>S3 storage at $0.03/GB/Month (Pricing)</li>
@@ -100,10 +99,26 @@
           </div>
         </div>
         <div class="row">
-        <input class="btn btn-primary btn-lg btn-block"  type="submit" value="Sign Up Now and use promo code dfjsafdksandfa!" />
-          <div class="col-md-5 col-md-offset-3 videoMain">
+        
+          <div class="col-md-6 videoMain">
 
             <iframe src="https://player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+        </div>
+        <div class="col-md-6">
+
+             
+                <h5>Many enhanced features compared to existing clouds:</h5>
+                <ul>
+                  <li>Virtual Machine deployment in under 5 seconds</li>
+                  <li>A private enterprise-class firewall</li>
+                  <li>Superior security capabilities</li>
+                  <li>Immediate Snapshots & Rollbacks</li>
+                </ul>
+              
+            <a class="signupSplash" href="../$$space/signUp"><span class="signupText">Sign Up Now and use promo code</span><br>
+            <span class="codeText">dfjsafdksandfa!</span>
+            </a>
+
         </div>
        <center>Go to<a href="../$$space"> Mothership1.com </a> </center>
         </div>
