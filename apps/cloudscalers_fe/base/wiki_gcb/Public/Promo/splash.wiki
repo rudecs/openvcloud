@@ -42,7 +42,7 @@
 	background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(243,243,243,1) 50%,rgba(237,237,237,1) 51%,rgba(255,255,255,1) 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(243,243,243,1) 50%,rgba(237,237,237,1) 51%,rgba(255,255,255,1) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
-	color: #0087b9;}
+	color: #0087b9;width: 485px !important;}
 	.videoMain { margin-top: 10px;margin-bottom: 10px;}
 	center { clear: both; }
 	.videoMain iframe {box-shadow: 0px 0px 15px #DFDFDF;}
@@ -100,6 +100,7 @@
           </div>
         </div>
         <div class="row">
+        <input class="btn btn-primary btn-lg btn-block"  type="submit" value="Sign Up Now and use promo code dfjsafdksandfa!" />
           <div class="col-md-5 col-md-offset-3 videoMain">
 
             <iframe src="https://player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
