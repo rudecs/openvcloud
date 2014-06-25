@@ -57,7 +57,7 @@
         <center>
           <h1>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h1>
         </center>
-        <h5 style="margin-bottom: 20px;">Mothership1 is a new and innovative cloud platform for virtual machines, storage, and applications.</h5>
+        <center><h5 style="margin-bottom: 20px;">Mothership1 is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
         <div class="row">
           <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
