@@ -86,9 +86,14 @@ class cloudapi_accounts(object):
         result dict
         """
         #put your code here to implement this method
-
-        return self.models.account.get(accountId)
-
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        for acl in self.models.account.get(accountId).acl:
+                if acl.userGroupId == user.lower() and acl.type == 'U':
+                      return self.models.account.get(accountId)
+                else:
+                      ctx.start_response('403 Forbidden', [])
+                      return 'Forbidden'
 
     @authenticator.auth(acl='R')
     @audit()
