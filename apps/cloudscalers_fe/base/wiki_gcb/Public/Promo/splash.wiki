@@ -48,6 +48,7 @@
 	color: #0087b9;width: 485px !important;}
 	.videoMain { margin-top: 10px;margin-bottom: 10px;}
 	center { clear: both; }
+	center h5 { font-weight: bold;}
 	.videoMain iframe {box-shadow: 0px 0px 15px #DFDFDF;}
 	.content.clearfix.padding { color: #FFF; background: rgb(6,167,226); /* Old browsers */ background: -moz-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(6,167,226,0.6)), color-stop(100%, rgba(255,255,255,0.6))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* IE10+ */ background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%, rgba(167, 167, 167, 0.6) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff', GradientType=0 );} /* IE6-9 */
 	.caption h5 { font-weight: bold;}
