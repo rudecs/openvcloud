@@ -58,33 +58,6 @@ class cloudapi_cloudspaces(object):
             acl.right = accesstype
             return self.models.cloudspace.set(cs)[0]
 
-    def _deploy(self, cloudspaceId):
-        cs = self.models.cloudspace.get(cloudspaceId)
-        if cs.status != 'VIRTUAL':
-            return
-        
-        #TODO: check location
-        cs.status = 'DEPLOYING'
-        self.models.cloudspace.set(cs)
-        networkid = cs.networkId
-        
-        publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-        if not publicipaddress:
-            self.libvirt_actor.releaseNetworkId(networkid)
-            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
-        
-        cs.publicipaddress = publicipaddress
-        #TODO: autogenerate long password
-        password = "mqewr987BBkk#mklm)plkmndf3236SxcbUiyrWgjmnbczUJjj"
-        try:
-            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, publicipaddress, 'routeros', networkid)
-        except:
-            self.libvirt_actor.releaseNetworkId(networkid)
-            raise
-        
-        cs.status = 'DEPLOYED'
-        self.models.cloudspace.set(cs)
-
     @authenticator.auth(acl='A')
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
         """
@@ -115,8 +88,6 @@ class cloudapi_cloudspaces(object):
         cs.networkId = networkid
         
         cloudspace_id = self.models.cloudspace.set(cs)[0]
-        
-        self._deploy(cloudspace_id, kwargs['ctx'])
         
         return cloudspace_id
 
@@ -170,7 +141,6 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-        
         
         cloudspace.status = "DESTROYING"
         
