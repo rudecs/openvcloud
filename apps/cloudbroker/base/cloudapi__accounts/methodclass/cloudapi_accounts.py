@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import ujson
 
@@ -29,6 +30,7 @@ class cloudapi_accounts(object):
         return self._models
 
     @authenticator.auth(acl='A')
+    @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -47,6 +49,7 @@ class cloudapi_accounts(object):
         return self.models.account.set(account)
 
     @authenticator.auth(acl='S')
+    @audit()
     def create(self, name, access, **kwargs):
         """
         Create a extra an account
@@ -65,6 +68,7 @@ class cloudapi_accounts(object):
 
 
     @authenticator.auth(acl='S')
+    @audit()
     def delete(self, accountId, **kwargs):
         """
         Delete an account
@@ -74,6 +78,7 @@ class cloudapi_accounts(object):
         return self.models.account.delete(accountId)
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, accountId, **kwargs):
         """
         get account.
@@ -86,6 +91,7 @@ class cloudapi_accounts(object):
 
 
     @authenticator.auth(acl='R')
+    @audit()
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -102,6 +108,7 @@ class cloudapi_accounts(object):
 
 
     @authenticator.auth(acl='A')
+    @audit()
     def deleteUser(self, accountId, userId, **kwargs):
         """
         Delete a user from the account
@@ -120,6 +127,7 @@ class cloudapi_accounts(object):
             self.models.account.set(account)
         return change
 
+    @audit()
     def list(self, **kwargs):
         """
         List accounts.
@@ -135,6 +143,7 @@ class cloudapi_accounts(object):
         return accounts
 
     @authenticator.auth(acl='A')
+    @audit()
     def update(self, accountId, name, **kwargs):
         """
         Update an account name
@@ -147,6 +156,7 @@ class cloudapi_accounts(object):
         raise NotImplementedError("not implemented method update")
 
     @authenticator.auth(acl='R')
+    @audit()
     def getCreditBalance(self, accountId, **kwargs):
         """
         Get the current available credit
@@ -174,6 +184,7 @@ class cloudapi_accounts(object):
         return {'credit':balance, 'time':int(time.time())}
 
     @authenticator.auth(acl='R')
+    @audit()
     def getCreditHistory(self, accountId, **kwargs):
         """
         Get all the credit transactions (positive and negative) for this account.

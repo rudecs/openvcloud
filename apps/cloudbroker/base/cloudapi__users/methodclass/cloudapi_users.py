@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
 import re, string, random, time
 
@@ -50,6 +51,7 @@ class cloudapi_users(object):
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
+    @audit()
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
