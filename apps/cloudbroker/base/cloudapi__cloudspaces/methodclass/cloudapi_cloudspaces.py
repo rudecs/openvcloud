@@ -66,23 +66,20 @@ class cloudapi_cloudspaces(object):
         #TODO: check location
         cs.status = 'DEPLOYING'
         self.models.cloudspace.set(cs)
+        networkid = cs.networkId
         
-        networkid = self.libvirt_actor.getFreeNetworkId()
-        if not networkid:
-            raise RuntimeError("Failed to get networkid")
         publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
         if not publicipaddress:
             self.libvirt_actor.releaseNetworkId(networkid)
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         
-        cs.networkId = networkid
         cs.publicipaddress = publicipaddress
-        
+        #TODO: autogenerate long password
+        password = "mqewr987BBkk#mklm)plkmndf3236SxcbUiyrWgjmnbczUJjj"
         try:
             self.netmgr.fw_create(str(cloudspaceId), 'admin', password, publicipaddress, 'routeros', networkid)
         except:
             self.libvirt_actor.releaseNetworkId(networkid)
-            self.models.cloudspace.delete(cloudspaceId)
             raise
         
         cs.status = 'DEPLOYED'
@@ -110,11 +107,30 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.status = 'VIRTUAL'
+        
+        networkid = self.libvirt_actor.getFreeNetworkId()
+        if not networkid:
+            raise RuntimeError("Failed to get networkid")
+        
+        cs.networkId = networkid
+        
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         
         self._deploy(cloudspace_id, kwargs['ctx'])
         
         return cloudspace_id
+
+    def _release_resources(self, cloudspaceId):
+         #delete routeros
+        fws = self.netmgr.fw_list(self.gridid, str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
+        if cloudspace.networkId:
+            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
+        cloudspace.networkId = None
+        #TODO: release public ip
+        
+        return cloudspace
 
     @authenticator.auth(acl='A')
     def delete(self, cloudspaceId, **kwargs):
@@ -122,7 +138,6 @@ class cloudapi_cloudspaces(object):
         Delete a cloudspace.
         param:cloudspaceId id of the cloudspace
         result bool,
-
         """
         ctx = kwargs['ctx']
         #A cloudspace may not contain any resources any more
@@ -155,13 +170,14 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-        #delete routeros
-        fws = self.netmgr.fw_list(self.gridid, str(cloudspaceId))
-        if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
-        if cloudspace.networkId:
-            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
-        cloudspace.networkId = None
+        
+        
+        cloudspace.status = "DESTROYING"
+        
+        self.models.cloudspace.set(cloudspace)
+        
+        cloudspace = self._release_resources(cloudspace)
+       
         cloudspace.status = 'DESTROYED'
 
         self.models.cloudspace.set(cloudspace)
