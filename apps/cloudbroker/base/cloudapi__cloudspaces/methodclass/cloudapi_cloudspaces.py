@@ -221,8 +221,9 @@ class cloudapi_cloudspaces(object):
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
             for acl in self.models.account.get(cloudspace['accountId']).acl:
+                cloudspace['userRightsOnAccount'] = acl
                 if acl.userGroupId == user.lower() and acl.type == 'U':
-                      cloudspace['userRightsOnAccount'] = True
+                      cloudspace['userRightsOnAccountBilling'] = True
 
         return cloudspaces
 
