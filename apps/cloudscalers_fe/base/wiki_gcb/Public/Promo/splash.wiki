@@ -5,6 +5,7 @@
 	 @media (max-width: 1376px) {
 	 .btn.btn-primary.btn-lg.btn-block {font-size: 14px !important; padding: 8px 10px !important;}
 	 h5 { color: #FFF; font-size: 13px !important;}
+	 .content.clearfix.padding h1 + h5 { font-size: 14px !important;}
 	}
 	@media (min-width: 992px){
 	.col-md-offset-3 {margin-left: 29%;}
@@ -15,7 +16,7 @@
 	 .login-symbol { background: none !important;}
 	 .white { background: none !important; padding-top:0 !important;}
 	 .content.clearfix.padding h1 { text-align:left; margin: 16px 0 10px 0;}
-	 /*.content.clearfix.padding h1 + h5 { font-weight: bold;}*/
+	 .content.clearfix.padding h1 + h5 { font-weight: bold; margin-bottom: 25px;font-size: 17px;}
 	 .caption ul {padding: 0 0 0 20px;}
 	 ul li { color: #FFF !important;list-style: initial;}
 	 .btn.btn-primary.btn-lg.btn-block { width: 500px !important;margin: 15px auto; display:block;}
