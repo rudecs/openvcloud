@@ -14,8 +14,9 @@
 	 .account-container.stacked { width: auto !important; margin-top: 0;position: relative;}
 	 .login-symbol { background: none !important;}
 	 .white { background: none !important; padding-top:0 !important;}
-	 .content.clearfix.padding h1 { text-align:left; margin: 16px 0 19px 0;}
-	 .caption ul {padding: 0 0 0 32px;}
+	 .content.clearfix.padding h1 { text-align:left; margin: 16px 0 10px 0;}
+	 /*.content.clearfix.padding h1 + h5 { font-weight: bold;}*/
+	 .caption ul {padding: 0 0 0 20px;}
 	 ul li { color: #FFF !important;list-style: initial;}
 	 .btn.btn-primary.btn-lg.btn-block { width: 500px !important;margin: 15px auto; display:block;}
 	 
@@ -64,15 +65,16 @@
       <div class="login-symbol signUpForm">
       <div class="promoPic"></div>	
         <center>
-          <h1>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h1>
+        <h1>Limited Time Offer: Free Cloud Hosting From Mothership<sup>1</sup></h1>
+          <h5>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h5>
         </center>
-        <center><h5 style="margin-bottom: 20px;">Mothership1 is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
+        <center><h5 style="margin-bottom: 20px;">Mothership<sup>1</sup> is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
         <div class="row">
           <div class="col-sm-6 col-md-6">
             <div class="thumbnail">
               <div class="caption freeBG">
-                <h5>Limited Time Offer: Free Cloud Hosting From Mothership1</h5>
-                <h5 class="subTitle">Limited Time Offer: Free Cloud Hosting From Mothership1</h5>
+                <h5>Limited Time Offer: Free Cloud Hosting From Mothership<sup>1</sup></h5>
+                
                 <ul>
                   <li>Get $50 Free Credit for 1 month</li>
                   <li>To use for Virtual Machines and Storage</li>
@@ -87,7 +89,7 @@
             <div class="thumbnail">
               <div class="caption">
                 <h5>Very competitive prices:</h5>
-                <h5 class="subTitle">Very competitive prices:</h5>
+                
                 <ul>
                   <li>Virtual Machines start at $5.00 USD/Month</li>
                   <li>S3 storage at $0.03/GB/Month (Pricing)</li>
@@ -116,11 +118,11 @@
                 </ul>
               
             <a class="signupSplash" href="../$$space/signUp"><span class="signupText">Sign Up Now and use promo code</span><br>
-            <span class="codeText">dfjsafdksandfa!</span>
+            <span class="codeText">cloudysummer</span>
             </a>
 
         </div>
-       <center>Go to<a href="../$$space"> Mothership1.com </a> </center>
+       <center>Go to<a href="../$$space"> Mothership<sup>1</sup>.com </a> </center>
         </div>
       </div>
     </div>
