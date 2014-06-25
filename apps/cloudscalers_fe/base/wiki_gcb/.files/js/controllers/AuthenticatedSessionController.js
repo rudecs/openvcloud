@@ -2,7 +2,7 @@ angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
-        $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName} : {id:''};
+        $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.userRightsOnAccount} : {id:''};
 
         $scope.setCurrentCloudspace = function(space) {
             if (space.locationurl != null){
@@ -23,7 +23,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.setCurrentAccount = function(){
             if ($scope.currentSpace){
-                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName};
+                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.userRightsOnAccount};
             }
         };
 
@@ -45,7 +45,12 @@ angular.module('cloudscalers.controllers')
             $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
         }, true);
 
-	$scope.userRights = _.findWhere($scope.currentSpace.acl,{ userGroupId: $scope.currentUser.username });
+	$scope.$watch('currentAccount',  function(){
+              if($scope.currentAccount){
+		$scope.userRightsOnAccount = $scope.currentAccount.userRightsOnAccount;
+	      }
+            }, true);
+
 
         $scope.logout = function() {
             User.logout();

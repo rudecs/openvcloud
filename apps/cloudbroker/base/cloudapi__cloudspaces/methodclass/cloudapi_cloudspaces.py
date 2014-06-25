@@ -216,10 +216,13 @@ class cloudapi_cloudspaces(object):
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
         locations = self.cb.extensions.imp.getLocations()
-
+        
         for cloudspace in cloudspaces:
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
+            for acl in self.models.account.get(cloudspace['accountId']).acl:
+                if acl.userGroupId == user.lower() and acl.type == 'U':
+                      cloudspace['userRightsOnAccount'] = True
 
         return cloudspaces
 
