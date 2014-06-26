@@ -14,7 +14,7 @@
 }}
 
 
-{{title:Mothership<sup>1</sup>: Security! Speed! Simplicity!}}
+{{title:Mothership1: Security! Speed! Simplicity!}}
 
 {{projectname:Mothership<sup>1</sup>}}
 
