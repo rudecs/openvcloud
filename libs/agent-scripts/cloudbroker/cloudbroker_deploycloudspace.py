@@ -4,7 +4,7 @@ descr = """
 Follow up creation of cloudspace routeros image
 """
 
-name = "cloudbroker_accountcreate"
+name = "cloudbroker_deploycloudspace"
 category = "cloudbroker"
 organization = "cloudscalers"
 author = "deboeckj@codescalers.com"

@@ -2,7 +2,13 @@ from JumpScale import j
 from cloudbrokerlib import authenticator
 import netaddr
 import ujson
-import urlparse
+import uuid
+
+
+def getIP(network):
+    if not network:
+        return network
+    return str(netaddr.IPNetwork(network).ip)
 
 
 class cloudapi_cloudspaces(object):
@@ -107,11 +113,14 @@ class cloudapi_cloudspaces(object):
             if pool.pubips:
                 pubip = pool.pubips.pop()
                 self.models.publicipv4pool.set(pool)
-                return pubip
+                net = netaddr.IPNetwork(poolid)
+                return netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))
 
     def _releasePublicIpAddress(self, publicip):
         net = netaddr.IPNetwork(publicip)
         pool = self.models.publicipv4pool.get(str(net.cidr))
+        if not pool:
+            return
         pubips = set(pool.pubips)
         pubips.add(str(net.ip))
         pool.pubips = list(pubips)
@@ -129,13 +138,12 @@ class cloudapi_cloudspaces(object):
         publicipaddress = self._getPublicIpAddress()
         if not publicipaddress:
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
-        
-        cs.publicipaddress = publicipaddress
+
+        cs.publicipaddress = str(publicipaddress)
         self.models.cloudspace.set(cs)
-        #TODO: autogenerate long password
-        password = "mqewr987BBkk#mklm)plkmndf3236SxcbUiyrWgjmnbczUJjj"
+        password = str(uuid.uuid4())
         try:
-            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, publicipaddress, 'routeros', networkid)
+            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid)
         except:
             self._releasePublicIpAddress(publicipaddress)
             cs.status = 'ERROR'
@@ -205,7 +213,7 @@ class cloudapi_cloudspaces(object):
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
-                        "publicipaddress": cloudspaceObject.publicipaddress,
+                        "publicipaddress": getIP(cloudspaceObject.publicipaddress),
                         "location": cloudspaceObject.location}
         return cloudspace
 
@@ -248,6 +256,7 @@ class cloudapi_cloudspaces(object):
         locations = self.cb.extensions.imp.getLocations()
 
         for cloudspace in cloudspaces:
+            cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
 

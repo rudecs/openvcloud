@@ -26,10 +26,9 @@ class cloudapi_machines(object):
         j.logger.setLogTargetLogForwarder()
 
         self.osisclient = j.core.osis.getClient(user='root')
+        self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-        
         self._pricing = pricing.pricing()     
-         
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
