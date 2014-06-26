@@ -18,6 +18,7 @@ body ul#resources li.resource div.heading ul.options {margin: 10px 10px 10px 0 !
 
  @media (max-width: 1290px) {
  	.btn-group.btn-group-sm.priceHM.floatR { margin: 10px auto 0;float: none;width: 120px;display: block;}
+	.well {padding-left: 0px;}
  }
 
  @media (max-width: 1290px) and (min-width: 992px) {
@@ -36,3 +37,7 @@ body ul#resources li.resource div.heading ul.options {margin: 10px 10px 10px 0 !
  @media (max-width: 580px) {
  	.col-md-6 .bulletStyle { width: 260px;padding: 0;margin: 0 0 0 -31px; }
  }
+
+ /*.half.copy.col-md-6 { padding-bottom: 26px;min-height: 209px;}*/
+ .half .wideOne { width: 100%;margin-top: 15px;}
+ .DesktopDeckColor + .half.col-md-6 {margin: 56px 0 0px 0;}
