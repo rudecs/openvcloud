@@ -14,6 +14,13 @@
 		var:password str,,Password to give to routeros @tags: optional 
 		result:int  #returns id of space created
 
+	method:deploy
+		"""
+	    Create VFW for cloudspace	
+		"""
+		var:cloudspaceId int,, id of the cloudspace
+		result:str Status of deployment 
+
 	method:delete
 		"""
 		Delete a cloudspace.

@@ -16,40 +16,16 @@ async = True
 
 
 
-def action(accountid, password, email, now, portalurl, token, username, user):
+def action(cloudspaceId):
     import JumpScale.grid.osis
     import JumpScale.portal
 
+    portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'cloudbroker', 'cfg', 'portal')
+    portalcfg = j.config.getConfig(portalcfgpath).get('main', {})
+    port = int(portalcfg.get('webserverport', 9999))
+    secret = portalcfg.get('secret')
+    cl = j.core.portal.getClient('127.0.0.1', port, secret)
+    cloudspaceapi = cl.getActor('cloudapi','cloudspaces')
 
-
-    cl = j.core.osis.getClientForNamespace('cloudbroker')
-    cs = cl.cloudspace.get(cloudspaceId)
-    if cs.status != 'VIRTUAL':
-        return
-
-    libvirt_actor = None #TODO
-    netmgr = None #TODO
-        
-    #TODO: check location
-    cs.status = 'DEPLOYING'
-    cl.models.cloudspace.set(cs)
-    networkid = cs.networkId
-        
-    publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-    if not publicipaddress:
-        libvirt_actor.releaseNetworkId(networkid)
-        raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
-    
-    cs.publicipaddress = publicipaddress
-    #TODO: autogenerate long password
-    password = "mqewr987BBkk#mklm)plkmndf3236SxcbUiyrWgjmnbczUJjj"
-    try:
-        netmgr.fw_create(str(cloudspaceId), 'admin', password, publicipaddress, 'routeros', networkid)
-    except:
-        libvirt_actor.releaseNetworkId(networkid)
-        raise
-        
-    cs.status = 'DEPLOYED'
-    cl.cloudspace.set(cs)
-
+    return cloudspaceapi.deploy(cloudspaceId)
 
