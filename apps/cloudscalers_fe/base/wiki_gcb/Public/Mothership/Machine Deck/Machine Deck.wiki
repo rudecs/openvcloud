@@ -10,7 +10,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">The Machine Deck enables users to configure and launch VMs from a powerful IaaS stack.</p>}}
-
+{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
 {{div}}
 
 {{div: class=half col-md-6 justOne}}
