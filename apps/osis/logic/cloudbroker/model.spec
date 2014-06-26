@@ -192,11 +192,11 @@
     """
     public ip pool
     """
-    prop:id str,,subnet/cidr
-    prop:subnet str,,Subnet of th
+    prop:id str,,network/cidr
+    prop:network str,,Network of the pool
+    prop:subnetmask str,,Subnetmask of the pool
     prop:gateway str,,Gateway of th
-    prop:cidr int,,Int
-    prop:pubips list,,list of ips
+    prop:pubips list(str),,list of ips
 
 [rootmodel:Size] @dbtype:osis
     """

@@ -118,7 +118,7 @@ class cloudapi_cloudspaces(object):
         self.models.publicipv4pool.set(pool)
 
     @authenticator.auth(acl='C')
-    def deploy(self, cloudspaceId):
+    def deploy(self, cloudspaceId, **kwargs):
         cs = self.models.cloudspace.get(cloudspaceId)
         if cs.status != 'VIRTUAL':
             return cs.status
