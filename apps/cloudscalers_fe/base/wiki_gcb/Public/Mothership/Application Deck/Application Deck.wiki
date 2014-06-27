@@ -10,7 +10,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.</p>}}
-
+{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
 {{div}}
 
 {{div: class=half col-md-6 justOne}}

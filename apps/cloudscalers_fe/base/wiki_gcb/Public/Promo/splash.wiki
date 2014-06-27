@@ -58,7 +58,8 @@
 	.signupText {font-size: 13px;color: #FFF;margin: 9px 0 0 80px;display: inline-block;}
 	.codeText { font-size: 24px;margin: -2px 0 0 97px;display: inline-block;color: #FFF;}
 	.subTitle {padding-left: 13px;font-weight: normal !important;}
-
+	.mtb {margin-top: 10px;margin-bottom: 10px;}
+	.wideOne { width: 100%;}
   </style>
 </head>
 <div class="container white"> <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png"></a>
@@ -72,9 +73,9 @@
         </center>
         <center><h5 style="margin-bottom: 20px;">Mothership<sup>1</sup> is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
         <div class="row">
-          <div class="col-sm-6 col-md-6">
+          <div class="col-md-6">
             <div class="thumbnail">
-              <div class="caption freeBG">
+              <div class="caption">
                 <h5>Limited Time Offer: Free Cloud Hosting From Mothership<sup>1</sup></h5>
                 
                 <ul>
@@ -87,9 +88,34 @@
             </div>
           </div>
           
-          <div class="col-sm-6 col-md-6">
+          <div class="col-md-6">
             <div class="thumbnail">
               <div class="caption">
+
+				<h5>Many enhanced features compared to existing clouds:</h5>
+                <ul>
+                  <li>Virtual Machine deployment in under 5 seconds</li>
+                  <li>A private enterprise-class firewall</li>
+                  <li>Superior security capabilities</li>
+                  <li>Immediate Snapshots & Rollbacks</li>
+                </ul>
+              
+           
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+        
+          <div class="col-md-6 mtb">
+
+            <iframe src="https://player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+        </div>
+        <div class="col-md-6 mtb">
+        	<a style="margin-bottom: 30px;" href="../$$space/SignUp?promocode=cloud50" class="btn btn-success wideOne" role="button">Sign Up Now for 50 USD Free Trial</a>
+             
                 <h5>Very competitive prices:</h5>
                 
                 <ul>
@@ -98,30 +124,8 @@
                   <li>Pay per hour</li>
                   <li>Up to 50% lower than major cloud providers</li>
                 </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-        
-          <div class="col-md-6 videoMain">
-
-            <iframe src="https://player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-        </div>
-        <div class="col-md-6">
-
-             
-                <h5>Many enhanced features compared to existing clouds:</h5>
-                <ul>
-                  <li>Virtual Machine deployment in under 5 seconds</li>
-                  <li>A private enterprise-class firewall</li>
-                  <li>Superior security capabilities</li>
-                  <li>Immediate Snapshots & Rollbacks</li>
-                </ul>
               
-            <a class="signupSplash" href="../$$space/signUp"><span class="signupText">Sign Up Now and use promo code</span><br>
-            <span class="codeText">cloudysummer</span>
-            </a>
+           
 
         </div>
        <center>Go to<a href="../$$space"> Mothership<sup>1</sup>.com </a> </center>

@@ -14,7 +14,7 @@
 }}
 
 
-{{title:Mothership<sup>1</sup>: Security! Speed! Simplicity!}}
+{{title:Mothership1: Security! Speed! Simplicity!}}
 
 {{projectname:Mothership<sup>1</sup>}}
 
@@ -78,3 +78,4 @@
     <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
 
 }}
+
