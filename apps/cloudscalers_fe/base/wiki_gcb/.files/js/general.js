@@ -1,4 +1,3 @@
-
 var __lc = {};
 __lc.license = 4357241;
 
@@ -7,3 +6,4 @@ __lc.license = 4357241;
 	lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
 	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
 })();
+

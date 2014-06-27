@@ -10,7 +10,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">Defense Shields provide privacy and secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.</p>}}
-
+{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
 {{div}}
 
 {{div: class=half col-md-6 justOne}}

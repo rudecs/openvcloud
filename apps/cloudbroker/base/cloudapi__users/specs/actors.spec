@@ -25,6 +25,7 @@
 	    var:company str,,name of the company
 	    var:companyurl str,,url of the main website
 	    var:location str,,location
+	    var:promocode str,,promocode @optional
 	    result:bool
 
 	method:get

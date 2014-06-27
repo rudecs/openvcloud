@@ -257,7 +257,7 @@ h1. Pricing
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">Sign Up</a>}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">{[ (plan.mem == '512MB' || plan.mem == '1GB' || plan.mem == '2GB' || plan.mem == '4GB') ? "Free Trial" : "Sign Up" ]}</a>}}
             {{div4}}
         {{div3}}
     @divend

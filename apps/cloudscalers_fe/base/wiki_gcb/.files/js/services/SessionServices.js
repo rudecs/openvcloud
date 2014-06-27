@@ -126,7 +126,7 @@ angular.module('cloudscalers.services')
         	SessionData.setUser(undefined);
         };
 
-        user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation) {
+        user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation, promocode) {
             var signUpResult = {};
 			var querystring = '?username='
 					+ encodeURIComponent(username)
@@ -135,7 +135,8 @@ angular.module('cloudscalers.services')
 					+ '&password=' + encodeURIComponent(password)
 					+ '&company=' + encodeURIComponent(company)
 					+ '&companyurl=' + encodeURIComponent(companyurl)
-					+ '&location=' + encodeURIComponent(preferredDataLocation);
+					+ '&location=' + encodeURIComponent(preferredDataLocation)
+					+ '&promocode=' + encodeURIComponent(promocode);
             $http({
                 method: 'GET',
                 url: cloudspaceconfig.apibaseurl + '/users/register' + querystring

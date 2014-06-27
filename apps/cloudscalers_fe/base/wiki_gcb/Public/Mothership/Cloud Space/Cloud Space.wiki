@@ -12,7 +12,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users.</p>}}
-
+{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
 {{div}}
 
 {{div: class=half col-md-6 justOne}}

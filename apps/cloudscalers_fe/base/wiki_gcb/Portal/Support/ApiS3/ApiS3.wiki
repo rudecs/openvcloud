@@ -24,105 +24,108 @@
 <div class="section" id="features-support">
 <h2>Features Support<a class="headerlink" href="#features-support" title="Permalink to this headline"></a></h2>
 <p>The following table describes the support status for current Amazon S3 functional features:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="37%">
-<col width="19%">
-<col width="44%">
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Feature</th>
-<th class="head">Status</th>
-<th class="head">Remarks</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><strong>List Buckets</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Delete Bucket</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Create Bucket</strong></td>
-<td>Supported</td>
-<td>Different set of canned ACLs</td>
-</tr>
-<tr class="row-odd"><td><strong>Bucket Lifecycle</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Policy (Buckets, Objects)</strong></td>
-<td>Not Supported</td>
-<td>ACLs are supported</td>
-</tr>
-<tr class="row-odd"><td><strong>Bucket Website</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Bucket ACLs (Get, Put)</strong></td>
-<td>Supported</td>
-<td>Different set of canned ACLs</td>
-</tr>
-<tr class="row-odd"><td><strong>Bucket Location</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Bucket Notification</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Bucket Object Versions</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Get Bucket Info (HEAD)</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Bucket Request Payment</strong></td>
-<td>Not Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Put Object</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Delete Object</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Get Object</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Object ACLs (Get, Put)</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Get Object Info (HEAD)</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>POST Object</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><strong>Copy Object</strong></td>
-<td>Supported</td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td><strong>Multipart Uploads</strong></td>
-<td>Supported</td>
-<td>(missing Copy Part)</td>
-</tr>
-</tbody>
-</table>
+<div class="table-responsive">
+	<table border="1" class="docutils">
+	<colgroup>
+	<col width="37%">
+	<col width="19%">
+	<col width="44%">
+	</colgroup>
+	<thead valign="bottom">
+	<tr class="row-odd"><th class="head">Feature</th>
+	<th class="head">Status</th>
+	<th class="head">Remarks</th>
+	</tr>
+	</thead>
+	<tbody valign="top">
+	<tr class="row-even"><td><strong>List Buckets</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Delete Bucket</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Create Bucket</strong></td>
+	<td>Supported</td>
+	<td>Different set of canned ACLs</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Bucket Lifecycle</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Policy (Buckets, Objects)</strong></td>
+	<td>Not Supported</td>
+	<td>ACLs are supported</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Bucket Website</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Bucket ACLs (Get, Put)</strong></td>
+	<td>Supported</td>
+	<td>Different set of canned ACLs</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Bucket Location</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Bucket Notification</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Bucket Object Versions</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Get Bucket Info (HEAD)</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Bucket Request Payment</strong></td>
+	<td>Not Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Put Object</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Delete Object</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Get Object</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Object ACLs (Get, Put)</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Get Object Info (HEAD)</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>POST Object</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-even"><td><strong>Copy Object</strong></td>
+	<td>Supported</td>
+	<td>&#160;</td>
+	</tr>
+	<tr class="row-odd"><td><strong>Multipart Uploads</strong></td>
+	<td>Supported</td>
+	<td>(missing Copy Part)</td>
+	</tr>
+	</tbody>
+	</table>
+</div>
 </div>
 <div class="section" id="unsupported-header-fields">
 <h2>Unsupported Header Fields<a class="headerlink" href="#unsupported-header-fields" title="Permalink to this headline"></a></h2>
 <p>The following common request header fields are not supported:</p>
+<div class="table-responsive">
 <table border="1" class="docutils">
 <colgroup>
 <col width="70%">
@@ -154,6 +157,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 
