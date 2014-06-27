@@ -34,6 +34,14 @@
 	    """
         var:username str,,username of the user
         result:dict,,user information.
+	
+	method:updatePassword
+	    """
+	    Change user passwrod
+	    """
+        var:oldPassword str,,oldPassword of the user
+        var:newPassword str,,newPassword of the user
+        result:dict,,user information.
 
     method:validate @noauth
         """

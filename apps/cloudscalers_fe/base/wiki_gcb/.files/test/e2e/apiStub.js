@@ -32,6 +32,19 @@ defineApiStub = function ($httpBackend) {
                 this.set(items);
             },
 
+            saveUser: function(item) {
+                var items = this.get();
+                for (var i = 0; i < items.length; i++) {
+                    console.log(items[i]);
+                    if(items[i] != null){
+                        if (items[i].username == item.username) {
+                            items[i] = item;
+                        }
+                    }
+                }
+                this.set(items);
+            },
+
             set: function(items) {
                 localStorage.setItem(key, JSON.stringify(items));
             },
@@ -69,6 +82,21 @@ defineApiStub = function ($httpBackend) {
             return [403, 'Unauthorized'];
         }
         return [200, '"yep123456789"'];
+    });
+    $httpBackend.whenGET(/^\/users\/updatePassword\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var user = _.findWhere(UsersList.get(), {username: params.username});
+        if( params.newPassword.length < 8 || params.newPassword.length > 80 || params.newPassword.indexOf(' ') >= 0 || params.newPassword == "undefined" ){
+            return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
+        }else{
+            if (user.password == params.oldPassword){
+                    user.password = params.newPassword;
+                    UsersList.saveUser(user);
+                    return [200, "Congratulations, Your password changed successfully."];
+            }else{
+                return [203, "Your current password dosen't match."];
+            }
+        }
     });
 
     $httpBackend.whenPOST('/users/register').respond(function(method, url, data) {
