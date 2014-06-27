@@ -10,6 +10,8 @@ angular.module('cloudscalers.controllers')
                 var accountCloudSpaceHierarchy = []
                 for (accountId in cloudspacesGroups){
                     var account = {id:accountId, name:cloudspacesGroups[accountId][0]['accountName']}
+                    if 'accountAcl' in cloudspacesGroups[accountId][0]:
+                    	account.acl = cloudspacesGroups[accountId][0]['accountAcl']
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
                 }
@@ -21,7 +23,10 @@ angular.module('cloudscalers.controllers')
             });
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
-                $scope.newCloudSpace = {
+                $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
+                		function(account){return account.acl != null;}
+                	);
+            	$scope.newCloudSpace = {
                     name: '',
                     account: $scope.currentAccount
                 };
