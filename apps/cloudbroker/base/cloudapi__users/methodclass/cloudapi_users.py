@@ -1,6 +1,8 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
 import re, string, random, time
+import md5
 
 class cloudapi_users(object):
     """
@@ -50,6 +52,7 @@ class cloudapi_users(object):
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
+    @audit()
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
@@ -78,7 +81,31 @@ class cloudapi_users(object):
             return False
         return re.search(r"\s",password) is None
 
-    def register(self, username, user, emailaddress, password, company, companyurl, location, **kwargs):
+    def updatePassword(self, oldPassword, newPassword, **kwargs):
+        """
+        Change user password
+        result:
+        """
+        ctx = kwargs['ctx']
+        user = j.core.portal.active.auth.getUserInfo(ctx.env['beaker.session']['user'])
+        if user:
+              if user.passwd == md5.new(oldPassword).hexdigest():
+                 if not self._isValidPassword(newPassword):
+                    return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
+                 else:
+                    cl = j.core.osis.getClient(user='root')
+                    usercl = j.core.osis.getClientForCategory(cl, 'system', 'user')
+                    user.passwd =  md5.new(newPassword).hexdigest()
+                    usercl.set(user)
+                    return [200, "Your password has been changed."]
+              else:
+                 return [400, "Your current password doesn't match."]
+        else:
+            ctx = kwargs['ctx']
+            ctx.start_response('404 Not Found', [])
+            return 'User not found'
+
+    def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
         param:username unique username for the account
@@ -130,6 +157,22 @@ class cloudapi_users(object):
             ace.right = 'CXDRAU'
             accountid = self.models.account.set(account)[0]
 
+            signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+            creditcomment = 'Getting you started'
+            if promocode == 'cloud50':
+                signupcredit = 50.0
+                creditcomment = 'Promo code cloud50'
+            if signupcredit > 0.0:
+                credittransaction = self.models.credittransaction.new()
+                credittransaction.accountId = accountid
+                credittransaction.amount = signupcredit
+                credittransaction.credit = signupcredit
+                credittransaction.currency = 'USD'
+                credittransaction.comment = creditcomment
+                credittransaction.status = 'CREDIT'
+                credittransaction.time = now
+
+                self.models.credittransaction.set(credittransaction)
 
             #create activationtoken
             actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
@@ -163,18 +206,5 @@ class cloudapi_users(object):
         account.status = 'CONFIRMED'
         self.models.account.set(account)
         self.models.accountactivationtoken.set(activation_token)
-
-        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
-        if signupcredit > 0.0:
-            credittransaction = self.models.credittransaction.new()
-            credittransaction.accountId = accountId
-            credittransaction.amount = signupcredit
-            credittransaction.credit = signupcredit
-            credittransaction.currency = 'USD'
-            credittransaction.comment = 'Getting you started'
-            credittransaction.status = 'CREDIT'
-            credittransaction.time = now
-
-            self.models.credittransaction.set(credittransaction)
 
         return True

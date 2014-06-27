@@ -31,7 +31,7 @@ def _send_signup_mail(**kwargs):
     <br>
     Thank you for registering at Mothership<sup>1</sup>!<br>
     <br>
-    We have now prepared your account %(username)s and we have applied a welcoming credit of $5 so you can start right away!<br>
+    We have now prepared your account %(username)s and we have applied a welcoming credit so you can start right away!<br>
     <br>
     Please confirm your e-mail address by following the activation link: <br>
     <br>

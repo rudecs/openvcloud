@@ -11,6 +11,15 @@
 
         <div class="login-fields">
             <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
+                <div class="field ng-hide ng-cloak" ng-show="promocode">
+                  <div class="loginField">
+                    <label class="loginFieldName loginFieldName2" for="promocode">Promo code:</label>
+                    <div class="inputWrap">
+                          <label class="loginFieldName loginFieldName2" id="promocode">{[promocode]}</label>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
 

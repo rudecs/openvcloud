@@ -10,7 +10,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce.</p>}}
-
+{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
 {{div}}
 
 {{div: class=half col-md-6 justOne}}

@@ -51,10 +51,7 @@
                             <span>Logout</span>
                         </a>
                     </li>
-                    <li class="right"><span class="user-name" ng-cloak>{[currentUser.username]}</span> </li>
-}}
-#                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
-{{html:
+                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
                 </ul>
             </div>
         </div>
@@ -140,7 +137,7 @@
         <li><a href="../$$space/ApiS3">Storage API</a></li>
         <li><a href="../kb/">Knowledge Base</a></li>
         <li><a href="http://support.mothership1.com">Support</a></li>
-        <li ng-show="userRights"><a href="../$$space/AccountSettings">Billing</a></li>
+        <li ng-show="userRightsOnAccountBilling"><a href="../$$space/AccountSettings">Billing</a></li>
         <li><a href="../$$space/CloudSpaceSettings">Cloud Space Settings</a></li>
 }}
 #        <li class="dropdown">
@@ -301,6 +298,7 @@ h2. loading
     <script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/services/UserServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>

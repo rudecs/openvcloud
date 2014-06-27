@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import requests
 from requests.auth import HTTPBasicAuth
@@ -84,6 +85,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         return ""
 
     @authenticator.auth(acl='R')
+    @audit()
     def initiatepayment(self, accountId, amount, currency, **kwargs):
         """
         Starts a paypal payment flow.

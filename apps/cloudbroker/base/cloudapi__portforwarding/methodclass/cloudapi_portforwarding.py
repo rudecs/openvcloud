@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import ujson
 
@@ -51,6 +52,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return localIp
 
     @authenticator.auth(acl='C')
+    @audit()
     def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, protocol=None, **kwargs):
         """
         Create a portforwarding rule
@@ -103,6 +105,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return False
 
     @authenticator.auth(acl='D')
+    @audit()
     def delete(self, cloudspaceid, id, **kwargs):
         """
         Delete a specific portforwarding rule
@@ -135,6 +138,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return self._process_list(forwards)
 
     @authenticator.auth(acl='C')
+    @audit()
     def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
@@ -183,6 +187,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return result
 
     @authenticator.auth(acl='R')
+    @audit()
     def list(self, cloudspaceid, **kwargs):
         """
         list all portforwarding rules.
@@ -198,6 +203,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return self._process_list(forwards)
 
     @authenticator.auth(acl='R')
+    @audit()
     def listcommonports(self, **kwargs):
         """
         List a range of predifined ports

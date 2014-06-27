@@ -6,8 +6,10 @@ angular.module('cloudscalers.controllers')
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
-        //$scope.user.password = '';
-        //$scope.passwordConfirmation = '';
+
+        var uri = new URI($window.location);
+        var queryparams = URI.parseQuery(uri.query());
+        $scope.promocode = queryparams.promocode;
 
         var acceptTerms = '';
         var acceptBelgian = '';
@@ -31,7 +33,7 @@ angular.module('cloudscalers.controllers')
                     $scope.user.companyurl = " ";
                 }
                 $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, $scope.user.password ,$scope.user.company , $scope.user.companyurl
-                    ,$scope.selectedLocation, $scope.user.password);
+                    ,$scope.selectedLocation, $scope.promocode);
             }
         };
 

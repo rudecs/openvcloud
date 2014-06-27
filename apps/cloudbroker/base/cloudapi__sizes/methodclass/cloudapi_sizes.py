@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 import ujson
 
 
@@ -28,6 +29,7 @@ class cloudapi_sizes(object):
             self._cb = j.apps.cloud.cloudbroker
         return self._cb
 
+    @audit()
     def list(self, **kwargs):
         """
         List the availabe flavors, filtering can be based on the user which is doing the request

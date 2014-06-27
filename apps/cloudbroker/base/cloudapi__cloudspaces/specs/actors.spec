@@ -68,3 +68,10 @@
 	    var:cloudspaceId int,, id of the cloudspace
 		var:userId int,, id of the user to remove
 		result: bool
+
+    method:getDefenseShield
+        """
+        Get information about the defense sheild
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        result: object

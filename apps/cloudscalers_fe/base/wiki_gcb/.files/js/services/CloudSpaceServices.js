@@ -34,6 +34,16 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
+            getDefenseShield: function(cloudSpaceId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/getDefenseShield?cloudspaceId=' + cloudSpaceId).then(
+                        function(result){
+                            return result.data;
+                        },
+                        function(reason){
+                            return $q.reject(reason);
+                        }
+                    );
+            },
             addUser: function(space, user, accessType) {
                 var accessString = '';
                 for (var x in accessType) {

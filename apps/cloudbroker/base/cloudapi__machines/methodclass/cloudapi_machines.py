@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, enums
 import JumpScale.grid.osis
 import string, time
@@ -68,26 +69,32 @@ class cloudapi_machines(object):
         return method(node)
 
     @authenticator.auth(acl='X')
+    @audit()
     def start(self, machineId, **kwargs):
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
+    @audit()
     def stop(self, machineId, **kwargs):
         return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
 
     @authenticator.auth(acl='X')
+    @audit()
     def reboot(self, machineId, **kwargs):
         return self._action(machineId, 'reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
+    @audit()
     def pause(self, machineId, **kwargs):
         return self._action(machineId, 'suspend', enums.MachineStatus.SUSPENDED)
 
     @authenticator.auth(acl='X')
+    @audit()
     def resume(self, machineId, **kwargs):
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='C')
+    @audit()
     def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
         """
         Add a disk to a machine
@@ -112,6 +119,7 @@ class cloudapi_machines(object):
         return diskid
 
     @authenticator.auth(acl='C')
+    @audit()
     def createTemplate(self, machineId, templatename, basename, **kwargs):
         """
         Creates a template from the active machine
@@ -145,6 +153,7 @@ class cloudapi_machines(object):
         return imageid
 
     @authenticator.auth(acl='C')
+    @audit()
     def backup(self, machineId, backupName, **kwargs):
         """
         backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running
@@ -191,6 +200,7 @@ class cloudapi_machines(object):
         return balance
 
     @authenticator.auth(acl='C')
+    @audit()
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
         Create a machine based on the available flavors, in a certain space.
@@ -310,6 +320,7 @@ class cloudapi_machines(object):
         self.models.cloudspace.set(cloudspace)
 
     @authenticator.auth(acl='D')
+    @audit()
     def delDisk(self, machineId, diskId, **kwargs):
         """
         Delete a disk from machine
@@ -327,6 +338,7 @@ class cloudapi_machines(object):
         return diskfound
 
     @authenticator.auth(acl='D')
+    @audit()
     def delete(self, machineId, **kwargs):
         """
         Delete a machine
@@ -354,8 +366,6 @@ class cloudapi_machines(object):
                     provider.client.destroy_node(pnode)
                     break
 
-
-
     def _getStorage(self, machine):
         if not machine['stackId']:
             return None
@@ -365,6 +375,7 @@ class cloudapi_machines(object):
         return storage
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, machineId, **kwargs):
         """
         Get information from a certain object.
@@ -393,8 +404,8 @@ class cloudapi_machines(object):
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-
     @authenticator.auth(acl='R')
+    @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
@@ -428,6 +439,7 @@ class cloudapi_machines(object):
         return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
+    @audit()
     def snapshot(self, machineId, name, **kwargs):
         """
         param:machineId id of machine to snapshot
@@ -450,6 +462,7 @@ class cloudapi_machines(object):
         return snapshot['name']
 
     @authenticator.auth(acl='C')
+    @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         snapshots = provider.client.ex_listsnapshots(node)
@@ -460,6 +473,7 @@ class cloudapi_machines(object):
         return result
 
     @authenticator.auth(acl='C')
+    @audit()
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
@@ -472,6 +486,7 @@ class cloudapi_machines(object):
         return provider.client.ex_snapshot_delete(node, name)
 
     @authenticator.auth(acl='C')
+    @audit()
     def rollbackSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
@@ -484,6 +499,7 @@ class cloudapi_machines(object):
         return provider.client.ex_snapshot_rollback(node, name)
 
     @authenticator.auth(acl='C')
+    @audit()
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
@@ -508,6 +524,7 @@ class cloudapi_machines(object):
         return self.models.vmachine.set(machine)[0]
 
     @authenticator.auth(acl='R')
+    @audit()
     def getConsoleUrl(self, machineId, **kwargs):
         """
         get url to connect to console
@@ -522,6 +539,7 @@ class cloudapi_machines(object):
         return provider.client.ex_get_console_url(node)
 
     @authenticator.auth(acl='C')
+    @audit()
     def clone(self, machineId, name, **kwargs):
         """
         clone a machine
@@ -573,6 +591,7 @@ class cloudapi_machines(object):
         return clone.id
 
     @authenticator.auth(acl='R')
+    @audit()
     def getHistory(self, machineId, size, **kwargs):
         """
         Gets the machine actions history
@@ -582,6 +601,7 @@ class cloudapi_machines(object):
         return self.osis_logs.search(query)['hits']['hits']
 
     @authenticator.auth(acl='R')
+    @audit()
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
         """
         Create a export/backup of a machine
@@ -628,6 +648,7 @@ class cloudapi_machines(object):
 
     
     @authenticator.auth(acl='C')
+    @audit()
     def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
         """
         restore export to a new machine
@@ -675,6 +696,7 @@ class cloudapi_machines(object):
         return id
 
     @authenticator.auth(acl='R')
+    @audit()
     def listExports(self, machineId, status, **kwargs):
         """
         List exported images

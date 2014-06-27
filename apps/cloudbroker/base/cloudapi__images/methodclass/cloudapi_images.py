@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 import ujson
 
 class cloudapi_images(object):
@@ -27,6 +28,7 @@ class cloudapi_images(object):
         return self._cb
 
 
+    @audit()
     def list(self, accountid, **kwargs):
         """
         List the availabe images, filtering can be based on the user which is doing the request
@@ -42,6 +44,7 @@ class cloudapi_images(object):
         images = [res['fields'] for res in results]
         return images
 
+    @audit()
     def delete(self, imageid, **kwargs):
         """
         Delete a image, you need to have Write access on the image

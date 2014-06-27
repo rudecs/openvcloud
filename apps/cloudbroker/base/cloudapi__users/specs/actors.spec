@@ -25,6 +25,7 @@
 	    var:company str,,name of the company
 	    var:companyurl str,,url of the main website
 	    var:location str,,location
+	    var:promocode str,,promocode @optional
 	    result:bool
 
 	method:get
@@ -32,6 +33,14 @@
 	    Get information of a existing username based on username id
 	    """
         var:username str,,username of the user
+        result:dict,,user information.
+	
+	method:updatePassword
+	    """
+	    Change user passwrod
+	    """
+        var:oldPassword str,,oldPassword of the user
+        var:newPassword str,,newPassword of the user
         result:dict,,user information.
 
     method:validate @noauth
