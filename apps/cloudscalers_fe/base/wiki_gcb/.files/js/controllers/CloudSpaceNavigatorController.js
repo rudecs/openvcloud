@@ -26,9 +26,13 @@ angular.module('cloudscalers.controllers')
                 $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
                 		function(account){return account.acl != null;}
                 	);
+                var selectedAccount = _.find($scope.accounts, function(account1,account2){return account1.id == account2.id;});
+                if selectedAccount == null:
+                	selectedAccount = $scope.accounts[0];
+                
             	$scope.newCloudSpace = {
                     name: '',
-                    account: $scope.currentAccount
+                    account: selectedAccount
                 };
                 $scope.submit = function () {
                     $modalInstance.close({
