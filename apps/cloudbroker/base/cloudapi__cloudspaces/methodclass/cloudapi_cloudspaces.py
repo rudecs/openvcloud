@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import ujson
 import gevent
@@ -34,6 +35,7 @@ class cloudapi_cloudspaces(object):
 
 
     @authenticator.auth(acl='U')
+    @audit()
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -59,6 +61,7 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     @authenticator.auth(acl='A')
+    @audit()
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
         """
         Create a extra cloudspace
@@ -104,6 +107,7 @@ class cloudapi_cloudspaces(object):
         return cloudspace_id
 
     @authenticator.auth(acl='A')
+    @audit()
     def delete(self, cloudspaceId, **kwargs):
         """
         Delete a cloudspace.
@@ -155,6 +159,7 @@ class cloudapi_cloudspaces(object):
 
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, cloudspaceId, **kwargs):
         """
         get cloudspaces.
@@ -168,10 +173,12 @@ class cloudapi_cloudspaces(object):
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
-                        "publicipaddress": cloudspaceObject.publicipaddress}
+                        "publicipaddress": cloudspaceObject.publicipaddress,
+                        "location": cloudspaceObject.location}
         return cloudspace
 
     @authenticator.auth(acl='U')
+    @audit()
     def deleteUser(self, cloudspaceId, userId, **kwargs):
         """
         Delete a user from the cloudspace
@@ -190,6 +197,7 @@ class cloudapi_cloudspaces(object):
             self.models.cloudspace.set(cloudspace)
         return change
 
+    @audit()
     def list(self, **kwargs):
         """
         List cloudspaces.
@@ -201,19 +209,26 @@ class cloudapi_cloudspaces(object):
         query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
-        
+
         #during the transitions phase, not all locations might be filled in
         for cloudspace in cloudspaces:
             if not 'location' in cloudspace or len(cloudspace['location']) == 0:
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
         locations = self.cb.extensions.imp.getLocations()
+        
         for cloudspace in cloudspaces:
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
+            cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
+            for acl in self.models.account.get(cloudspace['accountId']).acl:
+                cloudspace['userRightsOnAccount'] = acl
+                if acl.userGroupId == user.lower() and acl.type == 'U':
+                      cloudspace['userRightsOnAccountBilling'] = True
 
         return cloudspaces
 
     @authenticator.auth(acl='A')
+    @audit()
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Update a cloudspace name and capacity parameters can be updated

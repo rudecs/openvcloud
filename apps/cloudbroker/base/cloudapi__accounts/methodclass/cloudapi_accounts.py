@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import ujson
 
@@ -29,6 +30,7 @@ class cloudapi_accounts(object):
         return self._models
 
     @authenticator.auth(acl='A')
+    @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -47,6 +49,7 @@ class cloudapi_accounts(object):
         return self.models.account.set(account)
 
     @authenticator.auth(acl='S')
+    @audit()
     def create(self, name, access, **kwargs):
         """
         Create a extra an account
@@ -65,6 +68,7 @@ class cloudapi_accounts(object):
 
 
     @authenticator.auth(acl='S')
+    @audit()
     def delete(self, accountId, **kwargs):
         """
         Delete an account
@@ -74,6 +78,7 @@ class cloudapi_accounts(object):
         return self.models.account.delete(accountId)
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, accountId, **kwargs):
         """
         get account.
@@ -81,10 +86,12 @@ class cloudapi_accounts(object):
         result dict
         """
         #put your code here to implement this method
+
         return self.models.account.get(accountId)
 
 
     @authenticator.auth(acl='R')
+    @audit()
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -97,7 +104,11 @@ class cloudapi_accounts(object):
         images = [res['fields'] for res in results]
         return images
 
+        
+
+
     @authenticator.auth(acl='A')
+    @audit()
     def deleteUser(self, accountId, userId, **kwargs):
         """
         Delete a user from the account
@@ -116,6 +127,7 @@ class cloudapi_accounts(object):
             self.models.account.set(account)
         return change
 
+    @audit()
     def list(self, **kwargs):
         """
         List accounts.
@@ -131,6 +143,7 @@ class cloudapi_accounts(object):
         return accounts
 
     @authenticator.auth(acl='A')
+    @audit()
     def update(self, accountId, name, **kwargs):
         """
         Update an account name
@@ -141,12 +154,12 @@ class cloudapi_accounts(object):
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method update")
-    
+
     @authenticator.auth(acl='R')
+    @audit()
     def getCreditBalance(self, accountId, **kwargs):
         """
         Get the current available credit
-
         param:accountId id of the account
         result:dict A json dict containing the available credit
         """
@@ -159,7 +172,7 @@ class cloudapi_accounts(object):
         #balance = [res['fields'] for res in results]
         
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
-    
+
         query = {'fields': ['time', 'credit', 'status']}
         query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
         results = self.models.credittransaction.find(ujson.dumps(query))['result']
@@ -171,13 +184,14 @@ class cloudapi_accounts(object):
         return {'credit':balance, 'time':int(time.time())}
 
     @authenticator.auth(acl='R')
+    @audit()
     def getCreditHistory(self, accountId, **kwargs):
         """
         Get all the credit transactions (positive and negative) for this account.
-        
         param:accountId id of the account
         result:[] A json list with the transactions details.
         """
+
         query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
         query['query'] = {'term': {"accountId": accountId}}
         results = self.models.credittransaction.find(ujson.dumps(query))['result']

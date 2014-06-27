@@ -2,8 +2,8 @@ angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location) {
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
-        $scope.currentAccount = {id:$scope.currentSpace ? $scope.currentSpace.accountId : ''};
-
+        $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
+	
         $scope.setCurrentCloudspace = function(space) {
             if (space.locationurl != null){
                 var currentlocation = $window.location;
@@ -22,15 +22,10 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.setCurrentAccount = function(){
-            if ($scope.currentSpace && $scope.accounts){
-
-                $scope.currentAccount = _.findWhere($scope.accounts, {id: $scope.currentSpace.accountId});
+            if ($scope.currentSpace){
+                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
             }
         };
-
-        Account.list().then(function(accounts) {
-            $scope.accounts = accounts;
-        });
 
         $scope.loadSpaces = function() {
             return CloudSpace.list().then(function(cloudspaces){
@@ -50,9 +45,12 @@ angular.module('cloudscalers.controllers')
             $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
         }, true);
 
-        $scope.$watch('accounts', function(){
-        	$scope.setCurrentAccount();
-        });
+	$scope.$watch('currentAccount',  function(){
+              if($scope.currentAccount){
+		$scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
+	      }
+            }, true);
+
 
         $scope.logout = function() {
             User.logout();

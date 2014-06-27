@@ -6,7 +6,6 @@ angular.module('cloudscalers.controllers')
     $scope.credit = "Unavailable";
     $scope.creditToAdd = 25;
 
-
     $scope.refreshCredit = function(){
         Account.getCreditBalance($scope.currentAccount).then(
             function(result){

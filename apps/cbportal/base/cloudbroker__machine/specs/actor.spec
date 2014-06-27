@@ -43,9 +43,11 @@
         var:name str,, Usefull name for this backup
         var:backuptype str,, Type e.g raw, condensed
         var:storage str,, Type of storage used. e.g S3 or RADOS.
-        var:host str,, host to export(if s3) @tags: optional 
+        var:bucketname str,,bucket name 
+        var:host str,, host to export(if s3) @tags: optional
         var:aws_access_key str,,s3 access key @tags: optional 
-        var:aws_secret_key str,,s3 secret key @tags: optional 
+        var:aws_secret_key str,,s3 secret key @tags: optional
+        var:bucketname str,,bucket name 
         result:jobid
 
     method:tag
@@ -55,7 +57,7 @@
         var:machineId int,, id of the machine to tag
         var:tagName str,, tag
        
-    method:importbackup
+    method:restore
         """
         Import a existing backup on a cpu node
         """

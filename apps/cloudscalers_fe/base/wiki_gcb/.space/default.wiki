@@ -5,12 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <style type="text/css">
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
-            display: none !important;
-        }
-    </style>    
 }}
 
 
@@ -23,6 +17,7 @@
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/css/custom.css}}
 {{css:/$$space/.files/css/mothership1.css}}
+{{css:/$$space/.files/css/oocss.css}}
 
 #{{find}}
 
@@ -78,32 +73,31 @@
         <li><a href="../$$space/Decks">Home</a></li>
         <li> </li>
         <li class="dropdown dropdown-accordion">
-          <a id="drop1" role="button" class="just" data-toggle="dropdown">{[currentAccount.name]} / {[currentSpace.name]} <b class="caret"></b></a>
+          <a id="drop1" role="button" class="just" data-toggle="dropdown"><span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
-              <div class="panel-group grey" id="accordion" close-others="false">
-                <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
-                  <div class="panel-heading">
-                    <h4 class="panel-title">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
-                    </h4>
-                  </div>
-                  <div id="{[account.name | nospace]}" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <ul>
-                            <li ng-repeat="space in account.cloudspaces">
-                                <a href="#" ng-click="setCurrentCloudspace(space)">{[space.name]}</a>
-                            </li>
-                        </ul>
-
-                      </div>
-                  </div>
+                <div class="panel-group grey" id="accordion" close-others="false">
+	                <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
+	                    <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
+                            </h4>
+                        </div>
+                        <div id="{[account.name | nospace]}" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul>
+                                    <li ng-repeat="cloudspace in account.cloudspaces">
+                                        <a href="#" ng-click="setCurrentCloudspace(cloudspace)">{[cloudspace.name]}</a>
+                                    </li>
+                                </ul>
+                            </div>
+	                    </div>
+                    </div>
                 </div>
-                </div>
-              </div>
-              <ul class="justBorder">
-                  <li>
-                      <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New Cloud Space...</a>
+            </div>
+            <ul class="justBorder">
+            <li>
+              <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New Cloud Space...</a>
 }}
 #                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
 #                      <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
@@ -146,7 +140,7 @@
         <li><a href="../$$space/ApiS3">Storage API</a></li>
         <li><a href="../kb/">Knowledge Base</a></li>
         <li><a href="http://support.mothership1.com">Support</a></li>
-        <li><a href="../$$space/AccountSettings">Billing</a></li>
+        <li ng-show="userRightsOnAccountBilling"><a href="../$$space/AccountSettings">Billing</a></li>
         <li><a href="../$$space/CloudSpaceSettings">Cloud Space Settings</a></li>
 }}
 #        <li class="dropdown">
@@ -272,7 +266,7 @@
 
 
 
-{{div2:class=loader | style=display: none }} 
+{{div2:class=loader | style=display: none }}
 h2. loading
 {{html:
 <canvas id="c"></canvas>
@@ -369,7 +363,7 @@ var c = document.getElementById('c'),
       if(circle.rotation < 360){
         circle.rotation += circle.speed;
       } else {
-        circle.rotation = 0; 
+        circle.rotation = 0;
       }
     },
     renderCircle = function(){
@@ -378,7 +372,7 @@ var c = document.getElementById('c'),
       ctx.rotate(dToR(circle.rotation));
       ctx.beginPath();
       ctx.arc(0, 0, circle.radius, dToR(circle.angleStart), dToR(circle.angleEnd), true);
-      ctx.lineWidth = circle.thickness;    
+      ctx.lineWidth = circle.thickness;
       ctx.strokeStyle = gradient1;
       ctx.stroke();
       ctx.restore();
@@ -389,7 +383,7 @@ var c = document.getElementById('c'),
       ctx.rotate(dToR(circle.rotation));
       ctx.beginPath();
       ctx.arc(0, 0, circle.radius + (circle.thickness/2), dToR(circle.angleStart), dToR(circle.angleEnd), true);
-      ctx.lineWidth = 2;  
+      ctx.lineWidth = 2;
       ctx.strokeStyle = gradient2;
       ctx.stroke();
       ctx.restore();
@@ -402,11 +396,11 @@ var c = document.getElementById('c'),
       ctx.beginPath();
       ctx.arc(0, circle.radius, 30, 0, Math.PI *2, false);
       ctx.closePath();
-      var gradient3 = ctx.createRadialGradient(0, circle.radius, 0, 0, circle.radius, 30);      
+      var gradient3 = ctx.createRadialGradient(0, circle.radius, 0, 0, circle.radius, 30);
       gradient3.addColorStop(0, 'hsla(330, 50%, 50%, .35)');
       gradient3.addColorStop(1, 'hsla(330, 50%, 50%, 0)');
       ctx.fillStyle = gradient3;
-      ctx.fill();     
+      ctx.fill();
       ctx.restore();
     },
     renderCircleFlare2 = function(){
@@ -421,7 +415,7 @@ var c = document.getElementById('c'),
       gradient4.addColorStop(0, 'hsla(30, 100%, 50%, .2)');
       gradient4.addColorStop(1, 'hsla(30, 100%, 50%, 0)');
       ctx.fillStyle = gradient4;
-      ctx.fill();     
+      ctx.fill();
       ctx.restore();
     },
     createParticles = function(){
@@ -445,7 +439,7 @@ var c = document.getElementById('c'),
         p.x += p.vx;
         p.y += p.vy;
         p.alpha -= .01;
-        
+
         if(p.alpha < .02){
           particles.splice(i, 1)
         }
@@ -465,7 +459,7 @@ var c = document.getElementById('c'),
       ctx.globalCompositeOperation = 'destination-out';
       ctx.fillStyle = 'rgba(0, 0, 0, .1)';
       ctx.fillRect(0, 0, cw, ch);
-      ctx.globalCompositeOperation = 'lighter';   
+      ctx.globalCompositeOperation = 'lighter';
     }
     loop = function(){
       clear();
@@ -486,11 +480,11 @@ var c = document.getElementById('c'),
 ctx.shadowBlur = circle.blur;
 ctx.shadowColor = 'hsla('+circle.hue+', 80%, 60%, 1)';
 ctx.lineCap = 'round'
-  
+
 var gradient1 = ctx.createLinearGradient(0, -circle.radius, 0, circle.radius);
 gradient1.addColorStop(0, 'hsla('+circle.hue+', 60%, 50%, .25)');
 gradient1.addColorStop(1, 'hsla('+circle.hue+', 60%, 50%, 0)');
-  
+
 var gradient2 = ctx.createLinearGradient(0, -circle.radius, 0, circle.radius);
 gradient2.addColorStop(0, 'hsla('+circle.hue+', 100%, 50%, 0)');
 gradient2.addColorStop(.1, 'hsla('+circle.hue+', 100%, 100%, .7)');
@@ -501,7 +495,7 @@ setInterval(loop, 16);
 
 
 
-     
+
 
 
 
