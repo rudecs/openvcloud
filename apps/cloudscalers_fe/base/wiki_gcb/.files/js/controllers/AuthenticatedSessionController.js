@@ -5,6 +5,7 @@ angular.module('cloudscalers.controllers')
         $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
 	
         $scope.setCurrentCloudspace = function(space) {
+	    $scope.assignIPMessage = "";
             if (space.locationurl != null){
                 var currentlocation = $window.location;
                 if (currentlocation.origin != space.locationurl){
@@ -50,7 +51,41 @@ angular.module('cloudscalers.controllers')
 		$scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
 	      }
             }, true);
+	
+	CloudSpace.get($scope.currentSpace.id).then(
+		function(data) {
+                	if(data.status == 'DEPLOYED'){
+                        	$scope.assignIPMessage = "";
+                           }
+                           else{
+                                $scope.assignIPMessage = 'Assigning public IP-address...';
+                           }
+                        },
+                        function(reason) {
+                           $ErrorResponseAlert(reason);
+                        }
+        );
 
+	$scope.$watch('currentSpace.id',function(){
+                if ($scope.currentSpace){
+		var getCloudspaceStatueTimer = setInterval(function() {
+                    CloudSpace.get($scope.currentSpace.id).then(
+                        function(data) {
+			   if(data.status == 'DEPLOYED'){
+				$scope.assignIPMessage = "";
+				clearInterval(getCloudspaceStatueTimer);
+			   }
+			   else{
+				$scope.assignIPMessage = 'Assigning public IP-address...';
+			   }
+                        },
+                        function(reason) {
+                           $ErrorResponseAlert(reason);
+                        }
+                    );
+		 }, 5000);
+               }
+         });
 
         $scope.logout = function() {
             User.logout();

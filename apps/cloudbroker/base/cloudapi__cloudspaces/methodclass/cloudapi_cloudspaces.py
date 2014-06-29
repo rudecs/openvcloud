@@ -221,6 +221,7 @@ class cloudapi_cloudspaces(object):
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
                         "publicipaddress": getIP(cloudspaceObject.publicipaddress),
+                        "status": cloudspaceObject.status,
                         "location": cloudspaceObject.location}
         return cloudspace
 

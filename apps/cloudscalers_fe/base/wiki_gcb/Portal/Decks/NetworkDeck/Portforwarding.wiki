@@ -8,7 +8,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 	<div class="portMargin" ng-controller="PortforwardingController">
 		<div>
 			<div style="margin-bottom: 5px;">
-				<button class="btn btn-info btn-large absolute1" ng-click="portForwardPopup()">Add</button>
+				<button class="btn btn-info btn-large absolute1" ng-disabled="assignIPMessage" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
 			<table class="table table-striped table-bordered">
