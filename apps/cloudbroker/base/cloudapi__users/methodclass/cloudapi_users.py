@@ -1,8 +1,45 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
+import JumpScale.baselib.mailclient
 import re, string, random, time
 import md5
+
+def _send_signup_mail(**kwargs):
+    notifysupport = j.application.config.get("mothership1.cloudbroker.notifysupport")
+    fromaddr = 'support@mothership1.com'
+    toaddrs  =  [kwargs['email']]
+    if notifysupport == '1':
+        toaddrs.append('support@mothership1.com')
+
+
+    html = """
+<html>
+<head></head>
+<body>
+    Dear %(user)s,<br>
+    <br>
+    Thank you for registering at Mothership<sup>1</sup>!<br>
+    <br>
+    We have now prepared your account %(username)s and we have applied a welcoming credit so you can start right away!<br>
+    <br>
+    Please confirm your e-mail address by following the activation link: <br>
+    <br>
+    <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
+    <br>
+    If you are unable to follow the link, please copy and paste it in your favourite browser.<br>
+    <br>
+    After your validation, you will be able to log in with your username and chosen password.<br>
+    <br>
+    Best Regards,<br>
+    <br>
+    The Mothership<sup>1</sup> Team<br>
+    <a href="%(portalurl)s">www.mothership1.com</a><br>
+</body>
+</html>
+""" % kwargs
+
+    j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
 
 class cloudapi_users(object):
     """
@@ -182,8 +219,8 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
-            args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': locationurl, 'token': actual_token, 'username':username, 'user': user}
-            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
+            j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None, **kwargs)
+            _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl, activationtoken=actual_token)
 
             return True
 

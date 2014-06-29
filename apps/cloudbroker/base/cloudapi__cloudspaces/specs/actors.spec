@@ -11,7 +11,6 @@
 		var:access str,,id of the user which have full access to the space
 		var:maxMemoryCapacity int,,max size of memory in space (in GB) @tags: optional 
 		var:maxDiskCapacity int,,max size of aggregated disks (in GB) @tags: optional 
-		var:password str,,Password to give to routeros @tags: optional 
 		result:int  #returns id of space created
 
 	method:deploy

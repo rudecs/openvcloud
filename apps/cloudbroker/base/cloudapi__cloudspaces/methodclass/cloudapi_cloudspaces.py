@@ -70,7 +70,7 @@ class cloudapi_cloudspaces(object):
 
     @authenticator.auth(acl='A')
     @audit()
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
+    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create an extra cloudspace
         param:name name of space to create
