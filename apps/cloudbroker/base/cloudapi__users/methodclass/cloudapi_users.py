@@ -183,7 +183,7 @@ class cloudapi_users(object):
             self.models.accountactivationtoken.set(activation_token)
 
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': locationurl, 'token': actual_token, 'username':username, 'user': user}
-            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
+            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', queue='hypervisor', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
 
