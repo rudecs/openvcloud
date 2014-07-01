@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, network
 import netaddr
 import ujson
 import gevent
@@ -28,6 +28,7 @@ class cloudapi_cloudspaces(object):
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
         self.gridid = j.application.config.get('grid.id')
+        self.network = network.Network(self.models)
 
     @property
     def cb(self):
@@ -107,29 +108,10 @@ class cloudapi_cloudspaces(object):
         if cloudspace.networkId:
             self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
         if cloudspace.publicipaddress:
-            self._releasePublicIpAddress(cloudspace.publicipaddress)
+            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
         cloudspace.networkId = None
         cloudspace.publicipaddress = None
         return cloudspace
-
-    def _getPublicIpAddress(self):
-        for poolid in self.models.publicipv4pool.list():
-            pool = self.models.publicipv4pool.get(poolid)
-            if pool.pubips:
-                pubip = pool.pubips.pop()
-                self.models.publicipv4pool.set(pool)
-                net = netaddr.IPNetwork(poolid)
-                return netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))
-
-    def _releasePublicIpAddress(self, publicip):
-        net = netaddr.IPNetwork(publicip)
-        pool = self.models.publicipv4pool.get(str(net.cidr))
-        if not pool:
-            return
-        pubips = set(pool.pubips)
-        pubips.add(str(net.ip))
-        pool.pubips = list(pubips)
-        self.models.publicipv4pool.set(pool)
 
     @authenticator.auth(acl='C')
     def deploy(self, cloudspaceId, **kwargs):
@@ -140,7 +122,7 @@ class cloudapi_cloudspaces(object):
         cs.status = 'DEPLOYING'
         self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        publicipaddress = self._getPublicIpAddress()
+        publicipaddress = self.network.getPublicIpAddress()
         if not publicipaddress:
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
 
@@ -150,7 +132,7 @@ class cloudapi_cloudspaces(object):
         try:
             self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid)
         except:
-            self._releasePublicIpAddress(publicipaddress)
+            self.network.releasePublicIpAddress(publicipaddress)
             cs.status = 'ERROR'
             self.models.cloudspace.set(cs)
             raise
