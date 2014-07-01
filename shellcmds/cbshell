@@ -24,6 +24,7 @@ if __name__ == '__main__':
         j.apps = cl.actors
 
     cl.getActor('cloud','cloudbroker')
+    cl.getActor('jumpscale','netmgr')
     cl.getActor('libcloud','libvirt')
     for type_ in ('sizes', 'images', 'accounts', 'cloudspaces', 'machines', 'users'):
         cl.getActor('cloudapi', type_)
