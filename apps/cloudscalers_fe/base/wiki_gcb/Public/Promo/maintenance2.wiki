@@ -23,21 +23,40 @@
  	.inputEmail {font-size: 13px !important; }
  }
 </style>
+<link href="//cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
 
 </head>
 
 
 <div class="container">
     <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png"></a>
-        <div class="col-md-12 marginTop1">
-        	<h1>Oops, Sign Up is temporary not available.</h1>
-            <h1>Sorry for this inconvenience.</h1>
-            <h2>Leave your e-mail address here and we will send you an invite<br /> with a promotion code when Sign Up is back available.</h1>
-            <input class="inputEmail" type="text" name="email" placeholder="Your Email"/>
+    <div class="col-md-12 marginTop1">
+    	<h1>Oops, Sign Up is temporary not available.</h1>
+        <h1>Sorry for this inconvenience.</h1>
+        <h2>Leave your e-mail address here and we will send you an invite<br /> with a promotion code when Sign Up is back available.</h2>
+        <div id="mc_embed_signup">
+			<form action="//mothership1.us8.list-manage.com/subscribe/post?u=b5fb849a3e9276e259f879b4d&amp;id=b9a73b3328" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+	        	<input id="mce-EMAIL" name="EMAIL" class="inputEmail required email" type="email" name="EMAIL" placeholder="Your Email"/>
+				<div class="response" id="mce-error-response" style="display:none"></div>
+				<div class="response" id="mce-success-response" style="display:none"></div>
+				<div id="mce-responses" class="clear">
+					<div class="response" id="mce-error-response" style="display:none"></div>
+					<div class="response" id="mce-success-response" style="display:none"></div>
+				</div>    
+				<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+			    <div style="position: absolute; left: -5000px;"><input type="text" name="b_b5fb849a3e9276e259f879b4d_b9a73b3328" tabindex="-1" value=""></div>
+			    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+			</form>
         </div>
+    </div>
+
 </div>
-
-
-
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
+<script type='text/javascript'>
+(function($) {
+window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';
+}(jQuery));
+var $mcj = jQuery.noConflict(true);
+</script>
 
 }}
