@@ -3,15 +3,20 @@
 <head>
 <style type="text/css">
 	h1 { color: #FFF;font-size: 30px;}
-	.inputEmail { background-color: transparent;border: 0;border-bottom: 1px solid #FFF;outline: 0;width: 320px;font-size: 22px !important;padding: 5px 0px; color: #FFF;}
+	.inputEmail { background-color: transparent;border: 0 !important;border-bottom: 1px solid #FFF !important;outline: 0;width: 320px;font-size: 22px !important;padding: 0 0px 6px 0;color: #FFF;float: left;margin: 9px 0 0 0;}
+	.inputEmail:focus {border: 0 !important;border-bottom: 1px solid #FFF !important;outline: 0;}
+	.inputEmail.required.email.mce_inline_error { border-bottom-color: #6B0505 !important;}
 	h2 {color: #A7A7A7;line-height: 38px;}
 	::-webkit-input-placeholder {color: #A7A7A7;}
 	:-moz-placeholder { color: #A7A7A7;  }
 	::-moz-placeholder {  color: #A7A7A7;  }
 	:-ms-input-placeholder {  color: #A7A7A7;  }
 	.marginTop1 { margin-top: 15px;}
-
-@media (max-width: 1376px) {
+	#mc_embed_signup form { padding: 0 !important;}
+	.btn.btn-info.btn-large { margin: 9px 0 0 21px;}
+	.response {clear: left;margin: 15px 0 0 0;display: inline-block;color: #FFF;font-size: 16px;width: 510px;float: left;}
+	#mc_embed_signup #mce-success-response {color: #529214;}
+ @media (max-width: 1376px) {
  	h1 { color: #FFF;font-size: 25px;line-height: 19px;}
  	h2 {color: #A7A7A7;line-height: 32px;font-size: 20px;}
  	.inputEmail {font-size: 20px !important; }
@@ -23,8 +28,9 @@
  	.inputEmail {font-size: 13px !important; }
  }
 </style>
+<!--
 <link href="//cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
-
+-->
 </head>
 
 
@@ -37,15 +43,16 @@
         <div id="mc_embed_signup">
 			<form action="//mothership1.us8.list-manage.com/subscribe/post?u=b5fb849a3e9276e259f879b4d&amp;id=b9a73b3328" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
 	        	<input id="mce-EMAIL" name="EMAIL" class="inputEmail required email" type="email" name="EMAIL" placeholder="Your Email"/>
-				<div class="response" id="mce-error-response" style="display:none"></div>
+				  
+				<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+			    <div style="position: absolute; left: -5000px;"><input type="text" name="b_b5fb849a3e9276e259f879b4d_b9a73b3328" tabindex="-1" value=""></div>
+			    <div ><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-info btn-large "></div>
+			    <div class="response" id="mce-error-response" style="display:none">Please write a valid email!</div>
 				<div class="response" id="mce-success-response" style="display:none"></div>
 				<div id="mce-responses" class="clear">
 					<div class="response" id="mce-error-response" style="display:none"></div>
 					<div class="response" id="mce-success-response" style="display:none"></div>
-				</div>    
-				<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-			    <div style="position: absolute; left: -5000px;"><input type="text" name="b_b5fb849a3e9276e259f879b4d_b9a73b3328" tabindex="-1" value=""></div>
-			    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+				</div>  
 			</form>
         </div>
     </div>
