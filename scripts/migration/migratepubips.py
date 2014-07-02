@@ -26,7 +26,12 @@ def migrate(network, gateway):
     pool.gateway = str(gateway)
     pool.network = str(network.cidr.ip)
     import JumpScale.grid.osis
-    pool.pubips = list(freeips)
+    freeipsinpool = set()
+    for freeip in freeips:
+        ip = netaddr.IPAddress(freeip)
+        if ip in network:
+            freeipsinpool.add(freeip)
+    pool.pubips = list(freeipsinpool)
     ccl.publicipv4pool.set(pool)
     for spaced in cloudspaces:
         if spaced['status'] != 'DESTROYED':
