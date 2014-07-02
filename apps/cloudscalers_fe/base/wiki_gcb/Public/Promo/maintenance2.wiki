@@ -6,27 +6,49 @@
 	.inputEmail { background-color: transparent;border: 0 !important;border-bottom: 1px solid #FFF !important;outline: 0;width: 320px;font-size: 22px !important;padding: 0 0px 6px 0;color: #FFF;float: left;margin: 9px 0 0 0;}
 	.inputEmail:focus {border: 0 !important;border-bottom: 1px solid #FFF !important;outline: 0;}
 	.inputEmail.required.email.mce_inline_error { border-bottom-color: #6B0505 !important;}
-	h2 {color: #A7A7A7;line-height: 38px;}
-	::-webkit-input-placeholder {color: #A7A7A7;}
-	:-moz-placeholder { color: #A7A7A7;  }
-	::-moz-placeholder {  color: #A7A7A7;  }
-	:-ms-input-placeholder {  color: #A7A7A7;  }
+	h2 {color: #FFF;line-height: 38px;}
+	::-webkit-input-placeholder {color: #FFF;}
+	:-moz-placeholder { color: #FFF;  }
+	::-moz-placeholder {  color: #FFF;  }
+	:-ms-input-placeholder {  color: #FFF;  }
 	.marginTop1 { margin-top: 15px;}
 	#mc_embed_signup form { padding: 0 !important;}
 	.btn.btn-info.btn-large { margin: 9px 0 0 21px;}
 	.response {clear: left;margin: 15px 0 0 0;display: inline-block;color: #FFF;font-size: 16px;width: 510px;float: left;}
-	#mc_embed_signup #mce-success-response {color: #529214;}
+	#mc_embed_signup #mce-success-response {color: #FFF;}
  @media (max-width: 1376px) {
  	h1 { color: #FFF;font-size: 25px;line-height: 19px;}
- 	h2 {color: #A7A7A7;line-height: 32px;font-size: 20px;}
+ 	h2 {color: #FFF;line-height: 32px;font-size: 20px;}
  	.inputEmail {font-size: 20px !important; }
  }	
 
  @media (max-width: 768px) {
  	h1 { color: #FFF;font-size: 16px;line-height: 16px;}
- 	h2 {color: #A7A7A7;line-height: 24px;font-size: 13px;}
+ 	h2 {color: #FFF;line-height: 24px;font-size: 13px;}
  	.inputEmail {font-size: 13px !important; }
  }
+#mc_embed_signup { display: inline-block;width: 465px;}
+.login-symbol { text-align: center;}
+
+
+
+
+
+
+	 .logo {  margin-right: 30px;}
+	 .account-container.stacked { width: auto !important; margin-top: 0;position: relative;}
+	 .login-symbol { background: none !important;}
+	 .logo {margin: 0 auto;display: block;width: 370px;}
+	 .logo img { width: 370px;}
+	 .content { color: #FFF; background: rgb(6,167,226); /* Old browsers */ background: -moz-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(6,167,226,0.6)), color-stop(100%, rgba(255,255,255,0.6))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* IE10+ */ background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%, rgba(167, 167, 167, 0.6) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff', GradientType=0 );} /* IE6-9 */
+	
+
+
+
+
+
+
+
 </style>
 <!--
 <link href="//cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
@@ -34,11 +56,12 @@
 </head>
 
 
-<div class="container">
-    <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png"></a>
-    <div class="col-md-12 marginTop1">
-    	<h1>Oops, Sign Up is temporary not available.</h1>
-        <h1>Sorry for this inconvenience.</h1>
+<div class="container"> <a class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png"></a>
+  <div class="account-container stacked upMargin">
+    <div class="content">
+      <div class="login-symbol signUpForm">
+    	<h2>Sign Up is temporary not available.<br />
+       Sorry for this inconvenience.</h2>
         <h2>Leave your e-mail address here and we will send you an invite<br /> with a promotion code when Sign Up is back available.</h2>
         <div id="mc_embed_signup">
 			<form action="//mothership1.us8.list-manage.com/subscribe/post?u=b5fb849a3e9276e259f879b4d&amp;id=b9a73b3328" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
@@ -58,6 +81,10 @@
     </div>
 
 </div>
+</div>
+
+</div>
+
 <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
 <script type='text/javascript'>
 (function($) {
