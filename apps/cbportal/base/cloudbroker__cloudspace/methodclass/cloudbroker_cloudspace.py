@@ -1,7 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
-from cloudbroker import network
+from cloudbrokerlib import network
 import urlparse
 import urllib
 

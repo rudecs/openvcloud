@@ -11,11 +11,14 @@ class Network(object):
                 pubip = pool.pubips.pop()
                 self.models.publicipv4pool.set(pool)
                 net = netaddr.IPNetwork(poolid)
-                return netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))
+                return pool, netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))
 
     def releasePublicIpAddress(self, publicip):
         net = netaddr.IPNetwork(publicip)
-        pool = self.models.publicipv4pool.get(str(net.cidr))
+        try:
+            pool = self.models.publicipv4pool.get(str(net.cidr))
+        except:
+            pool = None
         if not pool:
             return
         pubips = set(pool.pubips)

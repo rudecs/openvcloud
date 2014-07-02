@@ -122,7 +122,10 @@ class cloudapi_cloudspaces(object):
         cs.status = 'DEPLOYING'
         self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        publicipaddress = self.network.getPublicIpAddress()
+        pool, publicipaddress = self.network.getPublicIpAddress()
+        publicgw = pool.gateway
+        network = netaddr.IPNetwork(pool.id)
+        publiccidr = network.prefixlen
         if not publicipaddress:
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
 
@@ -130,9 +133,9 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cs)
         password = str(uuid.uuid4())
         try:
-            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid)
+            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
-            self.network.releasePublicIpAddress(publicipaddress)
+            self.network.releasePublicIpAddress(str(publicipaddress))
             cs.status = 'ERROR'
             self.models.cloudspace.set(cs)
             raise
