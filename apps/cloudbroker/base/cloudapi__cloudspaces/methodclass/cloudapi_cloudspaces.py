@@ -287,6 +287,6 @@ class cloudapi_cloudspaces(object):
         api = self.netmgr.fw_getapi(fwid)
         pwd = str(uuid.uuid4())
         api.executeScript('/user set admin password=%s' %  pwd)
-        url = 'http://%s:9080/webfig/' % cloudspace.publicipaddress
+        url = 'http://%s:9080/webfig/' % getIP(cloudspace.publicipaddress)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
