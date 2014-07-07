@@ -7,6 +7,7 @@ h2. Network: $$id
 h3. Details
 |*Management IP*|${host}|
 |*Public IPs*|${pubips}|
+|*FW Node*|[${nid}|/grid/node?id=${nid}]|
 |*CloudSpace ID*|[${domain}|cloudspace?id=${domain}]|
 
 h3. Port Fowardings
