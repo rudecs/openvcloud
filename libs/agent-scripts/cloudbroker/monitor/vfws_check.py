@@ -4,7 +4,7 @@ descr = """
 Checks whether vfw can reach its gw
 """
 
-organization = 'jumpscale'
+organization = 'cloudscalers'
 author = "deboeckj@codescalers.com"
 version = "1.0"
 category = "monitor.vfw"
@@ -17,6 +17,7 @@ queue = 'process'
 
 def action(location):
     import JumpScale.grid.osis
+    import JumpScale.baselib.mailclient
     import netaddr
     import JumpScale.lib.routeros
 
@@ -42,13 +43,11 @@ def action(location):
         return gws[subnet]
 
     result = dict()
-    def chunks(l, n):
-        for i in xrange(0, len(l), n):
-            yield l[i:i+n]
+    cloudspaces = dict()
     def processCloudSpace(cloudspace):
+        cloudspaceid = cloudspace['id']
+        cloudspaces[cloudspaceid] = cloudspace
         if cloudspace['status'] != 'DESTROYED':
-            status = {'status': False, 'message':'UNKOWN'}
-            result[cloudspace['id']] = status
             if cloudspace['networkId']:
                 gwip = getDefaultGW(cloudspace['publicipaddress'])
                 try:
@@ -56,24 +55,31 @@ def action(location):
                     if j.system.net.tcpPortConnectionTest(vfw.host, 8728, 7):
                         routeros = j.clients.routeros.get(vfw.host, 'vscalers', ROUTEROS_PASSWORD)
                     else:
-                        status['message'] = 'Could not connect to routeros %s' % vfw.host
+                        result[cloudspaceid] = 'Could not connect to routeros %s' % vfw.host
                         return
                 except Exception, e:
-                    status['message'] = str(e)
+                    result[cloudspaceid] = str(e)
                     return
                 if gwip:
                     pingable = routeros.ping(gwip)
-                    if pingable:
-                        status['status'] = True
-                        status['message'] = 'OK'
-                    else:
-                        status['message'] = 'Could not ping %s'  % gwip
+                    if not pingable:
+                        result[cloudspaceid] = 'Could not ping %s'  % gwip
                 else:
-                    status['message'] = 'No GW assigned'
-    for cloudspaces in chunks(cloudspacecl.simpleSearch({'location': location}), 5):
-        for cloudspace in cloudspaces:
-            print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
-            processCloudSpace(cloudspace)
+                    result[cloudspaceid] = 'No GW assigned'
+    for cloudspace in cloudspacecl.simpleSearch({'location': location}):
+        print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
+        processCloudSpace(cloudspace)
+    if result:
+        body = """
+Some VFW have connections issues please investigate
+
+"""
+        for cloudspaceid, message in result.iteritems():
+            cloudspace = cloudspaces[cloudspaceid]
+            body += "* CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s\n" % cloudspace
+            body += "  ** %s \n\n" % message
+        j.clients.email.send("support@mothership1.com", "monitor@mothership1.com", "VFW Check", body)
+        print body
     return result
 
 
