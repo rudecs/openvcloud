@@ -1,8 +1,11 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
+import JumpScale.grid.osis
+import JumpScale.baselib.mailclient
 import re, string, random, time
 import md5
+import json
 
 class cloudapi_users(object):
     """
@@ -236,6 +239,8 @@ www.mothership1.com<br>
             self.models.accountactivationtoken.set(activation_token)
 
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': locationurl, 'token': actual_token, 'username':username, 'user': user}
+            with open('/root/logs/%s.json' % accountid, 'w') as fd:
+                json.dump(args, fd)
             self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', queue='hypervisor', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
