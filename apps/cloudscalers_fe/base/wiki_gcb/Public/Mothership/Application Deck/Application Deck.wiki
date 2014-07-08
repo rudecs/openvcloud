@@ -1,7 +1,25 @@
 @template public_with_left_nav
-{{html:
+{{html: 
+<head>
+      
+<style type="text/css">
+      
+.apsoluteButton1 { position: absolute;left: -248px;top: 370px;width: 180px;}
+
+ @media (max-width: 768px) {
+      .apsoluteButton1 {position: absolute;top: -50px;width: 93%;left: 0;margin: 0 15px;}
+ }
+
+
+</style>
+
+</head>
+
  <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+  <a href="/$$space/SignUp" class="btn btn-success wideOne apsoluteButton1" role="button">Sign Up</a>
 }}
+
+
 {{div: class=half copy col-md-6 ApplicationDeckColor}}
 
 
@@ -10,7 +28,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.</p>}}
-{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
+
 {{div}}
 
 {{div: class=half col-md-6 justOne}}

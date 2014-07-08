@@ -1,9 +1,10 @@
 from JumpScale import j
-import JumpScale.grid.agentcontroller
 from JumpScale.portal.portal.auth import auth as audit
+import JumpScale.grid.agentcontroller
 import JumpScale.grid.osis
 import JumpScale.baselib.mailclient
 import re, string, random, time
+import md5
 import json
 
 class cloudapi_users(object):
@@ -82,6 +83,30 @@ class cloudapi_users(object):
         if len(password) < 8 or len (password) > 80:
             return False
         return re.search(r"\s",password) is None
+
+    def updatePassword(self, oldPassword, newPassword, **kwargs):
+        """
+        Change user password
+        result:
+        """
+        ctx = kwargs['ctx']
+        user = j.core.portal.active.auth.getUserInfo(ctx.env['beaker.session']['user'])
+        if user:
+              if user.passwd == md5.new(oldPassword).hexdigest():
+                 if not self._isValidPassword(newPassword):
+                    return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
+                 else:
+                    cl = j.core.osis.getClient(user='root')
+                    usercl = j.core.osis.getClientForCategory(cl, 'system', 'user')
+                    user.passwd =  md5.new(newPassword).hexdigest()
+                    usercl.set(user)
+                    return [200, "Your password has been changed."]
+              else:
+                 return [400, "Your current password doesn't match."]
+        else:
+            ctx = kwargs['ctx']
+            ctx.start_response('404 Not Found', [])
+            return 'User not found'
 
 
 
