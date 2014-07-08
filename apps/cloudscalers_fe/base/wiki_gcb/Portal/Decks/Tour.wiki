@@ -6,9 +6,7 @@
             <p ng-bind="ttContent"></p>
 
             <!-- As an example, you can change the buttons based on the current step -->
-            <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"
-                ng-hide="tourStep == 1"></a>
-            <a ng-show="tourStep == 1" href="/$$space/AccountSettings" class="small button tour-next-tip">Create a cloudspace</a>
+            <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
             <a ng-click="closeTour()" class="tour-close-tip">×</a>
         </div>
     </div>
