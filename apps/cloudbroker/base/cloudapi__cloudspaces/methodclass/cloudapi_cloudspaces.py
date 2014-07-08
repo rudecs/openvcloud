@@ -254,6 +254,10 @@ class cloudapi_cloudspaces(object):
         api = self.netmgr.fw_getapi(fwid)
         pwd = str(uuid.uuid4())
         api.executeScript('/user set admin password=%s' %  pwd)
-        url = 'http://%s:9080/webfig/' % cloudspace.publicipaddress
+        location = cloudspace.location
+        if not location in self.cb.extensions.imp.getLocations():
+            location = self.cb.extensions.imp.whereAmI()
+            
+        url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(cloudspace.publicipaddress.split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
