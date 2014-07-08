@@ -41,8 +41,7 @@ h2. Storage Deck
 
 h2. Defense Shield
 
-*# Go to Defense Shield
-*# Login with user 'admin' and your portal password
+*# Go to Defense Shield and hit the Defense Shield button
 *# Configure what you like, it`s private it`s yours
 *# Each Cloud Space has its own Defense Shield
 *# For more simple tasks, use the Port Fowards in the Machine Deck submenu
@@ -55,6 +54,6 @@ Charges are done hourly if indicated so in the [pricing|Pricing]. Charges for vi
 
 h2. Questions?
 
-Good luck! In case of any questions, go to our [Documentation Center|FAQ] or contact [Customer Service|http://support.mothership1.com]
+Good luck! In case of any questions, go to our Knowledge Base or contact [Customer Service|http://support.mothership1.com]
 
 @divend

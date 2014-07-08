@@ -152,14 +152,22 @@ h1. Pricing
       <tbody>
         <tr>
           <td>
-            <b>Data Transfer In Datacenter</b>
+            <b>Data Transfer within a Mothership<sup>1</sup> Datacenter</b>
           </td>
           <td>$0.00</td>
           <td>Per GB</td>
         </tr>
+        <tr>
+          <td>
+            <b>Data Transfer IN to a Mothership<sup>1</sup> Datacenter</b>
+          </td>
+          <td>$0.00</td>
+          <td>Per GB</td>
+        </tr>
+
        <tr>
           <td valign=top>
-            <b>Data Transfer from/to internet</b><br>
+            <b>Data Transfer OUT from a Mothership<sup>1</sup> Datacenter</b><br>
             Up to 10 TB<br>
             Next 40 TB<br>
             Next 100 TB<br>
@@ -257,7 +265,7 @@ h1. Pricing
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">{[ (plan.mem == '512MB' || plan.mem == '1GB' || plan.mem == '2GB' || plan.mem == '4GB') ? "Free Trial" : "Sign Up" ]}</a>}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">{[ (plan.mem == '512MB' || plan.mem == '1GB' || plan.mem == '2GB') ? "Free Trial" : "Sign Up" ]}</a>}}
             {{div4}}
         {{div3}}
     @divend

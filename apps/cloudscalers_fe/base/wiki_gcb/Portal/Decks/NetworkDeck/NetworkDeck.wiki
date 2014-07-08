@@ -1,6 +1,6 @@
 h1. Defense Shield
 
-The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
+The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing and firewall settings.
 
 New users can find useful info about the Defense Shield in our [Quick Tutorial Guide|Getting Started].
 
@@ -14,3 +14,5 @@ New users can find useful info about the Defense Shield in our [Quick Tutorial G
     <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
 	<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript"></script>
 }}
+
+Note: The button uses a pop-up, make sure your browser accept pop-ups
