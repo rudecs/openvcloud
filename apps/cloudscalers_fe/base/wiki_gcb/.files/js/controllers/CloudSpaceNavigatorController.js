@@ -7,7 +7,7 @@ angular.module('cloudscalers.controllers')
 
             var buildAccountCloudSpaceHierarchy = function () {
                 var cloudspacesGroups = _.groupBy($scope.cloudspaces, 'accountId');
-                var accountCloudSpaceHierarchy = []
+                var accountCloudSpaceHierarchy = [];
                 for (accountId in cloudspacesGroups){
                     var account = {id:accountId, name:cloudspacesGroups[accountId][0]['accountName']}
                     account.cloudspaces = cloudspacesGroups[accountId];
