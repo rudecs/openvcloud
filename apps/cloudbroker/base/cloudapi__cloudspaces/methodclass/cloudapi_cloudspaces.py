@@ -206,7 +206,7 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'descr', 'accountId','acl','publicipaddress','location']}
+        query = {'fields': ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']}
         query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
@@ -222,9 +222,9 @@ class cloudapi_cloudspaces(object):
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
             for acl in self.models.account.get(cloudspace['accountId']).acl:
-                cloudspace['userRightsOnAccount'] = acl
                 if acl.userGroupId == user.lower() and acl.type == 'U':
-                      cloudspace['userRightsOnAccountBilling'] = True
+                    cloudspace['userRightsOnAccount'] = acl
+                    cloudspace['userRightsOnAccountBilling'] = True
 
         return cloudspaces
 
@@ -254,6 +254,10 @@ class cloudapi_cloudspaces(object):
         api = self.netmgr.fw_getapi(fwid)
         pwd = str(uuid.uuid4())
         api.executeScript('/user set admin password=%s' %  pwd)
-        url = 'http://%s:9080/webfig/' % cloudspace.publicipaddress
+        location = cloudspace.location
+        if not location in self.cb.extensions.imp.getLocations():
+            location = self.cb.extensions.imp.whereAmI()
+            
+        url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(cloudspace.publicipaddress.split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result

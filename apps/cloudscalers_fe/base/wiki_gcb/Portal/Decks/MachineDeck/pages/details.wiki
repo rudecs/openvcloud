@@ -131,14 +131,14 @@ h1 { margin-bottom: 20px; }
 			</script>
 
                         </li>
-
-                        <li>
-                            <a onclick="location.reload()">
-                                <i class="fa fa-undo"></i>
-                                Rebuild
-                            </a>
-                        </li>
-
+}}
+#                        <li>
+#                            <a onclick="location.reload()">
+#                                <i class="fa fa-undo"></i>
+#                                Rebuild
+#                            </a>
+#                        </li>
+{{html:
                         <li>
                             <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
                                 <i class="fa fa-copy"></i>

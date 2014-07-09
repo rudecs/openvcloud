@@ -1,8 +1,11 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
+import JumpScale.grid.osis
+import JumpScale.baselib.mailclient
 import re, string, random, time
 import md5
+import json
 
 class cloudapi_users(object):
     """
@@ -18,6 +21,7 @@ class cloudapi_users(object):
         self._models = None
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.acl = j.clients.agentcontroller.get()
+        self.libcloud_model = j.core.osis.getClientForNamespace('libcloud')
 
     @property
     def cb(self):
@@ -51,7 +55,6 @@ class cloudapi_users(object):
 
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
-
     @audit()
     def get(self, username, **kwargs):
         """
@@ -105,6 +108,8 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
+
+
     def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
@@ -140,6 +145,57 @@ class cloudapi_users(object):
                 correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
                 ctx.start_response('451 Redirect', [('Location', correctlocation)])
                 return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
+            networkids = self.libcloud_model.libvirtdomain.get('networkids')
+
+            if (len(networkids) < 25) or (j.application.config.exists('mothership1.cloudbroker.disableregistration') and j.application.config.getInt('mothership1.cloudbroker.disableregistration') == 1):
+                userdata = {'username':username,'user': user, 'emailaddress': emailaddress, 'password': password, 'company': company, 'companyurl': companyurl, 'location': location, 'promocode': promocode}
+                with open('/root/logs/request_access/%s.json' % emailaddress, 'w') as fd:
+                    json.dump(userdata, fd)
+                fromaddr = 'support@mothership1.com'
+                toaddrs = emailaddress
+                html = """
+<html>
+
+<head></head>
+
+<body>
+
+Dear,<br>
+
+<br>
+
+Thank you for registering with Mothership<sup>1</sup>.<br>
+
+<br>
+
+As we prefer to verify and follow up the experience of our new customers, we schedule new arrivals in batches.<br>
+
+<br>
+
+As there are currently many new registrations, you are queued to be provisioned in the next batches.<br>
+
+<br>
+
+Thank you for your understanding and we hope to see you soon on Mothership<sup>1</sup>.<br>
+
+<br>
+
+Best Regards,<br>
+
+<br>
+
+The Mothership<sup>1</sup> Team<br>
+
+www.mothership1.com<br>
+
+</body>
+
+</html>
+"""
+                j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
+                return True
+
+                
 
             j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
             account = self.models.account.new()
@@ -183,7 +239,9 @@ class cloudapi_users(object):
             self.models.accountactivationtoken.set(activation_token)
 
             args = {'accountid': accountid, 'password': password, 'email': emailaddress, 'now': now, 'portalurl': locationurl, 'token': actual_token, 'username':username, 'user': user}
-            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', args=args, nid=j.application.whoAmI.nid, wait=False)
+            with open('/root/logs/%s.json' % accountid, 'w') as fd:
+                json.dump(args, fd)
+            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_accountcreate', queue='hypervisor', args=args, nid=j.application.whoAmI.nid, wait=False)
 
             return True
 

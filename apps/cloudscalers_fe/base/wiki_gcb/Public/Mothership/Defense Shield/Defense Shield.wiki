@@ -1,7 +1,24 @@
 @template public_with_left_nav
-{{html:
- <img class="smallIcon" src="/$$space/.files/img/icon5.png" alt=""/>
+{{html: 
+<head>
+      
+<style type="text/css">
+      
+.apsoluteButton1 { position: absolute;left: -248px;top: 370px;width: 180px;}
+
+ @media (max-width: 768px) {
+      .apsoluteButton1 {position: absolute;top: -50px;width: 93%;left: 0;margin: 0 15px;}
+ }
+
+
+</style>
+
+</head>
+
+ <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+  <a href="/$$space/SignUp" class="btn btn-success wideOne apsoluteButton1" role="button">Sign Up</a>
 }}
+
 {{div: class=half copy col-md-6 DefenseShieldColor}}
 
 
@@ -10,7 +27,7 @@
 h1. $$page
 
 {{html: <p class="niceHead">Defense Shields provide privacy and secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.</p>}}
-{{html: <a href="/cloudscalers_fe/SignUp" class="btn btn-success wideOne" role="button">Sign Up</a>}}
+
 {{div}}
 
 {{div: class=half col-md-6 justOne}}
