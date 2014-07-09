@@ -6,9 +6,8 @@ angular.module('cloudscalers.controllers')
                 $scope.cancel = function () {
             		$modalInstance.dismiss('cancel');
             	};
-		$scope.defenseshieldautologin =  "autologin=" + $scope.defenseshield.user + "|" + $scope.defenseshield.password;
-                $scope.defenseshieldurl =$sce.trustAsResourceUrl($scope.defenseshield.url);
-                }
+            	var defenseshieldautologin =  "autologin=" + $scope.defenseshield.user + "|" + $scope.defenseshield.password;
+                $scope.defenseshieldframe = $sce.trustAsHtml('<iframe name="' + defenseshieldautologin + '" src="' + $scope.defenseshield.url +'" style="width:100%;height:80%"></iframe>');
             };
 
 	    $scope.showDefenseShield = function(){
