@@ -43,4 +43,5 @@ def action(files, temppath, name, storageparameters):
         metadata = backup.backup(store, bucketname, tempfilepath)
         j.system.fs.remove(tempfilepath)
         backupmetadata.append(metadata)
+    backup.store_metadata(store, mdbucketname, name,backupmetadata)
     return {'files':backupmetadata, 'timestamp':time.time()}
