@@ -27,10 +27,9 @@ class cloudapi_machines(object):
         j.logger.setLogTargetLogForwarder()
 
         self.osisclient = j.core.osis.getClient(user='root')
+        self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-        
         self._pricing = pricing.pricing()     
-         
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
@@ -221,6 +220,7 @@ class cloudapi_machines(object):
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
+        
         #Check if there is enough credit
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
         available_credit = self._getCreditBalance(accountId)
@@ -231,9 +231,15 @@ class cloudapi_machines(object):
             ctx.start_response('409 Conflict', [])
             return 'Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required
 
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        #create a public ip and virtual firewall on the cloudspace if needed
+        if cloudspace.status != 'DEPLOYED':
+            args = {'cloudspaceId': cloudspaceId}
+            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
+
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
-        networkid = self.models.cloudspace.get(cloudspaceId).networkId
+        networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name

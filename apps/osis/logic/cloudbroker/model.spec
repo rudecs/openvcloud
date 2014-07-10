@@ -188,6 +188,16 @@
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
     prop:location str,, datacenterlocation
 
+[rootmodel:PublicIPv4Pool] @dbtype:osis
+    """
+    public ip pool
+    """
+    prop:id str,,network/cidr
+    prop:network str,,Network of the pool
+    prop:subnetmask str,,Subnetmask of the pool
+    prop:gateway str,,Gateway of th
+    prop:pubips list(str),,list of ips
+
 [rootmodel:Size] @dbtype:osis
     """
     Size is a combination of memory and cores

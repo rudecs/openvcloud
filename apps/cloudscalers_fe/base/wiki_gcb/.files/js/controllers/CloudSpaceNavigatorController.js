@@ -1,7 +1,14 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert',
-        function ($scope, $modal, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert',
+        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert) {
             $scope.isCollapsed = true;
+
+            $scope.locations = {};
+            
+            $scope.countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
+            LocationsService.list().then(function(locations) {
+                $scope.locations = locations;
+            });
 
             $scope.AccountCloudSpaceHierarchy = undefined;
 
@@ -10,6 +17,9 @@ angular.module('cloudscalers.controllers')
                 var accountCloudSpaceHierarchy = [];
                 for (accountId in cloudspacesGroups){
                     var account = {id:accountId, name:cloudspacesGroups[accountId][0]['accountName']}
+                    if ('accountAcl' in cloudspacesGroups[accountId][0]){
+                    	account.acl = cloudspacesGroups[accountId][0]['accountAcl']
+                    }
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
                 }
@@ -21,18 +31,30 @@ angular.module('cloudscalers.controllers')
             });
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
-                $scope.newCloudSpace = {
+                $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
+                		function(account){return account.acl != null;}
+                	);
+                var selectedAccount = _.find($scope.accounts, function(account1,account2){return account1.id == account2.id;});
+                if (selectedAccount == null){
+                	selectedAccount = $scope.accounts[0];
+                }
+            	$scope.newCloudSpace = {
                     name: '',
-                    account: $scope.currentAccount
+                    account: selectedAccount
                 };
                 $scope.submit = function () {
                     $modalInstance.close({
                         name: $scope.newCloudSpace.name,
-                        accountId: $scope.newCloudSpace.account.id
+                        accountId: $scope.newCloudSpace.account.id,
+                        selectedLocation: $scope.selectedLocation
                     });
                 };
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
+                };
+                $scope.selectedLocation = 'ca1';
+                $scope.itemClicked = function(value) {
+                    $scope.selectedLocation = value;
                 };
             };
             $scope.createNewCloudSpace = function () {
@@ -45,7 +67,7 @@ angular.module('cloudscalers.controllers')
 
                 modalInstance.result.then(function (space) {
                     LoadingDialog.show('Creating cloudspace');
-                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username).then(
+                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, $scope.locations[space.selectedLocation]).then(
                         function (cloudspaceId) {
                             //Wait a second, consistency on the api is not garanteed before that
                             $timeout(function(){

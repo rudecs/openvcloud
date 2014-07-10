@@ -47,11 +47,10 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         if str(cloudspace.location) != location:
             ctx = kwargs["ctx"]
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'cloudspaceId': cloudspaceId, 'name': name, 'description': description, 'sizeId': sizeId, 
                      'imageId': imageId, 'disksize': disksize, 'stackid': stackid}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
             return url
@@ -148,10 +147,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         location = j.application.config.get('cloudbroker.where.am.i')
         if not cloudspace.location == location:
             ctx = kwargs['ctx']
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountName': accountName, 'spaceName': spaceName, 'machineId': machineId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response('302', headers)
             return url
@@ -190,11 +188,10 @@ class cloudbroker_machine(j.code.classGetBase()):
         location = j.application.config.get('cloudbroker.where.am.i')
         if cloudspace.location != location:
             ctx = kwargs['ctx']
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountName': accountName, 'machineId': machineId, 'targetComputeNode': targetComputeNode,
                       'withSnapshots': withSnapshots, 'collapseSnapshots': collapseSnapshots}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response('302', headers)
             return url

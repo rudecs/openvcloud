@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', '$modal', function($scope, User, LoadingDialog, $window, $modal) {
+    .controller('SignUpController', ['$scope', 'User', 'LocationsService', 'LoadingDialog','$window', '$modal', function($scope, User, LocationsService, LoadingDialog, $window, $modal) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
@@ -13,6 +13,13 @@ angular.module('cloudscalers.controllers')
 
         var acceptTerms = '';
         var acceptBelgian = '';
+
+        $scope.locations = {};
+        $scope.countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
+        LocationsService.list().then(function(locations) {
+            $scope.locations = locations;
+        });
+
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
                 $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
                 	&& $scope.user.password && $scope.passwordConfirmation

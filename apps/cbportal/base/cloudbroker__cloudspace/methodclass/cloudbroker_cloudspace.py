@@ -1,6 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib import network
 import urlparse
 import urllib
 
@@ -10,6 +11,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.actorname="cloudspace"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.network = network.Network(self.cbcl)
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
         self._cb = None
         self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
@@ -43,10 +45,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         if str(cloudspace['location']) != j.application.config.get('cloudbroker.where.am.i'):
             ctx = kwargs["ctx"]
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountname': accountname, 'cloudspaceName': cloudspaceName, 'cloudspaceId': cloudspaceId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
             return url
@@ -61,8 +62,11 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             self.netmgr.fw_delete(fws[0]['guid'], gid)
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(cloudspace['networkId'])
+        if cloudspace['publicipaddress']:
+            self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
 
         cloudspace['networkId'] = None
+        cloudspace['publicipaddress'] = None
         self.cbcl.cloudspace.set(cloudspace)
         return True
 
