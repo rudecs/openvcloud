@@ -30,10 +30,18 @@ def action(name, backupname, storageparameters):
     else:
         #rados has config on local cpu node
         store.conn.connect()
-    f = j.system.platform.lxc.exportTgz(name, backupname)
-    backupmetadata = []
-    metadata = backup.backup(store, bucketname, f)
-    backupmetadata.append(metadata)
-    backup.store_metadata(store, mdbucketname, name,backupmetadata)
-    j.system.fs.remove(f)
+    f = None
+    try:
+        j.system.platform.lxc.btrfsSubvolCopy(name, backupname)
+        f = j.system.platform.lxc.exportTgz(backupname, backupname)
+        backupmetadata = []
+        metadata = backup.backup(store, bucketname, f)
+        backupmetadata.append(metadata)
+        backup.store_metadata(store, mdbucketname, name,backupmetadata)
+    finally:
+        if f and j.system.fs.exists(f):
+            j.system.fs.remove(f)
+        if j.system.platform.lxc.btrfsSubvolExists(backupname):
+            j.system.platform.lxc.btrfsSubvolDelete(backupname)
+
     return {'files':backupmetadata, 'timestamp':time.time()}
