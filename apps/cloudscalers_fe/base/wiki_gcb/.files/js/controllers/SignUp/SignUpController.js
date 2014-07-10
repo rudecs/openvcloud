@@ -1,28 +1,39 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', function($scope, User, LoadingDialog, $window) {
+    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', '$modal', function($scope, User, LoadingDialog, $window, $modal) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
-        $scope.user.password = " ";
-        $scope.passwordConfirmation = " ";
-        $scope.$watch('user.username + user.password + email + passwordConfirmation', function() {
-            $scope.canSignUp = $scope.user.username && $scope.email;
-             // && $scope.user.password && $scope.passwordConfirmation
+
+        var uri = new URI($window.location);
+        var queryparams = URI.parseQuery(uri.query());
+        $scope.promocode = queryparams.promocode;
+
+        var acceptTerms = '';
+        var acceptBelgian = '';
+        $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
+                $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
+                	&& $scope.user.password && $scope.passwordConfirmation
         });
         $scope.signUp = function() {
             $scope.signUpResult = {};
 
-            $scope.isPasswordConfirmed = $scope.user.password == $scope.passwordConfirmation;
-            // && 
-                // $scope.user.password && 
-                // $scope.passwordConfirmation;
+            $scope.isPasswordConfirmed = $scope.user.password == $scope.passwordConfirmation  &&  $scope.user.password &&  $scope.passwordConfirmation;
 
             if ($scope.isPasswordConfirmed) {
-                $scope.signUpResult = User.signUp($scope.user.username, $scope.email, "stub");
-                // , $scope.user.password
+                var isempty = function(val){
+                    return (val === undefined || val == null || val.length <= 0) ? true : false;
+                }
+                if(isempty($scope.user.company)){
+                    $scope.user.company = " ";
+                }
+                if(isempty($scope.user.companyurl)){
+                    $scope.user.companyurl = " ";
+                }
+                $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, $scope.user.password ,$scope.user.company , $scope.user.companyurl
+                    ,$scope.selectedLocation, $scope.promocode);
             }
         };
 
@@ -30,13 +41,47 @@ angular.module('cloudscalers.controllers')
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
                 if ($scope.signUpResult.success) {
-                    // LoadingDialog.show('Creating account', 1000).then(function() {
-                        $scope.waitlogin();
-                    // });
-                    // var uri = new URI($window.location);
-                    // uri.filename('SignUpValidation');
-                    // $window.location = uri.toString();
+                    var uri = new URI($window.location);
+                    uri.filename('SignUpValidation');
+                    $window.location = uri.toString();
                 }
             }
         }, true);
-    }]);
+
+
+        var termsController = function ($scope, $modalInstance) {
+            $scope.cancel = function () {
+                $modalInstance.dismiss(acceptTerms);
+            };
+            if($scope.acceptTerms){
+                $('#accept-terms').prop('checked' , true);
+            }
+        };
+
+        acceptTermsChanged = function(checkboxElem) {
+          if (checkboxElem.checked) {
+            $scope.acceptTerms = "accept";
+          } else {
+            $scope.acceptTerms = "";
+          }
+        }
+
+        $scope.openTerms = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'termsDialog.html',
+                controller: termsController,
+                resolve: {},
+                scope: $scope
+            });
+        };
+
+
+    }]).directive("scroll", function ($window) {
+    return function(scope, element, attrs) {
+        angular.element($('#terms')).bind("scroll", function() {
+            var scrollHeight = this.scrollHeight - this.scrollHeight / 2.5;
+                 $('#accept-terms').removeAttr("disabled");
+            scope.$apply();
+        });
+    };
+});

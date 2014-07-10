@@ -5,22 +5,20 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
-class Class():
-    pass
+osiscl = j.core.osis.getClient(user='root')
+class Models(object):
+    def __getattr__(self, name):
+        attrib = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', name)
+        attrib.find = attrib.search
+        setattr(self, name, attrib)
+        return attrib
 
 cloudbroker = j.apps.cloud.cloudbroker
 
 ujson = j.db.serializers.ujson
 
 
-osiscl = j.core.osis.getClient(user='root')
-
-models = Class()
-for ns in osiscl.listNamespaceCategories('cloudbroker'):
-    models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
-    models.__dict__[ns].find = models.__dict__[ns].search
-
-
+models = Models()
 
 class Dummy(object):
     def __init__(self, **kwargs):
@@ -76,6 +74,10 @@ class CloudBroker(object):
     def __init__(self):
         self.Dummy = Dummy
 
+        locationkeys = j.application.config.getKeysFromPrefix('cloudbroker.location')
+        self._locations = dict([(locationkey.split('.')[-1],j.application.config.get(locationkey)) for locationkey in locationkeys])
+        self._where_am_i = j.application.config.get('cloudbroker.where_am_i')
+
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)
 
@@ -100,13 +102,13 @@ class CloudBroker(object):
             return ids[0]
         else:
             return None
-        
+
     def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
             raise RuntimeError('No Providers available')
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
-        if not capacityinfo: 
+        if not capacityinfo:
             return -1
         #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
         l = len(capacityinfo)
@@ -175,9 +177,14 @@ class CloudBroker(object):
         return models
 
     def getPublicIpAddress(self, networkid):
-        publicaddresses = {201:'192.198.94.10', 202:'192.198.94.11', 203:'192.198.94.12', 204:'192.198.94.13', 205:'192.198.94.14', 206:'192.198.94.15', 207:'192.198.94.16', 208:'192.198.94.17', 209:'192.198.94.18', 210:'192.198.94.19', 211:'192.198.94.20', 212:'192.198.94.21', 213:'192.198.94.22', 214:'192.198.94.23', 215:'192.198.94.24', 216:'192.198.94.25', 217:'192.198.94.26', 218:'192.198.94.27', 219:'192.198.94.28', 220:'192.198.94.29'}
-        if networkid in publicaddresses:
-            return publicaddresses[networkid]
+        publicaddresses = j.application.config.getDict('cloudscalers.networks.public_ip')
+        if str(networkid) in publicaddresses:
+            return publicaddresses[str(networkid)]
         else:
             return None
 
+    def getLocations(self):
+        return self._locations
+
+    def whereAmI(self):
+        return self._where_am_i

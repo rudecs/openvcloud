@@ -1,0 +1,3 @@
+{{html: <div class="well sidebar-nav">}}
+{{blog_index: <li><a href="{blog_url}">{blog_title}</a>  }}
+{{html: </div>}}

@@ -198,7 +198,7 @@ class CSLibvirtNodeDriver():
 
     def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
-        vxlan = self.backendconnection.environmentid
+        vxlan = '%04x' % networkid 
         macaddress = self.backendconnection.getMacAddress()
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         
@@ -280,7 +280,10 @@ class CSLibvirtNodeDriver():
             if disk.attrib['device'] == 'disk':
                 source = disk.find('source')
                 if source != None:
-                    diskfiles.append(source.attrib['dev'])
+                    if 'dev' in source.attrib:
+                        diskfiles.append(source.attrib['dev'])
+                    if 'file' in source.attrib:
+                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def _get_snapshot_disk_file_names(self, xml):
@@ -304,8 +307,10 @@ class CSLibvirtNodeDriver():
         backendnode = self.backendconnection.getNode(node.id)
         networkid = backendnode.networkid
         macaddress = backendnode.macaddress
-        ipaddress = '10.199.0.%s' % networkid
-        #ipaddress = '10.240.241.100'
+        iphex = "%04x" % networkid
+        first = int(iphex[0:2], 16)
+        second = int(iphex[2:4], 16)
+        ipaddress = '10.199.%s.%s' % (str(first), str(second))
         try:
             ro = routeros.routeros(ipaddress)
             ipaddress = ro.getIpaddress(macaddress)
@@ -350,8 +355,13 @@ class CSLibvirtNodeDriver():
         return self._execute_agent_job('rebootmachine', queue='hypervisor', machineid = machineid)
 
     def ex_start(self, node):
-        xml = ''
+        backendnode = self.backendconnection.getNode(node.id)
+        networkid = backendnode.networkid
+        xml = self._get_persistent_xml(node)
         machineid = node.id 
+        result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
+        if not result or result == -1:
+            return -1
         return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)    
  
     def ex_get_console_info(self, node):

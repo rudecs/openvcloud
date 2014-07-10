@@ -1,0 +1,14 @@
+{{html:
+<script type="text/ng-template" id="tour/tour.tpl.html">
+    <div class="tour-tip">
+        <span class="tour-arrow tt-{[ ttPlacement ]}"></span>
+        <div class="tour-content-wrapper">
+            <p ng-bind="ttContent"></p>
+
+            <!-- As an example, you can change the buttons based on the current step -->
+            <a ng-click="setCurrentStep(getCurrentStep() + 1)" ng-bind="ttNextLabel" class="small button tour-next-tip"></a>
+            <a ng-click="closeTour()" class="tour-close-tip">×</a>
+        </div>
+    </div>
+</script>
+}}

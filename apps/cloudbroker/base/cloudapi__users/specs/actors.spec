@@ -1,7 +1,7 @@
 [actor] @dbtype:mem,osis
 	"""
 	User management
-	"""    
+	"""
 
 	method:authenticate @noauth
 	    """
@@ -21,6 +21,11 @@
 	    var:username str,,unique username for the account
 	    var:emailaddress str,,unique emailaddress for the account
 	    var:password str,,unique password for the account
+	    var:user str,,name for the account
+	    var:company str,,name of the company
+	    var:companyurl str,,url of the main website
+	    var:location str,,location
+	    var:promocode str,,promocode @optional
 	    result:bool
 
 	method:get
@@ -29,3 +34,18 @@
 	    """
         var:username str,,username of the user
         result:dict,,user information.
+	
+	method:updatePassword
+	    """
+	    Change user passwrod
+	    """
+        var:oldPassword str,,oldPassword of the user
+        var:newPassword str,,newPassword of the user
+        result:dict,,user information.
+
+    method:validate @noauth
+        """
+        Validates a newly registered user
+        """
+        var:validationtoken str,, token generated at usercreation and sent via email
+        result:bool

@@ -1,6 +1,0 @@
-h1. Desktop Deck
-
-Activate your early access to your Office Deck and access desktop applications on any of your html devices.
-
-{{html:
-}}

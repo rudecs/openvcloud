@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
             },
 
            'responseError': function(rejection) {
-        	   if (rejection.status == 401){
+        	   if (rejection.status == 401 || rejection.status == 419){
         		   var uri = new URI($window.location);
 
        				uri.filename('Login');
@@ -95,23 +95,7 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason); }
             );
         };
-        user.waitlogin = function (username, password) {
-            return $http({
-                method: 'POST',
-                data: {
-                    username: username,
-                    password: password
-                },
-                url: cloudspaceconfig.apibaseurl + '/users/waitauthenticate'
-            }).then(
-                    function (result) {
-                        return result.data;
-                    },
-                    function (reason) {
-                        return $q.reject(reason); }
-            );
-        };
-        
+
         user.get = function(username){
         	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
         	var currentUser = SessionData.getUser();
@@ -142,24 +126,52 @@ angular.module('cloudscalers.services')
         	SessionData.setUser(undefined);
         };
 
-        user.signUp = function(username, email, password) {
+        user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation, promocode) {
             var signUpResult = {};
+			var querystring = '?username='
+					+ encodeURIComponent(username)
+					+ '&user=' + encodeURIComponent(name)
+					+ '&emailaddress=' + encodeURIComponent(email)
+					+ '&password=' + encodeURIComponent(password)
+					+ '&company=' + encodeURIComponent(company)
+					+ '&companyurl=' + encodeURIComponent(companyurl)
+					+ '&location=' + encodeURIComponent(preferredDataLocation)
+					+ '&promocode=' + encodeURIComponent(promocode);
             $http({
-                method: 'POST',
-                data: {
-                    username: username,
-                    emailaddress: email,
-                    password: password
-                },
-                url: cloudspaceconfig.apibaseurl + '/users/register'
+                method: 'GET',
+                url: cloudspaceconfig.apibaseurl + '/users/register' + querystring
             })
             .success(function(data, status, headers, config) {
                 signUpResult.success = true;
             })
             .error(function(data, status, headers, config) {
-                signUpResult.error = data;
+                if (status == 451) {
+					$http({
+						method: 'JSONP',
+						url: headers('Location') + querystring + '&_jsonp=JSON_CALLBACK'
+					})
+					.success(function(data, status, headers, config) {
+						signUpResult.success = true;
+					})
+					.error(function(data, status, headers, config) {
+						signUpResult.error = "An unexpected error has occurred";
+					});
+				}
+				else {signUpResult.error = data;}
+
             });
             return signUpResult;
+        };
+
+        user.activateAccount = function(activationToken){
+        	return $http.get(cloudspaceconfig.apibaseurl + '/users/validate?validationtoken=' + encodeURIComponent(activationToken)).then(
+        			function(result){
+        				return result.data;
+        			},
+        			function(reason){
+        				return $q.reject(reason);
+        			}
+        	);
         };
 
         return user;

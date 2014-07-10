@@ -1,0 +1,20 @@
+@template public_with_left_nav
+
+
+{{html:
+<head>
+<style type="text/css">
+.well { padding-left: 0;margin: 0;padding-top: 0;}
+</style>
+
+</head>
+}}
+
+
+Welcome to the Mothership1 press section.
+Find here information about press releases, product images and logos
+
+
+@divend
+@divend
+

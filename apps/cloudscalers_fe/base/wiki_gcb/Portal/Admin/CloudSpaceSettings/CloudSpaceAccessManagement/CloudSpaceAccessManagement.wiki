@@ -1,0 +1,28 @@
+{{html:
+<em>Provide other users access to your Cloud Space by adding their Mothership1 user name.</em>
+<form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController">
+<div class="table-responsive">
+    <table class="table users-table mtm">
+        <tr class="header">
+            <th class="username-text-container">
+                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
+            </th>
+            <th><input type="submit" class="btn" value="Add"></input></th>
+        </tr>
+        <tr>
+            <td colspan=2 ng-cloak ng-show="userError">
+                <div class="alert alert-error" style="margin-bottom: 0px;">
+                    {[ userError ]}
+                </div>
+            </td>
+        </tr>
+        <tr ng-cloak ng-repeat="user in currentSpace.acl">
+            <td>{[user.userGroupId]}</td>
+            <td><a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times"></a></td>
+        </tr>
+    </table>
+</div>
+</form>
+
+<script src="/$$space/.files/js/controllers/CloudSpaceAccessManagementController.js" type="text/javascript"></script>
+}}

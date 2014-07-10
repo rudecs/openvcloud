@@ -40,13 +40,10 @@ class CloudBrokerConnection():
          import JumpScale.grid.geventws
          from JumpScale.grid import agentcontroller
          if ipaddress:
-             self.client = j.core.portal.getPortalClient(ip=ipaddress, port=port, secret=secret)  
+             self.client = j.core.portal.getClient(ip=ipaddress, port=port, secret=secret)  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
              self.libvirt_actor = j.apps.libcloud.libvirt
-         hrd = j.application.config
-         self.environmentid = hrd.get('cloudscalers.environmentid')
-         self.publicdnsmasqconfigpath = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan', self.environmentid)
          self.db = self._getKeyValueStore()
          self.agentcontroller_client = j.clients.agentcontroller.get()
 

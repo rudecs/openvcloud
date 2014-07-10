@@ -27,6 +27,7 @@
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:tags str,, A tags string
 
 [model:VMAccount] @dbtype:osis
     """
@@ -42,6 +43,22 @@
     prop:id int,,
     prop:name str,,Name of account
     prop:acl list(ACE),, access control list
+    prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED)
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deactivationTime int,, epoch time of the deactivation, in seconds
+    prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
+    prop:company str,, Company holding the account
+    prop:companyurl str,, Website of the company holding the account
+    prop:displayname str,, The name as the account should be displayed
+
+[rootmodel:AccountActivationToken]
+    """
+    Token for accountactivation
+    """
+    prop:id str,, The activation token the user will user
+    prop:accountId int,, Account this token is for
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deletionTime int,, epoch time of deletion (inactivation), in seconds
 
 [model:ACE]
     """
@@ -85,6 +102,7 @@
     prop:status str,, status of the image, e.g DISABLED/ENABLED/CREATING/DELETING
     prop:accountId int,,id of account to which this image belongs
     prop:acl list(ACE),,access control list
+    prop:username str,, specific username for this image
 
 
 
@@ -168,8 +186,7 @@
     prop:networkId int,, Id of the used network
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
-
-
+    prop:location str,, datacenterlocation
 
 [rootmodel:Size] @dbtype:osis
     """
@@ -183,13 +200,33 @@
     prop:vcpus int,, Number of vcpus assigned to the machine
     prop:description str,,Description of the size
 
-[rootmodel:S3Bucket] @dbtype:osis
+[rootmodel:S3user]
     """
-    An S3 Bucket is a kind of storagebucket
+    A user on S3
     """
-    prop:id int,, id of the bucket
-    prop:cloudspaceId int,, the cloudspace this bucket belongs to
-    prop:url str,, the url of this S3 bucket
-    prop:name str,, bucketname
-    prop:location str,, the location this buckets is at
-    prop:accesskey str,, the key for accessing this S3 bucket
+    prop:id int,, id of the S3 user
+    prop:name str,, the uid of the S3 user
+    prop:cloudspaceId int,, the cloudspace this S3 is assigned to
+    prop:s3url str,, the url of the S3 api for this region
+    prop:location str,, the region of the S3 api for this user
+    prop:accesskey str,, the accesskey to access the S3 interface
+    prop:secretkey str,, the secretkey to access the S3 interface
+
+[rootmodel:vmexport]
+    """
+    A export of a vm. Contains one or multiple files.
+    """
+    prop:id int,, id of the export
+    prop:vmachineId int,, id of the vmachine
+    prop:name str,, name of the export
+    prop:type str,, type e.g Raw, condensed, ...
+    prop:bucket str,, name of the bucket
+    prop:server str,, hostname of the server(for rados None)
+    prop:storagetype str,, type of the storage(e.g S3 or RADOS)
+    prop:size int,, size of the machine in Mb
+    prop:original_size int,, original size of the machine in GB
+    prop:timestamp int,, epochtime of the machine
+    prop:config str,,json representation machine model
+    prop:status str,,status of the vm
+    prop:location str,, original machine location
+    prop:files str,,json representation of backup content

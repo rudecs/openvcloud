@@ -1,0 +1,73 @@
+@template public_with_left_nav
+{{html: 
+<head>
+      
+<style type="text/css">
+      
+.apsoluteButton1 { position: absolute;left: -248px;top: 370px;width: 180px;}
+
+ @media (max-width: 768px) {
+      .apsoluteButton1 {position: absolute;top: -50px;width: 93%;left: 0;margin: 0 15px;}
+ }
+
+
+</style>
+
+</head>
+
+ <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+  <a href="/$$space/SignUp" class="btn btn-success wideOne apsoluteButton1" role="button">Sign Up</a>
+}}
+
+{{div: class=half copy col-md-6 StorageDeckColor}}
+
+
+
+
+h1. $$page
+
+{{html: <p class="niceHead">The Storage Deck provides ultra-reliable & scalable storage.</p>}}
+
+{{div}}
+
+{{div: class=half col-md-6 justOne}}
+  {{html: <img class="storagMargin" src="/$$space/.files/img/images/storage-pic.jpg">}}
+{{div}}
+
+
+
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. S3
+      Object Based storage using S3 compatible API.
+{{div}}
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Fileserver
+      Virtual Fileserver up to Petabytes per Cloud Space. (Roadmap)
+{{div}}
+
+{{div: class=col-md-12 boxDecks clearL StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      h3. Very Reliable
+      Distributed storage ensuring data reliability.
+{{div}}
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Backup
+      Your virtual machines are backed up to your private storage deck.
+{{div}}
+{{div: class=col-md-12 boxDecks StorageDeckColor}}
+      {{html: <i class="fa fa-arrow-right"></i>}}
+      
+      h3. Integrated
+      All storage is integrated into your personal Cloud Space.
+{{div}}
+
+
+#{{gallery}}
+
+@divend

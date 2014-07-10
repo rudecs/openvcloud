@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('SessionController', ['$scope', 'User', '$window', '$timeout', function($scope, User, $window, $timeout) {
-        $scope.user = {username : '', password:''};
+        $scope.user = {username : '', password:'', company: '', vat: ''};
 
         $scope.login_error = undefined;
 
@@ -26,23 +26,9 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
-        $scope.waitlogin = function() {
-            $scope.$broadcast("autofill:update");
-            var usertologin = $scope.user.username;
-            User.waitlogin(usertologin, $scope.user.password).
-            then(
-                    function(result) {
-                        $scope.login_error = undefined;
-                        var uri = new URI($window.location);
-                        uri.filename('SignUpValidation');
-                        $window.location = uri.toString();
-                        $scope.user.password = "";
-                        $scope.passwordConfirmation = "";
-                    },
-                    function(reason) {
-                        $scope.login_error = reason.status;
-                    }
-            );
+        $scope.selectedLocation = 'ca1';
+        $scope.itemClicked = function (location) {
+            $scope.selectedLocation = location;
         };
         $timeout(function() {
             // Read the value set by browser autofill

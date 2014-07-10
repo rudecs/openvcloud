@@ -1,7 +1,0 @@
-{{html
-<html>
-<body>
-<meta http-equiv="refresh" content=1;"http://support.vscalers.com/view.php">
-</body>
-</html>
-}}

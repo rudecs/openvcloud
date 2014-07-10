@@ -1,0 +1,55 @@
+h1. Create Machine
+
+Configure your virtual machine by choosing your package, server OS and additional SSD storage.
+
+{{html:
+    
+<div class="form-horizontal">
+    <div class="nameField">
+        <h2>Name:</h2>
+        <input ng-model="machine.name" type="text" class="input-xxlarge"/>
+    </div>
+    <div class="nameField">
+        <h2>Description:</h2>
+            <textarea style="font-size: 16px;" ng-model="machine.description" type="text" class="input-xxlarge" />
+    </div>
+    <div class="nameField nameField23">
+        <h2>OS Image</h2>
+
+    </div>
+    <div class="controls controls2">{{include:image_list}}</div>
+    <div class="machineWrap">
+        <h2>Package *:</h2>
+        <div class="machineList">
+            <ul class="controls" >
+                <!-- {{include:plan_list}} -->
+                <li ng-repeat="size in sizes | orderBy:sizepredicate">
+                    <a href="" ng-model="machine.sizeId" btn-radio="size.id"
+                    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+                    {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+                    {[ size.vcpus ]} core(s), </br>
+                    {[ size.description ]}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+}}
+
+{{html:
+    
+    <div>
+        <h2>Increase disk size to:</h2>
+        <div class="machineList" >
+            {{include:storage_list}}
+        </div>
+    </div>
+    
+
+    <div class="form-actions">
+        <button class="btn btn-info btn-large mainButton" ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
+    </div>
+    
+}}
+
+{{html: </div>}}

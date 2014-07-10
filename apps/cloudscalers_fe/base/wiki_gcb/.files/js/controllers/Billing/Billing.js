@@ -4,9 +4,7 @@ angular.module('cloudscalers.controllers')
 
 
     $scope.credit = "Unavailable";
-    $scope.creditToAdd = 10;
-    $scope.refreshTimeoutReference = null;
-
+    $scope.creditToAdd = 25;
 
     $scope.refreshCredit = function(){
         Account.getCreditBalance($scope.currentAccount).then(
@@ -22,12 +20,7 @@ angular.module('cloudscalers.controllers')
                 $scope.transactions = result;
             }
         );
-        $scope.refreshTimeoutReference = $timeout(function(){$scope.refreshCredit();}, 2000)
     }
-
-    $scope.$on('$destroy',function(){
-            $timeout.cancel($scope.refreshTimeoutReference);
-    });
 
     $scope.refreshCredit();
 
@@ -79,7 +72,6 @@ angular.module('cloudscalers.controllers')
         }, function(reason) {
             $scope.spinnerShow = true;
             $scope.litecoin = false;
-            // $scope.litecoinError = true;
             $ErrorResponseAlert(reason);
         });
 

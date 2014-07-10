@@ -1,10 +1,12 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, enums
 import JumpScale.grid.osis
 import string, time
 from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
+from billingenginelib import pricing
 
 ujson = j.db.serializers.ujson
 
@@ -26,6 +28,10 @@ class cloudapi_machines(object):
 
         self.osisclient = j.core.osis.getClient(user='root')
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
+        
+        self._pricing = pricing.pricing()     
+         
+        self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
     def cb(self):
@@ -64,26 +70,32 @@ class cloudapi_machines(object):
         return method(node)
 
     @authenticator.auth(acl='X')
+    @audit()
     def start(self, machineId, **kwargs):
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
+    @audit()
     def stop(self, machineId, **kwargs):
         return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
 
     @authenticator.auth(acl='X')
+    @audit()
     def reboot(self, machineId, **kwargs):
         return self._action(machineId, 'reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
+    @audit()
     def pause(self, machineId, **kwargs):
         return self._action(machineId, 'suspend', enums.MachineStatus.SUSPENDED)
 
     @authenticator.auth(acl='X')
+    @audit()
     def resume(self, machineId, **kwargs):
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='C')
+    @audit()
     def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
         """
         Add a disk to a machine
@@ -107,7 +119,8 @@ class cloudapi_machines(object):
         self.models.vmachine.set(machine)
         return diskid
 
-
+    @authenticator.auth(acl='C')
+    @audit()
     def createTemplate(self, machineId, templatename, basename, **kwargs):
         """
         Creates a template from the active machine
@@ -123,12 +136,13 @@ class cloudapi_machines(object):
         image = self.models.image.new()
         image.name = templatename
         image.referenceId = ""
-        image.type = 'custom templates'
+        image.type = 'Custom Templates'
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
-        image.size = self._getStorage(m).id
+        firstdisk = self.models.disk.get(machine.disks[0])
+        image.size = firstdisk.sizeMax
         image.username = ""
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
@@ -140,6 +154,7 @@ class cloudapi_machines(object):
         return imageid
 
     @authenticator.auth(acl='C')
+    @audit()
     def backup(self, machineId, backupName, **kwargs):
         """
         backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running
@@ -169,7 +184,24 @@ class cloudapi_machines(object):
         firstdisk = self.models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
 
+
+    def _getCreditBalance(self, accountId):
+        """
+        Get the current available credit
+
+        param:accountId id of the account
+        """
+        query = {'fields': ['time', 'credit', 'status']}
+        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        results = self.models.credittransaction.find(ujson.dumps(query))['result']
+        history = [res['fields'] for res in results]
+        balance = 0.0
+        for transaction in history:
+            balance += float(transaction['credit'])
+        return balance
+
     @authenticator.auth(acl='C')
+    @audit()
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         """
         Create a machine based on the available flavors, in a certain space.
@@ -182,12 +214,22 @@ class cloudapi_machines(object):
         result bool
 
         """
+        ctx = kwargs['ctx']
         if not self._assertName(cloudspaceId, name, **kwargs):
-            ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'Selected name already exists'
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
+
+        #Check if there is enough credit
+        accountId = self.models.cloudspace.get(cloudspaceId).accountId
+        available_credit = self._getCreditBalance(accountId)
+        burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
+        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
+        new_burnrate = burnrate + hourly_price_new_machine
+        if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
+            ctx.start_response('409 Conflict', [])
+            return 'Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
@@ -207,17 +249,21 @@ class cloudapi_machines(object):
         machine.disks.append(diskid)
 
         account = machine.new_account()
-        if hasattr(image, 'username') and image.username:
-            account.login = image.username
+        if image.type == 'Custom Templates':
+            account.login = 'Custom login'
+            account.password = 'Custom password'
         else:
-            account.login = 'cloudscalers'
-        length = 6
-        chars = string.letters + string.digits
-        letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-        passwd = ''.join(choice(chars) for _ in xrange(length))
-        passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
-        account.password = passwd
-        auth = NodeAuthPassword(passwd)
+            if hasattr(image, 'username') and image.username:
+                account.login = image.username
+            else:
+                account.login = 'cloudscalers'
+            length = 6
+            chars = string.letters + string.digits
+            letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+            passwd = ''.join(choice(chars) for _ in xrange(length))
+            passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
+            account.password = passwd
+        auth = NodeAuthPassword(account.password)
         machine.id = self.models.vmachine.set(machine)[0]
 
         try:
@@ -262,10 +308,13 @@ class cloudapi_machines(object):
         self.models.vmachine.set(machine)
 
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        cloudspace.resourceProviderStacks.append(stackId)
+        providerstacks = set(cloudspace.resourceProviderStacks)
+        providerstacks.add(stackId)
+        cloudspace.resourceProviderStacks = list(providerstacks)
         self.models.cloudspace.set(cloudspace)
 
     @authenticator.auth(acl='D')
+    @audit()
     def delDisk(self, machineId, diskId, **kwargs):
         """
         Delete a disk from machine
@@ -283,6 +332,7 @@ class cloudapi_machines(object):
         return diskfound
 
     @authenticator.auth(acl='D')
+    @audit()
     def delete(self, machineId, **kwargs):
         """
         Delete a machine
@@ -298,6 +348,10 @@ class cloudapi_machines(object):
 
         tags = str(machineId)
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
+        try:
+            j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
+        except Exception, e:
+            j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         provider, node = self._getProviderAndNode(machineId)
         if provider:
@@ -305,26 +359,6 @@ class cloudapi_machines(object):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
-
-    def exporttoremote(self, machineId, exportName, uncpath, emailaddress, **kwargs):
-        """
-        param:machineId id of machine to export
-        param:exportName give name to export action
-        param:uncpath unique path where to export machine to ()
-        param:emailaddress to this address the result of the export is send.
-        result boolean if export is successfully started
-        """
-        provider, node = self._getProviderAndNode(machineId)
-        elements = urlparse.urlparse(uncpath)
-        if not elements.scheme in ['cifs','smb','ftp','file','sftp','http']:
-            ctx = kwargs['ctx']
-            ctx.start_response('400 Bad Request', [])
-            return 'Incorrect uncpath format, only cifs, smb, ftp, file, sftp and http is supported'
-        started = provider.client.ex_export(node, exportName, uncpath, emailaddress)
-        if started:
-            return True
-        else:
-            return False
 
     def _getStorage(self, machine):
         if not machine['stackId']:
@@ -335,6 +369,7 @@ class cloudapi_machines(object):
         return storage
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, machineId, **kwargs):
         """
         Get information from a certain object.
@@ -349,6 +384,7 @@ class cloudapi_machines(object):
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
+        osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
         if machine.nics:
@@ -359,20 +395,11 @@ class cloudapi_machines(object):
                     self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': machine.status, 'imageid': machine.imageId, 'sizeid': machine.sizeId,
+                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-    def importtoremote(self, name, uncpath, **kwargs):
-        """
-        param:name name of machine
-        param:uncpath unique path where to import machine from ()
-        result int
-
-        """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method importtoremote")
-
     @authenticator.auth(acl='R')
+    @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible.
@@ -406,6 +433,7 @@ class cloudapi_machines(object):
         return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
+    @audit()
     def snapshot(self, machineId, name, **kwargs):
         """
         param:machineId id of machine to snapshot
@@ -419,15 +447,16 @@ class cloudapi_machines(object):
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
         snapshots = provider.client.ex_listsnapshots(node)
-        if len(snapshots) > 10:
+        if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
-            return 'Max 10 snapshots allowed'
+            return 'Max 5 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_snapshot(node, name)
         return snapshot['name']
 
     @authenticator.auth(acl='C')
+    @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         snapshots = provider.client.ex_listsnapshots(node)
@@ -438,6 +467,7 @@ class cloudapi_machines(object):
         return result
 
     @authenticator.auth(acl='C')
+    @audit()
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
@@ -450,6 +480,7 @@ class cloudapi_machines(object):
         return provider.client.ex_snapshot_delete(node, name)
 
     @authenticator.auth(acl='C')
+    @audit()
     def rollbackSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
@@ -462,6 +493,7 @@ class cloudapi_machines(object):
         return provider.client.ex_snapshot_rollback(node, name)
 
     @authenticator.auth(acl='C')
+    @audit()
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
         Change basic properties of a machine.
@@ -485,6 +517,8 @@ class cloudapi_machines(object):
         #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
+    @authenticator.auth(acl='R')
+    @audit()
     def getConsoleUrl(self, machineId, **kwargs):
         """
         get url to connect to console
@@ -498,6 +532,8 @@ class cloudapi_machines(object):
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)
 
+    @authenticator.auth(acl='C')
+    @audit()
     def clone(self, machineId, name, **kwargs):
         """
         clone a machine
@@ -548,6 +584,8 @@ class cloudapi_machines(object):
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
 
+    @authenticator.auth(acl='R')
+    @audit()
     def getHistory(self, machineId, size, **kwargs):
         """
         Gets the machine actions history
@@ -555,3 +593,120 @@ class cloudapi_machines(object):
         tags = str(machineId)
         query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
         return self.osis_logs.search(query)['hits']['hits']
+
+    @authenticator.auth(acl='R')
+    @audit()
+    def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
+        """
+        Create a export/backup of a machine
+        param:machineId id of the machine to backup
+        param:name Usefull name for this backup
+        param:backuptype Type e.g raw, condensed
+        param:host host to export(if s3)
+        param:aws_access_key s3 access key
+        param:aws_secret_key s3 secret key
+        result jobid
+        """
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        system_cl = j.core.osis.getClientForNamespace('system')
+        machine = self.models.vmachine.get(machineId)
+        if not machine:
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        stack = self.models.stack.get(machine.stackId)
+        storageparameters  = {}
+        if not aws_access_key or not aws_secret_key or not host:
+            ctx.start_response('400', headers)
+            return 'S3 parameters are not provided'
+        storageparameters['aws_access_key'] = aws_access_key
+        storageparameters['aws_secret_key'] = aws_secret_key
+        storageparameters['host'] = host
+        storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = 'S3'
+        storageparameters['backup_type'] = 'condensed'
+        storageparameters['bucket'] = bucket
+        storageparameters['mdbucketname'] = bucket
+
+        storagepath = '/mnt/vmstor/vm-%s' % machineId
+        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        if len(nodes) != 1:
+            ctx.start_response('409', headers)
+            return 'Incorrect model structure'
+        nid = nodes[0]['id']
+        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
+        agentcontroller = j.clients.agentcontroller.get()
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+    
+    @authenticator.auth(acl='C')
+    @audit()
+    def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
+        """
+        restore export to a new machine
+        param:name name of the machine
+        param:cloudspaceId id of the exportd to backup
+        param:sizeId id of the specific size
+        param:description optional description
+        param:aws_access_key s3 access key
+        param:aws_secret_key s3 secret key
+        result jobid
+        """
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        vmexport = self.models.vmexport.get(vmexportId)
+        if not vmexport:
+            ctx.start_response('400', headers)
+            return 'Export definition with id %s not found' % vmexportId
+        host = vmexport.server
+        bucket = vmexport.bucket
+        import_name = vmexport.name
+
+
+        storageparameters = {}
+
+        if not aws_access_key or not aws_secret_key:
+            ctx.start_response('400', headers)
+            return 'S3 parameters are not provided'
+
+        storageparameters['aws_access_key'] = aws_access_key
+        storageparameters['aws_secret_key'] = aws_secret_key
+        storageparameters['host'] = host
+        storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = 'S3'
+        storageparameters['backup_type'] = 'condensed'
+        storageparameters['bucket'] = bucket
+        storageparameters['mdbucketname'] = bucket
+        storageparameters['import_name'] = import_name
+
+        args = {'name':name, 'cloudspaceId':cloudspaceId, 'vmexportId':vmexportId, 'sizeId':sizeId, 'description':description, 'storageparameters': storageparameters}
+
+        agentcontroller = j.clients.agentcontroller.get()
+
+        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
+        return id
+
+    @authenticator.auth(acl='R')
+    @audit()
+    def listExports(self, machineId, status, **kwargs):
+        """
+        List exported images
+        param:machineId id of the machine
+        param:status filter on specific status
+        result dict
+        """
+        query = {}
+        if status:
+            query['status'] = status
+        if machineId:
+            query['machineId'] = machineId
+        exports = self.models.vmexport.simpleSearch(query)
+        exportresult = []
+        for exp in exports:
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+        return exportresult
+
+       

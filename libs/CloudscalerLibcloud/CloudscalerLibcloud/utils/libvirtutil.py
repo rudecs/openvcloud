@@ -97,9 +97,12 @@ class LibvirtUtil(object):
             if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
                 source = disk.find('source')
                 if source != None:
-                    if 'dev' in source.attrib:
-                        diskfiles.append(source.attrib['dev'])
-                    if 'file' in source.attrib:
+                    if disk.attrib['device'] == 'disk':
+                        if 'dev' in source.attrib:
+                            diskfiles.append(source.attrib['dev'])
+                        if 'file' in source.attrib:
+                            diskfiles.append(source.attrib['file'])
+                    if disk.attrib['device'] == 'cdrom':
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 

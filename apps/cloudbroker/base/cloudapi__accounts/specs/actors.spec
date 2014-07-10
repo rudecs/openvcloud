@@ -53,7 +53,7 @@
 		"""
 		get account. 
 		"""
-        var:accountId int,, id of the account
+		var:accountId int,, id of the account
 		result:dict A json dict
 
 
@@ -63,7 +63,7 @@
 		"""
         var:accountId int,, id of the account
 		result:dict A json dict
-		
+
 	method:getCreditBalance
 		"""
 		Get the current available credit
@@ -77,3 +77,4 @@
 		"""
 		var:accountId int,, id of the account
 		result:[], A json list with the transactions details.
+

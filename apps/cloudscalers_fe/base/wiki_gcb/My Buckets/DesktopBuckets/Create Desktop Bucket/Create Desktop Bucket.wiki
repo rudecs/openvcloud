@@ -1,5 +1,0 @@
-h2. Create Desktop Bucket
-{{html:
-    <hr>
-}}
-{{include:CreateOrEditDesktopBucket}}
