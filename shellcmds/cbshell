@@ -2,11 +2,32 @@
 from JumpScale import j
 from IPython import embed
 import JumpScale.portal
-cl = j.core.portal.getClient('127.0.0.1', 80, '1234')
-cl.getActor('cloud','cloudbroker')
-cl.getActor('libcloud','libvirt')
-for type_ in ('sizes', 'images', 'accounts', 'cloudspaces', 'machines'):
-    cl.getActor('cloudapi', type_)
+from JumpScale.baselib.cmdutils import ArgumentParser
 
-embed()
+
+if __name__ == '__main__':
+    portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'cloudbroker', 'cfg', 'portal')
+    portalcfg = j.config.getConfig(portalcfgpath).get('main', {})
+    port = int(portalcfg.get('webserverport', 9999))
+    secret = portalcfg.get('secret')
+    parser = ArgumentParser()
+    parser.add_argument("-s", "--secret", default=secret)
+    parser.add_argument("-u", "--username")
+    parser.add_argument("-p", "--password")
+    opts = parser.parse_args()
+
+    cl = j.core.portal.getClient('127.0.0.1', port, secret)
+    if opts.username and opts.password:
+        newsecret = cl.actors.cloudapi.users.authenticate(opts.username, opts.password)
+        print "Next time you can use %s as secret" % newsecret
+        cl = j.core.portal.getClient('127.0.0.1', port, newsecret)
+        j.apps = cl.actors
+
+    cl.getActor('cloud','cloudbroker')
+    cl.getActor('jumpscale','netmgr')
+    cl.getActor('libcloud','libvirt')
+    for type_ in ('sizes', 'images', 'accounts', 'cloudspaces', 'machines', 'users'):
+        cl.getActor('cloudapi', type_)
+
+    embed()
 
