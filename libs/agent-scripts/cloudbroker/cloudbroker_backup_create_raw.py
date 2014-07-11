@@ -11,7 +11,7 @@ author = "hendrik@mothership1.com"
 license = "bsd"
 version = "1.0"
 roles = []
-queue = "hypervisor"
+queue = "io"
 async = True
 
 
@@ -20,6 +20,7 @@ def action(path, name, storageparameters):
     import ujson, time
     from JumpScale.baselib.backuptools import object_store
     from JumpScale.baselib.backuptools import backup
+
 
     files = j.system.fs.listFilesInDir(path)
     store = object_store.ObjectStore(storageparameters['storage_type'])

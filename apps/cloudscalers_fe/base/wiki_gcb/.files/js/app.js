@@ -28,7 +28,7 @@ var cloudscalersServices = angular.module('cloudscalers.services',['ng'])
 	}]);
 
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.services', 'cloudscalers.directives']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
 
 if(cloudspaceconfig.apibaseurl == ''){
 	cloudscalersControllers.config(function($provide) {

@@ -1,6 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib import network
 import urlparse
 import urllib
 
@@ -10,6 +11,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.actorname="cloudspace"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.network = network.Network(self.cbcl)
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
         self._cb = None
         self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
@@ -43,10 +45,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         if str(cloudspace['location']) != j.application.config.get('cloudbroker.where.am.i'):
             ctx = kwargs["ctx"]
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountname': accountname, 'cloudspaceName': cloudspaceName, 'cloudspaceId': cloudspaceId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
             return url
@@ -61,8 +62,48 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             self.netmgr.fw_delete(fws[0]['guid'], gid)
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(cloudspace['networkId'])
+        if cloudspace['publicipaddress']:
+            self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
 
         cloudspace['networkId'] = None
+        cloudspace['publicipaddress'] = None
         self.cbcl.cloudspace.set(cloudspace)
         return True
 
+
+    def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
+        """
+        move the virtual firewall of a cloudspace to a different firewall node
+        param:cloudspaceId id of the cloudspace
+        param:targetNode name of the firewallnode the virtual firewall has to be moved to
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method moveVirtualFirewallToFirewallNode")
+    
+    def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
+        """
+        Adds an available public IP address
+        param:cloudspaceId id of the cloudspace
+        param:ipaddress only needed if a specific IP address needs to be assigned to this space
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method addExtraIP")
+
+    def removeIP(self, cloudspaceId, ipaddress, **kwargs):
+        """
+        Removed a public IP address from the cloudspace
+        param:cloudspaceId id of the cloudspace
+        param:ipaddress public IP address to remove from this cloudspace
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method removeIP")
+    
+
+    def restoreVirtualFirewall(self, cloudspaceId, **kwargs):
+        """
+        Restore the virtual firewall of a cloudspace on an available firewall node
+        param:cloudspaceId id of the cloudspace
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method restoreVirtualFirewall")
+    

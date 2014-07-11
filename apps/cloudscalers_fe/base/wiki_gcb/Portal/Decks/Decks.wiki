@@ -33,7 +33,7 @@ Your private Defense Shield providing privacy and secure access to your Cloud Sp
         </div>
         <div class="col-md-4 boxes font color1 mbll">
            }}
-[Desktop Deck (Alfa)|DesktopDeck]
+[Desktop Deck|DesktopDeck]
 
                 [!/$$space/.files/img/icon1.png! | DesktopDeck]
     {{html:        

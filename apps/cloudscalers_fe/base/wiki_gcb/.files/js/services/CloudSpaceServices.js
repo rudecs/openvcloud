@@ -14,8 +14,8 @@ angular.module('cloudscalers.services')
             setCurrent: function(space) {
                 SessionData.setSpace(space);
             },
-            create: function(name, accountId, userId) {
-            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId)).then(
+            create: function(name, accountId, userId, locationUrl) {
+            	return $http.jsonp(locationUrl + cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId) + '&_jsonp=JSON_CALLBACK').then(
             			function(result){
             				return JSON.parse(result.data);
             			},
@@ -26,6 +26,16 @@ angular.module('cloudscalers.services')
             },
             get: function(cloudSpaceId) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/get?cloudspaceId=' + cloudSpaceId).then(
+                        function(result){
+                            return result.data;
+                        },
+                        function(reason){
+                            return $q.reject(reason);
+                        }
+                    );
+            },
+            getDefenseShield: function(cloudSpaceId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/getDefenseShield?cloudspaceId=' + cloudSpaceId).then(
                         function(result){
                             return result.data;
                         },

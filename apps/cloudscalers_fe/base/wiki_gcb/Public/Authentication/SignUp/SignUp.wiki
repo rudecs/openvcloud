@@ -11,6 +11,15 @@
 
         <div class="login-fields">
             <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
+                <div class="field ng-hide ng-cloak" ng-show="promocode">
+                  <div class="loginField">
+                    <label class="loginFieldName loginFieldName2" for="promocode">Promo code:</label>
+                    <div class="inputWrap">
+                          <label class="loginFieldName loginFieldName2" id="promocode">{[promocode]}</label>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="alert alert-error ng-hide" ng-show="!isPasswordConfirmed">The passwords do not match.</div>
                 <div class="alert alert-error ng-hide" ng-show="signUpError">{[signUpError]}</div>
 
@@ -87,15 +96,11 @@
                 </div>
                 <div id="flags-container" class="field">
                   <label class="loginFieldName loginFieldName2">Preferred Location:</label>
-                  <div class="mtl center">
-                        <ul class="flags-list mtl mll row inline-block">
-                          <li class="mrl" ng-class="{ 'selected': selectedLocation == 'ca1' }" ng-click="itemClicked('ca1')">
-                              <a href="" class="canada"></a>
-                              <span class="mts display-block cursor-default">Canada</span>
-                          </li>
-                          <li class="mrm" ng-class="{ 'selected': selectedLocation == 'us1' }" ng-click="itemClicked('us1')">
-                              <a href="" class="united states"></a>
-                              <span class="mts display-block cursor-default">United States</span>
+                  <div class="mtl">
+                        <ul class="flags-list mtl mll row">
+                          <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="itemClicked(location)">
+                              <a href="" class="{[ countries[location].toLowerCase() ]}"></a>
+                              <span class="mts block cursor-default">{[ countries[location] ]}</span>
                           </li>
                       </ul>
                     </div>

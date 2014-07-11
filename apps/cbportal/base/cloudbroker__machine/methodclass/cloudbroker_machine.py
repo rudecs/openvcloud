@@ -6,6 +6,8 @@ import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
 import urllib,ujson
 import urlparse
+import JumpScale.baselib.remote.cuisine
+import JumpScale.grid.agentcontroller
 
 
 class cloudbroker_machine(j.code.classGetBase()):
@@ -14,8 +16,10 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.actorname="machine"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
         self._cb = None
         self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
+        self.acl = j.clients.agentcontroller.get()
 
     @property
     def cb(self):
@@ -43,15 +47,14 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         if str(cloudspace.location) != location:
             ctx = kwargs["ctx"]
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'cloudspaceId': cloudspaceId, 'name': name, 'description': description, 'sizeId': sizeId, 
                      'imageId': imageId, 'disksize': disksize, 'stackid': stackid}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response("302", headers)
             return url
-        
+
         networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
@@ -144,10 +147,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         location = j.application.config.get('cloudbroker.where.am.i')
         if not cloudspace.location == location:
             ctx = kwargs['ctx']
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountName': accountName, 'spaceName': spaceName, 'machineId': machineId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response('302', headers)
             return url
@@ -155,7 +157,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.machines_actor.delete(vmachine.id)
         return True
 
-        @auth(['level1','level2'])
+    @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
@@ -172,26 +174,28 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
-        if not stacks:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Target node %s was not found' % targetComputeNode
+        if targetComputeNode:
+            stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
+            if not stacks:
+                ctx = kwargs['ctx']
+                headers = [('Content-Type', 'application/json'), ]
+                ctx.start_response('404', headers)
+                return 'Target node %s was not found' % targetComputeNode
+            target_stack = stacks[0]
+        else:
+            target_stack = self.cb.extensions.imp.getBestProvider(vmachine.imageId)
 
         location = j.application.config.get('cloudbroker.where.am.i')
         if cloudspace.location != location:
             ctx = kwargs['ctx']
-            urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
             params = {'accountName': accountName, 'machineId': machineId, 'targetComputeNode': targetComputeNode,
                       'withSnapshots': withSnapshots, 'collapseSnapshots': collapseSnapshots}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)['url']
-            url = '%s://%s%s?%s' % (urlparts.scheme, hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
+            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
+            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
             headers = [('Content-Type', 'application/json'), ('Location', url)]
             ctx.start_response('302', headers)
             return url
 
-        target_stack = stacks[0]
         source_stack = self.cbcl.stack.get(vmachine.stackId)
 
         # validate machine template is on target node
@@ -230,12 +234,22 @@ class cloudbroker_machine(j.code.classGetBase()):
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
         source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['referenceId'], iso_file_path))
 
-        # TODO: Migrate snapshots
+        if withSnapshots:
+            snapshots = self.machines_actor.listSnapshots(vmachine.id)
+            if snapshots:
+                source_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
+                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id, 'targethost': target_stack['referenceId']})
+                target_api.run('virsh define /tmp/vm-%s.xml' % vmachine.id)
+                for snapshot in snapshots:
+                    source_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
+                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['referenceId']})
+                    target_api.run('virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
+        vmachine.stackId = target_stack['id']
+        self.cbcl.vmachine.set(vmachine)
 
-
-    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, **kwargs):
+    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key,bucketname,**kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         system_cl = j.core.osis.getClientForNamespace('system')
@@ -256,8 +270,8 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         storageparameters['storage_type'] = storage
         storageparameters['backup_type'] = backuptype
-        storageparameters['bucket'] = 'backup'
-        storageparameters['mdbucketname'] = 'export_md'
+        storageparameters['bucket'] = bucketname
+        storageparameters['mdbucketname'] = bucketname
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
@@ -266,12 +280,11 @@ class cloudbroker_machine(j.code.classGetBase()):
             return 'Incorrect model structure'
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
 
-    def importbackup(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
+    def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         vmexport = self.cbcl.vmexport.get(vmexportId)
@@ -291,33 +304,134 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         storageparameters['storage_type'] = vmexport.storagetype
         storageparameters['bucket'] = vmexport.bucket
+        storageparameters['mdbucketname'] = vmexport.bucket
+
 
         metadata = ujson.loads(vmexport.files)
 
         args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
 
-        agentcontroller = j.clients.agentcontroller.get()
-
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
         
-    def listExports(self, status, **kwargs):
-        if not status:
-            exports = self.cbcl.vmexport.simpleSearch({})
-        else:
-            exports = self.cbcl.vmexport.simpleSearch({'status':status})
+    def listExports(self, status, machineId ,**kwargs):
+        query = {}
+        if status:
+            query['status'] = status
+        if machineId:
+            query['machineId'] = machineId
+        exports = self.cbcl.vmexport.simpleSearch(query)
         exportresult = []
         for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
-
-
+            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
 
+    def tag(self, machineId, tagName, **kwargs):
+        """
+        Adds a tag to a machine, useful for indexing and following a (set of) machines
+        param:machineId id of the machine to tag
+        param:tagName tag
+        """
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'vMachine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        tags = j.core.tags.getObject(vmachine.tags)
+        if tags.labelExists(tagName):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Tag %s is already assigned to this vMachine' % tagName
+
+        tags.labelSet(tagName)
+        vmachine.tags = tags.tagstring
+        self.cbcl.vmachine.set(vmachine)
+        return True
+
+    def untag(self, machineId, tagName, **kwargs):
+        """
+        Removes a specific tag from a machine
+        param:machineId id of the machine to untag
+        param:tagName tag
+        """
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'vMachine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        tags = j.core.tags.getObject(vmachine.tags)
+        if not tags.labelExists(tagName):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'vMachine does not have tag %s' % tagName
+
+        tags.labelDelete(tagName)
+        vmachine.tags = tags.tagstring
+        self.cbcl.vmachine.set(vmachine)
+        return True
 
 
+    def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
+        """
+        List the undestroyed machines based on specific criteria
+        At least one of the criteria needs to be passed
+        param:tag a specific tag
+        param:computenode name of a specific computenode
+        param:accountname specific account
+        param:cloudspaceId specific cloudspace
+        """
+        if not tag and not computeNode and not accountName and not cloudspaceId:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'At least one parameter must be passed'
+        params = dict()
+        native_query = dict() 
+        if tag:
+            params['tags'] = tag
+        if computeNode:
+            stacks = self.cbcl.stack.simpleSearch({'referenceId': computeNode})
+            if stacks:
+                stack_id = stacks[0]['id']
+                params['stackId'] = stack_id
+            else:
+                return list()
+        if accountName:
+            accounts = self.cbcl.account.simpleSearch({'name': accountName})
+            if accounts:
+                account_id = accounts[0]['id']
+                cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account_id})
+                if cloudspaces:
+                    cloudspaces_ids = [cs['id'] for cs in cloudspaces]
+                    native_query = {'query': {'bool': {'must': [{'terms': {'cloudspaceId': cloudspaces_ids}}]}}}
+                else:
+                    return list()
+            else:
+                return list()
+        if cloudspaceId:
+            params['cloudspaceId'] = cloudspaceId
 
+        if not native_query:
+            native_query = {'query': {'bool': {'must': []}}}
 
+        native_query['query']['bool']['must_not'] = [{'term': {'status': 'destroyed'}}]
+        return self.cbcl.vmachine.simpleSearch(params, nativequery=native_query)
 
-        
+    def checkImageChain(self, machineId, **kwargs):
+        """
+        Checks on the computenode the vm is on if the vm image is there
+        Check the chain of the vmimage to see if parents are there (the template starting from)
+        (executes the vm.hdcheck jumpscript)
+        param:machineId id of the machine
+        result dict,,
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method checkImageChain")

@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog',
-        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
+        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
             $scope.$watch('currentSpace.id',function(){
@@ -8,21 +8,24 @@ angular.module('cloudscalers.controllers')
                     Machine.list($scope.currentSpace.id).then(function(data) {
                       $scope.currentSpace.machines = data;
                     });
+
                 }
             });
-
-            $scope.updatePortforwardList = function(){
-            	Networks.listPortforwarding($scope.currentSpace.id).then(
-            			function(data) {
-            				$scope.portforwarding = data;
-            			},
-            			function(reason) {
-            				$ErrorResponseAlert(reason);
-            			}
-            	);
-            };
-
-            $scope.updatePortforwardList();
+	    $scope.$watch('assignIPMessage',function(){
+              if ($scope.assignIPMessage == ""){
+                  $scope.updatePortforwardList = function(){
+                      Networks.listPortforwarding($scope.currentSpace.id).then(
+                        function(data) {
+                                $scope.portforwarding = data;
+                        },
+                        function(reason) {
+                                $ErrorResponseAlert(reason);
+                        }
+                      );
+                  };
+		  $scope.updatePortforwardList();
+              }
+            });
 
             Networks.commonports().then(function(data) {
                 $scope.commonports = data;

@@ -1,16 +1,25 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', '$modal', function($scope, User, LoadingDialog, $window, $modal) {
+    .controller('SignUpController', ['$scope', 'User', 'LocationsService', 'LoadingDialog','$window', '$modal', function($scope, User, LocationsService, LoadingDialog, $window, $modal) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
         $scope.canSignUp = false;
         $scope.signUpError = '';
         $scope.signUpResult = '';
-        //$scope.user.password = '';
-        //$scope.passwordConfirmation = '';
+
+        var uri = new URI($window.location);
+        var queryparams = URI.parseQuery(uri.query());
+        $scope.promocode = queryparams.promocode;
 
         var acceptTerms = '';
         var acceptBelgian = '';
+
+        $scope.locations = {};
+        $scope.countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
+        LocationsService.list().then(function(locations) {
+            $scope.locations = locations;
+        });
+
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
                 $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
                 	&& $scope.user.password && $scope.passwordConfirmation
@@ -31,7 +40,7 @@ angular.module('cloudscalers.controllers')
                     $scope.user.companyurl = " ";
                 }
                 $scope.signUpResult = User.signUp($scope.user.username, $scope.user.name, $scope.email, $scope.user.password ,$scope.user.company , $scope.user.companyurl
-                    ,$scope.selectedLocation, $scope.user.password);
+                    ,$scope.selectedLocation, $scope.promocode);
             }
         };
 

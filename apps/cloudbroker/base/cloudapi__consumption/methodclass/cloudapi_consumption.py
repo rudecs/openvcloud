@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from billingenginelib import pricing
 
@@ -27,6 +28,7 @@ class cloudapi_consumption(j.code.classGetBase()):
         
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, accountId, reference, **kwargs):
         """
         Gets detailed consumption for a specific creditTransaction.
@@ -42,6 +44,7 @@ class cloudapi_consumption(j.code.classGetBase()):
         return billingstatement.dump()
 
     @authenticator.auth(acl='R')
+    @audit()
     def getBurnRate(self, accountId, **kwargs):
         """
         Get the hourly cost of the resources currently in use

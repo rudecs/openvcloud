@@ -27,6 +27,7 @@
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:tags str,, A tags string
 
 [model:VMAccount] @dbtype:osis
     """
@@ -187,6 +188,16 @@
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
     prop:location str,, datacenterlocation
 
+[rootmodel:PublicIPv4Pool] @dbtype:osis
+    """
+    public ip pool
+    """
+    prop:id str,,network/cidr
+    prop:network str,,Network of the pool
+    prop:subnetmask str,,Subnetmask of the pool
+    prop:gateway str,,Gateway of th
+    prop:pubips list(str),,list of ips
+
 [rootmodel:Size] @dbtype:osis
     """
     Size is a combination of memory and cores
@@ -223,6 +234,7 @@
     prop:server str,, hostname of the server(for rados None)
     prop:storagetype str,, type of the storage(e.g S3 or RADOS)
     prop:size int,, size of the machine in Mb
+    prop:original_size int,, original size of the machine in GB
     prop:timestamp int,, epochtime of the machine
     prop:config str,,json representation machine model
     prop:status str,,status of the vm

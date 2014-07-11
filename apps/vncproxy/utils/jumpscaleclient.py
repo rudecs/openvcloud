@@ -2,5 +2,7 @@ from JumpScale import j
 import JumpScale.portal
 
 def getClient(ip):
-    cl = j.core.portal.getClient(ip, 9999, '1234')
+    port = j.application.config.get('vncproxy.libcloud.actor.port')
+    key = j.application.config.get('vncproxy.libcloud.actor.secret')
+    cl = j.core.portal.getClient(ip, port, key)
     return cl.getActor('libcloud','libvirt')

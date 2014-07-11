@@ -1,24 +1,30 @@
-@usedefault
+{{html:
+<head>
+<style type="text/css">
+	#terms p { font-size: 14px !important;}
+	.mainButton {padding: 5px 15px;font-size: 14px;}
+</style>
+</head>
 
-h1. Pay with Wire Transfer
 
-We accept wire transfer payments as from 100 EUR.
+<p>We accept wire transfer payments as from 100 EUR.<br/>
 
-*Send the payment to:*
+<strong>Send the payment to:</strong><br/>
 
-CloudScalers BVBA
-Antwerpsesteenweg 19
-9080 Lochristi
-Belgium
+CloudScalers BVBA<br/>
+Antwerpsesteenweg 19<br/>
+9080 Lochristi<br/>
+Belgium<br/>
+<br/>
+<stong>Bank Account number:</stong> IBAN: BE31 3630 8641 8855 <br/>
 
-*Bank Account number:* IBAN: BE31 3630 8641 8855 
+<stong>BIC:</stong>  BBRUBEBB<br/>
 
-*BIC:* BBRUBEBB
+<stong>Bank Info:</stong>  ING Bank, Lochristi, Belgium<br/>
 
-*Bank Info:* ING Bank, Lochristi, Belgium
+<stong>Reference:</stong>  Add your Cloud Space name in the reference/description field.<br/><br/>
 
-*Reference:* Add your Cloud Space name in the reference/description field.
+Your account credit will be change as soon as we have received your payment.<br/>
 
-Your account credit will be change as soon as we have received your payment.
-
-All costs for the wire transfer are to be covered by the customer. If Mothership1 is charged bank costs for the wire transfer, the costs will be deducted first from the uploaded funds and the remaining amount will be added to your Cloud Space. Wire Transfers in Europe are free if the IBAN/BIC codes are used correctly.
+All costs for the wire transfer are to be covered by the customer. If Mothership1 is charged bank costs for the wire transfer, the costs will be deducted first from the uploaded funds and the remaining amount will be added to your Cloud Space. Wire Transfers in Europe are free if the IBAN/BIC codes are used correctly.<p>
+}}

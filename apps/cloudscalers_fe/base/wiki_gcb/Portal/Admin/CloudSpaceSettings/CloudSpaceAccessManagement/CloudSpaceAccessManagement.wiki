@@ -1,6 +1,7 @@
 {{html:
 <em>Provide other users access to your Cloud Space by adding their Mothership1 user name.</em>
 <form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController">
+<div class="table-responsive">
     <table class="table users-table mtm">
         <tr class="header">
             <th class="username-text-container">
@@ -20,6 +21,7 @@
             <td><a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times"></a></td>
         </tr>
     </table>
+</div>
 </form>
 
 <script src="/$$space/.files/js/controllers/CloudSpaceAccessManagementController.js" type="text/javascript"></script>

@@ -32,6 +32,19 @@ defineApiStub = function ($httpBackend) {
                 this.set(items);
             },
 
+            saveUser: function(item) {
+                var items = this.get();
+                for (var i = 0; i < items.length; i++) {
+                    console.log(items[i]);
+                    if(items[i] != null){
+                        if (items[i].username == item.username) {
+                            items[i] = item;
+                        }
+                    }
+                }
+                this.set(items);
+            },
+
             set: function(items) {
                 localStorage.setItem(key, JSON.stringify(items));
             },
@@ -69,6 +82,21 @@ defineApiStub = function ($httpBackend) {
             return [403, 'Unauthorized'];
         }
         return [200, '"yep123456789"'];
+    });
+    $httpBackend.whenGET(/^\/users\/updatePassword\?.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var user = _.findWhere(UsersList.get(), {username: params.username});
+        if( params.newPassword.length < 8 || params.newPassword.length > 80 || params.newPassword.indexOf(' ') >= 0 || params.newPassword == "undefined" ){
+            return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
+        }else{
+            if (user.password == params.oldPassword){
+                    user.password = params.newPassword;
+                    UsersList.saveUser(user);
+                    return [200, "Congratulations, Your password changed successfully."];
+            }else{
+                return [203, "Your current password dosen't match."];
+            }
+        }
     });
 
     $httpBackend.whenPOST('/users/register').respond(function(method, url, data) {
@@ -124,7 +152,7 @@ defineApiStub = function ($httpBackend) {
             "UNCPath": "",
             "description": "",
             "type": "Windows",
-            "id": 2,
+            "id": 0,
             "size": 50
         },
         {
@@ -133,6 +161,22 @@ defineApiStub = function ($httpBackend) {
             "description": "",
             "type": "Ubuntu",
             "id": 1,
+            "size": 50
+        },
+        {
+            "name": "first template",
+            "UNCPath": "",
+            "description": "description for first template",
+            "type": "Custom Templates",
+            "id": 2,
+            "size": 50
+        },
+        {
+            "name": "ssssss template",
+            "UNCPath": "",
+            "description": "",
+            "type": "Custom Templates",
+            "id": 3,
             "size": 50
         }
     ];
@@ -210,11 +254,13 @@ defineApiStub = function ($httpBackend) {
 
 
     $httpBackend.whenGET(/^\/machines\/get\?machineId=(.+).*/).respond(function (method, url, data) {
-        var params = new URI(url).search(true);
+         var params = new URI(url).search(true);
         if (!_.find(MachinesList.get(), function(m) { return m.id == params.machineId; })) {
             return [500, 'Not found']
         }
         var matchedMachine = MachinesList.getById(params.machineId);
+        var osImage = _.where(images, {id: matchedMachine.imageId});
+        matchedMachine.osImage = osImage[0].name;
         return [200, matchedMachine];
     });
 
@@ -389,16 +435,18 @@ defineApiStub = function ($httpBackend) {
         {id: '2', name: 'Awingu', preferredDataLocation: "ca1"},
         {id: '4', name: 'Incubaid', preferredDataLocation: "us1"},
     ]);
+
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1"},
-       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1"},
-       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1"},
-       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1"},
-       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1"},
-       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1"},
-       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1"},
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
     ];
 
+    
     var cloudSpace = {
         name: 'Development',
         descr: 'Development machine',
@@ -669,5 +717,16 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
         return [200, portforwarding];
+    });
+
+    $httpBackend.whenGET(/^\/template\/delete\?.*/).respond(function (method, url, data) {
+        var params = new URI(url).search(true);
+        var imageTemplate = _.where(images, {type: "Custom Templates"});
+        if(imageTemplate.length > 0){
+            imageTemplate.splice( params.templateIndex , 1);
+            return [200, true];
+        }else{
+            return [500, "Templates couldn't found!"];
+        }
     });
 };

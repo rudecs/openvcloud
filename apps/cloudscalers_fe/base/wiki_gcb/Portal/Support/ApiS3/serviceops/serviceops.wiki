@@ -15,6 +15,7 @@ Authorization: AWS {access-key}:{hash-of-header-and-secret}</pre>
 </div>
 <div class="section" id="response-entities">
 <h3>Response Entities<a class="headerlink" href="#response-entities" title="Permalink to this headline"></a></h3>
+<div class="table-responsive">
 <table border="1" class="docutils">
 <colgroup>
 <col width="26%">
@@ -62,6 +63,7 @@ Authorization: AWS {access-key}:{hash-of-header-and-secret}</pre>
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 </div>

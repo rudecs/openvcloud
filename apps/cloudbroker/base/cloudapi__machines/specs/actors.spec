@@ -104,21 +104,6 @@
         var:diskId int,,id of disk to delete
         result:bool    
 
-    method:exporttoremote
-        """     
-        """
-        var:machineId str,,id of machine to export
-        var:exportName str,,give name to export action
-        var:uncpath str,,unique path where to export machine to () #@todo give example ftp
-        var:emailaddress str,,to this address the result of the export is send.
-        result:int  #returns id of new machine create in system which remembers where export happened to
-
-    method:importtoremote
-        """     
-        """
-        var:name str,,name of machine
-        var:uncpath str,,unique path where to import machine from () #@todo give example ftp
-        result:int  #returns id of new machine create in system which remembers where export happened to
 
     method:snapshot
         """
@@ -161,13 +146,32 @@
         var:basename str,, Snapshot id on which the template is based @tags: optional 
         result:str
 
-    method:backup
-        """     
-        backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running
+
+    method:importToNewMachine
         """
-        var:machineId str,,id of machine to backup
-        var:backupName str,,name of backup
-        result:int  #returns id of new machine created
+        restore export to a new machine
+        """
+        var:name str,,name of the new machine
+        var:cloudspaceId int,, id of the cloudspace
+        var:vmexportId int,, id of the export 
+        var:sizeId int,,id of the specific size
+        var:description str,,optional description @tags: optional 
+        var:aws_access_key str,,s3 access key  
+        var:aws_secret_key str,,s3 secret key
+        result:jobid
+
+
+    method:export
+        """
+        Create a export/backup of a machine
+        """
+        var:machineId int,, id of the machine to backup
+        var:name str,, Usefull name for this backup
+        var:host str,, host to export(if s3)
+        var:aws_access_key str,,s3 access key 
+        var:aws_secret_key str,,s3 secret key
+        var:bucket str,,s3 bucket name
+        result:jobid
 
     method:getConsoleUrl
         """
@@ -191,5 +195,13 @@
         var:machineId str,,id of machine to clone
         var:size int,, result size
         result:list
+
+    method:listExports
+        """
+        List exported images
+        """
+        var:machineId str,, id of the machine
+        var:status str,, filter on specific status @tags: optional
+        result:dict a json list
 
     

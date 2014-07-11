@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, enums
 import ujson
 
@@ -41,6 +42,7 @@ class cloudapi_s3storage(j.code.classGetBase()):
         return s3storagebuckets[0]
 
     @authenticator.auth(acl='R')
+    @audit()
     def get(self, cloudspaceId, **kwargs):
         """
         Gets the S3 details for a specific cloudspace
@@ -55,6 +57,7 @@ class cloudapi_s3storage(j.code.classGetBase()):
         return connectiondetails
 
     @authenticator.auth(acl='R')
+    @audit()
     def listbuckets(self, cloudspaceId, **kwargs):
         """
         List the storage buckets in a space.
