@@ -5,10 +5,11 @@
 h2. User: $$id
 
 h3. Details
+|*Emails*|$$emails|
+|*Password Hash*|$$passwd|
 |*Domain*|$$domain|
 |*Roles*|$$roles|
 |*Groups*|$$groups|
-|*Emails*|$$emails|
 |*Last Checked*|$$lastcheck|
 |*Grid ID*|[$$gid|/Grid/grid?id=$$gid]|
 |*Active*|$$active|
