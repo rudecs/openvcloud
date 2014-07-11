@@ -6,6 +6,7 @@ import time
 import shutil
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
+from JumpScale.lib.btrfs import *
 
 
 LOCKCREATED = 1
@@ -433,5 +434,24 @@ class LibvirtUtil(object):
     def createNetwork(self, networkname, bridge):
         networkxml = self.env.get_template('network.xml').render(networkname=networkname, bridge=bridge)
         self.connection.networkCreateXML(networkxml)
+
+    def createVMStorSnapshot(self, name):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        if not j.system.fs.exists(vmstor_snapshot_path):
+            j.system.btrfs.subvolumeCreate(self.basepath, 'snapshots')
+        vmstorsnapshotpath = j.system.fs.joinPaths(vmstor_snapshot_path, name)
+        j.system.btrfs.snapshotReadOnlyCreate(self.basepath, vmstorsnapshotpath)
+        return True
+
+    def deleteVMStorSnapshot(self, name):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        j.system.btrfs.subvolumeDelete(vmstor_snapshot_path,name)
+        return True
+
+    def listVMStorSnapshots(self):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        return j.system.btrfs.subvolumeList(vmstor_snapshot_path)
+        
+
         
 
