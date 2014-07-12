@@ -24,11 +24,6 @@ Logout:/system/login?user_logoff_=1
 Access:/system/OverviewAccess?space=$$space
 System:/system
 --------------
-CloudBroker Grid:/cbgrid
-Grid:/grid
-JPackages:/jpackages
-Tests:/tests
---------------
 Accounts:/cbgrid/accounts
 Cloud Spaces:/cbgrid/cloudspaces
 Credit Information:/cbgrid/creditInfo

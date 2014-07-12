@@ -1,14 +1,15 @@
 
 {{title:CBGrid}}
 
-{{projectname:CloudBroker Grid}}
-
 {{find}}
 
 {{menu:
+$$$spaces
+Grid:/grid
 }}
 
 {{menuadmin_cbgrid}}
+{{menuspaces: class:brand name:Cloudbroker%20Grid marker:$$$spaces}}
 
 @block
 @row
