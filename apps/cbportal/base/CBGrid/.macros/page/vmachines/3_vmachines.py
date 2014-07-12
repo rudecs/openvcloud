@@ -6,9 +6,14 @@ def main(j, args, params, tags, tasklet):
     stackid = args.getTag("stackid")
     cloudspaceId = args.getTag("cloudspaceid")
     filters = dict()
+    nativequery = None
 
     if stackid:
         filters['stackId'] = stackid
+        ccl = j.core.osis.getClientForNamespace('cloudbroker')
+        location = j.application.config.get('cloudbroker.where_am_i')
+        spaces = [ x['id'] for x in ccl.cloudspace.simpleSearch({'location': location}) ]
+        nativequery = {'query': {'bool': {'must': [{'terms': {'cloudspaceId': spaces}}]}}}
     if cloudspaceId:
         filters['cloudspaceId'] = cloudspaceId
 
@@ -29,7 +34,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
     fieldvalues = [nameLinkify, 'status', 'hostName', makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
+    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
