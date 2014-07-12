@@ -1,10 +1,17 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, network
+import netaddr
 import ujson
 import gevent
 import urlparse
 import uuid
+
+
+def getIP(network):
+    if not network:
+        return network
+    return str(netaddr.IPNetwork(network).ip)
 
 
 class cloudapi_cloudspaces(object):
@@ -21,6 +28,7 @@ class cloudapi_cloudspaces(object):
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
         self.gridid = j.application.config.get('grid.id')
+        self.network = network.Network(self.models)
 
     @property
     def cb(self):
@@ -63,9 +71,9 @@ class cloudapi_cloudspaces(object):
 
     @authenticator.auth(acl='A')
     @audit()
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, password=None, **kwargs):
+    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
-        Create a extra cloudspace
+        Create an extra cloudspace
         param:name name of space to create
         param:access list of ids of users which have full access to this space
         param:maxMemoryCapacity max size of memory in space (in GB)
@@ -73,14 +81,6 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
-        #TODO: redirect to different location if necessary
-        networkid = self.libvirt_actor.getFreeNetworkId()
-        if not networkid:
-            raise RuntimeError("Failed to get networkid")
-        publicipaddress = self.cb.extensions.imp.getPublicIpAddress(networkid)
-        if not publicipaddress:
-            self.libvirt_actor.releaseNetworkId(networkid)
-            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -91,21 +91,57 @@ class cloudapi_cloudspaces(object):
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
-        cs.networkId = networkid
-        cs.status = 'UNCONFIRMED'
-        cs.publicipaddress = publicipaddress
-        cloudspace_id = self.models.cloudspace.set(cs)[0]
-        try:
-            self.netmgr.fw_create(str(cloudspace_id), 'admin', password, publicipaddress, 'routeros', networkid)
-        except:
-            self.libvirt_actor.releaseNetworkId(networkid)
-            self.models.cloudspace.delete(cloudspace_id)
-            raise
+        cs.status = 'VIRTUAL'
+        networkid = self.libvirt_actor.getFreeNetworkId()
+        if not networkid:
+            raise RuntimeError("Failed to get networkid")
 
-        cs = self.models.cloudspace.get(cloudspace_id)
-        cs.status = 'CREATED'
-        self.models.cloudspace.set(cs)
+        cs.networkId = networkid
+        cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
+
+    def _release_resources(self, cloudspace):
+         #delete routeros
+        fws = self.netmgr.fw_list(self.gridid, str(cloudspace.id))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
+        if cloudspace.networkId:
+            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
+        if cloudspace.publicipaddress:
+            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
+        cloudspace.networkId = None
+        cloudspace.publicipaddress = None
+        return cloudspace
+
+    @authenticator.auth(acl='C')
+    def deploy(self, cloudspaceId, **kwargs):
+        cs = self.models.cloudspace.get(cloudspaceId)
+        if cs.status != 'VIRTUAL':
+            return cs.status
+
+        cs.status = 'DEPLOYING'
+        self.models.cloudspace.set(cs)
+        networkid = cs.networkId
+        pool, publicipaddress = self.network.getPublicIpAddress()
+        publicgw = pool.gateway
+        network = netaddr.IPNetwork(pool.id)
+        publiccidr = network.prefixlen
+        if not publicipaddress:
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+
+        cs.publicipaddress = str(publicipaddress)
+        self.models.cloudspace.set(cs)
+        password = str(uuid.uuid4())
+        try:
+            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
+        except:
+            self.network.releasePublicIpAddress(str(publicipaddress))
+            cs.status = 'ERROR'
+            self.models.cloudspace.set(cs)
+            raise
+        cs.status = 'DEPLOYED'
+        self.models.cloudspace.set(cs)
+        return cs.status
 
     @authenticator.auth(acl='A')
     @audit()
@@ -114,7 +150,6 @@ class cloudapi_cloudspaces(object):
         Delete a cloudspace.
         param:cloudspaceId id of the cloudspace
         result bool,
-
         """
         ctx = kwargs['ctx']
         #A cloudspace may not contain any resources any more
@@ -147,15 +182,11 @@ class cloudapi_cloudspaces(object):
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
-        #delete routeros
-        fws = self.netmgr.fw_list(self.gridid, str(cloudspaceId))
-        if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
-        if cloudspace.networkId:
-            self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
-        cloudspace.networkId = None
-        cloudspace.status = 'DESTROYED'
 
+        cloudspace.status = "DESTROYING"
+        self.models.cloudspace.set(cloudspace)
+        cloudspace = self._release_resources(cloudspace)
+        cloudspace.status = 'DESTROYED'
         self.models.cloudspace.set(cloudspace)
 
 
@@ -174,7 +205,8 @@ class cloudapi_cloudspaces(object):
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
-                        "publicipaddress": cloudspaceObject.publicipaddress,
+                        "publicipaddress": getIP(cloudspaceObject.publicipaddress),
+                        "status": cloudspaceObject.status,
                         "location": cloudspaceObject.location}
         return cloudspace
 
@@ -217,13 +249,14 @@ class cloudapi_cloudspaces(object):
                 cloudspace['location'] = self.cb.extensions.imp.whereAmI()
 
         locations = self.cb.extensions.imp.getLocations()
-        
+
         for cloudspace in cloudspaces:
+            cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
             for acl in self.models.account.get(cloudspace['accountId']).acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
-                    cloudspace['userRightsOnAccount'] = acl
+                    cloudspace['accountAcl'] = acl
                     cloudspace['userRightsOnAccountBilling'] = True
 
         return cloudspaces
