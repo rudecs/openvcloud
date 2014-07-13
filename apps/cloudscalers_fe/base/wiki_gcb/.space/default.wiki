@@ -57,7 +57,10 @@
                             <span>Logout</span>
                         </a>
                     </li>
-                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
+                    <li class="right"><span class="user-name" ng-cloak>{[currentUser.username]}</span> </li>
+}}
+#                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
+{{html:
                 </ul>
             </div>
         </div>
@@ -77,7 +80,7 @@
         <li> </li>
         <li class="dropdown dropdown-accordion">
           <a id="drop1" role="button" class="just" data-toggle="dropdown"
-             tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom" tourtip-step="0">
+             tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom">
              <span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
@@ -140,13 +143,14 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="../$$space/Getting Started" tourtip="1 min to read" tourtip-placement="bottom" tourtip-step="1">Getting Started</a></li>
+        <li><a href="../$$space/Getting Started" tourtip="1 min to read" tourtip-placement="bottom">Getting Started</a></li>
         <li><a href="../$$space/ApiDocs">Machine API</a></li>
         <li><a href="../$$space/ApiS3">Storage API</a></li>
         <li><a href="../kb/">Knowledge Base</a></li>
         <li><a href="http://support.mothership1.com">Support</a></li>
-        <li ng-show="userRightsOnAccountBilling" tourtip="Upload credits to your Cloud Space" tourtip-placement="bottom" tourtip-step="2"><a href="../$$space/AccountSettings">Billing</a></li>
-        <li><a href="../$$space/CloudSpaceSettings" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom" tourtip-step="3">Cloud Space Settings</a></li>
+        <!--<li ng-show="userRightsOnAccountBilling"><a tourtip="Upload credits to your Cloud Space" tourtip-placement="bottom" href="../$$space/AccountSettings">Billing</a></li>-->
+        <li><a tourtip="Upload credits to your Cloud Space" tourtip-placement="bottom" href="../$$space/AccountSettings">Billing</a></li>
+        <li><a href="../$$space/CloudSpaceSettings" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom">Cloud Space Settings</a></li>
 }}
 #        <li class="dropdown">
 #          <a href="../$$space/Profile" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
@@ -181,8 +185,8 @@
       <!-- static right nav -->
   <div class="sideNav">
     <ul style="padding-left: 0;">
-      <li class="header blue">
-        <a href="MachineDeck" tourtip="Create and Manage your Virtual Machines" tourtip-placement="left" tourtip-step="4">Machine Deck <span>1</span></a>
+      <li class="header blue" >
+        <a href="MachineDeck" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machine Deck <span>1</span></a>
         <ul class="body">
           <li>
             <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)">Machines</a>
@@ -207,7 +211,7 @@
         </ul>
       </li>
       <li class="header darkOrange">
-        <a href="StorageDeck" tourtip="Get started with Mothership1 S3 compatible storage" tourtip-placement="left" tourtip-step="5">Storage Deck <span>3</span></a>
+        <a href="StorageDeck" tourtip="Get started with Mothership1 S3 compatible storage"  tourtip-placement="left">Storage Deck <span>3</span></a>
         <ul class="body">
           <li>
             <a href="StorageDeck" menu-link-active-location="StorageDeck">S3 Storage</a>
@@ -223,7 +227,7 @@
         </ul>
       </li>
       <li class="header red">
-        <a href="NetworkDeck" tourtip="Optionally manage your Private Virtual Datacenter's Firewall" tourtip-placement="left" tourtip-step="6">Defense Shields</a>
+        <a href="NetworkDeck" tourtip="Optionally manage your Private Virtual Datacenter's Firewall"  tourtip-placement="left">Defense Shields</a>
         <ul class="body">
           <li>
             <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
@@ -310,7 +314,6 @@ h2. loading
     <script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/services/UserServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/AuthenticatedSessionController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/CloudSpaceNavigatorController.js" type="text/javascript"></script>

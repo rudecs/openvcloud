@@ -78,7 +78,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px; margin-top: 0;">
+	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls" style="height: 33px; line-height: 31px;">
 					         {[currentSpace.publicipaddress]}

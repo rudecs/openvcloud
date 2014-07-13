@@ -22,7 +22,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     <!-- Button -->
     <div class="control-group absolutePad0">
       <div class="">
-        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute1">Create Machine</button>
+        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute1" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</button>
       </div>
     </div>
 
@@ -53,5 +53,8 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     </tbody>
   </table>
 </div>
+</div>
+<div style="position: absolute; top: 155px; right: -300px;">
+    <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
 </div>
 }}
