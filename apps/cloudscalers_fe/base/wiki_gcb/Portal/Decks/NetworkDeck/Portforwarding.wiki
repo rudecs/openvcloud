@@ -71,14 +71,15 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				padding: 19px 20px 30px;
 			}
 		</style>
-        <form name="form" class="form-horizontal" ng-submit="submit()">
+        <form name="form" class="form-horizontal" ng-submit="submit()" ng-controller="Mothership1TourController">
+            <tour step="portForwardTourStep" post-step="postStepCallback()">
             <div class="modal-header">
                 <h3>Port Forward</h3>
             </div>
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports">
+	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="bottom" tourtip-offset="20">
 						<label class="control-label" for="inputNewIP">Public IP</label>
 						<div class="controls" style="height: 33px; line-height: 31px;">
 					         {[currentSpace.publicipaddress]}
@@ -99,7 +100,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				<div class="col-md-4">
 					<h4>Destination</h4>
 					<div class="control-group" style="margin-top: 0;">
-						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
+						<label class="control-label" style="width: 90%; " tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="bottom" tourtip-offset="80">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
 		                    </select>
@@ -115,6 +116,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
                 <button type="submit" class="btn btn-primary ok">Ok</button>
                 <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
             </div>
+            </tour>
          </form>
 	</script>
 

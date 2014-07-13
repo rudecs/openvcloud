@@ -4,8 +4,9 @@ h1. Manage Machine
 h1 { margin-bottom: 20px; }
 }}
 {{html:
+<tour step="machineDetailTourStep" post-step="postStepCallBack">
 <a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.
-" tourtip-placement="bottom">
+">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
@@ -40,7 +41,7 @@ h1 { margin-bottom: 20px; }
                         <li>
                         	<div class="row">
                         		<div class="span3">IP Address</div>
-                        		<div class="span9 mtm" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">{[machine.interfaces[0].ipAddress]}</div>
+                        		<div class="span9 mtm">{[machine.interfaces[0].ipAddress]}</div>
                         	</div>
                         </li>
                         <li>
@@ -52,7 +53,7 @@ h1 { margin-bottom: 20px; }
                         <li class="initial">
                         	<div class="row">
                         		<div class="span3">Initial Credentials</div>
-                        		<div class="span9"><span class="mrl">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
+                        		<div class="span9"><span class="mrl" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
                         	</div>
                         </li>
                         <li>
@@ -108,7 +109,7 @@ h1 { margin-bottom: 20px; }
                         </li>
 
                         <li>
-                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
+                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                 <i class="fa fa-camera"></i>
                                 Take Snapshot
                             </a>
@@ -294,5 +295,5 @@ h1 { margin-bottom: 20px; }
         </div>
       </tab>
 </tabset>
-
+</tour>
 }}
