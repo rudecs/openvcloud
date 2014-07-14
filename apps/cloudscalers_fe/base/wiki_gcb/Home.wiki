@@ -98,7 +98,7 @@
       <div class="col-md-6 borderRight1"> <a href="../$$space/signUp"><img src="/$$space/.files/img/images/free-trial.png" alt=""></a> </div>
       <div class="col-md-6">
         <ul>
-          <li>Sign Up for our 30-Day Trial</li>
+          <li>Sign Up for our 2-week Trial</li>
           <li>No renewal obligation</li>
           <li>No automatic credit card charges</li>
         </ul>
