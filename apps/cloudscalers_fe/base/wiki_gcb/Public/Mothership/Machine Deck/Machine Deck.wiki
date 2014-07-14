@@ -15,7 +15,7 @@
 
 </head>
 
- <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
+ <img class="smallIcon" src="/$$space/.files/img/icon2.png" alt=""/>
   <a href="/$$space/SignUp" class="btn btn-success wideOne apsoluteButton1" role="button">Sign Up</a>
 }}
 
