@@ -23,22 +23,28 @@ def action():
     import JumpScale.baselib.mailclient
 
     osiscl = j.core.osis.getClient(user='root')
-    vmcl = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', 'vmachine')
+    ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    scl = j.core.osis.getClientForNamespace('system')
+    gridname = scl.grid.get(j.application.whoAmI.gid).name
     vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
+    cloudspaces = [ x['id'] for x in ccl.cloudspace.simpleSearch({'location': gridname}) ]
 
     routeros_password = j.application.config.get('vfw.admin.passwd')
 
-    running_vms = vmcl.simpleSearch({'status': 'RUNNING'})
+    running_vms = ccl.vmachine.simpleSearch({'status': 'RUNNING'})
 
     failed_machines = list()
     not_reachable_vfws = list()
     for vm in running_vms:
+        cloudspaceid = vm['cloudspaceId']
+        if cloudspaceid not in cloudspaces:
+            continue
         vfws = vfwcl.simpleSearch({'domain': str(vm['cloudspaceId'])})
         if vfws:
             vfw = vfws[0]
             # validate routeros is reachable
             try:
-                routeros = j.clients.routeros.get(vfw['internalip'], 'vscalers', routeros_password)
+                routeros = j.clients.routeros.get(vfw['host'], 'vscalers', routeros_password)
             except:
                 not_reachable_vfws.append(vfw)
                 continue
@@ -54,14 +60,14 @@ def action():
 
     if failed_machines or not_reachable_vfws:
         # raise to ops
-        message = 'Hello,'
+        message = 'Hello,\n\n'
         if failed_machines:
-            message += '<br/><br/>The following VMachines are not pingable:<br/><br/>'
+            message += 'The following VMachines are not pingable:\n\n'
             for vm in failed_machines:
-                message += '* %s: %s<br/>' % (vm['id'], vm['name'])
+                message += '* %s: %s\n' % (vm['id'], vm['name'])
         if not_reachable_vfws:
-            message += '<br/><br/>The following VFWs are not reachable:<br/><br/>'
+            message += '\n\nThe following VFWs are not reachable:\n\n'
             for vfw in not_reachable_vfws:
-                message += '* %s: %s, %s<br/>' % (vfw['name'] or 'N/A', vfw['internalip'] or 'N/A', ', '.join(vfw['pubips']))
+                message += '* %s: %s, %s\n' % (vfw['id'] or 'N/A', vfw['host'] or 'N/A', ', '.join(vfw['pubips']))
 
-        j.clients.email.send('support@mothership1.com', 'monitoring@mothership1.com', 'VMachines Status', message)
+        j.clients.email.send('support@mothership1.com', 'monitoring@mothership1.com', 'vMachines Status', message)
