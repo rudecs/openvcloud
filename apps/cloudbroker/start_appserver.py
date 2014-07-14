@@ -2,6 +2,7 @@
 from gevent import monkey
 #monkey.patch_all()
 monkey.patch_socket()
+monkey.patch_ssl()
 monkey.patch_thread()
 monkey.patch_time()
 
