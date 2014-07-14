@@ -79,8 +79,8 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="bottom" tourtip-offset="20">
-						<label class="control-label" for="inputNewIP">Public IP</label>
+	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" >
+						<label class="control-label ipTip" for="inputNewIP" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="top" >Public IP</label>
 						<div class="controls" style="height: 33px; line-height: 31px;">
 					         {[currentSpace.publicipaddress]}
 		       		</div>
@@ -100,7 +100,7 @@ Easily configure your port forwards to your Virtual Machines! Please take a smal
 				<div class="col-md-4">
 					<h4>Destination</h4>
 					<div class="control-group" style="margin-top: 0;">
-						<label class="control-label" style="width: 90%; " tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="bottom" tourtip-offset="80">Virtual Machine</label>
+						<label class="control-label machineTip" style="width: 90%; " tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
 		                    </select>

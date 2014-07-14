@@ -127,3 +127,23 @@ html body .tour-tip a.tour-close-tip {
 .darkOrange .tour-tip {left: -366px !important;}
 .red .tour-tip {left: -413px !important;}
 #singlebutton + .tour-tip { top: -20px !important;}
+.refresh-page + .tour-tip {top: -75px !important;width: 290px; }
+.forTip + .tour-tip {top: -25px !important; }
+.forTipSnap + .tour-tip {top: -85px !important; }
+.ipTip + .tour-tip {top: -85px !important; width: 370px;}
+.machineTip + .tour-tip {top: 45px !important;width: 290px;}
+.portforwordTip {position: absolute;top: 155px;right: -150px;}
+.portforwordTip  .tour-tip {top: 0 !important; left: 0 !important; right: 0 !important;}
+#creditToAddInput + .tour-tip {top: -30px !important;left: 203px !important; }
+
+
+@media (max-width: 1376px) {
+  .portforwordTip {right: 100px !important;}
+ }
+
+
+ @media (max-width: 992px) {
+  .tour-tip { display: none !important;}
+ }
+
+

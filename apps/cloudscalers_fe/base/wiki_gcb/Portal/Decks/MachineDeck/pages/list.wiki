@@ -54,7 +54,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
   </table>
 </div>
 </div>
-<div style="position: absolute; top: 155px; right: -300px;">
+<div class="portforwordTip" >
     <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
 </div>
 </tour>
