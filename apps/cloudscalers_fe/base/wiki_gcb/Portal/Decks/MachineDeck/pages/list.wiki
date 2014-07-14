@@ -13,7 +13,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 }}
 
 {{html:
-
+<tour step="machineListTourStep" post-step="postStepCallBack()">
 <div id="tabbable">
   <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
@@ -57,4 +57,5 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 <div style="position: absolute; top: 155px; right: -300px;">
     <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
 </div>
+</tour>
 }}

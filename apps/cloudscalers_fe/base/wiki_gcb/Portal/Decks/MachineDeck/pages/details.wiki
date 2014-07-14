@@ -5,8 +5,7 @@ h1 { margin-bottom: 20px; }
 }}
 {{html:
 <tour step="machineDetailTourStep" post-step="postStepCallBack">
-<a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.
-">
+<a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
@@ -109,7 +108,7 @@ h1 { margin-bottom: 20px; }
                         </li>
 
                         <li>
-                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
+                            <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                 <i class="fa fa-camera"></i>
                                 Take Snapshot
                             </a>
@@ -142,7 +141,7 @@ h1 { margin-bottom: 20px; }
                         </li>
 
                         <li>
-                            <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
+                            <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                 <i class="fa fa-copy"></i>
                                 Create Template
                             </a>
