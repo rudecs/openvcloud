@@ -12,6 +12,10 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         }
                     );
+            },
+            getCountryForLocation: function(location){
+            	var countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
+            	return countries[location];
             }
         };
     });

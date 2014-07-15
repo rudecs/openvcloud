@@ -128,7 +128,7 @@
                             <label class="col-sm-2 control-label">Location</label>
                             <div class="controls col-sm-9">
                                 <ul class="flags-list mtl mll row">
-                                    <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="itemClicked(location)">
+                                    <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
                                         <a href="" class="{[ countries[location].toLowerCase() ]}"></a>
                                         <span class="mts block cursor-default">{[ countries[location] ]}</span>
                                     </li>
