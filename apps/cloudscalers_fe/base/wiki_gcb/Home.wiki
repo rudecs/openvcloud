@@ -182,6 +182,16 @@
         $($(e.target).attr('href')).find('video')[0].play();
       })
     })
+
+      $('video').click(function(event) {
+    event.stopPropagation();
+    if ($(this).get(0).paused) {
+      $(this).get(0).play();
+    }
+    else {
+      $(this).get(0).pause();
+    }
+  });
   </script>
 </div>
 
