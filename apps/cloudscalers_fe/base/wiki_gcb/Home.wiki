@@ -156,7 +156,7 @@
   <div class="col-md-12 videoBox2">
     <div class="row">
     <ul class="nav-pills nav-stacked col-md-3" role="tablist">
-      <li><a data-toggle="tab" role="tab" href="#tab1"><strong>Cloud Space</strong><br>Your Private Virtual Datacenter</a></li>
+      <li class="active"><a data-toggle="tab" role="tab" href="#tab1"><strong>Cloud Space</strong><br>Your Private Virtual Datacenter</a></li>
       <li><a data-toggle="tab" role="tab" href="#tab2"><strong>Machine Deck</strong><br>Create Virtual Machines</a></li>
       <li><a data-toggle="tab" role="tab" href="#tab3"><strong>Snapshots</strong><br>Immediate VM snapshots and rollback</a></li>
       <li><a data-toggle="tab" role="tab" href="#tab4"><strong>Port Forwards</strong><br>Decide what goes public on your VM</a></li>
