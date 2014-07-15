@@ -1,0 +1,6 @@
+Cloud Space:Cloud Space
+Defense Shield:Defense Shield
+Machine Deck:Machine Deck
+Storage Deck:Storage Deck
+Desktop Deck:Desktop Deck
+Application Deck:Application Deck

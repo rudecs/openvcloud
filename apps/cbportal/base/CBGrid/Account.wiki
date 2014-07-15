@@ -1,0 +1,29 @@
+@usedefault
+
+{{Account id:$$id}}
+
+h2. Account: ${name}
+
+h3. Details
+|*Account ID*|$$id|
+|*Real Name*|${displayname}|
+|*Location*|${DCLocation}|
+|*Company*|${company}|
+|*Company Site*|${companyurl}|
+
+h3. Users Access
+||User Name||E-Mail||ACL||
+{% for user in users -%}
+    |${user.id}|${user.emails}|${user.acl}|
+{% endfor %}
+
+h3. Spaces
+{{cbspaces: accountId:$$id}}
+
+h3. Credit
+
+h4. Transactions
+{{transactions: accountId:$$id}}
+
+h4. Balance
+{{balances: accountId:$$id}}

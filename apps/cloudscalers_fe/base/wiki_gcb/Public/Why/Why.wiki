@@ -1,0 +1,97 @@
+@template public
+{{html:
+<head>
+<style type="text/css">
+	.table.table-condensed.table-hover th { font-weight: bold; font-size: 14px;padding: 6px 5px !important; border: 0;}
+</style>
+</head> 
+}}
+
+{{div: class=white}}
+{{div2: class=container why-page}}
+
+{{div3: class=half copy col-md-8}}
+
+
+h1. Mothership{{html:<sup>1</sup>}}
+
+#Mothership{{html:<sup>1</sup>}} brings a solution built on 3 pillars:
+
+{{div3}}
+
+#{{div3: class=half col-md-4 justOne centerPic}}
+# {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
+#  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
+#{{div3}}
+
+
+{{div3: class=seperateDecks}}
+{{div3}}
+
+{{div3: class=col-md-4 boxDecks2}}
+#      !/$$space/.files/img/why/why_Anywhere.png!
+      h3. Everyware Anyware
+      Mothership{{html:<sup>1</sup>}} integrates multiple functions into one portal, called "Decks", combining virtual machines, storage, cloud desktops and applications into an easy to use interface. Organize your IT resources in private "Cloud Spaces", assign credits and easily give access to users.
+{{div3}}
+{{div3: class=col-md-4 boxDecks2}}
+#      !/$$space/.files/img/why/why_warpspeed.jpg!
+      h3. Warp Speed
+      Speed is what Mothership{{html:<sup>1</sup>}} values. Our new cloud offering brings unseen speeds at several levels: new server deployment in less than 5 seconds, snapshots in a matter of seconds, immediate rollbacks, faster start and stop, and the use of PRO SSD drives with high performance and reliability.
+{{div3}}
+{{div3: class=col-md-4 boxDecks2}}
+#      !/$$space/.files/img/why/why_DefenseShield.jpg!
+      h3. Ultimate Defense
+      An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise-class firewall and router. VPN functions allow seamless and secure two-way integration with your local offices.
+{{div3}}
+
+{{div3: class=seperateDecks}}
+
+h1. Select your Cloud Deck
+
+Mothership{{html:<sup>1</sup>}} brings a unified cloud platform that delivers IT elements in the form of Cloud Decks to fulfill unique IT requirements. These decks are organized in secure [Cloud Spaces|Cloud Space] that have extensive and configurable private [Defense Shields|Defense Shield].
+
+* [Desktop Deck]: The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce. 
+* [Storage Deck]: Ultra reliable storage thanks to secure distributed storage platform. Attach as disk to the VM or use with the S3 compatible storage API.
+* [Machine Deck]: Powerful IaaS stack bringing almost instant creation of VMs. Select preferred SSD drive size, use the fast snapshotting and rollback snapshots. Automate using the simple API.
+* [Application Deck]: The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
+@LF
+h1. Value Proposition
+
+* Private virtual machines, cloud desktops and cloud applications (deployed behind enterprise capable firewall)
+* High performance thanks to storage delivered at SSD speeds
+* Highly flexible in instance creation (launch < 10 seconds for most machines)
+* No lock-in, thanks to built-in import and export functions
+* Extended management functions facilitating cloud management including improved snapshotting and template creation
+* Intuitive billing model
+* Straightforward API
+* Support for all operating systems including Windows
+* A far better TCO compared to major cloud providers
+@LF
+h1. Comparison Table
+{{div3: class=table-responsive}}
+
+|| Description (*) || MS1 || RS || AM || DO ||
+| Vmachines are by default private & protected on private lan | V | | | |
+| Integrated enterprise capable virtual firewall/router/vpn | V | | | |
+| Ultra reliable storage (integrated backup, redundant storage) | V | V | V | V |
+| Integrated S3 compatible storage cloud | V | V | V | |
+| Warp speed vmachine creation & snapshots | <10s | ? | ? | 60s |
+| Lower TCO & ultra transparent metering & billing model (ask for our TCO white paper) | V | | | V |
+| KIS : get rid of the complexity | V | | | V |
+| Integrated PAAS | | ? | V | |
+| Nr of enabled datacenters (**) | 3 | many | many | +5? |
+| Windows support | V | V | V | |
+| 1 click application install | Q3 | ? | ? | V |
+| Cloud is powered by own developed opensource framework | V | V | | |
+
+|MS1 = monthership1, RS = RackSpace,  AM = Amazon, DO = DigitalOcean|||||
+|(*) We tried to make an objective comparison, please send any remarks to info@mothership1.com |||||
+|(**) We will be enabling more datacenters soon. |||||
+
+{{div3}}
+
+
+@divend
+@divend
+@divend
+

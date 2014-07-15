@@ -1,0 +1,14 @@
+{{div2: class=container why-page}}
+
+h1. Documentation & Support
+
+Welcome to the Documentation and Support center.
+
+* [Getting Started]
+* [Knowledge Base|KB]
+* [Machine Deck API|ApiDocs]
+* [Storage Deck API|ApiS3]
+* [Contact Support|Support]
+* [Support Ticket Status|Tickets]
+
+@divend

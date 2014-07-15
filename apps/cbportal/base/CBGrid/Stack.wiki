@@ -1,0 +1,17 @@
+@usedefault
+
+{{stack_data: id:$$id}}
+
+h3. Stack: $$name
+
+* *ApiURL*: $$apiurl
+* *Description*: $$descr
+* *ReferenceId*: $$referenceid
+
+h3. Images:
+
+{{images: stackid:$$id}}
+
+h3. vMachines:
+
+{{vmachines: stackid:$$id}}

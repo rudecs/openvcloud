@@ -1,0 +1,7 @@
+{{html
+<html>
+<body>
+<meta http-equiv="refresh" content=1;"http://support.mothership1.com/view.php">
+</body>
+</html>
+}}

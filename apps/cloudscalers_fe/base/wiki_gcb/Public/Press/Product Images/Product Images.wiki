@@ -1,0 +1,82 @@
+@template public_with_left_nav
+{{html:
+<head>
+<link rel="stylesheet" href="/$$space/.files/css/blueimp-gallery.css">
+<link rel="stylesheet" href="/$$space/.files/css/blueimp-gallery-indicator.css">
+<style type="text/css">
+.links a { margin: 12px;display: inline-block;border: 2px solid #E1E1E1;}
+.links a img { width: 150px; height: 84px; }
+.blueimp-gallery > .slides { padding: 30px 0;}
+.well { padding-left: 0;margin: 0;padding-top: 0;}
+</style>
+</head>
+}}
+
+h1. Product Images
+{{html:
+<!--
+ <div class="item"><img src="/images/$$space/creat1.jpg" alt=""></div>
+-->
+
+
+<div id="links" class="links">
+    <a href="/images/$$space/screen1.jpg" data-gallery>
+        <img src="/images/$$space/screen1-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen2.jpg" data-gallery>
+        <img src="/images/$$space/screen2-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen3.jpg" data-gallery>
+        <img src="/images/$$space/screen3-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen4.jpg" data-gallery>
+        <img src="/images/$$space/screen4-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen5.jpg" data-gallery>
+        <img src="/images/$$space/screen5-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen6.jpg" data-gallery>
+        <img src="/images/$$space/screen6-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen7.jpg" data-gallery>
+        <img src="/images/$$space/screen7-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen8.jpg" data-gallery>
+        <img src="/images/$$space/screen8-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen9.jpg" data-gallery>
+        <img src="/images/$$space/screen9-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen10.jpg" data-gallery>
+        <img src="/images/$$space/screen10-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen11.jpg" data-gallery>
+        <img src="/images/$$space/screen11-s.jpg" alt="">
+    </a>
+    <a href="/images/$$space/screen12.jpg" data-gallery>
+        <img src="/images/$$space/screen12-s.jpg" alt="">
+    </a>
+    
+</div>
+<!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>
+
+}}
+
+
+@divend
+@divend
+{{html:
+<script src="/$$space/.files/js/blueimp-gallery.min.js"></script>
+<script src="/$$space/.files/js/blueimp-gallery-fullscreen.js"></script>
+<script src="/$$space/.files/js/blueimp-gallery-indicator.js"></script>
+<script src="/$$space/.files/js/jquery.blueimp-gallery.min.js"></script>
+ }}

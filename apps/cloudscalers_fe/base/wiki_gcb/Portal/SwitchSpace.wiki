@@ -1,0 +1,8 @@
+@template access
+
+{{html:
+<div ng-app="cloudscalers" ng-controller="SwitchSpaceController">
+</div>
+<script src="/$$space/.files/js/controllers/SwitchSpaceController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
+}}

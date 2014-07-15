@@ -1,0 +1,9 @@
+<button ng-repeat="size in sizes | orderBy:sizepredicate" type="button" class="btn btn-selector" ng-model="machine.sizeId" btn-radio="size.id" 
+    ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)">
+  {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+  {[ size.vcpus ]} core(s), </br>
+  {[ size.description ]}
+
+</button>
+
+

@@ -1,0 +1,33 @@
+
+{{title:CBGrid}}
+
+{{projectname:CloudBroker Grid}}
+
+{{find}}
+
+{{menu:
+}}
+
+{{menuadmin_cbgrid}}
+
+@block
+@row
+
+@col 10
+
+{{breadcrumbs}}
+{content}
+
+@divend
+@divend
+
+
+{{cssstyle
+td {
+    max-width:500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;}
+}}
+
+

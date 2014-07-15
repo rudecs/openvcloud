@@ -1,0 +1,58 @@
+{{html:
+<div ng-controller="CloudSpaceManagementController">
+	<h1>Settings for Cloud Space {[currentAccount.name]} / {[cloudSpace]}</h1>
+	<br>
+	<tabset style="clear:both;">
+
+		<tab id="access" heading="Access Management">
+			<div id="access" class="tab-pane">
+}}
+			{{include:CloudSpaceAccessManagement}}
+{{html:
+			</div>
+		</tab>
+		<tab id="details" heading="Details">
+			<div id="details" class="tab-pane active" >
+				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
+                  			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
+                  			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
+                  				<img src="/$$space/.files/img/flags/canada.png">
+                  				<span style="display: block; margin-top: 5px; font-size: 13px;">Canada</span>
+                  			</div>
+                  			<div ng-switch-when="us1" style="float: left; text-align: center; margin-bottom: 20px;">
+                  				<img src="/$$space/.files/img/flags/usa.png">
+                  				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
+                  			</div>
+                		</div>
+				<br><button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
+				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
+					<form name="destroyform" ng-submit="cancelDeletion()">
+						<div class="modal-header">
+								<h3>Delete Cloud Space?</h3>
+						</div>
+						<div class="modal-body">
+								<input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+								Deleting a Cloud Space is irreversible and <br/>
+								all data and authorizations to it will be removed.
+						</div>
+						<div class="modal-footer">
+								<button type="button" class="btn ok" ng-click="ok()">Ok</button>
+								<button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
+						</div>
+					</form>
+				</script>
+			</div>
+		</tab>
+	</tabset>
+</div>
+}}
+
+
+
+
+{{html:
+
+<script src="/$$space/.files/js/controllers/CloudSpace/CloudSpaceManagementController.js" type="text/javascript"></script>
+
+
+}}

@@ -1,0 +1,31 @@
+@usedefaults
+
+{{vmachine: id:$$id}}
+
+h2. vMachine: $$name
+
+|*ID*| $$id|
+|*Description*| $$descr|
+|*CPU Node*| [$$stackrefid|stack?id=$$stackid]|
+|*Account*| [$$accountname|account?id=$$accountid]|
+|*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
+|*Created at*| $$createdat|
+|*Deleted at*| $$deletedat|
+|*Size*| $$size|
+|*Image*| [$$image|image?id=$$imageid]|
+|*Status*| $$status|
+|*Host Name*| $$hostname|
+|*Hypervisor Type*| $$hypervisortype|
+*NICs*
+$$nics
+*Disks*
+$$disks
+
+h3. VMachine Status Details
+|*Status*|$$stats_state|
+|*Ping*|$$stats_ping|
+|*HardDrive Test*|$$stats_hdtest|
+|*Image*|$$stats_image|
+|*Parent Image*|$$stats_parent_image|
+|*Disk Size*|$$stats_disk_size|
+|*Last Checked*|$$stats_epoch|

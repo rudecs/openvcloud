@@ -1,0 +1,15 @@
+\.pyc$
+\.swp$
+\.rej$
+\.orig$
+~$
+
+# use glob syntax.
+syntax: glob
+*.gen.py
+apps/cloudscalers_fe/base/wiki_gcb/.files/coverage
+**.orig
+**/Thumbs.db
+**.DS_Store
+**sftp-config.json
+CloudScalers.sublime*

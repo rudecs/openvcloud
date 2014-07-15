@@ -1,0 +1,16 @@
+h1. Defense Shield
+
+The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
+
+New users can find useful info about the Defense Shield in our [Quick Tutorial Guide|Getting Started].
+
+{{html:
+	<div ng-controller="NetworkController">
+		<div>
+			<button class="btn" ng-click="getDefenseShield()" ng-disabled="disableAdvancedShieldConfiguration" target="_tab">Advanced Shield configuration</button>
+		</div>
+	</div>
+    <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/Network/NetworkController.js" type="text/javascript"></script>
+	<script src="/$$space/.files/js/services/NetworkServices.js" type="text/javascript"></script>
+}}

@@ -1,0 +1,91 @@
+@template public
+{{div: class=white}}
+
+{{html:
+<div class="container">
+    <div class="span12 newDecks">
+        <div class="col-md-6 boxes font color6 leftIcon">
+            <div class="col-md-4">
+                <img src="/$$space/.files/img/icon6.png" alt=""/>
+            </div>
+            <div class="col-md-8 prn">
+            <h2>
+}}
+[Cloud Space|Cloud Space]
+{{html:
+</h2>
+        Mothership1 offers a simple unified portal to create and manage cloud resources from a single platform built for technical & non-technical users.
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color5">
+          <div class="col-md-4">
+            <img src="/$$space/.files/img/icon5.png" alt=""/>
+          </div>
+          <div class="col-md-8 prn">
+            <h2>
+}}
+[Defense Shields|Defense Shield]
+{{html:
+</h2>
+        Defense Shields provide privacy and secure access to your Cloud Spaces. Each Cloud Space has a private defense shield owned and managed by only you.
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color1">
+            <div class="col-md-4">
+                <img src="/$$space/.files/img/icon1.png" alt=""/>
+            </div>
+            <div class="col-md-8 prn">
+            <h2>
+}}
+[Desktop Deck|Desktop Deck]
+{{html:
+</h2>
+The Desktop Deck provides an innovative way to deliver critical applications from the Cloud. Use laptops, tablets and smartphones to access MS Windows, Linux and Legacy desktop and server apps. Built-in cloud drive and collaboration tools will encourage teamwork and efficiency throughout your workforce.
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color3">
+          <div class="col-md-4">
+            <img src="/$$space/.files/img/icon3.png" alt=""/>
+          </div>
+          <div class="col-md-8 prn">
+            <h2>
+}}
+[Storage Deck|Storage Deck]
+{{html:
+</h2>
+The Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color2">
+            <div class="col-md-4">
+                <img src="/$$space/.files/img/icon2.png" alt=""/>
+            </div>
+            <div class="col-md-8 prn">
+            <h2>
+}}
+[Machine Deck|Machine Deck]
+{{html:
+</h2>
+The Machine Deck enables users to configure and launch VMs from the Mothership<sup>1</sup> IaaS stack. Select preferred SSD drive size, use the ultra fast snapshotting and rollback snapshots. Automate using the simple API.
+        </div>
+        </div>
+        <div class="col-md-6 boxes font color4">
+        <div class="col-md-4">
+            
+            <img src="/$$space/.files/img/icon4.png" alt=""/>
+        </div>
+        <div class="col-md-8 prn">
+            <h2>
+}}
+[Application Deck (Q4)|Application Deck]
+{{html:
+</h2>
+              The Application Deck provides users with access to your portfolio of private applications. The Application Deck leverages the best of all decks and is sized to support your application requirements.
+        </div>
+        </div>
+    </div>
+</div>
+
+
+}}
+@divend

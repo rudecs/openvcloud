@@ -1,0 +1,13 @@
+##when @ASK then there needs to be a value, will ask for it when needed, if not possible to ask will fail
+
+##next line will ask when install  (types are: int,str,bool,float)
+#this.isatest.var=@ASK name:var descr:this_is_a_test_\n_give_name type:str default:something
+
+##test with dropdown
+##executing pyton code(between {{}})
+#test.domain=@ASK type:dropdown dropdownvals:{{[item.domainname for item in j.packages.domains]}}
+##predefined
+#test.domain2=@ASK type:dropdown dropdownvals:mydom1,mydom2
+
+#test.askint=@ASK type:int default:5
+#test.askfloat=@ASK type:float default:5.5

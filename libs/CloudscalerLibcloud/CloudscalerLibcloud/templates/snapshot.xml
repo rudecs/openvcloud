@@ -1,0 +1,14 @@
+<domainsnapshot>
+    <description>Machine snapshot</description>
+    {% if name %}
+    <name>{{name}}</name>
+    {% endif %}
+    <memory snapshot='no'/>
+    <disks>
+    {% for source in diskfiles %}
+    <disk name='{{source}}' snapshot='{{type}}'>
+        <source file='{{"%s/snapshot_%s_%s.qcow2"|format(poolpath, name, time)}}'/>
+    </disk>
+    {% endfor %}
+    </disks>
+</domainsnapshot>
