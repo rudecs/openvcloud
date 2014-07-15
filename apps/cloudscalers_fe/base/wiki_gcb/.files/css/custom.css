@@ -795,6 +795,7 @@ body body #extra { background-color: #06a7e2 !important; }
 .flags-list .canada { background: url("../img/flags/canada.png") no-repeat center; }
 .flags-list .united.kingdom { background: url("../img/flags/uk.png") no-repeat center; }
 .flags-list .united.states { background: url("../img/flags/usa.png") no-repeat center; }
+.flags-list .belgium { background: url("../img/flags/belgium.png") no-repeat center; }
 .note1 { font-size: 13px; }
 .modal-header2 { padding: 0 15px; }
 .edit-description:hover .edit-description-link { display: inline !important; }

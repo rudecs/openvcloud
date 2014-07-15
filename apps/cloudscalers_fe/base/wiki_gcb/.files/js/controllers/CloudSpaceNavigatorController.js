@@ -53,7 +53,7 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
                 $scope.selectedLocation = 'ca1';
-                $scope.itemClicked = function(value) {
+                $scope.changeLocation = function(value) {
                     $scope.selectedLocation = value;
                 };
             };

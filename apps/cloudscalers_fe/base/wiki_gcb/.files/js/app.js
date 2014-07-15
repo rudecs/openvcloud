@@ -62,7 +62,7 @@ cloudscalers.factory('$alert', function($modal) {
 });
 cloudscalers.factory('$ErrorResponseAlert',function($alert){
     return function(reason) {
-        if (reason.status == 500 || reason.status == 502 || reason.status == 504){
+        if (reason.status == 500 || reason.status == 502 || reason.status == 504 || reason.data == null){
             $alert("An unexpected error has occurred");
         }
         else{
