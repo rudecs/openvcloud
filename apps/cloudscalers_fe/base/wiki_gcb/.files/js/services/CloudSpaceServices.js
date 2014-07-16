@@ -15,7 +15,7 @@ angular.module('cloudscalers.services')
                 SessionData.setSpace(space);
             },
             create: function(name, accountId, userId, locationUrl) {
-            	return $http.jsonp(locationUrl + cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId) + '&_jsonp=JSON_CALLBACK').then(
+            	return $http.jsonp(locationUrl + '/' + cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId) + '&_jsonp=JSON_CALLBACK').then(
             			function(result){
             				return JSON.parse(result.data);
             			},
