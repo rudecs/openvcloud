@@ -251,13 +251,15 @@ class cloudapi_cloudspaces(object):
         locations = self.cb.extensions.imp.getLocations()
 
         for cloudspace in cloudspaces:
+            account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
-            cloudspace['accountName'] = self.models.account.get(cloudspace['accountId']).name
-            for acl in self.models.account.get(cloudspace['accountId']).acl:
+            cloudspace['accountName'] = account.name
+            for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
                     cloudspace['userRightsOnAccountBilling'] = True
+            cloudspace['accountDCLocation'] = account.DCLocation
 
         return cloudspaces
 
