@@ -792,11 +792,11 @@ body body #extra { background-color: #06a7e2 !important; }
 .flags-list li:hover span, .flags-list li.selected span { color: #3E4753; }
 .flags-list a { display: block; width: 64px; height: 32px; margin: 0 auto; outline: 0; }
 .label-location { margin-left: 55px; font-weight: bold; }
-.flags-list .canada { background: url("../img/flags/canada.png") no-repeat center; }
-.flags-list .united.kingdom { background: url("../img/flags/uk.png") no-repeat center; }
-.flags-list .united.states { background: url("../img/flags/usa.png") no-repeat center; }
-.flags-list .belgium { background: url("../img/flags/belgium.png") no-repeat center; }
-.flags-list .black { background: url("../img/flags/black-flag.png") no-repeat center; }
+.flags-list .flag-canada { background: url("../img/flags/canada.png") no-repeat center; }
+.flags-list .flag-uk { background: url("../img/flags/uk.png") no-repeat center; }
+.flags-list .flag-usa { background: url("../img/flags/usa.png") no-repeat center; }
+.flags-list .flag-belgium { background: url("../img/flags/belgium.png") no-repeat center; }
+.flags-list .flag-black { background: url("../img/flags/black-flag.png") no-repeat center; }
 .note1 { font-size: 13px; }
 .modal-header2 { padding: 0 15px; }
 .edit-description:hover .edit-description-link { display: inline !important; }

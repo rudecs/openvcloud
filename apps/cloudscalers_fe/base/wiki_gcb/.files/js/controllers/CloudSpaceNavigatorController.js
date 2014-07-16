@@ -5,11 +5,14 @@ angular.module('cloudscalers.controllers')
 
             $scope.locations = {};
             
-            $scope.countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
             LocationsService.list().then(function(locations) {
                 $scope.locations = locations;
             });
 
+            $scope.getLocationInfo = function(locationcode){
+            	return LocationsService.get(locationcode);
+            }
+            
             $scope.AccountCloudSpaceHierarchy = undefined;
 
             var buildAccountCloudSpaceHierarchy = function () {

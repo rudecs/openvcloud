@@ -2,7 +2,14 @@
 angular.module('cloudscalers.services')
 
 	.factory('LocationsService', function ($http, $q) {
-    	return {
+		var locations = {
+    			'ca1': {title:'Canada', flag:'canada'},
+    			'us1': {title:'United States', flag:'usa'},
+    			'uk1': {title:'United Kingdom', flag:'uk'},
+    			'be1': {title:'Belgium', flag:'belgium'},
+    			'test1':{title:'Test', flag:'black'}
+		};
+		return {
             list: function(username, oldPassword, newPassword) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/locations/list').then(
                         function(result){
@@ -13,9 +20,8 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            getCountryForLocation: function(location){
-            	var countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium','test1':'Test'};
-            	return countries[location];
+            get: function(location){
+            	return locations[location];
             }
         };
     });
