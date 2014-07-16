@@ -54,7 +54,9 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
                 $scope.selectedLocation = selectedAccount.DCLocation;
-                //TODO: if selected location not in available locations, just pick the first one
+                if (!($scope.selectedLocation in $scope.locations)){
+                	$scope.selectedLocation = Object.keys($scope.locations)[0];
+                }
                 $scope.changeLocation = function(value) {
                     $scope.selectedLocation = value;
                 };
