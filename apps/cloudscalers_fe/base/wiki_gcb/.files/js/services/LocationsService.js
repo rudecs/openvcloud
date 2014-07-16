@@ -14,7 +14,7 @@ angular.module('cloudscalers.services')
                     );
             },
             getCountryForLocation: function(location){
-            	var countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
+            	var countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium','test1':'Test'};
             	return countries[location];
             }
         };
