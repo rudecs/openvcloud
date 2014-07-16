@@ -16,9 +16,10 @@ angular.module('cloudscalers.controllers')
                 var cloudspacesGroups = _.groupBy($scope.cloudspaces, 'accountId');
                 var accountCloudSpaceHierarchy = [];
                 for (accountId in cloudspacesGroups){
-                    var account = {id:accountId, name:cloudspacesGroups[accountId][0]['accountName']}
-                    if ('accountAcl' in cloudspacesGroups[accountId][0]){
-                    	account.acl = cloudspacesGroups[accountId][0]['accountAcl']
+                	var firstCloudSpace = cloudspacesGroups[accountId][0];
+                    var account = {id:accountId, name:firstCloudSpace['accountName'], DCLocation:firstCloudSpace['accountDCLocation'] }
+                    if ('accountAcl' in firstCloudSpace){
+                    	account.acl = firstCloudSpace['accountAcl']
                     }
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
@@ -52,7 +53,8 @@ angular.module('cloudscalers.controllers')
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
                 };
-                $scope.selectedLocation = 'ca1';
+                $scope.selectedLocation = selectedAccount.DCLocation;
+                //TODO: if selected location not in available locations, just pick the first one
                 $scope.changeLocation = function(value) {
                     $scope.selectedLocation = value;
                 };
