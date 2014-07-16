@@ -26,10 +26,6 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
-        $scope.selectedLocation = 'ca1';
-        $scope.itemClicked = function (location) {
-            $scope.selectedLocation = location;
-        };
         $timeout(function() {
             // Read the value set by browser autofill
             $scope.user.username = angular.element('[ng-model="user.username"]').val();

@@ -15,10 +15,23 @@ angular.module('cloudscalers.controllers')
         var acceptBelgian = '';
 
         $scope.locations = {};
-        $scope.countries = {'ca1': 'Canada', 'us1': 'United States', 'uk1': 'United Kingdom', 'be': 'Belgium'};
         LocationsService.list().then(function(locations) {
             $scope.locations = locations;
         });
+
+        $scope.selectedLocation = 'ca1';
+        
+        if (!($scope.selectedLocation in $scope.locations)){
+        	$scope.selectedLocation = Object.keys($scope.locations)[0];
+        }
+        
+        $scope.changeLocation = function (locationcode) {
+            $scope.selectedLocation = locationcode;
+        };
+        
+        $scope.getLocationInfo = function(locationcode){
+        	return LocationsService.get(locationcode);
+        }
 
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
                 $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
