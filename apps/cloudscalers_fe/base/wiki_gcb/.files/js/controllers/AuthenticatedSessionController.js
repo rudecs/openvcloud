@@ -54,30 +54,30 @@ angular.module('cloudscalers.controllers')
 	
 	CloudSpace.get($scope.currentSpace.id).then(
 		function(data) {
-                	if(data.status == 'DEPLOYED'){
-                        	$scope.assignIPMessage = "";
-                           }
-                           else{
-                                $scope.assignIPMessage = 'Assigning public IP-address...';
-                           }
-                        },
-                        function(reason) {
-                           $ErrorResponseAlert(reason);
-                        }
+        	if(data.status == 'DEPLOYED'){
+                	$scope.assignIPMessage = "";
+                   }
+                   else{
+                        $scope.assignIPMessage = 'Unavailable until the first Virtual Machine is deployed';
+                   }
+                },
+                function(reason) {
+                   $ErrorResponseAlert(reason);
+                }
         );
 
 	$scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
-		var getCloudspaceStatueTimer = setInterval(function() {
+		            var getCloudspaceStatueTimer = setInterval(function() {
                     CloudSpace.get($scope.currentSpace.id).then(
                         function(data) {
-			   if(data.status == 'DEPLOYED'){
-				$scope.assignIPMessage = "";
-				clearInterval(getCloudspaceStatueTimer);
-			   }
-			   else{
-				$scope.assignIPMessage = 'Assigning public IP-address...';
-			   }
+            			   if(data.status == 'DEPLOYED'){
+            				$scope.assignIPMessage = "";
+            				clearInterval(getCloudspaceStatueTimer);
+            			   }
+            			   else{
+            				$scope.assignIPMessage = 'Unavailable until the first Virtual Machine is deployed';
+            			   }
                         },
                         function(reason) {
                            $ErrorResponseAlert(reason);

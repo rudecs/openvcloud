@@ -267,9 +267,6 @@
     <script src="/$$space/.files/test/e2e/apiStub.js"></script>
     <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
-<div class="row txt-center margin-vertical-small" ng-show="assignIPMessage">
-   <div class="alert alert-warning" style="margin: 0 auto !important; width: 400px;">{[ assignIPMessage ]}</div>
-</div>
 }}
 
 {content}

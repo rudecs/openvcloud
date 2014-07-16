@@ -1,7 +1,9 @@
-h1. Defense Shield
-
-The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing and firewall settings.
- {{html:
+{{html:
+    <div class="row txt-center margin-vertical-small" ng-show="assignIPMessage">
+       <div class="alert alert-warning" style="margin: 0 auto !important; width: 400px;">{[ assignIPMessage ]}</div>
+    </div>
+    <h1 ng-class="{opacity4: assignIPMessage != ''}">Defense Shield</h1>
+    <p ng-class="{opacity4: assignIPMessage != ''}">The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing and firewall settings.</p>
 <style>
 .modal
 {
@@ -12,7 +14,7 @@ The Defense Shield is your personal firewall that handles all incoming and outgo
 </style>
  	<div ng-controller="NetworkController">
  		<div>
- 			<button class="btn" ng-click="showDefenseShield()">Advanced Shield configuration</button>
+ 			<button class="btn" ng-click="showDefenseShield()" ng-disabled="assignIPMessage">Advanced Shield configuration</button>
  		</div>
 		<script type="text/ng-template" id="routerosDialog.html">
                 <div class="modal-header">
