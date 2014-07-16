@@ -20,10 +20,12 @@ angular.module('cloudscalers.controllers')
         });
 
         $scope.selectedLocation = 'ca1';
+        $scope.$watch('locations',function(){
+        	if (!($scope.selectedLocation in $scope.locations)){
+            	$scope.selectedLocation = Object.keys($scope.locations)[0];
+            }
+        });
         
-        if (!($scope.selectedLocation in $scope.locations)){
-        	$scope.selectedLocation = Object.keys($scope.locations)[0];
-        }
         
         $scope.changeLocation = function (locationcode) {
             $scope.selectedLocation = locationcode;
