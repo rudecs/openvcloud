@@ -643,7 +643,7 @@ class cloudapi_machines(object):
         storageparameters['mdbucketname'] = bucket
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        nodes = system_cl.node.search({'name':stack.referenceId})[:1]
         if len(nodes) != 1:
             ctx.start_response('409', headers)
             return 'Incorrect model structure'
@@ -716,10 +716,9 @@ class cloudapi_machines(object):
             query['status'] = status
         if machineId:
             query['machineId'] = machineId
-        exports = self.models.vmexport.simpleSearch(query)
+        exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
-       
