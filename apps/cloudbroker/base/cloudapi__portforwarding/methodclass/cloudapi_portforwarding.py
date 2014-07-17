@@ -173,14 +173,13 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         result = list()
         for index, f in enumerate(forwards):
             f['id'] = index
-            query = {}
-            query['query'] = {'term': {'ipAddress': f['localIp']}}
-            machine = self.models.vmachine.find(ujson.dumps(query))
-            if machine['total'] != 1:
+            query = {'nics.ipAddress': f['localIp']}
+            machine = self.models.vmachine.search(query)[1:]
+            if len(machine) != 1:
                 f['vmName'] = f['localIp']
             else:
-                f['vmName'] = "%s (%s)" % (machine['result'][0]['_source']['name'], f['localIp'])
-                f['vmid'] = machine['result'][0]['_source']['id']
+                f['vmName'] = "%s (%s)" % (machine[0]['name'], f['localIp'])
+                f['vmid'] = machine[0]['id']
             if not f['protocol']:
                 f['protocol'] = 'tcp'
             result.append(f)

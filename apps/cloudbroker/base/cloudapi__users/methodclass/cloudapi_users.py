@@ -78,7 +78,7 @@ class cloudapi_users(object):
         result str,,session
         """
         ctx = kwargs['ctx']
-        accounts = self.models.account.simpleSearch({'name':username.lower()})
+        accounts = self.models.account.search({'name':username})[1:]
         if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session

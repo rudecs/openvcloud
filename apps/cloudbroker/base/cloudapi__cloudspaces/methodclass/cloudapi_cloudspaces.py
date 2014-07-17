@@ -152,33 +152,19 @@ class cloudapi_cloudspaces(object):
         result bool,
         """
         ctx = kwargs['ctx']
+        cloudspaceId = int(cloudspaceId)
         #A cloudspace may not contain any resources any more
-        query = {'fields': ['id', 'name']}
-        query['query'] = {'bool':{'must':[
-                                          {'term': {'cloudspaceId': cloudspaceId}}
-                                          ],
-                                  'must_not':[
-                                              {'term':{'status':'DESTROYED'.lower()}}
-                                              ]
-                                  }
-                          }
-        results = self.models.vmachine.find(ujson.dumps(query))['result']
+        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
+        results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
             return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
         #The last cloudspace in a space may not be deleted
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        query = {'fields': ['id', 'name']}
-        query['query'] = {'bool':{'must':[
-                                          {'term': {'accountId': cloudspace.accountId}}
-                                          ],
-                                  'must_not':[
-                                              {'term':{'status':'DESTROYED'.lower()}},
-                                              {'term':{'id':cloudspaceId}}
-                                              ]
-                                  }
-                          }
-        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        query  = {'accountId': cloudspace.accountId,
+                  'status': {'$ne': 'DESTROYED'},
+                  'id': {'$ne': cloudspaceId}}
+        results = self.models.cloudspace.search(query)[1:]
         if len(results) == 0:
             ctx.start_response('409 Conflict', [])
             return 'The last CloudSpace of an account can not be deleted.'
@@ -198,7 +184,7 @@ class cloudapi_cloudspaces(object):
         param:cloudspaceId id of the cloudspace
         result dict
         """
-        cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
+        cloudspaceObject = self.models.cloudspace.get(int(cloudspaceId))
 
         cloudspace = { "accountId": cloudspaceObject.accountId,
                         "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl],
@@ -238,19 +224,17 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']}
-        query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
-        results = self.models.cloudspace.find(ujson.dumps(query))['result']
-        cloudspaces = [res['fields'] for res in results]
-
-        #during the transitions phase, not all locations might be filled in
-        for cloudspace in cloudspaces:
-            if not 'location' in cloudspace or len(cloudspace['location']) == 0:
-                cloudspace['location'] = self.cb.extensions.imp.whereAmI()
-
+        fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
+        query = {"acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        cloudspaces = self.models.cloudspace.search(query)[1:]
+        self.cb.extensions.imp.filter(cloudspaces, fields)
         locations = self.cb.extensions.imp.getLocations()
 
         for cloudspace in cloudspaces:
+            #during the transitions phase, not all locations might be filled in
+            if 'location' not in cloudspace or len(cloudspace['location']) == 0:
+                cloudspace['location'] = self.cb.extensions.imp.whereAmI()
+
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['locationurl'] = locations[cloudspace['location'].lower()]

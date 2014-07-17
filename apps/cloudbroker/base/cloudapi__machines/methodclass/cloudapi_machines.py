@@ -106,7 +106,7 @@ class cloudapi_machines(object):
         result int
 
         """
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
@@ -190,10 +190,10 @@ class cloudapi_machines(object):
 
         param:accountId id of the account
         """
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        fields = ['time', 'credit', 'status']
+        query = {'accountId': int(accountId), 'status': {'$ne': 'UNCONFIRMED'}}
+        history = self.models.credittransaction.search(query)[1:]
+        self.cb.extensions.imp.filter(history, fields)
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
@@ -222,6 +222,9 @@ class cloudapi_machines(object):
 
         
         #Check if there is enough credit
+        cloudspaceId = int(cloudspaceId)
+        sizeId = int(sizeId)
+        imageId = int(imageId)
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
         available_credit = self._getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
@@ -329,7 +332,7 @@ class cloudapi_machines(object):
         result bool
 
         """
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         diskfound = diskId in machine.disks
         if diskfound:
             machine.disks.remove(diskId)
@@ -346,7 +349,7 @@ class cloudapi_machines(object):
         result
 
         """
-        vmachinemodel = self.models.vmachine.get(machineId)
+        vmachinemodel = self._getMachine(machineId)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
             vmachinemodel.status = 'DESTROYED'
@@ -385,7 +388,7 @@ class cloudapi_machines(object):
 
         """
         provider, node = self._getProviderAndNode(machineId)
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
@@ -414,26 +417,30 @@ class cloudapi_machines(object):
         result list
 
         """
-        query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
-        query['query'] = {'bool':{'must':[{'term': {'cloudspaceId':cloudspaceId}}],'must_not':{'term':{'status':'DESTROYED'.lower()}}}}
-        results = self.models.vmachine.find(ujson.dumps(query))['result']
+        cloudspaceId = int(cloudspaceId)
+        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+        query = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        results = self.models.vmachine.search(query)[1:]
         machines = []
         for res in results:
-            storage = self._getStorage(res['fields'])
+            storage = self._getStorage(res)
             if storage:
-                res['fields']['storage'] = storage.disk
+                res['storage'] = storage.disk
             else:
-                res['fields']['storage'] = 0
-            machines.append(res['fields'])
+                res['storage'] = 0
+            machines.append(res)
+        self.cb.extensions.imp.filter(results, fields)
         return machines
 
     def _getMachine(self, machineId):
+        machineId = int(machineId)
         return self.models.vmachine.get(machineId)
 
     def _getNode(self, referenceId):
         return self.cb.extensions.imp.Dummy(id=referenceId)
 
     def _getProviderAndNode(self, machineId):
+        machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
         return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)

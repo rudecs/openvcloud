@@ -5,20 +5,9 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
-osiscl = j.core.osis.getClient(user='root')
-class Models(object):
-    def __getattr__(self, name):
-        attrib = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', name)
-        attrib.find = attrib.search
-        setattr(self, name, attrib)
-        return attrib
-
 cloudbroker = j.apps.cloud.cloudbroker
-
 ujson = j.db.serializers.ujson
-
-
-models = Models()
+models = j.core.osis.getClientForNamespace('cloudbroker')
 
 class Dummy(object):
     def __init__(self, **kwargs):
@@ -66,8 +55,6 @@ class CloudProvider(object):
                 return image, image
 
 
-
-
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
 
@@ -90,18 +77,19 @@ class CloudBroker(object):
 
     def getIdByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)
-        queryapi = getattr(model, 'find')
-        query = {}
-        query = {'query': {'term': {'referenceId': referenceId}}, 'fields': ['id']}
-        queryresult = queryapi(ujson.dumps(query))
-        if 'result' in queryresult:
-            ids = [res['fields']['id'] for res in queryresult['result']]
-        else:
-            ids = [res['fields']['id'] for res in queryresult]
+        queryapi = getattr(model, 'search')
+        query = {'referenceId': referenceId}
+        ids = queryapi(query)[1:]
         if ids:
-            return ids[0]
+            return ids[0]['id']
         else:
             return None
+
+    def filter(self, results, fields):
+        for result in results:
+            for key in result.keys():
+                if key not in fields:
+                    result.pop(key)
 
     def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
@@ -119,12 +107,8 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, imageId):
         # group all units per type
-        stacks = models.stack.find(ujson.dumps({"query":{"term": {"images": imageId}}}))
-        resourcesdata = list()
-        for stack in stacks['result']:
-            stack = stack['_source']
-            resourcesdata.append(stack)
-        return resourcesdata
+        stacks = models.stack.search({"images": imageId})[1:]
+        return stacks
 
     def stackImportImages(self, stackId):
         provider = CloudProvider(stackId)

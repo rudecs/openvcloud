@@ -36,8 +36,7 @@ class cloudapi_sizes(object):
         result list
 
         """
-        term = dict()
-        query = {'fields': ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']}
-        results  = self.models.size.find(ujson.dumps(query))['result']
-        sizes = [res['fields'] for res in results]
-        return sizes
+        fields = ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']
+        results  = self.models.size.search({})[1:]
+        self.cb.extensions.imp.filter(results, fields)
+        return results

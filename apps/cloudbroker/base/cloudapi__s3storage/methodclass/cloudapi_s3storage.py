@@ -34,9 +34,8 @@ class cloudapi_s3storage(j.code.classGetBase()):
 
 
     def _get(self, cloudspaceId):
-        term = dict()
         location = self.cb.extensions.imp.whereAmI()
-        s3storagebuckets = self.models.s3user.simpleSearch({'cloudspaceId':cloudspaceId, 'location':location})      
+        s3storagebuckets = self.models.s3user.search({'cloudspaceId':int(cloudspaceId), 'location':location})[1:]
         if len(s3storagebuckets) == 0:
             return None
         return s3storagebuckets[0]

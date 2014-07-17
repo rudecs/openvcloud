@@ -33,26 +33,22 @@ class cloudapi_images(object):
         """
         List the availabe images, filtering can be based on the user which is doing the request
         """
-        ctx = kwargs['ctx']
-        user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']}
+        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountid:
-            query['query'] = {"bool": {"must": {"term": {"status": 'created'}}, "should":[{"term":{"accountId":accountid}}, {"term":{"accountId":0}}], "minimum_should_match":1}}
-        else:            
-            query['query'] = {"bool": {"must": {"term": {"status": 'created'}}, "should":[{"term":{"accountId":0}}], "minimum_should_match":1}}
-        results = self.models.image.find(ujson.dumps(query))['result']
-        images = [res['fields'] for res in results]
-        return images
+            query = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountid)]}}
+        else:
+            query = {'status': 'CREATED', 'accountId': 0}
+        results = self.models.image.search(query)[1:]
+        self.cb.extensions.imp.filter(results, fields)
+        return results
 
     @audit()
     def delete(self, imageid, **kwargs):
         """
         Delete a image, you need to have Write access on the image
         param:imageid id of the image to delete
-        result 
+        result
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method delete")
 
-
- 

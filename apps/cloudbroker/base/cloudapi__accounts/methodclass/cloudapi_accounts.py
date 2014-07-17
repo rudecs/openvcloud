@@ -98,11 +98,11 @@ class cloudapi_accounts(object):
         param:accountId id of the account
         result dict
         """
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']}
-        query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.image.find(ujson.dumps(query))['result']
-        images = [res['fields'] for res in results]
-        return images
+        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        query = {'accountId': int(accountId)}
+        results = self.models.image.search(query)[1:]
+        self.cb.extensions.imp.filter(results, fields)
+        return results
 
         
 
@@ -136,10 +136,10 @@ class cloudapi_accounts(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'acl']}
-        query['query'] = {'term': {"userGroupId": user}}
-        results = self.models.account.find(ujson.dumps(query))['result']
-        accounts = [res['fields'] for res in results]
+        fields = ['id', 'name', 'acl']
+        query = {'acl.userGroupId': user}
+        accounts = self.models.account.search(query)[1:]
+        self.cb.extensions.imp.filter(accounts, fields)
         return accounts
 
     @authenticator.auth(acl='A')
@@ -173,10 +173,10 @@ class cloudapi_accounts(object):
         
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
 
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        fields = ['time', 'credit', 'status']
+        query = {'accountId': int(accountId), 'status': {'$ne': 'UNCONFIRMED'}}
+        history = self.models.credittransaction.search(query)[1:]
+        self.cb.extensions.imp.filter(history, fields)
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
@@ -192,8 +192,8 @@ class cloudapi_accounts(object):
         result:[] A json list with the transactions details.
         """
 
-        query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
-        query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        fields = ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']
+        query = {"accountId": int(accountId)}
+        history = self.models.credittransaction.search(query)[1:]
+        self.cb.extensions.imp.filter(history, fields)
         return history
