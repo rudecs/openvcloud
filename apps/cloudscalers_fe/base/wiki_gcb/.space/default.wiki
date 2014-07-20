@@ -192,13 +192,8 @@
       <!-- static right nav -->
   <div class="sideNav">
     <ul style="padding-left: 0;">
-<<<<<<< local
-      <li class="header blue">
-        <a href="MachineDeck">Machine Deck <span>1</span></a>
-=======
       <li class="header blue" >
         <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machine Deck <span>1</span></a>
->>>>>>> other
         <ul class="body">
           <li>
             <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)">Machines</a>
@@ -225,11 +220,7 @@
         </ul>
       </li>
       <li class="header darkOrange">
-<<<<<<< local
-        <a href="StorageDeck">Storage Deck <span>3</span></a>
-=======
         <a href="StorageDeck" tourtip-step="3" tourtip="Get started with Mothership1 S3 compatible storage"  tourtip-placement="left">Storage Deck <span>3</span></a>
->>>>>>> other
         <ul class="body">
           <li>
             <a href="StorageDeck" menu-link-active-location="StorageDeck">S3 Storage</a>
@@ -245,11 +236,7 @@
         </ul>
       </li>
       <li class="header red">
-<<<<<<< local
-        <a href="NetworkDeck">Defense Shields</a>
-=======
         <a href="NetworkDeck" tourtip-step="4" tourtip="Optionally manage your Private Virtual Datacenter's Firewall"  tourtip-placement="left">Defense Shields</a>
->>>>>>> other
         <ul class="body">
           <li>
             <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
