@@ -178,7 +178,11 @@
   <script>
     $(function() {
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.relatedTarget) $($(e.relatedTarget).attr('href')).find('video')[0].pause();
+        if (e.relatedTarget) {
+          var video = $($(e.relatedTarget).attr('href')).find('video')[0];
+          video.pause();
+          video.load();
+        }
 
         $($(e.target).attr('href')).find('video')[0].play();
       })
