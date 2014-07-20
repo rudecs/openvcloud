@@ -175,29 +175,6 @@
     </div>
     </div>
   </div>
-  <script>
-    $(function() {
-      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.relatedTarget) {
-          var video = $($(e.relatedTarget).attr('href')).find('video')[0];
-          video.pause();
-          video.load();
-        }
-
-        $($(e.target).attr('href')).find('video')[0].play();
-      })
-    })
-/*
-      $('video').click(function(event) {
-    event.stopPropagation();
-    if ($(this).get(0).paused) {
-      $(this).get(0).play();
-    }
-    else {
-      $(this).get(0).pause();
-    }
-  });*/
-  </script>
 </div>
 
 }}
