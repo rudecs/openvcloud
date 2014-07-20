@@ -72,16 +72,8 @@ class cloudbroker_account(j.code.classGetBase()):
             return result
         else:
             accountId = result['id']
-            query = dict()
-            query['query'] = {'bool':{'must':[
-                                          {'term': {'accountId': accountId}}
-                                          ],
-                                  'must_not':[
-                                              {'term':{'status':'DESTROYED'.lower()}},
-                                              ]
-                                  }
-                          }
-            cloudspaces = self.cbcl.cloudspace.search(query)['result']
+            query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'.lower()}}
+            cloudspaces = self.cbcl.cloudspace.search(query)[1:]
             if cloudspaces:
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response("403", headers)

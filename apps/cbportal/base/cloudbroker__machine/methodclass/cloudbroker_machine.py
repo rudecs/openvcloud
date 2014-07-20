@@ -316,12 +316,8 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         
     def listExports(self, status, machineId ,**kwargs):
-        query = {}
-        if status:
-            query['status'] = status
-        if machineId:
-            query['machineId'] = machineId
-        exports = self.cbcl.vmexport.simpleSearch(query)
+        query = {'status': status, 'machineId': machineId}
+        exports = self.cbcl.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
@@ -393,37 +389,33 @@ class cloudbroker_machine(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return 'At least one parameter must be passed'
-        params = dict()
-        native_query = dict() 
+        query = dict()
         if tag:
-            params['tags'] = tag
+            query['tags'] = tag
         if computeNode:
-            stacks = self.cbcl.stack.simpleSearch({'referenceId': computeNode})
+            stacks = self.cbcl.stack.search({'referenceId': computeNode})[1:]
             if stacks:
                 stack_id = stacks[0]['id']
-                params['stackId'] = stack_id
+                query['stackId'] = stack_id
             else:
                 return list()
         if accountName:
-            accounts = self.cbcl.account.simpleSearch({'name': accountName})
+            accounts = self.cbcl.account.search({'name': accountName})[1:]
             if accounts:
                 account_id = accounts[0]['id']
-                cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account_id})
+                cloudspaces = self.cbcl.cloudspace.search({'accountId': account_id})[1:]
                 if cloudspaces:
                     cloudspaces_ids = [cs['id'] for cs in cloudspaces]
-                    native_query = {'query': {'bool': {'must': [{'terms': {'cloudspaceId': cloudspaces_ids}}]}}}
+                    query['cloudspaceId'] = {'$in': cloudspaces_ids}
                 else:
                     return list()
             else:
                 return list()
         if cloudspaceId:
-            params['cloudspaceId'] = cloudspaceId
+            query['cloudspaceId'] = cloudspaceId
 
-        if not native_query:
-            native_query = {'query': {'bool': {'must': []}}}
-
-        native_query['query']['bool']['must_not'] = [{'term': {'status': 'destroyed'}}]
-        return self.cbcl.vmachine.simpleSearch(params, nativequery=native_query)
+        query['status'] = {'$ne': 'destroyed'}
+        return self.cbcl.vmachine.search(query)[1:]
 
     def checkImageChain(self, machineId, **kwargs):
         """

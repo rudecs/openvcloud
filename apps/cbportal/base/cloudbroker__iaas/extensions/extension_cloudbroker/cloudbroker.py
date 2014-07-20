@@ -121,9 +121,8 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, imageId):
         # group all units per type
-        stacks = self.cbcl.stack.find(ujson.dumps({"query":{"term": {"images": imageId}}}))
+        stacks = self.cbcl.stack.simpleSearch({"images": imageId})
         resourcesdata = list()
-        for stack in stacks['result']:
-            stack = stack['_source']
+        for stack in stacks:
             resourcesdata.append(stack)
         return resourcesdata
