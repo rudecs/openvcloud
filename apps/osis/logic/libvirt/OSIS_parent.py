@@ -1,9 +1,9 @@
 from JumpScale import j
-from JumpScale.grid.osis.OSISStore import OSISStore
-ujson = j.db.serializers.getSerializerType('j')
+from JumpScale.grid.osis.OSISStoreMongo import OSISStoreMongo
 
 
-class mainclass(OSISStore):
+class mainclass(OSISStoreMongo):
+    MULTIGRID = False
 
     """
     Default object implementation
@@ -11,24 +11,18 @@ class mainclass(OSISStore):
 
     def set(self, key, value, waitIndex=False):
         id = value.get('id')
-        if id and self.db.exists(self.dbprefix, id):
-            orig = self.get(id)
+        if id and self.exists(id):
+            orig = self.get(id, True)
             orig.update(value)
             value = orig
             changed = True
             new = False
         else:
             if not id:
-                id = self.db.increment(self.dbprefix_incr)
+                id = self.incrId()
                 value['id'] = id
             changed = False
             new = True
         value['guid'] = id
-        self.db.set(self.dbprefix, key=id, value=value)
-        self.index(value)
+        self.client.save(value)
         return [id, new, changed]
-
-
-
-
-
