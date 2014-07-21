@@ -219,7 +219,7 @@ class cloudapi_users(object):
             activation_token.accountId = accountid
             self.models.accountactivationtoken.set(activation_token)
 
-            j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None, **kwargs)
+            j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
             _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl, activationtoken=actual_token)
 
             return True
