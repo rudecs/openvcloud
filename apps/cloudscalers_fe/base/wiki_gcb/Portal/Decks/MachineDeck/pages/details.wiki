@@ -4,7 +4,7 @@ h1. Manage Machine
 h1 { margin-bottom: 20px; }
 }}
 {{html:
-<tour step="machineDetailTourStep" post-step="postStepCallBack">
+<tour step="steps.machineDetailTourStep" post-step="postStepCallback()">
 <a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh

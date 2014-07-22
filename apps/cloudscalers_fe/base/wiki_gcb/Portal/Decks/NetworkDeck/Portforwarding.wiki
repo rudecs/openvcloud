@@ -75,7 +75,7 @@
 			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="submit()" ng-controller="Mothership1TourController">
-            <tour step="portForwardTourStep" post-step="postStepCallback()">
+            <tour step="steps.portForwardTourStep" post-step="postStepCallback()">
             <div class="modal-header">
                 <h3>Port Forward</h3>
             </div>

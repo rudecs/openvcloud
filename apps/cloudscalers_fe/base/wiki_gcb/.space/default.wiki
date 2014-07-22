@@ -30,7 +30,7 @@
 }}
 {{include:Tour}}
 {{html:
-<tour step="tourStep" post-step="postStepCallback()">
+<tour step="steps.tourStep" post-step="postStepCallback()">
 
 
     <script type="text/ng-template" id="myModalContent.html">
@@ -79,7 +79,8 @@
         <li><a href="../$$space/Decks">Home</a></li>
         <li> </li>
         <li class="dropdown dropdown-accordion">
-          <a id="drop1" role="button" class="just" data-toggle="dropdown">
+          <a id="drop1" role="button" class="just" data-toggle="dropdown"
+             tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom" tourtip-step="0">
              <span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
