@@ -52,20 +52,6 @@ angular.module('cloudscalers.controllers')
 	      }
             }, true);
 	
-	CloudSpace.get($scope.currentSpace.id).then(
-		function(data) {
-        	if(data.status == 'DEPLOYED'){
-                	$scope.assignIPMessage = "";
-                   }
-                   else{
-                        $scope.assignIPMessage = 'Unavailable until the first Virtual Machine is deployed';
-                   }
-                },
-                function(reason) {
-                   $ErrorResponseAlert(reason);
-                }
-        );
-
 	$scope.$watch('currentSpace.id',function(){
                 if ($scope.currentSpace){
 		            var getCloudspaceStatueTimer = setInterval(function() {
