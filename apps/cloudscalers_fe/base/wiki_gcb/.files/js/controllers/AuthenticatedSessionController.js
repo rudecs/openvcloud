@@ -44,7 +44,7 @@ angular.module('cloudscalers.controllers')
             if ($scope.currentSpace){
                 currentCloudSpaceFromList = _.findWhere($scope.cloudspaces, {id: $scope.currentSpace.id});
             }
-            if (currentCloudSpaceFromList != null){
+            if (currentCloudSpaceFromList == null){
                 currentCloudSpaceFromList = _.first($scope.cloudspaces);
             }
             $scope.setCurrentCloudspace(currentCloudSpaceFromList);
