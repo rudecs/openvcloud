@@ -7,6 +7,18 @@ angular.module('cloudscalers.controllers')
         	return LocationsService.get(locationcode);
         }
 
+    	$scope.$watch('currentSpace.id',function(){
+
+            CloudSpace.get($scope.currentSpace.id).then(
+            function(data) {
+                    $scope.cloudSpaceDetails = data;
+                    },
+                    function(reason) {
+                       $ErrorResponseAlert(reason);
+                    }
+                );
+    	});
+    	
         $scope.deleteCloudspace = function() {
             var modalInstance = $modal.open({
                 templateUrl: 'deleteCloudSpaceDialog.html',

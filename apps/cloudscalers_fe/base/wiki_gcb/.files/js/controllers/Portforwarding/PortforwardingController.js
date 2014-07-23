@@ -3,29 +3,33 @@ angular.module('cloudscalers.controllers')
         function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
-            $scope.$watch('currentSpace.id',function(){
+            
+            
+            $scope.updatePortforwardList = function(){
+                Networks.listPortforwarding($scope.currentSpace.id).then(
+                  function(data) {
+                          $scope.portforwarding = data;
+                  },
+                  function(reason) {
+                          $ErrorResponseAlert(reason);
+                  }
+                );
+            };
+            
+            $scope.$watch('currentSpace.id + currentSpace.status',function(){
                 if ($scope.currentSpace){
-                    Machine.list($scope.currentSpace.id).then(function(data) {
-                      $scope.currentSpace.machines = data;
-                    });
-
+                	if ($scope.currentSpace.status != "DEPLOYED"){
+                		$timeout($scope.loadSpaces,5000);
+                	}
+                	else{
+                		Machine.list($scope.currentSpace.id).then(function(data) {
+                    		$scope.currentSpace.machines = data;
+                    	});
+                    	$scope.updatePortforwardList();
+                	}
                 }
             });
-	    $scope.$watch('assignIPMessage',function(){
-              if ($scope.assignIPMessage == ""){
-                  $scope.updatePortforwardList = function(){
-                      Networks.listPortforwarding($scope.currentSpace.id).then(
-                        function(data) {
-                                $scope.portforwarding = data;
-                        },
-                        function(reason) {
-                                $ErrorResponseAlert(reason);
-                        }
-                      );
-                  };
-		  $scope.updatePortforwardList();
-              }
-            });
+            
 
             Networks.commonports().then(function(data) {
                 $scope.commonports = data;
