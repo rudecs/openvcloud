@@ -46,7 +46,7 @@ angular.module('cloudscalers.controllers')
                     "$destroy",
                     function( event ) {
                     	if (angular.isDefined(cloudspaceupdater)){
-                    		$timeout.cancel(cloudspaceupdater );
+                    		$interval.cancel(cloudspaceupdater );
                     		cloudspaceupdater = undefined;
                     	}
                     }
