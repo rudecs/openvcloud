@@ -137,7 +137,7 @@ class cloudapi_cloudspaces(object):
             self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
-            cs.status = 'ERROR'
+            cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
             raise
         cs.status = 'DEPLOYED'
