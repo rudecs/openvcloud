@@ -30,6 +30,9 @@ class auth(object):
 
     def __call__(self, func):
         def wrapper(*args, **kwargs):
+            if 'ctx' not in kwargs:
+                # call is not performed over rest let it pass
+                return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
             fullacl = set()

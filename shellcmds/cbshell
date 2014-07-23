@@ -6,28 +6,37 @@ from JumpScale.baselib.cmdutils import ArgumentParser
 
 
 if __name__ == '__main__':
-    portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'cloudbroker', 'cfg', 'portal')
-    portalcfg = j.config.getConfig(portalcfgpath).get('main', {})
-    port = int(portalcfg.get('webserverport', 9999))
-    secret = portalcfg.get('secret')
     parser = ArgumentParser()
-    parser.add_argument("-s", "--secret", default=secret)
+    parser.add_argument("-s", "--secret", default='1234')
     parser.add_argument("-u", "--username")
     parser.add_argument("-p", "--password")
+    parser.add_argument("-gp", "--gridportal", default=False, action="store_true")
     opts = parser.parse_args()
+
+    if opts.gridportal:
+        portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'gridportal', 'cfg', 'portal')
+    else:
+        portalcfgpath = j.system.fs.joinPaths(j.dirs.baseDir, 'apps', 'cloudbroker', 'cfg', 'portal')
+    portalcfg = j.config.getConfig(portalcfgpath).get('main', {})
+    port = int(portalcfg.get('webserverport', 9999))
+    secret = portalcfg.get('secret') if opts.secret == '1234' else opts.secret
 
     cl = j.core.portal.getClient('127.0.0.1', port, secret)
     if opts.username and opts.password:
-        newsecret = cl.actors.cloudapi.users.authenticate(opts.username, opts.password)
+        import requests
+        url = "http://127.0.0.1:%s" % (port)
+        resp = requests.post(url, {'user_login_': opts.username, 'passwd': opts.password})
+        newsecret = resp.cookies.get('beaker.session.id')
         print "Next time you can use %s as secret" % newsecret
         cl = j.core.portal.getClient('127.0.0.1', port, newsecret)
         j.apps = cl.actors
 
-    cl.getActor('cloud','cloudbroker')
-    cl.getActor('jumpscale','netmgr')
-    cl.getActor('libcloud','libvirt')
-    for type_ in ('sizes', 'images', 'accounts', 'cloudspaces', 'machines', 'users'):
-        cl.getActor('cloudapi', type_)
-
+    cl.getActor('system', 'contentmanager')
+    for actor in cl.actors.system.contentmanager.getActors():
+        space, actor = actor.split('__')
+        if space != 'systen':
+            print '\rLoading', space, actor,
+            cl.getActor(space,actor)
+    print ''
     embed()
 

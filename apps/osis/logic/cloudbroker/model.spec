@@ -121,6 +121,7 @@
     prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
+    prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
 
 
 [rootmodel:Disk] @dbtype:osis
@@ -187,6 +188,7 @@
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
     prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
     prop:location str,, datacenterlocation
+    prop:secret str,, used to identify a space through the cloud robot
 
 [rootmodel:PublicIPv4Pool] @dbtype:osis
     """
