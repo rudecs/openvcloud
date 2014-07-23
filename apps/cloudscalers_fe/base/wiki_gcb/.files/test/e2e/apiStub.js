@@ -729,4 +729,5 @@ defineApiStub = function ($httpBackend) {
             return [500, "Templates couldn't found!"];
         }
     });
+    $httpBackend.whenGET('/locations/list').respond([{'us1': ''}]);
 };

@@ -132,7 +132,7 @@ html body .tour-tip a.tour-close-tip {
 .forTipSnap + .tour-tip {top: -85px !important; }
 .ipTip + .tour-tip {top: -85px !important; width: 370px;}
 .machineTip + .tour-tip {top: 45px !important;width: 290px;}
-.portforwordTip {position: absolute;top: 155px;right: -150px;}
+.portforwordTip {position: absolute;top: 126px;right: -150px;}
 .portforwordTip  .tour-tip {top: 0 !important; left: 0 !important; right: 0 !important;}
 #creditToAddInput + .tour-tip {top: -30px !important;left: 203px !important; }
 
