@@ -1,7 +1,36 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout', '$sce', 'CloudSpace', '$ErrorResponseAlert',
-        function ($scope, Networks, Machine, $modal, $timeout, $sce, CloudSpace, $ErrorResponseAlert) {
+    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$interval', '$sce', 'CloudSpace', '$ErrorResponseAlert',
+        function ($scope, Networks, Machine, $modal, $interval, $sce, CloudSpace, $ErrorResponseAlert) {
 
+    	var cloudspaceupdater;
+    	$scope.$watch('currentSpace.id + currentSpace.status',function(){
+            if ($scope.currentSpace){
+            	if ($scope.currentSpace.status != "DEPLOYED"){
+            		if (!(angular.isDefined(cloudspaceupdater))){
+            			cloudspaceupdater = $interval($scope.loadSpaces,5000);
+            		}
+            	}
+            	else{
+            		if (angular.isDefined(cloudspaceupdater)){
+            			$interval.cancel(cloudspaceupdater);
+            			cloudspaceupdater = undefined;
+            		}
+            	}
+            }
+        });
+        
+        $scope.$on(
+                "$destroy",
+                function( event ) {
+                	if (angular.isDefined(cloudspaceupdater)){
+                		$timeout.cancel(cloudspaceupdater );
+                		cloudspaceupdater = undefined;
+                	}
+                }
+            );
+
+    	
+    	
             var routerosController = function ($scope, $modalInstance) {
                 $scope.cancel = function () {
             		$modalInstance.dismiss('cancel');
