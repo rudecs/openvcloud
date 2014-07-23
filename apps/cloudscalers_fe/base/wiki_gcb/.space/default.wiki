@@ -57,10 +57,7 @@
                             <span>Logout</span>
                         </a>
                     </li>
-                    <li class="right"><span class="user-name" ng-cloak>{[currentUser.username]}</span> </li>
-}}
-#                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
-{{html:
+                    <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
                 </ul>
             </div>
         </div>
@@ -104,11 +101,14 @@
                 </div>
             </div>
             <ul class="justBorder">
-            	<li>
-					<a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
-                    <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
-                 </li>
-             </ul>
+            <li>
+              <a href="../$$space/CreateCloudSpace" class="create-cloudspace">New Cloud Space...</a>
+}}
+#                      <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
+#                      <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
+{{html:
+                  </li>
+              </ul>
             <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
                 <form name="form" class="form-horizontal" ng-submit="submit()">
                     <div class="modal-header">
