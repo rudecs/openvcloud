@@ -300,6 +300,6 @@ class cloudapi_cloudspaces(object):
         if not location in self.cb.extensions.imp.getLocations():
             location = self.cb.extensions.imp.whereAmI()
 
-        url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(cloudspace.publicipaddress.split('.')),location)
+        url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
