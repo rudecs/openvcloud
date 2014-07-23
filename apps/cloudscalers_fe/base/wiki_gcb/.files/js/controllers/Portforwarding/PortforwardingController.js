@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
-        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
+        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
             
@@ -16,20 +16,40 @@ angular.module('cloudscalers.controllers')
                 );
             };
             
+            $scope.updateData = function(){
+            	Machine.list($scope.currentSpace.id).then(function(data) {
+            		$scope.currentSpace.machines = data;
+            	});
+            	$scope.updatePortforwardList();
+            }
+            
+            var cloudspaceupdater;
+            
             $scope.$watch('currentSpace.id + currentSpace.status',function(){
                 if ($scope.currentSpace){
                 	if ($scope.currentSpace.status != "DEPLOYED"){
-                		$timeout($scope.loadSpaces,5000);
+                		if (!(angular.isDefined(cloudspaceupdater))){
+                			cloudspaceupdater = $interval($scope.loadSpaces,5000);
+                		}
                 	}
                 	else{
-                		Machine.list($scope.currentSpace.id).then(function(data) {
-                    		$scope.currentSpace.machines = data;
-                    	});
-                    	$scope.updatePortforwardList();
+                		if (angular.isDefined(cloudspaceupdater)){
+                			$interval.cancel(cloudspaceupdater);
+                			cloudspaceupdater = undefined;
+                		}
+                		$scope.updateData();
                 	}
                 }
             });
             
+            $scope.$on(
+                    "$destroy",
+                    function( event ) {
+                    	if (angular.isDefined(cloudspaceupdater)){
+                    		$timeout.cancel(cloudspaceupdater );
+                    	}
+                    }
+                );
 
             Networks.commonports().then(function(data) {
                 $scope.commonports = data;
