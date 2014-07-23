@@ -30,7 +30,7 @@
 }}
 {{include:Tour}}
 {{html:
-<tour step="steps.tourStep" post-step="postStepCallback()">
+<tour step="steps.tourStep" post-step="postStepCallback()" post-tour="tourComplete('tourStep')">
 
 
     <script type="text/ng-template" id="myModalContent.html">

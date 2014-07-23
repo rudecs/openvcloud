@@ -14,4 +14,8 @@ angular.module('cloudscalers.controllers')
             ipCookie('machineListTourStep', $scope.steps['machineListTourStep']);
         };
         
+        $scope.tourComplete = function(tourName) {
+            ipCookie(tourName, 9999);
+        };
+        
     }]);

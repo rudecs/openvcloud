@@ -13,7 +13,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 }}
 
 {{html:
-<tour step="steps.machineListTourStep" post-step="postStepCallback()">
+<tour step="steps.machineListTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineListTourStep')">
 <div id="tabbable">
   <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
