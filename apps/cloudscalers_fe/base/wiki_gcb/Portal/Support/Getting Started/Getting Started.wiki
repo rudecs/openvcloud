@@ -138,5 +138,5 @@ h2. Cloud Space
 
 h2. Questions?
 
-Good luck! In case of any questions, go to our [Documentation Center|FAQ] or contact [Customer Service|http://support.mothership1.com]
+In case of any questions, go to our Documentation Center or contact [Customer Service|http://support.mothership1.com]
 
