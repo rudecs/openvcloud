@@ -97,6 +97,7 @@ class cloudapi_cloudspaces(object):
             raise RuntimeError("Failed to get networkid")
 
         cs.networkId = networkid
+        cs.secret = str(uuid.uuid4())
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
 
@@ -200,6 +201,11 @@ class cloudapi_cloudspaces(object):
         """
         cloudspaceObject = self.models.cloudspace.get(cloudspaceId)
 
+        #For backwards compatibility, set the secret if it is not filled in
+        if len(cloudspaceObject.secret) == 0:
+            cloudspaceObject.secret = str(uuid.uuid4())
+            self.models.cloudspace.set(cloudspaceObject)
+
         cloudspace = { "accountId": cloudspaceObject.accountId,
                         "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl],
                         "description": cloudspaceObject.descr,
@@ -207,7 +213,8 @@ class cloudapi_cloudspaces(object):
                         "name": cloudspaceObject.name,
                         "publicipaddress": getIP(cloudspaceObject.publicipaddress),
                         "status": cloudspaceObject.status,
-                        "location": cloudspaceObject.location}
+                        "location": cloudspaceObject.location,
+                        "secret": cloudspaceObject.secret}
         return cloudspace
 
     @authenticator.auth(acl='U')
@@ -292,7 +299,7 @@ class cloudapi_cloudspaces(object):
         location = cloudspace.location
         if not location in self.cb.extensions.imp.getLocations():
             location = self.cb.extensions.imp.whereAmI()
-            
+
         url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(cloudspace.publicipaddress.split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result

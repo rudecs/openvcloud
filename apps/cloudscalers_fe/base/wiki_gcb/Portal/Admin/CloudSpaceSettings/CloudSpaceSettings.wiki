@@ -13,6 +13,10 @@
 		</tab>
 		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" >
+				<div>
+					<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Secret:</label>
+					<span>{[ currentSpace.secret]}</span>
+				</div>
 				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
                   			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
                   			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
@@ -23,6 +27,10 @@
                   				<img src="/$$space/.files/img/flags/usa.png">
                   				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
                   			</div>
+							<div ng-switch-when="test1" style="float: left; text-align: center; margin-bottom: 20px;">
+								<img src="/$$space/.files/img/flags/black-flag.png">
+								<span style="display: block; margin-top: 5px; font-size: 13px;">Test</span>
+							</div>
                 		</div>
 				<br><button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
