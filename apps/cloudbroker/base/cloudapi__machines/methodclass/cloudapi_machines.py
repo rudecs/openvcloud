@@ -274,6 +274,11 @@ class cloudapi_machines(object):
 
         try:
             stack = self.cb.extensions.imp.getBestProvider(imageId)
+            if stack == -1:
+                self.models.vmachine.delete(machine.id)
+                ctx = kwargs['ctx']
+                ctx.start_response('503 Service Unavailable', [])
+                return 'Not enough resource available to provision the requested machine'
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
