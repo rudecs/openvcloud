@@ -13,10 +13,11 @@
 		</tab>
 		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" >
-				<div>
+				<div style="margin-bottom: 10px;">
 					<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Secret:</label>
-					<span>{[ currentSpace.secret]}</span>
+					<span>{[ cloudSpaceDetails.secret]}</span>
 				</div>
+				<br/>
 				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
                   			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px;">Location:</label>
                   			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
