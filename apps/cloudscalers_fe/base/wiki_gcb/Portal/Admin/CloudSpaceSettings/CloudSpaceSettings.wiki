@@ -14,7 +14,7 @@
 		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" >
 				<div style="margin-bottom: 10px;" class="clearfix">
-					<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px; min-width: 65px;">Secret:</label>
+					<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px; min-width: 65px;">Secret API Key:</label>
 					<p class="txt-14 txt-gray">{[ cloudSpaceDetails.secret]}</p>
 				</div>
 				<br/>
