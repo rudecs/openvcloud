@@ -186,9 +186,11 @@
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
     prop:networkId int,, Id of the used network
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
-    prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
+    prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
     prop:location str,, datacenterlocation
     prop:secret str,, used to identify a space through the cloud robot
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deletionTime int,, epoch time of destruction, in seconds
 
 [rootmodel:PublicIPv4Pool] @dbtype:osis
     """
