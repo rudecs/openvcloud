@@ -171,7 +171,7 @@ class cloudapi_users(object):
         matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
         existingusers = [user for user in matchingusers if user['emails'].lower() == emailaddress.lower()]
         
-        if len(existingusers > 0):
+        if (len(existingusers) > 0):
             ctx.start_response('409 Conflict', [])
             return 'An account with this email address already exists'
 
