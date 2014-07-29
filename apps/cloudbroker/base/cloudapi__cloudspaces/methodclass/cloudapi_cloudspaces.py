@@ -1,11 +1,13 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, network
+import billingenginelib
 import netaddr
 import ujson
 import gevent
 import urlparse
 import uuid
+import time
 
 
 def getIP(network):
@@ -69,6 +71,19 @@ class cloudapi_cloudspaces(object):
             acl.right = accesstype
             return self.models.cloudspace.set(cs)[0]
 
+    def _listActiveCloudSpaces(self, accountId):
+        query = {'fields': ['id', 'name','status']}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}}
+                                              ]
+                                  }
+                          }
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        return results
+
     @authenticator.auth(acl='A')
     @audit()
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
@@ -81,6 +96,15 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        
+        active_cloudspaces = self._listActiveCloudSpaces(accountId)
+        if (len(active_cloudspaces) > 0):
+            ctx = kwargs['ctx']
+            if (not billingenginelib.account.isPayingCustomer()):
+               ctx.start_response('409 Conflict', [])
+               return 'Creating an extra cloudspace is only available if you made at least 1 payment'
+ 
+        
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -98,6 +122,7 @@ class cloudapi_cloudspaces(object):
 
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
+        cs.creationTime = int(time.time())
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
 
@@ -188,6 +213,7 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cloudspace)
         cloudspace = self._release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
+        cloutspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
 
 

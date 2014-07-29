@@ -24,6 +24,8 @@ class pricing(object):
 
         self.primary_storage_price = j.application.config.getFloat('mothership1.billing.primarystorageprice')
 
+        self.extra_cloudspace_price = j.application.config.getFloat('mothership1.billing.extracloudspaceprice')
+
         self._machine_sizes = None
         self._machine_images = None
 
@@ -56,6 +58,9 @@ class pricing(object):
         base_price = self.base_machine_prices[machine_type.lower()][machine_memory]
         storage_price = (int(diskSize) - 10) * self.primary_storage_price
         return base_price + storage_price
+
+    def get_cloudspace_price_per_hour(self):
+        return self.extra_cloudspace_price
 
     def get_machine_price_per_hour(self, machine):
         machine_imageId = machine['imageId']
