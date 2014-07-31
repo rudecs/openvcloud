@@ -139,3 +139,25 @@ class cloudapi_paypal(j.code.classGetBase()):
 
         approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
         return {'paypalurl':approval_url}
+
+    def confirmvalidation(self, id, token, PayerID, **kwargs):
+        """
+        Paypal callback url for the 1$ authorization
+        param:id internal payment id
+        param:token token
+        param:PayerID PayerID
+        result dict
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method confirmvalidation")
+
+    @authenticator.auth(acl='R')
+    @audit()
+    def initiatevalidation(self, accountId, **kwargs):
+        """
+        Starts a paypal validation flow.
+        param:accountId id of the account
+        result dict
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method initiatevalidation")
