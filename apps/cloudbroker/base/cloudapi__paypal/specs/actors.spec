@@ -21,14 +21,14 @@
         var:PayerID str,,PayerID
         result:dict #An HTTP 302 Found response code is given with the url of the confirmation or cancelled page.
 
-    method:initiatevalidation
+    method:initiatevalidation @noauth
         """
         Starts a paypal validation flow.
         """
         var:accountId int,,id of the account
         result:dict #A json dict containing the paypal payment confirmation url
 
-    method:confirmvalidation
+    method:confirmvalidation @noauth
         """
         Paypal callback url for the 1$ authorization
         """
