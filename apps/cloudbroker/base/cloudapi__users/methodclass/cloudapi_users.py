@@ -79,13 +79,17 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         accounts = self.models.account.simpleSearch({'name':username.lower()})
-        if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
+        if accounts:
+            status = accounts[0].get('status', 'CONFIRMED')
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session
                 session['user'] = username
+                session['account_status'] = status
                 session.save()
+                if status != 'CONFIRMED':
+                  ctx.start_response('401 Unauthorized', [])
+                  return session.id
                 return session.id
-
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
@@ -164,13 +168,13 @@ class cloudapi_users(object):
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
             return 'Username already exists'
-        
+
         cl = j.core.osis.getClientForNamespace('system')
         #Elastic search analyzed this field, TODO: fix this
         firstemailaddresspart = emailaddress.lower().split('@')[0]
         matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
         existingusers = [user for user in matchingusers if user['emails'].lower() == emailaddress.lower()]
-        
+
         if (len(existingusers) > 0):
             ctx.start_response('409 Conflict', [])
             return 'An account with this email address already exists'
