@@ -88,7 +88,7 @@ angular.module('cloudscalers.services')
             }).then(
             		function (result) {
             			SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
-            			return result.data;
+            			return result;
             		},
             		function (reason) {
             			SessionData.setUser(undefined);
