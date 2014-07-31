@@ -37,8 +37,8 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             account_status = ctx.env['beaker.session']['account_status']
             if account_status != 'CONFIRMED':
-              ctx.start_response('403 Unconfirmed Account', [])
-              return ''
+              ctx.start_response('409 Conflict', [])
+              return 'Unconfirmed Account'
             fullacl = set()
             if self.acl:
                 userobj = j.core.portal.active.auth.getUserInfo(user)

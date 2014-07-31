@@ -87,7 +87,7 @@ class cloudapi_users(object):
                 session['account_status'] = status
                 session.save()
                 if status != 'CONFIRMED':
-                  ctx.start_response('401 Unauthorized', [])
+                  ctx.start_response('409 Conflict', [])
                   return session.id
                 return session.id
         ctx.start_response('401 Unauthorized', [])
