@@ -109,7 +109,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         credittransaction.id = self.models.credittransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
-                   "intent":"sale",
+                   "intent":"authorize",
                    "redirect_urls":{
                                     "return_url":"%s/restmachine/cloudapi/paypal/confirmauthorization?id=%s&authkey=%s" % (portalurl,credittransaction.id,kwargs['authkey']),
                                     "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
@@ -151,18 +151,17 @@ class cloudapi_paypal(j.code.classGetBase()):
         ctx = kwargs['ctx']
         validationTransaction = self.models.validationtransaction.get(id)
         paymentreference = validationTransaction.reference
-        #access_token = self._get_access_token()
-        #paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
-        #headers = {"Content-Type":"application/json",
-        #           "Authorization": "Bearer %s" % access_token}
-        #payload = { "payer_id" : PayerID }
-        #paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
-        #if paypalresponse.status_code is not 200:
-        #      ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
-        #    return "There was an error executing the payment at paypal"
-        #    #TODO raise erro
+        access_token = self._get_access_token()
+        paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        payload = { "payer_id" : PayerID }
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 200:
+            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
+            return "There was an error executing the payment at paypal"
 
-        #paypalresponsedata = paypalresponse.json()
+        paypalresponsedata = paypalresponse.json()
 
         validationTransaction.status = 'PROCESSED'
         account = self.models.account.get(validationTransaction.accountId)
@@ -170,6 +169,10 @@ class cloudapi_paypal(j.code.classGetBase()):
         self.models.account.set(account)
         ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
         self.models.validationtransaction.set(validationTransaction)
+        revoke_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'void'), None)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        paypalresponse = requests.post(revoke_url, headers=headers,data=None)
         ctx.start_response('302 Found', [('location','/wiki_gcb/')])
         return ""
 
@@ -208,7 +211,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         validationtransaction.id = self.models.validationtransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
-                   "intent":"sale",
+                   "intent":"authorize",
                    "redirect_urls":{
                                     "return_url":"%s/restmachine/cloudapi/paypal/confirmvalidation?id=%s&authkey=%s" % (portalurl,validationtransaction.id,kwargs['authkey']),
                                     "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
