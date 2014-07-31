@@ -14,6 +14,18 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         }
                     );
+            },
+            initiateAccountValidation: function(){
+                
+                return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatevalidation').
+                    then(function(result){
+                            var info = {'paypalurl':result.data.paypalurl};
+                            return info;
+                        },
+                        function(reason){
+                            return $q.reject(reason);
+                        }
+                    );
             }
         };
     });

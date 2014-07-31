@@ -1,5 +1,15 @@
 angular.module('cloudscalers.controllers')
-    .controller('AccountValidationController', ['$scope', 'User','$window', '$timeout', function($scope, User, $window, $timeout) {
+    .controller('AccountValidationController', ['$scope','$window','$ErrorResponseAlert', 'PaypalPayments', function($scope, $window, $ErrorResponseAlert, PaypalPayments) {
 
 
+        $scope.validateWithPayPal = function(){
+                PaypalPayments.initiateAccountValidation().then(
+                            function(result){
+                                $window.location = result.paypalurl;
+                            },
+                            function(reason){
+                                $ErrorResponseAlert(reason);
+                            }
+                        );
+        }
     }]);
