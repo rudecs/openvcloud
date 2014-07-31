@@ -148,16 +148,93 @@ class cloudapi_paypal(j.code.classGetBase()):
         param:PayerID PayerID
         result dict
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method confirmvalidation")
+        ctx = kwargs['ctx']
+        validationTransaction = self.models.validationtransaction.get(id)
+        paymentreference = validationTransaction.reference
+        #access_token = self._get_access_token()
+        #paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
+        #headers = {"Content-Type":"application/json",
+        #           "Authorization": "Bearer %s" % access_token}
+        #payload = { "payer_id" : PayerID }
+        #paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        #if paypalresponse.status_code is not 200:
+        #      ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
+        #    return "There was an error executing the payment at paypal"
+        #    #TODO raise erro
+
+        #paypalresponsedata = paypalresponse.json()
+
+        validationTransaction.status = 'PROCESSED'
+        account = self.models.account.get(validationTransaction.accountId)
+        account.status = 'CONFIRMED'
+        self.models.account.set(account)
+        ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
+        self.models.validationtransaction.set(validationTransaction)
+        ctx.start_response('302 Found', [('location','/wiki_gcb/')])
+        return ""
 
     @authenticator.auth(acl='R')
     @audit()
-    def initiatevalidation(self, accountId, **kwargs):
+    def initiatevalidation(self, **kwargs):
         """
-        Starts a paypal validation flow.
+        Starts a paypal validation flow, this is used to validate a user.
+        A small amount of money 1 USD is billed and after paypal validation the transcaction is removed
         param:accountId id of the account
         result dict
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method initiatevalidation")
+        ctx = kwargs['ctx']
+        import urlparse
+        urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+        portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
+        amount = 1
+        user = ctx.env['beaker.session']['user']
+        accounts = self.models.account.simpleSearch({'name':user.lower()})
+        if accounts:
+          account = accounts[0]
+        else:
+          ctx.start_response('409 Conflict', [])
+          return 'Incorrect configuration no account found for session'
+
+        accountId = account.id
+
+
+        access_token = self._get_access_token()
+        validationtransaction = self.models.validationtransaction.new()
+        validationtransaction.time = int(time.time())
+        validationtransaction.amount = amount
+        validationtransaction.currency = 'USD'
+        validationtransaction.status = 'UNCONFIRMED'
+        validationtransaction.accountId = accountId
+        validationtransaction.id = self.models.validationtransaction.set(credittransaction)[0]
+        paymenturl = '%s/v1/payments/payment' % self.paypal_url
+        payload = {
+                   "intent":"sale",
+                   "redirect_urls":{
+                                    "return_url":"%s/restmachine/cloudapi/paypal/confirmvalidation?id=%s&authkey=%s" % (portalurl,validationtransaction.id,kwargs['authkey']),
+                                    "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
+                                   },
+                   "payer":{
+                            "payment_method":"paypal"
+                           },
+                   "transactions":[
+                                   {
+                                    "amount":{
+                                              "total":amount,
+                                              "currency":"USD"
+                                             }
+                                   }
+                                  ]
+                  }
+
+        headers = {'content-type': 'application/json', 'Authorization': 'Bearer %s' % access_token}
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 201:
+             #TODO raise error
+             pass
+        paypalresponsedata = paypalresponse.json()
+
+        validationtransaction.reference = paypalresponsedata['id']
+        self.models.validationtransaction.set(validationtransaction)
+
+        approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
+        return {'paypalurl':approval_url}
