@@ -17,19 +17,22 @@ def _send_signup_mail(**kwargs):
 <html>
 <head></head>
 <body>
-    Dear %(user)s,<br>
+
+
+Best Regards,
+
+The Mothership1 Team
+www.mothership1.com
+
+
+    Dear,<br>
     <br>
-    Thank you for registering at Mothership<sup>1</sup>!<br>
+    Thank you for registering at Mothership<sup>1</sup>. You can now log in into mothership1 with your username %(username)s and your chosen password.
     <br>
-    We have now prepared your account %(username)s and we have applied a welcoming credit so you can start right away!<br>
-    <br>
-    Please confirm your e-mail address by following the activation link: <br>
-    <br>
-    <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
-    <br>
-    If you are unable to follow the link, please copy and paste it in your favourite browser.<br>
-    <br>
-    After your validation, you will be able to log in with your username and chosen password.<br>
+    All new users are granted a free test drive for 2 weeks.
+<br>
+In case you experience any issues in logging it or using the Mothership1 service, please contact us at support@motership1.com or use the lice chat function on mothership1.com
+<br>
     <br>
     Best Regards,<br>
     <br>
