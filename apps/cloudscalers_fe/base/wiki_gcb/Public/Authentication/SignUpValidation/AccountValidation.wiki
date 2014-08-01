@@ -24,6 +24,7 @@ After the validation, we provide free test drive credit so you can try Mothershi
 
 </div>
 <script src="/$$space/.files/js/controllers/SignUp/AccountValidationController.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/services/PaypalPayments.js" type="text/javascript"></script>
 }}
 
 
