@@ -223,8 +223,7 @@ class cloudapi_paypal(j.code.classGetBase()):
                                    {
                                     "amount":{
                                               "total":amount,
-                                              "currency":"USD",
-                                              "details": {"subtotal": "%s$" % amount}
+                                              "currency":"USD"
                                              },
                                     "description": 'Authorization to verify account'
                                    }
