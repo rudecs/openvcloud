@@ -4,13 +4,13 @@
 @col12
 h1. Please validate your Account
 
-Thank you for signing up. You are only 1 step away from entering Mothership{{html:<sup>1<sup>}}!
+Thank you for signing up. You are only 1 step away from entering Mothership{{html:<sup>1</sup>}}!
 
 We will verify your account using a Paypal validation. We will NOT charge your Paypal account, neither create a subscription on it.
 
 An authorisation of 1 USD is applied and is cancelled immediately.
 
-After this authorisation, we provide free test drive credit so you can try Mothership{{html:<sup>1<sup>}} right away!
+After this authorisation, we provide free test drive credit so you can try Mothership{{html:<sup>1</sup>}} right away!
 
 {{html:
 <div ng-controller="AccountValidationController" ng-cloak>
