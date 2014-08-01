@@ -1,17 +1,16 @@
 @template unconfirmedaccount
 {{div: class=white}}
 {{div: class=container why-page}}
-
 @col12
+h1. Please validate your Account
 
-h1. Account validation
+Thank you for signing up. You are only 1 step away from entering Mothership{{html:<sup>1<sup>}}!
 
-We have created your Mothership1 account but we still need proof of your identity.
-You are only 1 step away from entering Mothership1!
+We will verify your account using a Paypal validation. We will NOT charge your Paypal account, neither create a subscription on it.
 
-We will NOT charge your account, neither create a subscription. An authorisation of 1 USD is applied and cancelled right away.
+An authorisation of 1 USD is applied and is cancelled immediately.
 
-After the validation, we provide free test drive credit so you can try Mothership1 right away!
+After this authorisation, we provide free test drive credit so you can try Mothership{{html:<sup>1<sup>}} right away!
 
 {{html:
 <div ng-controller="AccountValidationController" ng-cloak>
