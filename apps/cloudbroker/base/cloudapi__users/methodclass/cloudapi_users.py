@@ -19,19 +19,13 @@ def _send_signup_mail(**kwargs):
 <body>
 
 
-Best Regards,
-
-The Mothership1 Team
-www.mothership1.com
-
-
     Dear,<br>
     <br>
-    Thank you for registering at Mothership<sup>1</sup>. You can now log in into mothership1 with your username %(username)s and your chosen password.
+    Thank you for registering with Mothership<sup>1</sup>. You can now log in into mothership1 with your username %(username)s and your chosen password.
     <br>
     All new users are granted a free test drive for 2 weeks.
 <br>
-In case you experience any issues in logging it or using the Mothership1 service, please contact us at support@motership1.com or use the lice chat function on mothership1.com
+In case you experience any issues in logging in or using the Mothership<sup>1 service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
 <br>
     <br>
     Best Regards,<br>
