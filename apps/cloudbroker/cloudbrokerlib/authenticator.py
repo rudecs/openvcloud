@@ -35,6 +35,10 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
+            account_status = ctx.env['beaker.session']['account_status']
+            if account_status != 'CONFIRMED':
+              ctx.start_response('409 Conflict', [])
+              return 'Unconfirmed Account'
             fullacl = set()
             if self.acl:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
@@ -62,4 +66,3 @@ class auth(object):
 
             return func(*args, **kwargs)
         return wrapper
-

@@ -11,10 +11,14 @@ angular.module('cloudscalers.controllers')
             then(
             		function(result) {
             			$scope.login_error = undefined;
+            			var target = 'Decks';
+                    	if (result.status == 409){
+                    		target = 'AccountValidation';
+                    	}
             			User.updateUserDetails(usertologin).then(
                                 function(result) {
-                        			var uri = new URI($window.location);
-                        			uri.filename('Decks');
+                                	var uri = new URI($window.location);
+                        			uri.filename(target);
                         			$window.location = uri.toString();
                                 },
                                 function(reason){
