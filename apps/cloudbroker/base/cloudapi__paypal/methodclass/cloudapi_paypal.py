@@ -109,7 +109,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         credittransaction.id = self.models.credittransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
-                   "intent":"authorize",
+                   "intent":"sale",
                    "redirect_urls":{
                                     "return_url":"%s/restmachine/cloudapi/paypal/confirmauthorization?id=%s&authkey=%s" % (portalurl,credittransaction.id,kwargs['authkey']),
                                     "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
