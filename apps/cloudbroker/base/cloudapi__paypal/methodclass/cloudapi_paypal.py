@@ -169,14 +169,14 @@ class cloudapi_paypal(j.code.classGetBase()):
         self.models.account.set(account)
         ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
         self.models.validationtransaction.set(validationTransaction)
-        revoke_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'void'), None)
+        revoke_url = next((link['href'] for link in paypalresponsedata['transactions'][0]['related_resources'][0]['authorization']['links'] if link['rel'] == 'void'), None)
         headers = {"Content-Type":"application/json",
                    "Authorization": "Bearer %s" % access_token}
         paypalresponse = requests.post(revoke_url, headers=headers,data=None)
         ctx.start_response('302 Found', [('location','/wiki_gcb/')])
         return ""
 
-    @authenticator.auth(acl='R')
+
     @audit()
     def initiatevalidation(self, **kwargs):
         """
@@ -198,17 +198,17 @@ class cloudapi_paypal(j.code.classGetBase()):
           ctx.start_response('409 Conflict', [])
           return 'Incorrect configuration no account found for session'
 
-        accountId = account.id
+        accountId = account['id']
 
 
         access_token = self._get_access_token()
         validationtransaction = self.models.validationtransaction.new()
         validationtransaction.time = int(time.time())
-        validationtransaction.amount = amount
+        validationtransaction.amount = float(amount)
         validationtransaction.currency = 'USD'
         validationtransaction.status = 'UNCONFIRMED'
         validationtransaction.accountId = accountId
-        validationtransaction.id = self.models.validationtransaction.set(credittransaction)[0]
+        validationtransaction.id = self.models.validationtransaction.set(validationtransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
                    "intent":"authorize",
