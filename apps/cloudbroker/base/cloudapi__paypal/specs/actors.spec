@@ -25,7 +25,6 @@
         """
         Starts a paypal validation flow.
         """
-        var:accountId int,,id of the account
         result:dict #A json dict containing the paypal payment confirmation url
 
     method:confirmvalidation @noauth
