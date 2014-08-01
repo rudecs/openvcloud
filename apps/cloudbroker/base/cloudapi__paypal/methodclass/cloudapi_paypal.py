@@ -214,7 +214,7 @@ class cloudapi_paypal(j.code.classGetBase()):
                    "intent":"authorize",
                    "redirect_urls":{
                                     "return_url":"%s/restmachine/cloudapi/paypal/confirmvalidation?id=%s&authkey=%s" % (portalurl,validationtransaction.id,kwargs['authkey']),
-                                    "cancel_url":"%s/wiki_gcb/AccountSettings" % portalurl
+                                    "cancel_url":"%s/wiki_gcb/AccountValidation" % portalurl
                                    },
                    "payer":{
                             "payment_method":"paypal"
