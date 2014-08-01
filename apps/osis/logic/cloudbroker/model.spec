@@ -70,7 +70,7 @@
 
 [rootmodel:CreditTransaction] @dbtype:osis
 	"""
-	Credit transaction (positive and negative) for an account
+  Credit transaction (positive and negative) for an account
 	"""
 	prop:accountId int,,
 	prop:time int,,
@@ -83,17 +83,17 @@
 
 
 [rootmodel:ValidationTransaction] @dbtype:osis
-  """
-  Validation transaction (this is a transcation to validate an account)
-  """
-  prop:accountId int,,
-  prop:time int,,
-  prop:currency str,, the currency the transaction was made in
-  prop:amount float,, the amount of (in currency) of the transaction
-  prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
-  prop:status str,, status of the transaction
-  prop:payerId str,, paypal reference
-  prop:comment str,, optional comment
+    """
+    Validation transaction (this is a transcation to validate an account)
+    """
+    prop:accountId int,,
+    prop:time int,,
+    prop:currency str,, the currency the transaction was made in
+    prop:amount float,, the amount of (in currency) of the transaction
+    prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
+    prop:status str,, status of the transaction
+    prop:payerId str,, paypal reference
+    prop:comment str,, optional comment
 
 [rootmodel:CreditBalance] @dbtype:osis
 	"""
