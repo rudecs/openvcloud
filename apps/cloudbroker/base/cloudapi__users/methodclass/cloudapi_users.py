@@ -225,16 +225,8 @@ class cloudapi_users(object):
 
             self.models.credittransaction.set(credittransaction)
 
-        #create activationtoken
-        actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
-        activation_token = self.models.accountactivationtoken.new()
-        activation_token.id = actual_token
-        activation_token.creationTime = now
-        activation_token.accountId = accountid
-        self.models.accountactivationtoken.set(activation_token)
-
         j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
-        _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl, activationtoken=actual_token)
+        _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl)
 
         return True
 
