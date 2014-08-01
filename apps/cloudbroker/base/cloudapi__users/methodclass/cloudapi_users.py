@@ -176,7 +176,7 @@ class cloudapi_users(object):
         #Elastic search analyzed this field, TODO: fix this
         firstemailaddresspart = emailaddress.lower().split('@')[0]
         matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
-        existingusers = [user for user in matchingusers if user['emails'].lower() == emailaddress.lower()]
+        existingusers = [match_user for match_user in matchingusers if match_user['emails'].lower() == emailaddress.lower()]
 
         if (len(existingusers) > 0):
             ctx.start_response('409 Conflict', [])
