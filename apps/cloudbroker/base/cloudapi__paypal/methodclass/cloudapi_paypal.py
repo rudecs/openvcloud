@@ -158,7 +158,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         payload = { "payer_id" : PayerID }
         paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
         if paypalresponse.status_code is not 200:
-            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
+            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountValidation')])
             return "There was an error executing the payment at paypal"
 
         paypalresponsedata = paypalresponse.json()
@@ -173,7 +173,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         headers = {"Content-Type":"application/json",
                    "Authorization": "Bearer %s" % access_token}
         paypalresponse = requests.post(revoke_url, headers=headers,data=None)
-        ctx.start_response('302 Found', [('location','/wiki_gcb/')])
+        ctx.start_response('302 Found', [('location','/wiki_gcb/Decks')])
         return ""
 
 
