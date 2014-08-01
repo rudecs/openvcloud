@@ -168,6 +168,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         account.status = 'CONFIRMED'
         self.models.account.set(account)
         ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
+        ctx.env['beaker.session'].save()
         self.models.validationtransaction.set(validationTransaction)
         revoke_url = next((link['href'] for link in paypalresponsedata['transactions'][0]['related_resources'][0]['authorization']['links'] if link['rel'] == 'void'), None)
         headers = {"Content-Type":"application/json",
