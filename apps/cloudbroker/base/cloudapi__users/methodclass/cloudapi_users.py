@@ -24,7 +24,8 @@ def _send_signup_mail(**kwargs):
     Thank you for registering with Mothership<sup>1</sup>.
     <br>
     <br>
-    You can now log in into mothership1 with your username %(username)s and your chosen password.
+    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
+    <br>
     <br>
     All new users are granted a free test drive for 2 weeks.
     <br>
