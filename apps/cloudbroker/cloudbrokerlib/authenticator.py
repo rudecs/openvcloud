@@ -35,7 +35,7 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
-            account_status = ctx.env['beaker.session']['account_status']
+            account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
             if account_status != 'CONFIRMED':
               ctx.start_response('409 Conflict', [])
               return 'Unconfirmed Account'

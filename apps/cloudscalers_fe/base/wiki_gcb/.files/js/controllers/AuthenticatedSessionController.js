@@ -7,6 +7,9 @@ angular.module('cloudscalers.controllers')
         $scope.setCurrentCloudspace = function(space) {
             if (space.locationurl != null){
                 var currentlocation = $window.location;
+                if (currentlocation.toString().indexOf('AccountValidation') > 1){
+                return;
+                }
                 if (currentlocation.origin != space.locationurl){
                     $window.location = space.locationurl + '/wiki_gcb/SwitchSpace'
                             + '?username=' + encodeURIComponent($scope.currentUser.username)
