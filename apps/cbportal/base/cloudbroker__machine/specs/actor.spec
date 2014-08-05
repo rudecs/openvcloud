@@ -47,7 +47,6 @@
         var:host str,, host to export(if s3) @tags: optional
         var:aws_access_key str,,s3 access key @tags: optional 
         var:aws_secret_key str,,s3 secret key @tags: optional
-        var:bucketname str,,bucket name 
         result:jobid
 
     method:tag

@@ -6,3 +6,7 @@ h3. Image: $$name
 * *Type*: $$type
 * *Size*: $$size
 * *UNCPath*: $$uncpath
+
+h4. Stacks which have this Image
+
+{{stacks imageid:$$id}}
