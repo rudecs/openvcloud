@@ -4,7 +4,7 @@ angular.module('cloudscalers.services')
     .factory('PaypalPayments', function ($http, $q) {
         return {
             initiatePayment: function(accountid,amount,currency){
-                
+
                 return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatepayment?accountId=' + encodeURIComponent(accountid) + '&amount='+ encodeURIComponent(amount) + '&currency=' + encodeURIComponent(currency)).
                     then(function(result){
                             var info = {'paypalurl':result.data.paypalurl};
@@ -16,8 +16,8 @@ angular.module('cloudscalers.services')
                     );
             },
             initiateAccountValidation: function(){
-                
-                return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatevalidation').
+
+                return $http.get(cloudspaceconfig.apibaseurl + '/paypal/initiatevalidation?authorization=' + encodeURIComponent('False')).
                     then(function(result){
                             var info = {'paypalurl':result.data.paypalurl};
                             return info;
