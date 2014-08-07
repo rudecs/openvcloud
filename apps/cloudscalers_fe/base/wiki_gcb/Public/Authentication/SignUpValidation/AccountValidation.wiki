@@ -4,11 +4,11 @@
 @col12
 h1. Please validate your Account
 
-Thank you for signing up. You are only 1 step away from entering Mothership{{html:<sup>1</sup>}}:
+Thank you for signing up. You are only 1 step away from entering Mothership{{html:<sup>1</sup>}}.
 
-We will verify your account using a 1 USD PayPal payment that is automatically refunded. This means you will see a 1 USD charged and 1 USD refunded on your credit card or PayPal balance. We will NOT create a subscription or allowance on your Paypal account for future billing.
+We will verify your account using 1 USD PayPal payment that is automatically refunded. This means you will see a 1 USD charged and 1 USD refunded on your credit card or PayPal balance. We will NOT create a subscription or allowance on your PayPal account for future billing.
 
-After this payment, you will be automatically be redirected into your Cloud Space at Mothership{{html:<sup>1</sup>}}. We provide some free test credit so you can try it right away!
+After this payment, you will automatically be redirected to your Cloud Space at Mothership{{html:<sup>1</sup>}}. We provide you with some free test credit so you can try it right away!
 
 {{html:
 <div ng-controller="AccountValidationController" ng-cloak>
@@ -23,7 +23,7 @@ After this payment, you will be automatically be redirected into your Cloud Spac
 
 {{html:
 <br>
-Note: in case of any issues during this validation, please contact us on <a href="mailto:support@mothership1.com</a> or using the live chat.
+Note: in case of any issues during this validation, please contact us on <a href="mailto:support@mothership1.com">support@mothership1.com</a> or use the live chat.
 }}
 
 @divend
