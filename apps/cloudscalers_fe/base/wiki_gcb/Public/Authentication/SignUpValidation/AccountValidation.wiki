@@ -26,7 +26,7 @@ An authorisation* of 1 USD is applied and is cancelled immediately. After this a
 
 {{html:
 <br><br>
-* Some credit cards companies do not allow credit card authorisation. We are adding a paypal refund validation button soon. Meanwhile, please send 1 USD to the Mothership<sup>1</sup> PayPal account sophie@cloudscalers.com and include your Mothership<sup>1</sup> username in the comments. Customer service will activate your account withing 24 hours and refund the full 1 USD. Sorry for this inconvenience.
+* Some credit cards companies do not allow credit card authorisation. We are adding a paypal refund validation button soon. Meanwhile, please send 1 USD to the Mothership<sup>1</sup> PayPal account sophie@cloudscalers.com and include your Mothership<sup>1</sup> username in the comments. Customer service will activate your account within 24 hours and refund the full 1 USD. Sorry for this inconvenience.<br>
 ** Mothership<sup>1</sup> is a solution operated by CloudScalers BVBA in Belgium
 }}
 
