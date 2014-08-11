@@ -17,6 +17,10 @@ class auth(object):
         account = self.models.account.get(cloudspace.accountId)
         fullacl.update(self.expandAcl(users, groups, account.acl))
         return fullacl
+    
+    def expandAclFromAccount(self, users, groups, account):
+        fullacl = self.expandAcl(users, groups, account.acl)
+        return fullacl
 
     def expandAcl(self, user, groups, acl):
         fullacl = set()
@@ -35,7 +39,7 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
-            account_status = ctx.env['beaker.session']['account_status']
+            account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
             if account_status != 'CONFIRMED':
               ctx.start_response('409 Conflict', [])
               return 'Unconfirmed Account'
@@ -47,7 +51,10 @@ class auth(object):
                 if 'admin' in groups:
                     return func(*args, **kwargs)
                 cloudspace = None
-                if 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
+                if 'accountId' in kwargs and kwargs['accountId']:
+                    account = self.models.account.get(kwargs['accountId'])
+                    fullacl.update(self.expandAclFromAccount(user, groups, account))
+                elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(kwargs['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:

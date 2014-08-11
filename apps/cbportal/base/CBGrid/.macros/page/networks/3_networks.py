@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
         return str(', '.join(row[field]))
 
     fieldids = ['id', 'domain', 'pubips', 'host']
-    fieldvalues = ['[%(id)s|/CBGrid/network?id=%(id)s]',
+    fieldvalues = ['[%(id)s|/CBGrid/network?id=%(id)s] (%(id)04x)',
                    '[%(domain)s|/CBGrid/cloudspace?id=%(domain)s]',
                    makeNS,
                    'host'
