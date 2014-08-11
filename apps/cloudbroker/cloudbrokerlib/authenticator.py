@@ -17,6 +17,10 @@ class auth(object):
         account = self.models.account.get(cloudspace.accountId)
         fullacl.update(self.expandAcl(users, groups, account.acl))
         return fullacl
+    
+    def expandAclFromAccount(self, users, groups, account):
+        fullacl = self.expandAcl(users, groups, account.acl)
+        return fullacl
 
     def expandAcl(self, user, groups, acl):
         fullacl = set()
@@ -47,7 +51,10 @@ class auth(object):
                 if 'admin' in groups:
                     return func(*args, **kwargs)
                 cloudspace = None
-                if 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
+                if 'accountId' in kwargs and kwargs['accountId']:
+                    account = self.models.account.get(kwargs['accountId'])
+                    fullacl.update(self.expandAclFromAccount(user, groups, account))
+                elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(kwargs['cloudspaceId'])
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
