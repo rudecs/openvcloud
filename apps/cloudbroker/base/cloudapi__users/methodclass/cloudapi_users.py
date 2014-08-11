@@ -17,19 +17,21 @@ def _send_signup_mail(**kwargs):
 <html>
 <head></head>
 <body>
-    Dear %(user)s,<br>
+
+
+    Dear,<br>
     <br>
-    Thank you for registering at Mothership<sup>1</sup>!<br>
+    Thank you for registering with Mothership<sup>1</sup>.
     <br>
-    We have now prepared your account %(username)s and we have applied a welcoming credit so you can start right away!<br>
     <br>
-    Please confirm your e-mail address by following the activation link: <br>
+    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
     <br>
-    <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
     <br>
-    If you are unable to follow the link, please copy and paste it in your favourite browser.<br>
+    All new users are granted a free test drive for 2 weeks.
     <br>
-    After your validation, you will be able to log in with your username and chosen password.<br>
+    <br>
+    In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    <br>
     <br>
     Best Regards,<br>
     <br>
@@ -79,13 +81,17 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         accounts = self.models.account.simpleSearch({'name':username.lower()})
-        if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
+        if accounts:
+            status = accounts[0].get('status', 'CONFIRMED')
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session
                 session['user'] = username
+                session['account_status'] = status
                 session.save()
+                if status != 'CONFIRMED':
+                  ctx.start_response('409 Conflict', [])
+                  return session.id
                 return session.id
-
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
@@ -163,66 +169,65 @@ class cloudapi_users(object):
 
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
-            return 'User already exists'
-        else:
-            now = int(time.time())
+            return 'Username already exists'
 
-            location = location.lower()
+        cl = j.core.osis.getClientForNamespace('system')
+        #Elastic search analyzed this field, TODO: fix this
+        firstemailaddresspart = emailaddress.lower().split('@')[0]
+        matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
+        existingusers = [match_user for match_user in matchingusers if match_user['emails'].lower() == emailaddress.lower()]
 
-            if not location in self.cb.extensions.imp.getLocations():
-                location = self.cb.extensions.imp.whereAmI()
+        if (len(existingusers) > 0):
+            ctx.start_response('409 Conflict', [])
+            return 'An account with this email address already exists'
 
-            locationurl = self.cb.extensions.imp.getLocations()[location]
-            if location != self.cb.extensions.imp.whereAmI():
-                correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
-                ctx.start_response('451 Redirect', [('Location', correctlocation)])
-                return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
+        now = int(time.time())
 
-            j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
-            account = self.models.account.new()
-            account.name = username
-            account.creationTime = now
-            account.DCLocation = location
-            account.company = company
-            account.companyurl = companyurl
-            account.status = 'UNCONFIRMED'
-            account.displayname = user
+        location = location.lower()
 
-            ace = account.new_acl()
-            ace.userGroupId = username
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
-            accountid = self.models.account.set(account)[0]
+        if not location in self.cb.extensions.imp.getLocations():
+            location = self.cb.extensions.imp.whereAmI()
 
-            signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
-            creditcomment = 'Getting you started'
-            if promocode == 'cloud50':
-                signupcredit = 50.0
-                creditcomment = 'Promo code cloud50'
-            if signupcredit > 0.0:
-                credittransaction = self.models.credittransaction.new()
-                credittransaction.accountId = accountid
-                credittransaction.amount = signupcredit
-                credittransaction.credit = signupcredit
-                credittransaction.currency = 'USD'
-                credittransaction.comment = creditcomment
-                credittransaction.status = 'CREDIT'
-                credittransaction.time = now
+        locationurl = self.cb.extensions.imp.getLocations()[location]
+        if location != self.cb.extensions.imp.whereAmI():
+            correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
+            ctx.start_response('451 Redirect', [('Location', correctlocation)])
+            return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
 
-                self.models.credittransaction.set(credittransaction)
+        j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
+        account = self.models.account.new()
+        account.name = username
+        account.creationTime = now
+        account.DCLocation = location
+        account.company = company
+        account.companyurl = companyurl
+        account.status = 'UNCONFIRMED'
+        account.displayname = user
 
-            #create activationtoken
-            actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
-            activation_token = self.models.accountactivationtoken.new()
-            activation_token.id = actual_token
-            activation_token.creationTime = now
-            activation_token.accountId = accountid
-            self.models.accountactivationtoken.set(activation_token)
+        ace = account.new_acl()
+        ace.userGroupId = username
+        ace.type = 'U'
+        ace.right = 'CXDRAU'
+        accountid = self.models.account.set(account)[0]
 
-            j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
-            _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl, activationtoken=actual_token)
+        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+        creditcomment = 'Getting you started'
+        if signupcredit > 0.0:
+            credittransaction = self.models.credittransaction.new()
+            credittransaction.accountId = accountid
+            credittransaction.amount = signupcredit
+            credittransaction.credit = signupcredit
+            credittransaction.currency = 'USD'
+            credittransaction.comment = creditcomment
+            credittransaction.status = 'CREDIT'
+            credittransaction.time = now
 
-            return True
+            self.models.credittransaction.set(credittransaction)
+
+        j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
+        _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl)
+
+        return True
 
     def validate(self, validationtoken, **kwargs):
         ctx = kwargs['ctx']

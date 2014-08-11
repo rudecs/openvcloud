@@ -76,8 +76,6 @@ h1. Pricing
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4 Address</td></tr>
                     <tr><td>+ Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>+ 100GB from/to internet</td></tr>
-                    <tr><td></td></tr>
                 </table>
                 }}
             {{div4}}
@@ -102,8 +100,6 @@ h1. Pricing
                     <tr><td>+ Private Defense Shield</td></tr>
                     <tr><td>+ Public IPv4 Address</td></tr>
                     <tr><td>+ Unlimited Data Transfer in Datacenter</td></tr>
-                    <tr><td>+ 100GB from/to internet</td></tr>                    
-                    <tr><td>Charged at $0.006944 per hour</td></tr>
                 </table>
                 }}
             {{div4}}
@@ -125,8 +121,6 @@ h1. Pricing
                 <table class="table">
                     <tr><td>Extra Public IPv4 address</td></tr>
                     <tr><td>For use in one of the Decks</td></tr>
-                    <tr><td>Charged at $0.003472 per hour</td></tr>
-                    <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>
                     <tr><td></td></tr>

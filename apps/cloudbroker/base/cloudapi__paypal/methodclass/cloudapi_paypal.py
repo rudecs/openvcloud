@@ -139,3 +139,154 @@ class cloudapi_paypal(j.code.classGetBase()):
 
         approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
         return {'paypalurl':approval_url}
+
+    def confirmvalidation(self, id, token, PayerID, **kwargs):
+        """
+        Paypal callback url for the 1$ authorization
+        param:id internal payment id
+        param:token token
+        param:PayerID PayerID
+        result dict
+        """
+        ctx = kwargs['ctx']
+        validationTransaction = self.models.validationtransaction.get(id)
+        paymentreference = validationTransaction.reference
+        access_token = self._get_access_token()
+        paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        payload = { "payer_id" : PayerID }
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 200:
+            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountValidation')])
+            return "There was an error executing the payment at paypal"
+
+        paypalresponsedata = paypalresponse.json()
+
+        validationTransaction.status = 'PROCESSED'
+        account = self.models.account.get(validationTransaction.accountId)
+        account.status = 'CONFIRMED'
+        self.models.account.set(account)
+        ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
+        ctx.env['beaker.session'].save()
+        self.models.validationtransaction.set(validationTransaction)
+        revoke_url = next((link['href'] for link in paypalresponsedata['transactions'][0]['related_resources'][0]['authorization']['links'] if link['rel'] == 'void'), None)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        paypalresponse = requests.post(revoke_url, headers=headers,data=None)
+        ctx.start_response('302 Found', [('location','/wiki_gcb/Decks')])
+        return ""
+
+
+    def confirmpayedvalidation(self, id, token, PayerID, **kwargs):
+        """
+        Paypal callback url for the 1$ payment, this is in case of a payed validation
+        param:id internal payment id
+        param:token token
+        param:PayerID PayerID
+        result dict
+        """
+        ctx = kwargs['ctx']
+        validationTransaction = self.models.validationtransaction.get(id)
+        paymentreference = validationTransaction.reference
+        access_token = self._get_access_token()
+        paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        payload = { "payer_id" : PayerID }
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 200:
+            ctx.start_response('302 Found',[('location','/wiki_gcb/AccountValidation')])
+            return "There was an error executing the payment at paypal"
+
+        paypalresponsedata = paypalresponse.json()
+
+        validationTransaction.status = 'PROCESSED'
+        account = self.models.account.get(validationTransaction.accountId)
+        account.status = 'CONFIRMED'
+        self.models.account.set(account)
+        ctx.env['beaker.session']['account_status'] = 'CONFIRMED'
+        ctx.env['beaker.session'].save()
+        self.models.validationtransaction.set(validationTransaction)
+        fundback_url = next((link['href'] for link in paypalresponsedata['transactions'][0]['related_resources'][0]['sale']['links'] if link['rel'] == 'refund'), None)
+        headers = {"Content-Type":"application/json",
+                   "Authorization": "Bearer %s" % access_token}
+        payload = {}
+        paypalresponse = requests.post(fundback_url, headers=headers,data=ujson.dumps(payload))
+        ctx.start_response('302 Found', [('location','/wiki_gcb/Decks')])
+        return ""
+
+
+
+    @audit()
+    def initiatevalidation(self, authorization, **kwargs):
+        """
+        Starts a paypal validation flow, this is used to validate a user.
+        A small amount of money 1 USD is billed and after paypal validation the transcaction is removed
+        param:accountId id of the account
+        result dict
+        """
+        ctx = kwargs['ctx']
+        import urlparse
+        urlparts = urlparse.urlsplit(ctx.env['HTTP_REFERER'])
+        portalurl = '%s://%s' % (urlparts.scheme, urlparts.hostname)
+        amount = 1
+        user = ctx.env['beaker.session']['user']
+        accounts = self.models.account.simpleSearch({'name':user.lower()})
+        if accounts:
+          account = accounts[0]
+        else:
+          ctx.start_response('409 Conflict', [])
+          return 'Incorrect configuration no account found for session'
+
+        accountId = account['id']
+
+
+        access_token = self._get_access_token()
+        validationtransaction = self.models.validationtransaction.new()
+        validationtransaction.time = int(time.time())
+        validationtransaction.amount = float(amount)
+        validationtransaction.currency = 'USD'
+        validationtransaction.status = 'UNCONFIRMED'
+        validationtransaction.accountId = accountId
+        validationtransaction.id = self.models.validationtransaction.set(validationtransaction)[0]
+        paymenturl = '%s/v1/payments/payment' % self.paypal_url
+        intent = 'authorize'
+        return_url = "%s/restmachine/cloudapi/paypal/confirmvalidation?id=%s&authkey=%s" % (portalurl,validationtransaction.id,kwargs['authkey'])
+        description = 'Authorization to verify account'
+        if authorization == 'False':
+          intent = 'sale'
+          return_url = "%s/restmachine/cloudapi/paypal/confirmpayedvalidation?id=%s&authkey=%s" % (portalurl,validationtransaction.id,kwargs['authkey'])
+          description = 'Payment to verify account, this will be refunded'
+        payload = {
+                   "intent":intent,
+                   "redirect_urls":{
+                                    "return_url": return_url,
+                                    "cancel_url":"%s/wiki_gcb/AccountValidation" % portalurl
+                                   },
+                   "payer":{
+                            "payment_method":"paypal"
+                           },
+                   "transactions":[
+                                   {
+                                    "amount":{
+                                              "total":amount,
+                                              "currency":"USD"
+                                             },
+                                    "description": description
+                                   }
+                                  ]
+                  }
+
+        headers = {'content-type': 'application/json', 'Authorization': 'Bearer %s' % access_token}
+        paypalresponse = requests.post(paymenturl, headers=headers,data=ujson.dumps(payload))
+        if paypalresponse.status_code is not 201:
+             #TODO raise error
+             pass
+        paypalresponsedata = paypalresponse.json()
+
+        validationtransaction.reference = paypalresponsedata['id']
+        self.models.validationtransaction.set(validationtransaction)
+
+        approval_url = next((link['href'] for link in paypalresponsedata['links'] if link['rel'] == 'approval_url'), None)
+        return {'paypalurl':approval_url}
