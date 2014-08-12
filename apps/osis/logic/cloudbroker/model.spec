@@ -262,5 +262,5 @@
     A token emailed to a user to reset his/her password
     """
     prop:id str,, The actual reset password token
-    prop:username int,, User this token is for
+    prop:username str,, User this token is for
     prop:creationTime int,, epoch time of creation, in seconds

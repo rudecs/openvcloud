@@ -151,7 +151,7 @@ class cloudapi_users(object):
     def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
         
         fromaddr = 'support@mothership1.com'
-        toaddrs  =  [email]
+        toaddrs  =  [emailaddress]
 
         html = """
 <html>
@@ -163,13 +163,14 @@ class cloudapi_users(object):
     <br>
     A request for a password reset on the Mothership<sup>1</sup> service has been requested using this email address.
     <br>
-    You can set a new password for the user %(username)s using the following link: <a href="%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)">%(portalurl)s/wiki_gcb/ResetPassword?resettoken=%(resettoken)</a>
+    <br>
+    You can set a new password for the user %(username)s using the following link: <a href="%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s">%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s</a>
     <br>
     If you are unable to follow the link, copy and paste it in your favorite browser.
     <br>
     <br>
     <br>
-    In case you experience any more issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    In case you experience any more issues logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
     <br>
     <br>
     Best Regards,<br>
@@ -204,6 +205,8 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'No user has been found for this email address'
         
+        user = existingusers[0]
+        
         location = self.cb.extensions.imp.whereAmI()
 
         locationurl = self.cb.extensions.imp.getLocations()[location]
@@ -212,11 +215,11 @@ class cloudapi_users(object):
         actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
         reset_token = self.models.resetpasswordtoken.new()
         reset_token.id = actual_token
-        reset_token.creationTime = now
-        reset_token.username = user['name']
+        reset_token.creationTime = int(time.time())
+        reset_token.username = user['id']
         self.models.resetpasswordtoken.set(reset_token)
 
-        _sendResetPasswordMail(emailaddress,user['name'],actual_token,locationurl)
+        self._sendResetPasswordMail(emailaddress,user['id'],actual_token,locationurl)
         
         return 'Reset password email send'
     
