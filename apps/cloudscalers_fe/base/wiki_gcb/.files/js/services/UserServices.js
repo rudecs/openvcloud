@@ -14,6 +14,17 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         }
                     );
+            },
+            sendResetPasswordLink: function(emailaddress){
+            	return $http.get(cloudspaceconfig.apibaseurl + '/users/sendResetPasswordLink?emailaddress=' + encodeURIComponent(emailaddress) )
+            	.then(
+            			function(result){
+            				return result;
+            			},
+            			function(reason){
+            				return $q.reject(reason);
+            			}
+            		);
             }
         };
     });

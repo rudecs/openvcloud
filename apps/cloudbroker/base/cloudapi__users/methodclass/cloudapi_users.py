@@ -148,6 +148,26 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
+    def sendResetPasswordLink(self, emailaddress, **kwargs):
+        """
+        Sends a reset password link to the supplied email address
+        param:emailaddress unique emailaddress for the account
+        result bool
+        """
+        ctx = kwargs['ctx']
+        
+        cl = j.core.osis.getClientForNamespace('system')
+        #Elastic search analyzed this field, TODO: fix this
+        firstemailaddresspart = emailaddress.lower().split('@')[0]
+        matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
+        existingusers = [match_user for match_user in matchingusers if match_user['emails'].lower() == emailaddress.lower()]
+
+        if (len(existingusers) == 0):
+            ctx.start_response('404 Not Found', [])
+            return 'No user has been found for this email address'
+        
+        return 'Reset password email send'
+    
     def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.

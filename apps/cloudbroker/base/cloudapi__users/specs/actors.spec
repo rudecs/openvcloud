@@ -43,7 +43,7 @@
         var:newPassword str,,newPassword of the user
         result:dict,,user information.
 
-    method:resetPassword @noauth
+    method:sendResetPasswordLink @noauth
 	    """
 	    Sends a reset password link to the supplied email address
 	    """
