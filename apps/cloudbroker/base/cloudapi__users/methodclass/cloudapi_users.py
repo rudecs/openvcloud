@@ -148,6 +148,44 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
+    def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
+        
+        fromaddr = 'support@mothership1.com'
+        toaddrs  =  [email]
+
+        html = """
+<html>
+<head></head>
+<body>
+
+
+    Dear,<br>
+    <br>
+    A request for a password reset on the Mothership<sup>1</sup> service has been requested using this email address.
+    <br>
+    You can set a new password for the user %(username)s using the following link: <a href="%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)">%(portalurl)s/wiki_gcb/ResetPassword?resettoken=%(resettoken)</a>
+    <br>
+    If you are unable to follow the link, copy and paste it in your favorite browser.
+    <br>
+    <br>
+    <br>
+    In case you experience any more issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    <br>
+    <br>
+    Best Regards,<br>
+    <br>
+    The Mothership<sup>1</sup> Team<br>
+    <a href="%(portalurl)s">www.mothership1.com</a><br>
+</body>
+</html>
+    """ % {'email':emailaddress, 'username':username, 'resettoken':resettoken, 'portalurl':portalurl}
+
+        j.clients.email.send(toaddrs, fromaddr, "Your Mothership1 password reset request", html, files=None)
+        
+        
+        
+        
+
     def sendResetPasswordLink(self, emailaddress, **kwargs):
         """
         Sends a reset password link to the supplied email address
@@ -165,6 +203,20 @@ class cloudapi_users(object):
         if (len(existingusers) == 0):
             ctx.start_response('404 Not Found', [])
             return 'No user has been found for this email address'
+        
+        location = self.cb.extensions.imp.whereAmI()
+
+        locationurl = self.cb.extensions.imp.getLocations()[location]
+        
+        #create reset token
+        actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
+        reset_token = self.models.resetpasswordtoken.new()
+        reset_token.id = actual_token
+        reset_token.creationTime = now
+        reset_token.username = user['name']
+        self.models.resetpasswordtoken.set(reset_token)
+
+        _sendResetPasswordMail(emailaddress,user['name'],actual_token,locationurl)
         
         return 'Reset password email send'
     
