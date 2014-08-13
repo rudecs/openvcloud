@@ -35,7 +35,7 @@ angular.module('cloudscalers.controllers')
       					$scope.user.password = $scope.newPassword;
       		    		$timeout(function(){
       		    			$scope.login();
-      		    		}, 4000);
+      		    		}, 2000);
       				},
       				function(reason){
       					if (reason.status == 409){
