@@ -25,6 +25,17 @@ angular.module('cloudscalers.services')
             				return $q.reject(reason);
             			}
             		);
+            },
+            getResetPasswordInformation: function(resettoken){
+            	return $http.get(cloudspaceconfig.apibaseurl + 'users/getResetPasswordInformation?resettoken=' + encodeURIComponent(resettoken))
+            	.then(
+            			function(result){
+            				return result;
+            			},
+            			function(reason){
+            				return $q.reject(reason);
+            			}
+            	);
             }
         };
     });
