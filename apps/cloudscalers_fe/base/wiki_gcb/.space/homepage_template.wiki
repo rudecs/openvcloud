@@ -33,7 +33,7 @@
 {{include:menu}}
 {{html:
 
-
+    <script src="//f.vimeocdn.com/js/froogaloop2.min.js"></script>
     <script src="/$$space/.files/lib/angular-1.2.6/angular.min.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
