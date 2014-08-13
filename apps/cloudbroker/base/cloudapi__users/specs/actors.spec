@@ -34,14 +34,36 @@
 	    """
         var:username str,,username of the user
         result:dict,,user information.
-	
+
 	method:updatePassword
 	    """
-	    Change user passwrod
+	    Change user password
 	    """
         var:oldPassword str,,oldPassword of the user
         var:newPassword str,,newPassword of the user
         result:dict,,user information.
+
+    method:sendResetPasswordLink @noauth
+	    """
+	    Sends a reset password link to the supplied email address
+	    """
+	    var:emailaddress str,,unique emailaddress for the account
+	    result:bool
+
+    method:getResetPasswordInformation @noauth
+        """
+        Retrieve information about a password reset token (if still valid)
+        """
+        var:resettoken str,, password reset token
+        result:bool
+
+    method:resetPassword @noauth
+        """
+        Resets a password
+        """
+        var:resettoken str,, password reset token
+        var:newpassword str,, new password
+        result:bool
 
     method:validate @noauth
         """

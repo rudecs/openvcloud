@@ -256,3 +256,12 @@
     prop:status str,,status of the vm
     prop:location str,, original machine location
     prop:files str,,json representation of backup content
+
+[rootmodel:resetpasswordtoken]
+    """
+    A token emailed to a user to reset his/her password
+    """
+    prop:id str,, The actual reset password token
+    prop:username str,, User this token is for
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:userguid str,, Actual id of the user this token is for
