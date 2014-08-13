@@ -17,7 +17,7 @@ class auth(object):
         account = self.models.account.get(cloudspace.accountId)
         fullacl.update(self.expandAcl(users, groups, account.acl))
         return fullacl
-    
+
     def expandAclFromAccount(self, users, groups, account):
         fullacl = self.expandAcl(users, groups, account.acl)
         return fullacl
@@ -50,6 +50,7 @@ class auth(object):
                 # add brokeradmin access
                 if 'admin' in groups:
                     return func(*args, **kwargs)
+                account = None
                 cloudspace = None
                 if 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(kwargs['accountId'])
@@ -64,7 +65,7 @@ class auth(object):
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:
                     fullacl.update('CXDRU')
-                if cloudspace and not self.acl.issubset(fullacl):
+                if ((cloudspace or account) and not self.acl.issubset(fullacl)):
                     ctx.start_response('403 No ace rule found for user %s for access %s' % (user, ''.join(self.acl)), [])
                     return ''
                 elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
