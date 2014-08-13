@@ -4,17 +4,13 @@ angular.module('cloudscalers.controllers')
     	$scope.verificationStatus = 'PENDING';
 
     	var uri = new URI($window.location);
-    	queryparams = URI.parseQuery(uri.query());
-    	resettoken = queryparams.token;
+    	var queryparams = URI.parseQuery(uri.query());
+    	var resettoken = queryparams.token;
 
     	Users.getResetPasswordInformation(resettoken).then(function(result){
 
     		$scope.verificationStatus = 'VALIDTOKEN';
-//    		$timeout(function(){
-//    			var uri = new URI($window.location);
-//                uri.filename('Login');
-//                $window.location = uri.toString();
-//    		}, 5000);
+    		$scope.username = result.username;
     	}, function(reason){
     		if (reason.status == 419){
     			$scope.verificationStatus = 'EXPIRED';
@@ -24,4 +20,36 @@ angular.module('cloudscalers.controllers')
     		}
     	});
 
+    	  $scope.updatePassword = function() {
+        		$scope.updateResultMessage = "";
+        		$scope.alertStatus = undefined;
+        		if($scope.newPassword != $scope.retypePassword){
+  	      			$scope.alertStatus = "error";
+  	      			$scope.updateResultMessage = "The given passwords do not match.";
+  	      			return;
+  	      		}
+        		Users.resetPassword(resettoken,$scope.newPassword).then(
+      				function(result){
+      					$scope.verificationStatus = 'SUCCEEDED';
+      					$scope.user.username = $scope.username;
+      					$scope.user.password = $scope.newPassword;
+      		    		$timeout(function(){
+      		    			$scope.login();
+      		    		}, 4000);
+      				},
+      				function(reason){
+      					if (reason.status == 409){
+      						$scope.alertStatus = "error";
+      	  	      			$scope.updateResultMessage = reason.data;
+      					}
+      					else if (reason.status == 419){
+      						$scope.verificationStatus = 'EXPIRED';
+      					}
+      					else {
+      						$scope.verificationStatus = 'ERROR';
+      					}
+      				}
+  		      	);
+         }
+    	
     }]);

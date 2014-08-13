@@ -264,3 +264,4 @@
     prop:id str,, The actual reset password token
     prop:username str,, User this token is for
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:userguid str,, Actual id of the user this token is for

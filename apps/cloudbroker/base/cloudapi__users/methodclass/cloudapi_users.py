@@ -217,6 +217,7 @@ class cloudapi_users(object):
         reset_token.id = actual_token
         reset_token.creationTime = int(time.time())
         reset_token.username = user['id']
+        reset_token.userguid = user['guid']
         self.models.resetpasswordtoken.set(reset_token)
 
         self._sendResetPasswordMail(emailaddress,user['id'],actual_token,locationurl)
@@ -238,7 +239,7 @@ class cloudapi_users(object):
         actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
 
         if (actual_reset_token.creationTime + 900) < now:
-            self.models.resetpasswordtoken.delete(actual_reset_token)
+            self.models.resetpasswordtoken.delete(resettoken)
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
@@ -257,19 +258,24 @@ class cloudapi_users(object):
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
+        if not self._isValidPassword(newpassword):
+            ctx.start_response('409 Bad Request', [])
+            return '''A password must be at least 8 and maximum 80 characters long
+                      and may not contain whitespace'''
+
         actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
 
         if (actual_reset_token.creationTime + 900 + 120) < now:
-            self.models.resetpasswordtoken.delete(actual_reset_token)
+            self.models.resetpasswordtoken.delete(resettoken)
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
         systemcl = j.core.osis.getClientForNamespace('system')
-        user = systemcl.user.get(actual_reset_token.username)
-        user.passwd =  md5.new(newPassword).hexdigest()
+        user = systemcl.user.get(actual_reset_token.userguid)
+        user.passwd =  md5.new(newpassword).hexdigest()
         systemcl.user.set(user)
         
-        self.models.resetpasswordtoken.delete(actual_reset_token)
+        self.models.resetpasswordtoken.delete(resettoken)
         
         return [200, "Your password has been changed."]
     

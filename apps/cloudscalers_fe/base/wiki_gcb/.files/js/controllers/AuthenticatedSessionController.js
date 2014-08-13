@@ -5,6 +5,10 @@ angular.module('cloudscalers.controllers')
         $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
 
         $scope.setCurrentCloudspace = function(space) {
+        	if (space == null)
+        	{
+        		return;
+        	}
             if (space.locationurl != null){
                 var currentlocation = $window.location;
                 if (currentlocation.toString().indexOf('AccountValidation') > 1){
