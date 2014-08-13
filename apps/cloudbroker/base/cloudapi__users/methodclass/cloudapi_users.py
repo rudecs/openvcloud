@@ -222,6 +222,56 @@ class cloudapi_users(object):
         self._sendResetPasswordMail(emailaddress,user['id'],actual_token,locationurl)
         
         return 'Reset password email send'
+
+    def getResetPasswordInformation(self, resettoken, **kwargs):
+        """
+        Retrieve information about a password reset token (if still valid)
+        param:resettoken password reset token
+        result bool
+        """
+        ctx = kwargs['ctx']
+        now = int(time.time())
+        if not self.models.resetpasswordtoken.exists(resettoken):
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
+
+        if (actual_reset_token.creationTime + 900) < now:
+            self.models.resetpasswordtoken.delete(actual_reset_token)
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        return {'username':actual_reset_token.username}
+
+    def resetPassword(self, resettoken, newpassword, **kwargs):
+        """
+        Resets a password
+        param:resettoken password reset token
+        param:newpassword new password
+        result bool
+        """
+        ctx = kwargs['ctx']
+        now = int(time.time())
+        if not self.models.resetpasswordtoken.exists(resettoken):
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
+
+        if (actual_reset_token.creationTime + 900 + 120) < now:
+            self.models.resetpasswordtoken.delete(actual_reset_token)
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        systemcl = j.core.osis.getClientForNamespace('system')
+        user = systemcl.user.get(actual_reset_token.username)
+        user.passwd =  md5.new(newPassword).hexdigest()
+        systemcl.user.set(user)
+        
+        self.models.resetpasswordtoken.delete(actual_reset_token)
+        
+        return [200, "Your password has been changed."]
     
     def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
         """
