@@ -1,7 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, network
-import billingenginelib
+from billingenginelib import account as accountbilling
 import netaddr
 import ujson
 import gevent
@@ -31,6 +31,7 @@ class cloudapi_cloudspaces(object):
         self.netmgr = j.apps.jumpscale.netmgr
         self.gridid = j.application.config.get('grid.id')
         self.network = network.Network(self.models)
+        self._accountbilling = accountbilling.account()
 
     @property
     def cb(self):
@@ -100,7 +101,7 @@ class cloudapi_cloudspaces(object):
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         if (len(active_cloudspaces) > 0):
             ctx = kwargs['ctx']
-            if (not billingenginelib.account.isPayingCustomer()):
+            if (not self._accountbilling.isPayingCustomer(accountId)):
                ctx.start_response('409 Conflict', [])
                return 'Creating an extra cloudspace is only available if you made at least 1 payment'
  

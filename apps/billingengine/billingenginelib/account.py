@@ -23,6 +23,6 @@ class account(object):
                                       }
                           }
 
-        queryresult = self.cloudbrokermodels.creddittransaction.find(ujson.dumps(query))['result']
+        queryresult = self.cloudbrokermodels.credittransaction.search(ujson.dumps(query))['result']
         payments = [res['fields'] for res in queryresult]
         return len(payments) > 0
