@@ -7,6 +7,7 @@ from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
 from billingenginelib import pricing
+from billingenginelib import account as accountbilling
 
 ujson = j.db.serializers.ujson
 
@@ -29,7 +30,8 @@ class cloudapi_machines(object):
         self.osisclient = j.core.osis.getClient(user='root')
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-        self._pricing = pricing.pricing()     
+        self._pricing = pricing.pricing()
+        self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
@@ -184,20 +186,6 @@ class cloudapi_machines(object):
         return provider.getSize(brokersize, firstdisk)
 
 
-    def _getCreditBalance(self, accountId):
-        """
-        Get the current available credit
-
-        param:accountId id of the account
-        """
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
-        balance = 0.0
-        for transaction in history:
-            balance += float(transaction['credit'])
-        return balance
 
     @authenticator.auth(acl='C')
     @audit()
@@ -223,7 +211,7 @@ class cloudapi_machines(object):
         
         #Check if there is enough credit
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
-        available_credit = self._getCreditBalance(accountId)
+        available_credit = self._accountbilling.getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine

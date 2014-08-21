@@ -24,6 +24,8 @@ class pricing(object):
 
         self.primary_storage_price = j.application.config.getFloat('mothership1.billing.primarystorageprice')
 
+        self.extra_cloudspace_price = j.application.config.getFloat('mothership1.billing.extracloudspaceprice')
+
         self._machine_sizes = None
         self._machine_images = None
 
@@ -57,6 +59,9 @@ class pricing(object):
         storage_price = (int(diskSize) - 10) * self.primary_storage_price
         return base_price + storage_price
 
+    def get_cloudspace_price_per_hour(self):
+        return self.extra_cloudspace_price
+
     def get_machine_price_per_hour(self, machine):
         machine_imageId = machine['imageId']
         machine_sizeId = machine['sizeId']
@@ -66,14 +71,26 @@ class pricing(object):
 
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
 
-    def get_burn_rate(self, accountId):
-        burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
-        query = {'fields': ['id', 'name', 'accountId']}
-        query['query'] = {'term': {'accountId': accountId}}
+    def _listActiveCloudSpaces(self, accountId):
+        query = {'fields': ['id', 'name','status', 'accountId']}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}}
+                                              ]
+                                  }
+                          }
         results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
+        return cloudspaces
 
-        account_hourly_cost = 0.0
+    def get_burn_rate(self, accountId):
+        burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
+        
+        cloudspaces = self._listActiveCloudSpaces(accountId)
+
+        account_hourly_cost = (len(cloudspaces) - 1) * self.get_cloudspace_price_per_hour()
 
         for cloudspace in cloudspaces:
             query = {'fields':['id','deletionTime','name','cloudspaceId','imageId','sizeId','disks']}
