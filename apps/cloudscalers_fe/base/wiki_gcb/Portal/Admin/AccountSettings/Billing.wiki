@@ -15,7 +15,7 @@
                     <div class="controls">
                         <div class="input-group input-group-sm">
                             <span class="input-group-addon">$</span>
-                            <input type="number" id="creditToAddInput" ng-model="creditToAdd" class="form-control" tourtip="Top up your account. Your uploaded credits will not expire as long your account is active!" tourtip-placement="right">
+                            <input type="number" id="creditToAddInput" ng-model="creditToAdd" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
 
         </div>
     </div>
-    
+
 }}
 
 
