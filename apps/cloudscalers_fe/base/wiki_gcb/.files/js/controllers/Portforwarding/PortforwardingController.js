@@ -1,31 +1,56 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$timeout','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
-        function ($scope, Networks, Machine, $modal, $timeout,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
+        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
-            $scope.$watch('currentSpace.id',function(){
+            
+            
+            $scope.updatePortforwardList = function(){
+                Networks.listPortforwarding($scope.currentSpace.id).then(
+                  function(data) {
+                          $scope.portforwarding = data;
+                  },
+                  function(reason) {
+                          $ErrorResponseAlert(reason);
+                  }
+                );
+            };
+            
+            $scope.updateData = function(){
+            	Machine.list($scope.currentSpace.id).then(function(data) {
+            		$scope.currentSpace.machines = data;
+            	});
+            	$scope.updatePortforwardList();
+            }
+            
+            var cloudspaceupdater;
+            
+            $scope.$watch('currentSpace.id + currentSpace.status',function(){
                 if ($scope.currentSpace){
-                    Machine.list($scope.currentSpace.id).then(function(data) {
-                      $scope.currentSpace.machines = data;
-                    });
-
+                	if ($scope.currentSpace.status != "DEPLOYED"){
+                		if (!(angular.isDefined(cloudspaceupdater))){
+                			cloudspaceupdater = $interval($scope.loadSpaces,5000);
+                		}
+                	}
+                	else{
+                		if (angular.isDefined(cloudspaceupdater)){
+                			$interval.cancel(cloudspaceupdater);
+                			cloudspaceupdater = undefined;
+                		}
+                		$scope.updateData();
+                	}
                 }
             });
-	    $scope.$watch('assignIPMessage',function(){
-              if ($scope.assignIPMessage == ""){
-                  $scope.updatePortforwardList = function(){
-                      Networks.listPortforwarding($scope.currentSpace.id).then(
-                        function(data) {
-                                $scope.portforwarding = data;
-                        },
-                        function(reason) {
-                                $ErrorResponseAlert(reason);
-                        }
-                      );
-                  };
-		  $scope.updatePortforwardList();
-              }
-            });
+            
+            $scope.$on(
+                    "$destroy",
+                    function( event ) {
+                    	if (angular.isDefined(cloudspaceupdater)){
+                    		$interval.cancel(cloudspaceupdater );
+                    		cloudspaceupdater = undefined;
+                    	}
+                    }
+                );
 
             Networks.commonports().then(function(data) {
                 $scope.commonports = data;

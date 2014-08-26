@@ -10,6 +10,7 @@ h3. Details
 |*Location*|${DCLocation}|
 |*Company*|${company}|
 |*Company Site*|${companyurl}|
+|*Status*|${status}|
 
 h3. Users Access
 ||User Name||E-Mail||ACL||

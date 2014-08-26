@@ -7,6 +7,7 @@ from random import sample, choice
 from libcloud.compute.base import NodeAuthPassword
 import urlparse
 from billingenginelib import pricing
+from billingenginelib import account as accountbilling
 
 ujson = j.db.serializers.ujson
 
@@ -29,7 +30,8 @@ class cloudapi_machines(object):
         self.osisclient = j.core.osis.getClient(user='root')
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-        self._pricing = pricing.pricing()     
+        self._pricing = pricing.pricing()
+        self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @property
@@ -183,22 +185,6 @@ class cloudapi_machines(object):
         firstdisk = self.models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
 
-
-    def _getCreditBalance(self, accountId):
-        """
-        Get the current available credit
-
-        param:accountId id of the account
-        """
-        fields = ['time', 'credit', 'status']
-        query = {'accountId': int(accountId), 'status': {'$ne': 'UNCONFIRMED'}}
-        history = self.models.credittransaction.search(query)[1:]
-        self.cb.extensions.imp.filter(history, fields)
-        balance = 0.0
-        for transaction in history:
-            balance += float(transaction['credit'])
-        return balance
-
     @authenticator.auth(acl='C')
     @audit()
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
@@ -226,7 +212,7 @@ class cloudapi_machines(object):
         sizeId = int(sizeId)
         imageId = int(imageId)
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
-        available_credit = self._getCreditBalance(accountId)
+        available_credit = self._accountbilling.getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine
@@ -277,6 +263,11 @@ class cloudapi_machines(object):
 
         try:
             stack = self.cb.extensions.imp.getBestProvider(imageId)
+            if stack == -1:
+                self.models.vmachine.delete(machine.id)
+                ctx = kwargs['ctx']
+                ctx.start_response('503 Service Unavailable', [])
+                return 'Not enough resource available to provision the requested machine'
             provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)

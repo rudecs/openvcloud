@@ -164,40 +164,30 @@
       <li><a data-toggle="tab" role="tab" href="#tab6"><strong>Windows Support</strong><br>Licensed Windows Images</a></li>
     </ul>
     <div class="tab-content col-md-9">
-      <div id="tab1" class="tab-pane fade in active"><video width="100%" preload="auto" poster="/$$space/.files/mp4/login.jpg" src="/$$space/.files/mp4/login.mp4"></video></div>
-      <div id="tab2" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Create Virtual Machine.jpg" src="/$$space/.files/mp4/Create Virtual Machine.mp4"></video></div>
-      <div id="tab3" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Immediate snapshots and rollback.jpg" src="/$$space/.files/mp4/Immediate snapshots and rollback.mp4"></video></div>
-      <div id="tab4" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Set port foward.jpg" src="/$$space/.files/mp4/Set port foward.mp4"></video></div>
-      <div id="tab5" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Configure Private Firewall.jpg" src="/$$space/.files/mp4/Configure Private Firewall.mp4"></video></div>
-      <div id="tab6" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Windows Support good.jpg" src="/$$space/.files/mp4/Windows Support good.mp4"></video></div>
+      <div id="tab1" class="tab-pane fade in active"><iframe src="//player.vimeo.com/video/100206695?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+      <div id="tab2" class="tab-pane fade"><iframe src="//player.vimeo.com/video/100206690?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> </div>
+      <div id="tab3" class="tab-pane fade"><iframe src="//player.vimeo.com/video/100206692?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+
+      <div id="tab4" class="tab-pane fade"><iframe src="//player.vimeo.com/video/100206698?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+      <div id="tab5" class="tab-pane fade"><iframe src="//player.vimeo.com/video/100206689?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+      <div id="tab6" class="tab-pane fade"><iframe src="//player.vimeo.com/video/100206731?title=0&amp;byline=0&amp;portrait=0&api=1" width="100%" height="443" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
     </div>
     </div>
     </div>
   </div>
-  <script>
-    $(function() {
-      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.relatedTarget) $($(e.relatedTarget).attr('href')).find('video')[0].pause();
-
-        $($(e.target).attr('href')).find('video')[0].play();
-      })
-    })
-
-      $('video').click(function(event) {
-    event.stopPropagation();
-    if ($(this).get(0).paused) {
-      $(this).get(0).play();
-    }
-    else {
-      $(this).get(0).pause();
-    }
-  });
-  </script>
 </div>
 
+<script type="text/javascript">
+$(function() {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var prevPlayer = $f($($(e.relatedTarget).attr('href')).find('iframe')[0]);
+        prevPlayer.api('pause');
+        prevPlayer.api('seekTo', 0);
+        $f($($(e.target).attr('href')).find('iframe')[0]).api('play');
+    });
+});
+</script>
 }}
-
-
 
 {{div2:class=loader | style=display: none }} 
 h2. loading

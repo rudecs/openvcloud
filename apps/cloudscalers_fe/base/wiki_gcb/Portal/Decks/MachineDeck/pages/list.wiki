@@ -13,7 +13,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 }}
 
 {{html:
-
+<tour step="steps.machineListTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineListTourStep')">
 <div id="tabbable">
   <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
@@ -22,7 +22,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     <!-- Button -->
     <div class="control-group absolutePad0">
       <div class="">
-        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute1">Create Machine</button>
+        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute1" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</button>
       </div>
     </div>
 
@@ -54,4 +54,8 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
   </table>
 </div>
 </div>
+<div class="portforwordTip" >
+    <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
+</div>
+</tour>
 }}

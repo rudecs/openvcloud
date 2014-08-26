@@ -8,7 +8,7 @@ class Network(object):
         for poolid in self.models.publicipv4pool.list():
             pool = self.models.publicipv4pool.get(poolid)
             if pool.pubips:
-                pubip = pool.pubips.pop()
+                pubip = pool.pubips.pop(0)
                 self.models.publicipv4pool.set(pool)
                 net = netaddr.IPNetwork(poolid)
                 return pool, netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))

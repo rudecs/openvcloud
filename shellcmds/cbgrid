@@ -61,7 +61,7 @@ elif opts.action == 'disablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = False
+        stackobj.status = 'DISABLED'
         scl.set(stackobj)
         print 'Node %s was disabled successfully' % nodename
 
@@ -74,7 +74,7 @@ elif opts.action == 'enablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = True
+        stackobj.status = 'ENABLED'
         scl.set(stackobj)
         print 'Node %s was enabled successfully' % nodename
 

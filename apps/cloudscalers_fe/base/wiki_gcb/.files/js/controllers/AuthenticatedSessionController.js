@@ -3,11 +3,17 @@ angular.module('cloudscalers.controllers')
         $scope.currentUser = User.current();
         $scope.currentSpace = CloudSpace.current();
         $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
-	
+
         $scope.setCurrentCloudspace = function(space) {
-	    $scope.assignIPMessage = "";
+        	if (space == null)
+        	{
+        		return;
+        	}
             if (space.locationurl != null){
                 var currentlocation = $window.location;
+                if (currentlocation.toString().indexOf('AccountValidation') > 1){
+                return;
+                }
                 if (currentlocation.origin != space.locationurl){
                     $window.location = space.locationurl + '/wiki_gcb/SwitchSpace'
                             + '?username=' + encodeURIComponent($scope.currentUser.username)
@@ -40,52 +46,23 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('cloudspaces', function(){
             if (!$scope.cloudspaces)
                 return;
-            if ($scope.currentSpace && _.findWhere($scope.cloudspaces, {id: $scope.currentSpace.id}))
-                return;
 
-            $scope.setCurrentCloudspace(_.first($scope.cloudspaces));
+            var currentCloudSpaceFromList;
+            if ($scope.currentSpace){
+                currentCloudSpaceFromList = _.find($scope.cloudspaces, function(cloudspace){ return cloudspace.id == $scope.currentSpace.id; });
+            }
+            if (currentCloudSpaceFromList == null){
+                currentCloudSpaceFromList = _.first($scope.cloudspaces);
+            }
+            $scope.setCurrentCloudspace(currentCloudSpaceFromList);
+
         }, true);
 
-	$scope.$watch('currentAccount',  function(){
+	    $scope.$watch('currentAccount',  function(){
               if($scope.currentAccount){
-		$scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
-	      }
+                    $scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
+	          }
             }, true);
-	
-	CloudSpace.get($scope.currentSpace.id).then(
-		function(data) {
-        	if(data.status == 'DEPLOYED'){
-                	$scope.assignIPMessage = "";
-                   }
-                   else{
-                        $scope.assignIPMessage = 'Unavailable until the first Virtual Machine is deployed';
-                   }
-                },
-                function(reason) {
-                   $ErrorResponseAlert(reason);
-                }
-        );
-
-	$scope.$watch('currentSpace.id',function(){
-                if ($scope.currentSpace){
-		            var getCloudspaceStatueTimer = setInterval(function() {
-                    CloudSpace.get($scope.currentSpace.id).then(
-                        function(data) {
-            			   if(data.status == 'DEPLOYED'){
-            				$scope.assignIPMessage = "";
-            				clearInterval(getCloudspaceStatueTimer);
-            			   }
-            			   else{
-            				$scope.assignIPMessage = 'Unavailable until the first Virtual Machine is deployed';
-            			   }
-                        },
-                        function(reason) {
-                           $ErrorResponseAlert(reason);
-                        }
-                    );
-		 }, 5000);
-               }
-         });
 
         $scope.logout = function() {
             User.logout();

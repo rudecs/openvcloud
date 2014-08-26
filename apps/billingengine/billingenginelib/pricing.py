@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale import portal
 from JumpScale.grid import osis
+import ujson
 
 class pricing(object):
     def __init__(self):
@@ -17,6 +18,7 @@ class pricing(object):
             self.base_machine_prices[machine_type.lower()] = dict([(int(kv[0]),float(kv[1])) for kv in stringprices.items()])
 
         self.primary_storage_price = j.application.config.getFloat('mothership1.billing.primarystorageprice')
+        self.extra_cloudspace_price = j.application.config.getFloat('mothership1.billing.extracloudspaceprice')
 
         self._machine_sizes = None
         self._machine_images = None
@@ -49,6 +51,9 @@ class pricing(object):
         storage_price = (int(diskSize) - 10) * self.primary_storage_price
         return base_price + storage_price
 
+    def get_cloudspace_price_per_hour(self):
+        return self.extra_cloudspace_price
+
     def get_machine_price_per_hour(self, machine):
         machine_imageId = machine['imageId']
         machine_sizeId = machine['sizeId']
@@ -58,11 +63,19 @@ class pricing(object):
 
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
 
+    def _listActiveCloudSpaces(self, accountId):
+        
+        fields = ['id', 'name','status', 'accountId']
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+        cloudspaces = self.cloudbrokermodels.cloudspace.search(query)[1:]
+        self.cb.extensions.imp.filter(cloudspaces, fields)
+        return cloudspaces
+
     def get_burn_rate(self, accountId):
         burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
-        cloudspaces = self.cloudbrokermodels.cloudspace.search({'accountId': int(accountId)})[1:]
+        cloudspaces = self._listActiveCloudSpaces(accountId)
 
-        account_hourly_cost = 0.0
+        account_hourly_cost = (len(cloudspaces) - 1) * self.get_cloudspace_price_per_hour()
 
         for cloudspace in cloudspaces:
             query = {'cloudspaceId': cloudspace['id'], 'status': {'$nin': ['DESTROYING', 'DESTROYED']}}

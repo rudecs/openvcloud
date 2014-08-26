@@ -68,7 +68,7 @@
       <div class="login-symbol signUpForm">
       <div class="promoPic"></div>	
         <center>
-        <h1>Limited Time Offer: Free Cloud Hosting From Mothership<sup>1</sup></h1>
+        <h1>Limited Time Promotion: 50 USD Cloud Hosting Bonus From Mothership<sup>1</sup></h1>
           <h5>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h5>
         </center>
         <center><h5 style="margin-bottom: 20px;">Mothership<sup>1</sup> is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>
@@ -76,13 +76,13 @@
           <div class="col-md-6">
             <div class="thumbnail">
               <div class="caption">
-                <h5>Limited Time Offer: Free Cloud Hosting From Mothership<sup>1</sup></h5>
+                <h5>Limited Time Offer: How to unlock 50 USD Bonus<sup>1</sup></h5>
                 
                 <ul>
-                  <li>Get $50 Free Credit for 1 month</li>
-                  <li>To use for Virtual Machines and Storage</li>
-                  <li>Signup now - No renewal obligation</li>
-                  <li>No automatic credit card charges</li>
+                  <li>Signup now - No obligations - No automatic credit card charges</li>
+                  <li>Receive $5 Test Drive Credit right away</li>
+                  <li>Proceed and purchase $25 of Credit</li>
+                  <li>$50 Bonus is added to your account</li>
                 </ul>
               </div>
             </div>
@@ -114,15 +114,15 @@
             <iframe src="https://player.vimeo.com/video/76605659?title=0&amp;byline=0&amp;portrait=0" width="100%" height="260" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
         </div>
         <div class="col-md-6 mtb">
-        	<a style="margin-bottom: 30px;" href="../$$space/SignUp?promocode=cloud50" class="btn btn-success wideOne" role="button">Sign Up Now for 50 USD Free Trial</a>
+        	<a style="margin-bottom: 30px;" href="../$$space/SignUp?promocode=cloudsummerpromo" class="btn btn-success wideOne" role="button">Sign Up Now using this promotion</a>
              
                 <h5>Very competitive prices:</h5>
                 
                 <ul>
                   <li>Virtual Machines start at $5.00 USD/Month</li>
-                  <li>S3 storage at $0.03/GB/Month (Pricing)</li>
+                  <li>S3 compatible storage at $0.03/GB/Month (Pricing)</li>
                   <li>Pay per hour</li>
-                  <li>Up to 50% lower than major cloud providers</li>
+                  <li>Up to 50% lower cost than major cloud providers</li>
                 </ul>
               
            

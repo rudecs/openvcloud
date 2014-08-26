@@ -17,19 +17,21 @@ def _send_signup_mail(**kwargs):
 <html>
 <head></head>
 <body>
-    Dear %(user)s,<br>
+
+
+    Dear,<br>
     <br>
-    Thank you for registering at Mothership<sup>1</sup>!<br>
+    Thank you for registering with Mothership<sup>1</sup>.
     <br>
-    We have now prepared your account %(username)s and we have applied a welcoming credit so you can start right away!<br>
     <br>
-    Please confirm your e-mail address by following the activation link: <br>
+    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
     <br>
-    <a href="%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s">%(portalurl)s/wiki_gcb/AccountActivation?activationtoken=%(activationtoken)s</a><br>
     <br>
-    If you are unable to follow the link, please copy and paste it in your favourite browser.<br>
+    All new users are granted a free test drive for 2 weeks.
     <br>
-    After your validation, you will be able to log in with your username and chosen password.<br>
+    <br>
+    In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    <br>
     <br>
     Best Regards,<br>
     <br>
@@ -83,9 +85,12 @@ class cloudapi_users(object):
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session
                 session['user'] = username
+                session['account_status'] = status
                 session.save()
+                if status != 'CONFIRMED':
+                  ctx.start_response('409 Conflict', [])
+                  return session.id
                 return session.id
-
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
@@ -142,6 +147,130 @@ class cloudapi_users(object):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
+    def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
+        
+        fromaddr = 'support@mothership1.com'
+        toaddrs  =  [emailaddress]
+
+        html = """
+<html>
+<head></head>
+<body>
+
+
+    Dear,<br>
+    <br>
+    A request for a password reset on the Mothership<sup>1</sup> service has been requested using this email address.
+    <br>
+    <br>
+    You can set a new password for the user %(username)s using the following link: <a href="%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s">%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s</a>
+    <br>
+    If you are unable to follow the link, copy and paste it in your favorite browser.
+    <br>
+    <br>
+    <br>
+    In case you experience any more issues logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    <br>
+    <br>
+    Best Regards,<br>
+    <br>
+    The Mothership<sup>1</sup> Team<br>
+    <a href="%(portalurl)s">www.mothership1.com</a><br>
+</body>
+</html>
+    """ % {'email':emailaddress, 'username':username, 'resettoken':resettoken, 'portalurl':portalurl}
+
+        j.clients.email.send(toaddrs, fromaddr, "Your Mothership1 password reset request", html, files=None)
+
+    def sendResetPasswordLink(self, emailaddress, **kwargs):
+        """
+        Sends a reset password link to the supplied email address
+        param:emailaddress unique emailaddress for the account
+        result bool
+        """
+        ctx = kwargs['ctx']
+        
+        cl = j.core.osis.getClientForNamespace('system')
+        existingusers = cl.user.search({'emails':emailaddress})[1:]
+
+        if (len(existingusers) == 0):
+            ctx.start_response('404 Not Found', [])
+            return 'No user has been found for this email address'
+        
+        user = existingusers[0]
+        
+        location = self.cb.extensions.imp.whereAmI()
+
+        locationurl = self.cb.extensions.imp.getLocations()[location]
+        
+        #create reset token
+        actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
+        reset_token = self.models.resetpasswordtoken.new()
+        reset_token.id = actual_token
+        reset_token.creationTime = int(time.time())
+        reset_token.username = user['id']
+        reset_token.userguid = user['guid']
+        self.models.resetpasswordtoken.set(reset_token)
+
+        self._sendResetPasswordMail(emailaddress,user['id'],actual_token,locationurl)
+        
+        return 'Reset password email send'
+
+    def getResetPasswordInformation(self, resettoken, **kwargs):
+        """
+        Retrieve information about a password reset token (if still valid)
+        param:resettoken password reset token
+        result bool
+        """
+        ctx = kwargs['ctx']
+        now = int(time.time())
+        if not self.models.resetpasswordtoken.exists(resettoken):
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
+
+        if (actual_reset_token.creationTime + 900) < now:
+            self.models.resetpasswordtoken.delete(resettoken)
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        return {'username':actual_reset_token.username}
+
+    def resetPassword(self, resettoken, newpassword, **kwargs):
+        """
+        Resets a password
+        param:resettoken password reset token
+        param:newpassword new password
+        result bool
+        """
+        ctx = kwargs['ctx']
+        now = int(time.time())
+        if not self.models.resetpasswordtoken.exists(resettoken):
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        if not self._isValidPassword(newpassword):
+            ctx.start_response('409 Bad Request', [])
+            return '''A password must be at least 8 and maximum 80 characters long
+                      and may not contain whitespace'''
+
+        actual_reset_token = self.models.resetpasswordtoken.get(resettoken)
+
+        if (actual_reset_token.creationTime + 900 + 120) < now:
+            self.models.resetpasswordtoken.delete(resettoken)
+            ctx.start_response('419 Authentication Expired', [])
+            return 'Invalid or expired validation token'
+
+        systemcl = j.core.osis.getClientForNamespace('system')
+        user = systemcl.user.get(actual_reset_token.userguid)
+        user.passwd =  md5.new(newpassword).hexdigest()
+        systemcl.user.set(user)
+        
+        self.models.resetpasswordtoken.delete(resettoken)
+        
+        return [200, "Your password has been changed."]
+
     def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
         """
         Register a new user, a user is registered with a login, password and a new account is created.
@@ -163,66 +292,64 @@ class cloudapi_users(object):
 
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
-            return 'User already exists'
-        else:
-            now = int(time.time())
+            return 'Username already exists'
+        cl = j.core.osis.getClientForNamespace('system')
+        #Elastic search analyzed this field, TODO: fix this
+        firstemailaddresspart = emailaddress.lower().split('@')[0]
+        matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
+        existingusers = [match_user for match_user in matchingusers if match_user['emails'].lower() == emailaddress.lower()]
 
-            location = location.lower()
+        if (len(existingusers) > 0):
+            ctx.start_response('409 Conflict', [])
+            return 'An account with this email address already exists'
 
-            if not location in self.cb.extensions.imp.getLocations():
-                location = self.cb.extensions.imp.whereAmI()
+        now = int(time.time())
 
-            locationurl = self.cb.extensions.imp.getLocations()[location]
-            if location != self.cb.extensions.imp.whereAmI():
-                correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
-                ctx.start_response('451 Redirect', [('Location', correctlocation)])
-                return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
+        location = location.lower()
 
-            j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
-            account = self.models.account.new()
-            account.name = username
-            account.creationTime = now
-            account.DCLocation = location
-            account.company = company
-            account.companyurl = companyurl
-            account.status = 'UNCONFIRMED'
-            account.displayname = user
+        if not location in self.cb.extensions.imp.getLocations():
+            location = self.cb.extensions.imp.whereAmI()
 
-            ace = account.new_acl()
-            ace.userGroupId = username
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
-            accountid = self.models.account.set(account)[0]
+        locationurl = self.cb.extensions.imp.getLocations()[location]
+        if location != self.cb.extensions.imp.whereAmI():
+            correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
+            ctx.start_response('451 Redirect', [('Location', correctlocation)])
+            return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
 
-            signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
-            creditcomment = 'Getting you started'
-            if promocode == 'cloud50':
-                signupcredit = 50.0
-                creditcomment = 'Promo code cloud50'
-            if signupcredit > 0.0:
-                credittransaction = self.models.credittransaction.new()
-                credittransaction.accountId = accountid
-                credittransaction.amount = signupcredit
-                credittransaction.credit = signupcredit
-                credittransaction.currency = 'USD'
-                credittransaction.comment = creditcomment
-                credittransaction.status = 'CREDIT'
-                credittransaction.time = now
+        j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
+        account = self.models.account.new()
+        account.name = username
+        account.creationTime = now
+        account.DCLocation = location
+        account.company = company
+        account.companyurl = companyurl
+        account.status = 'UNCONFIRMED'
+        account.displayname = user
 
-                self.models.credittransaction.set(credittransaction)
+        ace = account.new_acl()
+        ace.userGroupId = username
+        ace.type = 'U'
+        ace.right = 'CXDRAU'
+        accountid = self.models.account.set(account)[0]
 
-            #create activationtoken
-            actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(32))
-            activation_token = self.models.accountactivationtoken.new()
-            activation_token.id = actual_token
-            activation_token.creationTime = now
-            activation_token.accountId = accountid
-            self.models.accountactivationtoken.set(activation_token)
+        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+        creditcomment = 'Getting you started'
+        if signupcredit > 0.0:
+            credittransaction = self.models.credittransaction.new()
+            credittransaction.accountId = accountid
+            credittransaction.amount = signupcredit
+            credittransaction.credit = signupcredit
+            credittransaction.currency = 'USD'
+            credittransaction.comment = creditcomment
+            credittransaction.status = 'CREDIT'
+            credittransaction.time = now
 
-            j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None, **kwargs)
-            _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl, activationtoken=actual_token)
+            self.models.credittransaction.set(credittransaction)
 
-            return True
+        j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
+        _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl)
+
+        return True
 
     def validate(self, validationtoken, **kwargs):
         ctx = kwargs['ctx']

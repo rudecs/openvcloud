@@ -94,7 +94,7 @@ class CloudBroker(object):
     def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
-            raise RuntimeError('No Providers available')
+            raise -1
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             return -1
@@ -107,8 +107,12 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, imageId):
         # group all units per type
+        resourcesdata = list()
         stacks = models.stack.search({"images": imageId})[1:]
-        return stacks
+        for stack in stacks:
+            if stack.get('status', 'ENABLED') == 'ENABLED':
+                resourcesdata.append(stack)
+        return resourcesdata
 
     def stackImportImages(self, stackId):
         provider = CloudProvider(stackId)
