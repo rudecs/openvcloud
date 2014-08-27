@@ -87,7 +87,7 @@ class pricing(object):
 
     def get_burn_rate(self, accountId):
         burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
-        
+
         cloudspaces = self._listActiveCloudSpaces(accountId)
 
         account_hourly_cost = (len(cloudspaces) - 1) * self.get_cloudspace_price_per_hour()

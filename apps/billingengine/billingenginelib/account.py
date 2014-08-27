@@ -10,24 +10,13 @@ class account(object):
     def isPayingCustomer(self, accountId):
         query = {'fields':['accountId']}
 
-        query['query'] = {
-                          'filtered':{
-                                      "query" :{
-                                                "bool":{"must":[
-                                                                {"term":{"status":"credit"}},
-                                                                {"term" : { "accountId" : accountId }}
-                                                                ]
-                                                        }
-                                                },
-                                      "filter" : {"exists":{"field":"reference"}}
-                                      }
-                          }
+        query['query'] = {"bool":{"must":[{"term" : { "accountId" : accountId }}], "must_not": [{'term':{'status':'UNCONFIRMED'.lower()}}]}}
 
         queryresult = self.cloudbrokermodels.credittransaction.search(ujson.dumps(query))['result']
         payments = [res['fields'] for res in queryresult]
         return len(payments) > 0
-    
-    
+
+
     def getCreditBalance(self, accountId):
         """
         Get the current available credit
