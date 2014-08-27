@@ -1,5 +1,5 @@
 {{html:
-
+<div ng-controller="MachineListController">
    <div ng-cloak ng-show="(machines | filter:machineIsManageable).length == 0">
   }}
   h1. Machine Deck
@@ -9,10 +9,8 @@ Welcome to the Machine Deck. Hit Create Machine and in less than 5 seconds it wi
 New users can find useful info about the Machine Deck in our [Quick Tutorial Guide|Getting Started].
 
 {{html:
-</div>
-}}
+    </div>
 
-{{html:
 <tour step="steps.machineListTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineListTourStep')">
 <div id="tabbable">
   <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
@@ -58,4 +56,5 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
 </div>
 </tour>
+</div>
 }}
