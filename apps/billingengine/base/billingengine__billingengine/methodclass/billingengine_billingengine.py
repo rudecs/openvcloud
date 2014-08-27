@@ -59,6 +59,7 @@ class billingengine_billingengine(j.code.classGetBase()):
                 if (number_of_hours_in_previous_calculations < 1.0):
                     number_of_billable_hours = 1.0 - number_of_hours_in_previous_calculations
         
+        return number_of_billable_hours
 
     def _update_machine_billingstatement(self, machinebillingstatement, machine, fromTime, untilTime):
         machinebillingstatement.deletionTime = machine['deletionTime']
@@ -150,11 +151,11 @@ class billingengine_billingengine(j.code.classGetBase()):
 
         #First cloudspace is free and an account always has at least one cloudspace
         #So substract 1 cloudspace for the total billing time
-        if (len(cloudspaces > 0)):
-            cloudspacesbycreationtime = ordered(cloudspaces, key=lambda x: x['creationTime'])
+        if (len(cloudspaces) > 0):
+            cloudspacesbycreationtime = sorted(cloudspaces, key=lambda x: x['creationTime'])
             creationTime = cloudspacesbycreationtime[0]['creationTime']
             
-            cloudspacesbydeletiontime = ordered(cloudspaces, key=lambda x: x['deletionTime'])
+            cloudspacesbydeletiontime = sorted(cloudspaces, key=lambda x: x['deletionTime'])
             deletionTime = 0
             if (cloudspacesbydeletiontime[0]['deletionTime'] > 0):
                 deletionTime = cloudspacesbydeletiontime[-1]['deletionTime']
