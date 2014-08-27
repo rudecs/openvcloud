@@ -6,13 +6,21 @@ angular.module('cloudscalers.controllers')
         
 
         $scope.$watch('tabactive.console+$parent.machine.status',function(){
-		if ($scope.tabactive.console && $scope.$parent.machine.status == "RUNNING"){
+        	if ($scope.tabactive.console && $scope.$parent.machine.status == "RUNNING"){
         		$scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
-		}
-		else {
-			$scope.machineConsoleUrlResult = {};
-		}
-	});
+        	}
+        	else {
+        		$scope.machineConsoleUrlResult = {};
+        	}
+        });
+        
+        //Make sure the keyboard is not captured when going to other pages
+        $scope.$on(
+                "$destroy",
+                function( event ) {
+                	$scope.machineConsoleUrlResult = {};
+                }
+            );
         
         $scope.$watch('machineConsoleUrlResult',function(newvalue, oldvalue){
         	if (newvalue.url){
