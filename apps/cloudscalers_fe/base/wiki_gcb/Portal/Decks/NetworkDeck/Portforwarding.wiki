@@ -11,7 +11,7 @@
 	<div class="portMargin" ng-controller="PortforwardingController">
 		<div>
 			<div style="margin-bottom: 5px;">
-				<button class="btn btn-info btn-large absolute1" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED'" ng-click="portForwardPopup()">Add</button>
+				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED'" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
 			<table class="table table-striped table-bordered" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">

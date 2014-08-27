@@ -346,10 +346,18 @@
 .background-white{
 	background: #fff;
 }
-
 .opacity4{
 	opacity: .4;
 }
+
+/* positions */
+.position-top-small{
+	top: 5px;
+}
+.position-right-medium{
+	right: 15px;
+}
+
 /*  /////////////\\\\\\\\\\  */
 /*   	   End of oocss   	 */
 /*  \\\\\\\\\\\\\//////////  */
