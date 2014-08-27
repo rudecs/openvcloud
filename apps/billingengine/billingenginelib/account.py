@@ -10,7 +10,7 @@ class account(object):
     def isPayingCustomer(self, accountId):
         query = {'fields':['accountId']}
 
-        query['query'] = {"bool":{"must":[{"term" : { "accountId" : accountId }}], "must_not": [{'term':{'status':'UNCONFIRMED'.lower()}}]}}
+        query['query'] = {"bool":{"must":[{"term" : { "accountId" : accountId }},{'term':{'status':'PROCESSED'.lower()}}]}}
 
         queryresult = self.cloudbrokermodels.credittransaction.search(ujson.dumps(query))['result']
         payments = [res['fields'] for res in queryresult]
