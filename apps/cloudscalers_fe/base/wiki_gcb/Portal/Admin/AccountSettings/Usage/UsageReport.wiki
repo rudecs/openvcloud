@@ -17,7 +17,7 @@
                                                 <div class="margin-top-large">Cloudspace {[ cloudspace.name ]}</div>
                                         </div>
                                         <div class="span6">
-                                                <div class="margin-top-large">Cost: {[ cloudspace.totalCost | currency:"$" ]}</div>
+                                                <div class="margin-top-large">Cost: {[ cloudspace.totalCost | currency:"$" ]} ({[ cloudspace.cloudspaceCost | currency:"$" ]} for the cloudspace itself )</div>
                                         </div>
 				</div>
 				<div class="table-responsive">
@@ -59,6 +59,15 @@
 				</table>
 				</div>
 				<hr />
+			</div>
+			<hr />
+			<div class="row">
+				<div class="span6">
+					<div class="margin-top-large">1 cloudspace for free </div>
+				</div>
+				<div class="span6">
+					<div class="margin-top-large">Refund: {[ usagereport.freeCloudspaceCost | currency:"$" ]}</div>
+				</div>
 			</div>
 </div>
 <script src="/$$space/.files/js/controllers/Billing/UsageController.js" type="text/javascript"></script>
