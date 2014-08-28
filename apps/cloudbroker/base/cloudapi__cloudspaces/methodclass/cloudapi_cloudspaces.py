@@ -1,11 +1,14 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, network
+from billingenginelib import account as accountbilling
+from billingenginelib import pricing
 import netaddr
 import ujson
 import gevent
 import urlparse
 import uuid
+import time
 
 
 def getIP(network):
@@ -29,6 +32,11 @@ class cloudapi_cloudspaces(object):
         self.netmgr = j.apps.jumpscale.netmgr
         self.gridid = j.application.config.get('grid.id')
         self.network = network.Network(self.models)
+        self._accountbilling = accountbilling.account()
+        self._pricing = pricing.pricing()
+        self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
+
+       
 
     @property
     def cb(self):
@@ -69,6 +77,19 @@ class cloudapi_cloudspaces(object):
             acl.right = accesstype
             return self.models.cloudspace.set(cs)[0]
 
+    def _listActiveCloudSpaces(self, accountId):
+        query = {'fields': ['id', 'name','status']}
+        query['query'] = {'bool':{'must':[
+                                          {'term': {'accountId': accountId}}
+                                          ],
+                                  'must_not':[
+                                              {'term':{'status':'DESTROYED'.lower()}}
+                                              ]
+                                  }
+                          }
+        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        return results
+
     @authenticator.auth(acl='A')
     @audit()
     def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
@@ -81,6 +102,24 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        
+        active_cloudspaces = self._listActiveCloudSpaces(accountId)
+        
+        # Extra cloudspaces require a payment and a credit check
+        if (len(active_cloudspaces) > 0):
+            ctx = kwargs['ctx']
+            if (not self._accountbilling.isPayingCustomer(accountId)):
+               ctx.start_response('409 Conflict', [])
+               return 'Creating an extra cloudspace is only available if you made at least 1 payment'
+ 
+            available_credit = self._accountbilling.getCreditBalance(accountId)
+            burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
+            new_burnrate = burnrate + self._pricing.get_cloudspace_price_per_hour()
+            if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
+                ctx.start_response('409 Conflict', [])
+                return 'Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required
+
+        
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -98,6 +137,7 @@ class cloudapi_cloudspaces(object):
 
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
+        cs.creationTime = int(time.time())
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
 
@@ -188,6 +228,7 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cloudspace)
         cloudspace = self._release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
+        cloutspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
 
 

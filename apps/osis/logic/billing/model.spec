@@ -7,6 +7,7 @@
 	prop:accountId int,,
 	prop:lastupdatedTime int,,
 	prop:cloudspaces list(CloudSpaceUsage),,
+	prop:freeCloudspaceCost float,, The first cloudspace is free
 	prop:totalCost float,,
 	prop:fromTime int,,
 	prop:untilTime int,,
@@ -18,6 +19,7 @@
     prop:cloudspaceId int,,
     prop:name str,,name as given by customer
     prop:machines list(VMachine),,
+    prop:cloudspaceCost float,, Cost of the cloudspace itself
     prop:totalCost float,,
 
 [rootmodel:VMachine] @dbtype:osis

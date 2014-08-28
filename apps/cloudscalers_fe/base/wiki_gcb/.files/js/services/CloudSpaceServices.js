@@ -16,8 +16,15 @@ angular.module('cloudscalers.services')
             },
             create: function(name, accountId, userId, locationUrl) {
             	return $http.jsonp(locationUrl + '/' + cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId) + '&_jsonp=JSON_CALLBACK').then(
-            			function(result){
-            				return JSON.parse(result.data);
+            			function(jsonpresult){
+            				var actualresult = jsonpresult.data;
+            				var result = {status:actualresult.httpStatus, data:actualresult.body };
+            				if (result.status == 200){
+            					return result.data;
+            				}
+            				else {
+            					return $q.reject(result);
+            				}
             			},
             			function(reason){
             				return $q.reject(reason);

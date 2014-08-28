@@ -51,6 +51,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 localIp = machine.nics[0].ipAddress
         return localIp
 
+    def _checkreserved(self, publicport):
+        reservedports = [9022,9080, '9022', '9080']
+        return publicport in reservedports
+
     @authenticator.auth(acl='C')
     @audit()
     def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, protocol=None, **kwargs):
@@ -78,6 +82,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
+        if self._checkreserved(publicPort):
+            ctx.start_response('403 Forbidden', [])
+            return "Public port %s is reserved" % publicPort
+        
         return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
@@ -135,7 +143,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         forward = forwards[id]
         self.netmgr.fw_forward_delete(fw_id, self.gridid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -163,24 +171,36 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
             ctx.start_response('403 Forbidden', [])
             return "Forward for %s with port %s already exists" % (localIp, localPort)
+        if self._checkreserved(publicPort):
+            ctx.start_response('403 Forbidden', [])
+            return "Public port %s is reserved" % publicPort
         self.netmgr.fw_forward_delete(fw_id, self.gridid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        return self._process_list(forwards,cloudspaceid)
 
-    def _process_list(self, forwards):
+    def _process_list(self, forwards, cloudspaceId):
         result = list()
+        query = {}
+        query['query'] = {'bool':{'must':[
+                                               {'term': {'cloudspaceId': cloudspaceId}}
+                                               ],
+                                    'must_not': [
+                                               {'term': {'status':'destroyed'}}
+                                               ]
+                                      }
+                              }
+        
+        cloudspace_machines = self.models.vmachine.find(ujson.dumps(query))['result']
         for index, f in enumerate(forwards):
             f['id'] = index
-            query = {}
-            query['query'] = {'term': {'ipAddress': f['localIp']}}
-            machine = self.models.vmachine.find(ujson.dumps(query))
-            if machine['total'] != 1:
+            machineswithip = [machine['_source'] for machine in cloudspace_machines if machine['_source']['nics'][0]['ipAddress'] == f['localIp']]
+            if len(machineswithip) == 0:
                 f['vmName'] = f['localIp']
             else:
-                f['vmName'] = "%s (%s)" % (machine['result'][0]['_source']['name'], f['localIp'])
-                f['vmid'] = machine['result'][0]['_source']['id']
+                f['vmName'] = "%s (%s)" % (machineswithip[0]['name'], f['localIp'])
+                f['vmid'] = machineswithip[0]['id']
             if not f['protocol']:
                 f['protocol'] = 'tcp'
             result.append(f)
@@ -200,14 +220,4 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
-
-    @authenticator.auth(acl='R')
-    @audit()
-    def listcommonports(self, **kwargs):
-        """
-        List a range of predifined ports
-        """
-        return [{'name': 'http', 'port': 80, 'protocol': 'tcp'},
-                {'name': 'ftp', 'port': 21, 'protocol': 'tcp'},
-                {'name': 'ssh', 'port': 22, 'protocol': 'tcp'}]
+        return self._process_list(forwards,cloudspaceid)

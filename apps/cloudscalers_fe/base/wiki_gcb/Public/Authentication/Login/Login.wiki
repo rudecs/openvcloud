@@ -9,7 +9,7 @@
 
             <div class="login-fields">
 
-                
+
                 <div class="alert alert-error ng-hide" ng-show="login_error">Please enter the correct username & password.</div>
                 <div class="field">
                     <div class="loginField">
@@ -27,15 +27,17 @@
                         </div>
                     </div>
                  </div>
-                
+
             </div>
 
-            
+
                 <input type="submit" class="btn btn-primary btn-lg btn-block primaryMine" value="Login" >
-            
-			<div class="sp"></div> 
+                <div class="center">
+                    <a href="/$$space/ForgotPassword" style="color:#444444;">I forgot my password</a>
+                </div>
+			<div class="sp"></div>
 			<a href="/$$space/SignUp" class="btn btn-default btn-lg btn-block defaultMine">Sign Up</a>
-            
+
         </form>
         </div>
     </div>
