@@ -52,19 +52,10 @@ angular.module('cloudscalers.controllers')
                     }
                 );
 
-            Networks.commonports().then(function(data) {
-                $scope.commonports = data;
-            });
-
-            // commonports auto suggest
-            Networks.commonports("...").then(function(data) {
-              $scope.commonPorts = data;
-            });
+            $scope.commonports = Networks.commonports();
 
             $scope.suggestCommonPorts = function(typedport){
-              Networks.commonports(typedport).then(function(data) {
-                $scope.commonPorts = data;
-              });
+            	$scope.commonPorts = Networks.commonports();
             };
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {
