@@ -72,7 +72,7 @@
       </button>
     </div>
     <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav man">
+    <ul class="nav navbar-nav margin-all-none">
         <li><a href="../$$space/Decks">Home</a></li>
         <li> </li>
         <li class="dropdown dropdown-accordion">
@@ -128,8 +128,8 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Location</label>
                             <div class="controls col-sm-9">
-                                <ul class="flags-list mtl mll row">
-                                    <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
+                                <ul class="flags-list margin-top-large mll row">
+                                    <li class="margin-right-medium" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
                                         <a href="" class="{[ 'flag-' + getLocationInfo(location).flag ]}"></a>
                                         <span class="mts block cursor-default">{[ getLocationInfo(location).title ]}</span>
                                     </li>

@@ -19,7 +19,7 @@ h1. Mothership{{html:<sup>1</sup>}}
 
 {{div3}}
 
-#{{div3: class=half col-md-4 justOne centerPic}}
+#{{div3: class=half col-md-4 justOne txt-center}}
 # {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
 #  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
 #{{div3}}

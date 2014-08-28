@@ -32,7 +32,7 @@
 
 
                 <input type="submit" class="btn btn-primary btn-lg btn-block primaryMine" value="Login" >
-                <div class="center">
+                <div class="txt-center">
                     <a href="/$$space/ForgotPassword" style="color:#444444;">I forgot my password</a>
                 </div>
 			<div class="sp"></div>

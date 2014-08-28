@@ -20,15 +20,15 @@
 				<br/>
 				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
           			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px; min-width: 65px;">Location:</label>
-          			<div ng-switch-when="ca1" style="float: left; text-align: center; margin-bottom: 20px;">
+          			<div class="txt-center" ng-switch-when="ca1" style="float: left; margin-bottom: 20px;">
           				<img src="/$$space/.files/img/flags/canada.png">
           				<span style="display: block; margin-top: 5px; font-size: 13px;">Canada</span>
           			</div>
-          			<div ng-switch-when="us1" style="float: left; text-align: center; margin-bottom: 20px;">
+          			<div class="txt-center" ng-switch-when="us1" style="float: left; margin-bottom: 20px;">
           				<img src="/$$space/.files/img/flags/usa.png">
           				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
           			</div>
-					<div ng-switch-when="test1" style="float: left; text-align: center; margin-bottom: 20px;">
+					<div class="txt-center" ng-switch-when="test1" style="float: left; margin-bottom: 20px;">
 						<img src="/$$space/.files/img/flags/black-flag.png">
 						<span style="display: block; margin-top: 5px; font-size: 13px;">Test</span>
 					</div>

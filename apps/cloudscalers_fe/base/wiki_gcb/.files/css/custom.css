@@ -153,7 +153,8 @@ ul { list-style: none; }
 table.table th, table.table th a { background: #06a7e2 !important; color: #fff; font-weight: normal; }
 table.table td { word-break: break-all; }
 .table.users-table .header .btn { background: #FFF; color: #333; }
-.table { font-size: 12px; border: 1px solid #c4c4c4; color: #000000;}
+.table { font-size: 12px; }
+.table-bordered { border: 1px solid #c4c4c4; color: #000000; }
 table.table td { font-size: 14px; color: #000;}
 .the-price + table.table td { font-size: 12px; word-break: break-word; height: 34px;}
 table.table.pricingTable th {background: #FFF !important;color: #000;font-weight: bold;}
@@ -417,7 +418,6 @@ canvas { display: block; float: left; }
 .newDecks .boxes { margin: 10px 0; }
 .list .span3 { width: 151px; clear: none; }
 .list .span9 { clear: none; display: inline-block; }
-.span9.mtm.ng-binding { margin-top: 0; }
 .inputStyle { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 16px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .inputStyle:focus, .inputStyle:active { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 17px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .form-horizontal.contact_form.ng-pristine.ng-valid label { color: #000; font-weight: lighter; font-size: 16px; }
@@ -427,7 +427,7 @@ canvas { display: block; float: left; }
 .areaStyle textarea { border: 1px solid #77777b; outline: none; padding: 5px 5px; color: #77777b; float: right; font-size: 16px; box-shadow: none; border-radius: 0; }
 .areaStyle textarea:focus { border: 1px solid #77777b; outline: none; padding: 5px 5px; color: #77777b; float: right; font-size: 17px !important; box-shadow: none; border-radius: 0; }
 #console .span2 + .span4 { width: 376px; float: right; }
-.nav.navbar-nav.man > li:first-child a { padding-left:0; }
+.nav.navbar-nav > li:first-child a { padding-left:0; }
 .sticky2 > .navbar.navbar-inverse { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%; }
 .sticky2 { min-height: 100%; height: auto; margin: 0 auto -50px; padding: 0 0 50px; background: #FFF; }
 #gallery a { margin: 10px 20px; display: inline-block; }
@@ -465,12 +465,9 @@ canvas { display: block; float: left; }
 .ApplicationDeckColor i { color: #f6b332; }
 .ApplicationDeckColor + .half.col-md-6 { margin: -16px 0 0 0; }
 .appMargin2 { margin: 53px 0 0 0; }
-.centerPic { text-align: center; }
 .boxDecks2 h3 { padding: 10px 15px 10px 20px; border-bottom: 1px solid transparent; color: #fff; background-color: #06a7e2; border-color: #06a7e2; margin: 0; text-align: left; font-size: 21px; }
 .boxDecks2 { text-align: center; margin: 15px 18px 35px; border: 1px solid #06a7e2; padding: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; width: 30.333333%; min-height: 286px; }
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left; }
-.mrl.ng-binding + .ng-binding { font-family: "Lucida Console","Courier New",Monaco,"Nimbus Mono L",monospace; }
-h4.machine-label.mvn + .ng-binding { font-family: verdana !important; font-size: 14px; }
 .portMargin { margin: 20px 0; }
 body body #extra { background-color: #06a7e2 !important; }
 .no-background { background: none !important; }
@@ -518,45 +515,11 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 .mB15 { margin-bottom: 20px;}
 .operationWrap .form-control {border: 1px solid #06a7e2;box-shadow: none;border-radius: 0;color: #000;margin: -6px 0 0 0;}
 .operationWrap .control-label { margin: 0 -52px 0 0;padding: 0;}
-.headPrice.center { padding-left: 0;}
+.headPrice { padding-left: 0;}
 .minCloud .panel-body {min-height: 218px;}
 .panel-group .panel-heading+.panel-collapse .panel-body { border-top: 0;}
-/*  /////////////\\\\\\\\\\  */
-/*   oocss Generic classes   */
-/*  \\\\\\\\\\\\\//////////  */
-.padding-all-small { padding: 5px; }
-.padding-horizontal-medium { padding: 0 10px; }
-.margin-top-small { margin-top: 5px !important; }
-.border-radius-small { border-radius: 5px !important; }
-.mrl { margin-right: 35px; }
-.machine-label { font-size: 15px; font-weight: normal; }
-.pas { padding-top: 3px; }
-.mvn { margin-bottom: 0; }
-.mbl { margin-bottom: 20px; }
-.mbll { margin-bottom: 30px; }
-.mtl { margin-top: 20px; }
-.mtm { margin-top: 10px; }
-.mrm { margin-right: 10px; }
-.mvm { margin: 10px 0; }
-.man { margin: 0; }
 .alert { padding: 10px; line-height: 1.2em !important; margin: 0 !important; }
-.center { text-align: center; }
 .btn:focus, .btn:active:focus { outline: 0; }
-.mls { margin-left: 5px; font-size: 17px; }
-.mTxt { font-size: 15px !important; }
-.line-height { line-height: 1.6em !important; }
-.plm { padding-left: 15px; }
-.prn { padding-right: 0 !important; display: inline-block; }
-.justify { text-align: justify; }
-/* oocss text colors */
-.grayTxt { color: rgb(102, 102, 102) !important; }
-.bTxt { color: #000 !important; }
-.txt-center { text-align: center; }
-.sTxt { font-size: 10px; }
-/*  /////////////\\\\\\\\\\  */
-/*   	   End of oocss   	 */
-/*  \\\\\\\\\\\\\//////////  */
-
 
 /* Media Queries */
 @media (max-width: 1376px) {
@@ -744,7 +707,7 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 	.span3.actions { border-left: 0 !important; }
 	.form-horizontal.contact_form.ng-pristine.ng-valid label { width: 100%; }
 	.mainButton { margin-bottom: 10px; }
-	.refresh-page.mtl.right.mTxt.ng-scope { z-index: 99999999; position: absolute; right: 15px; top: 19px; }
+	.refresh-page { z-index: 99999999; position: absolute; right: 15px; top: 19px; }
 	.well { padding: 0 0px !important; }
 	.boxDecks2 { width: auto !important; min-height: auto !important; }
 	.span1, .span2, .span3, .span4, .span5, .span6, .span7, .span8, .span9, .span10, .span11, .span12 { width: 100%; clear: both; }
@@ -803,8 +766,8 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 	.upMargin { margin: 30px auto 0 !important; }
 	.inputWrap { width: 98% !important; }
 	.myNav ul li { text-align: left; float: none; }
-	.nav.navbar-nav.man li:first-child { margin: 0; padding: 0; }
-	.nav.navbar-nav.man li:first-child a { margin-left: 0; padding-left: 0; }
+	.nav.navbar-nav li:first-child { margin: 0; padding: 0; }
+	.nav.navbar-nav li:first-child a { margin-left: 0; padding-left: 0; }
 	.bottomFooter ul { margin-left: -56px; }
 	.navbar-collapse.in { overflow-x: hidden; }
 	.techspecs th.title { display: none; }
@@ -863,8 +826,8 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 	.upMargin { margin: 30px auto 0 !important; }
 	.inputWrap { width: 98% !important; }
 	.myNav ul li { text-align: left; }
-	.nav.navbar-nav.man li:first-child { margin: 0; padding: 0; }
-	.nav.navbar-nav.man li:first-child a { margin-left: 0; padding-left: 0; }
+	.nav.navbar-nav li:first-child { margin: 0; padding: 0; }
+	.nav.navbar-nav li:first-child a { margin-left: 0; padding-left: 0; }
 	.jumbotron { padding: 0; margin:0; }
 	.boxes h2 { float: left; clear: both; }
 	.boxes p { width: 100% !important; }
@@ -876,8 +839,7 @@ hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; b
 	.nav-tabs>li>a { padding: 5px 7px !important; }
 	.list .span3 { width: 104px !important; clear: none; }
 	.list .span9 { clear: none; display: inline-block; position: absolute; }
-	.mrl.ng-binding { }
-	.mrl.ng-binding + .ng-binding { display: inline-block; position: absolute; left: 16px; top: 25px; }
+	.login-credentials { display: inline-block; position: absolute; left: 16px; top: 25px; }
 	.initial { height: 57px !important; display: inline-block; }
 	.tabbable.ng-isolate-scope > ul li { float: inherit; }
 	.account-container.stacked { width: 262px !important; }

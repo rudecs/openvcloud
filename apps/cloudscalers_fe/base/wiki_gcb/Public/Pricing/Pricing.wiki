@@ -63,7 +63,7 @@ h1. Pricing
             {{div4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">First Cloud Space</h3>}}
+                {{html: <h3 class="headPrice txt-center">First Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -87,7 +87,7 @@ h1. Pricing
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Additional Cloud Spaces</h3>}}
+                {{html: <h3 class="headPrice txt-center">Additional Cloud Spaces</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -111,7 +111,7 @@ h1. Pricing
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Extra Public IPv4</h3>}}
+                {{html: <h3 class="headPrice txt-center">Extra Public IPv4</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -535,7 +535,7 @@ h1. Pricing
 
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Starter (*)</h3>}}
+                {{html: <h3 class="headPrice txt-center">Starter (*)</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -565,7 +565,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Starter Office (*)</h3>}}
+                {{html: <h3 class="headPrice txt-center">Starter Office (*)</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -602,7 +602,7 @@ h1. Pricing
                 {{div5}}
             {{div4}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Professional (*) </h3>}}
+                {{html: <h3 class="headPrice txt-center">Professional (*) </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -632,7 +632,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Enterprise (*) </h3>}}
+                {{html: <h3 class="headPrice txt-center">Enterprise (*) </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}

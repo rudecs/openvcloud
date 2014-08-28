@@ -1,6 +1,6 @@
 @usedefault
 {{html:
-	<a href="AccountSettings"><i class="fa fa-arrow-left mrm mbl"></i>Back</a>
+	<a href="AccountSettings"><i class="fa fa-arrow-left margin-right-medium margin-bottom-large"></i>Back</a>
 
 
 <div ng-controller="UsageController">
@@ -14,34 +14,34 @@
 			<div ng-repeat="cloudspace in usagereport.cloudspaces">
                                 <div class="row">
                                         <div class="span6">
-                                                <div class="mtl">Cloudspace {[ cloudspace.name ]}</div>
+                                                <div class="margin-top-large">Cloudspace {[ cloudspace.name ]}</div>
                                         </div>
                                         <div class="span6">
-                                                <div class="mtl">Cost: {[ cloudspace.totalCost | currency:"$" ]}</div>
+                                                <div class="margin-top-large">Cost: {[ cloudspace.totalCost | currency:"$" ]}</div>
                                         </div>
 				</div>
 				<div class="table-responsive">
-				<table class="table table-striped table-bordered mtl">
+				<table class="table table-striped table-bordered margin-top-large">
 				    <thead>
 				        <tr>
 				            <th>
 					            <a href="#" ng-click="orderByField='name'; reverseSort = !reverseSort">Machine
-					            	<span ng-show="orderByField == 'name'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            	<span ng-show="orderByField == 'name'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="txt-10">v</span></span>
 					            </a>
 				            </th>
 				            <th>
 				            	<a href="#" ng-click="orderByField='cost'; reverseSort = !reverseSort">Cost
-					            	<span ng-show="orderByField == 'cost'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            	<span ng-show="orderByField == 'cost'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="txt-10">v</span></span>
 					            </a>
 					        </th>
 				            <th>
 				            	<a href="#" ng-click="orderByField='creationTime'; reverseSort = !reverseSort">Created at
-					            	<span ng-show="orderByField == 'creationTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            	<span ng-show="orderByField == 'creationTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="txt-10">v</span></span>
 					            </a>
 				            </th>
 				            <th>
 				            	<a href="#" ng-click="orderByField='deletionTime'; reverseSort = !reverseSort">Destroyed at
-					            	<span ng-show="orderByField == 'deletionTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="sTxt">v</span></span>
+					            	<span ng-show="orderByField == 'deletionTime'"><span ng-show="!reverseSort">^</span><span ng-show="reverseSort" class="txt-10">v</span></span>
 					            </a>
 				            </th>
 				        </tr>

@@ -13,7 +13,7 @@ After this payment, you will automatically be redirected to your Cloud Space at 
 {{html:
 <div ng-controller="AccountValidationController" ng-cloak>
 
-    <a class="btn btn-small margin-top-small border-radius-small padding-all-small" style="border: 1px solid #06a7e2;" ng-click="validateWithPayPal()">
+    <a class="btn btn-small margin-top-small border-radius padding-all-small" style="border: 1px solid #06a7e2;" ng-click="validateWithPayPal()">
         Validate account by <img src="/$$space/.files/img/payment/paypal_logo.gif" class="padding-horizontal-medium" alt="Validate now by using PayPal (No Charges Apply)" style="height: 25px;"/>
     </a>
 </div>

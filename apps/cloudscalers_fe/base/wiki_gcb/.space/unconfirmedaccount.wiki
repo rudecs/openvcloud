@@ -64,7 +64,7 @@
       </button>
     </div>
     <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav man">
+    <ul class="nav navbar-nav margin-all-none">
       </ul>
 
     </div><!-- /.navbar-collapse -->
