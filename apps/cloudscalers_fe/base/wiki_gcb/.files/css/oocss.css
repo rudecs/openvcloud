@@ -157,6 +157,9 @@
 .hidden{
 	display: none !important;
 }
+.table-cell{
+	display: table-cell;
+}
 .list-style-none{
 	list-style: none !important;
 }
