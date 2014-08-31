@@ -5,7 +5,7 @@ h1 { margin-bottom: 20px; }
 }}
 {{html:
 <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
-<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15" style="margin-bottom: -20px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
+<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15 margin-right-medium" style="margin-bottom: -25px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
@@ -14,17 +14,17 @@ h1 { margin-bottom: 20px; }
         <div id="actions" class="tab-pane active">
             <div class="row">
                 <div class="span8">
-                    <ul class="list">
+                    <ul class="list padding-left-medium">
                         <li>
                             <div class="row">
                                 <div class="span3">Name</div>
-                                <div class="span9 margin-top-none word-break">{[machine.name]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small word-break">{[machine.name]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">Description</div>
-                                <div class="span9 txt-justify edit-description cursor-pointer width-70">
+                                <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small">
                                     <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                         <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
                                     </div>
@@ -34,50 +34,50 @@ h1 { margin-bottom: 20px; }
                         <li>
                             <div class="row">
                                 <div class="span3">Status</div>
-                                <div class="span9 margin-top-none">{[machine.status]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.status]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">IP Address</div>
-                                <div class="span9 margin-top-none">{[machine.interfaces[0].ipAddress]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.interfaces[0].ipAddress]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">OS Image</div>
-                                <div class="span9 margin-top-none">{[machine.osImage]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.osImage]}</div>
                             </div>
                         </li>
                         <li class="initial">
                             <div class="row">
                                 <div class="span3">Initial Credentials</div>
-                                <div class="span9"><span class="login-credentials margin-right-xlarge" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
+                                <div class="span9 clear-none inline-block margin-vertical-small"><span class="login-credentials margin-right-xlarge" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">CPU</div>
-                                <div class="span9 margin-top-none">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">Memory</div>
-                                <div class="span9 margin-top-none">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
                                 <div class="span3">Storage</div>
-                                <div class="span9 margin-top-none">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="span3 actions">
+                <div class="span3 machine-actions margin-left-large">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
-                    <ul class="actions">
+                    <ul class="actions margin-all-none padding-all-none padding-left-small">
 
                         <li ng-show="machine.status == 'HALTED' && machine.locked == false">
                             <a ng-click="start()">
@@ -199,7 +199,7 @@ h1 { margin-bottom: 20px; }
                                 </div>
                                 <div class="modal-body">
                                     <div class="control-group">
-                                        <label class="control-label" for="inputNewCloudSpaceName">Description</label>
+                                        <label class="control-label txt-gray" for="inputNewCloudSpaceName">Description</label>
                                         <div class="controls">
                                             <textarea style="min-height: 80px; width: 330px;" ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description"></textarea>
                                         </div>
@@ -216,7 +216,7 @@ h1 { margin-bottom: 20px; }
       <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
-                <em style="display: block;" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
+                <em class="block" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
                 hit any key to disable the screen saving mode of your virtual machine.</em>
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine is not running.
@@ -241,8 +241,8 @@ h1 { margin-bottom: 20px; }
                             {[machine.accounts[0].password]}
                         </p>
                     </div>
-                    <div class="span4" style="padding-top: 1%;">
-                        <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info left margin-right-medium" value="Capture keyboard"></input>
+                    <div class="span6 margin-top-small right txt-right">
+                        <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info float-none margin-right-medium" value="Capture keyboard"></input>
                         <div id="noVNC_buttons">
                         <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
                         id="sendCtrlAltDelButton">
