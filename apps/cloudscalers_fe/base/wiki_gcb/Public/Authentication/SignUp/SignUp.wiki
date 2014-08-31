@@ -78,9 +78,9 @@
                 </div>
                 <div id="flags-container" class="field">
                   <label class="loginFieldName loginFieldName2">Preferred Location:</label>
-                  <div class="mtl">
-                        <ul class="flags-list mtl mll row">
-                          <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
+                  <div class="margin-top-large">
+                        <ul class="flags-list margin-top-large mll row">
+                          <li class="margin-right-medium" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
                               <a href="" class="{[ 'flag-' + getLocationInfo(location).flag ]}"></a>
                               <span class="mts block cursor-default">{[ getLocationInfo(location).title ]}</span>
                           </li>
@@ -101,7 +101,7 @@
                 {{include:Disclaimer}}
                 {{html:
                   </div>
-                  <div class="mtl">
+                  <div class="margin-top-large">
                     <input id="accept-terms" type="checkbox" style="float: left; margin-right: 5px;" onClick="acceptTermsChanged(this);">
                     <label for="accept-terms" style="font-style: italic; font-size: 12px;">I have read and understood the above General Terms and Conditions</label>
                 </div>
@@ -113,7 +113,7 @@
             </div>
               <input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" ng-disabled="!canSignUp" value="Sign Up" />
 
-              <div class="center txt-right mtm mTxt">
+              <div class="txt-right margin-top-medium txt-15">
           <span class="mrs">Already a member? <a href="/$$space/login" style="color: #0087b9;">Login</a></span>
 
         </div>

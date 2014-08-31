@@ -1,7 +1,7 @@
 {{html:
 <div class="container">
     <div class="span11 newDecks newDecks2">
-        <div class="col-md-4 boxes font color6 leftIcon mbll">
+        <div class="col-md-4 boxes font color6 leftIcon">
         }} 
 [Cloud Space|AccountSettings]
 
@@ -10,74 +10,74 @@
 
           {{html:
             
-            <div class="prn justify">
+            <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
         Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
         </div>
-        <div class="col-md-4 boxes font color5 mbll">
+        <div class="col-md-4 boxes font color5">
          }}
 [Defense Shields|NetworkDeck]
 
             [!/$$space/.files/img/icon5.png! | NetworkDeck]
 
     {{html:      
-          <div class="prn justify">
+          <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
 Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes font color1 mbll">
+        <div class="col-md-4 boxes font color1">
            }}
 [Desktop Deck|DesktopDeck]
 
                 [!/$$space/.files/img/icon1.png! | DesktopDeck]
     {{html:        
-            <div class="prn justify">
+            <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
 Your Desktop Deck provides you an innovative way to deliver critical applications from the Cloud to your laptop, tablet and smartphone.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3 mbll">
+        <div class="col-md-4 boxes font color3">
           }}
 [Storage Deck|StorageDeck]
 
             [!/$$space/.files/img/icon3.png! | StorageDeck]
    {{html:       
-          <div class="prn justify">
+          <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
 Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
-        <div class="col-md-4 boxes font color2 mbll">
+        <div class="col-md-4 boxes font color2">
            }}
 [Machine Deck|MachineDeck]
 
                 [!/$$space/.files/img/icon2.png! | MachineDeck]
       {{html:      
-            <div class="prn justify">
+            <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
 On Your Machine Deck, configure, launch and manage your Virtual Machines. Automate using the simple API.
         </div>
         </div>
-        <div class="col-md-4 boxes font color4 mbll">
+        <div class="col-md-4 boxes font color4">
        }}
 [Application Deck (Q4)|ApplicationDeck]
 
             
             [!/$$space/.files/img/icon4.png! | ApplicationDeck]
        {{html: 
-        <div class="prn justify">
+        <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>

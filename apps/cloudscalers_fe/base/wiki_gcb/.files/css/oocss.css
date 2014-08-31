@@ -157,6 +157,9 @@
 .hidden{
 	display: none !important;
 }
+.table-cell{
+	display: table-cell;
+}
 .list-style-none{
 	list-style: none !important;
 }
@@ -257,6 +260,9 @@
 .txt-arial{
 	font-family: arial, sans-serif !important; 
 }
+.txt-verdana{
+	font-family: verdana !important;
+}
 .txt-center {
 	text-align: center !important; 
 }
@@ -301,6 +307,9 @@
 }
 .txt-16{ 
 	font-size: 16px;
+}
+.txt-17{ 
+	font-size: 17px;
 }
 .txt-19{ 
 	font-size: 19px;

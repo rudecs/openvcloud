@@ -19,7 +19,7 @@ h1. Templates Management
                 <td>{[template.description]}</td>
                 <td>{[template.size]}</td>
                 <td>{[template.status]}</td>
-                <!-- <td class="center"><a href="#" ng-click="deleteTemplate( $index )" class="fa fa-times"></a></td> -->
+                <!-- <td class="txt-center"><a href="#" ng-click="deleteTemplate( $index )" class="fa fa-times"></a></td> -->
             </tr>
         </tbody>
     </table>

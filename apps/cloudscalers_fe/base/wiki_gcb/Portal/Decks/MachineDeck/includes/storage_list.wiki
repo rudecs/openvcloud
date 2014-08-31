@@ -1,61 +1,61 @@
-<ul class="storage-size-list">
+<ul class="storage-size-list inline-block margin-all-none padding-all-none">
  <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(10) ng-model="machine.disksize" btn-radio="10">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(10) ng-model="machine.disksize" btn-radio="10">
       10 GB at SSD speed<br>Included
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(15) ng-model="machine.disksize" btn-radio="15">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(15) ng-model="machine.disksize" btn-radio="15">
       15 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(20) ng-model="machine.disksize" btn-radio="20">
       20 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(25) ng-model="machine.disksize" btn-radio="25">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(25) ng-model="machine.disksize" btn-radio="25">
       25 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
+    <button type="button" class="btn btn-selector table-cell"  ng-disabled=showDiskSize(30) ng-model="machine.disksize" btn-radio="30">
       30 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(40) ng-model="machine.disksize" btn-radio="40">
       40 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(50) ng-model="machine.disksize" btn-radio="50">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(50) ng-model="machine.disksize" btn-radio="50">
       50 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(60) ng-model="machine.disksize" btn-radio="60">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(60) ng-model="machine.disksize" btn-radio="60">
       60 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(70) ng-model="machine.disksize" btn-radio="70">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(70) ng-model="machine.disksize" btn-radio="70">
       70 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(80) ng-model="machine.disksize" btn-radio="80">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(80) ng-model="machine.disksize" btn-radio="80">
       80 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(90) ng-model="machine.disksize" btn-radio="90">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(90) ng-model="machine.disksize" btn-radio="90">
       90 GB SSD<br>
     </button>
   </li>
   <li>
-    <button type="button" class="btn btn-selector" ng-disabled=showDiskSize(100) ng-model="machine.disksize" btn-radio="100">
+    <button type="button" class="btn btn-selector table-cell" ng-disabled=showDiskSize(100) ng-model="machine.disksize" btn-radio="100">
       100 GB SSD<br>
     </button>
   </li>

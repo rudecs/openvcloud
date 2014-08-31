@@ -2,7 +2,7 @@
 <em>Provide other users access to your Cloud Space by adding their Mothership1 user name.</em>
 <form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController">
 <div class="table-responsive">
-    <table class="table users-table mtm">
+    <table class="table users-table margin-top-medium">
         <tr class="header">
             <th class="username-text-container">
                 <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
