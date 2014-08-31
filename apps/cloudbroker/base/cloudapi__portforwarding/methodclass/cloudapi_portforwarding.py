@@ -51,6 +51,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 localIp = machine.nics[0].ipAddress
         return localIp
 
+    def _checkreserved(self, publicport):
+        reservedports = [9022,9080, '9022', '9080']
+        return publicport in reservedports
+
     @authenticator.auth(acl='C')
     @audit()
     def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, protocol=None, **kwargs):
@@ -78,6 +82,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
+        if self._checkreserved(publicPort):
+            ctx.start_response('403 Forbidden', [])
+            return "Public port %s is reserved" % publicPort
+        
         return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
@@ -163,6 +171,9 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
             ctx.start_response('403 Forbidden', [])
             return "Forward for %s with port %s already exists" % (localIp, localPort)
+        if self._checkreserved(publicPort):
+            ctx.start_response('403 Forbidden', [])
+            return "Public port %s is reserved" % publicPort
         self.netmgr.fw_forward_delete(fw_id, self.gridid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
