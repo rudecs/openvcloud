@@ -30,7 +30,7 @@ h1. Pricing
 {{html:  
 </ul>
 
-<div class="tab-content">
+<div id="pricing" class="tab-content">
   <div class="minCloud tab-pane fade in active" id="CloudSpace">
   <p>Each Mothership<sup>1</sup> Cloud Space provides you with a Virtual Private Datacenter:</p>
   <div class="col-md-12">
@@ -213,7 +213,7 @@ h1. Pricing
     </div>
   </div>
     <br />
-  <div class="col-md-12 mB15">
+  <div class="col-md-12 margin-top-medium margin-bottom-large">
         <div class="row operationWrap">
             <label class="col-sm-2 control-label">Operation System: </label>
             <div class="col-md-3">
@@ -223,7 +223,7 @@ h1. Pricing
                     <option value="Windows Essentials">Windows Essentials</option>
                 </select>
             </div>
-            <div class="btn-group btn-group-sm priceHM floatR">
+            <div class="btn-group btn-group-sm priceHM right">
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
             </div>

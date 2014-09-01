@@ -13,7 +13,7 @@ h1. Press Center
 
     
 {{ blog_index:
-<div class="blogDesign">
+<div class="inline-block width-full">
 <h2><a href="{blog_url}">{blog_title}</a></h2>
 </div>
 }}
