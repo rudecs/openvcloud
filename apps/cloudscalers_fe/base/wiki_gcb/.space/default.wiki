@@ -81,7 +81,7 @@
              <span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
           <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
-                <div class="panel-group grey" id="accordion" close-others="false">
+                <div class="panel-group gray" id="accordion" close-others="false">
 	                <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
 	                    <div class="panel-heading">
                             <h4 class="panel-title">
