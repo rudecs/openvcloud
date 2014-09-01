@@ -78,16 +78,8 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     def _listActiveCloudSpaces(self, accountId):
-        query = {'fields': ['id', 'name','status']}
-        query['query'] = {'bool':{'must':[
-                                          {'term': {'accountId': accountId}}
-                                          ],
-                                  'must_not':[
-                                              {'term':{'status':'DESTROYED'.lower()}}
-                                              ]
-                                  }
-                          }
-        results = self.models.cloudspace.find(ujson.dumps(query))['result']
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+        results = self.models.cloudspace.search(query)[1:]
         return results
 
     @authenticator.auth(acl='A')

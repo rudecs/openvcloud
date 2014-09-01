@@ -5,11 +5,10 @@ class AUTH():
 
     def load(self,osis):
         pass
-        
-    def authenticate(self,osis,method,user,passwd):
+
+    def authenticate(self,osis,method,user,passwd, session):
         if j.core.osis.cmds._authenticateAdmin(user=user,passwd=passwd):
             return True
-        if user=="node" and method in ["set","get"]:
-            if j.core.osis.nodeguids.has_key(passwd):
-                return True
+        if j.core.osis.cmds._authenticateNode(session):
+            return True
         return False
