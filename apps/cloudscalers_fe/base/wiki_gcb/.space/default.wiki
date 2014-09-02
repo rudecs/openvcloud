@@ -64,14 +64,14 @@
     <nav class="navbar navbar-default " role="navigation">
     <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-list">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
     </div>
-    <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="navbar-list">
     <ul class="nav navbar-nav margin-all-none">
         <li><a href="../$$space/Decks">Home</a></li>
         <li> </li>

@@ -323,6 +323,9 @@
 .underline{
 	text-decoration: underline;
 }
+.no-text-decoration{
+	text-decoration: none;
+}
 /*  Borders  */
 .no-border-radius{
 	-moz-border-radius: 0;
