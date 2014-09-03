@@ -8,7 +8,7 @@
 	<p ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
 	   Easily configure your port forwards to your Virtual Machines! Please take a small waiting period into account on a new deployed virtual machine, as it can still be starting or that your Defense Shield might still be in the process of assigning the IP address.
 	</p>
-	<div class="portMargin" ng-controller="PortforwardingController">
+	<div class="margin-vertical-large" ng-controller="PortforwardingController">
 		<div>
 			<div style="margin-bottom: 5px;">
 				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED'" ng-click="portForwardPopup()">Add</button>

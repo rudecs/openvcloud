@@ -7,9 +7,9 @@
 <div class="account-container stacked upMargin" ng-app="cloudscalers" ng-controller="SessionController">
     <div class="content clearfix padding"  ng-controller="SignUpController">
         <div class="login-symbol signUpForm">
-        <h1>Sign Up</h1>
+        <h1 class="white-header">Sign Up</h1>
 
-        <div class="login-fields">
+        <div class="login-fields margin-bottom-medium">
             <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
                 <div class="field ng-hide ng-cloak" ng-show="promocode">
                   <div class="loginField">
@@ -114,7 +114,7 @@
               <input class="btn btn-primary btn-lg btn-block primaryMine"  type="submit" ng-disabled="!canSignUp" value="Sign Up" />
 
               <div class="txt-right margin-top-medium txt-15">
-          <span class="mrs">Already a member? <a href="/$$space/login" style="color: #0087b9;">Login</a></span>
+          <span class="txt-center width-full inline-block margin-vertical-medium">Already a member? <a href="/$$space/login" style="color: #0087b9;">Login</a></span>
 
         </div>
 

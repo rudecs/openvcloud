@@ -30,7 +30,7 @@ h1. $$page
 
 {{div}}
 
-{{div: class=half col-md-6 justOne}}
+{{div: class=half col-md-6 justOne txt-center}}
   {{html: <img class="appMargin" src="/$$space/.files/img/images/machine-pic.jpg">}}
 {{div}}
 

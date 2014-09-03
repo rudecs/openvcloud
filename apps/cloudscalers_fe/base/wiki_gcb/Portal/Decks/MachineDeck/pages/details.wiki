@@ -243,7 +243,7 @@ h1 { margin-bottom: 20px; }
                     </div>
                     <div class="span6 margin-top-small right txt-right">
                         <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info float-none margin-right-medium" value="Capture keyboard"></input>
-                        <div id="noVNC_buttons">
+                        <div id="noVNC_buttons" class="inline-block">
                         <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
                         id="sendCtrlAltDelButton">
                         </div>

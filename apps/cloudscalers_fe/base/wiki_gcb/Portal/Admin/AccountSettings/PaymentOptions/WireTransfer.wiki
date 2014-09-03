@@ -50,7 +50,7 @@
 {{html:
 	</div>
 
-	 <button type="submit" class="btn btn-primary ok mainButton floatR" data-dismiss="modal" aria-hidden="true">OK</button>
+	 <button type="submit" class="btn btn-primary ok mainButton right" data-dismiss="modal" aria-hidden="true">OK</button>
     </div>
 
 

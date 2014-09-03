@@ -149,7 +149,7 @@
 	clear: both;
 }
 .clear-none{ 
-	clear: none;
+	clear: none !important;
 }
 .inline-block{
 	display: inline-block !important;
@@ -322,6 +322,9 @@
 }
 .underline{
 	text-decoration: underline;
+}
+.no-text-decoration{
+	text-decoration: none;
 }
 /*  Borders  */
 .no-border-radius{
