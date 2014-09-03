@@ -1,7 +1,7 @@
 {{html:
 <div class="container">
     <div class="span11 newDecks newDecks2">
-        <div class="col-md-4 boxes font color6 leftIcon">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color6">
         }} 
 [Cloud Space|AccountSettings]
 
@@ -17,7 +17,7 @@
         Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
         </div>
-        <div class="col-md-4 boxes font color5">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color5 clear-left">
          }}
 [Defense Shields|NetworkDeck]
 
@@ -31,7 +31,7 @@
 Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes font color1">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1">
            }}
 [Desktop Deck|DesktopDeck]
 
@@ -44,7 +44,7 @@ Your private Defense Shield providing privacy and secure access to your Cloud Sp
 Your Desktop Deck provides you an innovative way to deliver critical applications from the Cloud to your laptop, tablet and smartphone.
         </div>
         </div>
-        <div class="col-md-4 boxes font color3">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color3 clear-none">
           }}
 [Storage Deck|StorageDeck]
 
@@ -57,7 +57,7 @@ Your Desktop Deck provides you an innovative way to deliver critical application
 Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
-        <div class="col-md-4 boxes font color2">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color2">
            }}
 [Machine Deck|MachineDeck]
 
@@ -70,7 +70,7 @@ Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
 On Your Machine Deck, configure, launch and manage your Virtual Machines. Automate using the simple API.
         </div>
         </div>
-        <div class="col-md-4 boxes font color4">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color4">
        }}
 [Application Deck (Q4)|ApplicationDeck]
 

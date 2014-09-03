@@ -76,10 +76,10 @@
         <li><a href="../$$space/Decks">Home</a></li>
         <li> </li>
         <li class="dropdown dropdown-accordion">
-          <a id="drop1" role="button" class="just" data-toggle="dropdown"
+          <a id="drop1" role="button" class="margin-left-none padding-left-none" data-toggle="dropdown"
              tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom" tourtip-step="0">
              <span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> <b class="caret"></b></a>
-          <div class="dropdown-menu justOpen" role="menu" aria-labelledby="dLabel">
+          <div class="dropdown-menu open-cloudspace-nav" role="menu" aria-labelledby="dLabel">
             <div class="accordionInside">
                 <div class="panel-group gray" id="accordion" close-others="false">
 	                <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <ul class="justBorder">
+            <ul class="create-cloudspace-container">
             	<li>
 					<a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
                     <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
@@ -148,7 +148,7 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="../$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
+        <li><a id="geeting-started" href="../$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
         <li><a href="../$$space/ApiDocs">Machine API</a></li>
         <li><a href="../$$space/ApiS3">Storage API</a></li>
         <li><a href="../kb/">Knowledge Base</a></li>

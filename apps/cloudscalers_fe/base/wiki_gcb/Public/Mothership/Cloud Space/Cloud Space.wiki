@@ -31,11 +31,11 @@ h1. $$page
 
 {{div}}
 
-{{div: class=half col-md-6 justOne}}
+{{div: class=half col-md-6 justOne txt-center}}
   {{html: <img src="/$$space/.files/img/images/cloudspace-pic.jpg">}}
 {{div}}
 
-{{div: class=seperateDecks}}
+{{div: class=seperateDecks clear-both}}
 {{div}}
 
 {{div: class=col-md-12 boxDecks cloudSpaceColor}}
