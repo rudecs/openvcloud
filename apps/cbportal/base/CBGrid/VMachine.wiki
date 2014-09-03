@@ -21,7 +21,7 @@ $$nics
 *Disks*
 $$disks
 
-h3. VMachine Status Details
+h3. vMachine Status Details
 |*Status*|$$stats_state|
 |*Ping*|$$stats_ping|
 |*HardDrive Test*|$$stats_hdtest|
