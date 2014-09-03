@@ -228,7 +228,7 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cloudspace)
         cloudspace = self._release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
-        cloutspace.deletionTime = int(time.time())
+        cloudspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
 
 
