@@ -17,14 +17,14 @@ h1 { margin-bottom: 20px; }
                     <ul class="list padding-left-medium">
                         <li>
                             <div class="row">
-                                <div class="span3">Name</div>
+                                <div class="span3 line-height">Name</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small word-break">{[machine.name]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">Description</div>
-                                <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small">
+                                <div class="span3 line-height">Description</div>
+                                <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small position-default">
                                     <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                         <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
                                     </div>
@@ -33,43 +33,43 @@ h1 { margin-bottom: 20px; }
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">Status</div>
+                                <div class="span3 line-height">Status</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[machine.status]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">IP Address</div>
+                                <div class="span3 line-height">IP Address</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[machine.interfaces[0].ipAddress]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">OS Image</div>
+                                <div class="span3 line-height">OS Image</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[machine.osImage]}</div>
                             </div>
                         </li>
                         <li class="initial">
                             <div class="row">
-                                <div class="span3">Initial Credentials</div>
+                                <div class="span3 line-height">Initial Credentials</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small"><span class="login-credentials margin-right-xlarge" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">CPU</div>
+                                <div class="span3 line-height">CPU</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">Memory</div>
+                                <div class="span3 line-height">Memory</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
                             </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">Storage</div>
+                                <div class="span3 line-height">Storage</div>
                                 <div class="span9 clear-none inline-block margin-vertical-small">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
                             </div>
                         </li>
