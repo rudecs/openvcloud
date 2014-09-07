@@ -81,15 +81,16 @@ class cloudapi_users(object):
         """
         ctx = kwargs['ctx']
         accounts = self.models.account.search({'name':username})[1:]
-        if accounts and accounts[0].get('status','CONFIRMED') != 'UNCONFIRMED':
+        if accounts:
+            status = accounts[0].get('status', 'CONFIRMED')
             if j.core.portal.active.auth.authenticate(username, password):
                 session = ctx.env['beaker.get_session']() #create new session
                 session['user'] = username
                 session['account_status'] = status
                 session.save()
                 if status != 'CONFIRMED':
-                  ctx.start_response('409 Conflict', [])
-                  return session.id
+                    ctx.start_response('409 Conflict', [])
+                    return session.id
                 return session.id
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
