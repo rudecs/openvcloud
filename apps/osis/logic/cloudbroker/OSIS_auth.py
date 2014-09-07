@@ -1,5 +1,4 @@
 from JumpScale import j
-import ujson
 
 class AUTH():
 
