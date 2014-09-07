@@ -306,6 +306,6 @@ class libcloud_libvirt(object):
         result 
         """
         query = {'fields': ['url']}
-        results = self._models.vnc.search(query)['result']
+        results = self._models.vnc.search(query)[1:]
         return [res['fields']['url'] for res in results]
 
