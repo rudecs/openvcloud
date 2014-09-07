@@ -53,13 +53,13 @@ class auth(object):
                 account = None
                 cloudspace = None
                 if 'accountId' in kwargs and kwargs['accountId']:
-                    account = self.models.account.get(kwargs['accountId'])
+                    account = self.models.account.get(int(kwargs['accountId']))
                     fullacl.update(self.expandAclFromAccount(user, groups, account))
                 elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
-                    cloudspace = self.models.cloudspace.get(kwargs['cloudspaceId'])
+                    cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 elif 'machineId' in kwargs:
-                    machine = self.models.vmachine.get(kwargs['machineId'])
+                    machine = self.models.vmachine.get(int(kwargs['machineId']))
                     cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
                 # if admin allow all other ACL as well
