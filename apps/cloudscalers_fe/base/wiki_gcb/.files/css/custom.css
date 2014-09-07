@@ -76,8 +76,8 @@ table.table td { word-break: break-all; }
 table.table td { font-size: 14px; color: #000;}
 .the-price + table.table td { font-size: 12px; word-break: break-word; height: 34px;}
 table.table.pricingTable th {background: #FFF !important;color: #000;font-weight: bold;}
-table.table th a {color: #FFF;}
-table.table th a:hover {color: #FFF;}
+table.table th a, table.table th a:hover {color: #FFF;}
+.table.table-condensed.table-hover th { font-weight: bold; font-size: 14px; padding: 6px 5px !important; border: 0;}
 /**/
 
 /* Bootstrap modifications */
@@ -157,6 +157,8 @@ canvas { display: block; float: left; }
 .autocomplete .highlight { background-color: #E2E2E2; }
 .autocomplete li.active .highlight { background: #666; color: #fff; }
 .ver { margin: -10px 0 0 0; }
+.bulletStyle { list-style-type: disc;}
+.settings-label{ height: 30px; line-height: 30px; min-width: 65px; }
 /* End of general style */
 
 /* sideNav */
@@ -542,6 +544,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 	.boxes p { width: 100% !important; }
 	.bottomFooter ul { margin-left: -56px; }
 	.newDecks .color3 { margin: 10px 0; }
+	.the-price h1, .the-price h1 span { font-size: 16px !important; }
 }
 @media (max-width: 992px) {
 	.creditForm .nameField { width: 70% !important; }
