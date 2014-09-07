@@ -38,7 +38,7 @@
     </style>
 </head>
 <div class="jumbotron">
-  <div class="container">
+  <div class="container margin-top-none">
     <div class="col-md-7 marginText">
       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -111,7 +111,7 @@
   <div class="container">
     <div class="col-md-12">
       <p class="font mainText">Revolutionary Cloud Computing!<br>
-      <div class="someText font">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available 'everyware anyware'. <a href="../$$space/Why">Read more <i class="fa fa-circle-arrow-right"></i></a> </div>
+      <div class="someText font txt-20 txt-white">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available 'everyware anyware'. <a href="../$$space/Why">Read more <i class="fa fa-circle-arrow-right"></i></a> </div>
       </p>
     </div>
   </div>

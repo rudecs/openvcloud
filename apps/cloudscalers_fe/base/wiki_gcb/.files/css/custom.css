@@ -32,10 +32,14 @@
 .creditForm .nameField h2 { max-width: 127px; }
 .mainButton { background-color: #06a7e2;/* padding: 10px 20px;*/ font-size: 16px; margin: 5px 10px 5px 0; }
 #tabbable .tab-pane ul .mainButton:active { outline: 5px auto -webkit-focus-ring-color !important; outline-offset: -2px !important; }
+input:-webkit-autofill { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
+input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
 ::-webkit-input-placeholder {color: #FFF;}
 :-moz-placeholder {color: #FFF;}
 ::-moz-placeholder {color: #FFF;}
 :-ms-input-placeholder {color: #FFF;}
+.multiple_selection { padding: 0; }
+.multiple_selection input { margin-right: 10px; }
 /* End of Forms*/
 
 /* Modals */
@@ -90,6 +94,7 @@ table.table th a:hover {color: #FFF;}
 .white h2 { color: #06a7e2; font-size: 17px; }
 .white p { color: #000; font-size: 16px; line-height: 32px; }
 .white ul li, .tab-pane.active ul li { color: #000; font-size: 16px; line-height: 30px; }
+.white a:hover, .white a:focus { color: #39b3d7; }
 .body a { line-height: 1.3em; }
 .dropdown-menu { box-shadow: none; }
 hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; border-top: 1px solid #E3E3E3; }
@@ -97,11 +102,8 @@ p { color:#77777b; }
 body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; color: #666; background-size: 100%; background-position: center 0; }
 html { -ms-overflow-style: scrollbar; }
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer; }
- ul { list-style: none; }
-.white a:hover, .white a:focus { color: #39b3d7; }
+ul { list-style: none; }
 a { color: #06a7e2; text-decoration: none; }
-input:-webkit-autofill { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
-input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
 .inputStyle { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 16px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .inputStyle:focus, .inputStyle:active { border: 0; border-bottom: 1px solid #77777b; outline: none; padding: 0px 5px 5px; font-size: 17px; color: #77777b; float: right; box-shadow: none; border-radius: 0; }
 .machineBox h2 { display: inline-block; margin-right: 15px; vertical-align: top; margin-top: 0; }
@@ -110,12 +112,11 @@ input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 50px white inset !import
 .loader h2 { font-size: 27px; text-align: center; margin-bottom: 0; z-index: 20000000000; position: relative; font-weight: lighter; }
 .loading { display: inline-block; height: 100%; left: 0; position: fixed; top: 0; width: 100%; background: rgba(0,0,0,.870); }
 .control-label { float: left; margin: 0 14px 0 0; }
-/*.form-control { border-radius: 0 !important; }*/
 .control-group { margin: 15px 0; display: inline-block; width: 100%; color: #000; font-size: 16px; }
 label + .controls { display: table-cell; margin: 0 0 0 0; }
 .account-container.stacked { width: 617px; margin: 100px auto 0; border: 7px solid rgba(255, 255, 255, 0.2); -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
 .content.clearfix.padding { color: #FFF; background: rgb(6,167,226); /* Old browsers */ background: -moz-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(6,167,226,0.6)), color-stop(100%, rgba(255,255,255,0.6))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(top, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* IE10+ */ background: linear-gradient(to bottom, rgba(6,167,226,0.6) 0%, rgba(255,255,255,0.6) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#06a7e2', endColorstr='#ffffff', GradientType=0 ); /* IE6-9 */ }
-.white-header { font-size: 26px; font-weight: bold; color: #FFF; text-align: center; margin: 16px 0 24px 0; }
+.white-header { font-size: 26px; margin: 16px 0 24px 0; }
 .sp { clear: both; text-align: center; width: 100%; background: url(../img/images/or.png) no-repeat top center; height: 17px; margin: 17px 0; }
 hr { margin-top: -23px; margin-bottom: 35px; }
 .fade { opacity: 0; -webkit-transition: opacity 0.15s linear; -moz-transition: opacity 0.15s linear; -o-transition: opacity 0.15s linear; transition: opacity 0.15s linear; }
@@ -368,11 +369,10 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 
 /* Home page */
 .jumbotron { background-color: rgba(0, 0, 0, 0); margin: 0; padding-top: 60px; }
-.jumbotron .container { margin-top: 0; }
 .font { font-family: arial, sans-serif; }
 .mainText { font-size: 41px !important; color: #06a7e2; }
 .arrow { color: #FFFFFF; font-size: 27px; list-style-type: disc; margin: 0; padding: 0; }
-.someText { font-size: 20px; line-height: 28px; color: #FFF; }
+.someText { line-height: 28px; }
 .marginTop { margin-top: 50px; margin-bottom: 80px; }
 .marginTop + .container { margin-bottom: 100px; }
 .newDecks .leftIcon { margin-left: 0; /*margin-bottom: 37px;*/ }
@@ -475,7 +475,6 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 	.account-container.stacked { width: 544px !important; }
 	.signUpForm .inputWrap { width: 69% !important; }
 	.marginTop { margin-top: 0px; margin-bottom: 80px; }
-	.jumbotron .container { margin-top: 0px !important; }
 }
 @media (max-width: 1290px) {
 	.navbar-default .navbar-nav>li>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus, .nav-tabs>li>a,
@@ -629,6 +628,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 	.half.copy.col-md-6 + .justOne { text-align: center; }
 	.navbar-right > li { padding-left: 15px; }
 	.question-symbol, .question-symbol:hover { color: #fff; margin-left: 5px; }
+	#geeting-started{ padding-left: 29px; }
 }
 @media (max-width: 580px) {
 	.osimage-label, .controls2, .signUpForm .inputWrap input, .boxes p, .nameField textarea,

@@ -5,7 +5,7 @@
     <div class="content clearfix padding">
     <div class="login-symbol">
         <form ng-submit="login()">
-            <h1 class="white-header">Sign In</h1>
+            <h1 class="white-header txt-white txt-bold txt-center">Sign In</h1>
 
             <div class="login-fields margin-bottom-medium">
 

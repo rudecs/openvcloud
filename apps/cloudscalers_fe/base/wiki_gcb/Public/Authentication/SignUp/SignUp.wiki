@@ -7,7 +7,7 @@
 <div class="account-container stacked upMargin" ng-app="cloudscalers" ng-controller="SessionController">
     <div class="content clearfix padding"  ng-controller="SignUpController">
         <div class="login-symbol signUpForm">
-        <h1 class="white-header">Sign Up</h1>
+        <h1 class="white-header txt-white txt-bold txt-center">Sign Up</h1>
 
         <div class="login-fields margin-bottom-medium">
             <form name="reg" ng-submit="signUp()"> <!-- name should be "reg" for some browsers to recognize it as a registration form -->
