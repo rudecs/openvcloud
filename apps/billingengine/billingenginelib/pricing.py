@@ -6,9 +6,6 @@ import ujson
 class pricing(object):
     def __init__(self):
 
-        class Class():
-            pass
-
         self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
         self.base_machine_prices = {}
 
@@ -64,11 +61,8 @@ class pricing(object):
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
 
     def _listActiveCloudSpaces(self, accountId):
-        
-        fields = ['id', 'name','status', 'accountId']
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.cloudbrokermodels.cloudspace.search(query)[1:]
-        self.cb.extensions.imp.filter(cloudspaces, fields)
         return cloudspaces
 
     def get_burn_rate(self, accountId):

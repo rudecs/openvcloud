@@ -54,9 +54,7 @@ class libcloud_libvirt(object):
             for i in rp.images:
                 images.append(j.code.object2dict(self._models.image.get(i)))
             return images
-        query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'extra']}
-        results = self._models.image.search(query)['result']
-        images = [res['fields'] for res in results]
+        images = self._models.image.search({})[1:]
         return images
 
     def listSizes(self, **kwargs):
@@ -64,9 +62,7 @@ class libcloud_libvirt(object):
         List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
         result
         """
-        query = {'fields': ['id', 'name', 'vcpus', 'memory', 'disk']}
-        results = self._models.size.search(query)['result']
-        sizes = [res['fields'] for res in results]
+        sizes = self._models.size.search({})['result']
         return sizes
 
     def addFreeSubnet(self, subnet, networkid, **kwargs):
@@ -224,22 +220,20 @@ class libcloud_libvirt(object):
         result
 
         """
-        query = {'fields': ['id', 'ipaddress', 'macaddress']}
-        results = self._models.node.search(query)['result']
+        results = self._models.node.search({})[1:]
         nodes = {}
         for res in results:
-            node = {'ipaddress': res['fields'].get('ipaddress')}
-            nodes[res['fields']['id']] = node
+            node = {'ipaddress': res.get('ipaddress')}
+            nodes[res['id']] = node
         return nodes
 
     def listResourceProviders(self, **kwargs):
-        query = {'fields': ['id', 'cloudUnitType', 'images']}
-        results = self._models.resourceprovider.search(query)['result']
+        results = self._models.resourceprovider.search({})[1:]
         nodes = {}
         for res in results:
-            node = {'cloudunittype': res['fields']['cloudUnitType']}
-            node['images'] = res['fields']['images']
-            nodes[res['fields']['id']] = node
+            node = {'cloudunittype': res['cloudUnitType']}
+            node['images'] = res['images']
+            nodes[res['id']] = node
         return nodes
 
     def unLinkImage(self, imageid, resourceprovider, **kwargs):
@@ -303,9 +297,8 @@ class libcloud_libvirt(object):
     def listVNC(self, **kwargs):
         """
         list vnc urls
-        result 
+        result
         """
-        query = {'fields': ['url']}
-        results = self._models.vnc.search(query)[1:]
-        return [res['fields']['url'] for res in results]
+        results = self._models.vnc.search({})[1:]
+        return [res['url'] for res in results]
 

@@ -94,7 +94,7 @@ class CloudBroker(object):
     def getBestProvider(self, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(imageId)
         if not capacityinfo:
-            raise -1
+            return -1
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             return -1
