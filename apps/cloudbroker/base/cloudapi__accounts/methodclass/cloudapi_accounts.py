@@ -59,6 +59,8 @@ class cloudapi_accounts(object):
         """
         account = self.models.account.new()
         account.name = name
+        if isinstance(access, basestring):
+            access = [ access ]
         for userid in access:
             ace = account.new_acl()
             ace.userGroupId = userid
