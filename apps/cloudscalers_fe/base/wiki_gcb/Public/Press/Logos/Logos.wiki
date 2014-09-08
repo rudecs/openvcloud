@@ -32,7 +32,7 @@ Click on any logo in the gallery to download it
 <br />
 <p>Download the EPS version of the above logos:</p>
 
-<ul style="padding: 0;">
+<ul class="padding-all-none">
   <li><a href="/images/$$space/Mothership_Logo_Revised_DR_1-download.ai" download>Mothership<sup>1</sup> logo wide.ai</a></li>
   <li><a href="/images/$$space/Mothership_Logo_Revised_DR_2-download.ai" download>Mothership<sup>1</sup> logo compact.ai</a></li>
   <li><a href="/images/$$space/Mothership_Logo_Revised_DR_Colour_1-download.ai" download>Mothership<sup>1</sup> logo wide color.ai</a></li>

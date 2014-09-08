@@ -1,7 +1,7 @@
 {{html:
     <div ng-controller="PaypalPaymentController">
         <a class="btn btn-small margin-top-small border-radius padding-all-small" ng-click="payWithPayPal()">
-            <img src="/$$space/.files/img/payment/paypal_logo.gif" class="padding-horizontal-medium" alt="PayPal" style="height: 25px;"/>
+            <img src="/$$space/.files/img/payment/paypal_logo.gif" class="paypal-image padding-horizontal-medium" alt="PayPal"/>
         </a>
     </div>
 

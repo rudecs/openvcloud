@@ -2,7 +2,7 @@
 <div ng-controller="CloudSpaceManagementController">
 	<h1>Settings for Cloud Space {[currentAccount.name]} / {[cloudSpace]}</h1>
 	<br>
-	<tabset style="clear:both;">
+	<tabset class="clear-both">
 
 		<tab id="access" heading="Access Management">
 			<div id="access" class="tab-pane">
@@ -13,27 +13,27 @@
 		</tab>
 		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" >
-				<div style="margin-bottom: 10px;" class="clearfix">
-					<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px; min-width: 65px;">Secret API Key:</label>
+				<div class="clearfix margin-bottom-medium">
+					<label class="left margin-right-medium settings-label">Secret API Key:</label>
 					<p class="txt-14 txt-gray">{[ cloudSpaceDetails.secret]}</p>
 				</div>
 				<br/>
-				<div ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location" style="margin-bottom: 10px;">
-          			<label class="left" style="margin-right: 10px; height: 30px; line-height: 30px; min-width: 65px;">Location:</label>
-          			<div class="txt-center" ng-switch-when="ca1" style="float: left; margin-bottom: 20px;">
+				<div class="margin-bottom-medium" ng-switch="currentSpace.location.toLowerCase()" ng-show="currentSpace.location">
+          			<label class="left margin-right-medium settings-label">Location:</label>
+          			<div class="txt-center margin-bottom-large left" ng-switch-when="ca1">
           				<img src="/$$space/.files/img/flags/canada.png">
-          				<span style="display: block; margin-top: 5px; font-size: 13px;">Canada</span>
+          				<span class="block margin-top-small txt-13">Canada</span>
           			</div>
-          			<div class="txt-center" ng-switch-when="us1" style="float: left; margin-bottom: 20px;">
+          			<div class="txt-center margin-bottom-large left" ng-switch-when="us1">
           				<img src="/$$space/.files/img/flags/usa.png">
-          				<span style="display: block; margin-top: 5px; font-size: 13px;">United States</span>
+          				<span class="block margin-top-small txt-13">United States</span>
           			</div>
-					<div class="txt-center" ng-switch-when="test1" style="float: left; margin-bottom: 20px;">
+					<div class="txt-center margin-bottom-large left" ng-switch-when="test1">
 						<img src="/$$space/.files/img/flags/black-flag.png">
-						<span style="display: block; margin-top: 5px; font-size: 13px;">Test</span>
+						<span class="block margin-top-small txt-13">Test</span>
 					</div>
         		</div>
-				<br><button class="btn" ng-click="deleteCloudspace()" style="margin-top: 20px; clear: both; display: block;"><i class="fa fa-trash"></i> Delete Cloud Space</button>
+				<br><button class="btn margin-top-large clear-both block" ng-click="deleteCloudspace()"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
 						<div class="modal-header">

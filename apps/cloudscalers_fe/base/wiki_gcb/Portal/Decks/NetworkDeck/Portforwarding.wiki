@@ -2,7 +2,7 @@
 
 {{html:
 	<div class="row txt-center margin-vertical-small ng-cloak" ng-show="currentSpace.status != 'DEPLOYED'">
-	   <div class="alert alert-warning" style="margin: 0 auto !important; width: 400px;">Unavailable until the first Virtual Machine is deployed</div>
+	   <div class="alert alert-warning margin-center-horizontal width-60">Unavailable until the first Virtual Machine is deployed</div>
 	</div>
 	<h1 ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">Port Forwards</h1>
 	<p ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
@@ -10,26 +10,26 @@
 	</p>
 	<div class="margin-vertical-large" ng-controller="PortforwardingController">
 		<div>
-			<div style="margin-bottom: 5px;">
+			<div class="margin-bottom-small">
 				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED'" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
 			<table class="table table-striped table-bordered" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
 				<tr>
-					<th style=""><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
+					<th><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
 					<th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
-					<th style=""><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
+					<th><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
 					<th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
 					<th><a href="" ng-click="predicate = 'protocol'; reverse=!reverse">Protocol</a></th>
 				</tr>
 				<tbody>
 					<tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
-						<td style="display: none;">{[portforward.id]}</td>
-						<td style=" cursor: pointer;">{[portforward.publicIp]}</td>
-						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.publicPort]}</td>
-						<td style=" cursor: pointer;" ng-click="portForwardPopupEdit()">{[portforward.vmName]}</td>
-						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.localPort]}</td>
-						<td ng-click="portForwardPopupEdit()" style="cursor: pointer;">{[portforward.protocol]}</td>
+						<td class="hidden">{[portforward.id]}</td>
+						<td class="cursor-pointer">{[portforward.publicIp]}</td>
+						<td ng-click="portForwardPopupEdit()" class="cursor-pointer">{[portforward.publicPort]}</td>
+						<td ng-click="portForwardPopupEdit()" class="cursor-pointer">{[portforward.vmName]}</td>
+						<td ng-click="portForwardPopupEdit()" class="cursor-pointer">{[portforward.localPort]}</td>
+						<td ng-click="portForwardPopupEdit()" class="cursor-pointer">{[portforward.protocol]}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -82,9 +82,9 @@
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px; margin-top: 0;" >
+	            	<div class="control-group margin-top-none" >
 						<label class="control-label ipTip" for="inputNewIP" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="top" >Public IP</label>
-						<div class="controls" style="height: 33px; line-height: 31px;">
+						<div class="controls line-height">
 					         {[currentSpace.publicipaddress]}
 		       		</div>
 						<label class="control-label" for="inputNewPublicPort">Port</label>
@@ -93,7 +93,7 @@
 						</div>
 						<label class="control-label" for="inputProtocol">Protocol</label>
 						<div class="controls">
-							<select ng-model="newRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control" style="width: 173px;">
+							<select ng-model="newRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control protocol-select">
 							</select>
 						</div>
 					</div>
@@ -102,10 +102,10 @@
 				</div>
 				<div class="col-md-4">
 					<h4>Destination</h4>
-					<div class="control-group" style="margin-top: 0;">
-						<label class="control-label machineTip" style="width: 90%; " tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
+					<div class="control-group margin-top-none">
+						<label class="control-label machineTip width-90" tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control protocol-select">
 		                    </select>
 		                </div>
 						<label class="control-label" for="inputNewLocalPort">Port</label>
@@ -166,9 +166,9 @@
             <div class="modal-body row-fluid">
             	<div class="col-md-5">
 					<h4>Source</h4>
-	            	<div class="control-group" style="min-height: 63px; margin-top: 0;">
+	            	<div class="control-group margin-top-none">
 						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls" style="height: 33px; line-height: 31px;">
+						<div class="controls line-height">
 							{[currentSpace.publicipaddress]}
 		       		</div>
 
@@ -178,8 +178,7 @@
 						</div>
 						<label class="control-label" for="inputProtocol">Protocol</label>
 						<div class="controls">
-							<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control" style="width: 173px;">
-							</select>
+							<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control protocol-select"></select>
 						</div>
 					</div>
 				</div>
@@ -187,10 +186,10 @@
 				</div>
 				<div class="col-md-4">
 					<h4>Destination</h4>
-					<div class="control-group" style="margin-top: 0;">
-						<label class="control-label" style="width: 90%; ">Virtual Machine</label>
+					<div class="control-group margin-top-none">
+						<label class="control-label width-90">Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control" style="width: 173px;">
+							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control protocol-select">
 		                    </select>
 		                </div>
 

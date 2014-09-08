@@ -1,15 +1,12 @@
 
 h1. Manage Machine
-{{cssstyle
-h1 { margin-bottom: 20px; }
-}}
 {{html:
 <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
-<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15 margin-right-medium" style="margin-bottom: -25px;" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
+<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
-<tabset style="clear:both;">
+<tabset class="clear-both">
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
         <div id="actions" class="tab-pane active">
             <div class="row">
@@ -26,7 +23,7 @@ h1 { margin-bottom: 20px; }
                                 <div class="span3 line-height">Description</div>
                                 <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small position-default">
                                     <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
-                                        <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
+                                        <em class="right edit-description-link">Edit</em>
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +198,7 @@ h1 { margin-bottom: 20px; }
                                     <div class="control-group">
                                         <label class="control-label txt-gray" for="inputNewCloudSpaceName">Description</label>
                                         <div class="controls">
-                                            <textarea style="min-height: 80px; width: 330px;" ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description"></textarea>
+                                            <textarea class="description-textarea" ng-model="machine.newdescription" type="text" class="input-xlarge" placeholder="Description"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -274,12 +271,12 @@ h1 { margin-bottom: 20px; }
                     <tbody>
                         <tr ng-repeat="snapshot in snapshots.snapshots">
                             <td width="45%">{[snapshot.name]}</td>
-                            <td style="white-space:nowrap" >
+                            <td class="nowrap">
                                 {[snapshot.epoch * 1000 | date:'medium']}
                             </td>
                             <td>
-                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
-                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                                <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
                             </td>
                         </tr>
                     </tbody>

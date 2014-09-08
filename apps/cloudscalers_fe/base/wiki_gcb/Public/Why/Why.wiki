@@ -1,12 +1,4 @@
 @template public
-{{html:
-<head>
-<style type="text/css">
-	.table.table-condensed.table-hover th { font-weight: bold; font-size: 14px;padding: 6px 5px !important; border: 0;}
-</style>
-</head> 
-}}
-
 {{div: class=white}}
 {{div2: class=container why-page}}
 
