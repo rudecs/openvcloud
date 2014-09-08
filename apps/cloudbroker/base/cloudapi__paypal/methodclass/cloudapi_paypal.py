@@ -65,7 +65,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         result string
         """
         ctx = kwargs['ctx']
-        creditTransaction = self.models.credittransaction.get(id)
+        creditTransaction = self.models.credittransaction.get(int(id))
         paymentreference = creditTransaction.reference
         access_token = self._get_access_token()
         paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
@@ -106,7 +106,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         credittransaction.credit = amount
         credittransaction.currency = 'USD'
         credittransaction.status = 'UNCONFIRMED'
-        credittransaction.accountId = accountId
+        credittransaction.accountId = int(accountId)
         credittransaction.id = self.models.credittransaction.set(credittransaction)[0]
         paymenturl = '%s/v1/payments/payment' % self.paypal_url
         payload = {
@@ -150,7 +150,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         result dict
         """
         ctx = kwargs['ctx']
-        validationTransaction = self.models.validationtransaction.get(id)
+        validationTransaction = self.models.validationtransaction.get(int(id))
         paymentreference = validationTransaction.reference
         access_token = self._get_access_token()
         paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
@@ -188,7 +188,7 @@ class cloudapi_paypal(j.code.classGetBase()):
         result dict
         """
         ctx = kwargs['ctx']
-        validationTransaction = self.models.validationtransaction.get(id)
+        validationTransaction = self.models.validationtransaction.get(int(id))
         paymentreference = validationTransaction.reference
         access_token = self._get_access_token()
         paymenturl = "%s/v1/payments/payment/%s/execute/" % (self.paypal_url,paymentreference)
