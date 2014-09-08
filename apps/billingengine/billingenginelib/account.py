@@ -8,13 +8,9 @@ class account(object):
         self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
 
     def isPayingCustomer(self, accountId):
-        query = {'fields':['accountId']}
-
-        query['query'] = {"bool":{"must":[{"term" : { "accountId" : accountId }}], "must_not": [{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-
-        queryresult = self.cloudbrokermodels.credittransaction.search(ujson.dumps(query))['result']
-        payments = [res['fields'] for res in queryresult]
-        return len(payments) > 0
+        query = {'accountId': accountId, 'status': {'$ne': 'UNCONFIRMED'}}
+        payments = self.cloudbrokermodels.credittransaction.search(query)[0]
+        return payments > 0
 
 
     def getCreditBalance(self, accountId):
@@ -23,10 +19,8 @@ class account(object):
 
         param:accountId id of the account
         """
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.cloudbrokermodels.credittransaction.search(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        query = {'accountId': accountId, 'status': {'$ne': 'UNCONFIRMED'}}
+        history = self.cloudbrokermodels.credittransaction.search(query)[1:]
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
