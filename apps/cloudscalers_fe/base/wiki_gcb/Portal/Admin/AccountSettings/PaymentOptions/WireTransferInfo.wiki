@@ -1,13 +1,6 @@
 {{html:
-<head>
-<style type="text/css">
-	#terms p { font-size: 14px !important;}
-	.mainButton {padding: 5px 15px;font-size: 14px;}
-</style>
-</head>
-
-
-<p>We accept wire transfer payments as from 100 EUR.<br/>
+<p class="txt-14">
+We accept wire transfer payments as from 100 EUR.<br/>
 
 <strong>Send the payment to:</strong><br/>
 
@@ -26,5 +19,6 @@ Belgium<br/>
 
 Your account credit will be change as soon as we have received your payment.<br/>
 
-All costs for the wire transfer are to be covered by the customer. If Mothership1 is charged bank costs for the wire transfer, the costs will be deducted first from the uploaded funds and the remaining amount will be added to your Cloud Space. Wire Transfers in Europe are free if the IBAN/BIC codes are used correctly.<p>
+All costs for the wire transfer are to be covered by the customer. If Mothership1 is charged bank costs for the wire transfer, the costs will be deducted first from the uploaded funds and the remaining amount will be added to your Cloud Space. Wire Transfers in Europe are free if the IBAN/BIC codes are used correctly.
+</p>
 }}

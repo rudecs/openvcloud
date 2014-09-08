@@ -133,7 +133,7 @@ body:before { content:""; height:100%; float:left; width:0; margin-top:-32767px;
 .sticky2 { min-height: 100%; height: auto; margin: 0 auto -50px; padding: 0 0 50px; background: #FFF; }
 #main { overflow:auto; padding-bottom: 150px; }
 #navbar-list { margin-left: 0 !important; padding-left: 0 !important; }
-#terms { height: 250px !important; width: 490px; overflow-y: scroll; }
+#terms { height: 250px !important; overflow: auto; overflow-x: hidden; -ms-overflow-x: hidden; }
 .carousel-control.left, .carousel-control.right { background: none; }
 .carousel-indicators { bottom: -52px !important; left: 0; width: auto; margin-left: 0; }
 .arrow li { margin: 15px 0; text-shadow: black 0.1em 0.1em 0.2em; list-style-type: none; }
@@ -159,6 +159,7 @@ canvas { display: block; float: left; }
 .ver { margin: -10px 0 0 0; }
 .bulletStyle { list-style-type: disc;}
 .settings-label{ height: 30px; line-height: 30px; min-width: 65px; }
+.login-url{ color: #0087b9; }
 /* End of general style */
 
 /* sideNav */
@@ -303,8 +304,10 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .list .span3 { font-size: 14px; color: #77777b; margin: 5px 0; width: 151px; clear: none; }
 .machine-actions { border-left: 1px solid #77777b; padding-left: 30px; }
 .edit-description:hover .edit-description-link { display: inline !important; }
-.edit-description-link { color: #0088cc; cursor: pointer; margin-right: 15px; }
+.edit-description-link { color: #0088cc; cursor: pointer; margin-right: 15px; display: none; }
 .edit-description-link:hover { text-decoration: underline; }
+.refresh-page { margin-bottom: -25px; }
+.description-textarea { min-height: 130px; width: 330px; }
 /* end of machine details page*/
 
 /* Decks Public Pages */
@@ -337,6 +340,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .inputWrap { float: left; width: 74%; }
 .signUpForm .inputWrap { width: 73%; }
 .signUpForm .inputWrap .inputLogin { font-size: 16px !important; }
+.signUpForm .inputWrap input { background-color: #FFF !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px; } 
 .primaryMine { background: #FFF !important; color: #0087b9; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none; font-size: 18px; padding: 10px 0; border: 0 !important; text-shadow: none; margin: 5px 0; }
 .primaryMine:hover { background: #FFF !important; color: #0087b9; border: 0 !important; text-shadow: none; }
 .defaultMine { background: #444444 !important; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: none!important; -moz-box-shadow: none!important; box-shadow: none!important; font-size: 18px!important; padding: 10px 0!important; border: 0 !important; text-shadow: none; margin: 5px 0; }
@@ -367,6 +371,9 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .flags-list .canada { background: url("../img/flags/canada.png") no-repeat center; }
 .flags-list .united.kingdom { background: url("../img/flags/uk.png") no-repeat center; }
 .flags-list .united.states { background: url("../img/flags/usa.png") no-repeat center; }
+#terms ul li { list-style-type: disc !important;}
+.signup-btn-decks { position: absolute;left: -248px;top: 370px;width: 180px;}
+.forPic img { width: 74px; margin: 21px 0 0 0; }
 /* end of public pages */
 
 /* Home page */
@@ -419,7 +426,12 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .creditMargin .form-control { margin: 10px 0; border: 1px solid #06a7e2; box-shadow: none; border-radius: 0; color: #000; }
 .creditMargin .form-control::-webkit-input-placeholder {color: #000;}
 .discRow { margin: 10px 15px; color: #06a7e2; }
+.paypal-image{ height: 25px; }
 /* end of billing page */
+
+/* Portfwarding Page */
+.protocol-select { width: 173px; }
+/**/
 
 /* Media Queries */
 @media (max-width: 1376px) {
@@ -631,7 +643,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 	.half.copy.col-md-6 + .justOne { text-align: center; }
 	.navbar-right > li { padding-left: 15px; }
 	.question-symbol, .question-symbol:hover { color: #fff; margin-left: 5px; }
-	#geeting-started{ padding-left: 29px; }
+	#geeting-started { padding-left: 29px; }
+	.signup-btn-decks { position: absolute; top: -50px; width: 93%; left: 0; margin: 0 15px; }
 }
 @media (max-width: 580px) {
 	.osimage-label, .controls2, .signUpForm .inputWrap input, .boxes p, .nameField textarea,

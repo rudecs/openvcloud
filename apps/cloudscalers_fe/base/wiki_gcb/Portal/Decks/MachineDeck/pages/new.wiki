@@ -11,7 +11,7 @@ Configure your virtual machine by choosing your package, server OS and additiona
     </div>
     <div class="nameField">
         <h2>Description:</h2>
-            <textarea style="font-size: 16px;" ng-model="machine.description" type="text" class="input-xxlarge" />
+            <textarea ng-model="machine.description" type="text" class="input-xxlarge" />
     </div>
     <div class="osimage-label nameField clear-both inline-block">
         <h2>OS Image</h2>

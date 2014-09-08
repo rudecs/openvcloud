@@ -37,7 +37,7 @@
         <div class="modal-header">
             <h3>Alert</h3>
         </div>
-        <div class="modal-body" style="width: 100%;">
+        <div class="modal-body width-full">
             <pre>{[ message ]}</pre>
         </div>
         <div class="modal-footer">
@@ -169,27 +169,13 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
 
-    <div class="main white" style="position: relative;">
+    <div class="main white relative">
 
       <!-- static right nav -->
   <div class="sideNav">
-    <ul style="padding-left: 0;">
+    <ul class="padding-left-none">
       <li class="header blue" >
         <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machine Deck <span>1</span></a>
         <ul class="body">
