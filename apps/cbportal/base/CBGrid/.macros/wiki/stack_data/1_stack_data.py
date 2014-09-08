@@ -8,6 +8,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
+    stid = int(stid)
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
     if not ccl.stack.exists(stid):

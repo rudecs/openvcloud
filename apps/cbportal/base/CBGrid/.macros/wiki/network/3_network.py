@@ -11,6 +11,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
+    id = int(id)
     vcl = j.core.osis.getClientForNamespace('vfw')
     key = "%s_%s" % (j.application.whoAmI.gid, id)
 

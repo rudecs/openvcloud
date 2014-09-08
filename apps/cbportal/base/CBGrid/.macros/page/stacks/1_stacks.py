@@ -9,6 +9,7 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
 
     if imageid:
+        imageid = int(imageid)
         ccl = j.core.osis.getClientForNamespace('cloudbroker')
         images = ccl.image.simpleSearch({'referenceId': imageid})
         if images:

@@ -13,6 +13,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
+    id = int(id)
     osiscl = j.core.osis.getClient(user='root')
     cbosis = j.core.osis.getClientForNamespace('cloudbroker', osiscl)
     try:

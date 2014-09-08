@@ -11,6 +11,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
+    id = int(id)
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
     if not cbclient.cloudspace.exists(id):

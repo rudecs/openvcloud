@@ -8,6 +8,7 @@ def main(j, args, params, tags, tasklet):
     stackid = args.getTag('stackid')
     nativequery = None
     if stackid:
+        stackid = int(stackid)
         ccl = j.core.osis.getClientForNamespace('cloudbroker')
         stack = ccl.stack.get(stackid)
         query = {'query': {'bool': {'must': [{'terms': {'id': stack.images}}]}}}

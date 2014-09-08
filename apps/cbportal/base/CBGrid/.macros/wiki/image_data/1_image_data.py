@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     def objFetchManipulate(id):
-        return ccl.image.get(imageid).dump()
+        return ccl.image.get(int(imageid)).dump()
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
 
