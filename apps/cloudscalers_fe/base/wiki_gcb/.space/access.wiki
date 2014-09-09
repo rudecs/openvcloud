@@ -7,10 +7,6 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-	<style type="text/css">
-    	.ng-hide { display: none !important;  }
-    </style>
 }}
 
 
@@ -24,6 +20,7 @@
 {{css:/$$space/.files/css/custom.css}}
 {{css:/$$space/.files/css/mothership1.css}}
 {{css:/$$space/.files/css/oocss.css}}
+{{css:/$$space/.files/css/media-queries.css}}
 
 #{{find}}
 

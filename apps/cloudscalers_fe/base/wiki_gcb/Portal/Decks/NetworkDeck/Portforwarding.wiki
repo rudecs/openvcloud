@@ -39,39 +39,9 @@
 	</div>
 	<script type="text/ng-template" id="portForwardDialog.html">
 		<style type="text/css">
-			.form-horizontal .control-label{
-				width: 105px;
-			}
-			.form-horizontal .controls{
-				margin-left: 0;
-			}
-			.row-fluid{
-				width: 96%;
-			}
-			.form-horizontal .control-label{
-				float: none;
-			}
-			.dropdown-menu{
-				top: 28px;
-			}
 			.modal-body{
 				overflow: visible;
 				min-height: 240px;
-			}
-			#common-port-menu{
-				padding: 4px 3px;
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-				width: 102px;
-				float: left;
-			}
-			#inputNewPublicPort{
-				width: 50%;
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-			}
-			.modal-footer{
-				padding: 19px 20px 30px;
 			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="submit()" ng-controller="Mothership1TourController">
@@ -79,19 +49,19 @@
             <div class="modal-header">
                 <h3>Port Forward</h3>
             </div>
-            <div class="modal-body row-fluid">
+            <div class="modal-body row-fluid width-95">
             	<div class="col-md-5">
 					<h4>Source</h4>
 	            	<div class="control-group margin-top-none" >
-						<label class="control-label ipTip" for="inputNewIP" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="top" >Public IP</label>
-						<div class="controls line-height">
+						<label class="control-label float-none ipTip" for="inputNewIP" tourtip="Your Public IP, serviced by your Defense Shield. Set here what ports you are opening on your firewall. Type the port number or select from the preset ports" tourtip-placement="top" >Public IP</label>
+						<div class="controls margin-left-noneline-height">
 					         {[currentSpace.publicipaddress]}
 		       		</div>
-						<label class="control-label" for="inputNewPublicPort">Port</label>
+						<label class="control-label float-none">Port</label>
 						<div class="controls">
 							<autocomplete ng-model="newRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 						</div>
-						<label class="control-label" for="inputProtocol">Protocol</label>
+						<label class="control-label float-none" for="inputProtocol">Protocol</label>
 						<div class="controls">
 							<select ng-model="newRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control protocol-select">
 							</select>
@@ -103,19 +73,19 @@
 				<div class="col-md-4">
 					<h4>Destination</h4>
 					<div class="control-group margin-top-none">
-						<label class="control-label machineTip width-90" tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
+						<label class="control-label float-none machineTip width-90" tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control protocol-select">
 		                    </select>
 		                </div>
-						<label class="control-label" for="inputNewLocalPort">Port</label>
+						<label class="control-label float-none" for="inputNewLocalPort">Port</label>
 						<div class="controls">
 							<autocomplete ng-model="newRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 						</div>
 					</div>
 				</div>
             </div>
-             <div class="modal-footer">
+             <div class="modal-footer padding-all-large">
                 <button type="submit" class="btn btn-primary ok">Ok</button>
                 <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
             </div>
@@ -125,58 +95,28 @@
 
 	<script type="text/ng-template" id="editPortForwardDialog.html">
 		<style type="text/css">
-			.form-horizontal .control-label{
-				width: 105px;
-			}
-			.form-horizontal .controls{
-				margin-left: 0;
-			}
-			.row-fluid{
-				width: 96%;
-			}
-			.form-horizontal .control-label{
-				float: none;
-			}
-			.dropdown-menu{
-				top: 28px;
-			}
 			.modal-body{
 				min-height: 240px;
-			}
-			#common-port-menu{
-				padding: 4px 3px;
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-				width: 102px;
-				float: left;
-			}
-			#inputNewPublicPort{
-				width: 50%;
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-			}
-			.modal-footer{
-				padding: 19px 20px 30px;
 			}
 		</style>
         <form name="form" class="form-horizontal" ng-submit="update()">
             <div class="modal-header">
                 <h3>Edit Port Forward</h3>
             </div>
-            <div class="modal-body row-fluid">
+            <div class="modal-body row-fluid width-95">
             	<div class="col-md-5">
 					<h4>Source</h4>
 	            	<div class="control-group margin-top-none">
-						<label class="control-label" for="inputNewIP">Public IP</label>
-						<div class="controls line-height">
+						<label class="control-label float-none" for="inputNewIP">Public IP</label>
+						<div class="controls margin-left-noneline-height">
 							{[currentSpace.publicipaddress]}
 		       		</div>
 
-						<label class="control-label" for="inputNewPublicPort">Port</label>
+						<label class="control-label float-none">Port</label>
 						<div class="controls">
 							<autocomplete ng-model="editRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 						</div>
-						<label class="control-label" for="inputProtocol">Protocol</label>
+						<label class="control-label float-none" for="inputProtocol">Protocol</label>
 						<div class="controls">
 							<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control protocol-select"></select>
 						</div>
@@ -187,20 +127,20 @@
 				<div class="col-md-4">
 					<h4>Destination</h4>
 					<div class="control-group margin-top-none">
-						<label class="control-label width-90">Virtual Machine</label>
+						<label class="control-label float-none width-90">Virtual Machine</label>
 						<div class="controls">
 							<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control protocol-select">
 		                    </select>
 		                </div>
 
-						<label class="control-label" for="inputNewLocalPort">Port</label>
+						<label class="control-label float-none" for="inputNewLocalPort">Port</label>
 						<div class="controls">
 							<autocomplete ng-model="editRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 						</div>
 					</div>
 				</div>
             </div>
-             <div class="modal-footer">
+             <div class="modal-footer padding-all-large">
                 <button type="submit" class="btn btn-primary ok">Ok</button>
                 <button type="button" class="btn cancel" ng-click="delete()">Delete</button>
                 <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>

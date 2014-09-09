@@ -1,42 +1,5 @@
 @template homepage_template
 {{html:
-<head>
-<style type="text/css">
-        .videoMain iframe {-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;box-shadow: 0px 0px 9px #06a7e2;} 
-        .bigButtonSignUp {margin-top: -66px;margin-bottom: -42px;}
-        .borderRight1 { border-right: 2px solid rgba(255, 255, 255, 0.6); } 
-        .borderRight1 + .col-md-6 ul { padding-left: 20px; }
-        .borderRight1 + .col-md-6 ul li { color: #FFF;font-size: 16px;font-weight: bold;list-style: initial; }
-        .nav-stacked li {margin: 19px 0;}
-        .nav-stacked { margin-top: 15px; margin-bottom: -5px; }
-        .nav-stacked li a {display: block;padding: 9px 19px;color: #e4e4e4;}
-        .nav-stacked li a strong {color: #FFF;}
-        .videoBox2 { background: rgba(6,167,226,0.2);-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;box-shadow: 0px 0px 9px #06a7e2;}
-        .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {background: rgba(0,143,237,0.5);}
-        .marginTop15 {margin-top: -63px;margin-bottom: 45px;}
-        .tab-pane video { border: 1px solid #06a7e2;}
-        .marginTop {margin-top: -7px;margin-bottom: 20px;}
-        .leftIcon {margin: 0 0 50px 210px;}
-         @media (max-width: 768px) {
-               .bigButtonSignUp {margin-top: 45px !important;margin-bottom: -12px !important;text-align: center !important;}
-               .borderRight1 { border-right: 0; }
-               .borderRight1 + .col-md-6 ul li { list-style: none; }
-               .borderRight1 img { margin-left: -50px; }
-            }
-
-            @media (max-width: 992px) {
-               .bigButtonSignUp {margin-top: 45px !important;margin-bottom: -12px !important;text-align: center !important;}
-               .borderRight1 { border-right: 0; margin-bottom: 15px; }
-               .borderRight1 + .col-md-6 ul li { list-style: none; }
-               .borderRight1 img { margin-left: -50px; }
-            }
-            @media (max-width: 1290px) and (min-width: 992px) {
-                .borderRight1 img { margin-left: -50px; }
-                .borderRight1 { border-right: 0; }
-                .borderRight1 + .col-md-6 ul li { list-style: none; }
-            }        
-    </style>
-</head>
 <div class="jumbotron">
   <div class="container margin-top-none">
     <div class="col-md-7 marginText">
@@ -97,7 +60,7 @@
     <div class="col-md-7 col-md-offset-3 bigButtonSignUp">
       <div class="col-md-6 borderRight1"> <a href="../$$space/signUp"><img src="/$$space/.files/img/images/free-trial.png" alt=""></a> </div>
       <div class="col-md-6">
-        <ul>
+        <ul class="padding-left-large">
           <li>Sign Up for our 2-week Trial</li>
           <li>No renewal obligation</li>
           <li>No automatic credit card charges</li>
@@ -107,7 +70,7 @@
   </div>
 </div>
 
-<div class="marginTop">
+<div class="revolutionary-cloud-container">
   <div class="container">
     <div class="col-md-12">
       <p class="font mainText">Revolutionary Cloud Computing!<br>
@@ -118,7 +81,7 @@
 </div>
 }}
 {{html:
-<div class="container">
+<div class="homepage-decks container">
   <div>
     <div class="col-md-5 boxes font color1 leftIcon"> <img src="/$$space/.files/img/icon1.png" alt=""/>
       <h2> }}
@@ -151,9 +114,9 @@
   </div>
 </div>
 
-<div class="container marginTop15">
+<div class="video-tour-container container margin-top-large">
   <div class="col-md-12">
-  <div class="col-md-12 videoBox2">
+  <div class="col-md-12 videoBox2 border-radius">
     <div class="row">
 }}
 {{vimeo_playlist:
