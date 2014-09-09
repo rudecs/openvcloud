@@ -1,17 +1,13 @@
 import requests
 import hashlib
+from settings import authenticationparams, WHMCS_API_ENDPOINT
 
-authenticationparams = dict(
-                            username = 'api',
-                            password = hashlib.md5('kmmlqwkerjoi324mmkkjhapl02bc').hexdigest(),
-                            accesskey = 'mmqewnlzklpo89ka234mkm2o1287kmmzbpldgej3'
-                            )
 
 def _call_whmcs_api(requestparams):
     actualrequestparams = dict()
     actualrequestparams.update(requestparams)
     actualrequestparams.update(authenticationparams)
-    response = requests.post('http://whmcsdev/whmcs/includes/api.php',data=actualrequestparams)
+    response = requests.post(WHMCS_API_ENDPOINT, data=actualrequestparams)
     return response
 
 def create_user(name, company, emails, password, companyurl, displayname, creationTime):
