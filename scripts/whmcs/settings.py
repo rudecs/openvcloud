@@ -5,3 +5,5 @@ authenticationparams = dict(
                             )
 
 WHMCS_API_ENDPOINT = 'http://whmcsdev/whmcs/includes/api.php'
+
+CLOUDSPACE_PRODUCT_ID = 34
