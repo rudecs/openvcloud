@@ -12,9 +12,10 @@ def _call_whmcs_api(requestparams):
     actualrequestparams.update(requestparams)
     actualrequestparams.update(authenticationparams)
     response = requests.post('http://whmcsdev/whmcs/includes/api.php',data=actualrequestparams)
-    return reponse
+    return response
 
 def create_user(name, company, emails, password, companyurl, displayname, creationTime):
+    print 'Creating %s' % name
     create_user_request_params = dict(
 
                 action = 'addclient',
@@ -37,7 +38,7 @@ def create_user(name, company, emails, password, companyurl, displayname, creati
 
 
 def update_user(name, company, emails, password, companyurl, displayname, creationTime):
-    
+    print 'Updating %s' % name
     user_request_params = dict(
 
                 action = 'updateclient',
