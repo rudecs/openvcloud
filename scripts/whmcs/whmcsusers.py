@@ -1,5 +1,4 @@
 import requests
-import hashlib
 from settings import authenticationparams, WHMCS_API_ENDPOINT
 
 

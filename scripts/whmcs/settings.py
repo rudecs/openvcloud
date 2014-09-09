@@ -1,3 +1,5 @@
+import hashlib
+
 authenticationparams = dict(
                             username = 'api',
                             password = hashlib.md5('kmmlqwkerjoi324mmkkjhapl02bc').hexdigest(),
