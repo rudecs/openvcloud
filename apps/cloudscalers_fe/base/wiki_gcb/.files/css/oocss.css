@@ -160,7 +160,7 @@
 .block{
 	display: block !important;
 }
-.hidden{
+.hidden, [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide{
 	display: none !important;
 }
 .table-cell{
@@ -246,6 +246,9 @@
 }
 .width-90{
 	width: 90%;
+}
+.width-95{
+	width: 95%;
 }
 
 .line-height{ 
