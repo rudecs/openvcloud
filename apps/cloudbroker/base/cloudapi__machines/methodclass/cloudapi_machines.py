@@ -595,8 +595,8 @@ class cloudapi_machines(object):
         Gets the machine actions history
         """
         tags = str(machineId)
-        query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
-        return self.osis_logs.search(query)['hits']['hits']
+        query = {'category': 'machine_history_ui', 'tags': tags}
+        return self.osis_logs.search(query, size=size)[1:]
 
     @authenticator.auth(acl='R')
     @audit()
