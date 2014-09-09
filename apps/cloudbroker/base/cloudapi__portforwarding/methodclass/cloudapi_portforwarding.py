@@ -21,7 +21,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         self._cb = None
         self._models = None
         self.netmgr = j.apps.jumpscale.netmgr
-        self.gridid = j.application.config.get('grid.id')
+        self.gridid = j.application.whoAmI.gid
         pass
 
     @property
@@ -62,6 +62,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         param:vmid id of the vm
         param:localPort private port
         """
+        vmid = int(vmid)
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
         if len(fw) == 0:
@@ -140,6 +141,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
     @authenticator.auth(acl='C')
     @audit()
     def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
+        vmid = int(vmid)
         ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
         if len(fw) == 0:

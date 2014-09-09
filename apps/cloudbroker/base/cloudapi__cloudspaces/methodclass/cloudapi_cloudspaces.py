@@ -308,6 +308,7 @@ class cloudapi_cloudspaces(object):
         Get informayion about the defense sheild
         param:cloudspaceId id of the cloudspace
         """
+        cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = "%s_%s" % (j.application.whoAmI.gid, cloudspace.networkId)
         api = self.netmgr.fw_getapi(fwid)
