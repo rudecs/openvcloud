@@ -34,20 +34,3 @@ class routeros():
     
     def close(self):
         self.sock.close()
-        
-        
-            
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
