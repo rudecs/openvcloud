@@ -27,9 +27,6 @@ def _send_signup_mail(**kwargs):
     You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
     <br>
     <br>
-    All new users are granted a free test drive for 2 weeks.
-    <br>
-    <br>
     In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
     <br>
     <br>
