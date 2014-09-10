@@ -1,4 +1,4 @@
-import requests
+import requests, base64, phpserialize
 from settings import authenticationparams, WHMCS_API_ENDPOINT
 
 
@@ -22,7 +22,7 @@ def create_user(name, company, emails, password, companyurl, displayname, creati
                 password2 = password,
                 country = "unknown",
                 currency = "1",
-                customfields = [companyurl, displayname, creationTime],
+                customfields = base64.b64encode(phpserialize.dumps([companyurl, displayname, creationTime])),
                 noemail = True,
                 skipvalidation= True
 
@@ -42,7 +42,7 @@ def update_user(name, company, emails, password, companyurl, displayname, creati
                 companyname = company,
                 email = emails,
                 password2 = password,
-                customfields = [companyurl, displayname, creationTime],
+                customfields = base64.b64encode(phpserialize.dumps([companyurl, displayname, creationTime])),
                 noemail = True,
                 skipvalidation= True
 

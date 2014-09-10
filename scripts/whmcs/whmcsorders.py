@@ -1,5 +1,5 @@
 import requests
-import hashlib
+import hashlib, base64, phpserialize
 
 from settings import authenticationparams, WHMCS_API_ENDPOINT
 
@@ -11,17 +11,18 @@ def _call_whmcs_api(requestparams):
     response = requests.post(WHMCS_API_ENDPOINT, data=actualrequestparams)
     return response
 
-def add_order(userId, productId, name, cloudbrokerId):
+def add_order(userId, productId, name, cloudbrokerId, status='Active'):
     
     request_params = dict(
 
                 action = 'addorder',
                 name=name,
+                status=status,
                 pid = productId,
                 clientid = userId,
                 billingcycle = 'monthly',
                 paymentmethod = 'paypal',
-                customfields = [cloudbrokerId],
+                customfields = base64.b64encode(phpserialize.dumps([cloudbrokerId])),
                 noemail = True,
                 skipvalidation= True
 
@@ -43,7 +44,7 @@ def list_orders():
     if response.ok:
         orders = response.json()
         if orders['numreturned'] > 0:
-            return orders['orders']
+            return orders['orders']['order']
         return []
     else:
       raise
