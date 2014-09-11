@@ -61,9 +61,9 @@
       <div class="col-md-6 borderRight1"> <a href="../$$space/signUp"><img src="/$$space/.files/img/images/free-trial.png" alt=""></a> </div>
       <div class="col-md-6">
         <ul class="padding-left-large">
-          <li>Sign Up for our 2-week Trial</li>
-          <li>No renewal obligation</li>
-          <li>No automatic credit card charges</li>
+          <li>Sign up in 30 seconds</li>
+          <li>VMs as from $0.0069/hour</li>
+          <li>Storage as from $0.03/GB/month</li>
         </ul>
       </div>
     </div>
