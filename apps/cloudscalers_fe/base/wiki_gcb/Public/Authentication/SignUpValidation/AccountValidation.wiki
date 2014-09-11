@@ -8,7 +8,7 @@ Thank you for signing up. You are only 1 step away from entering Mothership{{htm
 
 We will verify your account using 1 USD PayPal payment that is automatically refunded. This means you will see a 1 USD charged and 1 USD refunded on your credit card or PayPal balance. We will NOT create a subscription or allowance on your PayPal account for future billing.
 
-After this payment, you will automatically be redirected to your Cloud Space at Mothership{{html:<sup>1</sup>}}. We provide you with some free test credit so you can try it right away!
+After this validation, you will automatically be redirected to your Cloud Space at Mothership{{html:<sup>1</sup>}}.
 
 {{html:
 <div ng-controller="AccountValidationController" ng-cloak>
