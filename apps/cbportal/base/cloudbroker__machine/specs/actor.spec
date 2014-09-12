@@ -110,3 +110,15 @@
         var:accountName str,,Account name, extra validation for preventing a wrong machineId
         var:machineId int,,Id of the machine
         var:reason str,,Reason
+
+   method:backupAndDestroy
+        """
+        * Create a ticket
+        * Call the backup method
+        * Destroy the machine
+        * Close the ticket
+        Use with caution!
+        """
+        var:accountName str,,Account name, extra validation for preventing a wrong machineId
+        var:machineId int,,Id of the machine
+        var:reason str,,Reason
