@@ -329,7 +329,7 @@ class cloudapi_users(object):
         account.DCLocation = location
         account.company = company
         account.companyurl = companyurl
-        account.status = 'UNCONFIRMED'
+        account.status = 'CONFIRMED'
         account.displayname = user
 
         ace = account.new_acl()
