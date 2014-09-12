@@ -34,7 +34,7 @@
         var:targetComputeNode str,, Name of the compute node the machine has to be moved to @optional
         var:withSnapshots bool,, Defaults to true @optional
         var:collapseSnapshots bool,, Sanitize snapshots, defaults to false @optional
-    
+
     method:export
         """
         Create a export/backup of a machine
@@ -43,9 +43,9 @@
         var:name str,, Usefull name for this backup
         var:backuptype str,, Type e.g raw, condensed
         var:storage str,, Type of storage used. e.g S3 or RADOS.
-        var:bucketname str,,bucket name 
+        var:bucketname str,,bucket name
         var:host str,, host to export(if s3) @tags: optional
-        var:aws_access_key str,,s3 access key @tags: optional 
+        var:aws_access_key str,,s3 access key @tags: optional
         var:aws_secret_key str,,s3 secret key @tags: optional
         result:jobid
 
@@ -55,7 +55,7 @@
         """
         var:machineId int,, id of the machine to tag
         var:tagName str,, tag
-       
+
     method:restore
         """
         Import a existing backup on a cpu node
@@ -63,8 +63,8 @@
         var:vmexportId int,, id of the exportd to backup
         var:nid int,, node on which the bakcup is imported
         var:destinationpath str,, location where the backup should be located
-        var:aws_access_key str,,s3 access key @tags: optional 
-        var:aws_secret_key str,,s3 secret key @tags: optional 
+        var:aws_access_key str,,s3 access key @tags: optional
+        var:aws_secret_key str,,s3 secret key @tags: optional
         result:jobid
 
     method:untag
@@ -80,8 +80,8 @@
         """
         var:status str,,status of the backup @tags: optional
         var:machineId int,,id of the machine @tags: optional
-        result: list of created exports 
-    
+        result: list of created exports
+
     method:list
         """
         List the undestroyed machines based on specific criteria
@@ -91,7 +91,7 @@
         var:computeNode str,, name of a specific computenode @optional
         var:accountName str,, specific account @optional
         var:cloudspaceId int,, specific cloudspace @optional
-    
+
     method:checkImageChain
         """
         Checks on the computenode the vm is on if the vm image is there
@@ -100,3 +100,13 @@
         """
         var:machineId int,, id of the machine
         result:dict,, location of all files & their size
+
+    method:stopForAbusiveResourceUsage
+        """
+        If a machine is abusing the system and violating the usage policies it can be stopped using this procedure.
+        A ticket will be created for follow up and visibility, the machine stopped, the image put on slower storage and the ticket is automatically closed if all went well.
+        Use with caution!
+        """
+        var:accountName str,,Account name, extra validation for preventing a wrong machineId
+        var:machineId int,,Id of the machine
+        var:reason str,,Reason
