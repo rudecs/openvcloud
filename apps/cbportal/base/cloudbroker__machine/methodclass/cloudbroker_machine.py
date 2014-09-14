@@ -283,7 +283,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
-
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
@@ -314,7 +313,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
-        
     def listExports(self, status, machineId ,**kwargs):
         query = {}
         if status:
@@ -326,7 +324,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
-
 
     def tag(self, machineId, tagName, **kwargs):
         """
@@ -377,7 +374,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine.tags = tags.tagstring
         self.cbcl.vmachine.set(vmachine)
         return True
-
 
     def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
         """
@@ -435,3 +431,33 @@ class cloudbroker_machine(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method checkImageChain")
+
+    @auth(['level1','level2'])
+    def stopForAbusiveResourceUsage(self, accountName, machineId, reason, **kwargs):
+        '''If a machine is abusing the system and violating the usage policies it can be stopped using this procedure.
+        A ticket will be created for follow up and visibility, the machine stopped, the image put on slower storage and the ticket is automatically closed if all went well.
+        Use with caution!
+        @param:accountName str,,Account name, extra validation for preventing a wrong machineId
+        @param:machineId int,,Id of the machine
+        @param:reason str,,Reason
+        '''
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        rapi = j.remote.cuisine.api
+        stack = self.cbcl.stack.get(vmachine.stackId)
+        rapi.connect(stack.referenceId)
+        cmd = 'cd /mnt/vmstor; VM=vm-%s; virsh destroy $VM; tar cf - $VM | tar xvf - -C /mnt/vmstor2 && rm -rf $VM && ln -s /mnt/vmstor2/${VM}' % machineId
+        rapi.sudo(cmd)
+        return True
