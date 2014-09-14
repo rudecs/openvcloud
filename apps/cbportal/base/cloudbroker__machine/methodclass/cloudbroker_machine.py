@@ -461,3 +461,25 @@ class cloudbroker_machine(j.code.classGetBase()):
         cmd = 'cd /mnt/vmstor; VM=vm-%s; virsh destroy $VM; tar cf - $VM | tar xvf - -C /mnt/vmstor2 && rm -rf $VM && ln -s /mnt/vmstor2/${VM}' % machineId
         rapi.sudo(cmd)
         return True
+
+    @auth(['level1','level2'])
+    def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
+        """
+        * Create a ticket
+        * Call the backup method
+        * Destroy the machine
+        * Close the ticket
+        Use with caution!
+        """
+        machine = self.cbcl.vmachine.get(machineId)
+        if not machine:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        #Create Ticket
+        backupname = '%s_%s' % (machine.name, j.base.time.getLocalTimeHRForFilesystem())
+        self.acl.executeJumpScript('cloudscalers', 'backupmachine', j.application.whoAmI.nid, args={'machineid': machineId, 'backupname': backupname, 'location':'/mnt/vmstore/test/', 'emailaddress':'khamisr@codescalers.com'})
+        cloudspace = self.cbcl.cloudspace.get(machine.cloudspaceId)
+        self.destroy(accountName, cloudspace.name, machineId, reason)
+        #Close Ticket
