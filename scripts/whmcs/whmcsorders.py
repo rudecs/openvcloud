@@ -11,6 +11,14 @@ def _call_whmcs_api(requestparams):
     response = requests.post(WHMCS_API_ENDPOINT, data=actualrequestparams)
     return response
 
+def accept_order(orderId):
+    request_params = dict(
+                action='acceptorder',
+                orderid=orderId,
+                sendemail=False
+                          )
+    response = _call_whmcs_api(request_params)
+
 def add_order(userId, productId, name, cloudbrokerId, status='Active'):
     
     request_params = dict(
@@ -24,12 +32,13 @@ def add_order(userId, productId, name, cloudbrokerId, status='Active'):
                 paymentmethod = 'paypal',
                 customfields = base64.b64encode(phpserialize.dumps([cloudbrokerId])),
                 noemail = True,
-                skipvalidation= True
+                skipvalidation= True,
+                responsetype = 'json'
 
                 )
     
     response = _call_whmcs_api(request_params)
-    return response.ok
+    return response.json()
 
 
 def list_orders():

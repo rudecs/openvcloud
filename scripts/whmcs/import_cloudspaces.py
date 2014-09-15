@@ -8,8 +8,9 @@ from settings import CLOUDSPACE_PRODUCT_ID
 
 def add_cloudspace(userId, cloudspace):
     print "Adding cloudspace: %s" % cloudspace
-    whmcsorders.add_order(userId, CLOUDSPACE_PRODUCT_ID, cloudspace['name'], cloudspace['id'])
-
+    order = whmcsorders.add_order(userId, CLOUDSPACE_PRODUCT_ID, cloudspace['name'], cloudspace['id'])
+    whmcsorders.accept_order(order['orderid'])
+    
 def main():
     cb = j.core.osis.getClientForNamespace('cloudbroker')
     system = j.core.osis.getClientForNamespace('system')
