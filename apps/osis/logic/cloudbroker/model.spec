@@ -135,7 +135,7 @@
     prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
-    prop:regionId int,,Grid id.
+    prop:gid int,,Grid id.
     prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
 
 
@@ -269,12 +269,3 @@
     prop:username str,, User this token is for
     prop:creationTime int,, epoch time of creation, in seconds
     prop:userguid str,, Actual id of the user this token is for
-
-[rootmodel:region]
-    """
-    Logical group of compute power
-    """
-    prop:id str,, Code of region eg. uk1, us1 ca1
-    prop:name str,,Name of the region
-    prop:type str,,Type of the region eg. aws, cloudscalers, digital ocean
-    prop:data dict,, Extra data for region to work properly

@@ -199,11 +199,7 @@ class cloudapi_users(object):
             return 'No user has been found for this email address'
         
         user = existingusers[0]
-        
-        location = self.cb.extensions.imp.whereAmI()
-
-        locationurl = self.cb.extensions.imp.getLocations()[location]
-        
+        locationurl = j.actors.cloudapi.locations.getUrl()
         #create reset token
         actual_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(64))
         reset_token = self.models.resetpasswordtoken.new()
@@ -308,14 +304,7 @@ class cloudapi_users(object):
 
         location = location.lower()
 
-        if not location in self.cb.extensions.imp.getLocations():
-            location = self.cb.extensions.imp.whereAmI()
-
-        locationurl = self.cb.extensions.imp.getLocations()[location]
-        if location != self.cb.extensions.imp.whereAmI():
-            correctlocation = "%s/restmachine/cloudapi/users/register" % (locationurl)
-            ctx.start_response('451 Redirect', [('Location', correctlocation)])
-            return 'The request has been made on the wrong location, it should be done where the cloudspace needs to be created, in this case %s' % correctlocation
+        locationurl = j.actors.cloudapi.locations.getUrl()
 
         j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
         account = self.models.account.new()

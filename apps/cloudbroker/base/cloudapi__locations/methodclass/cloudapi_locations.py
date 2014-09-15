@@ -1,4 +1,5 @@
 from JumpScale import j
+import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth as audit
 
 
@@ -7,6 +8,7 @@ class cloudapi_locations(object):
         self._te = {}
         self.actorname = "locations"
         self.appname = "cloudapi"
+        self.osis = j.core.osis.getClientForNamespace('system')
         self._cb = None
         self._models = None
 
@@ -29,6 +31,7 @@ class cloudapi_locations(object):
         List locations.
         result []
         """
-        locations = self.cb.extensions.imp.getLocations()
-        return locations
+        return self.osis.grid.search({})[1:]
 
+    def getUrl(self):
+        return j.application.config.get('cloudbroker.portalurl')

@@ -81,7 +81,7 @@ class cloudapi_cloudspaces(object):
 
     @authenticator.auth(acl='A')
     @audit()
-    def create(self, accountId, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, gid, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create an extra cloudspace
         param:name name of space to create
@@ -91,6 +91,8 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        accountId = int(accountId)
+        gid = int(gid)
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
         if (len(active_cloudspaces) > 0):
@@ -109,13 +111,14 @@ class cloudapi_cloudspaces(object):
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
-        cs.location = self.cb.extensions.imp.whereAmI()
+        cs.location = grid.name
         ace = cs.new_acl()
         ace.userGroupId = access
         ace.type = 'U'
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
+        cs.gid = int(gid)
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId()
         if not networkid:
@@ -262,7 +265,6 @@ class cloudapi_cloudspaces(object):
         query = {"acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         self.cb.extensions.imp.filter(cloudspaces, fields)
-        locations = self.cb.extensions.imp.getLocations()
 
         for cloudspace in cloudspaces:
             #during the transitions phase, not all locations might be filled in
@@ -271,7 +273,6 @@ class cloudapi_cloudspaces(object):
 
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
-            cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
             cloudspace['accountName'] = account.name
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
@@ -309,8 +310,6 @@ class cloudapi_cloudspaces(object):
         pwd = str(uuid.uuid4())
         api.executeScript('/user set admin password=%s' %  pwd)
         location = cloudspace.location
-        if not location in self.cb.extensions.imp.getLocations():
-            location = self.cb.extensions.imp.whereAmI()
 
         url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
