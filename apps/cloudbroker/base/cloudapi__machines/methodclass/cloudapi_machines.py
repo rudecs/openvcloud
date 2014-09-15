@@ -262,7 +262,7 @@ class cloudapi_machines(object):
         machine.id = self.models.vmachine.set(machine)[0]
 
         try:
-            stack = self.cb.extensions.imp.getBestProvider(imageId)
+            stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, imageId)
             if stack == -1:
                 self.models.vmachine.delete(machine.id)
                 ctx = kwargs['ctx']
@@ -280,7 +280,7 @@ class cloudapi_machines(object):
         excludelist = [stack['id']]
         while(node == -1):
             #problem during creation of the machine on the node, we should create the node on a other machine
-            stack = self.cb.extensions.imp.getBestProvider(imageId, excludelist)
+            stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, imageId, excludelist)
             if stack == -1:
                   self.models.vmachine.delete(machine.id)
                   ctx = kwargs['ctx']

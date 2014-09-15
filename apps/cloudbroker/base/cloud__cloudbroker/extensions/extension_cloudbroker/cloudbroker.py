@@ -88,8 +88,8 @@ class CloudBroker(object):
                 if key not in fields:
                     result.pop(key)
 
-    def getBestProvider(self, imageId, excludelist=[]):
-        capacityinfo = self.getCapacityInfo(imageId)
+    def getBestProvider(self, gid, imageId, excludelist=[]):
+        capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
             return -1
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
@@ -102,10 +102,10 @@ class CloudBroker(object):
         return provider
 
 
-    def getCapacityInfo(self, imageId):
+    def getCapacityInfo(self, gid, imageId):
         # group all units per type
         resourcesdata = list()
-        stacks = models.stack.search({"images": imageId})[1:]
+        stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 resourcesdata.append(stack)
@@ -160,10 +160,3 @@ class CloudBroker(object):
 
     def getModel(self):
         return models
-
-    def getPublicIpAddress(self, networkid):
-        publicaddresses = j.application.config.getDict('cloudscalers.networks.public_ip')
-        if str(networkid) in publicaddresses:
-            return publicaddresses[str(networkid)]
-        else:
-            return None

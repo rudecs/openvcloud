@@ -183,7 +183,7 @@ class cloudbroker_machine(j.code.classGetBase()):
                 return 'Target node %s was not found' % targetComputeNode
             target_stack = stacks[0]
         else:
-            target_stack = self.cb.extensions.imp.getBestProvider(vmachine.imageId)
+            target_stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, vmachine.imageId)
 
         location = j.application.config.get('cloudbroker.where.am.i')
         if cloudspace.location != location:

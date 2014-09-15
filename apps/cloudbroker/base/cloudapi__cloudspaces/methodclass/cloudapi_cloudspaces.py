@@ -152,7 +152,7 @@ class cloudapi_cloudspaces(object):
         cs.status = 'DEPLOYING'
         self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        pool, publicipaddress = self.network.getPublicIpAddress()
+        pool, publicipaddress = self.network.getPublicIpAddress(cs.gid)
         publicgw = pool.gateway
         network = netaddr.IPNetwork(pool.id)
         publiccidr = network.prefixlen

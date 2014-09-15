@@ -213,6 +213,7 @@
     public ip pool
     """
     prop:id str,,network/cidr
+    prop:gid int,, Grid id
     prop:network str,,Network of the pool
     prop:subnetmask str,,Subnetmask of the pool
     prop:gateway str,,Gateway of th
