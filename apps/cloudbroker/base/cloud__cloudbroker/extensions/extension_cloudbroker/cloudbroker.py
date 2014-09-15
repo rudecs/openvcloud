@@ -35,6 +35,7 @@ class CloudProvider(object):
             if stack.type == 'LIBVIRT':
                 kwargs['id'] = stack.referenceId
                 kwargs['uri'] = stack.apiUrl
+                kwargs['gid'] = stack.gid
                 CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
                 cb = CloudBrokerConnection()
                 CloudProvider._providers[stackId].set_backend(cb)

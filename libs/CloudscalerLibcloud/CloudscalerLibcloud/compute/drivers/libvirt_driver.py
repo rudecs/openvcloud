@@ -30,9 +30,10 @@ class CSLibvirtNodeDriver():
         7: NodeState.UNKNOWN,  # last
     }
 
-    def __init__(self, id, uri):
+    def __init__(self, id, gid, uri):
         self._rndrbn_vnc = 0
-        self.id = id
+        self.id = int(id)
+        self.gid = gid
         self.name = id
         self.uri = uri
 
@@ -100,13 +101,15 @@ class CSLibvirtNodeDriver():
 
     def _execute_agent_job(self, name_, id=None, wait=True, queue=None, **kwargs):
         if not id:
-            role = self.id
-        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, queue=queue, args=kwargs)
+            id = self.id
+        else:
+            id = int(id)
+        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, nid=id, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                raise RuntimeError('Could not find agent with role:%s' %  role)
+                raise RuntimeError('Could not find agent with nid:%s' %  id)
             if job['result']:
-                raise RuntimeError("Could not execute %s for role:%s, error was:%s"%(name_,role,job['result']))
+                raise RuntimeError("Could not execute %s for nid:%s, error was:%s"%(name_,id,job['result']))
         if wait:
             return job['result']
         else:

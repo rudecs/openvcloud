@@ -21,7 +21,6 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         self._cb = None
         self._models = None
         self.netmgr = j.apps.jumpscale.netmgr
-        self.gridid = j.application.whoAmI.gid
         pass
 
     @property
@@ -63,8 +62,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         param:localPort private port
         """
         vmid = int(vmid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
@@ -76,7 +77,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'No correct ipaddress found for this machine'
 
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
         return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
@@ -94,8 +95,8 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 self._delete(cloudspaceid, idx)
         return True
 
-    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol):
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
+        forwards = self.netmgr.fw_forward_list(fw_id, gid)
         for fw in forwards:
             if fw['localIp'] == localIp \
                and fw['localPort'] == localPort \
@@ -142,14 +143,16 @@ class cloudapi_portforwarding(j.code.classGetBase()):
     @audit()
     def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
         vmid = int(vmid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
 
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         id = int(id)
         if not id < len(forwards):
             ctx.start_response('404 Not Found', [])
@@ -162,13 +165,13 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             else:
                 ctx.start_response('404 Not Found', [])
                 return 'No correct ipaddress found for machine with id %s' % vmid
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
             return "Forward for %s with port %s already exists" % (localIp, localPort)
-        self.netmgr.fw_forward_delete(fw_id, self.gridid,
+        self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
-        self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
+        forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         return self._process_list(forwards)
 
     def _process_list(self, forwards):
@@ -195,7 +198,9 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         param:cloudspaceid id of the cloudspace
         """
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'

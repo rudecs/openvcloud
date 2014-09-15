@@ -30,13 +30,10 @@ class cloudapi_cloudspaces(object):
         self._models = None
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
-        self.gridid = j.application.config.get('grid.id')
         self.network = network.Network(self.models)
         self._accountbilling = accountbilling.account()
         self._pricing = pricing.pricing()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
-
-       
 
     @property
     def cb(self):
@@ -94,9 +91,7 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
-        
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
-        
         # Extra cloudspaces require a payment and a credit check
         if (len(active_cloudspaces) > 0):
             ctx = kwargs['ctx']
@@ -111,7 +106,6 @@ class cloudapi_cloudspaces(object):
                 ctx.start_response('409 Conflict', [])
                 return 'Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required
 
-        
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -135,9 +129,9 @@ class cloudapi_cloudspaces(object):
 
     def _release_resources(self, cloudspace):
          #delete routeros
-        fws = self.netmgr.fw_list(self.gridid, str(cloudspace.id))
+        fws = self.netmgr.fw_list(cloudspace.gid, str(cloudspace.id))
         if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], self.gridid)
+            self.netmgr.fw_delete(fws[0]['guid'], cloudspace.gid)
         if cloudspace.networkId:
             self.libvirt_actor.releaseNetworkId(cloudspace.networkId)
         if cloudspace.publicipaddress:
@@ -166,7 +160,7 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cs)
         password = str(uuid.uuid4())
         try:
-            self.netmgr.fw_create(str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
+            self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
             cs.status = 'VIRTUAL'
