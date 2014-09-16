@@ -80,7 +80,8 @@ class CSLibvirtNodeDriver():
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = self.backendconnection.listImages(self.id)
+        providerid = "%s_%s" % (self.gid, self.id)
+        images = self.backendconnection.listImages(providerid)
         return [self._to_image(image) for image in images]
 
     def _to_image(self, image):
