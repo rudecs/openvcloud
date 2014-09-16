@@ -111,7 +111,7 @@
         var:machineId int,,Id of the machine
         var:reason str,,Reason
 
-   method:backupAndDestroy
+    method:backupAndDestroy
         """
         * Create a ticket
         * Call the backup method
