@@ -7,23 +7,20 @@ class mainclass(OSISStoreMongo):
     """
 
     def set(self, key, value, waitIndex=False, session=None):
-        id = value.get('id')
+        key = "%(gid)s_%(id)s" % value
+        value['guid'] = key
         db, counter = self._getMongoDB(session)
-        if id and self.exists(id, session=session):
-            orig = self.get(id, True, session=session)
+        if self.exists(key, session=session):
+            orig = self.get(key, True, session=session)
             orig.update(value)
             value = orig
             changed = True
             new = False
         else:
-            if not id:
-                id = self.incrId(counter)
-                value['id'] = id
             changed = False
             new = True
         if isinstance(id, basestring):
             id = id.replace('-', '')
             value['id'] = id
-        value['guid'] = id
         db.save(value)
         return [id, new, changed]

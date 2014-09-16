@@ -32,7 +32,7 @@ class CSLibvirtNodeDriver():
 
     def __init__(self, id, gid, uri):
         self._rndrbn_vnc = 0
-        self.id = int(id)
+        self.id = id
         self.gid = gid
         self.name = id
         self.uri = uri
@@ -101,7 +101,7 @@ class CSLibvirtNodeDriver():
 
     def _execute_agent_job(self, name_, id=None, wait=True, queue=None, **kwargs):
         if not id:
-            id = self.id
+            id = int(self.id)
         else:
             id = int(id)
         job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, nid=id, gid=self.gid, wait=wait, queue=queue, args=kwargs)
@@ -202,7 +202,7 @@ class CSLibvirtNodeDriver():
     def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid 
-        macaddress = self.backendconnection.getMacAddress()
+        macaddress = self.backendconnection.getMacAddress(self.gid)
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)

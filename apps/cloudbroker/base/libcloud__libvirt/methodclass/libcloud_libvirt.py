@@ -101,24 +101,23 @@ class libcloud_libvirt(object):
         self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return ipaddress
 
-    def getFreeMacAddress(self, **kwargs):
+    def getFreeMacAddress(self, gid, **kwargs):
         """
         Get a free macaddres in this libvirt environment
         result
         """
-        try:
-            lastMac = self.blobdb.get('lastmacaddress')
-        except:
+        key = 'lastmacaddress_%s'% gid
+        if self.blobdb.exists(key):
+            lastMac = self.blobdb.get(key)
+        else:
             newmacaddr = netaddr.EUI('52:54:00:00:00:00')
-            self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(int(newmacaddr)))
+            self.blobdb.set(key=key, obj=ujson.dumps(int(newmacaddr)))
             lastMac = int(newmacaddr)
         newmacaddr = lastMac + 1
         macaddr = netaddr.EUI(newmacaddr)
         macaddr.dialect = netaddr.mac_unix
-        self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(newmacaddr))
+        self.blobdb.set(key=key, obj=ujson.dumps(newmacaddr))
         return str(macaddr)
-
-    
 
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
@@ -132,50 +131,53 @@ class libcloud_libvirt(object):
         self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
-    def registerNetworkIdRange(self, start, end, **kwargs):
+    def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
         Add a new network idrange
         param:start start of the range
         param:end end of the range
         result 
         """
-        try:
-           networkids  = self.blobdb.get('networkids')
-        except:
+        key = 'networkids_%s' % gid
+        if self.blobdb.exists(key):
+            networkids  = self.blobdb.get(key)
+        else:
             #no list yet
             networkids = []
-            self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+            self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         toappend = [i for i in range(int(start), int(end) + 1) if i not in networkids]
         networkids = networkids + toappend
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         return True
 
 
-    def getFreeNetworkId(self, **kwargs):
+    def getFreeNetworkId(self, gid, **kwargs):
         """
         Get a free NetworkId
         result 
         """
-        networkids = self.blobdb.get('networkids')
+        key = 'networkids_%s' % gid
+        networkids = self.blobdb.get(key)
         if networkids:
             networkid = networkids.pop(0)
         else:
             networkid = None
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         return networkid
 
 
 
-    def releaseNetworkId(self, networkid, **kwargs):
+    def releaseNetworkId(self, gid, networkid, **kwargs):
         """
         Release a networkid.
         param:networkid int representing the netowrkid to release
         result bool
         """
-        networkids = self.blobdb.get('networkids')
+        key = 'networkids_%s' % gid
+        networkids = self.blobdb.get(key)
         if int(networkid) not in networkids:
             networkids.insert(0,int(networkid))
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         return True 
 
     def registerNode(self, id, macaddress, networkid, **kwargs):
@@ -227,8 +229,11 @@ class libcloud_libvirt(object):
             nodes[res['id']] = node
         return nodes
 
-    def listResourceProviders(self, **kwargs):
-        results = self._models.resourceprovider.search({})[1:]
+    def listResourceProviders(self, gid=None, **kwargs):
+        query = dict()
+        if gid is not None:
+            query['gid'] = gid
+        results = self._models.resourceprovider.search(query)[1:]
         nodes = {}
         for res in results:
             node = {'cloudunittype': res['cloudUnitType']}

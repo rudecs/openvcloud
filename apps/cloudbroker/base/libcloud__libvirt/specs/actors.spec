@@ -23,6 +23,7 @@
         """
         Get a free macaddres in this libvirt environment
         """
+        var:gid int,, Grid id
         result: free macaddress in the unix mac address format
 
     method: getFreeIpaddress
@@ -44,12 +45,14 @@
     """
     Get a free NetworkId
     """
+        var:gid int,, Grid id
         result: free ipaddress composed as int
 
     method: releaseNetworkId
     """
     Release a networkid.
     """
+        var:gid int,, Grid id
         var:networkid id,,int representing the netowrkid to release
         result:bool
 
@@ -66,6 +69,7 @@
     """
     Add a new network idrange
     """
+        var:gid int,, Grid id
         var:start int,,start of the range
         var:end int,,end of the range
         result: bool
@@ -104,6 +108,7 @@
     """
     List all registered resource providers
     """
+        var:gid int,, Grid id
         result:list of all registered resource providers
 
     method: linkImage
