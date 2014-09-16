@@ -455,12 +455,9 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        rapi = j.remote.cuisine.api
         stack = self.cbcl.stack.get(vmachine.stackId)
-        rapi.connect(stack.referenceId)
-        cmd = 'cd /mnt/vmstor; VM=vm-%s; virsh destroy $VM; tar cf - $VM | tar xvf - -C /mnt/vmstor2 && rm -rf $VM && ln -s /mnt/vmstor2/${VM}' % machineId
-        rapi.sudo(cmd)
-        return True
+        args = {'machineId': machineId, 'accountName': accountName, 'reason': reason}
+        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', role=stack.referenceId, args=args)
 
     @auth(['level1','level2'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
