@@ -203,7 +203,7 @@ class cloudapi_cloudspaces(object):
         self.models.cloudspace.set(cloudspace)
         cloudspace = self._release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
-        cloutspace.deletionTime = int(time.time())
+        cloudspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
 
 
@@ -305,7 +305,7 @@ class cloudapi_cloudspaces(object):
         """
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        fwid = "%s_%s" % (j.application.whoAmI.gid, cloudspace.networkId)
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         api = self.netmgr.fw_getapi(fwid)
         pwd = str(uuid.uuid4())
         api.executeScript('/user set admin password=%s' %  pwd)
