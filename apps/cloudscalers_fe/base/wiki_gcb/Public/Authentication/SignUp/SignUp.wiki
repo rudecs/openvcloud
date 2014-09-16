@@ -80,9 +80,9 @@
                   <label class="loginFieldName loginFieldName2">Preferred Location:</label>
                   <div class="mtl">
                         <ul class="flags-list mtl mll row">
-                          <li class="mrm" ng-repeat="(location, ip) in locations" ng-class="{ 'selected': selectedLocation == location }" ng-click="changeLocation(location)">
-                              <a href="" class="{[ 'flag-' + getLocationInfo(location).flag ]}"></a>
-                              <span class="mts block cursor-default">{[ getLocationInfo(location).title ]}</span>
+                          <li class="mrm" ng-repeat="location in locations" ng-class="{ 'selected': selectedLocation == location.locationCode }" ng-click="changeLocation(location)">
+                              <a href="" class="{[ 'flag-' + location.locationCode ]}"></a>
+                              <span class="mts block cursor-default">{[ location.name ]}</span>
                           </li>
                       </ul>
                     </div>

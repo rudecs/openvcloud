@@ -81,7 +81,7 @@ class cloudapi_cloudspaces(object):
 
     @authenticator.auth(acl='A')
     @audit()
-    def create(self, accountId, gid, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create an extra cloudspace
         param:name name of space to create
@@ -91,12 +91,18 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
+        ctx = kwargs['ctx']
         accountId = int(accountId)
-        gid = int(gid)
+        locations = self.models.location.search({'locationCode': location})[1:]
+        if not locations:
+            ctx.start_response('400 Bad Request', [])
+            return 'Location %s does not exists' % location
+        location = locations[0]
+       
+
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
         if (len(active_cloudspaces) > 0):
-            ctx = kwargs['ctx']
             if (not self._accountbilling.isPayingCustomer(accountId)):
                ctx.start_response('409 Conflict', [])
                return 'Creating an extra cloudspace is only available if you made at least 1 payment'
@@ -111,14 +117,14 @@ class cloudapi_cloudspaces(object):
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
-        cs.location = grid.name
+        cs.location = location['locationCode']
+        cs.gid = location['gid']
         ace = cs.new_acl()
         ace.userGroupId = access
         ace.type = 'U'
         ace.right = 'CXDRAU'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
-        cs.gid = int(gid)
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId()
         if not networkid:

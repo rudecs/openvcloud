@@ -22,19 +22,15 @@ angular.module('cloudscalers.controllers')
         $scope.selectedLocation = 'ca1';
         $scope.$watch('locations',function(){
         	if (!($scope.selectedLocation in $scope.locations)){
-            	$scope.selectedLocation = Object.keys($scope.locations)[0];
+            	$scope.selectedLocation = $scope.locations[0].locationCode;
             }
         });
         
         
-        $scope.changeLocation = function (locationcode) {
-            $scope.selectedLocation = locationcode;
+        $scope.changeLocation = function (location) {
+            $scope.selectedLocation = location.locationCode;
         };
         
-        $scope.getLocationInfo = function(locationcode){
-        	return LocationsService.get(locationcode);
-        }
-
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
                 $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
                 	&& $scope.user.password && $scope.passwordConfirmation

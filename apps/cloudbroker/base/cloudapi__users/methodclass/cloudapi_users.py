@@ -291,10 +291,7 @@ class cloudapi_users(object):
             ctx.start_response('409 Conflict', [])
             return 'Username already exists'
         cl = j.core.osis.getClientForNamespace('system')
-        #Elastic search analyzed this field, TODO: fix this
-        firstemailaddresspart = emailaddress.lower().split('@')[0]
-        matchingusers = cl.user.simpleSearch({'emails':firstemailaddresspart})
-        existingusers = [match_user for match_user in matchingusers if match_user['emails'].lower() == emailaddress.lower()]
+        existingusers = cl.user.search({'emails':emailaddress})[1:]
 
         if (len(existingusers) > 0):
             ctx.start_response('409 Conflict', [])
@@ -336,7 +333,7 @@ class cloudapi_users(object):
 
             self.models.credittransaction.set(credittransaction)
 
-        j.apps.cloudapi.cloudspaces.create(accountid, 'default', username, None, None)
+        j.apps.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
         _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl)
 
         return True

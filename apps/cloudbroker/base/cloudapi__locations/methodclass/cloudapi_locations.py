@@ -31,7 +31,7 @@ class cloudapi_locations(object):
         List locations.
         result []
         """
-        return self.osis.grid.search({})[1:]
+        return self.models.location.search({})[1:]
 
     def getUrl(self):
         return j.application.config.get('cloudbroker.portalurl')

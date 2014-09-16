@@ -19,9 +19,6 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         }
                     );
-            },
-            get: function(location){
-            	return locations[location];
             }
         };
     });

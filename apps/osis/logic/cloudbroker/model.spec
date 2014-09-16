@@ -270,3 +270,12 @@
     prop:username str,, User this token is for
     prop:creationTime int,, epoch time of creation, in seconds
     prop:userguid str,, Actual id of the user this token is for
+
+[rootmodel:Location] @dbtype:osis
+    """
+    """
+    prop:id int,,id of location
+    prop:gid int,, Grid id
+    prop:name str,,Name of location
+    prop:locationCode str,,Internal code for location
+    prop:flag str,,Flag to use for this location

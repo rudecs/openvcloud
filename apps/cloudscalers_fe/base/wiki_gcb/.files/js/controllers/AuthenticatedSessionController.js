@@ -9,19 +9,6 @@ angular.module('cloudscalers.controllers')
         	{
         		return;
         	}
-            if (space.locationurl != null){
-                var currentlocation = $window.location;
-                if (currentlocation.toString().indexOf('AccountValidation') > 1){
-                return;
-                }
-                if (currentlocation.origin != space.locationurl){
-                    $window.location = space.locationurl + '/wiki_gcb/SwitchSpace'
-                            + '?username=' + encodeURIComponent($scope.currentUser.username)
-                            + '&token=' + encodeURIComponent($scope.currentUser.api_key)
-                            + '&spaceId=' + encodeURIComponent(space.id);
-                    return
-                }
-            }
 
             CloudSpace.setCurrent(space);
             $scope.currentSpace = space;

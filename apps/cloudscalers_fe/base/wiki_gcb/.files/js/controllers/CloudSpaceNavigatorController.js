@@ -9,10 +9,6 @@ angular.module('cloudscalers.controllers')
                 $scope.locations = locations;
             });
 
-            $scope.getLocationInfo = function(locationcode){
-            	return LocationsService.get(locationcode);
-            }
-            
             $scope.AccountCloudSpaceHierarchy = undefined;
 
             var buildAccountCloudSpaceHierarchy = function () {
@@ -60,8 +56,8 @@ angular.module('cloudscalers.controllers')
                 if (!($scope.selectedLocation in $scope.locations)){
                 	$scope.selectedLocation = Object.keys($scope.locations)[0];
                 }
-                $scope.changeLocation = function(value) {
-                    $scope.selectedLocation = value;
+                $scope.changeLocation = function(location) {
+                    $scope.selectedLocation = location.locationCode;
                 };
             };
             $scope.createNewCloudSpace = function () {
@@ -74,7 +70,7 @@ angular.module('cloudscalers.controllers')
 
                 modalInstance.result.then(function (space) {
                     LoadingDialog.show('Creating cloudspace');
-                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, $scope.locations[space.selectedLocation]).then(
+                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, $scope.selectedLocation).then(
                         function (cloudspaceId) {
                             //Wait a second, consistency on the api is not garanteed before that
                             $timeout(function(){
