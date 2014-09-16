@@ -10,7 +10,7 @@ class Network(object):
                 pool = self.models.publicipv4pool.get(pool['id'])
                 pubip = pool.pubips.pop(0)
                 self.models.publicipv4pool.set(pool)
-                net = netaddr.IPNetwork(poolid)
+                net = netaddr.IPNetwork(pool.id)
                 return pool, netaddr.IPNetwork("%s/%s" % (pubip, net.prefixlen))
 
     def releasePublicIpAddress(self, publicip):
