@@ -91,10 +91,10 @@ class cloudapi_cloudspaces(object):
         result int
 
         """
-        ctx = kwargs['ctx']
         accountId = int(accountId)
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
+            ctx = kwargs['ctx']
             ctx.start_response('400 Bad Request', [])
             return 'Location %s does not exists' % location
         location = locations[0]
@@ -103,6 +103,7 @@ class cloudapi_cloudspaces(object):
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
         if (len(active_cloudspaces) > 0):
+            ctx = kwargs['ctx']
             if (not self._accountbilling.isPayingCustomer(accountId)):
                ctx.start_response('409 Conflict', [])
                return 'Creating an extra cloudspace is only available if you made at least 1 payment'
@@ -126,7 +127,7 @@ class cloudapi_cloudspaces(object):
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.status = 'VIRTUAL'
-        networkid = self.libvirt_actor.getFreeNetworkId()
+        networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
             raise RuntimeError("Failed to get networkid")
 

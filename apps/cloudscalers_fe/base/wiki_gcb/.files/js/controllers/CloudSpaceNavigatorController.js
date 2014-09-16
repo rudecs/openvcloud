@@ -70,7 +70,7 @@ angular.module('cloudscalers.controllers')
 
                 modalInstance.result.then(function (space) {
                     LoadingDialog.show('Creating cloudspace');
-                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, $scope.selectedLocation).then(
+                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, space.selectedLocation).then(
                         function (cloudspaceId) {
                             //Wait a second, consistency on the api is not garanteed before that
                             $timeout(function(){
