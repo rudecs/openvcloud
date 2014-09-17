@@ -43,20 +43,11 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         cloudspace = cloudspaces[0]
 
-        if str(cloudspace['location']) != j.application.config.get('cloudbroker.where.am.i'):
-            ctx = kwargs["ctx"]
-            params = {'accountname': accountname, 'cloudspaceName': cloudspaceName, 'cloudspaceId': cloudspaceId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace['location']))
-            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
-            headers = [('Content-Type', 'application/json'), ('Location', url)]
-            ctx.start_response("302", headers)
-            return url
-
         cloudspace['status'] = 'DESTROYED'
         self.cbcl.cloudspace.set(cloudspace)
 
         #delete routeros
-        gid = str(j.application.whoAmI.gid)
+        gid = str(cloudspace['gid'])
         fws = self.netmgr.fw_list(gid, str(cloudspaceId))
         if fws:
             self.netmgr.fw_delete(fws[0]['guid'], gid)

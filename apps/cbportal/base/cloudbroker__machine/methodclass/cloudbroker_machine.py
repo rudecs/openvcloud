@@ -40,20 +40,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:stackid id of the stack
         result bool
         """
-        location = j.application.config.get('cloudbroker.where.am.i')
         machine = self.cbcl.vmachine.new()
         image = self.cbcl.image.get(imageId)
         cloudspace = self.cbcl.cloudspace.get(cloudspaceId)
-
-        if str(cloudspace.location) != location:
-            ctx = kwargs["ctx"]
-            params = {'cloudspaceId': cloudspaceId, 'name': name, 'description': description, 'sizeId': sizeId, 
-                     'imageId': imageId, 'disksize': disksize, 'stackid': stackid}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % str(cloudspace.location))
-            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
-            headers = [('Content-Type', 'application/json'), ('Location', url)]
-            ctx.start_response("302", headers)
-            return url
 
         networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
@@ -144,16 +133,6 @@ class cloudbroker_machine(j.code.classGetBase()):
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        location = j.application.config.get('cloudbroker.where.am.i')
-        if not cloudspace.location == location:
-            ctx = kwargs['ctx']
-            params = {'accountName': accountName, 'spaceName': spaceName, 'machineId': machineId, 'reason': reason}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
-            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
-            headers = [('Content-Type', 'application/json'), ('Location', url)]
-            ctx.start_response('302', headers)
-            return url
-
         self.machines_actor.delete(vmachine.id)
         return True
 
@@ -184,17 +163,6 @@ class cloudbroker_machine(j.code.classGetBase()):
             target_stack = stacks[0]
         else:
             target_stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, vmachine.imageId)
-
-        location = j.application.config.get('cloudbroker.where.am.i')
-        if cloudspace.location != location:
-            ctx = kwargs['ctx']
-            params = {'accountName': accountName, 'machineId': machineId, 'targetComputeNode': targetComputeNode,
-                      'withSnapshots': withSnapshots, 'collapseSnapshots': collapseSnapshots}
-            hostname = j.application.config.getDict('cloudbroker.location.%s' % cloudspace.location)
-            url = '%s%s?%s' % (hostname, ctx.env['PATH_INFO'], urllib.urlencode(params))
-            headers = [('Content-Type', 'application/json'), ('Location', url)]
-            ctx.start_response('302', headers)
-            return url
 
         source_stack = self.cbcl.stack.get(vmachine.stackId)
 
