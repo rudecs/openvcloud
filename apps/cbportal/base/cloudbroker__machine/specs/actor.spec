@@ -140,3 +140,10 @@
         var:accountName str,,Account name, extra validation for preventing a wrong machineId
         var:machineId int,,Id of the machine
         var:reason str,,Reason
+
+    method:disableAccount
+        """
+        Disables a customer's account
+        """
+        var:accountName str,,Account name, extra validation for preventing a wrong machineId
+        var:reason str,,Reason

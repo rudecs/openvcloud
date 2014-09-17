@@ -218,6 +218,31 @@ class cloudbroker_machine(j.code.classGetBase()):
         j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
                                      'Closed', None, None, None, None)
 
+
+    @auth(['level1','level2'])
+    def disableAccount(self, accountName, reason, **kwargs):
+        accounts = self.cbcl.account.simpleSearch({'name': accountName})
+        if not accounts:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Account "%s" could not be found' % accountName
+
+        if len(accounts) > 1:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Found multiple accounts for the account name "%s"' % accountName
+
+        account = self.cbcl.account.get(accounts[0]['id'])
+        msg = 'Account: %s\nReason: %s' % (accountName, reason)
+        subject = 'Disabling account: %s' % accountName
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        account.status = 'DISABLED'
+        self.cbcl.account.set(account)
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
+
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         if not self.cbcl.vmachine.exists(machineId):
