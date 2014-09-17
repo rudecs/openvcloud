@@ -15,6 +15,24 @@
         var:stackid int,, id of the stack
         result:bool
 
+    method:stop
+        """
+        Stops a machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason
+
+    method:start
+        """
+        Starts a deployed machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason
+
     method:destroy
         """
         Destroys a machine
