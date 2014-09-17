@@ -33,4 +33,5 @@ def action(machineId, accountName, reason):
     j.system.process.execute(cmd)
 
     # if all went well, close the ticket
-    whmcs.whmcstickets.update_ticket(ticketId, departmentId, subject, priority, 'Closed', None, None, None, None) # TODO revisit
+    whmcs.whmcstickets.update_ticket(ticketId, departmentId, subject, priority,
+                                     'Closed', None, None, None, None) # TODO revisit

@@ -8,6 +8,7 @@ import urllib,ujson
 import urlparse
 import JumpScale.baselib.remote.cuisine
 import JumpScale.grid.agentcontroller
+import JumpScale.lib.whmcs
 
 
 class cloudbroker_machine(j.code.classGetBase()):
@@ -156,6 +157,66 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         self.machines_actor.delete(vmachine.id)
         return True
+
+    @auth(['level1','level2'])
+    def start(self, accountName, spaceName, machineId, reason, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
+        subject = 'Starting machine: %s' % vmachine.name
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        self.machines_actor.start(machineId)
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
+
+    @auth(['level1','level2'])
+    def stop(self, accountName, spaceName, machineId, reason, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
+        subject = 'Stopping machine: %s' % vmachine.name
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        self.machines_actor.stop(machineId)
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
 
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
@@ -468,7 +529,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Close the ticket
         Use with caution!
         """
-        import JumpScale.lib.whmcs
         machine = self.cbcl.vmachine.get(machineId)
         if not machine:
             ctx = kwargs['ctx']
