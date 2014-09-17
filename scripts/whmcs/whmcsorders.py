@@ -19,18 +19,17 @@ def accept_order(orderId):
                           )
     response = _call_whmcs_api(request_params)
 
-def add_order(userId, productId, name, cloudbrokerId, status='Active'):
+def add_order(userId, productId, name, cloudbrokerId, location):
     
     request_params = dict(
 
                 action = 'addorder',
                 name=name,
-                status=status,
                 pid = productId,
                 clientid = userId,
                 billingcycle = 'monthly',
                 paymentmethod = 'paypal',
-                customfields = base64.b64encode(phpserialize.dumps([cloudbrokerId])),
+                customfields = base64.b64encode(phpserialize.dumps([cloudbrokerId, name, location])),
                 noemail = True,
                 skipvalidation= True,
                 responsetype = 'json'
@@ -41,13 +40,16 @@ def add_order(userId, productId, name, cloudbrokerId, status='Active'):
     return response.json()
 
 
-def list_orders():
+def list_orders(orderId = None):
     
     request_params = dict(
                 action = 'getorders',
                 limitnum = 10000000,
                 responsetype = 'json'
                 )
+    
+    if orderId is not None:
+        request_params.update({'orderid':orderId})
 
     response = _call_whmcs_api(request_params)
     if response.ok:
@@ -67,3 +69,7 @@ def delete_order(orderId):
     
     response = _call_whmcs_api(request_params)
     return response.ok
+
+def get_order(orderId):
+    request_params = dict(
+                          )
