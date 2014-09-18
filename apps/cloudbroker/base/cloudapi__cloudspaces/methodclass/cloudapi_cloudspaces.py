@@ -78,6 +78,9 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     def _listActiveCloudSpaces(self, accountId):
+        account = self.models.account.get(accountId)
+        if account.status == 'DISABLED':
+            return []
         query = {'fields': ['id', 'name','status']}
         query['query'] = {'bool':{'must':[
                                           {'term': {'accountId': accountId}}
@@ -286,8 +289,14 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
+        query = {'fields': ['id'], 'query': {'bool':{'must_not':[{'term':{'status':'DISABLED'.lower()}}]}}}
+        disabledaccounts = self.models.account.find(ujson.dumps(query))
+
+        disabled = [account['fields']['id'] for account in disabledaccounts['result']]
+
         query = {'fields': ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']}
-        query['query'] = {'bool':{'must':[{'term': {'userGroupId': user.lower()}}],'must_not':[{'term':{'status':'DESTROYED'.lower()}}]}}
+        query['query'] = {'bool':{'must':[],'must_not':[{'term':{'status':'DESTROYED'.lower()}}, {'terms':{'accountId':disabled}}]}}
+
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
 

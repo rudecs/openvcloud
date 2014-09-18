@@ -560,10 +560,9 @@ class cloudbroker_machine(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        stack = self.cbcl.stack.get(machine.stackId)
         ticketid = j.tools.whmcs.tickets.create_ticket(accountName, "Operations", 'Backing up Machine %s for destruction' % machine.name, "High")
-        backupname = '%s_%s' % (machine.name, j.base.time.getLocalTimeHRForFilesystem())
-        self.acl.executeJumpScript('cloudscalers', 'backupmachine', args={'machineid': machineId, 'backupname': backupname, 'location':'/mnt/vmstore/test/', 'emailaddress':'khamisr@codescalers.com'}, role=stack['referenceId'])
+        backupname = 'Backup of machine %s at %s' % (machine.name, j.base.time.getLocalTimeHRForFilesystem())
+        self.export(machineId, backupname, backuptype='raw', storage='RADOS', bucketname='machine_backups')
         cloudspace = self.cbcl.cloudspace.get(machine.cloudspaceId)
         self.destroy(accountName, cloudspace.name, machineId, reason)
         j.tools.whmcs.tickets.update_ticket(ticketid, "Operations", 'Backing up Machine %s for destruction' % machine.name, "High", 'Closed', accountName, 'admin@cloudscalers.com', '', '')
