@@ -10,3 +10,12 @@
         var:name str,, name of the computenode
         var:status str,, status (ENABLED, DISABLED, HALTED).
         result: bool
+
+    method:disable
+        """
+        Migrates all machines to different computes
+        Set the status to 'DISABLED'
+        """
+        var:name str,, name of the computenode
+        var:gridId int,, the grid this computenode belongs to
+        result: bool
