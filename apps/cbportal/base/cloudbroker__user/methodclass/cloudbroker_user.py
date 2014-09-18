@@ -26,13 +26,12 @@ class cloudbroker_user(j.code.classGetBase()):
         This key can be used in a webbrowser to browse the cloud portal from the perspective of that specific user or to use the api in his/her authorization context
         param:username name of the user an authorization key is required for
         """
-        gid = j.application.whoAmI.gid
-        user_guid = '%s_%s' % (gid, username)
-        if not self.syscl.user.exists(user_guid):
+        users = self.syscl.user.search({'id': username})[1:]
+        if not users:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'User %s does not exist' % username
 
-        user = self.syscl.user.get(user_guid)
+        user = self.syscl.user.get(users[0]['guid'])
         return self.users_actor.authenticate(username, user.passwd)
