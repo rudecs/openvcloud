@@ -159,7 +159,12 @@ class cloudapi_cloudspaces(object):
         cs.status = 'DEPLOYING'
         self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        pool, publicipaddress = self.network.getPublicIpAddress(cs.gid)
+        netinfo = self.network.getPublicIpAddress(cs.gid)
+        if netinfo is None:
+            cs.status = 'VIRTUAL'
+            self.models.cloudspace.set(cs)
+            raise RuntimeError("No available public IPAddresses")
+        pool, publicipaddress = netinfo
         publicgw = pool.gateway
         network = netaddr.IPNetwork(pool.id)
         publiccidr = network.prefixlen
