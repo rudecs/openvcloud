@@ -33,6 +33,7 @@ class cloudapi_machines(object):
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
+        self.netmgr = j.apps.jumpscale.netmgr
 
     @property
     def cb(self):
@@ -387,12 +388,13 @@ class cloudapi_machines(object):
         osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
-        if machine.nics:
-            if machine.nics[0].ipAddress == 'Undefined':
-                ipaddress = provider.client.ex_getIpAddress(node)
-                if ipaddress:
-                    machine.nics[0].ipAddress= ipaddress
-                    self.models.vmachine.set(machine)
+        if machine.nics and machine.nics[0].ipAddress == 'Undefined':
+            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+            fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+            ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+            if ipaddress:
+                machine.nics[0].ipAddress= ipaddress
+                self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,

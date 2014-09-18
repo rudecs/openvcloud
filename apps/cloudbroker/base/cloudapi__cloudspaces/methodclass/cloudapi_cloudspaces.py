@@ -313,9 +313,8 @@ class cloudapi_cloudspaces(object):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-        api = self.netmgr.fw_getapi(fwid)
         pwd = str(uuid.uuid4())
-        api.executeScript('/user set admin password=%s' %  pwd)
+        self.netmgr.fw_set_password(fwid, 'admin', pwd)
         location = cloudspace.location
 
         url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)

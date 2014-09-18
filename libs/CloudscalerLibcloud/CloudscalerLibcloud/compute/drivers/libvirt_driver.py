@@ -251,6 +251,8 @@ class CSLibvirtNodeDriver():
 
     def ex_getDomain(self, node):
         node = self._from_agent_to_node(self._get_domain_for_node(node))
+        backendnode = self.backendconnection.getNode(node.id)
+        node.extra['macaddress'] = backendnode.macaddress
         return node
 
     def ex_snapshot(self, node, name, snapshottype='external'):
@@ -307,21 +309,6 @@ class CSLibvirtNodeDriver():
         job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
         return True
     
-    def ex_getIpAddress(self, node):
-        backendnode = self.backendconnection.getNode(node.id)
-        networkid = backendnode.networkid
-        macaddress = backendnode.macaddress
-        iphex = "%04x" % networkid
-        first = int(iphex[0:2], 16)
-        second = int(iphex[2:4], 16)
-        ipaddress = '10.199.%s.%s' % (str(first), str(second))
-        try:
-            ro = routeros.routeros(ipaddress)
-            ipaddress = ro.getIpaddress(macaddress)
-        except:
-            ipaddress = 'Undefined'
-        return ipaddress
-
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC()
         id_ = self._rndrbn_vnc % len(urls)
