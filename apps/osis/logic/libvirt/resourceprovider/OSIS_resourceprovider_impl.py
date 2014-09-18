@@ -19,8 +19,5 @@ class mainclass(OSISStoreMongo):
         else:
             changed = False
             new = True
-        if isinstance(id, basestring):
-            id = id.replace('-', '')
-            value['id'] = id
         db.save(value)
-        return [id, new, changed]
+        return [key, new, changed]
