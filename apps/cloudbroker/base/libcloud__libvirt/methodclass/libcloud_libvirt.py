@@ -299,11 +299,11 @@ class libcloud_libvirt(object):
         self.cache.set(key, data, timeout)
         return key
 
-    def listVNC(self, **kwargs):
+    def listVNC(self, gid, **kwargs):
         """
         list vnc urls
         result
         """
-        results = self._models.vnc.search({})[1:]
+        results = self._models.vnc.search({'gid': gid})[1:]
         return [res['url'] for res in results]
 

@@ -310,7 +310,7 @@ class CSLibvirtNodeDriver():
         return True
     
     def ex_get_console_url(self, node):
-        urls = self.backendconnection.listVNC()
+        urls = self.backendconnection.listVNC(self.gid)
         id_ = self._rndrbn_vnc % len(urls)
         url = urls[id_]
         self._rndrbn_vnc += 1

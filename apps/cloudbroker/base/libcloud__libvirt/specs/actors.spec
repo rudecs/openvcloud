@@ -139,6 +139,7 @@
     """
     list vnc urls
     """
+        var:gid int,, Grid id
         result: list
 
     method: storeInfo
