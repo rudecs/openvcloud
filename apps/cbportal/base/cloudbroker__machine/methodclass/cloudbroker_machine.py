@@ -240,6 +240,12 @@ class cloudbroker_machine(j.code.classGetBase()):
         ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
         account.status = 'DISABLED'
         self.cbcl.account.set(account)
+        # stop all account's machines
+        cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account.id})
+        for cs in cloudspaces:
+            vmachines = self.cbcl.vmachine.simpleSearch({'cloudspaceId': cs['id'], 'status': 'RUNNING'})
+            for vmachine in vmachines:
+                self.machines_actor.stop(vmachine['id'])
         j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
                                      'Closed', None, None, None, None)
 
@@ -543,7 +549,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         stack = self.cbcl.stack.get(vmachine.stackId)
         args = {'machineId': machineId, 'accountName': accountName, 'reason': reason}
-        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', role=stack.referenceId, args=args)
+        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', role=stack.referenceId, args=args, wait=False)
 
     @auth(['level1','level2'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
@@ -566,4 +572,3 @@ class cloudbroker_machine(j.code.classGetBase()):
         cloudspace = self.cbcl.cloudspace.get(machine.cloudspaceId)
         self.destroy(accountName, cloudspace.name, machineId, reason)
         j.tools.whmcs.tickets.update_ticket(ticketid, "Operations", 'Backing up Machine %s for destruction' % machine.name, "High", 'Closed', accountName, 'admin@cloudscalers.com', '', '')
-
