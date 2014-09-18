@@ -17,7 +17,7 @@
         Set the status to 'DISABLED'
         """
         var:name str,, name of the computenode
-        var:gridId int,, the grid this computenode belongs to
+        var:gid int,, the grid this computenode belongs to
         result: bool
 
     method:btrfs_rebalance
@@ -25,5 +25,5 @@
         Rebalances the btrfs filesystem
         """
         var:name str,, name of the computenode
-        var:gridId int,, the grid this computenode belongs to
+        var:gid int,, the grid this computenode belongs to
         result: bool
