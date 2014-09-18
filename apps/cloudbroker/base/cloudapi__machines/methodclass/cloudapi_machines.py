@@ -391,10 +391,13 @@ class cloudapi_machines(object):
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
             fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-            ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
-            if ipaddress:
-                machine.nics[0].ipAddress= ipaddress
-                self.models.vmachine.set(machine)
+            try:
+                ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+                if ipaddress:
+                    machine.nics[0].ipAddress= ipaddress
+                    self.models.vmachine.set(machine)
+            except:
+                pass # VFW not deployed yet
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
