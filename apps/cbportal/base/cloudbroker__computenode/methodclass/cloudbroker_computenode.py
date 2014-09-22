@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
+import JumpScale.grid.osis
 
 class cloudbroker_computenode(j.code.classGetBase()):
     """
