@@ -178,7 +178,7 @@ class libcloud_libvirt(object):
         if int(networkid) not in networkids:
             networkids.insert(0,int(networkid))
         self.blobdb.set(key=key, obj=ujson.dumps(networkids))
-        return True 
+        return True
 
     def registerNode(self, id, macaddress, networkid, **kwargs):
         """
@@ -271,9 +271,10 @@ class libcloud_libvirt(object):
         self._models.resourceprovider.set(res)
         return True
 
-    def registerVNC(self, url, **kwargs):
+    def registerVNC(self, url, gid, **kwargs):
         vnc = self._models.vnc.new()
         vnc.url = url
+        vnc.gid = gid
         return self._models.vnc.set(vnc)
 
     def retreiveInfo(self, key, reset=False, **kwargs):
