@@ -133,6 +133,7 @@
     register a vnc application
     """
         var:url str,, url of the application
+        var:gid int,, register a vnc app linked to gid
         result:int
 
     method: listVNC
