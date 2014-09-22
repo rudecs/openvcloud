@@ -559,32 +559,16 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Destroy the machine
         * Close the ticket
         """
-        def _backupanddestroy(accountName, machineId, reason):
-            vmachine = self.cbcl.vvmachine.get(machineId)
-            if not vmachine:
-                ctx = kwargs['ctx']
-                headers = [('Content-Type', 'application/json'), ]
-                ctx.start_response('400', headers)
-                return 'Machine %s not found' % machineId
-            ticketid = j.tools.whmcs.tickets.create_ticket('Backing up Machine %s for destruction' % vmachine.name, '', "High")
-            backupname = 'Backup of vmachine %s at %s' % (vmachine.name, j.base.time.getLocalTimeHRForFilesystem())
-            jobguid = self.export(machineId, backupname, backuptype='raw', storage='RADOS', bucketname='machine_backups')
-            cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
-            while True:
-                job = self.acl.getJobInfo(jobguid)
-                if job['state'] in ['OK', 'ERROR']:
-                    break
-                gevent.sleep(3)
-            
-            if job['state'] == 'ERROR':
-                j.tools.whmcs.tickets.add_note(ticketid, 'Backup failed. Not destroying')
-                return
-            radosid = job['result']
-            j.tools.whmcs.tickets.add_note(ticketid, 'RADOS ID=%s' % radosid)
-            self.destroy(accountName, cloudspace.name, machineId, reason)
-            j.tools.whmcs.tickets.update_ticket(ticketid, "Operations", 'Backing up Machine %s for destruction' % vmachine.name, "High", 'Closed', accountName, 'admin@cloudscalers.com', '', '')
-
-        import gevent
-        greenlet = gevent.spawn(_backupanddestroy(accountName, machineId, reason))
-        greenlet.join()
-        
+        vmachine = self.cbcl.vvmachine.get(machineId)
+        if not vmachine:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        ticketid = j.tools.whmcs.tickets.create_ticket('Backing up Machine %s for destruction' % vmachine.name, '', "High")
+        backupname = 'Backup of vmachine %s at %s' % (vmachine.name, j.base.time.getLocalTimeHRForFilesystem())
+        jobguid = self.export(machineId, backupname, backuptype='raw', storage='cephfs', bucketname='machine_backups')
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        stack = self.cbcl.stack.get(vmachine.stackId)
+        args = {'jobguid':jobguid, 'ticketid':ticketid, 'accountName': accountName, 'cloudspaceName':cloudspace.name, 'machineId':machineId, 'reason':reason}
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', role=stack.referenceId, args=args, wait=False)
