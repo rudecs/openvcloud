@@ -39,7 +39,7 @@ angular.module('cloudscalers.directives', [])
                            'view_only':    false,
                            'updateState':  updateState,
                            });
-            		rfb.connect(window.location.host, scope.connectioninfo.port, '', scope.connectioninfo.path);
+            		rfb.connect(scope.connectioninfo.host, scope.connectioninfo.port, '', scope.connectioninfo.path);
             		scope.rfb = rfb;
     			}
 
