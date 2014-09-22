@@ -1,4 +1,5 @@
 from JumpScale import j
+import os
 
 descr = """
 Libvirt script to copy (TGZ) a virtual machine to Ceph Filesystem
@@ -15,7 +16,9 @@ roles = []
 
 def action(machineid):
     backuppath   = '/mnt/cephfs'
-        
+    if not os.path.ismount(backuppath):
+        raise "No device mounted on %s" % backuppath
+    
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     return connection.backup_machine_to_filesystem(machineid, backuppath)
