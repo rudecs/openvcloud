@@ -21,7 +21,6 @@ class LibvirtUtil(object):
         self.readonly = libvirt.openReadOnly()
         self.basepath = '/mnt/vmstor'
         self.templatepath = '/mnt/vmstor/templates'
-        self.backuppath   = '/mnt/cephfs'
         self.env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
@@ -63,7 +62,7 @@ class LibvirtUtil(object):
             return True
         return domain.resume() == 0
 
-    def backup_machine_cephfs(self,machineid):
+    def backup_machine_to_filesystem(self,machineid, backuppath):
         from shutil import make_archive
         if self.isCurrentStorageAction(machineid):
             raise Exception("Can't delete a locked machine")
