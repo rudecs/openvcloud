@@ -26,4 +26,6 @@
         """
         var:name str,, name of the computenode
         var:gid int,, the grid this computenode belongs to
+        var:mountpoint str,,the mountpoint of the btrfs
+        var:uuid str,,if no mountpoint given, uuid is mandatory
         result: bool
