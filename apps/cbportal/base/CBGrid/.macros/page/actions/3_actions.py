@@ -45,7 +45,7 @@ def main(j, args, params, tags, tasklet):
                     },
                   'grid': 
                     {'purgeLogs': 
-                        {'Purge Logs': '/restmachine/cloudapi/account/enable?gid=%s&age=%s' % (gid, age)}
+                        {'Purge Logs': '/restmachine/cloudapi/grid/purgelogs?gid=%s&age=%s' % (gid, age)}
                     }
                   
                 }
