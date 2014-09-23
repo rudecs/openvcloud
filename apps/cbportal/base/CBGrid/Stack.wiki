@@ -15,3 +15,5 @@ h3. Images:
 h3. vMachines:
 
 {{vmachines: stackid:$$id}}
+
+{{actions actiontype:computenode name:$$name}}

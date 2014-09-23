@@ -16,8 +16,8 @@ def main(j, args, params, tags, tasklet):
     age = args.getTag('age') or '-3w'
 
 
-    if not actiontype or actiontype not in ['machine', 'account', 'grid']:
-        out = '"actiontype" param. Must be "machine", "account" or "grid"'
+    if not actiontype or actiontype not in ['machine', 'account', 'grid', 'computenode']:
+        out = '"actiontype" param. Must be "machine", "account", "computenode" or "grid"'
         params.result = (out, args.doc)
         return params
 
@@ -46,12 +46,22 @@ def main(j, args, params, tags, tasklet):
                   'grid': 
                     {'purgeLogs': 
                         {'Purge Logs': '/restmachine/cloudapi/grid/purgelogs?gid=%s&age=%s' % (gid, age)}
+                    },
+                  'computenode':
+                    {'setStatus_enabled': 
+                        {'Set Stack Status to ENABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=ENABLED' % (name)},
+                     'setStatus_disabled': 
+                        {'Set Stack Status to DISABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=DISABLED' % (name)},
+                     'setStatus_offline': 
+                        {'Set Stack Status to OFFLINE': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=OFFLINE' % (name)}
                     }
                   
                 }
 
     actionoptions = dict()
-    for action in actions.split(','):
+    if actiontype == 'computenode':
+        actions = 'setStatus_enabled,setStatus_disabled,setStatus_offline'
+    for action in actions.split(','):                
         if action in actionsmap[actiontype]:
             actionoptions.update(actionsmap[actiontype].get(action))
 
