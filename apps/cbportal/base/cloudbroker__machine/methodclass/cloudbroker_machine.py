@@ -554,7 +554,7 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
         """
-        * Create a ticket
+        * Create a ticketjob
         * Call the backup method
         * Destroy the machine
         * Close the ticket
@@ -565,10 +565,5 @@ class cloudbroker_machine(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        ticketid = j.tools.whmcs.tickets.create_ticket('Backing up Machine %s for destruction' % vmachine.name, '', "High")
-        backupname = 'Backup of vmachine %s at %s' % (vmachine.name, j.base.time.getLocalTimeHRForFilesystem())
-        jobguid = self.export(machineId, backupname, backuptype='raw', storage='cephfs', bucketname='machine_backups')
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
-        stack = self.cbcl.stack.get(vmachine.stackId)
-        args = {'jobguid':jobguid, 'ticketid':ticketid, 'accountName': accountName, 'cloudspaceName':cloudspace.name, 'machineId':machineId, 'reason':reason}
-        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', role=stack.referenceId, args=args, wait=False)
+        args = {'accountName': accountName, 'machineId':machineId, 'reason':reason, 'vmachineName':vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', node=j.application.whoAmI.nid, args=args, wait=False)
