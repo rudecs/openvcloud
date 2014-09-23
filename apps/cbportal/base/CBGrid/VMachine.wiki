@@ -31,4 +31,4 @@ h3. vMachine Status Details
 |*Last Checked*|$$stats_epoch|
 
 
-{{actions actions:start,stop,delete,snapshot,resume,reboot machineid:$$id name:backup}}
+{{actions actiontype:machine actions:start,stop,delete,snapshot,resume,reboot machineid:$$id name:backup}}
