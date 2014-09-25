@@ -49,17 +49,21 @@ def main(j, args, params, tags, tasklet):
                     },
                   'computenode':
                     {'setStatus_enabled': 
-                        {'Set Stack Status to ENABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=ENABLED' % (name)},
+                        {'Set Stack Status to ENABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=ENABLED&gid=%s' % (name, gid)},
                      'setStatus_disabled': 
-                        {'Set Stack Status to DISABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=DISABLED' % (name)},
+                        {'Set Stack Status to DISABLED': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=DISABLED&gid=%s' % (name, gid)},
                      'setStatus_offline': 
-                        {'Set Stack Status to OFFLINE': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=OFFLINE' % (name)}
+                        {'Set Stack Status to OFFLINE': '/restmachine/cloudapi/computenode/setstatus?name=%s&status=OFFLINE&gid=%s' % (name, gid)},
+                     'enable': 
+                        {'Enable stack': '/restmachine/cloudapi/computenode/enable?name=%s&gid=%s' % (name, gid)},
+                     'disable': 
+                        {'Disable stack': '/restmachine/cloudapi/computenode/disable?name=%s&gid=%s' % (name, gid)}
                     }
                   
                 }
 
     actionoptions = dict()
-    if actiontype == 'computenode':
+    if actiontype == 'computenode' and 'setstatus' in actions:
         actions = 'setStatus_enabled,setStatus_disabled,setStatus_offline'
     for action in actions.split(','):                
         if action in actionsmap[actiontype]:

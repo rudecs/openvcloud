@@ -8,17 +8,9 @@
         Set the computenode status, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'HALTED(Machine is not available'
         """
         var:name str,, name of the computenode
-        var:status str,, status (ENABLED, DISABLED, HALTED).
-        result: bool
-
-    method:disable
-        """
-        Migrates all machines to different computes
-        Set the status to 'DISABLED'
-        """
-        var:name str,, name of the computenode
         var:gid int,, the grid this computenode belongs to
-        result: bool
+        var:status str,, status (ENABLED, DISABLED, HALTED).
+        result: str
 
     method:btrfs_rebalance
         """
@@ -29,3 +21,22 @@
         var:mountpoint str,,the mountpoint of the btrfs
         var:uuid str,,if no mountpoint given, uuid is mandatory
         result: bool
+
+    method:enable
+        """     
+        Enable a stack
+        """
+        var:name str,,name of the computenode
+        var:gid int,,the grid this computenode belongs to
+        var:message str,,message. Must be less than 30 characters
+        result: str
+
+    method:disable
+        """
+        Migrates all machines to different computes
+        Set the status to 'DISABLED'
+        """
+        var:name str,, name of the computenode
+        var:gid int,, the grid this computenode belongs to
+        var:message str,,message. Must be less than 30 characters
+        result: str

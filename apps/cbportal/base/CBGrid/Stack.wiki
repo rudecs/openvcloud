@@ -16,4 +16,4 @@ h3. vMachines:
 
 {{vmachines: stackid:$$id}}
 
-{{actions actiontype:computenode name:$$name}}
+{{actions actiontype:computenode name:$$name actions:setstatus}}
