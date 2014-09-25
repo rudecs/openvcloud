@@ -28,6 +28,8 @@ class cloudbroker_computenode(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("400", headers)
             return 'Invalid status %s should be in %s' % (status, ', '.join(statusses))
+        if status == 'DISABLED':
+            return self.disable(name, gid, '')
         return self._changeStackStatus(name, gid, status)
 
     def _changeStackStatus(self, name, gid, status, kwargs):
