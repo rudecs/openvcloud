@@ -300,25 +300,25 @@ class cloudapi_cloudspaces(object):
         results = self.models.cloudspace.find(ujson.dumps(query))['result']
         cloudspaces = [res['fields'] for res in results]
 
-        #during the transitions phase, not all locations might be filled in
-        for cloudspace in cloudspaces:
-            if not 'location' in cloudspace or len(cloudspace['location']) == 0:
-                cloudspace['location'] = self.cb.extensions.imp.whereAmI()
-
         locations = self.cb.extensions.imp.getLocations()
 
+        resultingcloudspaces = []
         for cloudspace in cloudspaces:
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
-            cloudspace['locationurl'] = locations[cloudspace['location'].lower()]
+            cloudspacelocation = cloudspace['location'].lower()
+            if (cloudspacelocation not in locations):
+                continue
+            cloudspace['locationurl'] = locations[cloudspacelocation]
             cloudspace['accountName'] = account.name
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
                     cloudspace['userRightsOnAccountBilling'] = True
             cloudspace['accountDCLocation'] = account.DCLocation
+            resultingcloudspaces.append(cloudspace)
 
-        return cloudspaces
+        return resultingcloudspaces
 
     @authenticator.auth(acl='A')
     @audit()
