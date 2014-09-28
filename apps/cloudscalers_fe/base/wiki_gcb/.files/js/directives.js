@@ -75,7 +75,7 @@ angular.module('cloudscalers.directives', [])
                         Canvas not supported.\
                     </canvas>\
                     </div>\
-                    <div class="mlm" ng-show="showPlaceholder">A machine must be started to access the console!</div>\
+                    <div class="margin-left-medium" ng-show="showPlaceholder">A machine must be started to access the console!</div>\
                     ',
 	     }
 	})

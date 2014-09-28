@@ -1,17 +1,4 @@
-{{html:
-<head>
-	<style type="text/css">
-	.forPic img { width: 74px; margin: 21px 0 0 0;}
-	.tab-content>.tab-pane { padding: 10px 0;}
-	.tab-content {display: inline-block;width: 100%;}
-	</style>
-</head>
-}}
-
-
 h1. Quick Tutorial Guide
-
-
 {{html:
 <br>
 
@@ -22,9 +9,9 @@ h1. Quick Tutorial Guide
   <li><a href="#StorageDeck" role="tab" data-toggle="tab">Storage Deck</a></li>
   <li><a href="#DefenseShield" role="tab" data-toggle="tab">Defense Shield</a></li>
 </ul>
-<div class="tab-content">
+<div class="tab-content inline-block width-full">
 
-<div class="tab-pane fade in active" id="intro">
+<div class="tab-pane padding-vertical-medium fade in active" id="intro">
 }}
 {{div2: class=col-md-1 forPic}}
 !/$$space/.files/img/images/logo-only.jpeg!
@@ -50,7 +37,7 @@ The Cloud Space is protected by the Defense Shield, your personal firewall that 
 
 
 
-  <div class="tab-pane fade" id="CloudSpace">
+  <div class="tab-pane padding-vertical-medium fade" id="CloudSpace">
 }}
 {{div2: class=col-md-1 forPic}}
 !/$$space/.files/img/icon6.png!
@@ -72,7 +59,7 @@ h2. Cloud Space
 	
 {{html:
   </div>
-  <div class="tab-pane fade" id="MachineDeck">
+  <div class="tab-pane padding-vertical-medium fade" id="MachineDeck">
 }}
 {{div2: class=col-md-1 forPic}}
 !/$$space/.files/img/icon4.png!
@@ -94,7 +81,7 @@ h2. Cloud Space
 {{div2}}
 {{html:
   </div>
-  <div class="tab-pane fade" id="StorageDeck">
+  <div class="tab-pane padding-vertical-medium fade" id="StorageDeck">
 }}
 {{div2: class=col-md-1 forPic}}
 !/$$space/.files/img/icon3.png!
@@ -110,7 +97,7 @@ h2. Cloud Space
 {{div2}}
 {{html:
 </div>
-  <div class="tab-pane fade" id="DefenseShield">
+  <div class="tab-pane padding-vertical-medium fade" id="DefenseShield">
 }}
 {{div2: class=col-md-1 forPic}}
 !/$$space/.files/img/icon5.png!

@@ -75,6 +75,9 @@ class cloudapi_cloudspaces(object):
             return self.models.cloudspace.set(cs)[0]
 
     def _listActiveCloudSpaces(self, accountId):
+        account = self.models.account.get(accountId)
+        if account.status == 'DISABLED':
+            return []
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         results = self.models.cloudspace.search(query)[1:]
         return results
@@ -273,8 +276,12 @@ class cloudapi_cloudspaces(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
+        query = {'status': {'$ne': 'DISABLED'}}
+        disabledaccounts = self.models.account.search(query)[1:]
+        disabled = [account['id'] for account in disabledaccounts]
+
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        query = {"acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        query = {"accountId": {"$in": disabled}, "acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         self.cb.extensions.imp.filter(cloudspaces, fields)
 

@@ -8,7 +8,7 @@ class account(object):
         self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
 
     def isPayingCustomer(self, accountId):
-        query = {'accountId': accountId, 'status': {'$ne': 'UNCONFIRMED'}}
+        query = {'accountId': accountId, 'status': {'$ne': 'PROCESSED'}}
         payments = self.cloudbrokermodels.credittransaction.search(query)[0]
         return payments > 0
 

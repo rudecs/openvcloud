@@ -1,0 +1,117 @@
+{{html:
+  <div class="navbar navbar-inverse" ng-controller="CloudSpaceNavigatorController" role="navigation">
+    <div class="subnavbar-inner">
+        <div class="container">
+            <a ng-show="!currentUser.username" class="logo" href="../$$space"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
+            <a ng-show="currentUser.username" class="logo" href="../$$space/Decks"><img src="/$$space/.files/img/logo-colored.png" width='318' height='119'></a>
+            <ul class="pull-right span7">
+                <li class="right">
+                    <a class="signUp login right" ng-click="logout()" href="" >
+                        <i class="fa fa-lock"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+                <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
+            </ul>
+        </div>
+    </div>
+    <nav class="navbar navbar-default " role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-list">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-list">
+          <ul class="nav navbar-nav margin-all-none">
+              <li><a href="../$$space/Decks">Home</a></li>
+              <li class="dropdown dropdown-accordion">
+                <a id="drop1" role="button" class="margin-left-none padding-left-none" data-toggle="dropdown"
+                   tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom" tourtip-step="0">
+                   <span ng-cloak>{[currentAccount.name]} / {[currentSpace.name]}</span> 
+                   <b class="caret"></b>
+                </a>
+                <div class="dropdown-menu open-cloudspace-nav" role="menu" aria-labelledby="dLabel">
+                  <div class="accordionInside">
+                      <div class="panel-group gray" id="accordion" close-others="false">
+                        <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
+                                </h4>
+                              </div>
+                              <div id="{[account.name | nospace]}" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                      <ul>
+                                          <li ng-repeat="cloudspace in account.cloudspaces">
+                                            <a href="#" ng-click="setCurrentCloudspace(cloudspace)">{[cloudspace.name]}</a>
+                                          </li>
+                                      </ul>
+                                  </div>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+                    <ul class="create-cloudspace-container">
+                      <li>
+                         <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
+                         <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
+                      </li>
+                    </ul>
+                    <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
+                      <form name="form" class="form-horizontal" ng-submit="submit()">
+                        <div class="modal-header">
+                          <h2>New Cloud Space</h2>
+                        </div>
+                        <div class="modal-body">
+                          <div class="form-group">
+                              <label class="col-sm-2 control-label" for="inputAccount">Account</label>
+                              <div class="controls col-sm-9">
+                                <select class="form-control" ng-model="newCloudSpace.account" required ng-options="account.name for account in accounts">
+                                </select>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-sm-2 control-label" for="inputNewCloudSpaceName">Name</label>
+                              <div class="controls col-sm-9">
+                                <input class="form-control" ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-sm-2 control-label">Location</label>
+                              <div class="controls col-sm-9">
+                                  <ul class="flags-list margin-top-large mll row">
+                                    <li class="margin-right-medium" ng-repeat="location  in locations" ng-class="{ 'selected': selectedLocation == location.locationCode }" ng-click="changeLocation(location)">
+                                      <a href="" class="{[ 'flag-' + location.flag ]}"></a>
+                                      <span class="mts block cursor-default">{[ location.name ]}</span>
+                                    </li>
+                                  </ul>
+                              </div>
+                          </div>
+                        </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary ok">Ok</button>
+                            <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
+                          </div>
+                      </form>
+                    </script>
+                </div>
+              </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id="geeting-started" href="../$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
+            <li><a href="../$$space/ApiDocs">Machine API</a></li>
+            <li><a href="../$$space/ApiS3">Storage API</a></li>
+            <li><a href="../kb/">Knowledge Base</a></li>
+            <li><a href="http://support.mothership1.com">Support</a></li>
+            <li ng-show="userRightsOnAccountBilling"><a href="../$$space/AccountSettings">Billing</a></li>
+            <li><a href="../$$space/CloudSpaceSettings" tourtip-step="1" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom">Cloud Space Settings</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+}}

@@ -28,3 +28,6 @@ h4. Transactions
 
 h4. Balance
 {{balances: accountId:$$id}}
+
+
+{{actions actiontype:account actions:disable,enable,delete accountname:${name}}}

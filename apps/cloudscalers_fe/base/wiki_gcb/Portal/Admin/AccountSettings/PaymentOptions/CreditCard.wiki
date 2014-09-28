@@ -319,7 +319,7 @@ h1. Checkout
 
      <img class="visa" src="/$$space/.files/img/images/visa.jpg" />
     
-      <button class="btn btn-info btn-large floatR" >Pay Now</button> 
+      <button class="btn btn-info btn-large right" >Pay Now</button> 
 
 </div>
 }}

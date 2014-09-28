@@ -2,50 +2,19 @@
 <footer class="font">
     <div class="container">
         <div class="topFooter"></div>
-        <!-- <div class="midFooter">
-            <div class="col-md-6">
-                <ul class="first-list">
-                    <li><a href="/$$space/UnifiedCloud">Why</a></li>
-                    <li><a href="/$$space/Contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <ul class="second-list">
-                    <li>Follow Mothership<sup>1</sup></li>
-                    <li><a href="#"><img src="/$$space/.files/img/social1.png" alt="" /></a></li>
-                    <li><a href="#"><img src="/$$space/.files/img/social2.png" alt="" /></a></li>
-                    <li><a href="#"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
-                </ul>
-            </div>
-        </div> -->
-        <!-- <div class="bottomFooter">
-            <div class="col-md-12">
-                <ul class="first-list ">
-                    <li><a href="#">Copyright © 2014 Mothership<sup>1</sup></a></li>
-                    <li><a href="/$$space/">Mothership<sup>1</sup></a></li>                        
-                </ul>
-            </div>
-        </div> -->
-        
-            <div class="bottomFooter">
-                
+            <div class="bottomFooter">                
                 <div class="col-md-10">
-                    <ul class="first-list ">
+                    <ul class="first-list">
                         <li><a href="/$$space/">Copyright © 2014 Mothership<sup>1</sup></a></li>
                         <li><a href="/$$space/Terms">General Terms & Conditions</a></li>
                         <li><a href="/$$space/Privacy Policy">Privacy Policy</a></li>
                         <li><a href="/$$space/About Us">About Us</a></li>
                         <li><a href="/$$space/Press">Press</a></li>
                         <li><a href="/$$space/Contact">Contact</a></li>
-                        <li class="prn no-background">Follow Mothership<sup>1</sup></li>
+                        <li class="padding-right-none no-background">Follow Mothership<sup>1</sup></li>
                         <li><a href="https://twitter.com/mothershipware" target="_blank"><img src="/$$space/.files/img/social3.png" alt="" /></a></li>
                     </ul>
                 </div>
-                <!-- <div class="col-md-3">
-                    <ul class="second-list">
-                        <li><a href="/$$space/Contact">Contact</a></li>
-                    </ul>
-                </div> -->
             </div>
         </div>
 

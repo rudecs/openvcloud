@@ -62,6 +62,27 @@ class LibvirtUtil(object):
             return True
         return domain.resume() == 0
 
+    def backup_machine_to_filesystem(self,machineid, backuppath):
+        from shutil import make_archive
+        if self.isCurrentStorageAction(machineid):
+            raise Exception("Can't delete a locked machine")
+        domain = self.connection.lookupByUUIDString(machineid)
+        diskfiles = self._get_domain_disk_file_names(domain)
+        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+            domain.destroy()
+        for diskfile in diskfiles:
+            if os.path.exists(diskfile):
+                try:
+                    vol = self.connection.storageVolLookupByPath(diskfile)
+                except:
+                    continue
+                poolpath = os.path.join(self.basepath, domain.name())
+                if os.path.exists(poolpath):
+                    archive_name = os.path.join(backuppath,'vm-%04x' % machineid)
+                    root_dir     = poolpath
+                    make_archive(archive_name, gztar, root_dir)
+        return True
+
     def delete_machine(self, machineid):
         if self.isCurrentStorageAction(machineid):
             raise Exception("Can't delete a locked machine")
@@ -153,7 +174,7 @@ class LibvirtUtil(object):
         vol = self.connection.storageVolLookupByPath(path)
         return vol.delete(0)
 
-    def getSnapshot(self, domain, name): 
+    def getSnapshot(self, domain, name):
         domain = self._get_domain(domain)
         snap = domain.snapshotLookupByName('name')
         return {'name': snap.getName(), 'epoch': snap.getXMLDesc()}
@@ -256,7 +277,7 @@ class LibvirtUtil(object):
             if not done:
                 return False
         return True
-        
+
     def _block_job_info(self, domain, path):
         status = domain.blockJobInfo(path, 0)
         print status
@@ -289,7 +310,7 @@ class LibvirtUtil(object):
             snapshotfiles = self._getSnapshotDisks(id, name)
             for snapshotfile in snapshotfiles:
                 os.remove(snapshotfile['file'].path)
-            snapshot.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)      
+            snapshot.delete(libvirt.VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA)
         return True
 
     def _clone(self, id, name, clonefrom):
@@ -380,7 +401,7 @@ class LibvirtUtil(object):
             pool = self.env.get_template('pool.xml').render(poolname=poolname, basepath=self.basepath)
             self.connection.storagePoolCreateXML(pool, 0)
         return True
-            
+
     def create_machine(self, machinexml):
         domain = self.connection.defineXML(machinexml)
         domain.create()
@@ -451,7 +472,3 @@ class LibvirtUtil(object):
     def listVMStorSnapshots(self):
         vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
         return j.system.btrfs.subvolumeList(vmstor_snapshot_path)
-        
-
-        
-

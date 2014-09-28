@@ -1,0 +1,52 @@
+{{html:
+  <div class="sideNav">
+    <ul class="padding-left-none">
+      <li class="header blue" >
+        <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machine Deck <span>1</span></a>
+        <ul class="body">
+          <li>
+            <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)">Machines</a>
+          </li>
+          <li>
+            <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
+          </li>
+          <li>
+            <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header green">
+        <a href="DesktopDeck">Desktop Deck <span>2</span></a>
+        <ul class="body">
+          <li>
+            <a href="DesktopDeck" menu-link-active-location="(DesktopDeck$|DesktopDeck.*list)">Desktop Deck</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header darkOrange">
+        <a href="StorageDeck" tourtip-step="3" tourtip="Get started with Mothership1 S3 compatible storage"  tourtip-placement="left">Storage Deck <span>3</span></a>
+        <ul class="body">
+          <li>
+            <a href="StorageDeck" menu-link-active-location="StorageDeck">S3 Storage</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header orange">
+        <a href="ApplicationDeck">Application Deck <span>4</span></a>
+        <ul class="body">
+          <li>
+            <a href="ApplicationDeck" menu-link-active-location="ApplicationDeck">Applications</a>
+          </li>
+        </ul>
+      </li>
+      <li class="header red">
+        <a href="NetworkDeck" tourtip-step="4" tourtip="Optionally manage your Private Virtual Datacenter's Firewall"  tourtip-placement="left">Defense Shields</a>
+        <ul class="body">
+          <li>
+            <a href="NetworkDeck" menu-link-active-location="NetworkDeck">Defense Shield</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+}}

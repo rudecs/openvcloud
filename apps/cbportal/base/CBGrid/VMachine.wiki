@@ -21,7 +21,7 @@ $$nics
 *Disks*
 $$disks
 
-h3. VMachine Status Details
+h3. vMachine Status Details
 |*Status*|$$stats_state|
 |*Ping*|$$stats_ping|
 |*HardDrive Test*|$$stats_hdtest|
@@ -29,3 +29,6 @@ h3. VMachine Status Details
 |*Parent Image*|$$stats_parent_image|
 |*Disk Size*|$$stats_disk_size|
 |*Last Checked*|$$stats_epoch|
+
+
+{{actions actiontype:machine actions:start,stop,delete,snapshot,resume,reboot machineid:$$id name:backup}}

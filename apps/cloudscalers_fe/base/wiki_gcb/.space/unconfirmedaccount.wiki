@@ -18,6 +18,7 @@
 {{css:/$$space/.files/css/custom.css}}
 {{css:/$$space/.files/css/mothership1.css}}
 {{css:/$$space/.files/css/oocss.css}}
+{{css:/$$space/.files/css/media-queries.css}}
 
 #{{find}}
 
@@ -56,15 +57,15 @@
   <nav class="navbar navbar-default " role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-list">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
     </div>
-    <div class="collapse navbar-collapse mpl0" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav man">
+    <div class="collapse navbar-collapse margin-left-none padding-left-none" id="navbar-list">
+    <ul class="nav navbar-nav margin-all-none">
       </ul>
 
     </div><!-- /.navbar-collapse -->

@@ -5,10 +5,10 @@
 <div class="container">
     <div class="span12 newDecks">
         <div class="col-md-6 boxes font color6 leftIcon">
-            <div class="col-md-4">
+            <div class="col-md-4 clearfix">
                 <img src="/$$space/.files/img/icon6.png" alt=""/>
             </div>
-            <div class="col-md-8 prn">
+            <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Cloud Space|Cloud Space]
@@ -18,10 +18,10 @@
         </div>
         </div>
         <div class="col-md-6 boxes font color5">
-          <div class="col-md-4">
+          <div class="col-md-4 clearfix">
             <img src="/$$space/.files/img/icon5.png" alt=""/>
           </div>
-          <div class="col-md-8 prn">
+          <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Defense Shields|Defense Shield]
@@ -31,10 +31,10 @@
         </div>
         </div>
         <div class="col-md-6 boxes font color1">
-            <div class="col-md-4">
+            <div class="col-md-4 clearfix">
                 <img src="/$$space/.files/img/icon1.png" alt=""/>
             </div>
-            <div class="col-md-8 prn">
+            <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Desktop Deck|Desktop Deck]
@@ -44,10 +44,10 @@ The Desktop Deck provides an innovative way to deliver critical applications fro
         </div>
         </div>
         <div class="col-md-6 boxes font color3">
-          <div class="col-md-4">
+          <div class="col-md-4 clearfix">
             <img src="/$$space/.files/img/icon3.png" alt=""/>
           </div>
-          <div class="col-md-8 prn">
+          <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Storage Deck|Storage Deck]
@@ -57,10 +57,10 @@ The Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
         <div class="col-md-6 boxes font color2">
-            <div class="col-md-4">
+            <div class="col-md-4 clearfix">
                 <img src="/$$space/.files/img/icon2.png" alt=""/>
             </div>
-            <div class="col-md-8 prn">
+            <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Machine Deck|Machine Deck]
@@ -70,11 +70,11 @@ The Machine Deck enables users to configure and launch VMs from the Mothership<s
         </div>
         </div>
         <div class="col-md-6 boxes font color4">
-        <div class="col-md-4">
+        <div class="col-md-4 clearfix">
             
             <img src="/$$space/.files/img/icon4.png" alt=""/>
         </div>
-        <div class="col-md-8 prn">
+        <div class="col-md-8 padding-right-none">
             <h2>
 }}
 [Application Deck (Q4)|Application Deck]

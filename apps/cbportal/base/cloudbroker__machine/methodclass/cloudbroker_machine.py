@@ -8,6 +8,7 @@ import urllib,ujson
 import urlparse
 import JumpScale.baselib.remote.cuisine
 import JumpScale.grid.agentcontroller
+import JumpScale.lib.whmcs
 
 
 class cloudbroker_machine(j.code.classGetBase()):
@@ -137,6 +138,97 @@ class cloudbroker_machine(j.code.classGetBase()):
         return True
 
     @auth(['level1','level2'])
+    def start(self, accountName, spaceName, machineId, reason, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
+        subject = 'Starting machine: %s' % vmachine.name
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        self.machines_actor.start(machineId)
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
+
+    @auth(['level1','level2'])
+    def stop(self, accountName, spaceName, machineId, reason, **kwargs):
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
+        subject = 'Stopping machine: %s' % vmachine.name
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        self.machines_actor.stop(machineId)
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
+
+
+    @auth(['level1','level2'])
+    def disableAccount(self, accountName, reason, **kwargs):
+        accounts = self.cbcl.account.simpleSearch({'name': accountName})
+        if not accounts:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Account "%s" could not be found' % accountName
+
+        if len(accounts) > 1:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Found multiple accounts for the account name "%s"' % accountName
+
+        account = self.cbcl.account.get(accounts[0]['id'])
+        msg = 'Account: %s\nReason: %s' % (accountName, reason)
+        subject = 'Disabling account: %s' % accountName
+        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        account.status = 'DISABLED'
+        self.cbcl.account.set(account)
+        # stop all account's machines
+        cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account.id})
+        for cs in cloudspaces:
+            vmachines = self.cbcl.vmachine.simpleSearch({'cloudspaceId': cs['id'], 'status': 'RUNNING'})
+            for vmachine in vmachines:
+                self.machines_actor.stop(vmachine['id'])
+        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
+                                     'Closed', None, None, None, None)
+
+    @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
@@ -248,9 +340,8 @@ class cloudbroker_machine(j.code.classGetBase()):
             return 'Incorrect model structure'
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['result']
-        return id
-
+        guid = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['guid']
+        return guid
 
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         ctx = kwargs['ctx']
@@ -282,7 +373,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
-        
     def listExports(self, status, machineId ,**kwargs):
         query = {'status': status, 'machineId': machineId}
         exports = self.cbcl.vmexport.search(query)[1:]
@@ -290,7 +380,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
-
 
     def tag(self, machineId, tagName, **kwargs):
         """
@@ -341,7 +430,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine.tags = tags.tagstring
         self.cbcl.vmachine.set(vmachine)
         return True
-
 
     def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
         """
@@ -395,3 +483,47 @@ class cloudbroker_machine(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method checkImageChain")
+
+    @auth(['level1','level2'])
+    def stopForAbusiveResourceUsage(self, accountName, machineId, reason, **kwargs):
+        '''If a machine is abusing the system and violating the usage policies it can be stopped using this procedure.
+        A ticket will be created for follow up and visibility, the machine stopped, the image put on slower storage and the ticket is automatically closed if all went well.
+        Use with caution!
+        @param:accountName str,,Account name, extra validation for preventing a wrong machineId
+        @param:machineId int,,Id of the machine
+        @param:reason str,,Reason
+        '''
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        stack = self.cbcl.stack.get(vmachine.stackId)
+        args = {'machineId': machineId, 'accountName': accountName, 'reason': reason}
+        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', role=stack.referenceId, args=args, wait=False)
+
+    @auth(['level1','level2'])
+    def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
+        """
+        * Create a ticketjob
+        * Call the backup method
+        * Destroy the machine
+        * Close the ticket
+        """
+        vmachine = self.cbcl.vvmachine.get(machineId)
+        if not vmachine:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        args = {'accountName': accountName, 'machineId':machineId, 'reason':reason, 'vmachineName':vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', node=j.application.whoAmI.nid, args=args, wait=False)

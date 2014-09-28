@@ -1,16 +1,4 @@
 @template public
-{{html:
-<style type="text/css">
-.bulletStyle { list-style-type: disc;}
-.fontSmaller { font-size: 14px;}
-@media (max-width: 1290px) and (min-width: 992px) {
- .the-price h1 { font-size: 16px !important; }
- .the-price h1 span {font-size: 16px !important; }
-}
-</style>
-
-}}
-
 {{div: class=white}}
 {{div2: class=container | ng-app | ng-controller=PricingAllController}}
 
@@ -30,7 +18,7 @@ h1. Pricing
 {{html:  
 </ul>
 
-<div class="tab-content">
+<div id="pricing" class="tab-content">
   <div class="minCloud tab-pane fade in active" id="CloudSpace">
   <p>Each Mothership<sup>1</sup> Cloud Space provides you with a Virtual Private Datacenter:</p>
   <div class="col-md-12">
@@ -63,7 +51,7 @@ h1. Pricing
             {{div4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">First Cloud Space</h3>}}
+                {{html: <h3 class="headPrice txt-center">First Cloud Space</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -87,7 +75,7 @@ h1. Pricing
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Additional Cloud Spaces</h3>}}
+                {{html: <h3 class="headPrice txt-center">Additional Cloud Spaces</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -111,7 +99,7 @@ h1. Pricing
     {{div2: class=col-md-4}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Extra Public IPv4</h3>}}
+                {{html: <h3 class="headPrice txt-center">Extra Public IPv4</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -213,7 +201,7 @@ h1. Pricing
     </div>
   </div>
     <br />
-  <div class="col-md-12 mB15">
+  <div class="col-md-12 margin-top-medium margin-bottom-large">
         <div class="row operationWrap">
             <label class="col-sm-2 control-label">Operation System: </label>
             <div class="col-md-3">
@@ -223,7 +211,7 @@ h1. Pricing
                     <option value="Windows Essentials">Windows Essentials</option>
                 </select>
             </div>
-            <div class="btn-group btn-group-sm priceHM floatR">
+            <div class="btn-group btn-group-sm priceHM right">
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'hr'">Hourly</button>
             <button type="button" class="btn btn-primary" ng-model="pricingModel" btn-radio="'mo'">Monthly</button>
             </div>
@@ -262,7 +250,7 @@ h1. Pricing
                 }}
             {{div4}}
             {{div4: class=panel-footer}}
-                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">{[ (plan.mem == '512MB' || plan.mem == '1GB' || plan.mem == '2GB') ? "Free Trial" : "Sign Up" ]}</a>}}
+                {{html:<a href="/$$space/SignUp" class="btn btn-success" role="button">{[ (plan.mem == '512MB' || plan.mem == '1GB' || plan.mem == '2GB') ? "Sign Up" : "Sign Up" ]}</a>}}
             {{div4}}
         {{div3}}
     @divend
@@ -334,7 +322,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.03<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.03<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -364,7 +352,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.0295<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0295<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -388,7 +376,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.029<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.029<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -412,7 +400,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.0285<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0285<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -436,7 +424,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.028<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.028<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -460,7 +448,7 @@ h1. Pricing
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
-                    {{html:<h1>${[plan.price]}<span class=subscript>0.0275<br><span class="fontSmaller">/GB/month</span></span></h1>}}
+                    {{html:<h1>${[plan.price]}<span class=subscript>0.0275<br><span class="txt-14">/GB/month</span></span></h1>}}
                 {{div5}}
                 {{html:
                 <table class="table">
@@ -535,7 +523,7 @@ h1. Pricing
 
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Starter (*)</h3>}}
+                {{html: <h3 class="headPrice txt-center">Starter (*)</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -565,7 +553,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Starter Office (*)</h3>}}
+                {{html: <h3 class="headPrice txt-center">Starter Office (*)</h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -602,7 +590,7 @@ h1. Pricing
                 {{div5}}
             {{div4}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Professional (*) </h3>}}
+                {{html: <h3 class="headPrice txt-center">Professional (*) </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}
@@ -632,7 +620,7 @@ h1. Pricing
     {{div2: class=col-md-3}}
         {{div3: class=panel panel-primary}}
             {{div4: class=panel-heading}}
-                {{html: <h3 class="headPrice center">Enterprise (*) </h3>}}
+                {{html: <h3 class="headPrice txt-center">Enterprise (*) </h3>}}
             {{div4}}
             {{div4: class=panel-body}}
                 {{div5: class=the-price}}

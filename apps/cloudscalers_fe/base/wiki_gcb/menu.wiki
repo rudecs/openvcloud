@@ -17,17 +17,17 @@
             </div>
             <div class="navbar-right clearR myNav justMine">
                 <ul>
-                    <li><a href="/$$space/" class="Home active">Home<i class="fa fa-home mls"></i></a></li>
+                    <li><a href="/$$space/" class="Home active">Home<i class="fa fa-home margin-left-small txt-17"></i></a></li>
                     <li class="dropdown motherShipSub">
-                          <a href="/$$space/Mothership" class="Mothership Features active" style="padding-right:0">Mothership<sup>1</sup></a>
-                          <a href="#" class="dropdown-toggle Mothership Features active" style="padding-left:0" data-toggle="dropdown"><b class="caret"></b></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="/$$space/Cloud Space">Cloud Space</a></li>
-                                <li><a href="/$$space/Defense Shield">Defense Shield</a></li>
-                                <li><a href="/$$space/Machine Deck">Machine Deck</a></li>
-                                <li><a href="/$$space/Storage Deck">Storage Deck</a></li>
-                                <li><a href="/$$space/Desktop Deck">Desktop Deck</a></li>
-                                <li><a href="/$$space/Application Deck">Application Deck</a></li>
+                          <a href="/$$space/Mothership" class="Mothership Features active padding-right-none">Mothership<sup>1</sup></a>
+                          <a href="#" class="dropdown-toggle Mothership Features active padding-left-none" data-toggle="dropdown"><b class="caret"></b></a>
+                              <ul id="homepage-submenu" class="dropdown-menu">
+                                <li class="margin-all-none"><a href="/$$space/Cloud Space">Cloud Space</a></li>
+                                <li class="margin-all-none"><a href="/$$space/Defense Shield">Defense Shield</a></li>
+                                <li class="margin-all-none"><a href="/$$space/Machine Deck">Machine Deck</a></li>
+                                <li class="margin-all-none"><a href="/$$space/Storage Deck">Storage Deck</a></li>
+                                <li class="margin-all-none"><a href="/$$space/Desktop Deck">Desktop Deck</a></li>
+                                <li class="margin-all-none"><a href="/$$space/Application Deck">Application Deck</a></li>
                               </ul>
                         </li>
                     

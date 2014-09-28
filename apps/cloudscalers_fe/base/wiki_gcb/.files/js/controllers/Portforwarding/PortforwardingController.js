@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace',
-        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace','$timeout',
+        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace,$timeout) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
             
@@ -52,19 +52,10 @@ angular.module('cloudscalers.controllers')
                     }
                 );
 
-            Networks.commonports().then(function(data) {
-                $scope.commonports = data;
-            });
-
-            // commonports auto suggest
-            Networks.commonports("...").then(function(data) {
-              $scope.commonPorts = data;
-            });
+            $scope.commonports = Networks.commonports();
 
             $scope.suggestCommonPorts = function(typedport){
-              Networks.commonports(typedport).then(function(data) {
-                $scope.commonPorts = data;
-              });
+            	$scope.commonPorts = Networks.commonports();
             };
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.newRule = {

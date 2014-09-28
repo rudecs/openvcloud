@@ -68,7 +68,7 @@
       <div class="login-symbol signUpForm">
       <div class="promoPic"></div>	
         <center>
-        <h1>Limited Time Promotion: 50 USD Cloud Hosting Bonus From Mothership<sup>1</sup></h1>
+        <h1 class="white-header txt-white txt-bold txt-center">Limited Time Promotion: 50 USD Cloud Hosting Bonus From Mothership<sup>1</sup></h1>
           <h5>Mothership<sup>1</sup>: Security! Speed! Simplicity!</h5>
         </center>
         <center><h5 style="margin-bottom: 20px;">Mothership<sup>1</sup> is a new and innovative cloud platform for virtual machines, storage, and applications.</h5></center>

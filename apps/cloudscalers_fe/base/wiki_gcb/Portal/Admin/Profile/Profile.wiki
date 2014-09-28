@@ -3,23 +3,23 @@ h1. Profile
 {{html:
   <div ng-controller="UsersController">
     <form name="form" ng-submit="updatePassword()">
-      <div class="tab-pane row" style="margin-bottom: 40px; margin-left: 15px;">
-        <div class="nameField" style="margin-bottom: 10px; width: 100%;">
-           <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">Current password:</label>
-          <input required ng-model="oldPassword" type="password" class="input-xxlarge" style="width: 20%; float: left; margin-right: 10px;">
+      <div class="tab-pane row margin-bottom-large margin-left-medium">
+        <div class="nameField width-full margin-bottom-medium">
+           <label class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">Current password:</label>
+          <input required ng-model="oldPassword" type="password" class="input-xxlarge width-20 left margin-right-medium">
         </div>
-        <div class="nameField" style="margin-bottom: 10px; width: 100%;">
-           <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">New password:</label>
-          <input required ng-model="newPassword" type="password" class="input-xxlarge" style="width: 20%; float: left; margin-right: 10px;">
+        <div class="nameField width-full margin-bottom-medium">
+           <label class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">New password:</label>
+          <input required ng-model="newPassword" type="password" class="input-xxlarge width-20 left margin-right-medium">
         </div>
-        <div class="nameField" style="margin-bottom: 10px; width: 100%;">
-           <label class="left control-group" style="margin: 0 10px 0 0; width: 150px; height: 30px; line-height: 30px; font-size: 14px;">Retype password:</label>
-          <input required ng-model="retypePassword" type="password" class="input-xxlarge" style="width: 20%; float: left;">
+        <div class="nameField width-full margin-bottom-medium">
+           <label class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">Retype password:</label>
+          <input required ng-model="retypePassword" type="password" class="input-xxlarge width-20 left">
         </div>
       </div>
-        <button type="submit" class="btn btn-info btn-large">Update Password</button>
-        <div style="text-align: center;">
-          <div class="alert" ng-class="{'alert-success': alertStatus=='success', 'alert-danger': alertStatus=='error'}" ng-show="updateResultMessage" style="margin-top: 20px !important; width: 40%; text-align: center;">{[ updateResultMessage ]}</div>
+        <button type="submit" class="btn btn-info btn-large margin-top-large">Update Password</button>
+        <div class="txt-center">
+          <div class="alert txt-center margin-top-large width-40" ng-class="{'alert-success': alertStatus=='success', 'alert-danger': alertStatus=='error'}" ng-show="updateResultMessage">{[ updateResultMessage ]}</div>
         </div>
       </form>
   </div>

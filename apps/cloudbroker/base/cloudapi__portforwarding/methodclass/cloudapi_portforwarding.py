@@ -172,19 +172,26 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
-        return self._process_list(forwards)
+        return self._process_list(forwards, cloudspaceid)
 
     def _process_list(self, forwards):
         result = list()
+        query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROTYED'}}
+        machines = self.models.vmachine.search(query)[1:]
+        def getMachineByIP(ip):
+            for machine in machines:
+                for nic in machine['nics']:
+                    if nic['ipAddress'] == ip:
+                        return machine
+
         for index, f in enumerate(forwards):
             f['id'] = index
-            query = {'nics.ipAddress': f['localIp']}
-            machine = self.models.vmachine.search(query)[1:]
-            if len(machine) != 1:
+            machine = getMachineByIP(f['localIp'])
+            if machine is None:
                 f['vmName'] = f['localIp']
             else:
-                f['vmName'] = "%s (%s)" % (machine[0]['name'], f['localIp'])
-                f['vmid'] = machine[0]['id']
+                f['vmName'] = "%s (%s)" % (machine['name'], f['localIp'])
+                f['vmid'] = machine['id']
             if not f['protocol']:
                 f['protocol'] = 'tcp'
             result.append(f)
@@ -206,7 +213,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
         forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='R')
     @audit()

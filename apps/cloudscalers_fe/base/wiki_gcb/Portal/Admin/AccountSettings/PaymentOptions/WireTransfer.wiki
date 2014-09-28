@@ -6,7 +6,7 @@
 	.modal-body h2 {margin-top: 5px;font-size: 18px;}
 	.modal {margin: -265px 0 0 -408px;width: 754px;}
 	.modal-body {max-height: 500px;}
-
+	.mainButton {padding: 5px 15px;font-size: 14px;}
 	 @media (max-width: 1376px) {
 	.modal-body {display: inline-block;max-height: 400px;padding: 15px;overflow-y: auto;}
 	.terms p { font-size: 12px !important; line-height: 22px;}
@@ -50,7 +50,7 @@
 {{html:
 	</div>
 
-	 <button type="submit" class="btn btn-primary ok mainButton floatR" data-dismiss="modal" aria-hidden="true">OK</button>
+	 <button type="submit" class="btn btn-primary ok mainButton right" data-dismiss="modal" aria-hidden="true">OK</button>
     </div>
 
 
