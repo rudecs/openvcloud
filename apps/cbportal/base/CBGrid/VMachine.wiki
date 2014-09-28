@@ -31,4 +31,4 @@ h3. vMachine Status Details
 |*Last Checked*|$$stats_epoch|
 
 
-{{actions actiontype:machine actions:start,stop,delete,snapshot,resume,reboot machineid:$$id name:backup}}
+{{actions actiontype:machine actions:{"Start":"/restmachine/cloudapi/machines/start?machineId=$$id","Stop":"/restmachine/cloudapi/machines/stop?machineId=$$id","Delete":"/restmachine/cloudapi/machines/delete?machineId=$$id","Snapshot":"/restmachine/cloudapi/machines/backup?machineId=$$id&name=backup","Resume":"/restmachine/cloudapi/machines/resume?machineId=$$id","Reboot":"/restmachine/cloudapi/machines/reboot?machineId=$$id"} }}
