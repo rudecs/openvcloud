@@ -30,4 +30,4 @@ h4. Balance
 {{balances: accountId:$$id}}
 
 
-{{actions actiontype:account actions:disable,enable,delete accountname:${name}}}
+{{actions actions:{"Disable":"/restmachine/cloudapi/account/disable?accountname=${name}&reason=cbportal","Enable":"/restmachine/cloudapi/account/enable?accountname=${name}&reason=cbportal","Delete":"/restmachine/cloudapi/account/delete?accountname=${name}&reason=cbportal"} }}

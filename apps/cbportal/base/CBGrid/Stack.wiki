@@ -16,4 +16,4 @@ h3. vMachines:
 
 {{vmachines: stackid:$$id}}
 
-{{actions actiontype:computenode name:$$name actions:setstatus}}
+{{actions actions:{"Enable":"/restmachine/cloudapi/computenode/enable?name=$$name", "Disable":"/restmachine/cloudapi/computenode/disable?name=$$name"} }}
