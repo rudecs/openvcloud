@@ -367,9 +367,11 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .flags-list li:hover, .flags-list li.selected { background-color: rgb(234, 235, 245); border-radius: 5px; }
 .flags-list li:hover span, .flags-list li.selected span { color: #3E4753; }
 .flags-list a { display: block; width: 64px; height: 32px; margin: 0 auto; outline: 0; }
-.flags-list .canada { background: url("../img/flags/canada.png") no-repeat center; }
-.flags-list .united.kingdom { background: url("../img/flags/uk.png") no-repeat center; }
-.flags-list .united.states { background: url("../img/flags/usa.png") no-repeat center; }
+.flags-list .flag-canada { background: url("../img/flags/canada.png") no-repeat center; }
+.flags-list .flag-uk { background: url("../img/flags/uk.png") no-repeat center; }
+.flags-list .flag-usa { background: url("../img/flags/usa.png") no-repeat center; }
+.flags-list .flag-belgium { background: url("../img/flags/belgium.png") no-repeat center; }
+.flags-list .flag-black { background: url("../img/flags/black-flag.png") no-repeat center; }
 #terms ul li { list-style-type: disc !important;}
 .signup-btn-decks { position: absolute;left: -248px;top: 370px;width: 180px;}
 .forPic img { width: 74px; margin: 21px 0 0 0; }
