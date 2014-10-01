@@ -46,8 +46,11 @@ def main(j, args, params, tags, tasklet):
             stack = {'name': 'N/A', 'referenceId': 'N/A'}
         try: 
             image = cbosis.image.get(obj.imageId).dump()
+            ccl = j.core.osis.getClientForNamespace('libvirt')
+            imagedata = ccl.image.simpleSearch({'name': image['name']})
         except Exception:
             image = {'name':'N/A'}
+            imagedata = None
         try:
             space = cbosis.cloudspace.get(obj.cloudspaceId).dump()
             data['accountId'] = space['accountId']
@@ -91,7 +94,7 @@ def main(j, args, params, tags, tasklet):
         if hasattr(obj, 'deletionTime'):
             data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
         data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
-        data['image'] = image['name']
+        data['image'] = '[%s|image?id=%s]' % (image['name'], imagedata) if imagedata else image['name']
         data['stackname'] = stack['name']
         data['spacename'] = space['name']
         data['stackrefid'] = stack['referenceId'] or 'N/A'

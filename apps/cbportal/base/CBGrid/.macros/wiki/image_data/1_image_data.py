@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
 
-    imageobj = ccl.image.get(id)
+    imageobj = ccl.image.get(imageid)
     
     image = imageobj.dump()
 
