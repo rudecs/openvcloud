@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
     accountId = args.getTag('accountId')
     if accountId:
-        filters['accountId'] = accountId
+        filters['accountId'] = int(accountId)
 
     fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
 

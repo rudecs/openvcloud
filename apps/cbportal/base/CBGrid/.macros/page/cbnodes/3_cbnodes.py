@@ -6,6 +6,7 @@ def main(j, args, params, tags, tasklet):
     nativequery = None
     cloudspaceid = args.getTag('space')
     if cloudspaceid:
+        cloudspaceid = int(cloudspaceid)
         args.tags.tags.pop('space')
         cbclient = j.core.osis.getClientForNamespace('cloudbroker')
 
