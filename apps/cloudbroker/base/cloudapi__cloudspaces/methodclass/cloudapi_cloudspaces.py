@@ -60,7 +60,7 @@ class cloudapi_cloudspaces(object):
         result bool
 
         """
-
+        cloudspaceId = int(cloudspaceId)
         ctx = kwargs['ctx']
         if not j.core.portal.active.auth.userExists(userId):
             ctx.start_response('404 Not Found', [])
