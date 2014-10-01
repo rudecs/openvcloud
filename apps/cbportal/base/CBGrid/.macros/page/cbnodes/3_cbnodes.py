@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
             return params
 
         stackids = list(set(cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks))
-        stacks = cbclient.stack.search({'stackdId': {'$in': stackids}})[1:]
+        stacks = cbclient.stack.search({'id': {'$in': stackids}})[1:]
         nodeids = [ int(stack['referenceId']) for stack in stacks]
 
         nativequery = {'id': {'$in': nodeids}}
@@ -32,7 +32,7 @@ def main(j, args, params, tags, tasklet):
         return str(', '.join(row[field]))
 
     fieldids = ['id', 'name', 'ipaddr']
-    fieldvalues = ['[%(id)s|/Grid/node?id=%(id)s]', 'name', makeIPs]
+    fieldvalues = ['[%(id)s|/Grid/node?id=%(id)s&gid=%(gid)s]', 'name', makeIPs]
     tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
