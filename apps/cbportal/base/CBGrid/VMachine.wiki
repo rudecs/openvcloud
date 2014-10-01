@@ -31,4 +31,22 @@ h3. vMachine Status Details
 |*Last Checked*|$$stats_epoch|
 
 
-{{actions actiontype:machine actions:{"Start":"/restmachine/cloudapi/machines/start?machineId=$$id","Stop":"/restmachine/cloudapi/machines/stop?machineId=$$id","Delete":"/restmachine/cloudapi/machines/delete?machineId=$$id","Snapshot":"/restmachine/cloudapi/machines/backup?machineId=$$id&name=backup","Resume":"/restmachine/cloudapi/machines/resume?machineId=$$id","Reboot":"/restmachine/cloudapi/machines/reboot?machineId=$$id"} }}
+{{actions:
+- display: Start
+  action: /restmachine/cloudbroker/machines/start?machineId=$$id
+
+- display: Stop
+  action: /restmachine/cloudbroker/machines/stop?machineId=$$id
+
+- display: Delete
+  action: /restmachine/cloudbroker/machines/delete?machineId=$$id
+
+- display: Snapshot
+  action: /restmachine/cloudbroker/machines/backup?machineId=$$id&name=backup
+
+- display: Resume
+  action: /restmachine/cloudbroker/machines/resume?machineId=$$id
+
+- display: Reboot
+  action: /restmachine/cloudbroker/machines/reboot?machineId=$$id
+}}

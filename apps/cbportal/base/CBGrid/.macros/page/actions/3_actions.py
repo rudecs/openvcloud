@@ -1,30 +1,35 @@
-try:
-    import ujson as json
-except:
-    import json
+import yaml
 
 
 def main(j, args, params, tags, tasklet):
-    page = args.page
-    actions = args.getTag('actions')
+    def _showexample():
+        out = """Actions must be in yaml form.
+eg:
+{{actions: 
+- display: Disable
+  action: /restmachine/cloudbroker/account/disable?accountname=${name}&reason=cbportal
 
-    if not actions:
-        out = 'Missing param "actions". Should be in form of dict.'
+- display: Enable
+  action: /restmachine/cloudbroker/account/enable?accountname=${name}&reason=cbportal
+}}
+"""
         params.result = (out, args.doc)
         return params
 
+    page = args.page
+    macrostr = args.macrostr.strip()
+    content = "\n".join(macrostr.split("\n")[1:-1])
 
+    if not content:
+        return _showexample()
 
     actionoptions = dict()
-    try:
-      actions = json.loads(actions)
-    except Exception:
-        out = 'Actions must be in form of dict. eg: actions:{"Disable":"/restmachine/cloudapi/account/disable?accountname=${name}&reason=cbportal","Enable":"/restmachine/cloudapi/account/enable?accountname=${name}&reason=cbportal"} '
-        params.result = (out, args.doc)
-        return params
+    actions = yaml.load(content)
+    if actions == content:
+        return _showexample()
 
-    for display, action in actions.iteritems():                
-        actionoptions[display] = action
+    for actiondata in actions:
+        actionoptions.update({actiondata['display']: actiondata['action']})
 
     id = page.addComboBox(actionoptions)
 
@@ -38,7 +43,6 @@ def main(j, args, params, tags, tasklet):
             });
         });
         """ % (id, id))
-
 
     params.result = page
 
