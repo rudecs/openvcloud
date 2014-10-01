@@ -14,3 +14,7 @@ h3. Details
 |*Grid ID*|[$$gid|/Grid/grid?id=$$gid]|
 |*Active*|$$active|
 |*Description*|$$description|
+
+h3. CloudSpaces
+
+{{cbspacesusers: userId:$$id}}
