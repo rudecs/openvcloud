@@ -15,11 +15,11 @@ def main(j, args, params, tags, tasklet):
             params.result = page
             return params
 
-        stackids = cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks
-        stacks = cbclient.stack.simpleSearch({}, nativequery={'query': {'bool': {'must': [{'terms': {'id': set(stackids)}}]}}})
-        nodenames = [str(stack['referenceId']) for stack in stacks]
+        stackids = list(set(cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks))
+        stacks = cbclient.stack.search({'stackdId': {'$in': stackids}})[1:]
+        nodeids = [ int(stack['referenceId']) for stack in stacks]
 
-        nativequery = {'query': {'bool': {'must': [{'terms': {'name': nodenames}}]}}}
+        nativequery = {'id': {'$in': nodeids}}
 
     filters = dict()
     for tag, val in args.tags.tags.iteritems():

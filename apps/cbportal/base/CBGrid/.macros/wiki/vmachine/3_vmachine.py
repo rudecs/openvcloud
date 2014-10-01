@@ -23,10 +23,13 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    cl=j.clients.redis.getGeventRedisClient("localhost", int(j.application.config.get('redis.port.redisp')))
+    try:
+        cl = j.clients.redis.getGeventRedisClient("localhost", int(j.application.config.get('redis.port.redisp')))
+    except:
+        cl = None
 
     stats = dict()
-    if cl.hexists("vmachines.status", id):
+    if cl and cl.hexists("vmachines.status", id):
         vm = cl.hget("vmachines.status", id)
         stats = json.loads(vm)
 

@@ -11,12 +11,8 @@ def main(j, args, params, tags, tasklet):
     if stackid:
         stackid = int(stackid)
         filters['stackId'] = stackid
-        ccl = j.core.osis.getClientForNamespace('cloudbroker')
-        location = j.application.config.get('cloudbroker.where_am_i')
-        spaces = [ x['id'] for x in ccl.cloudspace.simpleSearch({'location': location}) ]
-        nativequery = {'query': {'bool': {'must': [{'terms': {'cloudspaceId': spaces}}]}}}
     if cloudspaceId:
-        filters['cloudspaceId'] = cloudspaceId
+        filters['cloudspaceId'] = int(cloudspaceId)
 
     fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
