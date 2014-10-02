@@ -64,3 +64,15 @@ class cloudbroker_computenode(j.code.classGetBase()):
 
                 machines_actor.moveToDifferentComputeNode(account.name, machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
         return self._changeStackStatus(name, gid, 'DISABLED')
+
+    def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
+        """
+        Rebalances the btrfs filesystem
+        var:name str,, name of the computenode
+        var:gid int,, the grid this computenode belongs to
+        var:mountpoint str,,the mountpoint of the btrfs
+        var:uuid str,,if no mountpoint given, uuid is mandatory
+        result: bool
+        """
+        raise NotImplemented()
+
