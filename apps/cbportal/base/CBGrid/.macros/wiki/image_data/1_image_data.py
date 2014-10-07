@@ -14,12 +14,15 @@ def main(j, args, params, tags, tasklet):
         params.result = ('Image with id %s not found' % imageid, args.doc)
         return params
 
-    def objFetchManipulate(id):
-        return ccl.image.get(int(imageid)).dump()
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
+    imageobj = ccl.image.get(imageid)
+    
+    image = imageobj.dump()
 
-    return push2doc(args,params,objFetchManipulate)
+    args.doc.applyTemplate(image)
+
+    params.result = (args.doc, args.doc)
+    return params
 
 def match(j, args, params, tags, tasklet):
     return True
