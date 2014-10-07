@@ -37,18 +37,20 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method getFreeIpaddress")
     
 
-    def getFreeMacAddress(self, **kwargs):
+    def getFreeMacAddress(self, gid, **kwargs):
         """
         Get a free macaddres in this libvirt environment
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeMacAddress")
     
 
-    def getFreeNetworkId(self, **kwargs):
+    def getFreeNetworkId(self, gid, **kwargs):
         """
         Get a free NetworkId
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
@@ -97,9 +99,10 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method listNodes")
     
 
-    def listResourceProviders(self, **kwargs):
+    def listResourceProviders(self, gid, **kwargs):
         """
         List all registered resource providers
+        param:gid Grid id
         result list
         """
         #put your code here to implement this method
@@ -115,18 +118,20 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method listSizes")
     
 
-    def listVNC(self, **kwargs):
+    def listVNC(self, gid, **kwargs):
         """
         list vnc urls
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listVNC")
     
 
-    def registerNetworkIdRange(self, start, end, **kwargs):
+    def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
         Add a new network idrange
+        param:gid Grid id
         param:start start of the range
         param:end end of the range
         result 
@@ -147,10 +152,11 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method registerNode")
     
 
-    def registerVNC(self, url, **kwargs):
+    def registerVNC(self, url, gid, **kwargs):
         """
         register a vnc application
         param:url url of the application
+        param:gid register a vnc app linked to gid
         result int
         """
         #put your code here to implement this method
@@ -168,9 +174,10 @@ class libcloud_libvirt(j.code.classGetBase()):
         raise NotImplementedError ("not implemented method releaseIpaddress")
     
 
-    def releaseNetworkId(self, networkid, **kwargs):
+    def releaseNetworkId(self, gid, networkid, **kwargs):
         """
         Release a networkid.
+        param:gid Grid id
         param:networkid int representing the netowrkid to release
         result bool
         """

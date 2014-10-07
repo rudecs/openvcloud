@@ -327,8 +327,9 @@ class cloudapi_cloudspaces(object):
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)
-        location = cloudspace.location
+        location = j.application.config.get('mothership1.cloudbroker.defense_proxy')                    
 
-        url = 'https://%s.defense.%s.mothership1.com/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
+
+        url = 'https://%s.defense.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
