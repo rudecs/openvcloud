@@ -70,6 +70,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
+        grid_id = fw[0]['gid']
 
         machine = self.models.vmachine.get(vmid)
         localIp = self._getLocalIp(machine)
@@ -80,16 +81,18 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (localIp, localPort)
-        return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
+        return self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
         cloudspaceid = str(machine.cloudspaceId)
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if not fw:
             return True
         fw_id = fw[0]['guid']
+        grid_id = fw[0]['gid']
         localIp = self._getLocalIp(machine)
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
         for idx, fw in enumerate(forwards):
             if fw['localIp'] == localIp:
                 self._delete(cloudspaceid, idx)
@@ -116,7 +119,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
 
         """
         ctx = kwargs['ctx']
-        result = self._delete(cloudspaceid, id)
+        result = self._delete(int(cloudspaceid), id)
         if result == -1:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
@@ -126,18 +129,20 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return result
 
     def _delete(self, cloudspaceid, id, **kwargs):
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             return -1
         fw_id = fw[0]['guid']
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        fw_gid = fw[0]['gid']
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         id = int(id)
         if not id < len(forwards):
             return -2
         forward = forwards[id]
-        self.netmgr.fw_forward_delete(fw_id, self.gridid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
+        return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -174,7 +179,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         return self._process_list(forwards, cloudspaceid)
 
-    def _process_list(self, forwards):
+    def _process_list(self, forwards, cloudspaceid):
         result = list()
         query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROTYED'}}
         machines = self.models.vmachine.search(query)[1:]
@@ -212,7 +217,8 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        fw_gid = fw[0]['gid']
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='R')
