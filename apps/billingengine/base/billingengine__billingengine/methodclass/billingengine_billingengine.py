@@ -21,13 +21,11 @@ class billingengine_billingengine(j.code.classGetBase()):
         self._pricing = pricing.pricing()
 
     def _get_last_billing_statement(self, accountId):
-        query = {'fields': ['fromTime', 'accountId','id']}
-        query['query'] = {'term': {"accountId": accountId}}
-        query['size'] = 1
-        query['sort'] = [{ "fromTime" : {'order':'desc', 'ignore_unmapped' : True}}]
-        results = self.billingenginemodels.billingstatement.find(ujson.dumps(query))['result']
+        query = {'$query': {'accountId': accountId},
+                 '$orderby': [('fromTime', -1)]}
+        results = self.billingenginemodels.billingstatement.search(query, size=1)[1:]
         if len(results) > 0:
-            return self.billingenginemodels.billingstatement.get(results[0]['fields']['id'])
+            return self.billingenginemodels.billingstatement.get(results['id'])
         else:
             return None
 
@@ -129,10 +127,9 @@ class billingengine_billingengine(j.code.classGetBase()):
 
 
     def _get_credit_transaction(self, currency, reference):
-        query = {'fields': ['id', 'currency','reference']}
-        query['query'] = {'bool':{'must':[{'term': {"currency": currency.lower()}},{'term':{ 'reference':reference}}]}}
-        transactions = self.cloudbrokermodels.credittransaction.find(ujson.dumps(query))['result']
-        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['fields']['id'])
+        query = {'currency': currency, 'reference': reference}
+        transactions = self.cloudbrokermodels.credittransaction.search(query)[1:]
+        return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['id'])
 
 
     def _addMonth(self, timestamp):
@@ -172,7 +169,7 @@ class billingengine_billingengine(j.code.classGetBase()):
         cloudspaces = self.cloudbrokermodels.cloudspace.search(query)[1:]
         cloudspaceids = [ cloudspace['id'] for cloudspace in cloudspaces ]
         query = {'$query': {'cloudspaceId': {'$in': cloudspaceids}}, 
-                 '$orderby': {'creationTime': 1}
+                 '$orderby': [('creationTime', 1)]
                 }
         results = self.cloudbrokermodels.vmachine.search(query, size=1)[1:]
         return results[0]['creationTime'] if len(results) > 0 else None
