@@ -36,19 +36,10 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return self._models
 
     def _getLocalIp(self, machine):
-        localIp = None
-        if machine.nics:
-            if machine.nics[0].ipAddress == 'Undefined':
-                provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
-                n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
-                ipaddress = provider.client.ex_getIpAddress(n)
-                if ipaddress:
-                    machine.nics[0].ipAddress = ipaddress
-                    self.models.vmachine.set(machine)
-                    localIp = ipaddress
-            else:
-                localIp = machine.nics[0].ipAddress
-        return localIp
+        for nic in  machine['interfaces']:
+            if nic.ipAddress != 'Undefined':
+                return nic.ipAddress
+        return None
 
     @authenticator.auth(acl='C')
     @audit()
@@ -72,9 +63,9 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         fw_id = fw[0]['guid']
         grid_id = fw[0]['gid']
 
-        machine = self.models.vmachine.get(vmid)
+        machine = j.apps.cloudapi.machines.get(vmid)
         localIp = self._getLocalIp(machine)
-        if not localIp:
+        if localIp is None:
             ctx.start_response('404 Not Found', [])
             return 'No correct ipaddress found for this machine'
 
@@ -84,14 +75,21 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
-        cloudspaceid = str(machine.cloudspaceId)
+        def getIP():
+            for nic in machine.nics:
+                if nic.ipAddress != 'Undefined':
+                    return nic.ipAddress
+            return None
+        localIp = getIP()
+        if localIp is None:
+            return True
+        cloudspaceid = machine.cloudspaceId
         cloudspace = self.models.cloudspace.get(cloudspaceid)
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if not fw:
             return True
         fw_id = fw[0]['guid']
         grid_id = fw[0]['gid']
-        localIp = self._getLocalIp(machine)
         forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
         for idx, fw in enumerate(forwards):
             if fw['localIp'] == localIp:
