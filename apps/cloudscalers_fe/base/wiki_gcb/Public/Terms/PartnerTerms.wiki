@@ -9,6 +9,7 @@
 		*1.	General - Scope*
 		The following terms and conditions apply to all business relationships between the software vendor, following named also as "*you*", the “*Vendor*” or the "*Partner*", and CloudScalers BVBA, a Belgian limited liability company having its registered offices at Antwerpsesteenweg 19, B-9080 Lochristi, Belgium, registered with the Crossroads Bank of Enterprises (‘KBO’) under company No. 0835.566.611 (RLP Gent), following named as "*we*", "*us*", or “*CloudScalers*”.
 		CloudScalers has developed a software program in view of creating, operating and monitoring virtual machines, virtual desktops and storage capacity called “Mothership1” (the "Software"). This Software consists of the following elements:
+		*- style=list-style-type: lower-roman 
 		* a computer operating system that uses private virtualization technology running on X86 Intel hardware in view of providing access to computing, storage and networking capacity, and a related metering system that tracks the end user consumption of cloud services per hour ( the “*Provisioning System*”);
 		* a back end management portal for the Software operator where the operator can follow-up accounts and end users (the “*Operator Portal*”);
 		* an end user front end portal, consisting of a public portal with private spaces, that provides an integrated front end platform for the management of cloud services (the “*End-User Portal*”).
@@ -56,50 +57,51 @@
 		*“Website”*	means www.mothership1.com or any other website of Vendor which provides access to the Software;
 
 		*4.	Distribution rights*
-		* Licence Grant
+		*4.1	Licence Grant*
 		During the term and subject to the terms, conditions and timely payment of the fees set out in these Partnership Terms and relevant Order Form, CloudScalers hereby grants to Vendor a worldwide, non-exclusive, non-transferable and non-assignable right to promote, distribute and market the Products to Distributors and End-Users. Vendor may not copy or modify the Products or Documentation, except as otherwise set forth in this Agreement.
 		The Software is licensed, not sold.  CloudScalers keeps all right, title and interest in the Software.  CloudScalers grants Vendor the non-exclusive, nontransferable right to sublicense the Software and the Documentation to End-Users. The license of Software to Vendor, and Vendor’s sublicense rights, apply to object code formats only.  The Vendor’s license, and all sublicensees' rights, are subject to Vendor’s and the sublicensees' ongoing compliance with these Partnership Terms. The Software is copyrighted. Vendor and its sublicensees may not, under any circumstances, copy, modify, reverse engineer, create derivative works, or otherwise derive Source Code from the Software, except as explicitly stipulated in the present Partnership Terms.  
-		* Sub-Vendor and Distributors
-		** Vendor has the right to appoint Distributors as sub-vendors for the distribution of the Product(s), provided that (i) such appointment shall ensure that the terms of these Partnership Terms shall apply mutatis mutandis vis-à-vis any such Distributors; and (ii) such Distributors are legally obligated to protect the proprietary rights of CloudScalers in the Products. 
-		** In all cases, Vendor shall remain at all times fully liable towards CloudScalers for the performance of any of its obligations under these Partnership Terms, even if such obligations have been sub-delegated to or performed by a Distributor.
-		* License Restrictions/Prohibitions. 
+		*4.2 Sub-Vendor and Distributors*
+		*- style= list-style-type: lower-alpha
+		*  Vendor has the right to appoint Distributors as sub-vendors for the distribution of the Product(s), provided that (i) such appointment shall ensure that the terms of these Partnership Terms shall apply mutatis mutandis vis-à-vis any such Distributors; and (ii) such Distributors are legally obligated to protect the proprietary rights of CloudScalers in the Products. 
+		*  In all cases, Vendor shall remain at all times fully liable towards CloudScalers for the performance of any of its obligations under these Partnership Terms, even if such obligations have been sub-delegated to or performed by a Distributor.
+		*4.3 License Restrictions/Prohibitions. *
 		Save to the extent expressly and specifically required by applicable mandatory law, expressly and specifically authorised under these Partnership Terms or expressly and specifically permitted in writing by a duly authorized representative of CloudScalers, Vendor expressly agrees and confirms that it shall not, either directly or indirectly: 
-		** sell, license, use, reproduce, copy, display, distribute, assign or transfer (with or without consideration) the Product(s), except as expressly permitted under these Partnership Terms; 
-		** decompile, reverse engineer, disassemble, modify, or otherwise attempt to derive the Source Code, underlying ideas, underlying user interface techniques or algorithms of the Product(s) or prepare any derivative works of the Product(s); 
-		** encumber or cause to exist any lien or security interest on the Product(s); 
-		** take any action that would cause the Product(s), the Source Code and/or the Documentation to be placed in the public domain; 
-		** modify or otherwise change the Product(s), except as explicitly stipulated in these Partnership Terms; 
-		** incorporate into, combine with, or distribute in conjunction with the Product(s), or a derivative work of the Product(s) any Product(s) that is licensed pursuant to free/open source license terms in such manner that would render the Product(s)’s code free/open source code.
-		* T&C’s
+		*  sell, license, use, reproduce, copy, display, distribute, assign or transfer (with or without consideration) the Product(s), except as expressly permitted under these Partnership Terms; 
+		*  decompile, reverse engineer, disassemble, modify, or otherwise attempt to derive the Source Code, underlying ideas, underlying user interface techniques or algorithms of the Product(s) or prepare any derivative works of the Product(s); 
+		*  encumber or cause to exist any lien or security interest on the Product(s); 
+		*  take any action that would cause the Product(s), the Source Code and/or the Documentation to be placed in the public domain; 
+		*  modify or otherwise change the Product(s), except as explicitly stipulated in these Partnership Terms; 
+		*  incorporate into, combine with, or distribute in conjunction with the Product(s), or a derivative work of the Product(s) any Product(s) that is licensed pursuant to free/open source license terms in such manner that would render the Product(s)’s code free/open source code.
+		*4.4 T&C’s*
 		Vendor undertakes to enforce the T&C’s and to procure that the End-Users commit to adequate terms and conditions in respect of the use of the Product(s) to ensure protection of CloudScalers’ and its licensors’ intellectual property rights and confidential information, which terms and conditions must be consistent with the terms of present Partnership Terms and shall at least contain, and/or comply with, the T&C’s.
 		If a breach of any provisions of the T&C’s occurs, Vendor shall take prompt corrective action to remedy the breach and shall, in addition, notify CloudScalers in writing of such breach and the corrective action taken. 
 		Vendor shall not grant End-User any more rights than those rights Vendor is entitled to grant under the present Partnership Terms, and will not entail any liability for CloudScalers beyond those expressly set out in these Partnership Terms. 
 		Vendor undertakes to regularly consult www.mothership1.com for the most current version of the applicable T&C’s and Partnership Terms.
-		* Trademarks
+		*4.5 Trademarks*
 		The Parties agree that the Products may be marketed, distributed, provided and otherwise utilized either under CloudScalers’ Trademarks or under Vendor’s Trademarks. In view thereof, Vendor may privately label the End-User Portal, and may remove CloudScalers’ branding, Trademarks or service marks on the Software and Documentation and attach Vendor Trademarks thereto, provided, however, CloudScaler’s copyright and other proprietary rights notices will remain on the Software and Vendor shall not remove such notices or permit others to do so.
 		Vendor has the right to create and distribute promotional materials for the Products and, as part of that process, Vendor may use and modify the promotional materials and rebrand or white label product manuals provided by CloudScalers.
-		* Absence of Exclusivity
+		*4.6 Absence of Exclusivity*
 		For the avoidance of doubt, CloudScalers reserves all right to market, distribute, resell and license the Product(s) itself and/or through any Distributor or other marketing channel. 
 
 		*5.	Vendor undertakings*
-		* Costs and expenses
+		*5.1 Costs and expenses*
 		Vendor shall bear all costs and expenses of distributing the Product(s) and shall host and configure the End-User Portal.
-		* Compliance
+		*5.2 Compliance*
 		Reseller shall comply in its own name and at its expense with all formalities required by any applicable law in promoting and selling the Product in any relevant territory.
-		* Response to Errors.
+		*5.3 Response to Errors.*
 		Level 1 and Level 2 Support (as defined hereinafter).  Vendor and/or its Distributors shall be solely responsible for providing Level 1 and Level 2 Support to End-Users. Errors that cannot reasonably be remedied by Vendor and which Vendor desires CloudScalers to remedy, shall be promptly reported by Vendor to CloudScalers.  Vendor shall actively assist in the problem determination and agrees, if requested by CloudScalers, to submit promptly to CloudScalers a listing of output and any other data, including the operating conditions under which the error occurred or was discovered, that CloudScalers may reasonably require to reproduce the error. Vendor will perform reasonable tests requested by CloudScalers if those may aid in problem resolution.
 		Level 3 and Level 4 Support (as defined hereinafter).  CloudScalers shall use its commercially reasonable efforts to correct errors and provide error corrections to Vendor after Vendor reports an error. CloudScalers will commence resolving critical errors (i.e. errors or defects that cause total failure of the Product, severe memory leaks, inrecoverable data loss or unavailability of the Services) at the latest on the next business day. Vendor shall be solely responsible for delivering and/or implementing fixtures to the errors with its End-Users.
 		Excluded errors. Any support requested in respect of errors or issues that do not originate from or cannot be attributed to the Product (including, without being limited to, errors or issues in respect of hardware, Windows, file servers, AD servers, network equipment, End User devices, etc.) shall be provided by Vendor or any relevant third party, as the case may be. Such errors or issues are explicitly excluded from CloudScalers’ support undertakings under the present Partnership Terms, and CloudScalers’ responsibility in respect of such errors or issues is hereby excluded.
 		“*Level 1 Support*” means responding to an initial request from an End-User by means of a hotline or similar. Level 1 Support includes (without being limitative):
-		** Addressing End-User inquiries regarding the Product;
-		** Performing initial diagnosis and analysis of problems encountered by the End-User and determining whether the error or issue relates to the Product or to other infrastructure components;
-		** When established that the problem constitutes an error relating to the Product, initiating Level 2 Support.
-		“Level 2 Support” means trained engineers responding to identified errors and includes the following:
-		** Verifying whether the error is a configuration issue or a software issue;
-		** When established that the error is a software issue, verify whether the error is a known error for which a solution already exists or a new/unknown error;
-		** Addressing and fixing known errors, or, to the extent such known error can only be remedied by CloudScalers, transmitting appropriate information to an issue tracking system for subsequent Level 3 Support („Issue Report“);
-		** If established that the error is a new/unknown error, transmitting appropriate information to an issue tracking system for subsequent Level 3 Support („Issue Report“);
-		** Delivering fixes to the End Users.
+		* Addressing End-User inquiries regarding the Product;
+		* Performing initial diagnosis and analysis of problems encountered by the End-User and determining whether the error or issue relates to the Product or to other infrastructure components;
+		* When established that the problem constitutes an error relating to the Product, initiating Level 2 Support.
+		“*Level 2 Support*” means trained engineers responding to identified errors and includes the following:
+		* Verifying whether the error is a configuration issue or a software issue;
+		* When established that the error is a software issue, verify whether the error is a known error for which a solution already exists or a new/unknown error;
+		* Addressing and fixing known errors, or, to the extent such known error can only be remedied by CloudScalers, transmitting appropriate information to an issue tracking system for subsequent Level 3 Support („Issue Report“);
+		* If established that the error is a new/unknown error, transmitting appropriate information to an issue tracking system for subsequent Level 3 Support („Issue Report“);
+		* Delivering fixes to the End Users.
 		“*Level 3 Support*” means expert level support by CloudScalers for the Product, according to Issue Reports received.
 		“*Level 4 Support*” means engineering level support by CloudScalers for the Product, according to Issue Reports received.
 
@@ -109,7 +111,7 @@
 		At the end of a certain Fixed Term, the Agreement shall automatically convert into an Agreement of indefinite term.
 
 		*7.	Payment*
-		* Fees and payment
+		*7.1 Fees and payment*
 		Vendor shall procure that End-Users can pay for selected Services using credit units as indicated on the Website. Vendor shall purchase corresponding credit units from CloudScalers (the "*Credits*") in order to resell such Credits to Distributors and/or End-Users.
 		The purchase price of the Credits is expressed as an amount in U.S. Dollars (the "*Price*"). The Price includes the fees for the licenses and other rigths granted by CloudScalers to Vendor under the Agreement.
 		The default Price for one (1) Credit shall amount to one U.S. Dollar (1 USD) (the “*Default Price*”). Price reductions may apply subject to the Vendor subscribing to – and complying with – a Partner Program, as set forth hereinafter.
@@ -119,36 +121,37 @@
 		Vendor shall be responsible for any and all sales and use taxes and any other contributions, charges, levies and assessments associated with the rights granted under the Agreement. If Vendor fails to timely pay the relevant fee, CloudScalers shall be entitled to late payment interest at 1,5% per month (or the maximum interest rate permitted under applicable law), compounded daily as of the due date without any formalities being required, without prejudice however to CloudScalers’ right to apply the default Price to Credits purchased by Vendor during the then current year, or to suspend or terminate the Agreement as set forth hereinafter. Vendor shall bear all costs related to the (extra) judicial enforcement by CloudScalers of Vendor’s payment obligations hereunder.
 		Any sums paid by Vendor to CloudScalers pursuant to the Agreement will be final and non-refundable. 
 		Vendor shall make all payments due under the Agreement without any deduction whether by way of set-off, counterclaim, discount or otherwise. 
-		* Minimum Purchase Commitment 
+		*7.2 Minimum Purchase Commitment *
 		Vendor may subscribe to one of CloudScalers’ Partner Programs (Silver, Gold or Platinum) committing to one of the following minimum purchase commitments during the Initial Term:
-		** Silver: when purchasing at least 1,077 Credits per month during the Initial Term, a 35% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 700.05 USD/month);
-		** Gold: when purchasing at least 9,091 Credits per month during the Initial Term, a 45% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 5,000.05 USD/month);
-		** Platinum: when purchasing at least 21,740 Credits per month per month during the Initial Term, a 54% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 10,000.04 USD/month);
+		* Silver: when purchasing at least 1,077 Credits per month during the Initial Term, a 35% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 700.05 USD/month);
+		* Gold: when purchasing at least 9,091 Credits per month during the Initial Term, a 45% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 5,000.05 USD/month);
+		* Platinum: when purchasing at least 21,740 Credits per month per month during the Initial Term, a 54% discount on the Default Price shall apply (which corresponds to a minimum purchase commitment of 10,000.04 USD/month);
 		When Vendor fails to meet the relevant minimum purchase commitment under a certain Partner Program during the Initial Term, but still meets a minimum purchase commitment corresponding to another Partner Program, Vendor will be deemed to have elected such amended Partner Program for a new Initial Term starting on the date when the initial Partner Program was breached.
 		When Vendor fails to meet the relevant minimum purchase commitment under a certain Partner Program during the Initial Term, and furthermore fails to meet the minimum purchase commitment of the Silver Partner Program, then CloudScalers shall be entitled to charge the Default Price for all Credits that have been purchased by Vendor during the twelve preceding months. 
 		If the Vendor wishes to amend and replace a certain Partner Program for another Partner Program, a new Initial Term will start and such amended Partner Program will be deemed to have been entered into for such new Initial Term.
 		If the Vendor wishes to step out of a certain Partner Program after the Initial Term has lapsed, the Default Price will apply to any Credits purchased as from that date onwards, without affecting any discounts that had been previously granted under a certain Partner Program during such past Initial Term.
 		Each new monthly payment will top up the existing amount of Credits. However, the mere fact that Vendor has sufficient amounts of Credits will not waive the minimum purchase commitment under a certain Partner Program. 
 		Credits will not expire when not being used. 
-		* Price Adjustment 
+		*7.3 Price Adjustment*
 		CloudScalers may change its fees upon sixty (60) days advance written notice to Vendor. 
-		* Tax and related obligations of Vendor
+		*7.4 Tax and related obligations of Vendor*
 		Sums payable under the Agreement are exclusive of value added tax which (if applicable) shall be paid by Vendor at the rate and in the manner for the time being prescribed by law. 
 		CloudScalers and Vendor agree that all payments to CloudScalers shall be made without any deductions or set-offs according to the following terms:
-		** all payments to CloudScalers under the Agreement shall be made without set-off or deduction for any present or future taxes (including without limitation sales or use taxes, value added taxes, customs duties and import or export fees), imposts, levies, duties, withholdings or deductions, or any other like payment imposed, levied, collected, withheld or assessed on such payments or on Vendor in connection with its activities or duties hereunder by any governmental authority or political subdivision (collectively “Taxes”). Vendor agrees that all Taxes shall be paid by and are the sole obligation of Vendor;
-		** upon request, Vendor shall provide certified statements, receipts or supporting data with respect to its payment of Taxes and such other supporting data as may be requested by CloudScalers to establish that such Taxes have been paid by Vendor; and
-		** should Taxes be imposed on CloudScalers, CloudScalers shall have the right to receive reimbursement of Taxes and any other amounts due and payable by Vendor; and 
-		** in general, should the net amounts received by CloudScalers be less than such payments would have been in absence of any legal requirement to make deductions and/or withholdings, CloudScalers will be entitled to cover for such withholdings or deductions by uplifting its prices.   
+		*- style=list-style-type: lower-roman 
+		* all payments to CloudScalers under the Agreement shall be made without set-off or deduction for any present or future taxes (including without limitation sales or use taxes, value added taxes, customs duties and import or export fees), imposts, levies, duties, withholdings or deductions, or any other like payment imposed, levied, collected, withheld or assessed on such payments or on Vendor in connection with its activities or duties hereunder by any governmental authority or political subdivision (collectively “Taxes”). Vendor agrees that all Taxes shall be paid by and are the sole obligation of Vendor;
+		* upon request, Vendor shall provide certified statements, receipts or supporting data with respect to its payment of Taxes and such other supporting data as may be requested by CloudScalers to establish that such Taxes have been paid by Vendor; and
+		* should Taxes be imposed on CloudScalers, CloudScalers shall have the right to receive reimbursement of Taxes and any other amounts due and payable by Vendor; and 
+		* in general, should the net amounts received by CloudScalers be less than such payments would have been in absence of any legal requirement to make deductions and/or withholdings, CloudScalers will be entitled to cover for such withholdings or deductions by uplifting its prices.   
 
 		*8.	Audit rights*
 		Vendor grants CloudScalers, or an independent accountant or auditor appointed by CloudScalers, the right to annually inspect Vendor books and records for the sole purpose of verifying compliance with the grant of license in the Agreement. Such inspection shall be performed at CloudScalers’s expense at Vendor offices during Vendor’s normal business hours upon fifteen (15) days prior written notice and shall not interfere with Vendor’s normal business operations. Audit reports shall only include detail sufficient to verify Vendor’s compliance with the grant of license in the Agreement. In the event that said audit determines Vendor has failed to pay amounts due to Vendor, Reseller shall promptly acquire sufficient licenses to cover all unlicensed use disclosed by any such audit starting from the moment the unlicensed use was presumed by CloudScalers to begin; and in addition, Vendor shall reimburse CloudScalers for all costs and expenses in connection wit the audit and an additional fee of fifty percent (50%) on the licenses to be acquired for the unlicensed use.  
 
 		*9.	Intellectual property rights*
-		* Ownership
+		9.1 Ownership
 		Vendor acknowledges that the Product(s) and Documentation constitutes proprietary and confidential information and trade secrets which are the sole and exclusive property of CloudScalers or its licensors.  
 		The Agreement does not transfer or convey to Vendor or any End User or third party any right, title or interest in or to the Product(s) or any associated Intellectual Property Rights or any other industrial and/or ownership right, but only a limited right of use in accordance with the present Partnership Terms.
 		CloudScalers does and shall continue to own all right, title, Intellectual Property Rights and interest in and to the Product(s), Documentation and other elements that may be provided by CloudScalers to Vendor hereunder.
-		* Infringement
+		9.2 Infringement
 		Vendor shall inform CloudScalers immediately and in writing if it becomes aware of any infringement or possible infringement of any of CloudScalers's Intellectual Property Rights and Vendor shall cooperate, at CloudScalers’s expense, in the conduct of any law suits concerning the same.
 
 		*10.	Changes in cloudscalers product(s)*
@@ -162,14 +165,14 @@
 		Vendor shall observe all applicable laws and regulations in respect of and obtain all necessary licenses, consents and permission required for the importation, (re-)exportation, marketing, sale and support and use of the Product(s) in a certain territory.
 
 		*12.	Cloudscalers warranties*
-		* End User Warranty
+		*12.1 End User Warranty*
 		Each Product will include a limited warranty to End-Users as set forth in the T&C’s or other documentation as provided with the Product.  
-		* Intellectual Property Rights
+		*12.2 Intellectual Property Rights*
 		CloudScalers has the full right and authority to license the Product(s) and to furnish the Product(s) to the Vendor and, to the knowledge of CloudScalers, the license and use of the Product(s) in accordance with the present Partnership Terms does not infringe any Intellectual Property Rights of any third party. For any breach of the warranty contained in this Section 12.2, the Vendor’s exclusive remedy, and CloudScalers’s entire liability, shall be as set forth in Section 14. 
-		* Provision of Product(s) "as is"
+		*12.3 Provision of Product(s) "as is"*
 		Except as set forth in sections 12.1 and 12.2, above, the Products are provided “AS IS".  The express warranties set forth in this section 12 are the only warranties made by Cloudscalers with respect to the Agreement, the Product(s), the Documentation or any materials provided by Cloudscalers in connection with the Agreement. Cloudscalers makes no other warranties, express or implied. Except as set forth above, all other warranties, whether express or implied, including, but not limited to, implied warranties of merchantability and fitness for a particular purpose or warranties arising by statute or otherwise in law or from a course of dealing or usage of trade are hereby excluded. Cloudscalers makes no representation or warranty that all errors have been or can be eliminated from the Product(s), that the Product(s) will operate without interruption or that it will operate with other Products, and Cloudscalers shall not in any event be responsible for losses of any kind resulting from the distribution or use of the Product(s), including, without limitation, any liability for business expense, machine downtime, data losses or damages caused to vendor, Vendor’s customers, End-Users or other third parties by any deficiency, defect, error, or malfunction. Cloudscalers of course does not disclaim liability to the extent such disclaimer is prohibited or limited by mandatory law.
 
-		*13.	Limitation of liability *
+		*13.	Limitation of liability*
 		In no event shall either Party be liable under or arising out of the Agreement for lost profits or any other indirect, incidental, consequential, special, or reliance damages, however caused and under any theory of liability, including without limitation (i) loss of revenue; (ii) loss of anticipated savings; * loss of business and/or goods; (iv) loss of goodwill; (v) loss and/or corruption of data and/or other information; and/or (vi) the cost of procuring replacement goods and/or services.  For the avoidance of doubt, the types of loss and/or damage specified in (i) to (vi) of this section shall not constitute direct losses for the purposes of the Agreement.
 		Each Party's aggregate liability for damages under the Agreement, regardless of the form of actions, shall not exceed the lesser of the aggregate net cash payments it has received under such Agreement, or 250.000 USD.
 
@@ -192,16 +195,16 @@
 		The obligations set out in this Article shall survive the variation, renewal or termination of the Agreement but shall not apply to information that becomes public domain other than through the fault of the parties or their employees, agents or representatives.
 
 		*17.	Termination*
-		* Termination at will
+		*17.1  Termination at will*
 		The Agreement cannot be terminated during the Initial Term. Upon expiry of the Initial Term, the Agreement can be terminated by either Party giving 30 days’ notice in writing to the other Party.
-		* Termination for cause
+		*17.2  Termination for cause*
 		Either Party may terminate the Agreement immediately by giving notice in writing to the other Party upon the occurrence of any of the following events with respect to the other Party: 
-		** the other Party becomes insolvent; or
-		** the other Party enters into or proposes to enter into any compromise or arrangement with its creditors, or convenes any meeting of its creditors, commits any act of bankruptcy or is subject to an order or a resolution for its liquidation, administration, winding up or dissolution (other than for the purposes of a solvent amalgamation or reconstruction); or 
-		** the other Party has a liquidator, receiver, administrator, investigator, statutory manager or similar officer appointed over any or all or any substantial part of its assets; or
+		* the other Party becomes insolvent; or
+		* the other Party enters into or proposes to enter into any compromise or arrangement with its creditors, or convenes any meeting of its creditors, commits any act of bankruptcy or is subject to an order or a resolution for its liquidation, administration, winding up or dissolution (other than for the purposes of a solvent amalgamation or reconstruction); or 
+		* the other Party has a liquidator, receiver, administrator, investigator, statutory manager or similar officer appointed over any or all or any substantial part of its assets; or
 		Either party may terminate the Agreement immediately by giving notice in writing to the other Party upon the other Party’s failure to remedy (if capable for remedy) any material breach of any of the terms, conditions, covenants, undertakings or agreements herein within sixty (60) days after written notice to do so by the non-breaching Party. 
 		Any termination of the Agreement will not prejudice the rights or remedies of either Party, whether under these Partnership Terms or otherwise and will not affect any accrued rights or liabilities of either Party at the date of termination.   
-		* Effects of Termination 
+		*17.3 Effects of Termination*
 		Upon termination or expiration of the Agreement for any cause or reason whatsoever, CloudScalers may take any action at law or in equity to enforce performance of the obligations or covenants of Vendor in such Agreement and to recover damages for breach of same Agreement. Vendor acknowledges that CloudScalers shall continue to be entitled to collect any fees set forth in the Agreement that have accrued or shall have accrue and become due and owing to CloudScalers, including interest or amounts due and any other fees due and payable to CloudScalers under the Agreement.
 		Termination or expiration of the Agreement for any cause or reason whatsoever shall not entitle Vendor to any reimboursements with respect to Credits purchased by Vendor under such Agreement. 
 		Vendor agrees that the termination of the Agreement shall not of itself give rise to any liability on the part of CloudScalers to pay any compensation to the Vendor, such as but not limited to a termination compensation or to any payment in respect of any goodwill established by the Vendor during the term of the Agreement, or render CloudScalers liable for damages on account of the loss of prospective profits or on account of any expenditure, investment or obligation incurred or made by the Vendor.
