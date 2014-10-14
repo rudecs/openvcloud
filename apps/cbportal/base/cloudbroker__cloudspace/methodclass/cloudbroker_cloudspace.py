@@ -25,6 +25,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
     @auth(['level1', 'level2'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
+        cloudspaceId = int(cloudspaceId)
         accounts = self.cbcl.account.simpleSearch({'name':accountname})
         if not accounts:
             ctx = kwargs["ctx"]
