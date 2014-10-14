@@ -25,7 +25,7 @@ class billingengine_billingengine(j.code.classGetBase()):
                  '$orderby': [('fromTime', -1)]}
         results = self.billingenginemodels.billingstatement.search(query, size=1)[1:]
         if len(results) > 0:
-            return self.billingenginemodels.billingstatement.get(results['id'])
+            return self.billingenginemodels.billingstatement.get(results[0]['id'])
         else:
             return None
 
@@ -60,12 +60,16 @@ class billingengine_billingengine(j.code.classGetBase()):
 
     def _update_usage(self, billing_statement):
 
-        query = {'accountId': billing_statement.accountId, 'deletionTime': {'$gt': billing_statement.fromTime, '$ne': 0}, 'creationTime': {'$lt': billing_statement.untilTime}}
+        query = {'accountId': billing_statement.accountId, 
+                 '$or': [{'deletionTime': 0}, {'deletionTime': {'$gt': billing_statement.fromTime}}], 
+                 'creationTime': {'$lt': billing_statement.untilTime}}
         cloudspaces = self.cloudbrokermodels.cloudspace.search(query)[1:]
 
 
         for cloudspace in cloudspaces:
-            query = {'cloudspaceId': cloudspace['id'], 'deletionTime': {'$gt': billing_statement.fromTime, '$ne': 0}, 'creationTime': {'$lt': billing_statement.untilTime}}
+            query = {'cloudspaceId': cloudspace['id'], 
+                     '$or': [{'deletionTime': 0}, {'deletionTime': {'$gt': billing_statement.fromTime}}], 
+                     'creationTime': {'$lt': billing_statement.untilTime}}
             machines = self.cloudbrokermodels.vmachine.search(query)[1:]
 
             cloudspacebillingstatement = next((space for space in billing_statement.cloudspaces if space.cloudspaceId == cloudspace['id']), None)
@@ -127,7 +131,7 @@ class billingengine_billingengine(j.code.classGetBase()):
 
 
     def _get_credit_transaction(self, currency, reference):
-        query = {'currency': currency, 'reference': reference}
+        query = {'currency': currency, 'reference': str(reference)}
         transactions = self.cloudbrokermodels.credittransaction.search(query)[1:]
         return None if len(transactions) == 0 else self.cloudbrokermodels.credittransaction.get(transactions[0]['id'])
 
