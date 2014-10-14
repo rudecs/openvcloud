@@ -53,7 +53,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         if fws:
             self.netmgr.fw_delete(fws[0]['guid'], gid)
         if cloudspace['networkId']:
-            self.libvirt_actor.releaseNetworkId(cloudspace['networkId'])
+            self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
         if cloudspace['publicipaddress']:
             self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
 
