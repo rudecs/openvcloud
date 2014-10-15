@@ -41,6 +41,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:stackid id of the stack
         result bool
         """
+        cloudspaceId = int(cloudspaceId)
         imageId = int(imageId)
         sizeId = int(sizeId)
         stackid = int(stackid)
