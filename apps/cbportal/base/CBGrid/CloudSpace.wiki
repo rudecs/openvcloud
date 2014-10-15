@@ -22,3 +22,11 @@ h3. Virtual Machines
 
 h3. CPU Nodes
 {{cbnodes space:$$id}}
+
+{{actions:
+- display: Choose Action
+  action:
+  
+- display: Delete
+  action: /restmachine/cloudbroker/cloudspace/destroy?cloudspaceId=$$id&cloudspaceName=$$name&reason=ops&accountname=$$accountname
+}}
