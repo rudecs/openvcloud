@@ -62,6 +62,11 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             machineId = machine['id']
             j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
 
+        #delete network information
+        if self.vfwcl.virtualfirewall.exists(cloudspace['networkId']):
+            self.vfwcl.virtualfirewall.delete(cloudspace['networkId'])
+
+
         cloudspace['networkId'] = None
         cloudspace['publicipaddress'] = None
         self.cbcl.cloudspace.set(cloudspace)
