@@ -41,6 +41,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:stackid id of the stack
         result bool
         """
+        imageId = int(imageId)
+        sizeId = int(sizeId)
+        stackid = int(stackid)
         machine = self.cbcl.vmachine.new()
         image = self.cbcl.image.get(imageId)
         cloudspace = self.cbcl.cloudspace.get(cloudspaceId)
@@ -113,6 +116,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
     @auth(['level1','level2'])
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -139,6 +143,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
     @auth(['level1','level2'])
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -169,6 +174,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
     @auth(['level1','level2'])
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -230,6 +236,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -310,6 +317,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.cbcl.vmachine.set(vmachine)
 
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key,bucketname,**kwargs):
+        machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         system_cl = j.core.osis.getClientForNamespace('system')
@@ -344,6 +352,8 @@ class cloudbroker_machine(j.code.classGetBase()):
         return guid
 
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
+        vmexportId = int(vmexportId)
+        nid = int(nid)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
         vmexport = self.cbcl.vmexport.get(vmexportId)
@@ -374,6 +384,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         return id
 
     def listExports(self, status, machineId ,**kwargs):
+        machineId = int(machineId)
         query = {'status': status, 'machineId': machineId}
         exports = self.cbcl.vmexport.search(query)[1:]
         exportresult = []
@@ -387,6 +398,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:machineId id of the machine to tag
         param:tagName tag
         """
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -412,6 +424,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:machineId id of the machine to untag
         param:tagName tag
         """
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -493,6 +506,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         @param:machineId int,,Id of the machine
         @param:reason str,,Reason
         '''
+        machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -519,7 +533,8 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Destroy the machine
         * Close the ticket
         """
-        vmachine = self.cbcl.vvmachine.get(machineId)
+        machineId = int(machineId)
+        vmachine = self.cbcl.vmachine.get(machineId)
         if not vmachine:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]

@@ -258,7 +258,7 @@ class cloudapi_cloudspaces(object):
         result
 
         """
-        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
         change = False
         for ace in cloudspace.acl:
             if ace.userGroupId == userId:
