@@ -321,7 +321,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        system_cl = j.core.osis.getClientForNamespace('system')
         machine = self.cbcl.vmachine.get(machineId)
         if not machine:
             ctx.start_response('400', headers)
@@ -343,13 +342,10 @@ class cloudbroker_machine(j.code.classGetBase()):
         storageparameters['mdbucketname'] = bucketname
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
-        if len(nodes) != 1:
-            ctx.start_response('409', headers)
-            return 'Incorrect model structure'
-        nid = nodes[0]['id']
+        nid = int(stack.referenceId)
+        gid = stack.gid
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        guid = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['guid']
+        guid = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
         return guid
 
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
