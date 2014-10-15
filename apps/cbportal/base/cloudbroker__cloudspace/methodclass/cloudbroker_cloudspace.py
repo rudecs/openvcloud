@@ -64,7 +64,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         #delete network information
         if self.vfwcl.virtualfirewall.exists(cloudspace['networkId']):
-            self.vfwcl.virtualfirewall.delete(cloudspace['networkId'])
+            vfw = self.vfwcl.virtualfirewall.get(cloudspace['networkId'])
+            vfw.state = 'DESTROYED'
+            self.vfwcl.virtualfirewall.set(vfw)
 
 
         cloudspace['networkId'] = None
