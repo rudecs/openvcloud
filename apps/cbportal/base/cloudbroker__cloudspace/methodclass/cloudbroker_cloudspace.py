@@ -16,7 +16,6 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self._cb = None
         self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
         self.libvirt_actor = self.cb.extensions.imp.actors.libcloud.libvirt
-        self.machine = self.cb.extensions.imp.actors.cloudbroker.machine
 
     @property
     def cb(self):
@@ -61,7 +60,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         #delete machines
         for machine in self.cbcl.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
             machineId = machine['id']
-            self.machine.destroy(accountname, cloudspaceName, machineId, reason)
+            j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
 
         cloudspace['networkId'] = None
         cloudspace['publicipaddress'] = None
