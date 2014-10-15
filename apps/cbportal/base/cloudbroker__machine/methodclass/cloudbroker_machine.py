@@ -534,11 +534,11 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Close the ticket
         """
         machineId = int(machineId)
-        vmachine = self.cbcl.vmachine.get(machineId)
-        if not vmachine:
-            ctx = kwargs['ctx']
+        ctx = kwargs['ctx']
+        if not self.cbcl.vmachine.exists(machineId):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
         args = {'accountName': accountName, 'machineId':machineId, 'reason':reason, 'vmachineName':vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
-        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', node=j.application.whoAmI.nid, args=args, wait=False)
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', nid=j.application.whoAmI.nid, args=args, wait=False)

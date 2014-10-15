@@ -21,18 +21,21 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     import JumpScale.lib.whmcs
     import time
 
-    cbip = j.application.config.get('cloudbroker.ip')
-    cbport = j.application.config.get('cloudbroker.port')
-    cbsecret = j.application.config.get('cloudbroker.secret')
-    cl = j.core.portal.getClient(cbip, cbport, cbsecret)
-    cloudbrokermachine = cl.getActor('cloudbroker','machine')
+    cl = j.core.portal.getClientByInstance('cbportal')
+
+    try:
+        cl.getActor('cloudbroker', 'machine')
+    except Exception:
+        pass
+    cloudbrokermachine = cl.actors.cloudbroker.machine
 
     agentcontrollerclient = j.clients.agentcontroller.get()
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
     ticketid = j.tools.whmcs.tickets.create_ticket('Backing up Machine %s for destruction' % vmachineName, '', "High")
+    machineId = int(machineId)
     backupname = 'Backup of vmachine %s at %s' % (vmachineName, j.base.time.getLocalTimeHRForFilesystem())
-    jobguid = cloudbrokermachine.export(machineId, backupname, backuptype='raw', storage='cephfs', bucketname='machine_backups')
+    jobguid = cloudbrokermachine.export(machineId, backupname, backuptype='raw', storage='cephfs', host='', aws_access_key='', aws_secret_key='', bucketname='machine_backups')
     
     while True:
         job = agentcontrollerclient.getJobInfo(jobguid)
