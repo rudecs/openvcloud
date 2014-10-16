@@ -32,11 +32,23 @@ h4. Balance
 
 {{actions:
 - display: Disable
-  action: /restmachine/cloudbroker/account/disable?accountname=${name}&reason=cbportal
+  action: /restmachine/cloudbroker/account/disable
+  data:
+   accountname: ${name}
+  input:
+  - reason
 
 - display: Enable
-  action: /restmachine/cloudbroker/account/enable?accountname=${name}&reason=cbportal
+  action: /restmachine/cloudbroker/account/enable
+  data:
+   accountname: ${name}
+  input:
+  - reason
 
 - display: Delete
-  action: /restmachine/cloudbroker/account/delete?accountname=${name}&reason=cbportal
+  action: /restmachine/cloudbroker/account/delete
+  data:
+   accountname: ${name}
+  input:
+  - reason
 }}

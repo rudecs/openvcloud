@@ -33,12 +33,30 @@ h3. vMachine Status Details
 
 {{actions:
 - display: Start
-  action: /restmachine/cloudbroker/machines/start?machineId=$$id&reason=ops&accountName=$$accountname&spaceName=$$spacename
+  input: 
+  - reason
+  - spacename
+  action: /restmachine/cloudbroker/machine/start
+  data: 
+   machineId: $$id
+   accountName: $$accountname
 
 - display: Stop
-  action: /restmachine/cloudbroker/machines/stop?machineId=$$id&reason=ops&accountName=$$accountname&spaceName=$$spacename
+  action: /restmachine/cloudbroker/machine/stop
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
 
 - display: Delete
-  action: /restmachine/cloudbroker/machines/destroy?machineId=$$id&reason=ops&accountName=$$accountname&spaceName=$$spacename
+  action: /restmachine/cloudbroker/machine/destroy
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
 
 }}
