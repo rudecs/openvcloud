@@ -51,7 +51,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.cbcl.cloudspace.set(cloudspace)
 
         #delete routeros
-        gid = str(cloudspace['gid'])
+        gid = cloudspace['gid']
         fws = self.netmgr.fw_list(gid, str(cloudspaceId))
         if fws:
             self.netmgr.fw_delete(fws[0]['guid'], gid)
