@@ -39,7 +39,7 @@ h3. vMachine Status Details
   data: 
    machineId: $$id
    accountName: $$accountname
-   spacename: $$spacename
+   spaceName: $$spacename
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
