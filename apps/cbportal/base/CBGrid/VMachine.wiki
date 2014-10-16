@@ -35,11 +35,11 @@ h3. vMachine Status Details
 - display: Start
   input: 
   - reason
-  - spacename
   action: /restmachine/cloudbroker/machine/start
   data: 
    machineId: $$id
    accountName: $$accountname
+   spacename: $$spacename
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
