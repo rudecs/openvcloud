@@ -58,6 +58,7 @@ angular.module('cloudscalers.controllers')
             	$scope.commonPorts = Networks.commonports();
             };
             var addRuleController = function ($scope, $modalInstance) {
+                $scope.updateData();
                 $scope.newRule = {
                     ip: $scope.currentSpace.publicipaddress,
                     publicPort: '',
