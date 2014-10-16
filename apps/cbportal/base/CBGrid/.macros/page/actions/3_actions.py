@@ -76,25 +76,26 @@ eg:
     $(document).ready(function() {
           // on-ok-button event
          $("#action-%s .modal-ok-btn").click(function(){
-          // get values
-          var data = %s;
-          var inputs = $("#action-%s .action-input");
-          for (var i=0; i < inputs.length; i++) {
-              var input = $(inputs[i]);
-              data[input.data('name')] = input.val();
-          }
-          $.ajax({
-                   type: "POST",
-                   url: "%s",
-                   data: data,
-                });
+              // get values
+              var data = %s;
+              var inputs = $("#action-%s .action-input");
+              for (var i=0; i < inputs.length; i++) {
+                  var input = $(inputs[i]);
+                  data[input.data('name')] = input.val();
+              }
+              $.ajax({
+                       type: "POST",
+                       url: "%s",
+                       data: data,
+                    });
+             $("#action-%s").modal('hide');
          });
          // on-cancel-button event
          $(".modal-cancel-btn").click(function(){
              // 
          });
     });
-            """ % (actionid, json.dumps(data), actionid, actionurl)
+            """ % (actionid, json.dumps(data), actionid, actionurl, actionid)
         page.addJS(None, js)
 
     id = page.addComboBox(actionoptions, {'#': 'Choose Action'})
