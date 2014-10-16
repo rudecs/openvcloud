@@ -168,10 +168,9 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Starting machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.start(machineId)
-        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
-                                     'Closed', None, None, None, None)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
@@ -199,10 +198,9 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Stopping machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.stop(machineId)
-        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
-                                     'Closed', None, None, None, None)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
 
 
     @auth(['level1','level2'])
@@ -223,7 +221,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         account = self.cbcl.account.get(accounts[0]['id'])
         msg = 'Account: %s\nReason: %s' % (accountName, reason)
         subject = 'Disabling account: %s' % accountName
-        ticketId = j.tools.whmcs.tickets.create_ticket(accountName, 'Operations', subject, msg, 'High')
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account.status = 'DISABLED'
         self.cbcl.account.set(account)
         # stop all account's machines
@@ -232,8 +230,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             vmachines = self.cbcl.vmachine.simpleSearch({'cloudspaceId': cs['id'], 'status': 'RUNNING'})
             for vmachine in vmachines:
                 self.machines_actor.stop(vmachine['id'])
-        j.tools.whmcs.tickets.update_ticket(ticketId, 'Operations', subject, msg, 'High',
-                                     'Closed', None, None, None, None)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):

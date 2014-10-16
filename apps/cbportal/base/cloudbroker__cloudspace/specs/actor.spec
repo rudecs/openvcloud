@@ -5,6 +5,7 @@
     method:destroy
         """
         destroy a cloudspace
+        Destroys its machines, vfws and routeros
         """
         var:accountname str,,name of account
         var:cloudspaceName str,,name of cloudspace

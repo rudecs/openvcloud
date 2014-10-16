@@ -39,6 +39,7 @@ def main(j, args, params, tags, tasklet):
         obj['resourceProviderStacks'] = ', '.join(links)
 
         obj['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in obj['acl']]))
+        obj['networkid'] = '[%s|network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid']) if obj['networkId'] else 'N/A'
 
         return obj
 

@@ -25,6 +25,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
     @auth(['level1', 'level2'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
+        """
+        Destroys a cloudspacec and its machines, vfws and routeros
+        """
         cloudspaceId = int(cloudspaceId)
         accounts = self.cbcl.account.simpleSearch({'name':accountname})
         if not accounts:
@@ -63,8 +66,9 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
 
         #delete network information
-        if self.vfwcl.virtualfirewall.exists(cloudspace['networkId']):
-            vfw = self.vfwcl.virtualfirewall.get(cloudspace['networkId'])
+        networkguid = '%s_%s' % (cloudspace['gid'], cloudspace['networkId'])
+        if self.vfwcl.virtualfirewall.exists(networkguid):
+            vfw = self.vfwcl.virtualfirewall.get(networkguid)
             vfw.state = 'DESTROYED'
             self.vfwcl.virtualfirewall.set(vfw)
 
