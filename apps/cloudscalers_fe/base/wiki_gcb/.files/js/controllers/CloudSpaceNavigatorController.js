@@ -52,10 +52,9 @@ angular.module('cloudscalers.controllers')
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
                 };
-                $scope.selectedLocation = selectedAccount.DCLocation;
-                if (!($scope.selectedLocation in $scope.locations)){
-                	$scope.selectedLocation = Object.keys($scope.locations)[0];
-                }
+
+                $scope.selectedLocation = $scope.locations[0].locationCode;
+
                 $scope.changeLocation = function(location) {
                     $scope.selectedLocation = location.locationCode;
                 };
