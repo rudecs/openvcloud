@@ -8,6 +8,7 @@ class cloudbroker_account(j.code.classGetBase()):
         self._te={}
         self.actorname="account"
         self.appname="cloudbroker"
+        self._cb = None
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.accounts_actor = self.cb.extensions.imp.actors.cloudapi.accounts
 
