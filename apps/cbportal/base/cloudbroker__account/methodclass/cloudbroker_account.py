@@ -11,6 +11,12 @@ class cloudbroker_account(j.code.classGetBase()):
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.accounts_actor = self.cb.extensions.imp.actors.cloudapi.accounts
 
+    @property
+    def cb(self):
+        if not self._cb:
+            self._cb = j.apps.cloudbroker.iaas
+        return self._cb
+
     def _checkAccount(self, accountname, ctx):
         account = self.cbcl.account.simpleSearch({'name':accountname})
         if not account:
