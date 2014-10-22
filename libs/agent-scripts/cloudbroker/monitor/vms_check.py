@@ -23,10 +23,7 @@ def action():
     import JumpScale.grid.agentcontroller
     import ujson as json
 
-    REDIS_PORT = j.application.config.get('redis.port.redisp')
-    WHERE_AM_I = j.application.config.get('cloudbroker.where.am.i')
-
-    rediscl = j.clients.redis.getGeventRedisClient('127.0.0.1', REDIS_PORT)
+    rediscl = j.clients.redis.getGeventRedisClientByInstanceName('production')
     accl = j.clients.agentcontroller.get()
     osiscl = j.core.osis.getClient(user='root')
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
