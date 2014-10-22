@@ -91,7 +91,7 @@ class cloudbroker_account(j.code.classGetBase()):
             return result
         else:
             account = result
-            account['name'] = 'name'
+            account['name'] = name
             self.cbcl.account.set(account)
             return True
 
