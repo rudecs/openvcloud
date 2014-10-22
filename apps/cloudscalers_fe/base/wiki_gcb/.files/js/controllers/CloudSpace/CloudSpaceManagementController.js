@@ -18,7 +18,11 @@ angular.module('cloudscalers.controllers')
                     }
                 );
     	});
-    	
+
+        LocationsService.list().then(function(locations) {
+            $scope.currentLocation =  _.findWhere(locations, {locationCode: $scope.currentSpace.location});
+        });
+
         $scope.deleteCloudspace = function() {
             var modalInstance = $modal.open({
                 templateUrl: 'deleteCloudSpaceDialog.html',

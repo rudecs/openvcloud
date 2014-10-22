@@ -10,7 +10,7 @@ angular.module('cloudscalers.services')
     			'test1':{title:'Test', flag:'black'}
 		};
 		return {
-            list: function(username, oldPassword, newPassword) {
+            list: function() {
                 return $http.get(cloudspaceconfig.apibaseurl + '/locations/list').then(
                         function(result){
                             return result.data;

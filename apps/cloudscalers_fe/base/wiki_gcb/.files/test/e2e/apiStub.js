@@ -729,5 +729,30 @@ defineApiStub = function ($httpBackend) {
             return [500, "Templates couldn't found!"];
         }
     });
-    $httpBackend.whenGET('/locations/list').respond([{'us1': ''}]);
+    $httpBackend.whenGET('/locations/list?authkey=yep123456789').respond(
+        [{'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'uk',
+        'gid': 500,
+        'guid': 1,
+        'id': 1,
+        'locationCode': 'eu1',
+        'name': 'UK'},
+        {'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'belgium',
+        'gid': 600,
+        'guid': 2,
+        'id': 2,
+        'locationCode': 'eu2',
+        'name': 'Belgium'},
+        {'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'canada',
+        'gid': 600,
+        'guid': 2,
+        'id': 2,
+        'locationCode': 'ca1',
+        'name': 'Canada'}]
+        );
 };
