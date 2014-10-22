@@ -18,14 +18,10 @@
 					<p class="txt-14 txt-gray">{[ cloudSpaceDetails.secret]}</p>
 				</div>
 				<br/>
-				<div class="margin-bottom-medium" ng-switch="currentLocation.flag.toLowerCase()" ng-show="currentLocation">
+				<div class="margin-bottom-medium" ng-show="currentLocation">
           			<label class="left margin-right-medium settings-label">Location:</label>
           			<div class="txt-center margin-bottom-large left">
-          				<img src="/$$space/.files/img/flags/canada.png" title="Canada" ng-switch-when="canada">
-          				<img src="/$$space/.files/img/flags/belgium.png" title="Belgium" ng-switch-when="belgium">
-          				<img src="/$$space/.files/img/flags/black-flag.png" ng-switch-when="black">
-          				<img src="/$$space/.files/img/flags/uk.png" title="United Kingdom" ng-switch-when="eu1">
-          				<img src="/$$space/.files/img/flags/usa.png" title="United States" ng-switch-when="usa">
+          				<img src="/$$space/.files/img/flags/{[ currentLocation.flag  ]}.png" title="{[ currentLocation.name  ]}" />
           				<span class="block margin-top-small txt-13">{[currentLocation.name]}</span>
           			</div>
         		</div>

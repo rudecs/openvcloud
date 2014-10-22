@@ -10,18 +10,18 @@ angular.module('cloudscalers.controllers')
     	$scope.$watch('currentSpace.id',function(){
 
             CloudSpace.get($scope.currentSpace.id).then(
-            function(data) {
-                    $scope.cloudSpaceDetails = data;
+                    function(data) {
+                        $scope.cloudSpaceDetails = data;
+                        LocationsService.list().then(function(locations) {
+                            $scope.currentLocation =  _.findWhere(locations, {locationCode: $scope.currentSpace.location});
+                        });
                     },
                     function(reason) {
-                       $ErrorResponseAlert(reason);
+                        $ErrorResponseAlert(reason);
                     }
-                );
-    	});
-
-        LocationsService.list().then(function(locations) {
-            $scope.currentLocation =  _.findWhere(locations, {locationCode: $scope.currentSpace.location});
+                    );
         });
+
 
         $scope.deleteCloudspace = function() {
             var modalInstance = $modal.open({
