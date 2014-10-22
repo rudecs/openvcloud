@@ -11,6 +11,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.actorname="cloudspace"
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.syscl = j.core.osis.getClientForNamespace('system')
         self.network = network.Network(self.cbcl)
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
         self._cb = None
@@ -131,7 +132,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             ctx.start_response("404", headers)
             return 'Account name not found'
         accountId = account[0]['id']
-        user = self.cbcl.user.simpleSearch({'name':access})
+        user = self.syscl.user.simpleSearch({'name':access})
         if not user:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)

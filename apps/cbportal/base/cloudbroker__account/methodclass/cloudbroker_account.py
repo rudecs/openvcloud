@@ -10,6 +10,7 @@ class cloudbroker_account(j.code.classGetBase()):
         self.appname="cloudbroker"
         self._cb = None
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        self.syscl = j.core.osis.getClientForNamespace('system')
         self.accounts_actor = self.cb.extensions.imp.actors.cloudapi.accounts
 
     @property
@@ -27,7 +28,7 @@ class cloudbroker_account(j.code.classGetBase()):
         return True, account[0]
 
     def _checkUser(self, username, ctx):
-        user = self.cbcl.user.simpleSearch({'name':username})
+        user = self.syscl.user.simpleSearch({'name':username})
         if not user:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
