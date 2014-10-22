@@ -88,7 +88,7 @@ class cloudapi_cloudspaces(object):
         """
         Create an extra cloudspace
         param:name name of space to create
-        param:access list of ids of users which have full access to this space
+        param:access id of user which has full access to this space
         param:maxMemoryCapacity max size of memory in space (in GB)
         param:maxDiskCapacity max size of aggregated disks (in GB)
         result int

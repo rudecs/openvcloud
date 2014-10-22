@@ -2,10 +2,10 @@
     """
     finance manager
     """    
-    method:addCredit
+    method:changeCredit
         """     
-        add credit to an account with certain amount.
+        add or remove credit to an account with certain amount.
         """
         var:accountname str,,name of account
-        var:amount str,,amount to be transferred
+        var:amount str,,amount to be transferred (positive is credit, negative is debit)
         var:message str,,message. Must be less than 30 characters

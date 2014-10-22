@@ -91,7 +91,6 @@ class cloudapi_accounts(object):
 
         return self.models.account.get(accountId)
 
-
     @authenticator.auth(acl='R')
     @audit()
     def listTemplates(self, accountId, **kwargs):
@@ -105,9 +104,6 @@ class cloudapi_accounts(object):
         results = self.models.image.search(query)[1:]
         self.cb.extensions.imp.filter(results, fields)
         return results
-
-        
-
 
     @authenticator.auth(acl='A')
     @audit()

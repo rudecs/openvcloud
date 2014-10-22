@@ -16,6 +16,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self._cb = None
         self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
         self.libvirt_actor = self.cb.extensions.imp.actors.libcloud.libvirt
+        self.cloudspaces_actor = self.cb.extensions.imp.actors.cloudapi.cloudspace
 
     @property
     def cb(self):
@@ -106,7 +107,6 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method removeIP")
     
-
     def restoreVirtualFirewall(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
@@ -114,4 +114,28 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method restoreVirtualFirewall")
+
+    def create(self, accountname, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+        """
+        Create a cloudspace
+        param:accountname name of account to create space for
+        param:name name of space to create
+        param:access username which has full access to this space
+        param:maxMemoryCapacity max size of memory in space (in GB)
+        param:maxDiskCapacity max size of aggregated disks (in GB)
+        """
+        ctx = kwargs["ctx"]
+        account = self.cbcl.account.simpleSearch({'name':accountname})
+        if not account:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Account name not found'
+        accountId = account[0]['id']
+        user = self.cbcl.user.simpleSearch({'name':access})
+        if not user:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Username "%s" not found' % access
+        self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
+        return True
     

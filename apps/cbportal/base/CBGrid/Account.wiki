@@ -4,6 +4,69 @@
 
 h2. Account: ${name}
 
+{{actions:
+- display: Disable
+  action: /restmachine/cloudbroker/account/disable
+  data:
+   accountname: ${name}
+  input:
+  - reason
+
+- display: Enable
+  action: /restmachine/cloudbroker/account/enable
+  data:
+   accountname: ${name}
+  input:
+  - reason
+
+- display: Delete
+  action: /restmachine/cloudbroker/account/delete
+  data:
+   accountname: ${name}
+  input:
+  - reason
+
+- display: Add User
+  action: /restmachine/cloudbroker/account/addUser
+  data:
+   accountname: ${name}
+  input:
+  - username
+  - accesstype
+
+- display: Delete User
+  action: /restmachine/cloudbroker/account/deleteUser
+  data:
+   accountname: ${name}
+  input:
+  - username
+
+- display: Create Space
+  action: /restmachine/cloudbroker/cloudspace/create
+  data:
+   accountname: ${name}
+  input:
+  - name
+  - access
+  - maxMemoryCapacity
+  - maxDiskCapacity
+
+- display: Change Credit
+  action: /restmachine/cloudbroker/finance/changecredit
+  data:
+   accountname: ${name}
+  input:
+  - amount
+  - message
+
+- display: Rename
+  action: /restmachine/cloudbroker/account/rename
+  data:
+   accountname: ${name}
+  input:
+  - name
+}}
+
 h3. Details
 |*Account ID*|$$id|
 |*Real Name*|${displayname}|
@@ -29,26 +92,3 @@ h4. Transactions
 h4. Balance
 {{balances: accountId:$$id}}
 
-
-{{actions:
-- display: Disable
-  action: /restmachine/cloudbroker/account/disable
-  data:
-   accountname: ${name}
-  input:
-  - reason
-
-- display: Enable
-  action: /restmachine/cloudbroker/account/enable
-  data:
-   accountname: ${name}
-  input:
-  - reason
-
-- display: Delete
-  action: /restmachine/cloudbroker/account/delete
-  data:
-   accountname: ${name}
-  input:
-  - reason
-}}

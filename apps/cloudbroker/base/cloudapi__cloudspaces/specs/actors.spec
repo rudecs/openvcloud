@@ -8,7 +8,7 @@
 		"""
         var:accountId str,, Id of acount this cloudspace belongs to
 		var:name str,,name of space to create
-		var:access str,,id of the user which have full access to the space
+		var:access str,,id of the user which has full access to the space
 		var:maxMemoryCapacity int,,max size of memory in space (in GB) @tags: optional 
 		var:maxDiskCapacity int,,max size of aggregated disks (in GB) @tags: optional 
 		result:int  #returns id of space created

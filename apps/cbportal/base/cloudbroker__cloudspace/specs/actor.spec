@@ -38,3 +38,13 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         var:ipaddress str,, public IP address to remove from this cloudspace
+
+    method:create
+        """
+        Create a cloudspace for given account
+        """
+        param:accountname name of account to create space for
+        param:name name of space to create
+        param:access comma-seperated list of usernames which have full access to this space
+        param:maxMemoryCapacity max size of memory in space (in GB)
+        param:maxDiskCapacity max size of aggregated disks (in GB)

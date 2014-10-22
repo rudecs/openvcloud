@@ -17,7 +17,7 @@ class cloudbroker_finance(j.code.classGetBase()):
         self.credittransactionclient = j.core.osis.getClientForCategory(cl,'cloudbroker','credittransaction')
 
     @auth(['finance',])
-    def addCredit(self, accountname, amount, message, **kwargs):
+    def changeCredit(self, accountname, amount, message, **kwargs):
         accounts = self.acclient.simpleSearch({'name': accountname})
         if not accounts:
             ctx = kwargs["ctx"]
@@ -38,7 +38,7 @@ class cloudbroker_finance(j.code.classGetBase()):
         credittransaction.credit = float(amount)
         credittransaction.currency = 'USD'
         credittransaction.comment = message
-        credittransaction.status = 'CREDIT'
+        credittransaction.status = 'CREDIT' if amount >= 0 else 'DEBIT'
         credittransaction.time = int(time.time())
 
         self.credittransactionclient.set(credittransaction)
