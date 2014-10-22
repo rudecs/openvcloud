@@ -36,7 +36,7 @@ def action():
     ping_jobs = dict()
     disk_check_jobs = dict()
     vmachines_data = dict()
-    cloudspaces = cbcl.cloudspace.simpleSearch({'location': WHERE_AM_I})
+    cloudspaces = cbcl.cloudspace.search()[1:]
 
     for cloudspace in cloudspaces:
         query = {'query': {'bool': {'must_not': {'term': {'status': 'destroyed'}}, 'must': {'term': {'cloudspaceId': cloudspace['id']}}}}}
@@ -53,7 +53,7 @@ def action():
             vmachines_data[vm['id']] = vm_data
             if vm['status'] == 'RUNNING':
                 args = {'vm_ip_address': vm['nics'][0]['ipAddress'], 'vm_cloudspace_id': cloudspace['id']}
-                job = accl.scheduleCmd(j.application.whoAmI.gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['admin'], wait=True)
+                job = accl.scheduleCmd(cloudspace['gid'], None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['admin'], wait=True)
                 ping_jobs[vm['id']] = job
 
             if vm['status']:
