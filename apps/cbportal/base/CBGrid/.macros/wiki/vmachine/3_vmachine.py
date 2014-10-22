@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    osiscl = j.core.osis.getClient(user='root')
+    osiscl = j.core.osis.getClient(user='root')l
     cbosis = j.core.osis.getClientForNamespace('cloudbroker', osiscl)
     try:
         obj = cbosis.vmachine.get(id)
@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    cl=j.clients.redis.getGeventRedisClient("localhost", int(j.application.config.get('redis.port.redisp')))
+    cl = j.clients.redis.getGeventRedisClientByInstanceName('production')
 
     stats = dict()
     if cl.hexists("vmachines.status", id):
