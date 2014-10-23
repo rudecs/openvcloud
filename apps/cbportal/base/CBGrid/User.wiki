@@ -4,6 +4,29 @@
 
 h2. User: $$id
 
+{{actions:
+- display: Update Password
+  action: /restmachine/cloudbroker/user/updatePassword
+  data:
+   username: ${id}
+  input:
+  - password
+
+- display: Send Reset Password Link
+  action: /restmachine/cloudbroker/account/sendResetPasswordLink
+  data:
+   username: ${id}
+  input:
+  - email
+
+- display: Delete
+  action: /restmachine/cloudbroker/user/delete
+  data:
+   username: ${id}
+  input:
+  - reason
+}}
+
 h3. Details
 |*Emails*|$$emails|
 |*Password Hash*|$$passwd|
