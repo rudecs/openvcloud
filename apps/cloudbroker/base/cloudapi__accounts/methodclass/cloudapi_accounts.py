@@ -40,8 +40,7 @@ class cloudapi_accounts(object):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.models.account.new()
-        account.dict2obj(self.models.account.get(accountId))
+        account = self.models.account.get(accountId)
         acl = account.new_acl()
         acl.userGroupId = userId
         acl.type = 'U'

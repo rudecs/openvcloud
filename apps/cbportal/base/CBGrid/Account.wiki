@@ -52,7 +52,7 @@ h2. Account: ${name}
   - maxDiskCapacity
 
 - display: Change Credit
-  action: /restmachine/cloudbroker/finance/changecredit
+  action: /restmachine/cloudbroker/finance/changeCredit
   data:
    accountname: ${name}
   input:

@@ -17,7 +17,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self._cb = None
         self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
         self.libvirt_actor = self.cb.extensions.imp.actors.libcloud.libvirt
-        self.cloudspaces_actor = self.cb.extensions.imp.actors.cloudapi.cloudspace
+        self.cloudspaces_actor = self.cb.extensions.imp.actors.cloudapi.cloudspaces
 
     @property
     def cb(self):
