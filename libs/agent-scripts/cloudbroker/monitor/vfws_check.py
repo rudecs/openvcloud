@@ -14,8 +14,9 @@ async = True
 log = False
 roles = ['fw',]
 queue = 'process'
+period = 3600
 
-def action(location):
+def action():
     import JumpScale.grid.osis
     import JumpScale.baselib.mailclient
     import netaddr
@@ -66,7 +67,7 @@ def action(location):
                         result[cloudspaceid] = 'Could not ping %s'  % gwip
                 else:
                     result[cloudspaceid] = 'No GW assigned'
-    for cloudspace in cloudspacecl.simpleSearch({'location': location}):
+    for cloudspace in cloudspacecl.search({'gid': j.application.whoAmI.gid})[1:]:
         print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
         processCloudSpace(cloudspace)
     if result:
