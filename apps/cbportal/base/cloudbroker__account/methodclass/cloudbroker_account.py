@@ -107,13 +107,13 @@ class cloudbroker_account(j.code.classGetBase()):
             return result
         else:
             accountId = result['id']
-            query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'.lower()}}
+            query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
             cloudspaces = self.cbcl.cloudspace.search(query)[1:]
             if cloudspaces:
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response("403", headers)
                 return 'Can not remove account which still has cloudspaces'
-            self.cbcl.account.delete(result['id'])
+            self.cbcl.account.delete(accountId)
             return True
 
     def addUser(self, accountname, username, accesstype, **kwargs):
