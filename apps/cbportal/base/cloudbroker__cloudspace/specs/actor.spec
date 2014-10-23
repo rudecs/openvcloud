@@ -43,8 +43,8 @@
         """
         Create a cloudspace for given account
         """
-        param:accountname var,, name of account to create space for
-        param:name var,, name of space to create
-        param:access var,, username which have full access to this space
-        param:maxMemoryCapacity int,, max size of memory in space (in GB)
-        param:maxDiskCapacity int,, max size of aggregated disks (in GB)
+        var:accountname str,, name of account to create space for
+        var:name str,, name of space to create
+        var:access str,, username which have full access to this space
+        var:maxMemoryCapacity int,, max size of memory in space (in GB)
+        var:maxDiskCapacity int,, max size of aggregated disks (in GB)

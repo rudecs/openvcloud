@@ -38,7 +38,7 @@ class cloudbroker_finance(j.code.classGetBase()):
         credittransaction.credit = float(amount)
         credittransaction.currency = 'USD'
         credittransaction.comment = message
-        credittransaction.status = 'CREDIT' if amount >= 0 else 'DEBIT'
+        credittransaction.status = 'CREDIT' if float(amount) >= 0 else 'DEBIT'
         credittransaction.time = int(time.time())
 
         self.credittransactionclient.set(credittransaction)

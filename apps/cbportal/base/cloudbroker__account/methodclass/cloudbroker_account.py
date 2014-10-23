@@ -28,7 +28,7 @@ class cloudbroker_account(j.code.classGetBase()):
         return True, account[0]
 
     def _checkUser(self, username, ctx):
-        user = self.syscl.user.simpleSearch({'name':username})
+        user = self.syscl.user.simpleSearch({'id':username})
         if not user:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
