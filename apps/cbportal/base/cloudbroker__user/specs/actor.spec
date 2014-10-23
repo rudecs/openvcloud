@@ -25,8 +25,8 @@
         result:bool
 
     method:delete
-       """
-       Delete a user 
-       """
-       var:username str,, id of user
-       result:bool
+        """
+        Delete a user 
+        """
+        var:username str,, id of user
+        result:bool

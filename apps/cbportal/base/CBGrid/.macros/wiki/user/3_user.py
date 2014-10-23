@@ -19,19 +19,18 @@ def main(j, args, params, tags, tasklet):
         return params
 
     user = userclient.get(id)
+   
+    obj = user.dump()
+    obj['lastcheck'] = j.base.time.epoch2HRDateTime(obj['lastcheck']) if obj['lastcheck'] else 'Never'
 
-    def objFetchManipulate(id):
-        #u'domain', u'description', u'roles', u'emails', u'authkey', u'lastcheck', u'gid', u'groups', u'active', u'guid', u'id'
-        obj = user.__dict__
-        obj['lastcheck'] = j.base.time.epoch2HRDateTime(obj['lastcheck']) if obj['lastcheck'] else 'Never'
+    for attr in ['roles', 'groups']:
+        obj[attr] = ', '.join(obj[attr])
 
-        for attr in ['roles', 'groups']:
-            obj[attr] = ', '.join(obj[attr])
-        return obj
+    obj['passwd'] = unicode(obj['passwd'], errors='ignore')
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
-
-    return push2doc(args,params,objFetchManipulate)
+    args.doc.applyTemplate(obj)
+    params.result = (args.doc, args.doc)
+    return params
 
 def match(j, args, params, tags, tasklet):
     return True

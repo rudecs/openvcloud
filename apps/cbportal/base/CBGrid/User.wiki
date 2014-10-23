@@ -2,7 +2,7 @@
 
 {{user id:$$id}}
 
-h2. User: $$id
+h2. User: ${id}
 
 {{actions:
 - display: Update Password
@@ -13,11 +13,10 @@ h2. User: $$id
   - password
 
 - display: Send Reset Password Link
-  action: /restmachine/cloudbroker/account/sendResetPasswordLink
+  action: /restmachine/cloudbroker/user/sendResetPasswordLink
   data:
    username: ${id}
-  input:
-  - email
+   email: ${emails}
 
 - display: Delete
   action: /restmachine/cloudbroker/user/delete
@@ -28,15 +27,15 @@ h2. User: $$id
 }}
 
 h3. Details
-|*Emails*|$$emails|
-|*Password Hash*|$$passwd|
-|*Domain*|$$domain|
-|*Roles*|$$roles|
-|*Groups*|$$groups|
-|*Last Checked*|$$lastcheck|
-|*Grid ID*|[$$gid|/Grid/grid?id=$$gid]|
-|*Active*|$$active|
-|*Description*|$$description|
+|*Emails*|${emails}|
+|*Password Hash*|${passwd}|
+|*Domain*|${domain}|
+|*Roles*|${roles}|
+|*Groups*|${groups}|
+|*Last Checked*|${lastcheck}|
+|*Grid ID*|[${gid}|/Grid/grid?id=${gid}]|
+|*Active*|${active}|
+|*Description*|${description}|
 
 h3. CloudSpaces
 

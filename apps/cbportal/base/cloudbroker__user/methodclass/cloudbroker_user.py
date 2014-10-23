@@ -1,6 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+import md5
 
 class cloudbroker_user(j.code.classGetBase()):
     """
@@ -13,6 +14,7 @@ class cloudbroker_user(j.code.classGetBase()):
         self.appname = "cloudbroker"
         self._cb = None
         self.syscl = j.core.osis.getClientForNamespace('system')
+        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.users_actor = self.cb.extensions.imp.actors.cloudapi.users
 
     @property
@@ -81,14 +83,14 @@ class cloudbroker_user(j.code.classGetBase()):
         for account in accountswiththisuser:
             rights = {acl['userGroupId']: acl['right'] for acl in account['acl']}
             admins = ['A' for right in rights.values() if 'A' in right]
-            if 'A' in rights[username] and len(admins) < 2:
+            if 'A' in rights[username] and len(admins) < 2 and not account['name']==username:
                 ctx.start_response('403', headers)
                 return 'Cannot delete last Admin user of an account'
             account['acl'] = [acl for acl in account['acl'] if username not in acl['userGroupId']]
             self.cbcl.account.set(account)
 
         #delete from cloudspaces
-        cloudspaceswiththisuser = self.cbcl.cloudpace.search(query)[1:]
+        cloudspaceswiththisuser = self.cbcl.cloudspace.search(query)[1:]
         for cloudspace in cloudspaceswiththisuser:
             cloudspace['acl'] = [acl for acl in cloudspace['acl'] if username not in acl['userGroupId']]
             self.cbcl.cloudspace.set(cloudspace)
