@@ -132,7 +132,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             ctx.start_response("404", headers)
             return 'Account name not found'
         accountId = account[0]['id']
-        user = self.syscl.user.simpleSearch({'name':access})
+        user = self.syscl.user.simpleSearch({'id':access})
         if not user:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)

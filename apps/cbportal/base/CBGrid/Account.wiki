@@ -47,6 +47,7 @@ h2. Account: ${name}
    accountname: ${name}
   input:
   - name
+  - location
   - access
   - maxMemoryCapacity
   - maxDiskCapacity

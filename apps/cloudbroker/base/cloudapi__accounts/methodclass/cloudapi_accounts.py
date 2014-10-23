@@ -40,6 +40,8 @@ class cloudapi_accounts(object):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
+        if not self.models.account.exists(accountId):
+            return False
         account = self.models.account.get(accountId)
         acl = account.new_acl()
         acl.userGroupId = userId
