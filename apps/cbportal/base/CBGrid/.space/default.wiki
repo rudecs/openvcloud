@@ -1,11 +1,13 @@
 
+
 {{title:CBGrid}}
 
 {{find}}
 
 {{menu:
-$$$spaces
-Grid:/grid
+StatusOverview:/grid/checkstatus
+GridPortal:/grid
+MS1Portal:/cbgrid
 }}
 
 {{menuadmin_cbgrid}}

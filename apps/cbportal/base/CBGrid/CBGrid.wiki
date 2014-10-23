@@ -1,5 +1,34 @@
 @usedefault
 
+h2. Mothership Operations Portal
+
+Welcome to our operations portal.
+
+
+h3. Main Links
+
+* [MS1 customer Portal US|http://www.mothership1.com]
+* [MS1 customer Portal EU|http://eu1.mothership1.com]
+
+h3. Documentation
+
+* [knowledgebase|http://gitlab.mothership1.com/ms1-admin/ms1_ops_knowledgebase/wikis/home]
+
+h3. Support Tools
+
+* [Tickets|http://support.mothership1.com]
+* [Racktables = Asset Management|http://racktables.mothership1.com]
+* [Project Mgmt  Bugtracker|http://incubaid.myjetbrains.com/youtrack/dashboard]
+
+h3. Monitoring
+
+* [Monitoring US or Canada (will get obsolete)|http://173.240.9.11:8080/icinga/]
+* [Monitoring Dockers|http://cpu01.bracknell1.vscalers.com:8080/containers/docker]
+
+h3. Dashboard
+
+@todo: new macro which will show stat info of accounts/vmachines/...
+
 h3. Accounts
 
 {{cbgrid.accounts}}

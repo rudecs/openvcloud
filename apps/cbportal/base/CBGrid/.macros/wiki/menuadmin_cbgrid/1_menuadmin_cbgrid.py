@@ -16,20 +16,20 @@ def main(j, args, params, tags, tasklet):
 
 
     C = """
-{{menudropdown: name:Portal
+{{menudropdown: name:Navigation
 Edit:/system/edit?space=$$space&page=$$page&$$querystr
 New:/system/create?space=$$space
 --------------
 Logout:/system/login?user_logoff_=1
-Access:/system/OverviewAccess?space=$$space
 System:/system
 --------------
 Accounts:/cbgrid/accounts
-Cloud Spaces:/cbgrid/cloudspaces
-Credit Information:/cbgrid/creditInfo
+CloudSpaces:/cbgrid/cloudspaces
+GridNodes:/grid/nodes
+CpuNodes:/cbgrid/stacks
+StatusOverview:/grid/checkstatus
 Images:/cbgrid/images
 Networks:/cbgrid/networks
-Stacks:/cbgrid/stacks
 Users:/cbgrid/users
 Virtual Machines:/cbgrid/vmachines
 """
