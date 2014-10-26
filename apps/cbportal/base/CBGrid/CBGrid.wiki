@@ -18,8 +18,9 @@ h3. Actions
 - display: Add Account
   action: /restmachine/cloudbroker/account/create
   input:
+  - username
   - name
-  - email
+  - emailaddress
   - password
   - location
 }}

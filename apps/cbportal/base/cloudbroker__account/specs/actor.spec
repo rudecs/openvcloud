@@ -45,3 +45,13 @@
         """"
         var:accountname str,, name of the account
         var:name str,,new name
+
+    method:create
+        """
+        Create Account.
+        """"
+        var:username str,, name of the account
+        var:name str,, Display name
+        var:emailaddress str,,email
+        var:password str,,password
+        var:location str,,locationcode
