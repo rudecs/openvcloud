@@ -30,3 +30,12 @@
         """
         var:username str,, id of user
         result:bool
+
+    method:create
+        """
+        Create a user
+        """
+        var:username str,, id of user
+        var:emailaddress str,, id of user
+        var:password str,, id of user
+        result:bool

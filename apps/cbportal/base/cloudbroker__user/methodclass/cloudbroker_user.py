@@ -56,6 +56,16 @@ class cloudbroker_user(j.code.classGetBase()):
         return True
 
     @auth(['level1', 'level2'])
+    def create(self, username, emailaddress, password, **kwargs):
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        check, result = self._checkUser(username)
+        if check:
+            ctx.start_response('409', headers)
+            return "Username %s already exists" % username
+        return j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
+
+    @auth(['level1', 'level2'])
     def sendResetPasswordLink(self, username, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]

@@ -4,6 +4,25 @@ h2. Mothership Operations Portal
 
 Welcome to our operations portal.
 
+{{toc: start=3 | depth=2}}
+
+h3. Actions
+{{actions:
+- display: Add User
+  action: /restmachine/cloudbroker/user/create
+  input:
+  - username
+  - emailaddress
+  - password
+
+- display: Add Account
+  action: /restmachine/cloudbroker/account/create
+  input:
+  - name
+  - email
+  - password
+  - location
+}}
 
 h3. Main Links
 
@@ -26,7 +45,6 @@ h3. Monitoring
 * [Monitoring Dockers|http://cpu01.bracknell1.vscalers.com:8080/containers/docker]
 
 h3. Dashboard
-
 
 @block
 @row
