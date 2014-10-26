@@ -2,36 +2,34 @@
 
 {{vmachine: id:$$id}}
 
-
-
 {{actions:
-- display: Start
-  input: 
-  - reason
-  action: /restmachine/cloudbroker/machine/start
-  data: 
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
 
-- display: Stop
-  action: /restmachine/cloudbroker/machine/stop
-  data:
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
-  input:
-  - reason
+[[actions]]
+action = "\/restmachine\/cloudbroker\/machine\/start"
+input = [ "reason",]
+display = "Start"
+[actions.data]
+machineId = "$$id"
+spaceName = "$$spacename"
+accountName = "$$accountname"
 
-- display: Delete
-  action: /restmachine/cloudbroker/machine/destroy
-  data:
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
-  input:
-  - reason
+[[actions]]
+action = "\/restmachine\/cloudbroker\/machine\/stop"
+input = [ "reason",]
+display = "Stop"
+[actions.data]
+machineId = "$$id"
+spaceName = "$$spacename"
+accountName = "$$accountname"
 
+[[actions]]
+action = "\/restmachine\/cloudbroker\/machine\/destroy"
+input = [ "reason",]
+display = "Delete"
+[actions.data]
+machineId = "$$id"
+spaceName = "$$spacename"
+accountName = "$$accountname"
 }}
 
 h2. vMachine: $$name

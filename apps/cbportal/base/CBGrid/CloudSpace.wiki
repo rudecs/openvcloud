@@ -3,6 +3,16 @@
 {{cbspace id:$$id}}
 
 h2. CloudSpace: $$name
+{{actions:  
+[[actions]]
+action = "\/restmachine\/cloudbroker\/cloudspace\/destroy"
+input = [ "reason",]
+display = "Delete"
+[actions.data]
+cloudspaceId = "$$id"
+cloudspaceName = "$$name"
+accountname = "$$accountname"
+}}
 
 h3. Details
 |*CloudSpace ID*|$$id|
@@ -22,14 +32,3 @@ h3. Virtual Machines
 
 h3. CPU Nodes
 {{cbnodes space:$$id}}
-
-{{actions:  
-- display: Delete
-  action: /restmachine/cloudbroker/cloudspace/destroy
-  data:
-   cloudspaceId: $$id
-   cloudspaceName: $$name
-   accountname: $$accountname
-  input:
-  - reason
-}}

@@ -3,6 +3,19 @@
 {{stack_data: id:$$id}}
 
 h3. Stack: $$name
+{{actions:
+
+[[actions]]
+action = "\/restmachine\/cloudbroker\/computenode\/enable"
+data = "name:$$name"
+display = "Enable"
+
+[[actions]]
+action = "\/restmachine\/cloudbroker\/computenode\/disable"
+display = "Disable"
+[actions.data]
+name = "$$name"
+}}
 
 * *ApiURL*: $$apiurl
 * *Description*: $$descr
@@ -15,15 +28,3 @@ h3. Images:
 h3. vMachines:
 
 {{vmachines: stackid:$$id}}
-
-{{actions:
-- display: Enable
-  action: /restmachine/cloudbroker/computenode/enable
-  data:
-   name:$$name
-
-- display: Disable
-  action: /restmachine/cloudbroker/computenode/disable
-  data:
-   name: $$name
-}}
