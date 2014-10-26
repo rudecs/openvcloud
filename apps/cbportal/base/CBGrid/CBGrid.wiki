@@ -31,22 +31,26 @@ h3. Dashboard
 @block
 @row
 
-@col 4
+@col 3
 h5. No. of Active Accounts
 {{nraccountgauge: id:1 width:100 height:100}}
 @divend 
 
-@col 4
+@col 3
 h5. No. of Active Users
 {{nrusergauge: id:2 width:100 height:100}}
 @divend 
 
-@col 4
+@col 3
 h5. No. of Running vMachines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 width:100 height:100}}
 @divend 
+@divend 
 
+h3. Locations
+
+{{locations}}
 
 h3. Accounts
 
