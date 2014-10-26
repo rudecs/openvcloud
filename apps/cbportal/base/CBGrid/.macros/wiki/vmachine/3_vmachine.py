@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    osiscl = j.core.osis.getClient(user='root')
+    osiscl = j.core.osis.getClientByInstance('main')
     cbosis = j.core.osis.getClientForNamespace('cloudbroker', osiscl)
     try:
         obj = cbosis.vmachine.get(id)

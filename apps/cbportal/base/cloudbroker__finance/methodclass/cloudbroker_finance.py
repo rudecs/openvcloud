@@ -12,7 +12,7 @@ class cloudbroker_finance(j.code.classGetBase()):
         self.actorname="finance"
         self.appname="cloudbroker"
 
-        cl = j.core.osis.getClient(user='root')
+        cl = j.core.osis.getClientByInstance('main')
         self.acclient = j.core.osis.getClientForCategory(cl,'cloudbroker','account')
         self.credittransactionclient = j.core.osis.getClientForCategory(cl,'cloudbroker','credittransaction')
 

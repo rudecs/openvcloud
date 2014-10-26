@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.core.osis.getClient(user='root')
+    oscl = j.core.osis.getClientByInstance('main')
     userclient = j.core.osis.getClientForCategory(oscl, 'system', 'user')
 
     if not userclient.exists(id):
