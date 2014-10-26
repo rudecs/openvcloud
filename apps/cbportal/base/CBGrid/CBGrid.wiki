@@ -8,16 +8,21 @@ Welcome to our operations portal.
 
 h3. Actions
 {{actions:
+- display: Add User
+  action: /restmachine/cloudbroker/user/create
+  input:
+  - username
+  - emailaddress
+  - password
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/user\/create"
-input = [ "username", "emailaddress", "password",]
-display = "Add User"
-
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/create"
-input = [ "username", "name", "emailaddress", "password", "location",]
-display = "Add Account"
+- display: Add Account
+  action: /restmachine/cloudbroker/account/create
+  input:
+  - username
+  - name
+  - emailaddress
+  - password
+  - location
 }}
 
 h3. Main Links

@@ -5,62 +5,67 @@
 h2. Account: ${name}
 
 {{actions:
+- display: Disable
+  action: /restmachine/cloudbroker/account/disable
+  data:
+   accountname: ${name}
+  input:
+  - reason
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/disable"
-input = [ "reason",]
-display = "Disable"
-[actions.data]
-accountname = "${name}"
+- display: Enable
+  action: /restmachine/cloudbroker/account/enable
+  data:
+   accountname: ${name}
+  input:
+  - reason
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/enable"
-input = [ "reason",]
-display = "Enable"
-[actions.data]
-accountname = "${name}"
+- display: Delete
+  action: /restmachine/cloudbroker/account/delete
+  data:
+   accountname: ${name}
+  input:
+  - reason
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/delete"
-input = [ "reason",]
-display = "Delete"
-[actions.data]
-accountname = "${name}"
+- display: Add User
+  action: /restmachine/cloudbroker/account/addUser
+  data:
+   accountname: ${name}
+  input:
+  - username
+  - accesstype
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/addUser"
-input = [ "username", "accesstype",]
-display = "Add User"
-[actions.data]
-accountname = "${name}"
+- display: Delete User
+  action: /restmachine/cloudbroker/account/deleteUser
+  data:
+   accountname: ${name}
+  input:
+  - username
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/deleteUser"
-input = [ "username",]
-display = "Delete User"
-[actions.data]
-accountname = "${name}"
+- display: Create Space
+  action: /restmachine/cloudbroker/cloudspace/create
+  data:
+   accountname: ${name}
+  input:
+  - name
+  - location
+  - access
+  - maxMemoryCapacity
+  - maxDiskCapacity
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/cloudspace\/create"
-input = [ "name", "location", "access", "maxMemoryCapacity", "maxDiskCapacity",]
-display = "Create Space"
-[actions.data]
-accountname = "${name}"
+- display: Change Credit
+  action: /restmachine/cloudbroker/finance/changeCredit
+  data:
+   accountname: ${name}
+  input:
+  - amount
+  - message
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/finance\/changeCredit"
-input = [ "amount", "message",]
-display = "Change Credit"
-[actions.data]
-accountname = "${name}"
-
-[[actions]]
-action = "\/restmachine\/cloudbroker\/account\/rename"
-input = [ "name",]
-display = "Rename"
-[actions.data]
-accountname = "${name}"
+- display: Rename
+  action: /restmachine/cloudbroker/account/rename
+  data:
+   accountname: ${name}
+  input:
+  - name
 }}
 
 h3. Details

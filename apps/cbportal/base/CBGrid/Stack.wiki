@@ -4,17 +4,15 @@
 
 h3. Stack: $$name
 {{actions:
+- display: Enable
+  action: /restmachine/cloudbroker/computenode/enable
+  data:
+   name:$$name
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/computenode\/enable"
-data = "name:$$name"
-display = "Enable"
-
-[[actions]]
-action = "\/restmachine\/cloudbroker\/computenode\/disable"
-display = "Disable"
-[actions.data]
-name = "$$name"
+- display: Disable
+  action: /restmachine/cloudbroker/computenode/disable
+  data:
+   name: $$name
 }}
 
 * *ApiURL*: $$apiurl

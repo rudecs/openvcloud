@@ -5,27 +5,25 @@
 h2. User: ${id}
 
 {{actions:
+- display: Update Password
+  action: /restmachine/cloudbroker/user/updatePassword
+  data:
+   username: ${id}
+  input:
+  - password
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/user\/updatePassword"
-input = [ "password",]
-display = "Update Password"
-[actions.data]
-username = "${id}"
+- display: Send Reset Password Link
+  action: /restmachine/cloudbroker/user/sendResetPasswordLink
+  data:
+   username: ${id}
+   email: ${emails}
 
-[[actions]]
-action = "\/restmachine\/cloudbroker\/user\/sendResetPasswordLink"
-display = "Send Reset Password Link"
-[actions.data]
-username = "${id}"
-email = "${emails}"
-
-[[actions]]
-action = "\/restmachine\/cloudbroker\/user\/delete"
-input = [ "reason",]
-display = "Delete"
-[actions.data]
-username = "${id}"
+- display: Delete
+  action: /restmachine/cloudbroker/user/delete
+  data:
+   username: ${id}
+  input:
+  - reason
 }}
 
 h3. Details

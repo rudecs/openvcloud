@@ -4,14 +4,14 @@
 
 h2. CloudSpace: $$name
 {{actions:  
-[[actions]]
-action = "\/restmachine\/cloudbroker\/cloudspace\/destroy"
-input = [ "reason",]
-display = "Delete"
-[actions.data]
-cloudspaceId = "$$id"
-cloudspaceName = "$$name"
-accountname = "$$accountname"
+- display: Delete
+  action: /restmachine/cloudbroker/cloudspace/destroy
+  data:
+   cloudspaceId: $$id
+   cloudspaceName: $$name
+   accountname: $$accountname
+  input:
+  - reason
 }}
 
 h3. Details
