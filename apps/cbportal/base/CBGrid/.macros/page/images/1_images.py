@@ -14,13 +14,6 @@ def main(j, args, params, tags, tasklet):
         imageids = [ image['referenceId'] for image in images ]
         nativequery = {'id': {'$in': imageids}}
 
-    imageid = args.getTag('imageid')
-    if imageid:
-        if not nativequery:
-            nativequery = {'imageid': int(imageid)}
-        else:
-            nativequery['imageid'] = int(imageid)
-
     fieldnames = ['Name', 'Type', 'Size', 'UNCPath']
     fieldvalues = ["<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>", 'type', '%(size)s GiB', 'UNCPath']
     fieldids = ['name', 'type', 'size', 'uncpath']

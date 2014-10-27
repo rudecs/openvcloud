@@ -5,6 +5,7 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
     stackid = args.getTag("stackid")
     cloudspaceId = args.getTag("cloudspaceid")
+    imageid = args.getTag('imageid')
     filters = dict()
     nativequery = None
 
@@ -13,6 +14,8 @@ def main(j, args, params, tags, tasklet):
         filters['stackId'] = stackid
     if cloudspaceId:
         filters['cloudspaceId'] = int(cloudspaceId)
+    if imageid:
+        filters['imageId'] = int(imageid)
 
     fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
