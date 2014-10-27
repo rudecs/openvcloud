@@ -18,9 +18,7 @@ def action(machineid, templatename, imageid, createfrom):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     image_id, imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
-    osisserver  = j.application.config.get('grid.master.ip')
-    user = j.application.config.get('system.superadmin.login')
-    osiscl = j.core.osis.getClient(ipaddr=osisserver, user=user)
+    osiscl = j.core.osis.getClientByInstance('main')
     imagemodel = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', 'image')
     image = imagemodel.get(imageid)
     image.referenceId = image_id

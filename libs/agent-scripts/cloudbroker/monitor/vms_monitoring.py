@@ -22,7 +22,7 @@ def action():
     import JumpScale.lib.routeros
     import JumpScale.baselib.mailclient
 
-    osiscl = j.core.osis.getClient(user='root')
+    osiscl = j.core.osis.getClientByInstance('main')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
     scl = j.core.osis.getClientForNamespace('system')
     gridname = scl.grid.get(j.application.whoAmI.gid).name

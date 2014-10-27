@@ -25,7 +25,7 @@ def action():
 
     rediscl = j.clients.redis.getGeventRedisClientByInstanceName('production')
     accl = j.clients.agentcontroller.get()
-    osiscl = j.core.osis.getClient(user='root')
+    osiscl = j.core.osis.getClientByInstance('main')
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
     nodecl = j.core.osis.getClientForCategory(osiscl, 'system', 'node')
 
