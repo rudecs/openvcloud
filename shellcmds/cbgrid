@@ -20,7 +20,7 @@ parser.add_argument("-i", '--showimages', action='store_true', required=False, h
 
 opts = parser.parse_args()
 
-ocl = j.core.osis.getClient(user='root')
+ocl = j.core.osis.getClientByInstance('main')
 
 if opts.action == 'listnodes':
     print "%(id)-40s %(referenceid)3s %(enabled)40s" % {'id': 'ID', 'referenceid': 'Node', 'enabled': 'Enabled'}

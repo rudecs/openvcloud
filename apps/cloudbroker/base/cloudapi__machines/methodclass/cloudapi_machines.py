@@ -27,7 +27,7 @@ class cloudapi_machines(object):
         self._models = None
         j.logger.setLogTargetLogForwarder()
 
-        self.osisclient = j.core.osis.getClient(user='root')
+        self.osisclient = j.core.osis.getClientByInstance('main')
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
         self._pricing = pricing.pricing()

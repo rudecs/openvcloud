@@ -12,7 +12,7 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         self.actorname="paymentaddress"
         self.appname="cryptopayment"
         
-        osiscl = j.core.osis.getClient(user='root')
+        osiscl = j.core.osis.getClientByInstance('main')
 
         class Class():
             pass

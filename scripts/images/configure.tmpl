@@ -20,7 +20,7 @@ def main(j,jp):
     image_id = str(int(j.tools.hash.md5_string(jp.name)[0:9], 16))
     name = '{{description}}'
 
-    osiscl = j.core.osis.getClient(serverip, user='root')
+    osiscl = j.core.osis.getClientByInstance('main')
 
     catimageclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'image')
     catresourceclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'resourceprovider')

@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     params.merge(args)
     doc = params.doc
     out = ""
-    cl = j.core.osis.getClient('10.101.175.1')
+    cl = j.core.osis.getClientByInstance('main')
 
     osis_ecos = j.core.osis.getClientForCategory(cl, "system", "eco")
     osis_logs = j.core.osis.getClientForCategory(cl, "system", "log")

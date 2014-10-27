@@ -133,7 +133,7 @@ class cloudapi_users(object):
                  if not self._isValidPassword(newPassword):
                     return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
                  else:
-                    cl = j.core.osis.getClient(user='root')
+                    cl = j.core.osis.getClientByInstance('main')
                     usercl = j.core.osis.getClientForCategory(cl, 'system', 'user')
                     user.passwd =  md5.new(newPassword).hexdigest()
                     usercl.set(user)

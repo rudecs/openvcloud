@@ -24,7 +24,7 @@ class CryptopaymentProcessor(object):
     
     def __init__(self):
 
-        osiscl = j.core.osis.getClient(user='root')
+        osiscl = j.core.osis.getClientByInstance('main')
 
         class Class():
             pass

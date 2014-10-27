@@ -50,7 +50,7 @@ class CloudBrokerConnection():
 
      def _getKeyValueStore(self):
          import JumpScale.grid.osis
-         client = self._j.core.osis.getClient()
+         client = self._j.core.osis.getClientByInstance('main')
          if self.NAMESPACE not in client.listNamespaces():
              client.createNamespace(self.NAMESPACE, 'blob')
          if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
