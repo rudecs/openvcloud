@@ -15,7 +15,11 @@ def main(j, args, params, tags, tasklet):
     if cloudspaceId:
         filters['cloudspaceId'] = int(cloudspaceId)
     if imageid:
-        filters['imageId'] = int(imageid)
+        imageid = str(imageid)
+        ccl = j.core.osis.getClientForNamespace('cloudbroker')
+        images = ccl.image.search({'referenceId': imageid})[1:]
+        if images:
+            filters['imageId'] = images[0]['id']
 
     fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
