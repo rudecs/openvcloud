@@ -11,3 +11,25 @@
         var:gid int,, id of the grid
         var:age str,, by default 1 week (-1h, -1w TODO: check the options in the jsgrid purgelogs)
         result: bool
+
+    method:checkVMs
+        """
+        Run checkvms jumpscript
+        """
+        var:gid int,, id of the grid
+        result: bool
+
+    method:syncAvailableImagesToCloudbroker
+        """
+        synch available images to cloudbroker
+        """
+        var gid int,, id of the grid
+        result: bool
+
+    method:addPublicIPv4Subnet
+        """
+        Add public IP Subnet
+        """
+        var gid int,, id of the grid
+        var subnet str,, subnet to be added
+        result: bool

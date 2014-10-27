@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
         return "<img src='https://www.mothership1.com/wiki_gcb/.files/img/flags/%(flag)s.png'/>" % row
 
     fieldids = ['gid', 'name', 'flag', 'locationCode']
-    fieldvalues = ['gid', 'name', makeImg, 'locationCode']
+    fieldvalues = ['[%(gid)s|/CBGrid/grid?gid=%(gid)s]', 'name', makeImg, 'locationCode']
     tableid = modifier.addTableForModel('cloudbroker', 'location', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
 

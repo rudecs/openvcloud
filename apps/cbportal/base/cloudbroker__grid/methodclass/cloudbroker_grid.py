@@ -14,3 +14,13 @@ class cloudbroker_grid(j.code.classGetBase()):
     @auth(['level1', 'level2'])
     def purgeLogs(self, gid, age='-1w'):
         return self.acl.executeJumpScript('cloudscalers', 'logs_purge', args={'age': age}, role='admin', wait=False)['result']
+
+    @auth(['level1', 'level2'])
+    def checkVMs(self, gid):
+        return True
+
+    def syncAvailableImagesToCloudbroker(self, gid):
+        return True
+
+    def addPublicIPv4Subnet(self, gid, subnet):
+        return True
