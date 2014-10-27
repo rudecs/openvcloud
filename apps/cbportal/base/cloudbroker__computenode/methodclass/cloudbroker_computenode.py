@@ -30,11 +30,10 @@ class cloudbroker_computenode(j.code.classGetBase()):
             return 'Invalid status %s should be in %s' % (status, ', '.join(statusses))
         if status == 'DISABLED':
             return self.disable(name, gid, '')
-        return self._changeStackStatus(name, gid, status)
+        return self._changeStackStatus(name, gid, status, kwargs)
 
     def _changeStackStatus(self, name, gid, status, kwargs):
-        #TODO use gid
-        stack = self.cbcl.stack.simpleSearch({'referenceId':name})
+        stack = self.cbcl.stack.search({'name':name, 'gid': int(gid)})[1:]
         if stack:
             stack = stack[0]
             stack['status'] = status
@@ -52,18 +51,18 @@ class cloudbroker_computenode(j.code.classGetBase()):
 
     @auth(['level2','level3'], True)
     def disable(self, name, gid, message, **kwargs):
-        #TODO use gid
-        stack = self.cbcl.stack.simpleSearch({'referenceId':name})
+        stack = self.cbcl.stack.search({'name':name, 'gid': int(gid)})[1:]
         if stack:
+            self._changeStackStatus(name, gid, 'DISABLED', kwargs)
             stack = stack[0]
             machines_actor = j.core.portal.active.actorsloader.getActor('cloudbroker__machine')
-            stackmachines = self.cbcl.vmachine.simpleSearch({'stackId': stack['id']})
+            stackmachines = self.cbcl.vmachine.search({'stackId': stack['id']})[1:]
             for machine in stackmachines:  
                 cloudspace = self.cbcl.cloudspace.get(machine['cloudspaceId'])
                 account = self.cbcl.account.get(cloudspace.accountId)
 
                 machines_actor.moveToDifferentComputeNode(account.name, machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
-        return self._changeStackStatus(name, gid, 'DISABLED')
+        return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
         """
