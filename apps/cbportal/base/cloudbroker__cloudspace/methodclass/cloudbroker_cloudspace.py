@@ -2,8 +2,6 @@ from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib import network
-import urlparse
-import urllib
 
 class cloudbroker_cloudspace(j.code.classGetBase()):
     def __init__(self):
@@ -73,41 +71,53 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         return True
 
 
+    @auth(['level1','level2'])
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
         param:cloudspaceId id of the cloudspace
         param:targetNode name of the firewallnode the virtual firewall has to be moved to
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method moveVirtualFirewallToFirewallNode")
+        return True
     
+    @auth(['level1','level2'])
     def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
         """
         Adds an available public IP address
         param:cloudspaceId id of the cloudspace
         param:ipaddress only needed if a specific IP address needs to be assigned to this space
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method addExtraIP")
+        return True
 
+    @auth(['level1','level2'])
     def removeIP(self, cloudspaceId, ipaddress, **kwargs):
         """
         Removed a public IP address from the cloudspace
         param:cloudspaceId id of the cloudspace
         param:ipaddress public IP address to remove from this cloudspace
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method removeIP")
+        return True
     
+    @auth(['level1','level2'])
     def restoreVirtualFirewall(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
         param:cloudspaceId id of the cloudspace
         """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method restoreVirtualFirewall")
+        return True
 
+    @auth(['level1','level2'])
+    def destroyVFW(self, cloudpaceId, **kwargs):
+        return True
+
+    @auth(['level1','level2'])
+    def updateName(self, cloudspaceId, newname, **kwargs):
+        cloudspace = self.cbcl.cloudspace.get(int(cloudspaceId))
+        cloudspace.name = newname
+        self.cbcl.cloudspace.set(cloudspace)
+        return True
+
+    @auth(['level1','level2'])
     def create(self, accountname, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create a cloudspace
@@ -131,4 +141,55 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             return 'Username "%s" not found' % access
         self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
         return True
+
+    def _checkUser(self, username):
+        user = self.syscl.user.simpleSearch({'id':username})
+        if not user:
+            return False, 'Username "%s" not found' % username
+        return True, user[0]
     
+    @auth(['level1','level2'])
+    def addUser(self, cloudspaceId, username, accesstype, **kwargs):
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        param:accountname id of the account
+        param:username id of the user to give access
+        param:accesstype 'R' for read only access, 'W' for Write access
+        result bool
+        """
+        ctx = kwargs["ctx"]
+        cloudspaceId = int(cloudspaceId)
+        if not self.cbcl.cloudspace.exists(cloudspaceId):
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return "Cloud space with id %s doest not exists" % cloudspaceId
+
+        check, result = self._checkUser(username)
+        if not check:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return result
+        userId = result['id']
+        self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
+        return True
+
+    @auth(['level1','level2'])
+    def deleteUser(self, cloudspaceId, username, **kwargs):
+        """
+        Delete a user from the account
+        """
+        ctx = kwargs["ctx"]
+        cloudspaceId = int(cloudspaceId)
+        if not self.cbcl.cloudspace.exists(cloudspaceId):
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return "Cloud space with id %s doest not exists" % cloudspaceId
+        check, result = self._checkUser(username)
+        if not check:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return result
+        userId = result['id']
+        self.cloudspaces_actor.deleteUser(cloudspaceId, userId)
+        return True
