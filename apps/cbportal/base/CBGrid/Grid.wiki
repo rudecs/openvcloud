@@ -1,6 +1,6 @@
 @usedefault
 
-Grid %{name}
+h2. Grid $$gid
 
 
 @row
