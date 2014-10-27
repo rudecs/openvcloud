@@ -2,4 +2,4 @@
 
 h3. Stacks
 
-{{stacks}}
+{{stacks gid:$$gid}}

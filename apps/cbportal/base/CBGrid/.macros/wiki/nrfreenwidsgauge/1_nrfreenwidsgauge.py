@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
         networkids = []
     allkeys = ac.list()
     allnetworkids = list()
-    [allnetworkids.extend(allnetworkids.extend(ac.get(key))) for key in allkeys if key.startswith('networkids_')]
+    [allnetworkids.extend(ac.get(key)) for key in allkeys if key.startswith('networkids_')]
     total = len(allnetworkids)
     running = len(networkids)
     if running < 10:

@@ -1,4 +1,3 @@
-import urlparse
 
 def main(j, args, params, tags, tasklet):
 
@@ -9,11 +8,17 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
 
     if imageid:
+        args.tags.tags.pop('imageid')
         imageid = str(imageid)
         ccl = j.core.osis.getClientForNamespace('cloudbroker')
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['images'] = images[0]['id']
+
+    filters = dict()
+    for tag, val in args.tags.tags.iteritems():
+        val = args.getTag(tag)
+        filters[tag] = j.basetype.integer.fromString(val) if j.basetype.integer.checkString(val) else val
 
     fieldnames = ['Id', 'Name', 'ReferenceId', 'Type', 'Description']
     fieldvalues = ["<a href='/cbgrid/stack?id=%(id)s'>%(id)s</a>", "name", 'referenceId', 'type', 'descr']
