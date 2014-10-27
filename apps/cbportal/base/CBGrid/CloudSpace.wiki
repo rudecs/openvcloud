@@ -8,7 +8,7 @@ h2. CloudSpace: ${name}
 {{toc: start=3}}
 
 {{actions:  
-- display: Delete
+- display: Delete CloudSpace
   action: /restmachine/cloudbroker/cloudspace/destroy
   data:
    cloudspaceId: $$id
@@ -20,33 +20,41 @@ h2. CloudSpace: ${name}
 - display: Create Machine
   action: '#createmachine'
 
-- display: Move FW Node
-  action: '#movefwnode'
+- display: Move VFW
+  action: '#movevfw'
 
-- display: Restore FW Node
-  action: '#restorefwnode'
+- display: Restore VFW Node
+  action: /restmachine/cloudbroker/cloudspace/restoreVirtualFirewall
+  data:
+   cloudspaceId: $$id
+  input:
+  - reason
 
 - display: Add Extra IP
-  action: /restmachine/cludbroker/cloudspace/addExtraIP
+  action: /restmachine/cloudbroker/cloudspace/addExtraIP
+  data:
+   cloudspaceId: $$id
   input:
   - ipaddress
   - reason
 
 - display: Remove IP
-  action: /restmachine/cludbroker/cloudspace/removeIP
+  action: /restmachine/cloudbroker/cloudspace/removeIP
+  data:
+   cloudspaceId: $$id
   input:
   - ipaddress
   - reason
 
-- display: Remove VFW
-  action: /restmachine/cludbroker/cloudspace/removeVFW
+- display: Deploy VFW
+  action: /restmachine/cloudbroker/cloudspace/restoreVirtualFirewall
   input:
   - reason
   data:
    cloudspaceId: $$id
 
-- display: Deploy VFW
-  action: /restmachine/cludbroker/cloudspace/restoreVirtualFirewall
+- display: Remove VFW
+  action: /restmachine/cloudbroker/cloudspace/removeVFW
   input:
   - reason
   data:
@@ -77,6 +85,7 @@ h2. CloudSpace: ${name}
 }}
 
 {{createmachine: cloudspaceId:$$id}}
+{{movevfw: cloudspaceId:$$id}}
 
 h3. Details
 |*CloudSpace ID*|$$id|

@@ -29,6 +29,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         return self._cb
 
     @auth(['level1',])
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs): 
+        return self.machines_actor.create(cloudspaceId, name, description, sizeId, imageId, disksize)
+    @auth(['level1',])
     def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, **kwargs):
         """
         Create a machine on a specific stackid

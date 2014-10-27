@@ -2,6 +2,20 @@
     """
     machine manager
     """
+
+    method:create
+        """
+        Create a machine based on the available sizes, in a certain space.
+        The user needs write access rights on the space.    
+        """
+        var:cloudspaceId int,,id of space in which we want to create a machine
+        var:name str,,name of machine
+        var:description str,,optional description @tags: optional 
+        var:sizeId int,,id of the specific size
+        var:imageId int,, id of the specific image
+        var:disksize int,, size of base volume
+        result:bool    
+
     method:createOnStack
         """
         Create a machine on a specific stackid
