@@ -45,3 +45,12 @@ class cloudbroker_image(j.code.classGetBase()):
         result bool
         """
         return True
+
+    @auth(['level1',])
+    def disable(self, imageId, **kwargs):
+        """
+        Disable an image
+        param:imageId id of image
+        result bool
+        """
+        return True
