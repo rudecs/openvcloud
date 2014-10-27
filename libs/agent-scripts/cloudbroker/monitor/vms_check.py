@@ -36,7 +36,7 @@ def action():
     ping_jobs = dict()
     disk_check_jobs = dict()
     vmachines_data = dict()
-    cloudspaces = cbcl.cloudspace.search()[1:]
+    cloudspaces = cbcl.cloudspace.search({})[1:]
 
     for cloudspace in cloudspaces:
         query = {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}}
