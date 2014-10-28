@@ -103,7 +103,22 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         return True
     
     @auth(['level1','level2'])
-    def restoreVirtualFirewall(self, cloudspaceId, **kwargs):
+    def deployVFW(self, cloudspaceId, **kwargs):
+        """
+        Deploy VFW 
+        param:cloudspaceId id of the cloudspace
+        """
+        cloudspaceId = int(cloudspaceId)
+        if not self.cbcl.cloudspace.exists(cloudspaceId):
+            ctx = kwargs["ctx"]
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Cloudspace with id %s not found' % (cloudspaceId)
+
+        return self.cloudspaces_actor.deploy(cloudspaceId)
+
+    @auth(['level1','level2'])
+    def resetVFW(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
         param:cloudspaceId id of the cloudspace
@@ -115,6 +130,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             ctx.start_response("404", headers)
             return 'Cloudspace with id %s not found' % (cloudspaceId)
 
+        self.destroyVFW(cloudspaceId, **kwargs)
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1','level2'])

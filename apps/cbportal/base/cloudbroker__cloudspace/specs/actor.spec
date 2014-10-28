@@ -19,9 +19,15 @@
         var:cloudspaceId int,, id of the cloudspace
         var:targetNode str,, name of the firewallnode the virtual firewall has to be moved to
 
-    method:restoreVirtualFirewall
+    method:resetVFW
         """
-        Restore the virtual firewall of a cloudspace on an available firewall node
+        Reset VFW
+        """
+        var:cloudspaceId int,, id of the cloudspace
+
+    method:deployVFW
+        """
+        Deploy VFW
         """
         var:cloudspaceId int,, id of the cloudspace
 
