@@ -40,4 +40,4 @@ h3. Machine History
 {{machinehistory machineid:$$id}}
 
 h3. Machine PortForwarding Rules
-{{machinehistory machineid:$$id}}
+{{machinePortForwarding machineid:$$id}}

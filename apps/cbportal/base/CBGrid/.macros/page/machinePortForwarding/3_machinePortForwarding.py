@@ -12,11 +12,12 @@ def main(j, args, params, tags, tasklet):
 
     def _formatdata(portforwards):
         aaData = list()
-        for portforward in portforwards:
-            for field in ['protocol', 'fromAddr', 'fromPort', 'toAddr', 'toPort']:
-                portforward[field] = j.tools.text.toStr(portforward[field])
-            itemdata = [portforward['protocol'], '%s:%s' % (portforward['fromAddr'], portforward['fromPort']), '%s:%s' % (portforward['toAddr'], portforward['toPort'])]
-            aaData.append(itemdata)
+        for rule in portforwards:
+            for portforward in rule:
+                for field in ['protocol', 'fromAddr', 'fromPort', 'toAddr', 'toPort']:
+                    portforward[field] = j.tools.text.toStr(portforward[field])
+                itemdata = [portforward['protocol'], '%s:%s' % (portforward['fromAddr'], portforward['fromPort']), '%s:%s' % (portforward['toAddr'], portforward['toPort'])]
+                aaData.append(itemdata)
         aaData = str(aaData)
         return aaData.replace('[[', '[ [').replace(']]', '] ]')
 
