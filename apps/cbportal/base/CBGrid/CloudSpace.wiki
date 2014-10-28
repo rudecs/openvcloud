@@ -54,7 +54,7 @@ h2. CloudSpace: ${name}
    cloudspaceId: $$id
 
 - display: Remove VFW
-  action: /restmachine/cloudbroker/cloudspace/removeVFW
+  action: /restmachine/cloudbroker/cloudspace/destroyVFW
   input:
   - reason
   data:
@@ -91,6 +91,7 @@ h3. Details
 |*CloudSpace ID*|$$id|
 |*Account*|[${accountname}|account?id=${accountid}]|
 |*Network ID*|${networkid}|
+|*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*Status*|${status}|
 |*Location*|${location}|
 |*Access Control List*|${acl}|

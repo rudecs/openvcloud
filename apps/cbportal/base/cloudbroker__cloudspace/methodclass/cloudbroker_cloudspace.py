@@ -52,9 +52,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         #delete routeros
         gid = cloudspace['gid']
-        fws = self.netmgr.fw_list(gid, str(cloudspaceId))
-        if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], gid)
+        self._destroyVFW(gid, cloudspaceId)
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
         if cloudspace['publicipaddress']:
@@ -70,6 +68,12 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         self.cbcl.cloudspace.set(cloudspace)
         return True
 
+    def _destroyVFW(self, gid, cloudspaceId):
+        fws = self.netmgr.fw_list(int(gid), str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], gid)
+            return True
+        return False
 
     @auth(['level1','level2'])
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
@@ -104,10 +108,32 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         Restore the virtual firewall of a cloudspace on an available firewall node
         param:cloudspaceId id of the cloudspace
         """
-        return True
+        cloudspaceId = int(cloudspaceId)
+        if not self.cbcl.cloudspace.exists(cloudspaceId):
+            ctx = kwargs["ctx"]
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Cloudspace with id %s not found' % (cloudspaceId)
+
+        return self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1','level2'])
-    def destroyVFW(self, cloudpaceId, **kwargs):
+    def destroyVFW(self, cloudspaceId, **kwargs):
+        cloudspaceId = int(cloudspaceId)
+        if not self.cbcl.cloudspace.exists(cloudspaceId):
+            ctx = kwargs["ctx"]
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response("404", headers)
+            return 'Cloudspace with id %s not found' % (cloudspaceId)
+
+        cloudspace = self.cbcl.cloudspace.get(cloudspaceId)
+
+        self._destroyVFW(cloudspace.gid, cloudspaceId)
+        if cloudspace.publicipaddress:
+            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
+            cloudspace.publicipaddress = None
+            cloudspace.status = 'VIRTUAL'
+            self.cbcl.cloudspace.set(cloudspace)
         return True
 
     @auth(['level1','level2'])
