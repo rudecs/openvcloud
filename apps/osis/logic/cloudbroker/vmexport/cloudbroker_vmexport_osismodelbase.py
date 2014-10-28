@@ -8,7 +8,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
     def __init__(self):
         self._P_id=0
     
-        self._P_vmachineId=0
+        self._P_machineId=0
     
         self._P_name=""
     
@@ -64,23 +64,23 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
 
 
     @property
-    def vmachineId(self):
-        return self._P_vmachineId
-    @vmachineId.setter
-    def vmachineId(self, value):
+    def machineId(self):
+        return self._P_machineId
+    @machineId.setter
+    def machineId(self, value):
         
         if not isinstance(value, int) and value is not None:
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property vmachineId input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property machineId input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise RuntimeError(msg)
     
 
-        self._P_vmachineId=value
-    @vmachineId.deleter
-    def vmachineId(self):
-        del self._P_vmachineId
+        self._P_machineId=value
+    @machineId.deleter
+    def machineId(self):
+        del self._P_machineId
 
 
     @property

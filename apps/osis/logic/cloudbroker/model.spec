@@ -248,7 +248,7 @@
     A export of a vm. Contains one or multiple files.
     """
     prop:id int,, id of the export
-    prop:vmachineId int,, id of the vmachine
+    prop:machineId int,, id of the vmachine
     prop:name str,, name of the export
     prop:type str,, type e.g Raw, condensed, ...
     prop:bucket str,, name of the bucket

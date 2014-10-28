@@ -161,3 +161,10 @@
         """
         var:accountName str,,Account name, extra validation for preventing a wrong machineId
         var:reason str,,Reason
+
+    method:listSnapshots
+        """
+        list snapshots of a machine
+        """
+        var:machineId int,, ID of machine
+        var:result json,,

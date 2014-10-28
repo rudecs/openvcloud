@@ -58,3 +58,9 @@ h3. vMachine Status Details
 |*Parent Image*|$$stats_parent_image|
 |*Disk Size*|$$stats_disk_size|
 |*Last Checked*|$$stats_epoch|
+
+h3. Machine Exports
+{{vmexports machineid:$$id}}
+
+h3. Machine Snapshots
+{{snapshots machineid:$$id}} 

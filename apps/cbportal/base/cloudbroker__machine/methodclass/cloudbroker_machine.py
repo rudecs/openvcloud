@@ -539,3 +539,12 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine = self.cbcl.vmachine.get(machineId)
         args = {'accountName': accountName, 'machineId':machineId, 'reason':reason, 'vmachineName':vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', nid=j.application.whoAmI.nid, args=args, wait=False)
+
+    def listSnapshots(self, machineId, **kwargs):
+        machineId = int(machineId)
+        if not self.cbcl.vmachine.exists(machineId) or not self.cbcl.vmachine.get(machineId)['status']=='RUNNING':
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Machine %s not found or not running' % machineId
+        return self.machines_actor.listSnapshots(machineId)
