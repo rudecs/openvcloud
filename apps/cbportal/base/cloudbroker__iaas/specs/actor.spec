@@ -15,6 +15,7 @@
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:gateway str,, gateway of the subnet
         var:freeips list,, list of ips to mark as free in the subnet
+        var:gid int,, id of grid
 
     method:addPublicIPv4IPS
         """

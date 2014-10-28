@@ -10,14 +10,18 @@ organization = "cloudscalers"
 author = "zains@codescalers.com"
 license = "bsd"
 version = "1.0"
-roles = ['admin']
+roles = ['master']
 queue = "io"
 
-def action(age):
-    import JumpScale.baselib.elasticsearch
-    start = j.base.time.getEpochAgo(age)
-    esclient = j.clients.elasticsearch.get()
-    query = {'range': {'epoch': {'gt': start}}}
-    index='system_log'
-    result = esclient.delete_by_query(index=index, query=query, doc_type='json')
-    return result['ok']
+def action(age, gid=None):
+    try:
+        start = j.base.time.getEpochAgo(age)
+    except Exception:
+        return False
+    import JumpScale.grid.osis
+    syscl = j.core.osis.getClientForNamespace('system')
+    query = {'epoch':{'$gt':start}}
+    if gid:
+        query['gid'] = int(gid)
+    result = syscl.log.deleteSearch(query)
+    return result

@@ -1,7 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 import JumpScale.grid.agentcontroller
-import JumpScale.baselib.elasticsearch
 
 class cloudbroker_grid(j.code.classGetBase()):
 
@@ -12,15 +11,10 @@ class cloudbroker_grid(j.code.classGetBase()):
         self.acl = j.clients.agentcontroller.get()
 
     @auth(['level1', 'level2'])
-    def purgeLogs(self, gid, age='-1w'):
-        return self.acl.executeJumpScript('cloudscalers', 'logs_purge', args={'age': age}, role='admin', wait=False)['result']
+    def purgeLogs(self, gid, age='-3d', **kwargs):
+        return self.acl.executeJumpScript('cloudscalers', 'logs_purge', args={'age': age}, role='master', wait=False)['result']
 
     @auth(['level1', 'level2'])
-    def checkVMs(self, gid):
-        return True
-
-    def syncAvailableImagesToCloudbroker(self, gid):
-        return True
-
-    def addPublicIPv4Subnet(self, gid, subnet):
+    def checkVMs(self, **kwargs):
+        self.acl.executeJumpScript('jumpscale', 'vms_check', role='master', wait=False)
         return True

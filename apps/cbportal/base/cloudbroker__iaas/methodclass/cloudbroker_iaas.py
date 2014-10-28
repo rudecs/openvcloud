@@ -28,13 +28,15 @@ class cloudbroker_iaas(j.code.classGetBase()):
             self._cb = j.apps.cloudbroker.iaas
         return self._cb
 
-    def addPublicIPv4Subnet(self, subnet, gateway, freeips, **kwargs):
+    def addPublicIPv4Subnet(self, subnet, gateway, freeips, gid, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
         """
         ctx = kwargs["ctx"]
         net = netaddr.IPNetwork(subnet)
+        if isinstance(freeips, basestring):
+            freeips = [ip.strip() for ip in freeips.split(',')]
         if not checkIPS(net, freeips):
             ctx.start_response("400 Bad Request")
             return "One or more IP Addresses %s is not in subnet %s" % (subnet)
@@ -44,6 +46,7 @@ class cloudbroker_iaas(j.code.classGetBase()):
 
         pool = self.cbcl.publicipv4pool.new()
         pool.id = subnet
+        pool.gid = int(gid)
         pool.gateway = gateway
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)

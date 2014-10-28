@@ -55,16 +55,18 @@ h5. No. of Free Network IDs
    - age
 
 - display: Sync Available Images to CloudBroker
-  action: /restmachine/cloudbroker/grid/syncAvailableImagesToCloudbroker
+  action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
   data:
    gid: $$gid
 
 - display: Add Public IPv4 Subnet
-  action: /restmachine/cloudbroker/grid/addPublicIPv4Subnet
+  action: /restmachine/cloudbroker/iaas/addPublicIPv4Subnet
   data:
    gid: $$gid
   input:
    - subnet
+   - gateway
+   - freeips
 }}
 
 h3. Stacks

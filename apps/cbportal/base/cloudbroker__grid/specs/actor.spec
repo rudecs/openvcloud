@@ -19,17 +19,3 @@
         var:gid int,, id of the grid
         result: bool
 
-    method:syncAvailableImagesToCloudbroker
-        """
-        synch available images to cloudbroker
-        """
-        var gid int,, id of the grid
-        result: bool
-
-    method:addPublicIPv4Subnet
-        """
-        Add public IP Subnet
-        """
-        var gid int,, id of the grid
-        var subnet str,, subnet to be added
-        result: bool
