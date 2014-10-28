@@ -168,3 +168,10 @@
         """
         var:machineId int,, ID of machine
         var:result json,,
+
+    method:getHistory
+        """
+        get history of a machine
+        """
+        var:machineId int,, ID of machine
+        var:result json,,

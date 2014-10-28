@@ -541,10 +541,32 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', nid=j.application.whoAmI.nid, args=args, wait=False)
 
     def listSnapshots(self, machineId, **kwargs):
+        ctx = kwargs.get('ctx')
+        headers = [('Content-Type', 'application/json'), ]
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId) or not self.cbcl.vmachine.get(machineId)['status']=='RUNNING':
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'Machine %s not found or not running' % machineId
+        if not self.cbcl.vmachine.exists(machineId):
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        if vmachine.status=='DESTROYED' or not vmachine.status:
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s is invalid' % machineId
         return self.machines_actor.listSnapshots(machineId)
+
+    def getHistory(self, machineId, **kwargs):
+        ctx = kwargs.get('ctx')
+        headers = [('Content-Type', 'application/json'), ]
+        machineId = int(machineId)
+        if not self.cbcl.vmachine.exists(machineId):
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        if vmachine.status=='DESTROYED' or not vmachine.status:
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s is invalid' % machineId
+        return self.machines_actor.getHistory(machineId)
+
