@@ -1,35 +1,6 @@
 @usedefaults
-
 {{vmachine: id:$$id}}
-
-{{actions:
-- display: Start
-  input: 
-  - reason
-  action: /restmachine/cloudbroker/machine/start
-  data: 
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
-
-- display: Stop
-  action: /restmachine/cloudbroker/machine/stop
-  data:
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
-  input:
-  - reason
-
-- display: Delete
-  action: /restmachine/cloudbroker/machine/destroy
-  data:
-   machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
-  input:
-  - reason
-}}
+{{include:vmachine_actions}}
 
 h2. vMachine: $$name
 

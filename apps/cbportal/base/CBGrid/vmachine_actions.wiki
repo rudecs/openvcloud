@@ -1,0 +1,187 @@
+
+{{actions:
+- display: Start
+  input: 
+  - reason
+  action: /restmachine/cloudbroker/machine/start
+  data: 
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+
+- display: Stop
+  action: /restmachine/cloudbroker/machine/stop
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Stop For Abuse Resource Usage
+  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+  data:
+   machineId: $$id
+   accountName: $$accountname
+  input:
+  - reason
+
+- display: Reboot
+  action: ./
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Pause
+  action: ./
+  data:
+   machineid: $$id
+   accountname: $$accountname
+   spacename: $$spacename
+  input:
+  - reason
+
+- display: Resume
+  action: ./
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Delete
+  action: /restmachine/cloudbroker/machine/destroy
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Snapshot
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - snapshotName
+
+- display: Rollback Snapshot
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - snapshotName
+
+- display: Delete Snapshot
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - snapshotName
+
+- display: Clone 
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - cloneName
+
+- display: Backup And Destroy
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - backupName
+
+- display: Create Portforwarding
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - destIP
+  - destPort
+  - proto
+
+- display: Delete Portforwarding
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - destIP
+  - destPort
+  - proto
+
+- display: Add Disk 
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - size
+
+- display: Delete Disk 
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - diskId
+
+- display: Create Template 
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - templateName
+
+- display: Update Machine 
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - newName
+
+- display: Export
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - exportName
+
+- display: Restore
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - exportName
+
+- display: Check Image Chain
+  action: ./
+  data:
+   machineid: $$id
+
+- display: Move to diffrent Compute Node
+  action: ./
+  data:
+   machineid: $$id
+  input:
+  - newName
+
+- display: Tag
+  action: /restmachine/cloudbroker/machine/tag
+  data:
+   machineId: $$id
+  input:
+  - tagName
+
+- display: Remove Tag
+  action: /restmachine/cloudbroker/machine/untag
+  data:
+   machineId: $$id
+  input:
+  - tagName
+
+}}
+

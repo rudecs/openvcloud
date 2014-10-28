@@ -12,6 +12,7 @@ class cloudbroker_account(j.code.classGetBase()):
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.syscl = j.core.osis.getClientForNamespace('system')
         self.accounts_actor = self.cb.extensions.imp.actors.cloudapi.accounts
+        self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
         self.users_actor = self.cb.extensions.imp.actors.cloudapi.users
 
     @property
@@ -26,6 +27,11 @@ class cloudbroker_account(j.code.classGetBase()):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
             return False, 'Account name not found'
+        if len(account) > 1:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return 'Found multiple accounts for the account name "%s"' % accountname
+
         return True, account[0]
 
     def _checkUser(self, username):
@@ -47,10 +53,20 @@ class cloudbroker_account(j.code.classGetBase()):
         if not check:
             return result
         else:
+            msg = 'Account: %s\nReason: %s' % (accountname, reason)
+            subject = 'Disabling account: %s' % accountname
+            ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
             account = result
             account['deactivationTime'] = time.time()
             account['status'] = 'DISABLED'
             self.cbcl.account.set(account)
+            # stop all account's machines
+            cloudspaces = self.cbcl.cloudspace.search({'accountId': account['id']})[1:]
+            for cs in cloudspaces:
+                vmachines = self.cbcl.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+                for vmachine in vmachines:
+                    self.machines_actor.stop(vmachine['id'])
+            j.tools.whmcs.tickets.close_ticket(ticketId)
             return True
 
     @auth(['level1','level2'])

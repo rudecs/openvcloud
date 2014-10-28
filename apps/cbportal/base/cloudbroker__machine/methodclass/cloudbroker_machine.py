@@ -205,36 +205,6 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.machines_actor.stop(machineId)
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
-
-    @auth(['level1','level2'])
-    def disableAccount(self, accountName, reason, **kwargs):
-        accounts = self.cbcl.account.simpleSearch({'name': accountName})
-        if not accounts:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Account "%s" could not be found' % accountName
-
-        if len(accounts) > 1:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'Found multiple accounts for the account name "%s"' % accountName
-
-        account = self.cbcl.account.get(accounts[0]['id'])
-        msg = 'Account: %s\nReason: %s' % (accountName, reason)
-        subject = 'Disabling account: %s' % accountName
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
-        account.status = 'DISABLED'
-        self.cbcl.account.set(account)
-        # stop all account's machines
-        cloudspaces = self.cbcl.cloudspace.simpleSearch({'accountId': account.id})
-        for cs in cloudspaces:
-            vmachines = self.cbcl.vmachine.simpleSearch({'cloudspaceId': cs['id'], 'status': 'RUNNING'})
-            for vmachine in vmachines:
-                self.machines_actor.stop(vmachine['id'])
-        j.tools.whmcs.tickets.close_ticket(ticketId)
-
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
