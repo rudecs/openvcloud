@@ -18,6 +18,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.appname="cloudbroker"
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
+        self.vfwcl = j.core.osis.getClientForNamespace('vfw')
         self._cb = None
         self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
         self.acl = j.clients.agentcontroller.get()
@@ -539,4 +540,26 @@ class cloudbroker_machine(j.code.classGetBase()):
                 ctx.start_response('400', headers)
             return 'Machine %s is invalid' % machineId
         return self.machines_actor.getHistory(machineId)
+
+    def listPortForwards(self, machineId, **kwargs):
+        ctx = kwargs.get('ctx')
+        headers = [('Content-Type', 'application/json'), ]
+        machineId = int(machineId)
+        if not self.cbcl.vmachine.exists(machineId):
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        if vmachine.status=='DESTROYED' or not vmachine.status:
+            if ctx:
+                ctx.start_response('400', headers)
+            return 'Machine %s is invalid' % machineId
+        machineips = [nic.ipAddress for nic in vmachine.nics if not nic.ipAddress=='Undefined']
+        vfws = self.vfwcl.virtualfirewall.search({'tcpForwardRules.toAddr':{'$in':machineips}})[1:]
+        result = list()
+        if vfws:
+            for vfw in vfws:
+                result.append(vfw['tcpForwardRules'])
+        return result
+
 

@@ -7,15 +7,30 @@ def main(j, args, params, tags, tasklet):
         params.result = page
         return params
 
+    modifier = j.html.getPageModifierGridDataTables(page)
     j.apps.actorsloader.getActor('cloudbroker', 'machine')
-    
-    history = j.apps.cloudbroker.machine.getHistory(machineId)
-    if not isinstance(history, list):
-        page.addMessage(history)
+
+    def _formatdata(histories):
+        aaData = list()
+        for history in histories:
+            epoch = j.base.time.epoch2HRDateTime(history['epoch']) if not history['epoch']==0 else 'N/A'
+            itemdata = [j.tools.text.toStr(history['message']), epoch]
+            aaData.append(itemdata)
+        aaData = str(aaData)
+        return aaData.replace('[[', '[ [').replace(']]', '] ]')
+
+    histories = j.apps.cloudbroker.machine.getHistory(machineId)
+    if not isinstance(histories, list):
+        page.addMessage(histories)
         params.result = page
         return params
         
-    page.addMessage('HISTORY:%s' % history)
+    histories = _formatdata(histories)
+
+    fieldnames = ('Action', 'At')
+    tableid = modifier.addTableFromData(histories, fieldnames)
+
+    modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page
 
