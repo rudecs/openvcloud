@@ -86,6 +86,8 @@ class cloudbroker_machine(j.code.classGetBase()):
             provider = self.cb.extensions.imp.getProviderByStackId(stackid)
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
+            if not image or not pimage:
+                j.events.opserror_critical("Stack %s does not contain image %s" % (stackid, machine.imageId))
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
         except:

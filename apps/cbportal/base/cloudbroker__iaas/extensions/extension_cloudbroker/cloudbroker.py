@@ -16,7 +16,6 @@ class CloudProvider(object):
         providertype = getattr(Provider, stack.type)
         kwargs = dict()
         if stackId not in CloudProvider.providers:
-            CloudProvider.providers[stackId] = None
             if stack.type == 'OPENSTACK':
                 DriverClass = get_driver(providertype)
                 args = [ stack.login, stack.passwd]
@@ -52,6 +51,7 @@ class CloudProvider(object):
         for image in self.client.list_images():
             if image.id == iimage.referenceId:
                 return image, image
+        return None, None
 
 
 class CloudBroker(object):

@@ -93,7 +93,7 @@ h2. CloudSpace: ${name}
 
 h3. Details
 |*CloudSpace ID*|$$id|
-|*Account*|[${accountname}|account?id=${accountid}]|
+|*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|${networkid}|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*Status*|${status}|
