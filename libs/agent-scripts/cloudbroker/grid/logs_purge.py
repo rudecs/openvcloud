@@ -20,7 +20,7 @@ def action(age, gid=None):
         return False
     import JumpScale.grid.osis
     syscl = j.core.osis.getClientForNamespace('system')
-    query = {'epoch':{'$gt':start}}
+    query = {'epoch':{'$lt':start}}
     if gid:
         query['gid'] = int(gid)
     result = syscl.log.deleteSearch(query)

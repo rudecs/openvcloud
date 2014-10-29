@@ -24,10 +24,10 @@ Logout:/system/login?user_logoff_=1
 System:/system
 --------------
 Accounts:/cbgrid/accounts
-CloudSpaces:/cbgrid/cloudspaces
-GridNodes:/grid/nodes
-CpuNodes:/cbgrid/stacks
-StatusOverview:/grid/checkstatus
+Cloud Spaces:/cbgrid/cloudspaces
+Grid Nodes:/grid/nodes
+CPU Nodes:/cbgrid/stacks
+Status Overview:/grid/checkstatus
 Images:/cbgrid/images
 Networks:/cbgrid/networks
 Users:/cbgrid/users
