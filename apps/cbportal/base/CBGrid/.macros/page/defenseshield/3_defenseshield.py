@@ -4,10 +4,13 @@ def main(j, args, params, tags, tasklet):
     actors = j.apps.cloudbroker.iaas.cb.extensions.imp.actors.cloudapi
     params.result = page = args.page
     cloudspaceId = args.getTag('cloudspaceId')
-    defenseinfo = actors.cloudspaces.getDefenseShield(cloudspaceId)
-    defenseinfo['name'] = "autologin=%(user)s|%()s"
+    try:
+        defenseinfo = actors.cloudspaces.getDefenseShield(cloudspaceId)
+        defenseinfo['name'] = "autologin=%(user)s|%()s"
+        page.addHTML("""<a href="javascript:window.open('%(url)s', 'autologin=%(user)s%%7c%(password)s');javascript:void(0);">Defenseshield</a>""" % defenseinfo)
 
-    page.addHTML("""<a href="javascript:window.open('%(url)s', 'autologin=%(user)s%%7c%(password)s');javascript:void(0);">Defenseshield</a>""" % defenseinfo)
+    except:
+        page.addMessage("N/A")
 
     return params
 

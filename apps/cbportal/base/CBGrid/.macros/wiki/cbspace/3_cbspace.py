@@ -34,10 +34,10 @@ def main(j, args, params, tags, tasklet):
 
     obj['acl'] = str(', '.join([' *%s*:%s' % (acl['userGroupId'], acl['right']) for acl in obj['acl']]))
 
-    if obj['networkId']:
-        obj['networkid'] = '[%s|network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
-        vfwkey = "%(gid)s_%(networkId)s" % (obj)
+    vfwkey = "%(gid)s_%(networkId)s" % (obj)
+    if vcl.virtualfirewall.exists(vfwkey):
         network =  vcl.virtualfirewall.get(vfwkey).dump()
+        obj['networkid'] = '[%s|network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
         obj['network'] = network
     else:
         obj['networkid'] = 'N/A'
