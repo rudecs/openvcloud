@@ -30,8 +30,8 @@ def action(gid=None):
     nodecl = j.core.osis.getClientForCategory(osiscl, 'system', 'node')
 
     # get all stacks and nodes data, save trips to osis
-    stacks = dict([(s['id'], s) for s in cbcl.stack.simpleSearch({})])
-    nodes = dict([(n['id'], n) for n in nodecl.simpleSearch({})])
+    stacks = dict([(s['id'], s) for s in cbcl.stack.search({})])
+    nodes = dict([(n['id'], n) for n in nodecl.search({})])
 
     ping_jobs = dict()
     disk_check_jobs = dict()
@@ -39,7 +39,7 @@ def action(gid=None):
     query = {}
     if gid:
         query['gid'] = gid
-    cloudspaces = cbcl.cloudspace.search(gid)[1:]
+    cloudspaces = cbcl.cloudspace.search(query)[1:]
 
     for cloudspace in cloudspaces:
         gid = gid or cloudspace['gid']
