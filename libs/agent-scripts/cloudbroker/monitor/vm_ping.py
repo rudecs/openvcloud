@@ -13,7 +13,7 @@ category = "monitor.vms"
 enable = True
 async = True
 log = False
-roles = ['admin',]
+roles = ['fw',]
 
 def action(vm_ip_address, vm_cloudspace_id):
     import JumpScale.grid.osis

@@ -16,7 +16,7 @@ async = True
 roles = ['master',]
 log = False
 
-def action():
+def action(gid=None):
     import JumpScale.grid.osis
     import JumpScale.lib.routeros
     import JumpScale.baselib.redis
@@ -31,20 +31,24 @@ def action():
 
     # get all stacks and nodes data, save trips to osis
     stacks = dict([(s['id'], s) for s in cbcl.stack.simpleSearch({})])
-    nodes = dict([(n['name'], n) for n in nodecl.simpleSearch({})])
+    nodes = dict([(n['id'], n) for n in nodecl.simpleSearch({})])
 
     ping_jobs = dict()
     disk_check_jobs = dict()
     vmachines_data = dict()
-    cloudspaces = cbcl.cloudspace.search({})[1:]
+    query = {}
+    if gid:
+        query['gid'] = gid
+    cloudspaces = cbcl.cloudspace.search(gid)[1:]
 
     for cloudspace in cloudspaces:
+        gid = gid or cloudspace['gid']
         query = {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}}
         vms = cbcl.vmachine.search(query)[1:]
         for vm in vms:
             if vm['stackId'] in stacks:
-                cpu_node_name = stacks[vm['stackId']]['referenceId']
-                cpu_node_id = nodes[cpu_node_name]['id']
+                cpu_node_id = int(stacks[vm['stackId']]['referenceId'])
+                cpu_node_name = nodes[cpu_node_id].get('name', 'N/A')
             else:
                 cpu_node_id = 0
                 cpu_node_name = 'N/A'
@@ -53,11 +57,11 @@ def action():
             vmachines_data[vm['id']] = vm_data
             if vm['status'] == 'RUNNING':
                 args = {'vm_ip_address': vm['nics'][0]['ipAddress'], 'vm_cloudspace_id': cloudspace['id']}
-                job = accl.scheduleCmd(cloudspace['gid'], None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['admin'], wait=True)
+                job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
                 ping_jobs[vm['id']] = job
 
             if vm['status']:
-                job = accl.scheduleCmd(cloudspace['gid'], cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
+                job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
                 disk_check_jobs[vm['id']] = job
 
     for vm_id, job in ping_jobs.iteritems():
@@ -70,9 +74,9 @@ def action():
         if result['result']:
             result = result['result']
             vmachines_data[vm_id]['hdtest'] = True
-            vmachines_data[vm_id]['image'] = result['image']
-            vmachines_data[vm_id]['parent_image'] = result['backing file']
-            vmachines_data[vm_id]['disk_size'] = result['disk size']
+            vmachines_data[vm_id]['image'] = result.get('image', 'N/A')
+            vmachines_data[vm_id]['parent_image'] = result.get('backing file', 'N/A')
+            vmachines_data[vm_id]['disk_size'] = result.get('disk size', 'N/A')
 
     for vm_id, vm_data in vmachines_data.iteritems():
         rediscl.hset('vmachines.status', vm_id, json.dumps(vm_data))
