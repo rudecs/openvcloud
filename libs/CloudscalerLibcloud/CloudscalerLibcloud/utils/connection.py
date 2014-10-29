@@ -33,14 +33,13 @@ class CloudBrokerConnection():
      NAMESPACE = 'libcloud'
      CATEGORY = 'libvirtdomain'
 
-     def __init__(self, ipaddress=None, port=None, secret=None):
+     def __init__(self, client=None):
          from JumpScale import j
          self._j = j
-         import JumpScale.portal
          import JumpScale.grid.geventws
          from JumpScale.grid import agentcontroller
-         if ipaddress:
-             self.client = j.core.portal.getClient(ip=ipaddress, port=port, secret=secret)  
+         if client:
+             self.client = client  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
              self.libvirt_actor = j.apps.libcloud.libvirt

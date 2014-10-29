@@ -3,16 +3,14 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
+import JumpScale.portal
 import JumpScale.grid.osis
-
+import random
 
 class CloudProvider(object):
     providers = dict()
     def __init__(self, stackId):
         cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-        cbip = j.application.config.get('cloudbroker.ip')
-        cbport = j.application.config.get('cloudbroker.port')
-        cbsecret = j.application.config.get('cloudbroker.secret')
 
         stack = cbcl.stack.get(stackId)
         providertype = getattr(Provider, stack.type)
@@ -35,7 +33,8 @@ class CloudProvider(object):
                 kwargs['uri'] = stack.apiUrl
                 kwargs['gid'] = stack.gid
                 prov = CSLibvirtNodeDriver(**kwargs)
-                cb = CloudBrokerConnection(cbip, cbport, cbsecret)
+                cbclient = j.core.portal.getClientByInstance('cloudbroker')
+                cb = CloudBrokerConnection(cbclient)
                 prov.set_backend(cb)
                 CloudProvider.providers[stackId] = prov
         self.cbcl = cbcl

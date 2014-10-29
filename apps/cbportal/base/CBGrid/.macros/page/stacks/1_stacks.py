@@ -17,10 +17,11 @@ def main(j, args, params, tags, tasklet):
 
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
-        filters[tag] = j.basetype.integer.fromString(val) if j.basetype.integer.checkString(val) else val
+        if val:
+            filters[tag] = j.basetype.integer.fromString(val) if j.basetype.integer.checkString(val) else val
 
     fieldnames = ['Grid ID', 'ID', 'Name', 'Reference ID', 'Type', 'Description']
-    fieldvalues = ["<a href='/cbgrid/gid?id=%(gid)s'>%(gid)s</a>", "<a href='/cbgrid/stack?id=%(id)s'>%(id)s</a>", "name", 'referenceId', 'type', 'descr']
+    fieldvalues = ["<a href='/cbgrid/grid?gid=%(gid)s'>%(gid)s</a>", "<a href='/cbgrid/stack?id=%(id)s'>%(id)s</a>", "name", 'referenceId', 'type', 'descr']
     fieldids = ['gid', 'id', 'name', 'referenceId', 'type', 'descr']
     tableid = modifier.addTableForModel('cloudbroker', 'stack', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
