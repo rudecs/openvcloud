@@ -27,7 +27,7 @@
   - reason
 
 - display: Reboot
-  action: ./
+  action: /restmachine/cloudbroker/machine/reboot
   data:
    machineId: $$id
    accountName: $$accountname
@@ -36,7 +36,7 @@
   - reason
 
 - display: Pause
-  action: ./
+  action: /restmachine/cloudbroker/machine/pause
   data:
    machineid: $$id
    accountname: $$accountname
@@ -45,7 +45,7 @@
   - reason
 
 - display: Resume
-  action: ./
+  action: /restmachine/cloudbroker/machine/resume
   data:
    machineId: $$id
    accountName: $$accountname
@@ -63,10 +63,13 @@
   - reason
 
 - display: Snapshot
-  action: ./
+  action: /restmachine/cloudbroker/machine/snapshot
   data:
-   machineid: $$id
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
   input:
+  - reason
   - snapshotName
 
 - display: Rollback Snapshot

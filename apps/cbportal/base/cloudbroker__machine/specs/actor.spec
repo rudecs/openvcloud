@@ -47,6 +47,43 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
 
+    method:reboot
+        """
+        Reboots a deployed machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason
+
+    method:pause
+        """
+        Pauses a deployed machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason
+
+    method:resume
+        """
+        Resumes a deployed paused machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:reason str,,Reason
+
+    method:snapshot
+        """
+        Resumes a deployed paused machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:snapshotName str,,Snapshot name
+        var:reason str,,Reason
+
     method:destroy
         """
         Destroys a machine
