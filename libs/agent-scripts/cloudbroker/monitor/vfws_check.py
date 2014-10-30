@@ -24,24 +24,19 @@ def action():
 
     osiscl = j.core.osis.getClientByInstance('main')
     vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
-    cloudspacecl = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', 'cloudspace')
+    cbcl = j.core.osis.getClientForNamespace('cloudbroker')
     ROUTEROS_PASSWORD = j.application.config.get('vfw.admin.passwd')
-    cidders = j.application.config.getDict('vfw.public.cidrs')
-    gws = j.application.config.getDict('vfw.public.gw')
 
-    networks = []
-    for c in cidders:
-        networks.append(netaddr.IPNetwork('%s/%s' % (c, cidders[c])))
+    pools = dict()
 
     def getDefaultGW(publicip):
-        ipaddress = netaddr.IPAddress(publicip)
-        subnet = None
-        for net in networks:
-            if ipaddress in net:
-                subnet = str(net.network)
-        if not subnet:
-            return None
-        return gws[subnet]
+        net = netaddr.IPNetwork(publicip)
+        cidr = str(net.cidr)
+        if cidr not in pools:
+            pool = cbcl.publicipv4pool.get(cidr)
+            pools[cidr] = pool
+
+        return pools[cidr].gateway
 
     result = dict()
     cloudspaces = dict()
@@ -67,7 +62,7 @@ def action():
                         result[cloudspaceid] = 'Could not ping %s'  % gwip
                 else:
                     result[cloudspaceid] = 'No GW assigned'
-    for cloudspace in cloudspacecl.search({'gid': j.application.whoAmI.gid})[1:]:
+    for cloudspace in cbcl.cloudspace.search({'gid': j.application.whoAmI.gid})[1:]:
         print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
         processCloudSpace(cloudspace)
     if result:
