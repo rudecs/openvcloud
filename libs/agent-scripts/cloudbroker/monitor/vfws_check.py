@@ -43,26 +43,25 @@ def action():
     def processCloudSpace(cloudspace):
         cloudspaceid = cloudspace['id']
         cloudspaces[cloudspaceid] = cloudspace
-        if cloudspace['status'] != 'DESTROYED':
-            if cloudspace['networkId']:
-                gwip = getDefaultGW(cloudspace['publicipaddress'])
-                try:
-                    vfw = vfwcl.get("%s_%s" % (j.application.whoAmI.gid, cloudspace['networkId']))
-                    if j.system.net.tcpPortConnectionTest(vfw.host, 8728, 7):
-                        routeros = j.clients.routeros.get(vfw.host, 'vscalers', ROUTEROS_PASSWORD)
-                    else:
-                        result[cloudspaceid] = 'Could not connect to routeros %s' % vfw.host
-                        return
-                except Exception, e:
-                    result[cloudspaceid] = str(e)
-                    return
-                if gwip:
-                    pingable = routeros.ping(gwip)
-                    if not pingable:
-                        result[cloudspaceid] = 'Could not ping %s'  % gwip
+        if cloudspace['networkId']:
+            gwip = getDefaultGW(cloudspace['publicipaddress'])
+            try:
+                vfw = vfwcl.get("%s_%s" % (j.application.whoAmI.gid, cloudspace['networkId']))
+                if j.system.net.tcpPortConnectionTest(vfw.host, 8728, 7):
+                    routeros = j.clients.routeros.get(vfw.host, 'vscalers', ROUTEROS_PASSWORD)
                 else:
-                    result[cloudspaceid] = 'No GW assigned'
-    for cloudspace in cbcl.cloudspace.search({'gid': j.application.whoAmI.gid})[1:]:
+                    result[cloudspaceid] = 'Could not connect to routeros %s' % vfw.host
+                    return
+            except Exception, e:
+                result[cloudspaceid] = str(e)
+                return
+            if gwip:
+                pingable = routeros.ping(gwip)
+                if not pingable:
+                    result[cloudspaceid] = 'Could not ping %s'  % gwip
+            else:
+                result[cloudspaceid] = 'No GW assigned'
+    for cloudspace in cbcl.cloudspace.search({'gid': j.application.whoAmI.gid, 'status': 'DEPLOYED'})[1:]:
         print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
         processCloudSpace(cloudspace)
     if result:
