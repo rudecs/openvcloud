@@ -27,7 +27,7 @@ angular.module('cloudscalers.controllers')
                         $scope.machineHistory.error = status;
                         $scope.machineHistory.history = [];
                     } else {
-                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h._source.epoch; });
+                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h.epoch; });
                         $scope.machineHistory.error = undefined;
                     }
                 }).error(function (data, status, headers, config) {
