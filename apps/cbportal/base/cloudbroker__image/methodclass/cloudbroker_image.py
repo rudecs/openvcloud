@@ -11,17 +11,17 @@ class cloudbroker_image(j.code.classGetBase()):
         self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
         self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
 
-    def _checkimage(self, imageId, **kwargs):
-        if not self.cbcl.image.exists(imageId):
-            ctx = kwargs.get('ctx')
+    def _checkimage(self, imageId, ctx):
+        cbimage = self.cbcl.image.search({'referenceId': imageId})[1:]
+        if not cbimage:
             if ctx:
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response('400', headers)
             return False, 'Image with id "%s" not found' % imageId, None
-        cbimage = self.cbcl.image.get(imageId)
+        cbimage = cbimage[0]
         libvirtimage = None
-        if self.libvirtcl.exists(cbimage.referenceId):
-            libvirtimage = self.libvirtcl.get(cbimage.referenceId)
+        if self.libvirtcl.image.exists(imageId):
+            libvirtimage = self.libvirtcl.image.get(imageId)
         return True, cbimage, libvirtimage
 
     @property
@@ -37,9 +37,10 @@ class cloudbroker_image(j.code.classGetBase()):
         param:imageId id of image
         result bool
         """
-        check, result, libvirtimage = self._checkimage(imageId, kwargs)
+        ctx = kwargs.get('ctx')
+        check, result, libvirtimage = self._checkimage(imageId, ctx)
         if check:
-            result.status = 'DESTROYED'
+            result['status'] = 'DESTROYED'
             self.cbcl.image.set(result)
             if libvirtimage:
                 libvirtimage.status = 'DESTROYED'
@@ -55,15 +56,16 @@ class cloudbroker_image(j.code.classGetBase()):
         param:imageId id of image
         result bool
         """
-        check, result, libvirtimage = self._checkimage(imageId, kwargs)
+        ctx = kwargs.get('ctx')
+        check, result, libvirtimage = self._checkimage(imageId, ctx)
         if check:
             if not libvirtimage:
-                result.status = 'DESTROYED'
+                result['status'] = 'DESTROYED'
                 return self.cbcl.image.set(result)
-            if result.status == 'DISABLED':
-                result.status = 'CREATED'
+            if libvirtimage.status == 'DISABLED':
+                result['status'] = 'CREATED'
                 libvirtimage.status = 'CREATED'
-                self.libvirtcl.set(libvirtimage)
+                self.libvirtcl.image.set(libvirtimage)
                 return self.cbcl.image.set(result)
             else:
                 return 'Image was not DISABLED'
@@ -76,13 +78,14 @@ class cloudbroker_image(j.code.classGetBase()):
         param:imageId id of image
         result bool
         """
-        check, result, libvirtimage = self._checkimage(imageId, kwargs)
+        ctx = kwargs.get('ctx')
+        check, result, libvirtimage = self._checkimage(imageId, ctx)
         if check:
             if not libvirtimage:
                 result.status = 'DESTROYED'
                 return self.cbcl.image.set(result)
-            if result.status == 'CREATED':
-                result.status = 'DISABLED'
+            if libvirtimage.status == 'CREATED' or libvirtimage.status == '':
+                result['status'] = 'DISABLED'
                 libvirtimage.status = 'DISABLED'
                 self.libvirtcl.image.set(libvirtimage)
                 return self.cbcl.image.set(result)
