@@ -55,7 +55,7 @@ class cloudbroker_computenode(j.code.classGetBase()):
         if stack:
             self._changeStackStatus(name, gid, 'DISABLED', kwargs)
             stack = stack[0]
-            machines_actor = j.core.portal.active.actorsloader.getActor('cloudbroker__machine')
+            machines_actor = j.apps.cloudbroker.machine
             stackmachines = self.cbcl.vmachine.search({'stackId': stack['id']})[1:]
             for machine in stackmachines:  
                 cloudspace = self.cbcl.cloudspace.get(machine['cloudspaceId'])
