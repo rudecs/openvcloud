@@ -30,8 +30,8 @@ def action(gid=None):
     nodecl = j.core.osis.getClientForCategory(osiscl, 'system', 'node')
 
     # get all stacks and nodes data, save trips to osis
-    stacks = dict([(s['id'], s) for s in cbcl.stack.search({})])
-    nodes = dict([(n['id'], n) for n in nodecl.search({})])
+    stacks = dict([(s['id'], s) for s in cbcl.stack.search({})[1:]])
+    nodes = dict([(n['id'], n) for n in nodecl.search({})[1:]])
 
     ping_jobs = dict()
     disk_check_jobs = dict()
