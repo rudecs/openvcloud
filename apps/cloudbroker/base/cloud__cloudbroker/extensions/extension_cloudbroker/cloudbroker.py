@@ -111,37 +111,6 @@ class CloudBroker(object):
                 resourcesdata.append(stack)
         return resourcesdata
 
-    def stackImportImages(self, stackId):
-        provider = CloudProvider(stackId)
-        count = 0
-        stack = models.stack.get(stackId)
-        stack.images = []
-        for pimage in provider.client.list_images():
-            imageid = self.getIdByReferenceId('image', pimage.id)
-            if not imageid:
-                image = cloudbroker.models.image.new()
-                image.name = pimage.name
-                image.referenceId = pimage.id
-                image.type = pimage.extra['imagetype']
-                image.size = pimage.extra['size']
-                image.username = pimage.extra['username']
-                image.status = 'CREATED'
-                image.accountId = 0
-            else:
-                image = models.image.get(imageid)
-                image.name = pimage.name
-                image.referenceId = pimage.id
-                image.type = pimage.extra['imagetype']
-                image.size = pimage.extra['size']
-                image.username = pimage.extra['username']
-            count += 1
-            imageid = models.image.set(image)[0]
-            if not imageid in stack.images:
-                stack.images.append(imageid)
-                models.stack.set(stack)
-        return count
-
-
     def stackImportSizes(self, stackId):
         provider = CloudProvider(stackId)
         count = 0

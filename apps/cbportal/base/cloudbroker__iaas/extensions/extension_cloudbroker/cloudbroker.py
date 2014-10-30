@@ -62,10 +62,7 @@ class CloudBroker(object):
     @property
     def actors(self):
         if not self._actors:
-            cbip = j.application.config.get('cloudbroker.ip')
-            cbport = j.application.config.getInt('cloudbroker.port')
-            cbsecret = j.application.config.get('cloudbroker.secret')
-            cl = j.core.portal.getClient(cbip, cbport, cbsecret)
+            cl = j.core.portal.getClientByInstance('cloudbroker')
             self._actors = cl.actors
         return self._actors
 
@@ -75,9 +72,9 @@ class CloudBroker(object):
             raise RuntimeError('Provider not found')
         count = 0
         stack = provider.cbcl.stack.get(stackId)
-        stack.images = []
-        for pimage in provider.client.list_images():
-            images = provider.cbcl.image.simpleSearch({'referenceId':pimage.id})
+        stack.images = list()
+        for pimage in provider.client.list_images(): #libvirt/openstack images
+            images = provider.cbcl.image.search({'referenceId':pimage.id})[1:]
             if not images:
                 image = provider.cbcl.image.new()
                 image.name = pimage.name
@@ -85,16 +82,16 @@ class CloudBroker(object):
                 image.type = pimage.extra['imagetype']
                 image.size = pimage.extra['size']
                 image.username = pimage.extra['username']
-                image.status = 'CREATED'
+                image.status = pimage.status or 'CREATED'
                 image.accountId = 0
             else:
-                imageid = images[0]['id']
-                image = provider.cbcl.image.get(imageid)
-                image.name = pimage.name
-                image.referenceId = pimage.id
-                image.type = pimage.extra['imagetype']
-                image.size = pimage.extra['size']
-                image.username = pimage.extra['username']
+                image = images[0]
+                image['name'] = pimage.name
+                image['referenceId'] = pimage.id
+                image['type'] = pimage.extra['imagetype']
+                image['size'] = pimage.extra['size']
+                image['username'] = pimage.extra['username']
+                image['status'] = pimage.status or 'CREATED'
             count += 1
             imageid = provider.cbcl.image.set(image)[0]
             if not imageid in stack.images:
