@@ -18,7 +18,7 @@
   input:
   - reason
 
-- display: Stop For Abuse Resource Usage
+- display: Stop For Abusive Resource Usage
   action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
   data:
    machineId: $$id
