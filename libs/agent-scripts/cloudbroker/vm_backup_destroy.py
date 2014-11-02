@@ -32,7 +32,8 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     agentcontrollerclient = j.clients.agentcontroller.get()
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
 
-    ticketid = j.tools.whmcs.tickets.create_ticket('Backing up Machine %s for destruction' % vmachineName, '', "High")
+    subject = 'Backing up Machine %s for destruction' % vmachineName
+    ticketid = j.tools.whmcs.tickets.create_ticket(subject, subject, "High")
     machineId = int(machineId)
     backupname = 'Backup of vmachine %s at %s' % (vmachineName, j.base.time.getLocalTimeHRForFilesystem())
     jobguid = cloudbrokermachine.export(machineId, backupname, backuptype='raw', storage='cephfs', host='', aws_access_key='', aws_secret_key='', bucketname='machine_backups')
