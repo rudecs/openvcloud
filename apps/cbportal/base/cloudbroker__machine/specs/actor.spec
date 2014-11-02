@@ -94,6 +94,16 @@
         var:snapshotName str,,Snapshot name
         var:reason str,,Reason
 
+    method:deleteSnapshot
+        """
+        Deletes a machine snapshot
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:snapshotName str,,Snapshot name
+        var:reason str,,Reason
+
     method:destroy
         """
         Destroys a machine

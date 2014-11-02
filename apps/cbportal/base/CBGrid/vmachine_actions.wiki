@@ -83,10 +83,13 @@
   - snapshotName
 
 - display: Delete Snapshot
-  action: ./
+  action: /restmachine/cloudbroker/machine/deleteSnapshot
   data:
    machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
   input:
+  - reason
   - snapshotName
 
 - display: Clone 
