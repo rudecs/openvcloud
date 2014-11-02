@@ -103,11 +103,12 @@
   - cloneName
 
 - display: Backup And Destroy
-  action: ./
+  action: /restmachine/cloudbroker/machine/backupAndDestroy
   data:
+   accountName: $$accountname
    machineId: $$id
   input:
-  - backupName
+  - reason
 
 - display: Create Portforwarding
   action: ./
