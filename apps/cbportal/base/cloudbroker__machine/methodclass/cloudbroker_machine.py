@@ -714,14 +714,22 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Close the ticket
         """
         machineId = int(machineId)
-        ctx = kwargs['ctx']
         if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        args = {'accountName': accountName, 'machineId':machineId, 'reason':reason, 'vmachineName':vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
-        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', nid=j.application.whoAmI.nid, args=args, wait=False)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+        stack = self.cbcl.stack.get(vmachine.stackId)
+        args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
 
     def listSnapshots(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
