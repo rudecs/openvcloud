@@ -729,7 +729,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
         stack = self.cbcl.stack.get(vmachine.stackId)
         args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
-        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
+        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
     def listSnapshots(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
