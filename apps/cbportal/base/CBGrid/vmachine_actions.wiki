@@ -38,7 +38,7 @@
 - display: Pause
   action: /restmachine/cloudbroker/machine/pause
   data:
-   machineid: $$id
+   machineId: $$id
    accountname: $$accountname
    spacename: $$spacename
   input:
@@ -75,35 +75,35 @@
 - display: Rollback Snapshot
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - snapshotName
 
 - display: Delete Snapshot
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - snapshotName
 
 - display: Clone 
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - cloneName
 
 - display: Backup And Destroy
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - backupName
 
 - display: Create Portforwarding
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - destIP
   - destPort
@@ -112,7 +112,7 @@
 - display: Delete Portforwarding
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - destIP
   - destPort
@@ -121,54 +121,54 @@
 - display: Add Disk 
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - size
 
 - display: Delete Disk 
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - diskId
 
 - display: Create Template 
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - templateName
 
 - display: Update Machine 
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - newName
 
 - display: Export
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - exportName
 
 - display: Restore
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - exportName
 
 - display: Check Image Chain
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
 
 - display: Move to diffrent Compute Node
   action: ./
   data:
-   machineid: $$id
+   machineId: $$id
   input:
   - newName
 
