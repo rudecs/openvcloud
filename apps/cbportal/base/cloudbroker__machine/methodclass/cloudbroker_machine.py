@@ -329,6 +329,36 @@ class cloudbroker_machine(j.code.classGetBase()):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
+    def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
+        machineId = int(machineId)
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if not cloudspace.name == spaceName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
+
+        account = self.cbcl.account.get(cloudspace.accountId)
+        if not account.name == accountName:
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
+        subject = 'Rolling back snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self.machines_actor.rollbackSnapshot(machineId, snapshotName)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):

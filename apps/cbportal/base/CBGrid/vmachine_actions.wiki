@@ -73,10 +73,13 @@
   - snapshotName
 
 - display: Rollback Snapshot
-  action: ./
+  action: /restmachine/cloudbroker/machine/rollbackSnapshot
   data:
    machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
   input:
+  - reason
   - snapshotName
 
 - display: Delete Snapshot

@@ -76,7 +76,17 @@
 
     method:snapshot
         """
-        Resumes a deployed paused machine
+        Takes a snapshot of a deployed machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:snapshotName str,,Snapshot name
+        var:reason str,,Reason
+
+    method:rollbackSnapshot
+        """
+        Rolls back a machine snapshot
         """
         var:accountName str,,Account name
         var:spaceName str,,Space name
