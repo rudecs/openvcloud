@@ -104,6 +104,16 @@
         var:snapshotName str,,Snapshot name
         var:reason str,,Reason
 
+    method:clone
+        """
+        Clones a machine
+        """
+        var:accountName str,,Account name
+        var:spaceName str,,Space name
+        var:machineId int,,Machine id
+        var:cloneName str,,Clone name
+        var:reason str,,Reason
+
     method:destroy
         """
         Destroys a machine

@@ -93,10 +93,13 @@
   - snapshotName
 
 - display: Clone 
-  action: ./
+  action: /restmachine/cloudbroker/machine/clone
   data:
    machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
   input:
+  - reason
   - cloneName
 
 - display: Backup And Destroy
