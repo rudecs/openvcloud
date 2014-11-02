@@ -39,8 +39,8 @@
   action: /restmachine/cloudbroker/machine/pause
   data:
    machineId: $$id
-   accountname: $$accountname
-   spacename: $$spacename
+   accountName: $$accountname
+   spaceName: $$spacename
   input:
   - reason
 
