@@ -711,7 +711,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         stack = self.cbcl.stack.get(vmachine.stackId)
         args = {'machineId': machineId, 'accountName': accountName, 'reason': reason}
-        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', role=stack.referenceId, args=args, wait=False)
+        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
 
     @auth(['level1','level2'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
