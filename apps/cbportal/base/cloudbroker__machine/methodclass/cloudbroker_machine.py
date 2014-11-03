@@ -710,8 +710,12 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
         stack = self.cbcl.stack.get(vmachine.stackId)
+        subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
+        msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': machineId, 'accountName': accountName, 'reason': reason}
         self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
