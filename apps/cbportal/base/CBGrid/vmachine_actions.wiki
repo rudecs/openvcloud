@@ -116,7 +116,7 @@
    machineId: $$id
    spaceName: $$spacename
   input:
-  - destIP
+  - localPort
   - destPort
   - proto
   - reason
