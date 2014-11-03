@@ -783,6 +783,7 @@ class cloudbroker_machine(j.code.classGetBase()):
                 result.append(vfw['tcpForwardRules'])
         return result
 
+    @auth(['level1','level2'])
     def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
