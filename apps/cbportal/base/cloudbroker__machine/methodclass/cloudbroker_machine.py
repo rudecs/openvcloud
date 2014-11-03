@@ -800,5 +800,5 @@ class cloudbroker_machine(j.code.classGetBase()):
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
         subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
-        self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, int(destPort), vmachine.id, int(localPort), proto)
+        self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
         j.tools.whmcs.tickets.close_ticket(ticketId)
