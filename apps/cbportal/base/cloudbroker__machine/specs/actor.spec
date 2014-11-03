@@ -242,3 +242,14 @@
         """
         var:machineId int,, ID of machine
         var:result json,,
+
+    method:createPortForward
+        """
+        Creates a port forwarding rule for a machine
+        """
+        var:machineId int,, ID of machine
+        var:spaceName str,,Space name
+        var:localPort int,,Source port
+        var:destPort int,,Destination port
+        var:proto str,,Protocol
+        var:reason str,,Reason

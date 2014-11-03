@@ -21,6 +21,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
         self._cb = None
         self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
+        self.portforwarding_actor = self.cb.extensions.imp.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
 
     @property
@@ -782,4 +783,21 @@ class cloudbroker_machine(j.code.classGetBase()):
                 result.append(vfw['tcpForwardRules'])
         return result
 
-
+    def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if spaceName != cloudspace.name:
+            ctx.start_response('400', headers)
+            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
+        subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, int(destPort), vmachine.id, int(localPort), proto)
+        j.tools.whmcs.tickets.close_ticket(ticketId)

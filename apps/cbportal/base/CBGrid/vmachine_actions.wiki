@@ -111,13 +111,15 @@
   - reason
 
 - display: Create Portforwarding
-  action: ./
+  action: /restmachine/cloudbroker/machine/createPortForward
   data:
    machineId: $$id
+   spaceName: $$spacename
   input:
   - destIP
   - destPort
   - proto
+  - reason
 
 - display: Delete Portforwarding
   action: ./
@@ -127,6 +129,7 @@
   - destIP
   - destPort
   - proto
+  - reason
 
 - display: Add Disk 
   action: ./
