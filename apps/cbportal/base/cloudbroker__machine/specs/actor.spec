@@ -253,3 +253,12 @@
         var:destPort int,,Destination port
         var:proto str,,Protocol
         var:reason str,,Reason
+
+    method:deletePortForward
+        """
+        Deletes a port forwarding rule for a machine
+        """
+        var:machineId int,, ID of machine
+        var:spaceName str,,Space name
+        var:ruleId int,,Portforwarding rule id
+        var:reason str,,Reason

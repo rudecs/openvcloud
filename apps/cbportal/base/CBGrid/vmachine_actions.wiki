@@ -122,13 +122,12 @@
   - reason
 
 - display: Delete Portforwarding
-  action: ./
+  action: /restmachine/cloudbroker/machine/deletePortForward
   data:
    machineId: $$id
+   spaceName: $$spacename
   input:
-  - destIP
-  - destPort
-  - proto
+  - ruleId
   - reason
 
 - display: Add Disk 

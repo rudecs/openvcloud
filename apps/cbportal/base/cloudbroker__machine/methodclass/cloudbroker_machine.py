@@ -501,6 +501,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         vmachine.stackId = target_stack['id']
         self.cbcl.vmachine.set(vmachine)
 
+    @auth(['level1','level2'])
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key,bucketname,**kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -532,6 +533,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         guid = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
         return guid
 
+    @auth(['level1','level2'])
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         vmexportId = int(vmexportId)
         nid = int(nid)
@@ -564,6 +566,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
+    @auth(['level1','level2'])
     def listExports(self, status, machineId ,**kwargs):
         machineId = int(machineId)
         query = {'status': status, 'machineId': machineId}
@@ -573,6 +576,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
+    @auth(['level1','level2'])
     def tag(self, machineId, tagName, **kwargs):
         """
         Adds a tag to a machine, useful for indexing and following a (set of) machines
@@ -599,6 +603,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.cbcl.vmachine.set(vmachine)
         return True
 
+    @auth(['level1','level2'])
     def untag(self, machineId, tagName, **kwargs):
         """
         Removes a specific tag from a machine
@@ -625,6 +630,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.cbcl.vmachine.set(vmachine)
         return True
 
+    @auth(['level1','level2'])
     def list(self, tag=None, computeNode=None, accountName=None, cloudspaceId=None, **kwargs):
         """
         List the undestroyed machines based on specific criteria
@@ -667,6 +673,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         query['status'] = {'$ne': 'destroyed'}
         return self.cbcl.vmachine.search(query)[1:]
 
+    @auth(['level1','level2'])
     def checkImageChain(self, machineId, **kwargs):
         """
         Checks on the computenode the vm is on if the vm image is there
@@ -732,6 +739,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
+    @auth(['level1','level2'])
     def listSnapshots(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
@@ -747,6 +755,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return 'Machine %s is invalid' % machineId
         return self.machines_actor.listSnapshots(machineId)
 
+    @auth(['level1','level2'])
     def getHistory(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
@@ -762,6 +771,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return 'Machine %s is invalid' % machineId
         return self.machines_actor.getHistory(machineId)
 
+    @auth(['level1','level2'])
     def listPortForwards(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
@@ -801,4 +811,24 @@ class cloudbroker_machine(j.code.classGetBase()):
         subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1','level2'])
+    def deletePortForward(self, machineId, spaceName, ruleId, reason, **kwargs):
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if spaceName != cloudspace.name:
+            ctx.start_response('400', headers)
+            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (account.name, spaceName, vmachine.name, ruleId, reason)
+        subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self.portforwarding_actor.delete(cloudspace.id, ruleId)
         j.tools.whmcs.tickets.close_ticket(ticketId)
