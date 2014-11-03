@@ -10,7 +10,6 @@ organization = "cloudscalers"
 author = "zains@codescalers.com"
 license = "bsd"
 version = "1.0"
-roles = ['compute']
 queue = "hypervisor"
 
 def action(machineId, accountName, reason):
