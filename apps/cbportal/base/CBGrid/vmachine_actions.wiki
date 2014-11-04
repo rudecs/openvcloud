@@ -131,18 +131,27 @@
   - reason
 
 - display: Add Disk 
-  action: ./
+  action: /restmachine/cloudbroker/machine/addDisk
   data:
    machineId: $$id
+   spaceName: $$spacename
   input:
+  - diskName
+  - description
   - size
+  - type
+  - reason
 
 - display: Delete Disk 
   action: ./
   data:
    machineId: $$id
   input:
-  - diskId
+  - diskName
+  - description
+  - size
+  - type
+  - reason
 
 - display: Create Template 
   action: ./

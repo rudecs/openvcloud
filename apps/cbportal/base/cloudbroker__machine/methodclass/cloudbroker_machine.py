@@ -836,3 +836,23 @@ class cloudbroker_machine(j.code.classGetBase()):
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.delete(cloudspace.id, ruleId)
         j.tools.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1','level2'])
+    def addDisk(self, machineId, spaceName, diskName, description, reason, size=10, type='D', **kwargs):
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if spaceName != cloudspace.name:
+            ctx.start_response('400', headers)
+            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskName, reason)
+        subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
