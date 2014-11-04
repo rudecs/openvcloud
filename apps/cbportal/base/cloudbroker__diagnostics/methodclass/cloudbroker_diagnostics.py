@@ -24,4 +24,4 @@ class cloudbroker_diagnostics(j.code.classGetBase()):
         Starts the vms check jumpscipt to do a ping to every VM from their virtual firewalls
         result boolean
         """
-        return self.acl.executeJumpScript('jumpscale', 'vms_check', role='master')
+        return self.acl.executeJumpscript('jumpscale', 'vms_check', role='master')

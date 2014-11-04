@@ -51,13 +51,13 @@ def action(path, name, machineId,storageparameters,nid,backup_type):
 
     if storageparameters['storage_type'] == 'cephfs':
         args = {'machineid':machineId}
-        result = agentcontroller.executeJumpScript('cloudscalers','cloudbroker_backup_cephfs', args=args,nid=nid,timeout=3600, wait=True)
+        result = agentcontroller.executeJumpscript('cloudscalers','cloudbroker_backup_cephfs', args=args,nid=nid,timeout=3600, wait=True)
     elif backup_type == 'raw':
         args = {'path':path, 'name':name, 'storageparameters': storageparameters}
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, timeout=3600, wait=True)
+        result = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_backup_create_raw', args=args, nid=nid, timeout=3600, wait=True)
     elif backup_type == 'condensed':
         args = {'domainid': vm.referenceId, 'temppath': TEMPSTORE, 'name':name, 'storageparameters': storageparameters}
-        result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, timeout=3600, wait=True)
+        result = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_backup_create_condensed', args=args, nid=nid, timeout=3600, wait=True)
     else:
         raise 'Incorrect storage/backup type'
 

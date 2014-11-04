@@ -225,7 +225,7 @@ class cloudapi_machines(object):
         #create a public ip and virtual firewall on the cloudspace if needed
         if cloudspace.status != 'DEPLOYED':
             args = {'cloudspaceId': cloudspaceId}
-            self.acl.executeJumpScript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
+            self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
 
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
@@ -646,7 +646,7 @@ class cloudapi_machines(object):
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
     
@@ -695,7 +695,7 @@ class cloudapi_machines(object):
 
         agentcontroller = j.clients.agentcontroller.get()
 
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
     @authenticator.auth(acl='R')

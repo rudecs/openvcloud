@@ -474,13 +474,13 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine base image was not found on target node"
 
         # create network on target node
-        self.acl.executeJumpScript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
 
         # get disks info on source node
-        disks_info = self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, role=source_stack.referenceId, wait=True)['result']
+        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, role=source_stack.referenceId, wait=True)['result']
 
         # create disks on target node
-        self.acl.executeJumpScript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
 
         # scp the .iso file
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
@@ -530,7 +530,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         nid = int(stack.referenceId)
         gid = stack.gid
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        guid = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
+        guid = self.acl.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
         return guid
 
     @auth(['level1','level2'])
@@ -563,7 +563,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
 
-        id = self.acl.executeJumpScript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
+        id = self.acl.executeJumpscript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
     @auth(['level1','level2'])
@@ -714,7 +714,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
-        self.acl.executeJumpScript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
+        self.acl.executeJumpscript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
@@ -741,7 +741,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
         stack = self.cbcl.stack.get(vmachine.stackId)
         args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
-        self.acl.executeJumpScript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
+        self.acl.executeJumpscript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
     @auth(['level1','level2'])
     def listSnapshots(self, machineId, **kwargs):
