@@ -400,7 +400,7 @@ class cloudapi_machines(object):
                 pass # VFW not deployed yet
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
+                'status': enums.MachineStatusMap.getByValue(node.state), 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     @authenticator.auth(acl='R')
