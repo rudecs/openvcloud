@@ -23,7 +23,7 @@ class MachineStatus(BaseEnum):
     _ENUMS = ['RUNNING', 'HALTED', 'SUSPENDED']
 
 class MachineStatusMap(MapEnum):
-    _ENUMS = {'RUNNING': 1, 'HALTED': 4, 'SUSPENDED': 3}
+    _ENUMS = {'RUNNING': 1, 'HALTED': 5, 'SUSPENDED': 3}
 
 
 MachineStatus._init()
