@@ -12,11 +12,11 @@ license = "bsd"
 version = "1.0"
 queue = "hypervisor"
 
-def action(machineId, accountName, reason):
+def action(machineId, nodeId):
     # shutdown the vmachine
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    connection.shutdown(machineId)
+    connection.shutdown(nodeId)
 
     # move the vmachine to slower storage
     cmd = 'cd /mnt/vmstor; VM=vm-%s; tar cf - $VM | tar xvf - -C /mnt/vmstor2 && rm -rf $VM && ln -s /mnt/vmstor2/${VM}' % machineId
