@@ -19,5 +19,7 @@ def action(machineId, nodeId):
     connection.shutdown(nodeId)
 
     # move the vmachine to slower storage
-    cmd = 'cd /mnt/vmstor; VM=vm-%s; tar cf - $VM | tar xvf - -C /mnt/vmstor2 && rm -rf $VM && ln -s /mnt/vmstor2/${VM}' % machineId
-    j.system.process.execute(cmd)
+    src = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % machineId)
+    dest = j.system.fs.joinPaths('/mnt', 'vmstor2', 'vm-%s' % machineId)
+    j.system.fs.moveDir(src, dest)
+    j.system.fs.symlink(dest, j.system.fs.joinPaths('/mnt', 'vmstor'))
