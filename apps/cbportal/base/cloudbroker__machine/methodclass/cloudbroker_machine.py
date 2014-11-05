@@ -438,7 +438,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
         if targetComputeNode:
-            stacks = self.cbcl.stack.simpleSearch({'referenceId': targetComputeNode})
+            stacks = self.cbcl.stack.search({'name': targetComputeNode})[1:]
             if not stacks:
                 ctx = kwargs['ctx']
                 headers = [('Content-Type', 'application/json'), ]
@@ -456,10 +456,10 @@ class cloudbroker_machine(j.code.classGetBase()):
         image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
 
         source_api = j.remote.cuisine.api
-        source_api.connect(source_stack.referenceId)
+        source_api.connect(source_stack.name)
 
         target_api = j.remote.cuisine.api
-        target_api.connect(target_stack['referenceId'])
+        target_api.connect(target_stack['name'])
 
         if target_api.file_exists(image_path):
             if target_api.file_md5(image_path) != source_api.file_md5(image_path):
@@ -474,27 +474,27 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine base image was not found on target node"
 
         # create network on target node
-        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, role=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, gid=target_stack['gid'], nid=target_stack['referenceId'], wait=True)
 
         # get disks info on source node
-        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, role=source_stack.referenceId, wait=True)['result']
+        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, gid=source_stack.gid, nid=source_stack.referenceId, wait=True)['result']
 
         # create disks on target node
-        self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, role=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, gid=target_stack['gid'], nid=target_stack['referenceId'], wait=True)
 
         # scp the .iso file
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
-        source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['referenceId'], iso_file_path))
+        source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['name'], iso_file_path))
 
         if withSnapshots:
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
             if snapshots:
                 source_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
-                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id, 'targethost': target_stack['referenceId']})
+                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
                 target_api.run('virsh define /tmp/vm-%s.xml' % vmachine.id)
                 for snapshot in snapshots:
                     source_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
-                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['referenceId']})
+                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
                     target_api.run('virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
@@ -502,7 +502,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         self.cbcl.vmachine.set(vmachine)
 
     @auth(['level1','level2'])
-    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key,bucketname,**kwargs):
+    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, bucketname, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
