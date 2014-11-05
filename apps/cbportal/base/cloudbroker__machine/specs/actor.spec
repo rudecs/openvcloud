@@ -292,3 +292,12 @@
         var:spaceName str,,Space name
         var:templateName str,, Name of the template
         var:reason str,,Reason
+
+    method:updateMachine
+        """
+        Updates machine description
+        """
+        var:machineId int,, ID of machine
+        var:spaceName str,,Space name
+        var:description str,, new description
+        var:reason str,,Reason

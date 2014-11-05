@@ -896,3 +896,23 @@ class cloudbroker_machine(j.code.classGetBase()):
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.createTemplate(machineId, templateName, None)
         j.tools.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1','level2'])
+    def updateMachine(self, machineId, spaceName, description, reason, **kwargs):
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
+        if not self.cbcl.vmachine.exists(machineId):
+            ctx.start_response('404', headers)
+            return 'Machine ID %s was not found' % machineId
+        vmachine = self.cbcl.vmachine.get(machineId)
+        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        if spaceName != cloudspace.name:
+            ctx.start_response('400', headers)
+            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
+        account = self.cbcl.account.get(cloudspace.accountId)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (account.name, spaceName, vmachine.name, description, reason)
+        subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self.machines_actor.update(machineId, description=description)
+        j.tools.whmcs.tickets.close_ticket(ticketId)
