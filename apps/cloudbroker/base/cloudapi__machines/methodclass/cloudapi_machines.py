@@ -25,7 +25,6 @@ class cloudapi_machines(object):
         self.appname = "cloudapi"
         self._cb = None
         self._models = None
-        j.logger.setLogTargetLogForwarder()
 
         self.osisclient = j.core.osis.getClientByInstance('main')
         self.acl = j.clients.agentcontroller.get()

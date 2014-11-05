@@ -15,7 +15,6 @@ class cloudapi_s3storage(j.code.classGetBase()):
         self.appname="cloudapi"
         self._cb = None
         self._models = None
-        j.logger.setLogTargetLogForwarder()
 
         self.osisclient = j.core.osis.getClientByInstance('main')
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
