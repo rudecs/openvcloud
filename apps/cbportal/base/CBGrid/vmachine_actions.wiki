@@ -152,11 +152,13 @@
   - reason
 
 - display: Create Template 
-  action: ./
+  action: /restmachine/cloudbroker/machine/createTemplate
   data:
    machineId: $$id
+   spaceName: $$spacename
   input:
   - templateName
+  - reason
 
 - display: Update Machine 
   action: ./

@@ -283,3 +283,12 @@
         var:spaceName str,,Space name
         var:diskId int,, ID of disk
         var:reason str,,Reason
+
+    method:createTemplate
+        """
+        Creates a template from a deployed machine
+        """
+        var:machineId int,, ID of machine
+        var:spaceName str,,Space name
+        var:templateName str,, Name of the template
+        var:reason str,,Reason
