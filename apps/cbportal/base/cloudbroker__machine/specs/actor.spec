@@ -274,3 +274,12 @@
         var:size int,,size in GByte default=10 @tags: optional
         var:type str,,(B;D;T)  B=Boot;D=Data;T=Temp default=D @tags: optional
         var:reason str,,Reason
+
+    method:deleteDisk
+        """
+        Deletes a disk from a deployed machine
+        """
+        var:machineId int,, ID of machine
+        var:spaceName str,,Space name
+        var:diskId int,, ID of disk
+        var:reason str,,Reason

@@ -143,14 +143,12 @@
   - reason
 
 - display: Delete Disk 
-  action: ./
+  action: /restmachine/cloudbroker/machine/deleteDisk
   data:
    machineId: $$id
+   spaceName: $$spacename
   input:
-  - diskName
-  - description
-  - size
-  - type
+  - diskId
   - reason
 
 - display: Create Template 
