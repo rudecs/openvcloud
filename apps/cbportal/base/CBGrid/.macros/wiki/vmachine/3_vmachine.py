@@ -66,7 +66,7 @@ def main(j, args, params, tags, tasklet):
             except:
                 pass
 
-        fields = ('name', 'id', 'descr', 'imageId', 'stackId', 'status', 'hostName', 'hypervisorType', 'cloudspaceId')
+        fields = ('name', 'id', 'descr', 'imageId', 'stackId', 'status', 'hostName', 'hypervisorType', 'cloudspaceId', 'tags')
         for field in fields:
             data[field.lower()] = getattr(obj, field, 'N/A')
 

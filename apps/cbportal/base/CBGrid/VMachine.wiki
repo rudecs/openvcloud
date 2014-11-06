@@ -6,6 +6,7 @@ h2. vMachine: $$name
 
 |*ID*| $$id|
 |*Description*| $$descr|
+|*Tags*| $$tags|
 |*CPU Node*| [$$stackrefid|stack?id=$$stackid]|
 |*Account*| [$$accountname|account?id=$$accountid]|
 |*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
