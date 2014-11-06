@@ -24,7 +24,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     try:
-        cl = j.clients.redis.getGeventRedisClientByInstanceName('production')
+        cl = j.clients.redis.getGeventRedisClientByInstanceName('system')
     except:
         cl = None
 
