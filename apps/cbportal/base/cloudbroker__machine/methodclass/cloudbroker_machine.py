@@ -420,7 +420,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1','level2'])
-    def moveToDifferentComputeNode(self, accountName, machineId, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
+    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
         if not self.cbcl.vmachine.exists(machineId):
             ctx = kwargs['ctx']

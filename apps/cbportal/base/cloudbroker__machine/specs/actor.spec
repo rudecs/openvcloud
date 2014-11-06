@@ -133,6 +133,7 @@
         var:targetComputeNode str,, Name of the compute node the machine has to be moved to @optional
         var:withSnapshots bool,, Defaults to true @optional
         var:collapseSnapshots bool,, Sanitize snapshots, defaults to false @optional
+        var:reason str,,Reason
 
     method:export
         """

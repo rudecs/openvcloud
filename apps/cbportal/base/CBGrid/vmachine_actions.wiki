@@ -184,16 +184,18 @@
   - exportName
 
 - display: Check Image Chain
-  action: ./
+  action: /restmachine/cloudbroker/machine/checkImageChain
   data:
    machineId: $$id
 
-- display: Move to diffrent Compute Node
-  action: ./
+- display: Move to a diffrent Compute Node
+  action: /restmachine/cloudbroker/machine/moveToDifferentComputeNode
   data:
    machineId: $$id
+   accountName: $$accountname
   input:
-  - newName
+  - targetComputeNode
+  - reason
 
 - display: Tag
   action: /restmachine/cloudbroker/machine/tag
