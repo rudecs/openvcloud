@@ -397,9 +397,13 @@ class cloudapi_machines(object):
                     self.models.vmachine.set(machine)
             except:
                 pass # VFW not deployed yet
+        realstatus = enums.MachineStatusMap.getByValue(node.state)
+        if realstatus != machine.status:
+            machine.status = realstatus
+            self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': enums.MachineStatusMap.getByValue(node.state), 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
+                'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     @authenticator.auth(acl='R')
