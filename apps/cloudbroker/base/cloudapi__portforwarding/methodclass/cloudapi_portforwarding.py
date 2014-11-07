@@ -71,7 +71,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
 
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
-            return "Forward from %s with port %s already exists" % (publicIp, publicPort)
+            return "Forward to %s with port %s already exists" % (publicIp, publicPort)
         return self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
@@ -168,7 +168,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
                 return 'No correct ipaddress found for machine with id %s' % vmid
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
-            return "Forward from %s with port %s already exists" % (publicIp, publicPort)
+            return "Forward for %s with port %s already exists" % (publicIp, publicPort)
         self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
