@@ -206,7 +206,6 @@ class cloudapi_machines(object):
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
-        
         #Check if there is enough credit
         cloudspaceId = int(cloudspaceId)
         sizeId = int(sizeId)

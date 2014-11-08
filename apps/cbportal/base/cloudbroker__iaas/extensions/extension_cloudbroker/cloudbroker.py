@@ -79,19 +79,19 @@ class CloudBroker(object):
                 image = provider.cbcl.image.new()
                 image.name = pimage.name
                 image.referenceId = pimage.id
-                image.type = pimage.extra['imagetype']
-                image.size = pimage.extra['size']
-                image.username = pimage.extra['username']
-                image.status = pimage.status or 'CREATED'
+                image.type = pimage.extra.get('imagetype', 'Unknown')
+                image.size = pimage.extra.get('size', 0)
+                image.username = pimage.extra.get('username', 'cloudscalers')
+                image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
                 image.accountId = 0
             else:
                 image = images[0]
                 image['name'] = pimage.name
                 image['referenceId'] = pimage.id
-                image['type'] = pimage.extra['imagetype']
-                image['size'] = pimage.extra['size']
-                image['username'] = pimage.extra['username']
-                image['status'] = pimage.status or 'CREATED'
+                image['type'] = pimage.extra.get('imagetype', 'Unknown')
+                image['size'] = pimage.extra.get('size', 0)
+                image['username'] = pimage.extra.get('username', 'cloudscalers')
+                image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
             count += 1
             imageid = provider.cbcl.image.set(image)[0]
             if not imageid in stack.images:
