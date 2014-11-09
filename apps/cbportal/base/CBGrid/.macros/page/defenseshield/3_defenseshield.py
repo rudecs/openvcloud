@@ -1,7 +1,7 @@
 from JumpScale.portal.docgenerator.popup import Popup
 
 def main(j, args, params, tags, tasklet):
-    actors = j.apps.cloudbroker.iaas.cb.extensions.imp.actors.cloudapi
+    actors = j.apps.cloudbroker.iaas.cb.actors.cloudapi
     params.result = page = args.page
     cloudspaceId = args.getTag('cloudspaceId')
     try:

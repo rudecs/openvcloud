@@ -1,37 +1,27 @@
 from JumpScale import j
+from cloudbrokerlib.baseactor import BaseActor
 import time, string
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
-import urllib,ujson
-import urlparse
+import ujson
 import JumpScale.baselib.remote.cuisine
 import JumpScale.grid.agentcontroller
 import JumpScale.lib.whmcs
 
 
-class cloudbroker_machine(j.code.classGetBase()):
+class cloudbroker_machine(BaseActor):
     def __init__(self):
-        self._te={}
-        self.actorname="machine"
-        self.appname="cloudbroker"
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        super(cloudbroker_machine, self).__init__()
         self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
-        self._cb = None
-        self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
-        self.portforwarding_actor = self.cb.extensions.imp.actors.cloudapi.portforwarding
+        self.machines_actor = self.cb.actors.cloudapi.machines
+        self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
 
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
     @auth(['level1',])
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs): 
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         return self.machines_actor.create(cloudspaceId, name, description, sizeId, imageId, disksize)
     @auth(['level1',])
     def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, **kwargs):
@@ -50,9 +40,9 @@ class cloudbroker_machine(j.code.classGetBase()):
         imageId = int(imageId)
         sizeId = int(sizeId)
         stackid = int(stackid)
-        machine = self.cbcl.vmachine.new()
-        image = self.cbcl.image.get(imageId)
-        cloudspace = self.cbcl.cloudspace.get(cloudspaceId)
+        machine = self.models.vmachine.new()
+        image = self.models.image.get(imageId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
 
         networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
@@ -62,11 +52,11 @@ class cloudbroker_machine(j.code.classGetBase()):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
 
-        disk = self.cbcl.disk.new()
+        disk = self.models.disk.new()
         disk.name = '%s_1'
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
-        diskid = self.cbcl.disk.set(disk)[0]
+        diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
 
         account = machine.new_account()
@@ -81,10 +71,10 @@ class cloudbroker_machine(j.code.classGetBase()):
         passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
         account.password = passwd
         auth = NodeAuthPassword(passwd)
-        machine.id = self.cbcl.vmachine.set(machine)[0]
+        machine.id = self.models.vmachine.set(machine)[0]
 
         try:
-            provider = self.cb.extensions.imp.getProviderByStackId(stackid)
+            provider = self.cb.getProviderByStackId(stackid)
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             if not image or not pimage:
@@ -92,7 +82,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
         except:
-            self.cbcl.vmachine.delete(machine.id)
+            self.models.vmachine.delete(machine.id)
             raise
         node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
         if node == -1:
@@ -101,8 +91,8 @@ class cloudbroker_machine(j.code.classGetBase()):
         return machine.id
 
     def _getSize(self, provider, machine):
-        brokersize = self.cbcl.size.get(machine.sizeId)
-        firstdisk = self.cbcl.disk.get(machine.disks[0])
+        brokersize = self.models.size.get(machine.sizeId)
+        firstdisk = self.models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
 
     def _updateMachineFromNode(self, machine, node, stackId, psize):
@@ -114,32 +104,32 @@ class cloudbroker_machine(j.code.classGetBase()):
         for ipaddress in node.public_ips:
             nic = machine.new_nic()
             nic.ipAddress = ipaddress
-        self.cbcl.vmachine.set(machine)
+        self.models.vmachine.set(machine)
 
-        cloudspace = self.cbcl.cloudspace.get(machine.cloudspaceId)
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         providerstacks = set(cloudspace.resourceProviderStacks)
         providerstacks.add(stackId)
         cloudspace.resourceProviderStacks = list(providerstacks)
-        self.cbcl.cloudspace.set(cloudspace)
+        self.models.cloudspace.set(cloudspace)
 
     @auth(['level1','level2'])
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -152,21 +142,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -182,21 +172,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -212,21 +202,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def pause(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -242,21 +232,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def resume(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -272,21 +262,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -302,21 +292,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -332,21 +322,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -362,21 +352,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -392,21 +382,21 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if not cloudspace.name == spaceName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
 
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -422,15 +412,15 @@ class cloudbroker_machine(j.code.classGetBase()):
     @auth(['level1','level2'])
     def moveToDifferentComputeNode(self, accountName, machineId, reason, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        account = self.models.account.get(cloudspace.accountId)
         if account.name != accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
@@ -438,7 +428,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
         if targetComputeNode:
-            stacks = self.cbcl.stack.search({'name': targetComputeNode})[1:]
+            stacks = self.models.stack.search({'name': targetComputeNode})[1:]
             if not stacks:
                 ctx = kwargs['ctx']
                 headers = [('Content-Type', 'application/json'), ]
@@ -446,12 +436,12 @@ class cloudbroker_machine(j.code.classGetBase()):
                 return 'Target node %s was not found' % targetComputeNode
             target_stack = stacks[0]
         else:
-            target_stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, vmachine.imageId)
+            target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
 
-        source_stack = self.cbcl.stack.get(vmachine.stackId)
+        source_stack = self.models.stack.get(vmachine.stackId)
 
         # validate machine template is on target node
-        image = self.cbcl.image.get(vmachine.imageId)
+        image = self.models.image.get(vmachine.imageId)
         libvirt_image = self.libvirtcl.image.get(image.referenceId)
         image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
 
@@ -499,18 +489,18 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
         vmachine.stackId = target_stack['id']
-        self.cbcl.vmachine.set(vmachine)
+        self.models.vmachine.set(vmachine)
 
     @auth(['level1','level2'])
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, bucketname, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        machine = self.cbcl.vmachine.get(machineId)
+        machine = self.models.vmachine.get(machineId)
         if not machine:
             ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        stack = self.cbcl.stack.get(machine.stackId)
+        stack = self.models.stack.get(machine.stackId)
         storageparameters  = {}
         if storage == 'S3':
             if not aws_access_key or not aws_secret_key or not host:
@@ -539,7 +529,7 @@ class cloudbroker_machine(j.code.classGetBase()):
         nid = int(nid)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        vmexport = self.cbcl.vmexport.get(vmexportId)
+        vmexport = self.models.vmexport.get(vmexportId)
         if not vmexport:
             ctx.start_response('400', headers)
             return 'Export definition with id %s not found' % vmexportId
@@ -570,7 +560,7 @@ class cloudbroker_machine(j.code.classGetBase()):
     def listExports(self, status, machineId ,**kwargs):
         machineId = int(machineId)
         query = {'status': status, 'machineId': machineId}
-        exports = self.cbcl.vmexport.search(query)[1:]
+        exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
@@ -584,13 +574,13 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:tagName tag
         """
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'vMachine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
+        vmachine = self.models.vmachine.get(machineId)
         tags = j.core.tags.getObject(vmachine.tags)
         if tags.labelExists(tagName):
             ctx = kwargs['ctx']
@@ -600,7 +590,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         tags.labelSet(tagName)
         vmachine.tags = tags.tagstring
-        self.cbcl.vmachine.set(vmachine)
+        self.models.vmachine.set(vmachine)
         return True
 
     @auth(['level1','level2'])
@@ -611,13 +601,13 @@ class cloudbroker_machine(j.code.classGetBase()):
         param:tagName tag
         """
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'vMachine ID %s was not found' % machineId
 
-        vmachine = self.cbcl.vmachine.get(machineId)
+        vmachine = self.models.vmachine.get(machineId)
         tags = j.core.tags.getObject(vmachine.tags)
         if not tags.labelExists(tagName):
             ctx = kwargs['ctx']
@@ -627,7 +617,7 @@ class cloudbroker_machine(j.code.classGetBase()):
 
         tags.labelDelete(tagName)
         vmachine.tags = tags.tagstring
-        self.cbcl.vmachine.set(vmachine)
+        self.models.vmachine.set(vmachine)
         return True
 
     @auth(['level1','level2'])
@@ -649,17 +639,17 @@ class cloudbroker_machine(j.code.classGetBase()):
         if tag:
             query['tags'] = tag
         if computeNode:
-            stacks = self.cbcl.stack.search({'referenceId': computeNode})[1:]
+            stacks = self.models.stack.search({'referenceId': computeNode})[1:]
             if stacks:
                 stack_id = stacks[0]['id']
                 query['stackId'] = stack_id
             else:
                 return list()
         if accountName:
-            accounts = self.cbcl.account.search({'name': accountName})[1:]
+            accounts = self.models.account.search({'name': accountName})[1:]
             if accounts:
                 account_id = accounts[0]['id']
-                cloudspaces = self.cbcl.cloudspace.search({'accountId': account_id})[1:]
+                cloudspaces = self.models.cloudspace.search({'accountId': account_id})[1:]
                 if cloudspaces:
                     cloudspaces_ids = [cs['id'] for cs in cloudspaces]
                     query['cloudspaceId'] = {'$in': cloudspaces_ids}
@@ -671,7 +661,7 @@ class cloudbroker_machine(j.code.classGetBase()):
             query['cloudspaceId'] = cloudspaceId
 
         query['status'] = {'$ne': 'destroyed'}
-        return self.cbcl.vmachine.search(query)[1:]
+        return self.models.vmachine.search(query)[1:]
 
     @auth(['level1','level2'])
     def checkImageChain(self, machineId, **kwargs):
@@ -695,21 +685,21 @@ class cloudbroker_machine(j.code.classGetBase()):
         @param:reason str,,Reason
         '''
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        stack = self.cbcl.stack.get(vmachine.stackId)
+        stack = self.models.stack.get(vmachine.stackId)
         subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
         msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, "High")
@@ -726,20 +716,20 @@ class cloudbroker_machine(j.code.classGetBase()):
         * Close the ticket
         """
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        account = self.models.account.get(cloudspace.accountId)
         if not account.name == accountName:
             ctx = kwargs['ctx']
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-        stack = self.cbcl.stack.get(vmachine.stackId)
+        stack = self.models.stack.get(vmachine.stackId)
         args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpscript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
@@ -748,11 +738,11 @@ class cloudbroker_machine(j.code.classGetBase()):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             if ctx:
                 ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
+        vmachine = self.models.vmachine.get(machineId)
         if vmachine.status=='DESTROYED' or not vmachine.status:
             if ctx:
                 ctx.start_response('400', headers)
@@ -764,11 +754,11 @@ class cloudbroker_machine(j.code.classGetBase()):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             if ctx:
                 ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
+        vmachine = self.models.vmachine.get(machineId)
         if vmachine.status=='DESTROYED' or not vmachine.status:
             if ctx:
                 ctx.start_response('400', headers)
@@ -780,11 +770,11 @@ class cloudbroker_machine(j.code.classGetBase()):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
         machineId = int(machineId)
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             if ctx:
                 ctx.start_response('400', headers)
             return 'Machine %s not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
+        vmachine = self.models.vmachine.get(machineId)
         if vmachine.status=='DESTROYED' or not vmachine.status:
             if ctx:
                 ctx.start_response('400', headers)
@@ -802,15 +792,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
         subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -822,15 +812,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (account.name, spaceName, vmachine.name, ruleId, reason)
         subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -842,15 +832,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskName, reason)
         subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -862,15 +852,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskId, reason)
         subject = 'Deleting disk: %s for machine %s' % (diskId, vmachine.name)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -882,15 +872,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (account.name, spaceName, vmachine.name, templateName, reason)
         subject = 'Creating template: %s for machine %s' % (templateName, vmachine.name)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -902,15 +892,15 @@ class cloudbroker_machine(j.code.classGetBase()):
         machineId = int(machineId)
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        if not self.cbcl.vmachine.exists(machineId):
+        if not self.models.vmachine.exists(machineId):
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
-        vmachine = self.cbcl.vmachine.get(machineId)
-        cloudspace = self.cbcl.cloudspace.get(vmachine.cloudspaceId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName != cloudspace.name:
             ctx.start_response('400', headers)
             return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
-        account = self.cbcl.account.get(cloudspace.accountId)
+        account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (account.name, spaceName, vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
         ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')

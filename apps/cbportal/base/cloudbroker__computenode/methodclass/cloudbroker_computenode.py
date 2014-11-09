@@ -1,19 +1,12 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
-import JumpScale.grid.osis
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudbroker_computenode(j.code.classGetBase()):
+class cloudbroker_computenode(BaseActor):
     """
     Operator actions for handling interventsions on a computenode
     
     """
-    def __init__(self):
-        
-        self._te={}
-        self.actorname="ComputeNode"
-        self.appname="cloudbroker"
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-
     @auth(['level1', 'level2'])
     def setStatus(self, name, gid, status, **kwargs):
         """
@@ -33,11 +26,11 @@ class cloudbroker_computenode(j.code.classGetBase()):
         return self._changeStackStatus(name, gid, status, kwargs)
 
     def _changeStackStatus(self, name, gid, status, kwargs):
-        stack = self.cbcl.stack.search({'name':name, 'gid': int(gid)})[1:]
+        stack = self.models.stack.search({'name':name, 'gid': int(gid)})[1:]
         if stack:
             stack = stack[0]
             stack['status'] = status
-            self.cbcl.stack.set(stack)
+            self.models.stack.set(stack)
             return stack['status']
         else:
             ctx = kwargs["ctx"]
@@ -51,15 +44,15 @@ class cloudbroker_computenode(j.code.classGetBase()):
 
     @auth(['level2','level3'], True)
     def disable(self, name, gid, message, **kwargs):
-        stack = self.cbcl.stack.search({'name':name, 'gid': int(gid)})[1:]
+        stack = self.models.stack.search({'name':name, 'gid': int(gid)})[1:]
         if stack:
             self._changeStackStatus(name, gid, 'DISABLED', kwargs)
             stack = stack[0]
             machines_actor = j.apps.cloudbroker.machine
-            stackmachines = self.cbcl.vmachine.search({'stackId': stack['id']})[1:]
+            stackmachines = self.models.vmachine.search({'stackId': stack['id']})[1:]
             for machine in stackmachines:  
-                cloudspace = self.cbcl.cloudspace.get(machine['cloudspaceId'])
-                account = self.cbcl.account.get(cloudspace.accountId)
+                cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
+                account = self.models.account.get(cloudspace.accountId)
 
                 machines_actor.moveToDifferentComputeNode(account.name, machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
         return True

@@ -1,8 +1,8 @@
 from JumpScale import j
-import JumpScale.grid.osis
 import netaddr
 json = j.db.serializers.ujson
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 
 def checkIPS(network, ips):
     for ip in ips:
@@ -10,24 +10,10 @@ def checkIPS(network, ips):
             return False
     return True
 
-
-class cloudbroker_iaas(j.code.classGetBase()):
+class cloudbroker_iaas(BaseActor):
     """
     gateway to grid
     """
-    def __init__(self):
-        self._te={}
-        self.actorname = "iaas"
-        self.appname = "cloudbroker"
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-        self._cb = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
     def addPublicIPv4Subnet(self, subnet, gateway, freeips, gid, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
@@ -44,14 +30,14 @@ class cloudbroker_iaas(j.code.classGetBase()):
             ctx.start_response("400 Bad Request")
             return "Gateway Address %s is not in subnet %s" % (gateway, subnet)
 
-        pool = self.cbcl.publicipv4pool.new()
+        pool = self.models.publicipv4pool.new()
         pool.id = subnet
         pool.gid = int(gid)
         pool.gateway = gateway
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
         pool.pubips = list(set(freeips))
-        self.cbcl.publicipv4pool.set(pool)
+        self.models.publicipv4pool.set(pool)
         return subnet
 
     def addPublicIPv4IPS(self, subnet, freeips, **kwargs):
@@ -59,16 +45,16 @@ class cloudbroker_iaas(j.code.classGetBase()):
         Add public ips to an existing range
         """
         ctx = kwargs["ctx"]
-        if not self.cbcl.publicipv4pool.exists(subnet):
+        if not self.models.publicipv4pool.exists(subnet):
             ctx.start_response("404 Not Found")
             return "Could not find PublicIPv4Pool with subnet %s" % subnet
         net = netaddr.IPNetwork(subnet)
         if not checkIPS(net, freeips):
             ctx.start_response("400 Bad Request")
             return "One or more IP Addresses %s is not in subnet %s" % (subnet)
-        pool = self.cbcl.publicipv4pool.get(subnet)
+        pool = self.models.publicipv4pool.get(subnet)
         pool.pubips = list(set(pool.pubips).union(set(freeips)))
-        self.cbcl.publicipv4pool.set(pool)
+        self.models.publicipv4pool.set(pool)
         return subnet
 
     def removePublicIPv4IPS(self, subnet, freeips, **kwargs):
@@ -76,16 +62,16 @@ class cloudbroker_iaas(j.code.classGetBase()):
         Remove public ips from an existing range
         """
         ctx = kwargs["ctx"]
-        if not self.cbcl.publicipv4pool.exists(subnet):
+        if not self.models.publicipv4pool.exists(subnet):
             ctx.start_response("404 Not Found")
             return "Could not find PublicIPv4Pool with subnet %s" % subnet
         net = netaddr.IPNetwork(subnet)
         if not checkIPS(net, freeips):
             ctx.start_response("400 Bad Request")
             return "One or more IP Addresses %s is not in subnet %s" % (subnet)
-        pool = self.cbcl.publicipv4pool.get(subnet)
+        pool = self.models.publicipv4pool.get(subnet)
         pool.pubips = list(set(pool.pubips) - set(freeips))
-        self.cbcl.publicipv4pool.set(pool)
+        self.models.publicipv4pool.set(pool)
         return subnet
 
     @auth(['level1', 'level2'])
@@ -94,7 +80,7 @@ class cloudbroker_iaas(j.code.classGetBase()):
         synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
         result boolean
         """
-        stacks = self.cbcl.stack.list()
+        stacks = self.models.stack.list()
         for stack in stacks:
-            self.cb.extensions.imp.stackImportImages(stack)
+            self.cb.stackImportImages(stack)
         return True

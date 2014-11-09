@@ -1,27 +1,18 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 from cloudbrokerlib import network
 
-class cloudbroker_cloudspace(j.code.classGetBase()):
+class cloudbroker_cloudspace(BaseActor):
     def __init__(self):
-        self._te={}
-        self.actorname="cloudspace"
-        self.appname="cloudbroker"
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        super(cloudbroker_cloudspace, self).__init__(self)
         self.syscl = j.core.osis.getClientForNamespace('system')
-        self.network = network.Network(self.cbcl)
+        self.network = network.Network(self.models)
         self.vfwcl = j.core.osis.getClientForNamespace('vfw')
-        self._cb = None
-        self.netmgr = self.cb.extensions.imp.actors.jumpscale.netmgr
-        self.libvirt_actor = self.cb.extensions.imp.actors.libcloud.libvirt
-        self.cloudspaces_actor = self.cb.extensions.imp.actors.cloudapi.cloudspaces
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
+        self.netmgr = self.cb.actors.jumpscale.netmgr
+        self.libvirt_actor = self.cb.actors.libcloud.libvirt
+        self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
 
     @auth(['level1', 'level2'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
@@ -29,7 +20,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         Destroys a cloudspacec and its machines, vfws and routeros
         """
         cloudspaceId = int(cloudspaceId)
-        accounts = self.cbcl.account.simpleSearch({'name':accountname})
+        accounts = self.models.account.simpleSearch({'name':accountname})
         if not accounts:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -38,7 +29,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
 
         accountid = accounts[0]['id']
 
-        cloudspaces = self.cbcl.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
+        cloudspaces = self.models.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -48,7 +39,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         cloudspace = cloudspaces[0]
 
         cloudspace['status'] = 'DESTROYED'
-        self.cbcl.cloudspace.set(cloudspace)
+        self.models.cloudspace.set(cloudspace)
 
         #delete routeros
         gid = cloudspace['gid']
@@ -59,13 +50,13 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
             self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
 
         #delete machines
-        for machine in self.cbcl.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
+        for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
             machineId = machine['id']
             j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
 
         cloudspace['networkId'] = None
         cloudspace['publicipaddress'] = None
-        self.cbcl.cloudspace.set(cloudspace)
+        self.models.cloudspace.set(cloudspace)
         return True
 
     def _destroyVFW(self, gid, cloudspaceId):
@@ -109,7 +100,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         param:cloudspaceId id of the cloudspace
         """
         cloudspaceId = int(cloudspaceId)
-        if not self.cbcl.cloudspace.exists(cloudspaceId):
+        if not self.models.cloudspace.exists(cloudspaceId):
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
@@ -124,7 +115,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         param:cloudspaceId id of the cloudspace
         """
         cloudspaceId = int(cloudspaceId)
-        if not self.cbcl.cloudspace.exists(cloudspaceId):
+        if not self.models.cloudspace.exists(cloudspaceId):
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
@@ -136,27 +127,27 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
     @auth(['level1','level2'])
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
-        if not self.cbcl.cloudspace.exists(cloudspaceId):
+        if not self.models.cloudspace.exists(cloudspaceId):
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
             return 'Cloudspace with id %s not found' % (cloudspaceId)
 
-        cloudspace = self.cbcl.cloudspace.get(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
 
         self._destroyVFW(cloudspace.gid, cloudspaceId)
         if cloudspace.publicipaddress:
             self.network.releasePublicIpAddress(cloudspace.publicipaddress)
             cloudspace.publicipaddress = None
             cloudspace.status = 'VIRTUAL'
-            self.cbcl.cloudspace.set(cloudspace)
+            self.models.cloudspace.set(cloudspace)
         return True
 
     @auth(['level1','level2'])
     def updateName(self, cloudspaceId, newname, **kwargs):
-        cloudspace = self.cbcl.cloudspace.get(int(cloudspaceId))
+        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
         cloudspace.name = newname
-        self.cbcl.cloudspace.set(cloudspace)
+        self.models.cloudspace.set(cloudspace)
         return True
 
     @auth(['level1','level2'])
@@ -170,7 +161,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         param:maxDiskCapacity max size of aggregated disks (in GB)
         """
         ctx = kwargs["ctx"]
-        account = self.cbcl.account.simpleSearch({'name':accountname})
+        account = self.models.account.simpleSearch({'name':accountname})
         if not account:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
@@ -202,7 +193,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         """
         ctx = kwargs["ctx"]
         cloudspaceId = int(cloudspaceId)
-        if not self.cbcl.cloudspace.exists(cloudspaceId):
+        if not self.models.cloudspace.exists(cloudspaceId):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
             return "Cloud space with id %s doest not exists" % cloudspaceId
@@ -223,7 +214,7 @@ class cloudbroker_cloudspace(j.code.classGetBase()):
         """
         ctx = kwargs["ctx"]
         cloudspaceId = int(cloudspaceId)
-        if not self.cbcl.cloudspace.exists(cloudspaceId):
+        if not self.models.cloudspace.exists(cloudspaceId):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
             return "Cloud space with id %s doest not exists" % cloudspaceId

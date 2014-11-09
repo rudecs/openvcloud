@@ -4,3 +4,7 @@
 *.orig
 *.gen.py
 apps/cloudscalers_fe/base/wiki_gcb/.files/coverage
+apps/osis/logic/cloudbroker
+apps/osis/logic/billing
+apps/osis/logic/libvirt
+apps/osis/logic/cryptopayment

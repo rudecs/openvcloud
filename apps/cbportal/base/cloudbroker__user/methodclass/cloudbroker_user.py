@@ -1,21 +1,16 @@
 from JumpScale import j
-import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 import md5
 
-class cloudbroker_user(j.code.classGetBase()):
+class cloudbroker_user(BaseActor):
     """
     Operator actions for interventions specific to a user
     """
     def __init__(self):
-        
-        self._te = {}
-        self.actorname = "user"
-        self.appname = "cloudbroker"
-        self._cb = None
+        super(cloudbroker_user, self).__init__() 
         self.syscl = j.core.osis.getClientForNamespace('system')
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-        self.users_actor = self.cb.extensions.imp.actors.cloudapi.users
+        self.users_actor = self.cb.actors.cloudapi.users
 
     @property
     def cb(self):
@@ -89,7 +84,7 @@ class cloudbroker_user(j.code.classGetBase()):
         #delete all acls
         #delete from accounts
         query = {'acl.userGroupId': 'reem', 'acl.type':'U'}
-        accountswiththisuser = self.cbcl.account.search(query)[1:]
+        accountswiththisuser = self.models.account.search(query)[1:]
         for account in accountswiththisuser:
             rights = {acl['userGroupId']: acl['right'] for acl in account['acl']}
             admins = ['A' for right in rights.values() if 'A' in right]
@@ -97,13 +92,13 @@ class cloudbroker_user(j.code.classGetBase()):
                 ctx.start_response('403', headers)
                 return 'Cannot delete last Admin user of an account'
             account['acl'] = [acl for acl in account['acl'] if username not in acl['userGroupId']]
-            self.cbcl.account.set(account)
+            self.models.account.set(account)
 
         #delete from cloudspaces
-        cloudspaceswiththisuser = self.cbcl.cloudspace.search(query)[1:]
+        cloudspaceswiththisuser = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaceswiththisuser:
             cloudspace['acl'] = [acl for acl in cloudspace['acl'] if username not in acl['userGroupId']]
-            self.cbcl.cloudspace.set(cloudspace)
+            self.models.cloudspace.set(cloudspace)
 
         user['active'] = False
         self.syscl.user.set(user)

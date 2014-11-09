@@ -53,12 +53,21 @@ class CloudProvider(object):
         for image in self.client.list_images():
             if image.id == iimage.referenceId:
                 return image, image
+        return None, None
 
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
 
     def __init__(self):
         self.Dummy = Dummy
+        self._actors = None
+
+    @property
+    def actors(self):
+        if not self._actors:
+            cl = j.core.portal.getClientByInstance('cloudbroker')
+            self._actors = cl.actors
+        return self._actors
 
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)
@@ -101,3 +110,36 @@ class CloudBroker(object):
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 resourcesdata.append(stack)
         return resourcesdata
+
+    def stackImportImages(self, stackId):
+        provider = CloudProvider(stackId)
+        if not provider:
+            raise RuntimeError('Provider not found')
+        count = 0
+        stack = models.stack.get(stackId)
+        stack.images = list()
+        for pimage in provider.client.list_images(): #libvirt/openstack images
+            images = models.image.search({'referenceId':pimage.id})[1:]
+            if not images:
+                image = models.image.new()
+                image.name = pimage.name
+                image.referenceId = pimage.id
+                image.type = pimage.extra.get('imagetype', 'Unknown')
+                image.size = pimage.extra.get('size', 0)
+                image.username = pimage.extra.get('username', 'cloudscalers')
+                image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
+                image.accountId = 0
+            else:
+                image = images[0]
+                image['name'] = pimage.name
+                image['referenceId'] = pimage.id
+                image['type'] = pimage.extra.get('imagetype', 'Unknown')
+                image['size'] = pimage.extra.get('size', 0)
+                image['username'] = pimage.extra.get('username', 'cloudscalers')
+                image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
+            count += 1
+            imageid = models.image.set(image)[0]
+            if not imageid in stack.images:
+                stack.images.append(imageid)
+                models.stack.set(stack)
+        return count

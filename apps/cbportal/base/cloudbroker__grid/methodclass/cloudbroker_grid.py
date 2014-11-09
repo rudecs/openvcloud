@@ -2,12 +2,9 @@ from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 import JumpScale.grid.agentcontroller
 
-class cloudbroker_grid(j.code.classGetBase()):
+class cloudbroker_grid(object):
 
     def __init__(self):
-        self._te = dict()
-        self.actorname = "grid"
-        self.appname = "cloudbroker"
         self.acl = j.clients.agentcontroller.get()
 
     @auth(['level1', 'level2'])

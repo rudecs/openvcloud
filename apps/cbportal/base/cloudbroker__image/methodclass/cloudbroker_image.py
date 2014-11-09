@@ -1,18 +1,14 @@
 from JumpScale import j
-import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 
-
-class cloudbroker_image(j.code.classGetBase()):
+class cloudbroker_image(BaseActor):
     def __init__(self):
-        self._te={}
-        self.actorname="image"
-        self.appname="cloudbroker"
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        super(cloudbroker_image, self).__init__()
         self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
 
     def _checkimage(self, imageId, ctx):
-        cbimage = self.cbcl.image.search({'referenceId': imageId})[1:]
+        cbimage = self.models.image.search({'referenceId': imageId})[1:]
         if not cbimage:
             if ctx:
                 headers = [('Content-Type', 'application/json'), ]
@@ -41,7 +37,7 @@ class cloudbroker_image(j.code.classGetBase()):
         check, result, libvirtimage = self._checkimage(imageId, ctx)
         if check:
             result['status'] = 'DESTROYED'
-            self.cbcl.image.set(result)
+            self.models.image.set(result)
             if libvirtimage:
                 libvirtimage.status = 'DESTROYED'
                 self.libvirtcl.image.set(libvirtimage)
@@ -61,12 +57,12 @@ class cloudbroker_image(j.code.classGetBase()):
         if check:
             if not libvirtimage:
                 result['status'] = 'DESTROYED'
-                return self.cbcl.image.set(result)
+                return self.models.image.set(result)
             if libvirtimage.status == 'DISABLED':
                 result['status'] = 'CREATED'
                 libvirtimage.status = 'CREATED'
                 self.libvirtcl.image.set(libvirtimage)
-                return self.cbcl.image.set(result)
+                return self.models.image.set(result)
             else:
                 return 'Image was not DISABLED'
         return result
@@ -83,12 +79,12 @@ class cloudbroker_image(j.code.classGetBase()):
         if check:
             if not libvirtimage:
                 result.status = 'DESTROYED'
-                return self.cbcl.image.set(result)
+                return self.models.image.set(result)
             if libvirtimage.status == 'CREATED' or libvirtimage.status == '':
                 result['status'] = 'DISABLED'
                 libvirtimage.status = 'DISABLED'
                 self.libvirtcl.image.set(libvirtimage)
-                return self.cbcl.image.set(result)
+                return self.models.image.set(result)
             else:
                 return 'Image could not be DISABLED'
         return result

@@ -1,28 +1,18 @@
 from JumpScale import j
 import time
-import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudbroker_account(j.code.classGetBase()):
+class cloudbroker_account(BaseActor):
     def __init__(self):
-        self._te={}
-        self.actorname="account"
-        self.appname="cloudbroker"
-        self._cb = None
-        self.cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+        super(cloudbroker_account, self).__init__()
         self.syscl = j.core.osis.getClientForNamespace('system')
-        self.accounts_actor = self.cb.extensions.imp.actors.cloudapi.accounts
-        self.machines_actor = self.cb.extensions.imp.actors.cloudapi.machines
-        self.users_actor = self.cb.extensions.imp.actors.cloudapi.users
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
+        self.accounts_actor = self.cb.actors.cloudapi.accounts
+        self.machines_actor = self.cb.actors.cloudapi.machines
+        self.users_actor = self.cb.actors.cloudapi.users
 
     def _checkAccount(self, accountname, ctx):
-        account = self.cbcl.account.simpleSearch({'name':accountname})
+        account = self.models.account.simpleSearch({'name':accountname})
         if not account:
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
@@ -59,11 +49,11 @@ class cloudbroker_account(j.code.classGetBase()):
             account = result
             account['deactivationTime'] = time.time()
             account['status'] = 'DISABLED'
-            self.cbcl.account.set(account)
+            self.models.account.set(account)
             # stop all account's machines
-            cloudspaces = self.cbcl.cloudspace.search({'accountId': account['id']})[1:]
+            cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
             for cs in cloudspaces:
-                vmachines = self.cbcl.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+                vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
                 for vmachine in vmachines:
                     self.machines_actor.stop(vmachine['id'])
             j.tools.whmcs.tickets.close_ticket(ticketId)
@@ -100,7 +90,7 @@ class cloudbroker_account(j.code.classGetBase()):
                 return 'Account is not disabled'
 
             account['status'] = 'CONFIRMED'
-            self.cbcl.account.set(account)
+            self.models.account.set(account)
             return True
 
     @auth(['level1','level2'])
@@ -118,7 +108,7 @@ class cloudbroker_account(j.code.classGetBase()):
         else:
             account = result
             account['name'] = name
-            self.cbcl.account.set(account)
+            self.models.account.set(account)
             return True
 
     @auth(['level1','level2'])
@@ -133,14 +123,14 @@ class cloudbroker_account(j.code.classGetBase()):
         else:
             accountId = result['id']
             query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
-            cloudspaces = self.cbcl.cloudspace.search(query)[1:]
+            cloudspaces = self.models.cloudspace.search(query)[1:]
             for cloudspace in cloudspaces:
                 cloudspacename = cloudspace['name']
                 cloudspaceid = cloudspace['id']
                 j.apps.cloudbroker.cloudspace.destroy(accountname, cloudspacename, cloudspaceid, reason, **kwargs)
-            account = self.cbcl.account.get(accountId)
+            account = self.models.account.get(accountId)
             account.status = 'DESTROYED'
-            self.cbcl.account.set(account)
+            self.models.account.set(account)
             return True
 
     @auth(['level1','level2'])

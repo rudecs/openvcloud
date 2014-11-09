@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     cloudspaceId = int(args.getTag('cloudspaceId'))
     scl = j.core.osis.getClientForNamespace('cloudbroker')
-    actors = j.apps.cloudbroker.iaas.cb.extensions.imp.actors.cloudapi
+    actors = j.apps.cloudbroker.iaas.cb.actors.cloudapi
 
     cloudspace = scl.cloudspace.get(cloudspaceId)
     stacks = scl.stack.search({'gid': cloudspace.gid, 'status': 'ENABLED'})[1:]
