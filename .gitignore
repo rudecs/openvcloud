@@ -1,1 +1,6 @@
 *.pyc
+*.swp
+*.rej
+*.orig
+*.gen.py
+apps/cloudscalers_fe/base/wiki_gcb/.files/coverage
