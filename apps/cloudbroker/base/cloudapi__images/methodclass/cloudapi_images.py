@@ -1,33 +1,12 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
-import ujson
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudapi_images(object):
+class cloudapi_images(BaseActor):
     """
     Lists all the images. A image is a template which can be used to deploy machines.
 
     """
-    def __init__(self):
-
-        self._te = {}
-        self.actorname = "images"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-
     @audit()
     def list(self, accountid, **kwargs):
         """
@@ -35,11 +14,11 @@ class cloudapi_images(object):
         """
         fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountid:
-            query = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountid)]}}
+            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountid)]}}
         else:
-            query = {'status': 'CREATED', 'accountId': 0}
+            q = {'status': 'CREATED', 'accountId': 0}
+        query = {'$query': q, '$fields': fields}
         results = self.models.image.search(query)[1:]
-        self.cb.extensions.imp.filter(results, fields)
         return results
 
     @audit()

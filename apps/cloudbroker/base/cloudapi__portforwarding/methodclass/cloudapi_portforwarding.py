@@ -1,10 +1,10 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
-import ujson
+from cloudbrokerlib.baseactor import BaseActor
 
 
-class cloudapi_portforwarding(j.code.classGetBase()):
+class cloudapi_portforwarding(BaseActor):
 
     """
     Portforwarding api
@@ -13,27 +13,8 @@ class cloudapi_portforwarding(j.code.classGetBase()):
     """
 
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "portforwarding"
-        self.appname = "cloudapi"
-        # cloudapi_portforwarding_osis.__init__(self)
-        self._cb = None
-        self._models = None
+        super(cloudapi_portforwarding, self).__init__()
         self.netmgr = j.apps.jumpscale.netmgr
-        pass
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def _getLocalIp(self, machine):
         for nic in  machine['interfaces']:

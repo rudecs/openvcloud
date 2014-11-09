@@ -3,15 +3,16 @@ from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 import requests
 from requests.auth import HTTPBasicAuth
+from cloudbrokerlib.baseactor import BaseActor
 import ujson, time
 
-class cloudapi_paypal(j.code.classGetBase()):
+class cloudapi_paypal(BaseActor):
     """
     API consumption Actor, this actor is the final api a enduser uses to get consumption details
 
     """
     def __init__(self):
-
+        super(cloudapi_paypal, self).__init__()
         self.paypal_user = j.application.config.get('mothership1.cloudbroker.paypal.apiuser')
         self.paypal_secret = j.application.config.get('mothership1.cloudbroker.paypal.apisecret')
 
@@ -21,25 +22,6 @@ class cloudapi_paypal(j.code.classGetBase()):
             self.paypal_url = 'https://api.paypal.com'
         else:
             self.paypal_url = 'https://api.sandbox.paypal.com'
-
-        self._te={}
-        self.actorname="paypal"
-        self.appname="cloudapi"
-        self._cb = None
-        self._models = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
 
     def _get_access_token(self):
 

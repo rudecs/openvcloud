@@ -9,7 +9,7 @@ class pricing(object):
         self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
         self.base_machine_prices = {}
 
-        for machine_price_key in j.application.config.getKeysFromPrefix('mothership1.billing.machineprices'):
+        for machine_price_key in j.application.config.prefix('mothership1.billing.machineprices'):
             machine_type = machine_price_key.split('.')[-1]
             stringprices = j.application.config.getDict(machine_price_key)
             self.base_machine_prices[machine_type.lower()] = dict([(int(kv[0]),float(kv[1])) for kv in stringprices.items()])

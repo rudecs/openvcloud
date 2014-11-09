@@ -1,50 +1,27 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, enums
-import JumpScale.grid.osis
+from cloudbrokerlib.baseactor import BaseActor
 import string, time
-from random import sample, choice
+from random import choice
 from libcloud.compute.base import NodeAuthPassword
-import urlparse
 from billingenginelib import pricing
 from billingenginelib import account as accountbilling
 
-ujson = j.db.serializers.ujson
-
-
-
-class cloudapi_machines(object):
+class cloudapi_machines(BaseActor):
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
 
     """
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "machines"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
-
-        self.osisclient = j.core.osis.getClientByInstance('main')
+        super(cloudapi_machines, self).__init__()
+        self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
@@ -114,7 +91,7 @@ class cloudapi_machines(object):
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
-        self.cb.extensions.imp.addDiskToMachine(machine, disk)
+        self.cb.addDiskToMachine(machine, disk)
         diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
         self.models.vmachine.set(machine)
@@ -169,7 +146,7 @@ class cloudapi_machines(object):
 
     def _getProvider(self, machine):
         if machine.referenceId and machine.stackId:
-            return self.cb.extensions.imp.getProviderByStackId(machine.stackId)
+            return self.cb.getProviderByStackId(machine.stackId)
         return None
 
     def _assertName(self, cloudspaceId, name, **kwargs):
@@ -261,13 +238,13 @@ class cloudapi_machines(object):
         machine.id = self.models.vmachine.set(machine)[0]
 
         try:
-            stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, imageId)
+            stack = self.cb.getBestProvider(cloudspace.gid, imageId)
             if stack == -1:
                 self.models.vmachine.delete(machine.id)
                 ctx = kwargs['ctx']
                 ctx.start_response('503 Service Unavailable', [])
                 return 'Not enough resource available to provision the requested machine'
-            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
+            provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
@@ -279,14 +256,14 @@ class cloudapi_machines(object):
         excludelist = [stack['id']]
         while(node == -1):
             #problem during creation of the machine on the node, we should create the node on a other machine
-            stack = self.cb.extensions.imp.getBestProvider(cloudspace.gid, imageId, excludelist)
+            stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
             if stack == -1:
                   self.models.vmachine.delete(machine.id)
                   ctx = kwargs['ctx']
                   ctx.start_response('503 Service Unavailable', [])
                   return 'Not enough resource available to provision the requested machine'
             excludelist.append(stack['id'])
-            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
+            provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
@@ -362,7 +339,7 @@ class cloudapi_machines(object):
     def _getStorage(self, machine):
         if not machine['stackId']:
             return None
-        provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
+        provider = self.cb.getProviderByStackId(machine['stackId'])
         firstdisk = self.models.disk.get(machine['disks'][0])
         storage = provider.getSize(self.models.size.get(machine['sizeId']), firstdisk)
         return storage
@@ -417,7 +394,8 @@ class cloudapi_machines(object):
         """
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
-        query = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        query = {'$query': q, '$fields': fields}
         results = self.models.vmachine.search(query)[1:]
         machines = []
         for res in results:
@@ -427,7 +405,6 @@ class cloudapi_machines(object):
             else:
                 res['storage'] = 0
             machines.append(res)
-        self.cb.extensions.imp.filter(results, fields)
         return machines
 
     def _getMachine(self, machineId):
@@ -435,13 +412,13 @@ class cloudapi_machines(object):
         return self.models.vmachine.get(machineId)
 
     def _getNode(self, referenceId):
-        return self.cb.extensions.imp.Dummy(id=referenceId)
+        return self.cb.Dummy(id=referenceId)
 
     def _getProviderAndNode(self, machineId):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
+        return provider, self.cb.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
     @audit()

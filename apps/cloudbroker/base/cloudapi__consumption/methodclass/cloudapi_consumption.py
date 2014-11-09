@@ -3,19 +3,14 @@ from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from billingenginelib import pricing
 
-class cloudapi_consumption(j.code.classGetBase()):
+class cloudapi_consumption(object):
     """
     API consumption Actor, this actor is the final api a enduser uses to get consumption details
 
     """
     def __init__(self):
-
-        self._te={}
-        self.actorname="consumption"
-        self.appname="cloudapi"
         self.models = j.core.osis.getClientForNamespace('billing')
         self._pricing = pricing.pricing()
-
 
     @authenticator.auth(acl='R')
     @audit()

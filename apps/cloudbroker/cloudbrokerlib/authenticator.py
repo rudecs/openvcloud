@@ -1,16 +1,10 @@
 from JumpScale import j
-
+from .cloudbroker import models
 
 class auth(object):
     def __init__(self, acl):
         self.acl = set(acl)
-        self._models = None
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = j.apps.cloud.cloudbroker.extensions.imp.getModel()
-        return self._models
+        self.models = models
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):
         fullacl = self.expandAcl(users, groups, cloudspace.acl)

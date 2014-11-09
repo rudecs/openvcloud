@@ -5,7 +5,6 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
-cloudbroker = j.apps.cloud.cloudbroker
 ujson = j.db.serializers.ujson
 models = j.core.osis.getClientForNamespace('cloudbroker')
 
@@ -55,7 +54,6 @@ class CloudProvider(object):
             if image.id == iimage.referenceId:
                 return image, image
 
-
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
 
@@ -82,12 +80,6 @@ class CloudBroker(object):
         else:
             return None
 
-    def filter(self, results, fields):
-        for result in results:
-            for key in result.keys():
-                if key not in fields:
-                    result.pop(key)
-
     def getBestProvider(self, gid, imageId, excludelist=[]):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
@@ -101,7 +93,6 @@ class CloudBroker(object):
         provider = capacityinfo[i]
         return provider
 
-
     def getCapacityInfo(self, gid, imageId):
         # group all units per type
         resourcesdata = list()
@@ -110,22 +101,3 @@ class CloudBroker(object):
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 resourcesdata.append(stack)
         return resourcesdata
-
-    def stackImportSizes(self, stackId):
-        provider = CloudProvider(stackId)
-        count = 0
-        for psize in provider.client.list_sizes():
-            sizeid = self.getIdByReferenceId('size', psize.name)
-            size = cloudbroker.models.size.new()
-            if sizeid:
-                size.dict2obj(cloudbroker.model_size_get(sizeid))
-            size.CU = psize.ram
-            size.name = psize.name
-            size.referenceId = psize.name
-            size.disk = psize.disk * 1024 #we store in MB
-            count += 1
-            models.size.set(size)
-        return count
-
-    def getModel(self):
-        return models

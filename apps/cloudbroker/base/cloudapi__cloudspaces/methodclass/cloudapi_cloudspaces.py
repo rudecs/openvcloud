@@ -3,10 +3,8 @@ from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, network
 from billingenginelib import account as accountbilling
 from billingenginelib import pricing
+from cloudbrokerlib.baseactor import BaseActor
 import netaddr
-import ujson
-import gevent
-import urlparse
 import uuid
 import time
 
@@ -17,36 +15,19 @@ def getIP(network):
     return str(netaddr.IPNetwork(network).ip)
 
 
-class cloudapi_cloudspaces(object):
+class cloudapi_cloudspaces(BaseActor):
     """
     API Actor api for managing cloudspaces, this actor is the final api a enduser uses to manage cloudspaces
 
     """
     def __init__(self):
-        self._te = {}
-        self.actorname = "cloudspaces"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
+        super(cloudapi_cloudspaces, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
         self.network = network.Network(self.models)
         self._accountbilling = accountbilling.account()
         self._pricing = pricing.pricing()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
 
     @authenticator.auth(acl='U')
     @audit()
@@ -281,15 +262,11 @@ class cloudapi_cloudspaces(object):
         disabled = [account['id'] for account in disabledaccounts]
 
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        query = {"accountId": {"$in": disabled}, "acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        q = {"accountId": {"$in": disabled}, "acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        query = {'$query': q, '$fields': fields}
         cloudspaces = self.models.cloudspace.search(query)[1:]
-        self.cb.extensions.imp.filter(cloudspaces, fields)
 
         for cloudspace in cloudspaces:
-            #during the transitions phase, not all locations might be filled in
-            if 'location' not in cloudspace or len(cloudspace['location']) == 0:
-                cloudspace['location'] = self.cb.extensions.imp.whereAmI()
-
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name

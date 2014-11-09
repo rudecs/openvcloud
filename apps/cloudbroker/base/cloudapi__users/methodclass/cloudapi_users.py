@@ -2,6 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.mailclient
+from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
 import md5
 
@@ -40,32 +41,15 @@ def _send_signup_mail(**kwargs):
 
     j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
 
-class cloudapi_users(object):
+class cloudapi_users(BaseActor):
     """
     User management
 
     """
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "users"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
+        super(cloudapi_users, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.acl = j.clients.agentcontroller.get()
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def authenticate(self, username, password, **kwargs):
         """

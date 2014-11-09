@@ -1,40 +1,19 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
-from cloudbrokerlib import authenticator, enums
-import ujson
+from cloudbrokerlib import authenticator
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudapi_s3storage(j.code.classGetBase()):
+class cloudapi_s3storage(BaseActor):
     """
     API Actor api, this actor is the final api a enduser uses to manage storagebuckets
-    
     """
     def __init__(self):
-        
-        self._te={}
-        self.actorname="s3storage"
-        self.appname="cloudapi"
-        self._cb = None
-        self._models = None
-
-        self.osisclient = j.core.osis.getClientByInstance('main')
-        self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
+        super(cloudapi_s3storage, self).__init__()
+        self.osis_logs = j.core.osis.getClientForCategory(j.core.portal.active.osis, "system", "log")
 
     def _get(self, cloudspaceId):
-        location = self.cb.extensions.imp.whereAmI()
-        s3storagebuckets = self.models.s3user.search({'cloudspaceId':int(cloudspaceId), 'location':location})[1:]
+        cloudspace = self.models.cloudspace.get(int(cloudspaceId)) 
+        s3storagebuckets = self.models.s3user.search({'cloudspaceId':int(cloudspaceId), 'location':cloudspace.location})[1:]
         if len(s3storagebuckets) == 0:
             return None
         return s3storagebuckets[0]
@@ -47,7 +26,7 @@ class cloudapi_s3storage(j.code.classGetBase()):
         param:cloudspaceId id of the space
         result list
         """
-        ctx = kwargs['ctx'] 
+        ctx = kwargs['ctx']
         connectiondetails = self._get(cloudspaceId)
         if connectiondetails is None:
             ctx.start_response('404 Not Found', [])
