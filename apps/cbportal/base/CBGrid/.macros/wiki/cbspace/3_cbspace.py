@@ -40,7 +40,10 @@ def main(j, args, params, tags, tasklet):
         obj['networkid'] = '[%s|network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
         obj['network'] = network
     else:
-        obj['networkid'] = 'N/A'
+        if obj['networkId']:
+            obj['networkid'] = obj['networkId']
+        else:
+            obj['networkid'] = 'N/A'
         obj['network'] = {'tcpForwardRules': []}
 
 
