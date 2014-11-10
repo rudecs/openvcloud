@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
-    .controller('SessionController', ['$scope', 'User', '$window', '$timeout', function($scope, User, $window, $timeout) {
+    .controller('SessionController', ['$scope', 'User', '$window', '$timeout','$location', 'SessionData', function($scope, User, $window, $timeout,$location, SessionData) {
         $scope.user = {username : '', password:'', company: '', vat: ''};
-
+        
         $scope.login_error = undefined;
 
         $scope.login = function() {
@@ -30,6 +30,15 @@ angular.module('cloudscalers.controllers')
             		}
             );
         };
+
+        if($location.search().username, $location.search().apiKey){
+            SessionData.setUser({ username: $location.search().username, api_key: $location.search().apiKey });
+            var target = 'Decks';
+            var uri = new URI($window.location);
+            uri.filename(target);
+            uri.query('');
+            $window.location = uri.toString();
+        }
         $timeout(function() {
             // Read the value set by browser autofill
             $scope.user.username = angular.element('[ng-model="user.username"]').val();
@@ -44,4 +53,6 @@ angular.module('cloudscalers.controllers')
             });
         }
     }
-});;
+}).config(['$locationProvider', function($locationProvider){
+    $locationProvider.html5Mode(true);    
+}]);

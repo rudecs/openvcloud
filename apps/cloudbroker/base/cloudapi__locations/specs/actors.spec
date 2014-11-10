@@ -9,3 +9,9 @@
 		"""
 		result:[], A json list, every element contains information of the list as a dictionary.
 
+	method:getUrl @noauth
+		"""
+		get portal url. 
+		"""
+		result:str 
+

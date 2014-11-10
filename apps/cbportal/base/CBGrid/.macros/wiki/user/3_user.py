@@ -27,6 +27,20 @@ def main(j, args, params, tags, tasklet):
         obj[attr] = ', '.join(obj[attr])
 
     obj['passwd'] = unicode(obj['passwd'], errors='ignore')
+    authkey = user.authkey
+    if user.authkey:
+        session = args.requestContext.env['beaker.session']
+        if session.get_by_id(session):
+            authkey = None
+    if not authkey:
+        newsession = args.requestContext.env['beaker.get_session']()
+        newsession['user'] = user.id
+        newsession['account_status'] = 'CONFIRMED'
+        newsession.save()
+        authkey = user.authkey = newsession.id
+        userclient.set(user)
+    portalurl = j.apps.cloudbroker.iaas.cb.actors.cloudapi.locations.getUrl()
+    obj['loginurl'] = "%s/wiki_gcb/login?username=%s&apiKey=%s" % (portalurl, user.id, authkey)
 
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)

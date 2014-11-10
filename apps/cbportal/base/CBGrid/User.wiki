@@ -28,7 +28,7 @@ h2. User: ${id}
 
 h3. Details
 |*Emails*|${emails}|
-|*Password Hash*|${passwd}|
+|*Login to Mothership1*|[click me|${loginurl}]|
 |*Domain*|${domain}|
 |*Roles*|${roles}|
 |*Groups*|${groups}|

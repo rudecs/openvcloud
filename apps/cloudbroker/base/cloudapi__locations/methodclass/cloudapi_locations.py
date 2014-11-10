@@ -11,5 +11,5 @@ class cloudapi_locations(BaseActor):
         """
         return self.models.location.search({})[1:]
 
-    def getUrl(self):
-        return j.application.config.get('cloudbroker.portalurl')
+    def getUrl(self, **kwargs):
+        return j.application.config.getStr('cloudbroker.portalurl')
