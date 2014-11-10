@@ -490,7 +490,7 @@ class cloudbroker_machine(BaseActor):
                     remote_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
                     _switch_context(target_stack['name'], 'run', ['virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']}])
 
-        remote_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
+        remote_api.run('virsh migrate --live vm-%s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
         vmachine.stackId = target_stack['id']
         self.models.vmachine.set(vmachine)
 
