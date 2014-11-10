@@ -445,14 +445,17 @@ class cloudbroker_machine(BaseActor):
         libvirt_image = self.libvirtcl.image.get(image.referenceId)
         image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
 
-        source_api = j.remote.cuisine.api
-        source_api.connect(source_stack.name)
+        remote_api = j.remote.cuisine.api
+        remote_api.connect(source_stack.name)
 
-        target_api = j.remote.cuisine.api
-        target_api.connect(target_stack['name'])
+        def _switch_context(new_host, command, args):
+            with j.remote.cuisine.fabric.settings(host_string=new_host):
+                return getattr(remote_api, command)(*args)
 
-        if target_api.file_exists(image_path):
-            if target_api.file_md5(image_path) != source_api.file_md5(image_path):
+        image_exists = _switch_context(target_stack['name'], 'file_exists', [image_path,])
+        if image_exists:
+            image_md5sum = _switch_context(target_stack['name'], 'file_md5', [image_path,])
+            if image_md5sum != remote_api.file_md5(image_path):
                 ctx = kwargs['ctx']
                 headers = [('Content-Type', 'application/json'), ]
                 ctx.start_response('400', headers)
@@ -474,20 +477,20 @@ class cloudbroker_machine(BaseActor):
 
         # scp the .iso file
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id)
-        source_api.run('scp %s/cloud-init.vm-%s.iso root@%s:%s' % (iso_file_path, vmachine.id, target_stack['name'], iso_file_path))
+        remote_api.run('scp %s/cloud-init.vm-%s.iso root@%s:%s' % (iso_file_path, vmachine.id, target_stack['name'], iso_file_path))
 
         if withSnapshots:
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
             if snapshots:
-                source_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
-                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
-                target_api.run('virsh define /tmp/vm-%s.xml' % vmachine.id)
+                remote_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
+                remote_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
+                _switch_context(target_stack['name'], 'run', ['virsh define /tmp/vm-%s.xml' % vmachine.id,])
                 for snapshot in snapshots:
-                    source_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
-                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
-                    target_api.run('virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
+                    remote_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
+                    remote_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
+                    _switch_context(target_stack['name'], 'run', ['virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']}])
 
-        source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
+        remote_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
         vmachine.stackId = target_stack['id']
         self.models.vmachine.set(vmachine)
 
