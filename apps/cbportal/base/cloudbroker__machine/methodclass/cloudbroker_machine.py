@@ -473,18 +473,18 @@ class cloudbroker_machine(BaseActor):
         self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, gid=target_stack['gid'], nid=target_stack['referenceId'], wait=True)
 
         # scp the .iso file
-        iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id, 'cloud-init.vm-%s.iso' % vmachine.id)
-        source_api.run('scp %s root@%s:%s' % (iso_file_path, target_stack['name'], iso_file_path))
+        iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id)
+        source_api.run('scp %s/cloud-init.vm-%s.iso root@%s:%s' % (iso_file_path, vmachine.id, target_stack['name'], iso_file_path))
 
         if withSnapshots:
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
             if snapshots:
                 source_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
-                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
+                source_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
                 target_api.run('virsh define /tmp/vm-%s.xml' % vmachine.id)
                 for snapshot in snapshots:
                     source_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
-                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
+                    source_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
                     target_api.run('virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
 
         source_api.run('virsh migrate --live %s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
