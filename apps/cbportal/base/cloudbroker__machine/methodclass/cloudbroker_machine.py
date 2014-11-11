@@ -448,8 +448,8 @@ class cloudbroker_machine(BaseActor):
         remote_api = j.remote.cuisine.api
         remote_api.connect(source_stack.name)
 
-        def _switch_context(new_host, command, args):
-            with j.remote.cuisine.fabric.settings(host_string=new_host):
+        def _switch_context(new_host, command, args, forward_agent=True):
+            with j.remote.cuisine.fabric.settings(host_string=new_host, forward_agent=forward_agent):
                 return getattr(remote_api, command)(*args)
 
         image_exists = _switch_context(target_stack['name'], 'file_exists', [image_path,])
