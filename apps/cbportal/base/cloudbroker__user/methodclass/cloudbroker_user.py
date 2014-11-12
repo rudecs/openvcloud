@@ -8,15 +8,9 @@ class cloudbroker_user(BaseActor):
     Operator actions for interventions specific to a user
     """
     def __init__(self):
-        super(cloudbroker_user, self).__init__() 
+        super(cloudbroker_user, self).__init__()
         self.syscl = j.core.osis.getClientForNamespace('system')
         self.users_actor = self.cb.actors.cloudapi.users
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
 
     def _checkUser(self, username):
         users = self.syscl.user.search({'id': username})[1:]

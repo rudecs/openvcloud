@@ -20,12 +20,6 @@ class cloudbroker_image(BaseActor):
             libvirtimage = self.libvirtcl.image.get(imageId)
         return True, cbimage, libvirtimage
 
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloudbroker.iaas
-        return self._cb
-
     @auth(['level1',])
     def delete(self, imageId, **kwargs):
         """
