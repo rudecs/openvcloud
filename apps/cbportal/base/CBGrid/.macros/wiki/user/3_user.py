@@ -40,7 +40,7 @@ def main(j, args, params, tags, tasklet):
         authkey = user.authkey = newsession.id
         userclient.set(user)
     portalurl = j.apps.cloudbroker.iaas.cb.actors.cloudapi.locations.getUrl()
-    obj['loginurl'] = "%s/wiki_gcb/login?username=%s&apiKey=%s" % (portalurl, user.id, authkey)
+    obj['loginurl'] = "%s/wiki_gcb/login#?username=%s&apiKey=%s" % (portalurl, user.id, authkey)
 
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)

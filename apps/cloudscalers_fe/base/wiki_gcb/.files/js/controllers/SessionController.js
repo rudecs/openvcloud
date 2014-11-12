@@ -31,7 +31,7 @@ angular.module('cloudscalers.controllers')
             );
         };
 
-        if($location.search().username, $location.search().apiKey){
+        if($location.search().username && $location.search().apiKey){
             SessionData.setUser({ username: $location.search().username, api_key: $location.search().apiKey });
             var target = 'Decks';
             var uri = new URI($window.location);
@@ -53,6 +53,4 @@ angular.module('cloudscalers.controllers')
             });
         }
     }
-}).config(['$locationProvider', function($locationProvider){
-    $locationProvider.html5Mode(true);    
-}]);
+});
