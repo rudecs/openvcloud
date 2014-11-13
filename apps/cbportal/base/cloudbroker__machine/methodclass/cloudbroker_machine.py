@@ -479,7 +479,7 @@ class cloudbroker_machine(BaseActor):
         iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id)
         remote_api.run('scp %s/cloud-init.vm-%s.iso root@%s:%s' % (iso_file_path, vmachine.id, target_stack['name'], iso_file_path))
 
-        if withSnapshots:
+        if j.basetype.boolean.fromString(withSnapshots):
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
             if snapshots:
                 remote_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})

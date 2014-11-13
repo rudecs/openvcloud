@@ -189,13 +189,7 @@
    machineId: $$id
 
 - display: Move to a diffrent Compute Node
-  action: /restmachine/cloudbroker/machine/moveToDifferentComputeNode
-  data:
-   machineId: $$id
-   accountName: $$accountname
-  input:
-  - targetComputeNode
-  - reason
+  action: "#movemachine"
 
 - display: Tag
   action: /restmachine/cloudbroker/machine/tag
@@ -212,4 +206,6 @@
   - tagName
 
 }}
+
+{{movemachine: machineId:$$id accountName:$$accountname}}
 
