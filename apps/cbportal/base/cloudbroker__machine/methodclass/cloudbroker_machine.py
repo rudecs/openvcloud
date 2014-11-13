@@ -782,13 +782,16 @@ class cloudbroker_machine(BaseActor):
             if ctx:
                 ctx.start_response('400', headers)
             return 'Machine %s is invalid' % machineId
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        vfwkey = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        results = list()
         machineips = [nic.ipAddress for nic in vmachine.nics if not nic.ipAddress=='Undefined']
-        vfws = self.vfwcl.virtualfirewall.search({'tcpForwardRules.toAddr':{'$in':machineips}})[1:]
-        result = list()
-        if vfws:
-            for vfw in vfws:
-                result.append(vfw['tcpForwardRules'])
-        return result
+        if self.vfwcl.virtualfirewall.exists(vfwkey):
+            vfw = self.vfwcl.virtualfirewall.get(vfwkey).dump()
+            for forward in vfw['tcpForwardRules']:
+                if forward['toAddr'] in machineips:
+                    results.append(forward)
+        return results
 
     @auth(['level1','level2'])
     def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
