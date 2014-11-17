@@ -35,9 +35,13 @@ class CloudProvider(object):
                 kwargs['id'] = stack.referenceId
                 kwargs['uri'] = stack.apiUrl
                 kwargs['gid'] = stack.gid
-                CloudProvider._providers[stackId] = CSLibvirtNodeDriver(**kwargs)
-                cb = CloudBrokerConnection()
-                CloudProvider._providers[stackId].set_backend(cb)
+                driver = CSLibvirtNodeDriver(**kwargs)
+                client = None
+                if not j.apps.actorsloader.existsActor('libvirt', 'libcloud'):
+                    client = j.core.portal.getClientByInstance('cloudbroker')
+                cb = CloudBrokerConnection(client)
+                driver.set_backend(cb)
+                CloudProvider._providers[stackId] = driver
 
         self.client = CloudProvider._providers[stackId]
 
