@@ -2,6 +2,33 @@
 
 h2. Grid $$gid
 
+{{actions:
+- display: Check VMs
+  action: /restmachine/cloudbroker/grid/checkVMs
+  data:
+   gid: $$gid
+
+- display: Purge Logs
+  action: /restmachine/cloudbroker/grid/purgeLogs
+  data:
+   gid: $$gid
+  input:
+   - age
+
+- display: Sync Available Images to CloudBroker
+  action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
+  data:
+   gid: $$gid
+
+- display: Add Public IPv4 Subnet
+  action: /restmachine/cloudbroker/iaas/addPublicIPv4Subnet
+  data:
+   gid: $$gid
+  input:
+   - subnet
+   - gateway
+   - freeips
+}}
 
 @row
 
@@ -41,33 +68,6 @@ h5. No. of Free Network IDs
 @colend 
 @rowend
 
-{{actions:
-- display: Check VMs
-  action: /restmachine/cloudbroker/grid/checkVMs
-  data:
-   gid: $$gid
-
-- display: Purge Logs
-  action: /restmachine/cloudbroker/grid/purgeLogs
-  data:
-   gid: $$gid
-  input:
-   - age
-
-- display: Sync Available Images to CloudBroker
-  action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
-  data:
-   gid: $$gid
-
-- display: Add Public IPv4 Subnet
-  action: /restmachine/cloudbroker/iaas/addPublicIPv4Subnet
-  data:
-   gid: $$gid
-  input:
-   - subnet
-   - gateway
-   - freeips
-}}
 
 h3. Stacks
 {{stacks gid:$$gid}}
