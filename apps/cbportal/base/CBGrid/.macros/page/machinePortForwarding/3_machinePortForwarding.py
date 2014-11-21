@@ -12,14 +12,10 @@ def main(j, args, params, tags, tasklet):
 
     def _formatdata(portforwards):
         aaData = list()
-        for rule in portforwards:
-            for portforward in rule:
-                for field in ['protocol', 'fromAddr', 'fromPort', 'toAddr', 'toPort']:
-                    portforward[field] = j.tools.text.toStr(portforward[field])
-                itemdata = [portforward['protocol'], '%s:%s' % (portforward['fromAddr'], portforward['fromPort']), '%s:%s' % (portforward['toAddr'], portforward['toPort'])]
-                aaData.append(itemdata)
-        aaData = str(aaData)
-        return aaData.replace('[[', '[ [').replace(']]', '] ]')
+        for portforward in portforwards:
+            itemdata = ['%s:%s' % (portforward['fromAddr'], portforward['fromPort']), '%s:%s' % (portforward['toAddr'], portforward['toPort']), portforward['protocol'].upper()]
+            aaData.append(itemdata)
+        return str(aaData).replace('[[', '[ [').replace(']]', '] ]')
 
     portforwards = j.apps.cloudbroker.machine.listPortForwards(machineId)
     if not isinstance(portforwards, list):
@@ -29,7 +25,7 @@ def main(j, args, params, tags, tasklet):
         
     portforwards = _formatdata(portforwards)
 
-    fieldnames = ('Protocol', 'From', 'To')
+    fieldnames = ('From', 'To', 'Protocol')
     tableid = modifier.addTableFromData(portforwards, fieldnames)
 
     modifier.addSearchOptions('#%s' % tableid)

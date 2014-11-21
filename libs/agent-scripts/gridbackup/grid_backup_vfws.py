@@ -32,4 +32,4 @@ def action(storageparameters):
                 'files': files,
                 'storageparameters': storageparameters}
 
-        acl.executeJumpscript('cloudscalers', 'cloudbroker_backup_create_condensed', nid=vfw.nid, args=args, queue='io', wait=False)
+        acl.executeJumpscript('cloudscalers', 'cloudbroker_backup_create_condensed', nid=vfw.nid, gid=vfw.gid, args=args, queue='io', wait=False)
