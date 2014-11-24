@@ -1,0 +1,50 @@
+@template public
+{{div: class=white container}}
+
+
+h1. Describe your project and get a free start!
+
+Describe your project and we are returning a competitive offer by giving you a month for free!
+ 
+{{contact_form: receiver_email:support@mothership1.com | custom | subject: Pricing Information}}
+    h5. Email Address
+
+    {{div: class=control-group}}
+        {{ email: name=sender_email | required | placeholder= your email address}}
+    {{div}}
+    h5. Contact Name
+
+    {{div: class=control-group}}
+        {{ text: name=sender_name | required=true | placeholder= your name}}
+    {{div}}
+
+    h5. Phone Number
+
+    {{div: class=control-group}}
+        {{ text: name=phonenumber |  placeholder= phone number}}
+    {{div}}
+
+    h5. Service type
+
+    {{dropdown: name=Select service type | id=selected_type | multiple
+        * Machine
+        * Storage
+        * Desktop
+    }}
+  
+
+    h5. Short description of your project!
+
+    {{div: class=control-group }}
+        {{ textarea: rows=10 | cols=100 | required | name=body}}
+    {{div}}
+
+    {{div: class=control-group}}
+        {{submit: class=btn btn-primary btn-small | data-loading-text=Sending... }}
+           {{html:KickStart!}} 
+        {{submit}}
+        {{ reset }}
+    {{div}}
+{{ contact_form }}
+
+@divend
