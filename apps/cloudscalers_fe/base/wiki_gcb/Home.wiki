@@ -62,8 +62,6 @@
       <div class="col-md-6">
         <ul class="padding-left-large">
           <li>Sign up in 30 seconds</li>
-          <li>VMs as from $0.0069/hour</li>
-          <li>Storage as from $0.03/GB/month</li>
         </ul>
       </div>
     </div>
