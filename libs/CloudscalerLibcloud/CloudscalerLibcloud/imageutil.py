@@ -2,9 +2,9 @@ from JumpScale import j
 import JumpScale.grid.osis
 import requests
 
-def registerImage(jp, name, imagepath, type, disksize):
+def registerImage(jp, name, imagepath, type, disksize, username = None):
     #register image on cloudbroker
-    node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid) 
+    node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid)
     image_id = str(int(j.tools.hash.md5_string(jp.name)[0:9], 16))
     osiscl = j.core.osis.getClientByInstance('main')
     catimageclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'image')
@@ -18,6 +18,7 @@ def registerImage(jp, name, imagepath, type, disksize):
         image['UNCPath'] = imagepath
         image['type'] = type
         image['size'] = disksize
+        image['username'] = username
         catimageclient.set(image)
 
 
