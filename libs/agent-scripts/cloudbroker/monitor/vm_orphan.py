@@ -14,6 +14,7 @@ period = 3600 # 1 hrs
 enable = True
 async = True
 roles = ['cpu',]
+queue = 'process'
 log = False
 
 def action():
