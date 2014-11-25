@@ -252,7 +252,7 @@ class CSLibvirtNodeDriver():
     def ex_getDomain(self, node):
         node = self._from_agent_to_node(self._get_domain_for_node(node))
         backendnode = self.backendconnection.getNode(node.id)
-        node.extra['macaddress'] = backendnode.macaddress
+        node.extra['macaddress'] = backendnode['macaddress']
         return node
 
     def ex_snapshot(self, node, name, snapshottype='external'):
@@ -347,7 +347,7 @@ class CSLibvirtNodeDriver():
 
     def ex_start(self, node):
         backendnode = self.backendconnection.getNode(node.id)
-        networkid = backendnode.networkid
+        networkid = backendnode['networkid']
         xml = self._get_persistent_xml(node)
         machineid = node.id 
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
