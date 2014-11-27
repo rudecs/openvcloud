@@ -25,7 +25,7 @@ def registerImage(jp, name, imagepath, type, disksize, username = None):
     if not node_id in catresourceclient.list():
         rp = dict()
         rp['cloudUnitType'] = 'CU'
-        rp['id'] = node_id
+        rp['id'] = j.application.whoAmI.nid
         rp['gid'] = j.application.whoAmI.gid
         rp['images'] = [image_id]
     else:
