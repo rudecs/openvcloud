@@ -90,6 +90,7 @@ def do(username):
         nodename = vfw.pop('nodename')
         nid = getNid(vfw['gid'], nodename)
         vfw['nid'] = nid
+        vfw['password'] = 'Dct007'
         vfw['domain'] = str(cloudspacemapping[int(vfw['domain'])])
         vcl.virtualfirewall.set(vfw)
 
