@@ -62,11 +62,14 @@ def do(username):
             print "Could not find node on gid: %s with name: %s" % (gid, name)
         return nodes[0]['id']
 
+    cloudspacemapping = dict()
     for cloudspace in data['cloudspaces']:
         oldspaceid = cloudspace.pop('id', None)
+        cloudspacemapping = dict()
         cloudspace['gid'] = locations[cloudspace['location']]
         cloudspace['accountId'] = accountId
         cloudspaceId, _, _ = ccl.cloudspace.set(cloudspace)
+        cloudspacemapping[oldspaceid] = cloudspaceId
         for vm in data['vmachines']:
             if vm['cloudspaceId'] == oldspaceid:
                 vm['cloudspaceId'] = cloudspaceId
@@ -87,6 +90,7 @@ def do(username):
         nodename = vfw.pop('nodename')
         nid = getNid(vfw['gid'], nodename)
         vfw['nid'] = nid
+        vfw['domain'] = str(cloudspacemapping[int(vfw['domain'])])
         vcl.virtualfirewall.set(vfw)
 
 if __name__ == '__main__':
