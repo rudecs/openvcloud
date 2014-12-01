@@ -52,8 +52,6 @@ h2. Cloud Space
 	h2. Cloud Credits
 
 	The Cloud Space handles no commitments or built-in limits to the number of services you can create, but uses a minimal credit balance policy. Your created services or actions taken on active services should be able to last for at least 4 days with your remaining credit. For example, you have a credit balance of 5 USD, that will allow you to create either several small Linux virtual machines up to one 4GB Linux package.
-
-	Charges are done hourly if indicated so in the [pricing|Pricing]. Charges for virtual machines are per minute, except the first hour is always charged.
 {{div2}}
 
 	
