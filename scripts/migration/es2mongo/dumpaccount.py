@@ -6,6 +6,8 @@ def do(username):
     import JumpScale.grid
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    lcl = j.core.osis.getClientForNamespace('libcloud')
+    lclvrt = j.core.osis.getClientForNamespace('libvirt')
     vcl = j.core.osis.getClientForNamespace('vfw')
     grid = scl.grid.get(j.application.whoAmI.gid)
     locationname = grid.name
@@ -39,8 +41,10 @@ def do(username):
     for cloudspace in data['cloudspaces']:
         for vmachine in ccl.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
             if vmachine['status'] != 'DESTROYED':
+                vmachine['xml'] = lclvrt.libvirtdomain.get('domain_%(referenceId)s' % vmachine)
+                vmachine['node'] = lcl.node.get(vmachine['referenceId']).dump()
                 vmachines.append(vmachine)
-                for disk in vmachines['disks']:
+                for disk in vmachine['disks']:
                     disks.append(ccl.disk.get(disk).dump())
         for vfw in vcl.virtualfirewall.simpleSearch({'domain': str(cloudspace['id'])}):
             node = scl.node.get("%(gid)s_%(nid)s" % vfw)

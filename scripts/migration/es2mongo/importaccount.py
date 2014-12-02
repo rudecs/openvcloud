@@ -8,7 +8,10 @@ def do(username):
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
     vcl = j.core.osis.getClientForNamespace('vfw')
+    lcl = j.core.osis.getClientForNamespace('libcloud')
+    lclvrt = j.core.osis.getClientForNamespace('libvirt')
     locations = { location['locationCode']: location['gid'] for location in ccl.location.search({})[1:] }
+    locationmap = {301: 'lenoir2.vscalers.com', 400: 'york1.vscalers.com'}
     disksbyid = { disk['id']: disk for disk in data['disks'] }
 
 
@@ -34,8 +37,11 @@ def do(username):
                 stackname = stack['referenceId']
                 stacks = ccl.stack.search({'name': stackname, 'gid': gid})[1:]
                 if not stacks:
-                    print "Could not find stack for gid: %s with name:%s" % (gid, stackname)
-                    return 0
+                    stackname = "%s.%s" % (stackname, locationmap[gid])
+                    stacks = ccl.stack.search({'name': stackname, 'gid': gid})[1:]
+                    if not stacks:
+                        print "Could not find stack for gid: %s with name:%s" % (gid, stackname)
+                        return 0
                 return stacks[0]['id']
 
     def getNewSize(sizeId):
@@ -59,7 +65,10 @@ def do(username):
     def getNid(gid, name):
         nodes = scl.node.search({'gid': gid, 'name': name})[1:]
         if not nodes:
-            print "Could not find node on gid: %s with name: %s" % (gid, name)
+            name = "%s.%s" % (name, locationmap[gid])
+            nodes = scl.node.search({'gid': gid, 'name': name})[1:]
+            if not nodes:
+                print "Could not find node on gid: %s with name: %s" % (gid, name)
         return nodes[0]['id']
 
     cloudspacemapping = dict()
@@ -84,6 +93,12 @@ def do(username):
                     disk.pop('id', None)
                     newdisksid, _, _ = ccl.disk.set(disk)
                     newdiskids.append(newdisksid)
+                xml = vm.pop('xml', None)
+                if xml:
+                    lcl.libvirtdomain.set(xml, 'domain_%(referenceId)s' % vm)
+                node = vm.pop('node', None)
+                if node:
+                    lclvrt.node.set(node)
                 ccl.vmachine.set(vm)
 
     for vfw in data['vfws']:
