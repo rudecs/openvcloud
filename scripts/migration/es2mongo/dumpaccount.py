@@ -41,8 +41,8 @@ def do(username):
     for cloudspace in data['cloudspaces']:
         for vmachine in ccl.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
             if vmachine['status'] != 'DESTROYED':
-                vmachine['xml'] = lclvrt.libvirtdomain.get('domain_%(referenceId)s' % vmachine)
-                vmachine['node'] = lcl.node.get(vmachine['referenceId']).dump()
+                vmachine['xml'] = lcl.libvirtdomain.get('domain_%(referenceId)s' % vmachine)
+                vmachine['node'] = lclvrt.node.get(vmachine['referenceId']).dump()
                 vmachines.append(vmachine)
                 for disk in vmachine['disks']:
                     disks.append(ccl.disk.get(disk).dump())

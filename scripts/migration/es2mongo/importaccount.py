@@ -58,7 +58,7 @@ def do(username):
             if image['id'] == imageId:
                 images = ccl.image.search({'name': image['name'], 'size': image['size']})[1:]
                 if not images:
-                    print "Could not find image with id:%" % imageId
+                    print "Could not find image %s" % image
                     return 0
                 return images[0]['id']
 
@@ -69,6 +69,7 @@ def do(username):
             nodes = scl.node.search({'gid': gid, 'name': name})[1:]
             if not nodes:
                 print "Could not find node on gid: %s with name: %s" % (gid, name)
+                return 0
         return nodes[0]['id']
 
     cloudspacemapping = dict()
