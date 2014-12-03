@@ -6,6 +6,7 @@ def do(username):
     import JumpScale.grid
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    bcl = j.core.osis.getClientForNamespace('billing')
     lcl = j.core.osis.getClientForNamespace('libcloud')
     lclvrt = j.core.osis.getClientForNamespace('libvirt')
     vcl = j.core.osis.getClientForNamespace('vfw')
@@ -27,6 +28,10 @@ def do(username):
     data['sizes'] = ccl.size.simpleSearch({})
     data['images'] = ccl.image.simpleSearch({})
     data['stacks'] = ccl.stack.simpleSearch({})
+    data['transactions'] = ccl.credittransaction.simpleSearch({'accountId': accountId})
+    for transaction in data['transactions']:
+        if transaction['reference']:
+            transaction['bill'] = bcl.billingstatement.get(transaction['reference']).dump()
     cloudspaces = list()
     data['cloudspaces'] = cloudspaces
     for cloudspace in ccl.cloudspace.simpleSearch({'accountId': accountId}):

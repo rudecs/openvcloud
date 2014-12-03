@@ -1,12 +1,13 @@
 import json
 import sys
 from JumpScale import j
-def do(username):
+def do(username, credit):
     with open('%s.json' % username) as fd:
         data = json.load(fd)
     import JumpScale.grid
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    bcl = j.core.osis.getClientForNamespace('billing')
     vcl = j.core.osis.getClientForNamespace('vfw')
     lcl = j.core.osis.getClientForNamespace('libcloud')
     lclvrt = j.core.osis.getClientForNamespace('libvirt')
@@ -30,6 +31,23 @@ def do(username):
     else:
         accountId = accounts[0]['id']
     print 'AccountId %s for user %s' % (accountId, username)
+
+    if credit:
+        for transaction in data['transactions']:
+            bill = transaction.pop('bill', None)
+            billId = None
+            if bill:
+                bill.pop('guid', None)
+                bill.pop('id', None)
+                bill['accountId'] = accountId
+                billId, _,_ = bcl.billingstatement.set(bill)
+            transaction.pop('id', None)
+            transaction.pop('guid', None)
+            transaction['accountId'] = accountId
+            transaction['reference'] = billId
+            ccl.credittransaction.set(transaction)
+        print 'Done'
+        sys.exit(0)
 
     def getNewStackId(gid, stackId):
         for stack in data['stacks']:
@@ -114,5 +132,6 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--username')
+    parser.add_argument('-c', '--credit', action='store_true', default=False)
     opts = parser.parse_args()
-    do(opts.username)
+    do(opts.username, opts.credit)
