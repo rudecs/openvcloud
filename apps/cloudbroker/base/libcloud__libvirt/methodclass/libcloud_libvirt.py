@@ -213,7 +213,7 @@ class libcloud_libvirt(object):
         param: id of the node to get 
         result node
         """
-        node = self._models.node.get(id)
+        node = self._models.node.get(id).dump()
         return node
 
     def listNodes(self, **kwargs):
