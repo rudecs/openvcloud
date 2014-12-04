@@ -31,7 +31,9 @@ def do(username):
     data['transactions'] = ccl.credittransaction.simpleSearch({'accountId': accountId})
     for transaction in data['transactions']:
         if transaction['reference']:
-            transaction['bill'] = bcl.billingstatement.get(transaction['reference']).dump()
+            bill = bcl.billingstatement.get(transaction['reference'])
+            if bill:
+                transaction['bill'] = bill.dump()
     cloudspaces = list()
     data['cloudspaces'] = cloudspaces
     for cloudspace in ccl.cloudspace.simpleSearch({'accountId': accountId}):
