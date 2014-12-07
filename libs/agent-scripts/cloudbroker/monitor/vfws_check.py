@@ -47,6 +47,8 @@ def action():
             gwip = getDefaultGW(cloudspace['publicipaddress'])
             try:
                 vfw = vfwcl.get("%s_%s" % (j.application.whoAmI.gid, cloudspace['networkId']))
+                if vfw.nid != j.application.whoAmI.nid:
+                    return
                 if j.system.net.tcpPortConnectionTest(vfw.host, 8728, 7):
                     routeros = j.clients.routeros.get(vfw.host, 'vscalers', ROUTEROS_PASSWORD)
                 else:
@@ -79,7 +81,7 @@ Some VFW have connections issues please investigate
 
 
 if __name__ == '__main__':
-    result = action('ca1')
+    result = action()
     import yaml
     import json
     with open('/root/vfws_check.json', 'w') as fd:
