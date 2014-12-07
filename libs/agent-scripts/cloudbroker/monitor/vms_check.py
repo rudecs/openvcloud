@@ -36,13 +36,14 @@ def action(gid=None):
     ping_jobs = dict()
     disk_check_jobs = dict()
     vmachines_data = dict()
-    query = {}
+    query = {'status': {'$ne': 'DESTROYED'}}
     if gid:
         query['gid'] = gid
     cloudspaces = cbcl.cloudspace.search(query)[1:]
 
     for cloudspace in cloudspaces:
-        gid = gid or cloudspace['gid']
+        gid = cloudspace['gid']
+        print 'Cloudspace %(accountId)s %(name)s' % cloudspace
         query = {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}}
         vms = cbcl.vmachine.search(query)[1:]
         for vm in vms:
@@ -57,19 +58,20 @@ def action(gid=None):
             vmachines_data[vm['id']] = vm_data
             if vm['status'] == 'RUNNING':
                 args = {'vm_ip_address': vm['nics'][0]['ipAddress'], 'vm_cloudspace_id': cloudspace['id']}
-                job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
+                job = accl.scheduleCmd(gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
                 ping_jobs[vm['id']] = job
 
             if vm['status']:
                 job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
                 disk_check_jobs[vm['id']] = job
-
-    for vm_id, job in ping_jobs.iteritems():
+    for idx, (vm_id, job) in enumerate(ping_jobs.iteritems()):
+        print 'Waiting for %s/%s pingjobs' % (idx, len(ping_jobs))
         result = accl.waitJumpscript(job=job)
         if result['result']:
             vmachines_data[vm_id]['ping'] = result['result']
 
-    for vm_id, job in disk_check_jobs.iteritems():
+    for idx, (vm_id, job) in enumerate(disk_check_jobs.iteritems()):
+        print 'Waiting for %s/%s disk_check_jobs' % (idx, len(disk_check_jobs))
         result = accl.waitJumpscript(job=job)
         if result['result']:
             result = result['result']
@@ -81,3 +83,8 @@ def action(gid=None):
     for vm_id, vm_data in vmachines_data.iteritems():
         rediscl.hset('vmachines.status', vm_id, json.dumps(vm_data))
     return vmachines_data
+
+
+if __name__ == '__main__':
+    action()
+
