@@ -104,8 +104,11 @@ def main(j, args, params, tags, tasklet):
             if k == 'epoch':
                 v = j.base.time.epoch2HRDateTime(stats['epoch'])
             if k == 'disk_size':
-                size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
-                v = '%.2f %siB' % (size, unit)
+                if isinstance(stats['disk_size'], basestring):
+                    v = stats['disk_size']
+                else:
+                    size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
+                    v = '%.2f %siB' % (size, unit)
             data['stats_%s' % k] = v
 
         return data
