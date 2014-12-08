@@ -30,7 +30,7 @@ def main(j, args, params, tags, tasklet):
     authkey = user.authkey
     if user.authkey:
         session = args.requestContext.env['beaker.session']
-        if session.get_by_id(session):
+        if not session.get_by_id(user.authkey):
             authkey = None
     if not authkey:
         newsession = args.requestContext.env['beaker.get_session']()
