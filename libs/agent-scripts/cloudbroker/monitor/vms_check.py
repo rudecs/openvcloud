@@ -1,4 +1,5 @@
 from JumpScale import j
+import time
 
 descr = """
 Check vmachines status
@@ -18,6 +19,7 @@ log = False
 
 def action(gid=None):
     import JumpScale.grid.osis
+    import JumpScale.portal
     import JumpScale.lib.routeros
     import JumpScale.baselib.redis
     import JumpScale.grid.agentcontroller
@@ -27,6 +29,7 @@ def action(gid=None):
     accl = j.clients.agentcontroller.get()
     osiscl = j.core.osis.getClientByInstance('main')
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+    portalclient = j.core.portal.getClientByInstance('cloudbroker').actors
     nodecl = j.core.osis.getClientForCategory(osiscl, 'system', 'node')
 
     # get all stacks and nodes data, save trips to osis
@@ -57,22 +60,29 @@ def action(gid=None):
                        'cpu_node_id': cpu_node_id, 'epoch': j.base.time.getTimeEpoch()}
             vmachines_data[vm['id']] = vm_data
             if vm['status'] == 'RUNNING':
-                args = {'vm_ip_address': vm['nics'][0]['ipAddress'], 'vm_cloudspace_id': cloudspace['id']}
-                job = accl.scheduleCmd(gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
-                ping_jobs[vm['id']] = job
+                ipaddress = vm['nics'][0]['ipAddress']
+                if ipaddress == 'Undefined':
+                    print 'Retreiving vm from portal %(id)s' % vm
+                    vmdata = portalclient.cloudapi.machines.get(vm['id'])
+                    ipaddress = vmdata['interfaces'][0]['ipAddress']
+                if ipaddress != 'Undefined':
+                    args = {'vm_ip_address': ipaddress, 'vm_cloudspace_id': cloudspace['id']}
+                    job = accl.scheduleCmd(gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
+                    ping_jobs[vm['id']] = job
 
             if vm['status']:
                 job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
                 disk_check_jobs[vm['id']] = job
+    time.sleep(5)
     for idx, (vm_id, job) in enumerate(ping_jobs.iteritems()):
         print 'Waiting for %s/%s pingjobs' % (idx, len(ping_jobs))
-        result = accl.waitJumpscript(job=job)
+        result = accl.waitJumpscript(job=job, timeout=0)
         if result['result']:
             vmachines_data[vm_id]['ping'] = result['result']
 
     for idx, (vm_id, job) in enumerate(disk_check_jobs.iteritems()):
         print 'Waiting for %s/%s disk_check_jobs' % (idx, len(disk_check_jobs))
-        result = accl.waitJumpscript(job=job)
+        result = accl.waitJumpscript(job=job, timeout=0)
         if result['result']:
             result = result['result']
             vmachines_data[vm_id]['hdtest'] = True

@@ -18,7 +18,6 @@ period = 3600
 
 def action():
     import JumpScale.grid.osis
-    import JumpScale.baselib.mailclient
     import netaddr
     import JumpScale.lib.routeros
 
@@ -75,7 +74,8 @@ Some VFW have connections issues please investigate
             cloudspace = cloudspaces[cloudspaceid]
             body += "* CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s\n" % cloudspace
             body += "  ** %s \n\n" % message
-        j.clients.email.send("support@mothership1.com", "monitor@mothership1.com", "VFW Check", body)
+
+        j.errorconditionhandler.raiseOperationalWarning(body, 'monitoring')
         print body
     return result
 
