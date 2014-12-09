@@ -79,7 +79,7 @@ h3. Details
 h3. Users Access
 ||User Name||E-Mail||ACL||
 {% for user in users -%}
-    |${user.id}|${user.emails}|${user.acl}|
+    | [${user.id}|/CBGrid/user?id=${user.guid}] |${user.emails}|${user.acl}|
 {% endfor %}
 
 h3. Spaces
