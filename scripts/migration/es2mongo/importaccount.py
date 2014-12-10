@@ -34,9 +34,14 @@ def do(username, data, credit):
     if not groups:
         scl.group.set(data['group'])
 
-    user = scl.user.simpleSearch({'id': username})
-    if not user:
-        scl.user.set(data['user'])
+    user = scl.group.simpleSearch({'id': username})[0]
+
+    user = scl.user.get(user['guid'])
+    for prop in ('domain', 'description', 'roles', 'passwd', 'emails', 'authkey', 'lastcheck'):
+        if not getattr(user, prop):
+            setattr(user, prop, data['user'][prop])
+    scl.user.set(user)
+
 
     accounts = ccl.account.simpleSearch({'name': username})
     if not accounts:
