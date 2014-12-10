@@ -1,9 +1,11 @@
 import json
 import sys
 from JumpScale import j
+import JumpScale.grid
+ccl = j.core.osis.getClientForNamespace('cloudbroker')
+
 def do(username):
     data = {}
-    import JumpScale.grid
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
     bcl = j.core.osis.getClientForNamespace('billing')
@@ -26,7 +28,17 @@ def do(username):
     accountId = accounts[0]['id']
     data['account'] = ccl.account.get(accountId).dump()
     data['sizes'] = ccl.size.simpleSearch({})
-    data['images'] = ccl.image.simpleSearch({})
+    data['images'] = ccl.image.simpleSearch({'accountId': 0})
+    accountimages = list()
+    data['accountimages'] = accountimages
+    def processImageId(imageId):
+        image = ccl.image.get(imageId).dump()
+        if image['accountId'] == accountId:
+            image['reference'] = lclvrt.image.get(image['referenceId']).dump()
+            image['gid'] = j.application.whoAmI.gid
+            accountimages.append(image)
+
+
     data['stacks'] = ccl.stack.simpleSearch({})
     data['transactions'] = ccl.credittransaction.simpleSearch({'accountId': accountId})
     for transaction in data['transactions']:
@@ -47,12 +59,14 @@ def do(username):
     data['vfws'] = vfws
     for cloudspace in data['cloudspaces']:
         for vmachine in ccl.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
-            if vmachine['status'] != 'DESTROYED':
+            if vmachine['status'] != 'DESTROYED' and vmachine['referenceId']:
                 vmachine['xml'] = lcl.libvirtdomain.get('domain_%(referenceId)s' % vmachine)
                 vmachine['node'] = lclvrt.node.get(vmachine['referenceId']).dump()
                 vmachines.append(vmachine)
                 for disk in vmachine['disks']:
                     disks.append(ccl.disk.get(disk).dump())
+
+                processImageId(vmachine['imageId'])
         for vfw in vcl.virtualfirewall.simpleSearch({'domain': str(cloudspace['id'])}):
             node = scl.node.get("%(gid)s_%(nid)s" % vfw)
             vfw['nodename'] = node.name
@@ -67,5 +81,19 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--username')
+    parser.add_argument('-a', '--all', action="store_true", default=False)
     opts = parser.parse_args()
-    do(opts.username)
+    if opts.all:
+        users = set()
+        for account in ccl.account.simpleSearch({'status': 'CONFIRMED'}):
+            for space in ccl.cloudspace.simpleSearch({'status': 'DEPLOYED', 'accountId': account['id']}):
+                machines = ccl.vmachine.simpleSearch({'cloudspaceId': space['id'], 'status': 'RUNNING'})
+                if machines:
+                    users.add(account['name'])
+
+        for user in users:
+            print '* User %s' % user
+            do(user)
+
+    else:
+        do(opts.username)

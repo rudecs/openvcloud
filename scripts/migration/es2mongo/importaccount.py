@@ -1,9 +1,23 @@
 import json
 import sys
+import os
 from JumpScale import j
-def do(username, credit):
-    with open('%s.json' % username) as fd:
-        data = json.load(fd)
+
+def load(path, credit):
+    def loadfile(path):
+        with open(path) as fd:
+            data = json.load(fd)
+        username, _ = os.path.splitext(j.system.fs.getBaseName(path))
+        do(username, data, credit)
+
+    if j.system.fs.isFile(path):
+        loadfile(path)
+    elif j.system.fs.isDir(path):
+        for filepath in j.system.fs.listFilesInDir(path, filter='*.json'):
+            loadfile(filepath)
+
+
+def do(username, data, credit):
     import JumpScale.grid
     scl = j.core.osis.getClientForNamespace('system')
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
@@ -47,7 +61,7 @@ def do(username, credit):
             transaction['reference'] = billId
             ccl.credittransaction.set(transaction)
         print 'Done'
-        sys.exit(0)
+        return
 
     def getNewStackId(gid, stackId):
         for stack in data['stacks']:
@@ -62,6 +76,13 @@ def do(username, credit):
                         return 0
                 return stacks[0]['id']
 
+    def getStacksWithImage(imageId):
+        stacks = list()
+        for stack in data['stacks']:
+            if imageId in stack.get('images', list()):
+                stacks.append(stack['id'])
+        return stacks
+
     def getNewSize(sizeId):
         for size in data['sizes']:
             if size['id'] == sizeId:
@@ -74,7 +95,7 @@ def do(username, credit):
     def getNewImage(imageId):
         for image in data['images']:
             if image['id'] == imageId:
-                images = ccl.image.search({'name': image['name'], 'size': image['size']})[1:]
+                images = ccl.image.search({'name': image['name']})[1:]
                 if not images:
                     print "Could not find image %s" % image
                     return 0
@@ -90,12 +111,34 @@ def do(username, credit):
                 return 0
         return nodes[0]['id']
 
+    for accountimage in data['accountimages']:
+        accountimage['accountId'] = accountId
+        gid = accountimage.pop('gid')
+        oldid = accountimage.pop('id', None)
+        accountimage.pop('guid', None)
+        reference = accountimage.pop('reference', None)
+        accountimage['type'] = 'Custom Templates'
+        reference['type'] = 'Custom Templates'
+        lclvrt.image.set(reference)
+        newimageid, _, _ = ccl.image.set(accountimage)
+        for oldstackid in getStacksWithImage(oldid):
+            stackId = getNewStackId(gid, oldstackid)
+            stack = ccl.stack.get(stackId)
+            if newimageid not in stack.images:
+                stack.images.append(newimageid)
+                ccl.stack.set(stack)
+            provid = '%s_%s' % (stack.gid, stack.referenceId)
+            provider = lclvrt.resourceprovider.get(provid)
+            if reference['guid'] not in provider.images:
+                provider.images.append(reference['guid'])
+                lclvrt.resourceprovider.set(provider)
+
+
     cloudspacemapping = dict()
     for cloudspace in data['cloudspaces']:
         oldspaceid = cloudspace.pop('id', None)
-        cloudspacemapping = dict()
-        cloudspace['gid'] = locations[cloudspace['location']]
         cloudspace['accountId'] = accountId
+        cloudspace['gid'] = locations[cloudspace['location']]
         cloudspaceId, _, _ = ccl.cloudspace.set(cloudspace)
         cloudspacemapping[oldspaceid] = cloudspaceId
         for vm in data['vmachines']:
@@ -131,7 +174,8 @@ def do(username, credit):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-u', '--username')
+    parser.add_argument('-p', '--path', help="File path or folderpath")
     parser.add_argument('-c', '--credit', action='store_true', default=False)
     opts = parser.parse_args()
-    do(opts.username, opts.credit)
+    load(opts.path, opts.credit)
+
