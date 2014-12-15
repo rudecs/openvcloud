@@ -32,7 +32,7 @@
                         </li>
                     
                     <li><a href="/$$space/Why" class="Why Mothership<sup>1</sup> active">Why Mothership<sup>1</sup></a></li>
-                    <li><a href="/$$space/KickStart" class="KickStart">KickStart!</a></li>
+                    <li><a href="/$$space/Pricing" class="Pricing">Pricing</a></li>
                 </ul>               
             </div>
         </div>
