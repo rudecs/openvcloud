@@ -70,7 +70,7 @@ class cloudapi_accounts(BaseActor):
         """
         #put your code here to implement this method
 
-        return self.models.account.get(accountId)
+        return self.models.account.get(int(accountId))
 
     @authenticator.auth(acl='R')
     @audit()
