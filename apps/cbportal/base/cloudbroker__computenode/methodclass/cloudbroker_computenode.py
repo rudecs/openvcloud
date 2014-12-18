@@ -7,7 +7,7 @@ class cloudbroker_computenode(BaseActor):
     Operator actions for handling interventsions on a computenode
     
     """
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def setStatus(self, name, gid, status, **kwargs):
         """
         Set different stack statusses, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'OFFLINE(Machine is not available'

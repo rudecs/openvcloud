@@ -32,7 +32,7 @@ class cloudbroker_user(BaseActor):
             return result
         return self.users_actor.authenticate(username, result['passwd'])
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def updatePassword(self, username, password, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
@@ -44,7 +44,7 @@ class cloudbroker_user(BaseActor):
         self.syscl.user.set(result)
         return True
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
@@ -54,7 +54,7 @@ class cloudbroker_user(BaseActor):
             return "Username %s already exists" % username
         return j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def sendResetPasswordLink(self, username, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
@@ -65,7 +65,7 @@ class cloudbroker_user(BaseActor):
         email = result['emails']
         return self.users_actor.sendResetPasswordLink(email)
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def delete(self, username, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]

@@ -20,7 +20,7 @@ class cloudbroker_image(BaseActor):
             libvirtimage = self.libvirtcl.image.get(imageId)
         return True, cbimage, libvirtimage
 
-    @auth(['level1',])
+    @auth(['level1', 'level2', 'level3'])
     def delete(self, imageId, **kwargs):
         """
         Delete an image
@@ -39,7 +39,7 @@ class cloudbroker_image(BaseActor):
         return result
 
 
-    @auth(['level1',])
+    @auth(['level1', 'level2', 'level3'])
     def enable(self, imageId, **kwargs):
         """
         Enable an image
@@ -61,7 +61,7 @@ class cloudbroker_image(BaseActor):
                 return 'Image was not DISABLED'
         return result
 
-    @auth(['level1',])
+    @auth(['level1', 'level2', 'level3'])
     def disable(self, imageId, **kwargs):
         """
         Disable an image
