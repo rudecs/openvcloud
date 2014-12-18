@@ -74,7 +74,7 @@ class cloudbroker_iaas(BaseActor):
         self.models.publicipv4pool.set(pool)
         return subnet
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def syncAvailableImagesToCloudbroker(self, **kwargs):
         """
         synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model

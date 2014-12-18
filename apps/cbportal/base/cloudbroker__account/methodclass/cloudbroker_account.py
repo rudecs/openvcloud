@@ -30,7 +30,7 @@ class cloudbroker_account(BaseActor):
             return False, 'Username "%s" not found' % username
         return True, user[0]
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def disable(self, accountname, reason, **kwargs):
         """
         Disable an account
@@ -59,7 +59,7 @@ class cloudbroker_account(BaseActor):
             j.tools.whmcs.tickets.close_ticket(ticketId)
             return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def create(self, username, name, emailaddress, password, location, **kwargs):
         ctx = kwargs["ctx"]
         check, result = self._checkUser(username)
@@ -69,7 +69,7 @@ class cloudbroker_account(BaseActor):
             return "Username %s already exists" % username
         return self.users_actor.register(username, name, emailaddress, password, None, None, location, None)
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def enable(self, accountname, reason, **kwargs):
         """
         Enable an account
@@ -93,7 +93,7 @@ class cloudbroker_account(BaseActor):
             self.models.account.set(account)
             return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def rename(self, accountname, name, **kwargs):
         """
         Rename an account
@@ -111,7 +111,7 @@ class cloudbroker_account(BaseActor):
             self.models.account.set(account)
             return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def delete(self, accountname, reason, **kwargs):
         """
         Complete delete an acount from the system
@@ -133,7 +133,7 @@ class cloudbroker_account(BaseActor):
             self.models.account.set(account)
             return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def addUser(self, accountname, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -157,7 +157,7 @@ class cloudbroker_account(BaseActor):
         self.accounts_actor.addUser(accountId, userId, accesstype)
         return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def deleteUser(self, accountname, username, **kwargs):
         """
         Delete a user from the account

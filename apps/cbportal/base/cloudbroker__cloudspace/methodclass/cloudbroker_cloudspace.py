@@ -14,7 +14,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.libvirt_actor = self.cb.actors.libcloud.libvirt
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
 
-    @auth(['level1', 'level2'])
+    @auth(['level1', 'level2', 'level3'])
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
@@ -66,7 +66,7 @@ class cloudbroker_cloudspace(BaseActor):
             return True
         return False
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
@@ -75,7 +75,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         return True
     
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
         """
         Adds an available public IP address
@@ -84,7 +84,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def removeIP(self, cloudspaceId, ipaddress, **kwargs):
         """
         Removed a public IP address from the cloudspace
@@ -93,7 +93,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         return True
     
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def deployVFW(self, cloudspaceId, **kwargs):
         """
         Deploy VFW 
@@ -108,7 +108,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def resetVFW(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
@@ -124,7 +124,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.destroyVFW(cloudspaceId, **kwargs)
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
@@ -143,14 +143,14 @@ class cloudbroker_cloudspace(BaseActor):
             self.models.cloudspace.set(cloudspace)
         return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def updateName(self, cloudspaceId, newname, **kwargs):
         cloudspace = self.models.cloudspace.get(int(cloudspaceId))
         cloudspace.name = newname
         self.models.cloudspace.set(cloudspace)
         return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def create(self, accountname, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create a cloudspace
@@ -181,7 +181,7 @@ class cloudbroker_cloudspace(BaseActor):
             return False, 'Username "%s" not found' % username
         return True, user[0]
     
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def addUser(self, cloudspaceId, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -207,7 +207,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
         return True
 
-    @auth(['level1','level2'])
+    @auth(['level1', 'level2', 'level3'])
     def deleteUser(self, cloudspaceId, username, **kwargs):
         """
         Delete a user from the account
