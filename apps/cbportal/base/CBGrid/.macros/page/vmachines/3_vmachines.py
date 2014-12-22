@@ -6,8 +6,10 @@ def main(j, args, params, tags, tasklet):
     stackid = args.getTag("stackid")
     cloudspaceId = args.getTag("cloudspaceid")
     imageid = args.getTag('imageid')
+    gid = args.getTag('gid')
     filters = dict()
-    nativequery = None
+    nativequery = dict()
+    nativequery['status'] = {'$nin': ['DESTROYED']}
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
     if stackid:
@@ -20,12 +22,13 @@ def main(j, args, params, tags, tasklet):
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['imageId'] = images[0]['id']
+    if gid:
+        gid = int(gid)
+        stacks = ccl.stack.simpleSearch({'gid':gid})
+        stacksids = [ stack['id'] for stack in stacks ]
+        nativequery['stackId'] = {'$in':stacksids}
 
-    fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack', 'Location']
-
-    def makeTime(row, field):
-        time = datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
-        return time
+    fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
@@ -35,25 +38,10 @@ def main(j, args, params, tags, tasklet):
 
     def spaceLinkify(row, field):
         return '[%s|cloudspace?id=%s]' % (row[field], row[field])
-    
-    locations = dict()
-    def locationLinkify(row, field):
-        sid = int(row[field])
-        if sid == 0:
-            return 'N/A'
-        gid = locations.get(sid)
-        if not gid:
-            stack = ccl.stack.get(sid)
-            locations[sid] = stack.gid
-            gid = stack.gid
-        if gid:
-            return '[%s|location?id=%d]' % (gid,gid)
-        else:
-            return 'N/A'
 
-    fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId', 'stackId']
-    fieldvalues = [nameLinkify, 'status', 'hostName', makeTime, spaceLinkify, stackLinkify, locationLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery)
+    fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
+    fieldvalues = [nameLinkify, 'status', 'hostName', modifier.makeTime, spaceLinkify, stackLinkify]
+    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 

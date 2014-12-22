@@ -2,6 +2,8 @@
 
 h2. Grid $$gid
 
+{{toc: start=3 | depth=2}}
+
 {{actions:
 - display: Check VMs
   action: /restmachine/cloudbroker/grid/checkVMs
@@ -75,3 +77,5 @@ h3. Stacks
 h3. Firewall Nodes
 {{fwnodes gid:$$gid roles:fw}}
 
+h3. vMachines
+{{vmachines gid:$$gid}}
