@@ -8,6 +8,7 @@ def main(j, args, params, tags, tasklet):
     imageid = args.getTag('imageid')
     filters = dict()
     nativequery = None
+    ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
     if stackid:
         stackid = int(stackid)
@@ -16,7 +17,6 @@ def main(j, args, params, tags, tasklet):
         filters['cloudspaceId'] = int(cloudspaceId)
     if imageid:
         imageid = str(imageid)
-        ccl = j.core.osis.getClientForNamespace('cloudbroker')
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['imageId'] = images[0]['id']
@@ -43,7 +43,6 @@ def main(j, args, params, tags, tasklet):
             return 'N/A'
         gid = locations.get(sid)
         if not gid:
-            ccl = j.core.osis.getClientForNamespace('cloudbroker') 
             stack = ccl.stack.get(sid)
             locations[sid] = stack.gid
             gid = stack.gid
