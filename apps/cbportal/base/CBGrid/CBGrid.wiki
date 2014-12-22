@@ -55,15 +55,15 @@ h5. No. of Active Accounts
 @colend 
 
 @col 3
-h5. No. of Active Users
-{{nrusergauge: id:2 width:100 height:100}}
-@colend 
-
-@col 4
 h5. No. of Running vMachines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 width:100 height:100}}
-@colend 
+@colend
+
+@col 4
+h5. No. of Windows Running vMachines
+{{nrwinvmgauge: id:4 width:100 heigth:100}}^M
+@colend
 @rowend 
 
 h3. Locations
