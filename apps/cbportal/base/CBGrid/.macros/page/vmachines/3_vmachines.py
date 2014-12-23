@@ -6,8 +6,11 @@ def main(j, args, params, tags, tasklet):
     stackid = args.getTag("stackid")
     cloudspaceId = args.getTag("cloudspaceid")
     imageid = args.getTag('imageid')
+    gid = args.getTag('gid')
     filters = dict()
-    nativequery = None
+    nativequery = dict()
+    nativequery['status'] = {'$nin': ['DESTROYED']}
+    ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
     if stackid:
         stackid = int(stackid)
@@ -16,16 +19,16 @@ def main(j, args, params, tags, tasklet):
         filters['cloudspaceId'] = int(cloudspaceId)
     if imageid:
         imageid = str(imageid)
-        ccl = j.core.osis.getClientForNamespace('cloudbroker')
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['imageId'] = images[0]['id']
+    if gid:
+        gid = int(gid)
+        stacks = ccl.stack.simpleSearch({'gid':gid})
+        stacksids = [ stack['id'] for stack in stacks ]
+        nativequery['stackId'] = {'$in':stacksids}
 
     fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
-
-    def makeTime(row, field):
-        time = datetime.datetime.fromtimestamp(row[field]).strftime('%m-%d %H:%M:%S') or ''
-        return time
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
@@ -37,8 +40,8 @@ def main(j, args, params, tags, tasklet):
         return '[%s|cloudspace?id=%s]' % (row[field], row[field])
 
     fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'status', 'hostName', makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery)
+    fieldvalues = [nameLinkify, 'status', 'hostName', modifier.makeTime, spaceLinkify, stackLinkify]
+    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
