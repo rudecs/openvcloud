@@ -8,8 +8,7 @@ def main(j, args, params, tags, tasklet):
     imageid = args.getTag('imageid')
     gid = args.getTag('gid')
     filters = dict()
-    nativequery = dict()
-    nativequery['status'] = {'$nin': ['DESTROYED']}
+    filters['status'] = ['RUNNING','HALTED','PAUSED']
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
     if stackid:
@@ -26,7 +25,7 @@ def main(j, args, params, tags, tasklet):
         gid = int(gid)
         stacks = ccl.stack.simpleSearch({'gid':gid})
         stacksids = [ stack['id'] for stack in stacks ]
-        nativequery['stackId'] = {'$in':stacksids}
+        filters['stackId'] = stacksids
 
     fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'Stack']
 
@@ -41,7 +40,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
     fieldvalues = [nameLinkify, 'status', 'hostName', modifier.makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
+    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 

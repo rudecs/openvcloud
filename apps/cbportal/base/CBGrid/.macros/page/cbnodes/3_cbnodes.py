@@ -3,7 +3,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    nativequery = None
+    filters = dict()
     cloudspaceid = args.getTag('space')
     if cloudspaceid:
         cloudspaceid = int(cloudspaceid)
@@ -18,10 +18,8 @@ def main(j, args, params, tags, tasklet):
         stackids = list(set(cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks))
         stacks = cbclient.stack.search({'id': {'$in': stackids}})[1:]
         nodeids = [ int(stack['referenceId']) for stack in stacks]
+        filters['id'] = nodeids
 
-        nativequery = {'id': {'$in': nodeids}}
-
-    filters = dict()
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
         filters[tag] = val
@@ -33,7 +31,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldids = ['id', 'name', 'ipaddr']
     fieldvalues = ['[%(id)s|/Grid/node?id=%(id)s&gid=%(gid)s]', 'name', makeIPs]
-    tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
+    tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 

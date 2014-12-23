@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
         pass
 
     fieldnames = ['ID', 'Name', 'ACL', 'Status', ]
-    nativequery = {'acl.userGroupId' : userId}
+    filters['acl.userGroupId'] = userId
 
     def makeACL(row, field):
         for acl in row['acl']:
@@ -21,7 +21,7 @@ def main(j, args, params, tags, tasklet):
     fieldids = ['id', 'name', 'acl', 'status']
     fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name',
                    makeACL, 'status' ]
-    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters, nativequery=nativequery)
+    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
