@@ -8,7 +8,6 @@ def main(j, args, params, tags, tasklet):
     imageid = args.getTag('imageid')
     gid = args.getTag('gid')
     filters = dict()
-    nativequery = dict()
     filters['status'] = ['RUNNING','HALTED','PAUSED']
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
 
@@ -41,7 +40,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
     fieldvalues = [nameLinkify, 'status', 'hostName', modifier.makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, nativequery)
+    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 

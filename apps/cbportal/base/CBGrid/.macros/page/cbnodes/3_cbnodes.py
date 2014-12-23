@@ -3,7 +3,6 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    nativequery = None
     filters = dict()
     cloudspaceid = args.getTag('space')
     if cloudspaceid:
@@ -32,7 +31,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldids = ['id', 'name', 'ipaddr']
     fieldvalues = ['[%(id)s|/Grid/node?id=%(id)s&gid=%(gid)s]', 'name', makeIPs]
-    tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters, nativequery)
+    tableid = modifier.addTableForModel('system', 'node', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
