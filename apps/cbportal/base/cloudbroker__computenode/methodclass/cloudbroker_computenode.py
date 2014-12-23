@@ -7,6 +7,10 @@ class cloudbroker_computenode(BaseActor):
     Operator actions for handling interventsions on a computenode
     
     """
+    def __init__(self):
+        super(cloudbroker_computenode, self).__init__()
+        self._ncl = j.core.osis.getClientForCategory(j.core.portal.active.osis, 'system', 'node')
+
     @auth(['level1', 'level2', 'level3'])
     def setStatus(self, name, gid, status, **kwargs):
         """
@@ -31,6 +35,12 @@ class cloudbroker_computenode(BaseActor):
             stack = stack[0]
             stack['status'] = status
             self.models.stack.set(stack)
+            if status in ['ENABLED', 'DISABLED', 'OFFLINE']:
+                nodes = self._ncl.search({'id':int(stack['referenceId']), 'gid':stack['gid']})[1:]
+                if len(nodes) > 0:
+                    node = nodes[0]
+                    node['active'] =  True if status == 'ENABLED' else False
+                    self._ncl.set(node)
             return stack['status']
         else:
             ctx = kwargs["ctx"]
@@ -67,4 +77,3 @@ class cloudbroker_computenode(BaseActor):
         result: bool
         """
         raise NotImplemented()
-
