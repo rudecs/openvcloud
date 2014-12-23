@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
         pass
 
     fieldnames = ['ID', 'Name', 'ACL', 'Status', ]
-    nativequery = {'acl.userGroupId' : userId}
+    filters['acl.userGroupId'] = userId
 
     def makeACL(row, field):
         for acl in row['acl']:
