@@ -27,8 +27,7 @@ class cloudapi_images(BaseActor):
                 for stack in stacks:
                     imageids.update(stack['images'])
                 if len(imageids) > 0:
-                    limageids = [id for id in imageids]
-                    q['id'] = {'$in': limageids}
+                    q['id'] = {'$in': list(imageids)}
 
         results = self.models.image.search(query)[1:]
         return results
