@@ -6,7 +6,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.$watch('currentspace.accountId',function(){
         	if ($scope.currentSpace){
-        		$scope.images = Image.list($scope.currentSpace.accountId);
+        		$scope.images = Image.list($scope.currentSpace.accountId, $scope.currentSpace.id);
         	}
         });
 
