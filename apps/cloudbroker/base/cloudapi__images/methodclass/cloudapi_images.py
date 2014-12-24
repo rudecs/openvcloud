@@ -14,26 +14,23 @@ class cloudapi_images(BaseActor):
         """
         fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountid:
-            q = {'status': 'CREATED', 'accountId': int(accountid)}
+            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountid)]}}
         else:
             q = {'status': 'CREATED', 'accountId': 0}
         query = {'$query': q, '$fields': fields}
-        results = self.models.image.search(query)[1:]
 
         if cloudspaceid:
             cloudspace = self.models.cloudspace.get(int(cloudspaceid))
             if cloudspace:
-                stacks = self.models.stack.search({'gid': cloudspace.gid})[1:]
-                imageids = list()
+                stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
+                imageids = set()
                 for stack in stacks:
-                    for id in stack['images']:
-                        if id not in imageids:
-                            imageids.append(id)
+                    imageids.update(stack['images'])
                 if len(imageids) > 0:
-                    images = self.models.image.search({'id': {'$in': imageids}})[1:]
-                    if len(images) > 0:
-                        results.extend(images)
+                    limageids = [id for id in imageids]
+                    q['id'] = {'$in': limageids}
 
+        results = self.models.image.search(query)[1:]
         return results
 
     @audit()
