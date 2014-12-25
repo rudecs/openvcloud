@@ -7,6 +7,7 @@
         List the availabe images, filtering can be based on the user which is doing the request
         """
         var:accountid int,, optional account id to filer @tags: optional
+        var:cloudspaceid int,, optional cloudpsace id to filer @tags: optional
         result: list
 
 

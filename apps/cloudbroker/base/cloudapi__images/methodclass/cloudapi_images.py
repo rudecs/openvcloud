@@ -8,9 +8,9 @@ class cloudapi_images(BaseActor):
 
     """
     @audit()
-    def list(self, accountid, **kwargs):
+    def list(self, accountid, cloudspaceid, **kwargs):
         """
-        List the availabe images, filtering can be based on the user which is doing the request
+        List the availabe images, filtering can be based on the cloudspace and the user which is doing the request
         """
         fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountid:
@@ -18,6 +18,17 @@ class cloudapi_images(BaseActor):
         else:
             q = {'status': 'CREATED', 'accountId': 0}
         query = {'$query': q, '$fields': fields}
+
+        if cloudspaceid:
+            cloudspace = self.models.cloudspace.get(int(cloudspaceid))
+            if cloudspace:
+                stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
+                imageids = set()
+                for stack in stacks:
+                    imageids.update(stack['images'])
+                if len(imageids) > 0:
+                    q['id'] = {'$in': list(imageids)}
+
         results = self.models.image.search(query)[1:]
         return results
 
