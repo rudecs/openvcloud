@@ -20,7 +20,7 @@ class cloudbroker_health(j.code.classGetBase()):
 	headers = [('Content-Type', 'application/json'), ]
 	resp = {}
 	try:
-	    dbstate = j.core.portal.active.osis.getStatus()
+            dbstate = j.core.portal.active.osis.getStatus()
             resp['mongodb'] = dbstate['mongodb']
             resp['influxdb'] = dbstate['influxdb']
 	except Exception:
@@ -29,13 +29,13 @@ class cloudbroker_health(j.code.classGetBase()):
 
 	result = self.acl.executeJumpscript('cloudscalers','health_alertservice', role='master',gid=500, wait=True, timeout=30)
 	if result['state'] != 'OK' or result['result'] == False:
-	    resp['alerter'] = False
+            resp['alerter'] = False
 	else:
-	    resp['alerter'] = True
+            resp['alerter'] = True
 
 	if not all(resp.values()):
-	    ctx.start_response('200 Ok',headers)
+            ctx.start_response('200 Ok',headers)
 	else:
-	    ctx.start_response('503 Service Unavailable',headers)
+            ctx.start_response('503 Service Unavailable',headers)
 	return json.dumps(resp)
 
