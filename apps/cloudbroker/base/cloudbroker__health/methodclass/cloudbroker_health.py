@@ -28,10 +28,10 @@ class cloudbroker_health(j.code.classGetBase()):
             resp['influxdb'] = False
 
 	result = self.acl.executeJumpscript('cloudscalers','health_alertservice', role='master',gid=j.application.whoAmI.gid, wait=True, timeout=30)
-	if result['state'] != 'OK' or result['result'] == False:
+	if result['state'] != 'OK':
             resp['alerter'] = False
 	else:
-            resp['alerter'] = True
+            resp['alerter'] = result['result']
 
 	if all(resp.values()):
             ctx.start_response('200 Ok',headers)
