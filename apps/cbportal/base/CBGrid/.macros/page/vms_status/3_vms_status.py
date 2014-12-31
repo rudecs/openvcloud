@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
         aaData = str(aaData)
         return aaData.replace('[[', '[ [').replace(']]', '] ]')
 
-    cl = j.clients.redis.getGeventRedisClientByInstanceName('system')
+    cl = j.clients.redis.getByInstanceName('system')
 
     vms = cl.hgetall("vmachines.status")
     vmachines = dict([(vms[i], json.loads(vms[i+1])) for i, _ in enumerate(vms) if i % 2 == 0])
