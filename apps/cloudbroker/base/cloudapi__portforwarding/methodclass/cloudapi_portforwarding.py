@@ -158,7 +158,7 @@ class cloudapi_portforwarding(BaseActor):
 
     def _process_list(self, forwards, cloudspaceid):
         result = list()
-        query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROTYED'}}
+        query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROYED'}}
         machines = self.models.vmachine.search(query)[1:]
         def getMachineByIP(ip):
             for machine in machines:
