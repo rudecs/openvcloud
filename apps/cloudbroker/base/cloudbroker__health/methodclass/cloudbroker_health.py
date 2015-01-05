@@ -28,7 +28,7 @@ class cloudbroker_health(j.code.classGetBase()):
             resp['mongodb'] = False
             resp['influxdb'] = False
 
-        result = self.acl.executeJumpscript('cloudscalers','health_alertservice', role='master',gid=500, wait=True, timeout=30)
+        result = self.acl.executeJumpscript('cloudscalers','health_alertservice', role='master',gid=j.application.whoAmI.gid, wait=True, timeout=30)
         if result['state'] != 'OK':
             resp['alerter'] = False
             resp['healtcheckalive'] = False
