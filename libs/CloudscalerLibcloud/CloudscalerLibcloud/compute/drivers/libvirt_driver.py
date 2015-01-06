@@ -249,7 +249,8 @@ class CSLibvirtNodeDriver():
         self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
         return True
 
-    def ex_getDomain(self, node):
+    def ex_get_node_details(self, nodeid):
+        node = Node(id=nodeid)
         node = self._from_agent_to_node(self._get_domain_for_node(node))
         backendnode = self.backendconnection.getNode(node.id)
         node.extra['macaddress'] = backendnode['macaddress']

@@ -362,17 +362,19 @@ class cloudapi_machines(BaseActor):
         m['sizeId'] = machine.sizeId
         osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
-        node = provider.client.ex_getDomain(node)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
-            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-            fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-            try:
-                ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
-                if ipaddress:
-                    machine.nics[0].ipAddress= ipaddress
-                    self.models.vmachine.set(machine)
-            except:
-                pass # VFW not deployed yet
+            if node.private_ips:
+	        machine.nics[0].ipAddress = node.private_ips[0]
+            else: 
+                cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+                fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+                try:
+                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+                    if ipaddress:
+                        machine.nics[0].ipAddress= ipaddress
+                        self.models.vmachine.set(machine)
+                except:
+                    pass # VFW not deployed yet
         realstatus = enums.MachineStatusMap.getByValue(node.state)
         if realstatus != machine.status:
             machine.status = realstatus
@@ -380,7 +382,7 @@ class cloudapi_machines(BaseActor):
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
+                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
     @authenticator.auth(acl='R')
     @audit()
@@ -418,7 +420,7 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.Dummy(id=machine.referenceId)
+        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider)
 
     @authenticator.auth(acl='C')
     @audit()
