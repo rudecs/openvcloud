@@ -10,15 +10,36 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
 
     def ex_list_volume_snapshots(self):
         """
-        Originally known as ex_list_snapshots
+        LIST VOLUME SNAPSHOTS
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_list_snapshots`
+         
+        :rtype: ``list``
         """
         return self._to_volume_snapshots(
             self.connection.request('/os-snapshots').object)
 
     def ex_create_volume_snapshot(self, volume, name, description=None, force=False):
         """
-        Originally known as ex_create_snapshot
+        CREATE VOLUME SNAPSHOT
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_create_snapshot`
+        
+        :param      volume: volume
+        :type       volume: :class:`StorageVolume`
+
+        :keyword    name: New name for the volume snapshot
+        :type       name: ``str``
+
+        :keyword    description: Description of the snapshot (optional)
+        :type       description: ``s:class:`NodeImage`tr``
+
+        :keyword    force: Whether to force creation (optional)
+        :type       force: ``bool``
+
+        :rtype:     :class:`VolumeSnapshot`
         """
+        
         data = {'snapshot': {'display_name': name,
                              'display_description': description,
                              'volume_id': volume.id,
@@ -29,7 +50,14 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                                                          data=data).object)
     def ex_delete_volume_snapshot(self, snapshot):
         """
-        Originally known as ex_delete_snapshot
+        DELETE VOLUME SNAPSHOT
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_delete_snapshot`
+
+        :param      snapshot: snapshot
+        :type       snapshot: :class:`VolumeSnapshot`
+
+        :rtype:     ``bool``
         """
         resp = self.connection.request('/os-snapshots/%s' % snapshot.id,
                                        method='DELETE')
@@ -37,7 +65,25 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
     
     def ex_create_volume_snapshot(self, volume, name, description=None, force=False):
         """
-        Originally known as ex_create_snapshot
+        
+        CREATE VOLUME SNAPSHOT
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_create_snapshot`
+        
+        :param      volume: volume
+        :type       volume: :class:`StorageVolume`
+
+        :keyword    name: New name for the volume snapshot
+        :type       name: ``str``
+
+        :keyword    description: Description of the snapshot (optional)
+        :type       description: ``str``
+
+        :keyword    force: Whether to force creation (optional)
+        :type       force: ``bool``
+
+        :rtype:     :class:`VolumeSnapshot`
+
         """
         data = {'snapshot': {'display_name': name,
                              'display_description': description,
@@ -50,13 +96,35 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
 
     def ex_create_snapshot(self, node, name, snapshottype=None):
         """
-        Overriden behavior to create image snapshots
+        CREATE IMAGE SNAPSHOT (INSTEAD OF VOLUME SNAPSHOT)
+        
+        @overrides :class:`OpenStack_1_1_NodeDriver.ex_create_snapshot`
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :param      name: name for new image
+        :type       name: ``str``
+
+        :rtype: :class:`NodeImage`
+        
         """
         return self.create_image(node, name, {'image_type':'snapshot'})
     
     def ex_delete_snapshot(self, node, name):
         """
-        Overriden behavior to delete image snapshots
+        DELETE IMAGE SNAPSHOT (INSTEAD OF VOLUME SNAPSHOT)
+        
+        @overrides :class:`OpenStack_1_1_NodeDriver.ex_delete_snapshot`
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :param      name: name for new image
+        :type       name: ``str``
+
+        :rtype: ``bool``
+        
         """
         for image in self.list_images():
             if node.id == image.extra['metadata'].get('instance_uuid') and image.name == name:
@@ -65,9 +133,14 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
     
     def ex_list_snapshots(self, node):
         """
-        Overriden behavior to list image snapshots
-        Also return type is changed from ImageNode to dict to match the
-        Libvirt behavior
+        LIST IMAGE SNAPSHOTS (INSTEAD OF VOLUME SNAPSHOTS)
+        
+        @overrides :class:`OpenStack_1_1_NodeDriver.ex_list_snapshots`
+         
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :rtype: ``list``
         """
         result = []
         for image in self.list_images():
@@ -75,7 +148,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                         image.extra['metadata'].get('image_type') == 'snapshot':
                 
                 snap = {'name': image.name,
-                    'epoch': int(datetime.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s')) }
+                    'epoch': int(datetimeDone.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s')) }
                 result.append(snap)
         return result
     
@@ -87,19 +160,29 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
 
     def _to_volume_snapshot(self, data):
         """
-        Originally known as  _to_snapshot
+        HELPER FUNCTION (NOT USED DIRECTLY)
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver._to_snapshot`
         """
         return self._to_snapshot(data)
     
     def _to_volume_snapshots(self, obj):
         """
-          Originally known as  _to_volume_snapshots
+        HELPER FUNCTION (NOT USED DIRECTLY)
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver._to_snapshots`
         """
         return self._to_snapshots(obj)
     
     def ex_start_node(self, node):
         """
-        NEW
+        START A NODE
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+        
+        :rtype: ``bool``
+        
         """
         # Only start in case of suspended or SHUTOFF [both the same / check NODE_STATE_MAP]
         if self.NODE_STATE_MAP[self.node.state] in [self.NODE_STATE_MAP['SHUTOFF'], self.NODE_STATE_MAP['SUSPENDED']]:
