@@ -420,7 +420,7 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider)
+        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state='', extra={})
 
     @authenticator.auth(acl='C')
     @audit()
@@ -436,20 +436,20 @@ class cloudapi_machines(BaseActor):
         if not modelmachine.status == enums.MachineStatus.RUNNING:
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
-        snapshots = provider.client.ex_listsnapshots(node)
+        snapshots = provider.client.ex_list_snapshots(node)
         if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
             return 'Max 5 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
-        snapshot = provider.client.ex_snapshot(node, name)
+        snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot['name']
 
     @authenticator.auth(acl='C')
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        snapshots = provider.client.ex_listsnapshots(node)
+        snapshots = provider.client.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:
             if not snapshot['name'].endswith('_DELETING'):
@@ -467,7 +467,7 @@ class cloudapi_machines(BaseActor):
             return 'A snapshot can only be removed from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
-        return provider.client.ex_snapshot_delete(node, name)
+        return provider.client.ex_delete_snapshot(node, name)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -480,7 +480,7 @@ class cloudapi_machines(BaseActor):
            return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
-        return provider.client.ex_snapshot_rollback(node, name)
+        return provider.client.ex_rollback_snapshot(node, name)
 
     @authenticator.auth(acl='C')
     @audit()

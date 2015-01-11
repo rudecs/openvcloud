@@ -2,6 +2,7 @@ from JumpScale import j
 from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver
+from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
@@ -21,12 +22,12 @@ class CloudProvider(object):
             providertype = getattr(Provider, stack.type)
             kwargs = dict()
             if stack.type == 'OPENSTACK':
-                DriverClass = get_driver(providertype)
                 args = [ stack.login, stack.passwd]
                 kwargs['ex_force_auth_url'] = stack.apiUrl
                 kwargs['ex_force_auth_version'] = '2.0_password'
                 kwargs['ex_tenant_name'] = stack.login
-                self.client = CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
+                driver = OpenStackNodeDriver(*args, **kwargs)
+                CloudProvider._providers[stackId] = driver
             if stack.type == 'DUMMY':
                 DriverClass = get_driver(providertype)
                 args = [1,]
