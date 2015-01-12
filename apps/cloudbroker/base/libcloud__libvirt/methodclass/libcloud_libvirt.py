@@ -305,6 +305,7 @@ class libcloud_libvirt(object):
         list vnc urls
         result
         """
+        gid = int(gid)
         results = self._models.vnc.search({'gid': gid})[1:]
         return [res['url'] for res in results]
 
