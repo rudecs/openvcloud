@@ -188,3 +188,57 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         if self.NODE_STATE_MAP[self.node.state] in [self.NODE_STATE_MAP['SHUTOFF'], self.NODE_STATE_MAP['SUSPENDED']]:
             return self.reboot_node(node) # HARD
         return False
+
+    def create_size(self, name, ram, vcpus, disk):
+        """
+        CREATE A FLAVTOR
+        
+        IF SUCCESSFUL, RETURNS NELY CREATED FLAVOR
+        
+        :param      name: flavor name
+        :type       name: : ``str``
+        
+        :param      ram: RAM size in MBs
+        :type       ram: : ``int``
+        
+        :param      vcpus: number of virtual cpus
+        :type       vcpus: : ``int``
+        
+        :param      disk: DISK size in GBs
+        :type       disk: : ``int``
+        
+        :rtype: ``bool``
+        """
+        
+        data = {
+            "flavor": {
+                "name": name,
+                "ram": ram,
+                "vcpus": vcpus,
+                "disk": disk
+            }
+        }
+
+        return self.connection.request('/flavors',
+                                       method='POST',
+                                       data=data).object
+    
+    # IS THER AWAY TO CREATE IMAGE FROM ANOTHER IMAGE IN OPENSTACK?
+    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+        """
+        CREATES AN IMAGE FROM THE NODE 
+        IGNORES imageid
+        
+        :param      node: class: Node
+        :type       node: : ``Node``
+        
+        :param      name: Image name
+        :type       name: : ``str``
+        
+        :param      imageid: IGNORED
+        :type       imageid: : ``str``
+        
+        
+        :rtype: ``class: NodeImage``
+        """
+        return self.create_image(node, name, {'image_type':'image'})

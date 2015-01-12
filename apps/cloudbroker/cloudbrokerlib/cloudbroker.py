@@ -124,6 +124,11 @@ class CloudBroker(object):
         stack = models.stack.get(stackId)
         stack.images = list()
         for pimage in provider.client.list_images(): #libvirt/openstack images
+            # SKIP Openstack snapshots
+            if 'metadata' in image.extra and \
+                image.extra['metadata'].get('image_type') == 'snapshot':
+                continue
+            
             images = models.image.search({'referenceId':pimage.id})[1:]
             if not images:
                 image = models.image.new()
