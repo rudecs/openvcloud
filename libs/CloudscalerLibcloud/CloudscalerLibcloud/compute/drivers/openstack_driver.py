@@ -148,7 +148,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                         image.extra['metadata'].get('image_type') == 'snapshot':
                 
                 snap = {'name': image.name,
-                    'epoch': int(datetimeDone.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s')) }
+                    'epoch': int(datetime.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s')) }
                 result.append(snap)
         return result
     
