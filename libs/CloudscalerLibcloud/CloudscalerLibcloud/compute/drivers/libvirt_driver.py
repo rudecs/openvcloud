@@ -243,7 +243,7 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+    def ex_create_template(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
         self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
         return True

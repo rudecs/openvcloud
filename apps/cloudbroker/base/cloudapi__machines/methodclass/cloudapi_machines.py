@@ -128,7 +128,7 @@ class cloudapi_machines(BaseActor):
         stack = self.models.stack.get(machine.stackId)
         stack.images.append(imageid)
         self.models.stack.set(stack)
-        provider.client.ex_createTemplate(node, templatename, imageid, basename)
+        provider.client.ex_create_template(node, templatename, imageid, basename)
         return imageid
 
     @authenticator.auth(acl='C')

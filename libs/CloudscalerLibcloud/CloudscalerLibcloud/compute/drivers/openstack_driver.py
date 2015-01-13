@@ -224,7 +224,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                                        data=data).object
     
     # IS THER AWAY TO CREATE IMAGE FROM ANOTHER IMAGE IN OPENSTACK?
-    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+    def ex_create_template(self, node, name, imageid, snapshotbase=None):
         """
         CREATES AN IMAGE FROM THE NODE 
         IGNORES imageid
