@@ -55,7 +55,7 @@ class CloudProvider(object):
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
-        for image in self.client.list_images():
+        for image in self.client.ex_list_images():
             if image.id == iimage.referenceId:
                 return image, image
         return None, None
@@ -123,12 +123,7 @@ class CloudBroker(object):
         count = 0
         stack = models.stack.get(stackId)
         stack.images = list()
-        for pimage in provider.client.list_images(): #libvirt/openstack images
-            # SKIP Openstack snapshots
-            if 'metadata' in image.extra and \
-                image.extra['metadata'].get('image_type') == 'snapshot':
-                continue
-            
+        for pimage in provider.client.ex_list_images(): #libvirt/openstack images
             images = models.image.search({'referenceId':pimage.id})[1:]
             if not images:
                 image = models.image.new()

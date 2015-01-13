@@ -152,6 +152,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                 result.append(snap)
         return result
     
+    
     def ex_rollback_snapshot(self, node, name):
         """
         Not supported in open stack
@@ -188,9 +189,12 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         if self.NODE_STATE_MAP[self.node.state] in [self.NODE_STATE_MAP['SHUTOFF'], self.NODE_STATE_MAP['SUSPENDED']]:
             return self.reboot_node(node) # HARD
         return False
-
+    
+    # name is create_size to cope with the other call : list_sizes()
     def create_size(self, name, ram, vcpus, disk):
         """
+        NEW 
+        
         CREATE A FLAVTOR
         
         IF SUCCESSFUL, RETURNS NELY CREATED FLAVOR
@@ -226,6 +230,8 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
     # IS THER AWAY TO CREATE IMAGE FROM ANOTHER IMAGE IN OPENSTACK?
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
         """
+        NEW
+        
         CREATES AN IMAGE FROM THE NODE 
         IGNORES imageid
         
@@ -242,3 +248,25 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         :rtype: ``class: NodeImage``
         """
         return self.create_image(node, name, {'image_type':'image'})
+    
+    # This is different from list_images that gets all images including snapshots
+    def ex_list_images(self):
+        """
+        NEW
+        
+        LIST IMAGAES ONLY & EXCLUDE SNAPSHOTS
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :rtype: ``list``
+        """
+        result = []
+        for image in self.list_images():
+            if image.extra['metadata'].get('image_type') == 'snapshot':
+                continue
+            
+            # make it compatible with libvirt driver as in cloudbroker extra['imagetype'] used
+            image.extra['imagetype'] = image.extra['metadata'].get('image_type', 'UNKNOWN')
+            result.append(image)
+        return result

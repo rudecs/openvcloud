@@ -71,7 +71,7 @@ class CSLibvirtNodeDriver():
             driver=self,
             disk=size['disk'])
 
-    def list_images(self, location=None):
+    def ex_list_images(self, location=None):
         """
         Libvirt doesn't has a idea of images, because of this we are using
         the cloudscalers internal images api.
