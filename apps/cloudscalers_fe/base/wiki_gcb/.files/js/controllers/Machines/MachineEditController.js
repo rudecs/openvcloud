@@ -255,6 +255,7 @@ angular.module('cloudscalers.controllers')
         };
         $scope.refreshPage = function() {
             $scope.machine = Machine.get($routeParams.machineId);
+            updatesnapshots();
         };
         $scope.start = function() {
             LoadingDialog.show('Starting');
