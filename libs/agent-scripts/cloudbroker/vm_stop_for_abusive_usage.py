@@ -22,5 +22,6 @@ def action(machineId, nodeId):
     import os
     src = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % machineId)
     dest = j.system.fs.joinPaths('/mnt', 'vmstor2', 'vm-%s' % machineId)
-    j.system.fs.moveDir(src, dest)
-    os.symlink(dest, src)
+    if not j.system.fs.exists(dest):
+        j.system.fs.moveDir(src, dest)
+        os.symlink(dest, src)
