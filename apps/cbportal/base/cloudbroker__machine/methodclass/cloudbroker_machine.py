@@ -410,88 +410,69 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
-    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetComputeNode=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
+    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'), ]
         if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('404', headers)
             return 'Machine ID %s was not found' % machineId
 
         vmachine = self.models.vmachine.get(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
+        source_stack = self.models.stack.get(vmachine.stackId)
         if account.name != accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
             ctx.start_response('400', headers)
             return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
 
-        if targetComputeNode:
-            stacks = self.models.stack.search({'name': targetComputeNode})[1:]
-            if not stacks:
-                ctx = kwargs['ctx']
-                headers = [('Content-Type', 'application/json'), ]
-                ctx.start_response('404', headers)
-                return 'Target node %s was not found' % targetComputeNode
-            target_stack = stacks[0]
+        if targetStackId:
+            target_stack = self.models.stack.get(int(targetStackId))
+            if target_stack.gid != source_stack.gid:
+                ctx.start_response('400', headers)
+                return 'Target stack %(name)s is not on some grid as source' % target_stack
+
         else:
             target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
 
-        source_stack = self.models.stack.get(vmachine.stackId)
 
         # validate machine template is on target node
         image = self.models.image.get(vmachine.imageId)
         libvirt_image = self.libvirtcl.image.get(image.referenceId)
         image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
 
-        remote_api = j.remote.cuisine.api
-        remote_api.connect(source_stack.name)
-
-        def _switch_context(new_host, command, args, forward_agent=True):
-            with j.remote.cuisine.fabric.settings(host_string=new_host, forward_agent=forward_agent):
-                return getattr(remote_api, command)(*args)
-
-        image_exists = _switch_context(target_stack['name'], 'file_exists', [image_path,])
-        if image_exists:
-            image_md5sum = _switch_context(target_stack['name'], 'file_md5', [image_path,])
-            if image_md5sum != remote_api.file_md5(image_path):
-                ctx = kwargs['ctx']
-                headers = [('Content-Type', 'application/json'), ]
-                ctx.start_response('400', headers)
-                return "Image's MD5sum on target node doesn't match machine base image MD5sum"
-        else:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return "Machine base image was not found on target node"
+        srcmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=source_stack.gid, nid=int(source_stack.referenceId), wait=True)['result']
+        destmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)['result']
+        if srcmd5 != destmd5:
+            ctx.start_response('400', headers)
+            return "Image's MD5sum on target node doesn't match machine base image MD5sum"
 
         # create network on target node
-        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, gid=target_stack['gid'], nid=target_stack['referenceId'], wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
 
         # get disks info on source node
-        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, gid=source_stack.gid, nid=source_stack.referenceId, wait=True)['result']
+        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, gid=source_stack.gid, nid=int(source_stack.referenceId), wait=True)['result']
 
         # create disks on target node
-        self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_createdisks', args={'vm_id': vmachine.id, 'disks_info': disks_info}, gid=target_stack['gid'], nid=target_stack['referenceId'], wait=True)
-
-        # scp the .iso file
-        iso_file_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vmachine.id)
-        remote_api.run('scp %s/cloud-init.vm-%s.iso root@%s:%s' % (iso_file_path, vmachine.id, target_stack['name'], iso_file_path))
-
+        snapshots = []
         if j.basetype.boolean.fromString(withSnapshots):
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
-            if snapshots:
-                remote_api.run('virsh dumpxml vm-%(vmid)s > /tmp/vm-%(vmid)s.xml' % {'vmid': vmachine.id})
-                remote_api.run('scp /tmp/vm-%(vmid)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'targethost': target_stack['name']})
-                _switch_context(target_stack['name'], 'run', ['virsh define /tmp/vm-%s.xml' % vmachine.id,])
-                for snapshot in snapshots:
-                    remote_api.run('virsh snapshot-dumpxml %(vmid)s %(ssname)s > /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']})
-                    remote_api.run('scp /tmp/snapshot_%(vmid)s_%(ssname)s.xml %(targethost)s:/tmp/' % {'vmid': vmachine.id, 'ssname': snapshot['name'], 'targethost': target_stack['name']})
-                    _switch_context(target_stack['name'], 'run', ['virsh snapshot-create --redefine %(vmid)s /tmp/snapshot_%(vmid)s_%(ssname)s.xml' % {'vmid': vmachine.id, 'ssname': snapshot['name']}])
+        sshkey = None
+        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'id_rsa')
+        if j.system.fs.exists(sshpath):
+            sshkey = j.system.fs.fileGetContents(sshpath)
+        args = {'vm_id': vmachine.id,
+                'disks_info': disks_info,
+                'source_stack': source_stack.dump(),
+                'target_stack': target_stack.dump(),
+                'sshkey': sshkey,
+                'snapshots': snapshots}
+        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
+        if job['state'] != 'OK':
+            ctx.start_response('500', headers)
+            return "Migrate failed: %s" % (job['result'])
 
-        remote_api.run('virsh migrate --live vm-%s %s --copy-storage-inc --verbose --persistent --undefinesource' % (vmachine.id, target_stack['apiUrl']))
-        vmachine.stackId = target_stack['id']
+        vmachine.stackId = target_stack.id 
         self.models.vmachine.set(vmachine)
 
     @auth(['level1', 'level2', 'level3'])
