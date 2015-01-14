@@ -26,9 +26,9 @@ def main(j, args, params, tags, tasklet):
     dropnodes = list()
     for node in vfwnodes:
         if node['id'] != vfw.nid or node['gid'] != vfw.gid:
-            dropnodes.append(("FW Node %(name)s" % node, "%(gid)s_%(id)s" % node))
+            dropnodes.append(("FW Node %(name)s" % node, "%(id)s" % node))
 
-    popup.addDropdown("FW Node to move to", 'targetNode', dropnodes)
+    popup.addDropdown("FW Node to move to", 'targetNid', dropnodes)
     popup.addHiddenField('cloudspaceId', cloudspaceId)
 
     popup.write_html(page)

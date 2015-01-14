@@ -67,12 +67,21 @@ class cloudbroker_cloudspace(BaseActor):
         return False
 
     @auth(['level1', 'level2', 'level3'])
-    def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNode, **kwargs):
+    def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNid, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
         param:cloudspaceId id of the cloudspace
         param:targetNode name of the firewallnode the virtual firewall has to be moved to
         """
+        ctx = kwargs["ctx"]
+        headers = [('Content-Type', 'application/json'), ]
+        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
+        if cloudspace.status != 'DEPLOYED':
+            ctx.start_response("400", headers)
+            return 'Could not move fw for cloudspace which is not deployed'
+
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        self.netmgr.fw_move(fwid, int(targetNid))
         return True
     
     @auth(['level1', 'level2', 'level3'])

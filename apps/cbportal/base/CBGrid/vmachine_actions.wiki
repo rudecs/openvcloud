@@ -130,26 +130,26 @@
   - ruleId
   - reason
 
-- display: Add Disk 
-  action: /restmachine/cloudbroker/machine/addDisk
-  data:
-   machineId: $$id
-   spaceName: $$spacename
-  input:
-  - diskName
-  - description
-  - size
-  - type
-  - reason
-
-- display: Delete Disk 
-  action: /restmachine/cloudbroker/machine/deleteDisk
-  data:
-   machineId: $$id
-   spaceName: $$spacename
-  input:
-  - diskId
-  - reason
+#- display: Add Disk 
+#  action: /restmachine/cloudbroker/machine/addDisk
+#  data:
+#   machineId: $$id
+#   spaceName: $$spacename
+#  input:
+#  - diskName
+#  - description
+#  - size
+#  - type
+#  - reason
+#
+#- display: Delete Disk 
+#  action: /restmachine/cloudbroker/machine/deleteDisk
+#  data:
+#   machineId: $$id
+#   spaceName: $$spacename
+#  input:
+#  - diskId
+#  - reason
 
 - display: Create Template 
   action: /restmachine/cloudbroker/machine/createTemplate
