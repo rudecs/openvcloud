@@ -657,7 +657,16 @@ class cloudbroker_machine(BaseActor):
         result dict,,
         """
         #put your code here to implement this method
-        raise NotImplementedError ("not implemented method checkImageChain")
+        vmachine = self.models.vmachine.get(int(machineId))
+        stack = self.models.stack.get(vmachine.stackId)
+        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id, 'chain': True}, gid=stack.gid, nid=int(stack.referenceId), wait=True)
+        if job['state'] != 'OK':
+            ctx = kwargs['ctx']
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('500', headers)
+            return 'Something wrong with image or node see job %s' % job['guid']
+        return job['result']
+
 
     @auth(['level1', 'level2', 'level3'])
     def stopForAbusiveResourceUsage(self, accountName, machineId, reason, **kwargs):
