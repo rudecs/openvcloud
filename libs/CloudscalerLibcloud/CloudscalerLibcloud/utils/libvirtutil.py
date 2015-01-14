@@ -50,6 +50,18 @@ class LibvirtUtil(object):
             return True
         return domain.shutdown() == 0
 
+    def reboot(self, id):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't reboot a locked machine")
+        domain = self._get_domain(id)
+        if domain:
+            if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+                domain.create()
+            else:
+                domain.reboot()
+        else:
+            raise Exception("Machine is currently not running")
+
     def suspend(self, id):
         domain = self._get_domain(id)
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_PAUSED:
