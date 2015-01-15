@@ -458,7 +458,7 @@ class cloudbroker_machine(BaseActor):
         if j.basetype.boolean.fromString(withSnapshots):
             snapshots = self.machines_actor.listSnapshots(vmachine.id)
         sshkey = None
-        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'id_rsa')
+        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'sshkey')
         if j.system.fs.exists(sshpath):
             sshkey = j.system.fs.fileGetContents(sshpath)
         args = {'vm_id': vmachine.id,
