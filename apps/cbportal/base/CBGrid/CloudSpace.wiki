@@ -70,21 +70,21 @@ h2. CloudSpace: ${name}
   input:
    - username
 
-- display: Add Extra IP
-  action: /restmachine/cloudbroker/cloudspace/addExtraIP
-  data:
-   cloudspaceId: $$id
-  input:
-  - ipaddress
-  - reason
+#- display: Add Extra IP
+#  action: /restmachine/cloudbroker/cloudspace/addExtraIP
+#  data:
+#   cloudspaceId: $$id
+#  input:
+#  - ipaddress
+#  - reason
 
-- display: Remove IP
-  action: /restmachine/cloudbroker/cloudspace/removeIP
-  data:
-   cloudspaceId: $$id
-  input:
-  - ipaddress
-  - reason
+#- display: Remove IP
+#  action: /restmachine/cloudbroker/cloudspace/removeIP
+#  data:
+#   cloudspaceId: $$id
+#  input:
+#  - ipaddress
+#  - reason
 
 }}
 

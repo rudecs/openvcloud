@@ -67,7 +67,7 @@ class cloudbroker_account(BaseActor):
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("409", headers)
             return "Username %s already exists" % username
-        return self.users_actor.register(username, name, emailaddress, password, None, None, location, None)
+        return self.users_actor.register(username=username, user=name, emailaddress=emailaddress, password=password, location=location)
 
     @auth(['level1', 'level2', 'level3'])
     def enable(self, accountname, reason, **kwargs):
