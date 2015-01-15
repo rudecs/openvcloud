@@ -6,6 +6,13 @@ from libcloud.compute.base import NodeSize, NodeImage, Node
 from libcloud.pricing import get_size_price
 from datetime import datetime
 
+class DictLikecNodeImage():
+    def __init__(self, image):
+        self._image = image
+
+    def __getitem__(self, item):
+       return getattr(self._image, item)
+
 class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
 
     def ex_list_volume_snapshots(self):
@@ -109,7 +116,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         :rtype: :class:`NodeImage`
         
         """
-        return self.create_image(node, name, {'image_type':'snapshot'})
+        return DictLikecNodeImage(self.create_image(node, name, {'image_type':'snapshot'}))
     
     def ex_delete_snapshot(self, node, name):
         """
@@ -118,7 +125,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         @overrides :class:`OpenStack_1_1_NodeDriver.ex_delete_snapshot`
         
         :param      node: node to use as a base for image
-        :type       node: :class:`Node`
+        :type       node: :class:`Nodeex_delete_snapshot`
 
         :param      name: name for new image
         :type       name: ``str``
@@ -175,8 +182,61 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         """
         return self._to_snapshots(obj)
     
+    def ex_get_console_url(self, node, length=None):
+        """
+        Get console url
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_get_console_url`
+
+        :param      node: node
+        :type       node: :class:`Node`
+
+        :param      length: Optional number of lines to fetch from the
+                            console log
+        :type       length: ``int``
+
+        :return: Dictionary with the output
+        :rtype: ``dict``
+        """
+
+        data = {
+            "os-getVNCConsole": {
+                "type": "novnc"
+            }
+        }
+
+        resp = self.connection.request('/servers/%s/action' % node.id,
+                                       method='POST', data=data).object
+        if resp and 'console' in resp:
+            return resp['console'].get('url')
+    
+    def ex_resume_node(self, node):
+        """
+        RESUME OPENSTACK NODE
+        
+        NOTE THAT RESUME ACTION IN OPENSTACK MEANS SOMETHING DIFFERENT THAN
+        LIBVIRT [IN LIBVIRT IT MEANS UNPAUSE] THAT IS WHY IT NEEDED TO BE
+        OVERRIDEN TO MATCH SAME BEHAVIOR IN LIBVIRT DRIVER
+        
+        @replaces :class:`OpenStack_1_1_NodeDriver.ex_resume_node`
+
+        :param      node: node
+        :type       node: :class:`Node`
+
+        :param      length: Optional number of lines to fetch from the
+                            console log
+        :type       length: ``int``
+
+        :return: Dictionary with the output
+        :rtype: ``dict``
+        """
+
+        return self.ex_unpause_node(node)
+
     def ex_start_node(self, node):
         """
+        NEW
+        
         START A NODE
         
         :param      node: node to use as a base for image
@@ -185,8 +245,9 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         :rtype: ``bool``
         
         """
-        # Only start in case of suspended or SHUTOFF [both the same / check NODE_STATE_MAP]
-        if self.NODE_STATE_MAP[self.node.state] in [self.NODE_STATE_MAP['SHUTOFF'], self.NODE_STATE_MAP['SUSPENDED']]:
+        node = self.ex_get_node_details(node.id)
+        # Only start in case of suspended or HALTED [both the same / check NODE_STATE_MAP]
+        if node.state in [self.NODE_STATE_MAP.get('SHUTOFF'), self.NODE_STATE_MAP.get('SUSPENDED')]:
             return self.reboot_node(node) # HARD
         return False
     
@@ -227,6 +288,7 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                                        method='POST',
                                        data=data).object
     
+
     # IS THER AWAY TO CREATE IMAGE FROM ANOTHER IMAGE IN OPENSTACK?
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
         """
@@ -265,8 +327,20 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         for image in self.list_images():
             if image.extra['metadata'].get('image_type') == 'snapshot':
                 continue
-            
             # make it compatible with libvirt driver as in cloudbroker extra['imagetype'] used
             image.extra['imagetype'] = image.extra['metadata'].get('image_type', 'UNKNOWN')
             result.append(image)
         return result
+    
+    def ex_stop_node(self, node):
+        """
+        NEW
+        
+        STOP NODE
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :rtype: ``bool``
+        """
+        return self.ex_suspend_node(node)

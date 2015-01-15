@@ -37,7 +37,7 @@ class cloudapi_machines(BaseActor):
         actionname = "%s_node" % actiontype.lower()
         method = getattr(provider.client, actionname, None)
         if not method:
-            method = getattr(provider.client, "ex_%s" % actiontype.lower(), None)
+            method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
             if not method:
                 raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
         if newstatus and newstatus != machine.status:
@@ -65,7 +65,7 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='X')
     @audit()
     def pause(self, machineId, **kwargs):
-        return self._action(machineId, 'suspend', enums.MachineStatus.SUSPENDED)
+        return self._action(machineId, 'pause', enums.MachineStatus.PAUSED)
 
     @authenticator.auth(acl='X')
     @audit()
@@ -375,7 +375,8 @@ class cloudapi_machines(BaseActor):
                         self.models.vmachine.set(machine)
                 except:
                     pass # VFW not deployed yet
-        realstatus = enums.MachineStatusMap.getByValue(node.state)
+
+        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name)
         if realstatus != machine.status:
             machine.status = realstatus
             self.models.vmachine.set(machine)
@@ -420,7 +421,8 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state='', extra={})
+        state = provider.client.ex_get_node_details(machine.referenceId).state
+        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
 
     @authenticator.auth(acl='C')
     @audit()
