@@ -117,34 +117,61 @@ class CloudBroker(object):
         return resourcesdata
 
     def stackImportImages(self, stackId):
+        """
+        Sync Provider images [Deletes obsolete images that are deleted from provider side/Add new ones]        
+        """
         provider = CloudProvider(stackId)
         if not provider:
             raise RuntimeError('Provider not found')
-        count = 0
+        
+        pname = provider.client.name.lower()
         stack = models.stack.get(stackId)
         stack.images = list()
-        for pimage in provider.client.ex_list_images(): #libvirt/openstack images
-            images = models.image.search({'referenceId':pimage.id})[1:]
-            if not images:
-                image = models.image.new()
-                image.name = pimage.name
-                image.referenceId = pimage.id
-                image.type = pimage.extra.get('imagetype', 'Unknown')
-                image.size = pimage.extra.get('size', 0)
-                image.username = pimage.extra.get('username', 'cloudscalers')
-                image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
-                image.accountId = 0
-            else:
-                image = images[0]
-                image['name'] = pimage.name
-                image['referenceId'] = pimage.id
-                image['type'] = pimage.extra.get('imagetype', 'Unknown')
-                image['size'] = pimage.extra.get('size', 0)
-                image['username'] = pimage.extra.get('username', 'cloudscalers')
-                image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
-            count += 1
+        
+        pimages = {}
+        for p in provider.client.ex_list_images():
+            pimages[p.id] = p
+        pimages_ids = set(pimages.keys())
+        
+        images_current = models.image.search({'provider_name':pname})[1:]
+        images_current_ids = set([p['referenceId'] for p in images_current])
+        
+        new_images_ids = pimages_ids - images_current_ids
+        deleted_images_ids = images_current_ids - pimages_ids
+        updated_images_ids = pimages_ids & images_current_ids
+
+        # Add new Images
+        for id in new_images_ids:
+            pimage = pimages[id]
+            image = models.image.new()
+            image.provider_name = pname
+            image.name = pimage.name
+            image.referenceId = pimage.id
+            image.type = pimage.extra.get('imagetype', 'Unknown')
+            image.size = pimage.extra.get('size', 0)
+            image.username = pimage.extra.get('username', 'cloudscalers')
+            image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
+            image.accountId = 0
+            
             imageid = models.image.set(image)[0]
-            if not imageid in stack.images:
-                stack.images.append(imageid)
-                models.stack.set(stack)
-        return count
+            stack.images.append(imageid)
+        
+        # Delete obsolete images
+        for image in models.image.search({'referenceId':{'$in':list(deleted_images_ids)}})[1:]:
+            models.image.delete(image['id'])
+
+        # Update current images
+        for image in models.image.search({'referenceId':{'$in':list(updated_images_ids)}})[1:]:
+            pimage = pimages[image['referenceId']]
+            image['name'] = pimage.name
+            image['type'] = pimage.extra.get('imagetype', 'Unknown')
+            image['size'] = pimage.extra.get('size', 0)
+            image['username'] = pimage.extra.get('username', 'cloudscalers')
+            image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
+            image['provider_name'] = pname
+            
+            imageid = models.image.set(image)[0]
+            stack.images.append(imageid)
+        
+        models.stack.set(stack)
+        return len(new_images_ids)
