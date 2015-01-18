@@ -13,12 +13,11 @@ class MapEnum(BaseEnum):
     
     class Maaper(object):
         def __init__(self, provider):
-            self.provider = provider
             self.name = provider.name
         
         def __str__(self):
-            return self.provider
-    
+            return self.name
+
     @classmethod
     def _init(cls):
         for name, value in cls._ENUMS.iteritems():
@@ -47,7 +46,8 @@ class MachineStatusMap(MapEnum):
               'openstack':{
                         'RUNNING': 0,
                         'HALTED': 2,
-                        'PAUSED': 4}
+                        'PAUSED': 4,
+                        'PENDING':3}
               }
 
 MachineStatus._init()

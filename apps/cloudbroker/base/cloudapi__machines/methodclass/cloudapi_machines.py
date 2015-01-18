@@ -402,6 +402,9 @@ class cloudapi_machines(BaseActor):
         results = self.models.vmachine.search(query)[1:]
         machines = []
         for res in results:
+            provider, node = self._getProviderAndNode(res['id'])
+            if node.state == 'DESTROYED':
+                continue
             storage = self._getStorage(res)
             if storage:
                 res['storage'] = storage.disk
@@ -421,7 +424,15 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        state = provider.client.ex_get_node_details(machine.referenceId).state
+        state = 'DESTROYED'
+        try:
+            info = provider.client.ex_get_node_details(machine.referenceId)
+            state = info.state
+        except Exception:
+            # Machine is no more valid / mark it as destroyed
+            machine = self.models.vmachine.get(machineId)
+            machine.status = "DESTROYED"
+            self.models.vmachine.set(machine)
         return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
 
     @authenticator.auth(acl='C')
