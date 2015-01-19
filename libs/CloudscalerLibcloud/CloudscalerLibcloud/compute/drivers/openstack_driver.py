@@ -138,33 +138,95 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
                 return self.delete_image(image)
         return True
     
+    
+    def _list_snapshots(self, node):
+        """
+        HELPER FUNCTION
+        
+        LIST IMAGE SNAPSHOTS (INSTEAD OF VOLUME SNAPSHOTS)
+        ADD EPOCH TO IMAGE
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+
+        :rtype: ``list :class:NodeImage``
+        """
+        result = []
+        for image in self.list_images():
+            if image.extra['metadata'].get('instance_uuid') == node.id and\
+                        image.extra['metadata'].get('image_type') == 'snapshot':
+                image.epoch = int(datetime.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s'))
+                result.append(image)
+        return result
+        
     def ex_list_snapshots(self, node):
         """
         LIST IMAGE SNAPSHOTS (INSTEAD OF VOLUME SNAPSHOTS)
+        RETURNS IMAGES AS DICTS
         
         @overrides :class:`OpenStack_1_1_NodeDriver.ex_list_snapshots`
          
         :param      node: node to use as a base for image
         :type       node: :class:`Node`
 
-        :rtype: ``list``
+        :rtype: ``list :class:DictLikeNodeImage``
         """
-        result = []
-        for image in self.list_images():
-            if image.extra['metadata'].get('instance_uuid') == node.id and\
-                        image.extra['metadata'].get('image_type') == 'snapshot':
-                
-                snap = {'name': image.name,
-                    'epoch': int(datetime.strptime(image.extra['created'], '%Y-%m-%dT%H:%M:%SZ').strftime('%s')) }
-                result.append(snap)
-        return result
+        
+        return [{'name':image.name, 'epoch':image.epoch} for image in self._list_snapshots(node)]
     
+    def _ex_get_snapshot(self, node, name):
+        """
+        NEW 
+        RETURN SNASHOT
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+        :param      name: snapshot name
+        :type       name: ``str``
+
+        :rtype: ``class: NodeImage``
+        """
+        for snap in self._list_snapshots(node):
+            if snap.name == name:
+                return snap
+        
+    
+    def _ex_get_size(self, id):
+        """
+        NEW 
+        RETURN SIZE by ID
+        
+        :param      id: size ID
+        :type       id: ``int``
+
+        :rtype: ``class: NodeSize``
+        """
+        for s in self.list_sizes():
+            if s.id == id:
+                return s
     
     def ex_rollback_snapshot(self, node, name):
         """
-        Not supported in open stack
+        Delete Old instance and use the current snapshot to create a new machine
+        returns New Node ID
+        
+        :param      node: node to use as a base for image
+        :type       node: :class:`Node`
+        :param      name: snapshot name
+        :type       name: ``str``
+
+
+        :rtype: ``str``
         """
-        raise NotImplementedError(" Not supported in open stack")
+        
+        node = self.ex_get_node_details(node.id)
+        if node.state == self.NODE_STATE_MAP.get('PENDING'):
+            raise Exception("Can't rollback a locked machine")
+
+        snap = self._ex_get_snapshot(node, name)
+        size = self._ex_get_size( snap.extra['metadata']['instance_type_flavorid'])
+        if self.destroy_node(node):
+            return self.create_node(name=node.name, image=snap, size=size).id
 
     def _to_volume_snapshot(self, data):
         """

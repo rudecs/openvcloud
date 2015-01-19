@@ -495,7 +495,13 @@ class cloudapi_machines(BaseActor):
            return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
-        return provider.client.ex_rollback_snapshot(node, name)
+        res =  provider.client.ex_rollback_snapshot(node, name, )
+        if isinstance(res, str):
+             modelmachine.referenceId = res
+             modelmachine.status = enums.MachineStatus.RUNNING
+             self.models.vmachine.set(modelmachine)
+             return True
+        return res
 
     @authenticator.auth(acl='C')
     @audit()
