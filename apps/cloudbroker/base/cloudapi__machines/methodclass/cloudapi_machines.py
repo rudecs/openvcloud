@@ -479,11 +479,11 @@ class cloudapi_machines(BaseActor):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
         
-#         Why this code is needed? is it libvirt related and should be moved?
-#         if not modelmachine.status == enums.MachineStatus.RUNNING:
-#             ctx = kwargs['ctx']
-#             ctx.start_response('409 Conflict', [])
-#             return 'A snapshot can only be removed from a running Machine bucket'
+        if not modelmachine.status == enums.MachineStatus.RUNNING and\
+                not provider.client.ex_snapshots_can_be_deleted_while_running():
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'A snapshot can only be removed from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_delete_snapshot(node, name)

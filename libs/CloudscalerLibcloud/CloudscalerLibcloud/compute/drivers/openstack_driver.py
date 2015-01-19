@@ -406,3 +406,10 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         :rtype: ``bool``
         """
         return self.ex_suspend_node(node)
+    
+    def ex_snapshots_can_be_deleted_while_running(self):
+        """
+        NEW
+        FOR OPENSTACK A SNAPSHOT CAN BE DELETED WHILE MACHINE RUNNGIN
+        """
+        return True

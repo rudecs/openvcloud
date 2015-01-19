@@ -429,5 +429,11 @@ class CSLibvirtNodeDriver():
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+    
+    def ex_snapshots_can_be_deleted_while_running(self):
+        """
+        FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
+        """
+        return False
 
 
