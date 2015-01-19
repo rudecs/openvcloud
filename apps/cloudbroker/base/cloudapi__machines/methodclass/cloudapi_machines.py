@@ -129,6 +129,10 @@ class cloudapi_machines(BaseActor):
         stack.images.append(imageid)
         self.models.stack.set(stack)
         provider.client.ex_create_template(node, templatename, imageid, basename)
+        # Change status of image to created after successful creation
+        image = self.models.image.get(imageid)
+        image.status = 'CREATED'
+        imageid = self.models.image.set(image)[0]
         return imageid
 
     @authenticator.auth(acl='C')
