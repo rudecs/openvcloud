@@ -7,7 +7,7 @@ Libvirt script to stop a virtual machine
 name = "stopmachine"
 category = "libvirt"
 organization = "cloudscalers"
-author = "hendrik@awingu.com"
+author = "hamdy.farag@codescalers.com"
 license = "bsd"
 version = "1.0"
 roles = []
