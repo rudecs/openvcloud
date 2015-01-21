@@ -13,13 +13,13 @@ category = "monitor.vms"
 enable = True
 async = True
 log = False
-roles = ['admin',]
+roles = ['fw',]
 
 def action(vm_ip_address, vm_cloudspace_id):
     import JumpScale.grid.osis
     import JumpScale.lib.routeros
 
-    osiscl = j.core.osis.getClient(user='root')
+    osiscl = j.core.osis.getClientByInstance('main')
     vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
     ROUTEROS_PASSWORD = j.application.config.get('vfw.admin.passwd')
 

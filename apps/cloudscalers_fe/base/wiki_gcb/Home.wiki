@@ -1,44 +1,7 @@
 @template homepage_template
 {{html:
-<head>
-<style type="text/css">
-        .videoMain iframe {-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;box-shadow: 0px 0px 9px #06a7e2;} 
-        .bigButtonSignUp {margin-top: -66px;margin-bottom: -42px;}
-        .borderRight1 { border-right: 2px solid rgba(255, 255, 255, 0.6); } 
-        .borderRight1 + .col-md-6 ul { padding-left: 20px; }
-        .borderRight1 + .col-md-6 ul li { color: #FFF;font-size: 16px;font-weight: bold;list-style: initial; }
-        .nav-stacked li {margin: 19px 0;}
-        .nav-stacked { margin-top: 15px; margin-bottom: -5px; }
-        .nav-stacked li a {display: block;padding: 9px 19px;color: #e4e4e4;}
-        .nav-stacked li a strong {color: #FFF;}
-        .videoBox2 { background: rgba(6,167,226,0.2);-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;box-shadow: 0px 0px 9px #06a7e2;}
-        .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {background: rgba(0,143,237,0.5);}
-        .marginTop15 {margin-top: -63px;margin-bottom: 45px;}
-        .tab-pane video { border: 1px solid #06a7e2;}
-        .marginTop {margin-top: -7px;margin-bottom: 20px;}
-        .leftIcon {margin: 0 0 50px 210px;}
-         @media (max-width: 768px) {
-               .bigButtonSignUp {margin-top: 45px !important;margin-bottom: -12px !important;text-align: center !important;}
-               .borderRight1 { border-right: 0; }
-               .borderRight1 + .col-md-6 ul li { list-style: none; }
-               .borderRight1 img { margin-left: -50px; }
-            }
-
-            @media (max-width: 992px) {
-               .bigButtonSignUp {margin-top: 45px !important;margin-bottom: -12px !important;text-align: center !important;}
-               .borderRight1 { border-right: 0; margin-bottom: 15px; }
-               .borderRight1 + .col-md-6 ul li { list-style: none; }
-               .borderRight1 img { margin-left: -50px; }
-            }
-            @media (max-width: 1290px) and (min-width: 992px) {
-                .borderRight1 img { margin-left: -50px; }
-                .borderRight1 { border-right: 0; }
-                .borderRight1 + .col-md-6 ul li { list-style: none; }
-            }        
-    </style>
-</head>
 <div class="jumbotron">
-  <div class="container">
+  <div class="container margin-top-none">
     <div class="col-md-7 marginText">
       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -97,28 +60,26 @@
     <div class="col-md-7 col-md-offset-3 bigButtonSignUp">
       <div class="col-md-6 borderRight1"> <a href="../$$space/signUp"><img src="/$$space/.files/img/images/free-trial.png" alt=""></a> </div>
       <div class="col-md-6">
-        <ul>
-          <li>Sign Up for our 30-Day Trial</li>
-          <li>No renewal obligation</li>
-          <li>No automatic credit card charges</li>
+        <ul class="padding-left-large">
+          <li>Sign up in 30 seconds</li>
         </ul>
       </div>
     </div>
   </div>
 </div>
 
-<div class="marginTop">
+<div class="revolutionary-cloud-container">
   <div class="container">
     <div class="col-md-12">
       <p class="font mainText">Revolutionary Cloud Computing!<br>
-      <div class="someText font">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available 'everyware anyware'. <a href="../$$space/Why">Read more <i class="fa fa-circle-arrow-right"></i></a> </div>
+      <div class="someText font txt-20 txt-white">Built to be simple for everyone, it challenges the status quo and promises to set a new industry standard- globally and beyond. Unprecedented speed and security available 'everyware anyware'. <a href="../$$space/Why">Read more <i class="fa fa-circle-arrow-right"></i></a> </div>
       </p>
     </div>
   </div>
 </div>
 }}
 {{html:
-<div class="container">
+<div class="homepage-decks container">
   <div>
     <div class="col-md-5 boxes font color1 leftIcon"> <img src="/$$space/.files/img/icon1.png" alt=""/>
       <h2> }}
@@ -151,43 +112,48 @@
   </div>
 </div>
 
-<div class="container marginTop15">
+<div class="video-tour-container container margin-top-large">
   <div class="col-md-12">
-  <div class="col-md-12 videoBox2">
+  <div class="col-md-12 videoBox2 border-radius">
     <div class="row">
-    <ul class="nav-pills nav-stacked col-md-3" role="tablist">
-      <li><a data-toggle="tab" role="tab" href="#tab1"><strong>Cloud Space</strong><br>Your Private Virtual Datacenter</a></li>
-      <li><a data-toggle="tab" role="tab" href="#tab2"><strong>Machine Deck</strong><br>Create Virtual Machines</a></li>
-      <li><a data-toggle="tab" role="tab" href="#tab3"><strong>Snapshots</strong><br>Immediate VM snapshots and rollback</a></li>
-      <li><a data-toggle="tab" role="tab" href="#tab4"><strong>Port Forwards</strong><br>Decide what goes public on your VM</a></li>
-      <li><a data-toggle="tab" role="tab" href="#tab5"><strong>Defense Shield</strong><br>Private Firewall & Routing</a></li>
-      <li><a data-toggle="tab" role="tab" href="#tab6"><strong>Windows Support</strong><br>Licensed Windows Images</a></li>
-    </ul>
-    <div class="tab-content col-md-9">
-      <div id="tab1" class="tab-pane fade in active"><video width="100%" preload="auto" poster="/$$space/.files/mp4/login.jpg" src="/$$space/.files/mp4/login.mp4"></video></div>
-      <div id="tab2" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Create Virtual Machine.jpg" src="/$$space/.files/mp4/Create Virtual Machine.mp4"></video></div>
-      <div id="tab3" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Immediate snapshots and rollback.jpg" src="/$$space/.files/mp4/Immediate snapshots and rollback.mp4"></video></div>
-      <div id="tab4" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Set port foward.jpg" src="/$$space/.files/mp4/Set port foward.mp4"></video></div>
-      <div id="tab5" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Configure Private Firewall.jpg" src="/$$space/.files/mp4/Configure Private Firewall.mp4"></video></div>
-      <div id="tab6" class="tab-pane fade"><video width="100%" poster="/$$space/.files/mp4/Windows Support good.jpg" src="/$$space/.files/mp4/Windows Support good.mp4"></video></div>
-    </div>
+}}
+{{vimeo_playlist:
+Cloud Space
+Your Private Virtual Datacenter
+//player.vimeo.com/video/100206695
+--------------
+Machine Deck
+Create Virtual Machines
+//player.vimeo.com/video/100206690
+--------------
+Snapshots
+Immediate VM snapshots and rollback
+//player.vimeo.com/video/100206692
+--------------
+Port Forwards
+Decide what goes public on your VM
+//player.vimeo.com/video/100206698
+--------------
+Defense Shield
+Private Firewall & Routing
+//player.vimeo.com/video/100206689
+--------------
+Windows Support
+Licensed Windows Images
+//player.vimeo.com/video/100206731
+}}
+{{html:
+
     </div>
     </div>
   </div>
-  <script>
-    $(function() {
-      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        if (e.relatedTarget) $($(e.relatedTarget).attr('href')).find('video')[0].pause();
-
-        $($(e.target).attr('href')).find('video')[0].play();
-      })
-    })
-  </script>
 </div>
-
+<script type="text/javascript">
+$(function() {
+    var togglers = $('.videoBox2').find('iframe[src*=vimeo]').width('100%').height('433');
+});
+</script>
 }}
-
-
 
 {{div2:class=loader | style=display: none }} 
 h2. loading

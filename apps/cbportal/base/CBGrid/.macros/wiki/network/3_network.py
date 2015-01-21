@@ -6,16 +6,18 @@ except:
 def main(j, args, params, tags, tasklet):
 
     id = args.getTag('id')
-    if not id:
-        out = 'Missing network id param "id"'
+    gid = args.getTag('gid')
+    if not id or not gid:
+        out = 'Missing network id param "id" or "gid"'
         params.result = (out, args.doc)
         return params
 
+    id = int(id)
     vcl = j.core.osis.getClientForNamespace('vfw')
-    key = "%s_%s" % (j.application.whoAmI.gid, id)
+    key = "%s_%s" % (gid, id)
 
     if not vcl.virtualfirewall.exists(key):
-        params.result = ('Network with id %s not found' % id, args.doc)
+        params.result = ('Network with id %s not found' % key, args.doc)
         return params
 
     network =  vcl.virtualfirewall.get(key)

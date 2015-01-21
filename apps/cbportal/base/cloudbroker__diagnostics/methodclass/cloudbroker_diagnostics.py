@@ -1,16 +1,12 @@
 from JumpScale import j
 import JumpScale.grid.agentcontroller
 
-class cloudbroker_diagnostics(j.code.classGetBase()):
+class cloudbroker_diagnostics(object):
     """
     Operator actions to perform specific diagnostic checks on the platform
     
     """
     def __init__(self):
-        
-        self._te={}
-        self.actorname="diagnostics"
-        self.appname="cloudbroker"
         self._acl = None
     
     @property
@@ -24,4 +20,4 @@ class cloudbroker_diagnostics(j.code.classGetBase()):
         Starts the vms check jumpscipt to do a ping to every VM from their virtual firewalls
         result boolean
         """
-        return self.acl.executeJumpScript('jumpscale', 'vms_check', role='master')
+        return self.acl.executeJumpscript('jumpscale', 'vms_check', role='master')

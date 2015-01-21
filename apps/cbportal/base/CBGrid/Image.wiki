@@ -1,8 +1,38 @@
 @usedefault
 
 {{image_data id:$$id}}
-h3. Image: $$name
+h3. Image: ${name}
 
-* *Type*: $$type
-* *Size*: $$size
-* *UNCPath*: $$uncpath
+{{actions:
+- display: Delete
+  input: 
+  - reason
+  action: /restmachine/cloudbroker/image/delete
+  data: 
+   imageId: $$id
+
+- display: Enable
+  input: 
+  - reason
+  action: /restmachine/cloudbroker/image/enable
+  data: 
+   imageId: $$id
+
+- display: Disable
+  input: 
+  - reason
+  action: /restmachine/cloudbroker/image/disable
+  data: 
+   imageId: $$id
+}}
+
+* *Type*: ${type}
+* *Size*: ${size}
+* *UNCPath*: ${uncpath}
+
+h4. Stacks which have this Image
+
+{{stacks imageid:$$id}}
+
+h4. VMachines which use this image
+{{vmachines imageid:$$id}}

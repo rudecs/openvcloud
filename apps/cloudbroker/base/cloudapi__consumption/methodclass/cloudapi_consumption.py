@@ -3,29 +3,14 @@ from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from billingenginelib import pricing
 
-class cloudapi_consumption(j.code.classGetBase()):
+class cloudapi_consumption(object):
     """
     API consumption Actor, this actor is the final api a enduser uses to get consumption details
 
     """
     def __init__(self):
-        osiscl = j.core.osis.getClient(user='root')
-
-        class Class():
-            pass
-
-        self.models = Class()
-        for ns in osiscl.listNamespaceCategories('billing'):
-            self.models.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'billing', ns))
-            self.models.__dict__[ns].find = self.models.__dict__[ns].search
-
-        self._te={}
-        self.actorname="consumption"
-        self.appname="cloudapi"
-        #cloudapi_consumption_osis.__init__(self)
-        
+        self.models = j.core.osis.getClientForNamespace('billing')
         self._pricing = pricing.pricing()
-        
 
     @authenticator.auth(acl='R')
     @audit()
@@ -36,7 +21,7 @@ class cloudapi_consumption(j.code.classGetBase()):
         param:reference id of the billingstatement
         result bool
         """
-        billingstatement = self.models.billingstatement.get(reference)
+        billingstatement = self.models.billingstatement.get(int(reference))
         if str(billingstatement.accountId) != accountId:
             ctx = kwargs['ctx']
             ctx.start_response('401 Unauthorized', [])

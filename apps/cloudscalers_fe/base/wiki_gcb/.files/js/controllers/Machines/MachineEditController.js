@@ -27,7 +27,7 @@ angular.module('cloudscalers.controllers')
                         $scope.machineHistory.error = status;
                         $scope.machineHistory.history = [];
                     } else {
-                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h._source.epoch; });
+                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h.epoch; });
                         $scope.machineHistory.error = undefined;
                     }
                 }).error(function (data, status, headers, config) {
@@ -255,6 +255,7 @@ angular.module('cloudscalers.controllers')
         };
         $scope.refreshPage = function() {
             $scope.machine = Machine.get($routeParams.machineId);
+            updatesnapshots();
         };
         $scope.start = function() {
             LoadingDialog.show('Starting');
@@ -292,7 +293,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert(reason.data);
+                    $ErrorResponseAlert(reason);
                 }
             );
         };
@@ -305,7 +306,7 @@ angular.module('cloudscalers.controllers')
                 },
                 function(reason){
                     LoadingDialog.hide();
-                    $alert(reason.data);
+                    $ErrorResponseAlert(reason);
                 }
             );
         };

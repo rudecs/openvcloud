@@ -1,0 +1,81 @@
+@usedefault
+
+h2. Grid $$gid
+
+{{toc: start=3 | depth=2}}
+
+{{actions:
+- display: Check VMs
+  action: /restmachine/cloudbroker/grid/checkVMs
+  data:
+   gid: $$gid
+
+- display: Purge Logs
+  action: /restmachine/cloudbroker/grid/purgeLogs
+  data:
+   gid: $$gid
+  input:
+   - age
+
+- display: Sync Available Images to CloudBroker
+  action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
+  data:
+   gid: $$gid
+
+- display: Add Public IPv4 Subnet
+  action: /restmachine/cloudbroker/iaas/addPublicIPv4Subnet
+  data:
+   gid: $$gid
+  input:
+   - subnet
+   - gateway
+   - freeips
+}}
+
+@row
+
+@col 3
+h5. No. of Active Accounts
+{{nraccountgauge id:1 gid:$$gid width:100 height:100}}
+@colend 
+
+
+@col 3
+h5. No. of Free IPs
+{{nrfreeipsgauge id:5 gid:$$gid width:100 height:100}}
+@colend 
+
+@col 4
+h5. No. of Running vMachines
+#*From Total Deployed:45*
+{{nrvmgauge: id:3 gid:$$gid width:100 height:100}}
+@colend 
+@rowend 
+
+@row
+
+@col 3
+h5. No. of Active CloudSpaces
+{{nrcloudspacegauge id:4 gid:$$gid width:100 height:100}}
+@colend 
+
+@col 3
+h5. No. of Free Network IDs
+{{nrfreenwidsgauge: id:6 gid:$$gid width:100 height:100}}
+@colend 
+
+@col 4
+h5. No. of Windows Vmachines Running 
+{{nrwinvmgauge id:2 gid:$$gid width:100 height:100}}
+@colend
+@rowend
+
+
+h3. Stacks
+{{stacks gid:$$gid}}
+
+h3. Firewall Nodes
+{{fwnodes gid:$$gid roles:fw}}
+
+h3. vMachines
+{{vmachines gid:$$gid}}

@@ -5,6 +5,7 @@
     method:destroy
         """
         destroy a cloudspace
+        Destroys its machines, vfws and routeros
         """
         var:accountname str,,name of account
         var:cloudspaceName str,,name of cloudspace
@@ -16,11 +17,17 @@
         move the virtual firewall of a cloudspace to a different firewall node
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:targetNode str,, name of the firewallnode the virtual firewall has to be moved to
+        var:targetNid int,, name of the firewallnode the virtual firewall has to be moved to
 
-    method:restoreVirtualFirewall
+    method:resetVFW
         """
-        Restore the virtual firewall of a cloudspace on an available firewall node
+        Reset VFW
+        """
+        var:cloudspaceId int,, id of the cloudspace
+
+    method:deployVFW
+        """
+        Deploy VFW
         """
         var:cloudspaceId int,, id of the cloudspace
 
@@ -37,3 +44,42 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         var:ipaddress str,, public IP address to remove from this cloudspace
+
+    method:create
+        """
+        Create a cloudspace for given account
+        """
+        var:accountname str,, name of account to create space for
+        var:name str,, name of space to create
+        var:access str,, username which have full access to this space
+        var:maxMemoryCapacity int,, max size of memory in space (in GB)
+        var:maxDiskCapacity int,, max size of aggregated disks (in GB)
+
+    method:destroyVFW
+        """
+        Destroy VFW of this cloudspace
+        """
+        var:cloudspaceId int,,Id of the cloudspace
+
+    method:updateName
+        """
+        Update name of the cloudspace
+        """
+        var:cloudspaceId int,,Id of the cloudspace
+        var:newname str,,New name of the cloudspace
+
+    method:addUser
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        """"
+        var:cloudspaceId int,,Id of the cloudspace
+        var:username str,,name of the user to be given rights
+        var:accesstype str,, R or W
+
+    method:deleteUser
+        """
+        Delete user from account.
+        """"
+        var:cloudspaceId int,,Id of the cloudspace
+        var:username str,,name of the user to be removed

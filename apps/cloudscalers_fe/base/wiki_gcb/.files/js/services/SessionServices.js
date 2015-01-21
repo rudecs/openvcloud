@@ -88,11 +88,18 @@ angular.module('cloudscalers.services')
             }).then(
             		function (result) {
             			SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
-            			return result.data;
+            			return result;
             		},
             		function (reason) {
-            			SessionData.setUser(undefined);
-                        return $q.reject(reason); }
+            			if (reason.status == 409){
+            				SessionData.setUser({username: username, api_key: reason.data});
+                			return reason;
+            			}
+            			else{
+            				SessionData.setUser(undefined);
+            				return $q.reject(reason); 
+            			}
+            		}
             );
         };
 

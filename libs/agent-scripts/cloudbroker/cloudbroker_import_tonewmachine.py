@@ -53,7 +53,7 @@ def action(name, cloudspaceId, vmexportId, sizeId, description, storageparameter
     metadata = ujson.loads(vmexport.files)
     image_name = '%s-%s.qcow2' % (vmexport.name, vmexport.id)
     args = {'path':path, 'metadata':metadata, 'storageparameters': storageparameters, 'qcow_only':True, 'filename': image_name }
-    result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_onnode', args=args, nid=nid, wait=True)['result']
+    result = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_onnode', args=args, nid=nid, wait=True)['result']
 
     image_id = vmexport.id
     imagepath = image_name

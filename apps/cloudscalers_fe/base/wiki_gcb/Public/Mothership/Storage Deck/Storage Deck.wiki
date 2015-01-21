@@ -1,22 +1,7 @@
 @template public_with_left_nav
 {{html: 
-<head>
-      
-<style type="text/css">
-      
-.apsoluteButton1 { position: absolute;left: -248px;top: 370px;width: 180px;}
-
- @media (max-width: 768px) {
-      .apsoluteButton1 {position: absolute;top: -50px;width: 93%;left: 0;margin: 0 15px;}
- }
-
-
-</style>
-
-</head>
-
- <img class="smallIcon" src="/$$space/.files/img/icon4.png" alt=""/>
-  <a href="/$$space/SignUp" class="btn btn-success wideOne apsoluteButton1" role="button">Sign Up</a>
+  <img class="smallIcon" src="/$$space/.files/img/icon3.png" alt=""/>
+  <a href="/$$space/SignUp" class="btn btn-success wideOne signup-btn-decks" role="button">Sign Up</a>
 }}
 
 {{div: class=half copy col-md-6 StorageDeckColor}}
@@ -30,7 +15,7 @@ h1. $$page
 
 {{div}}
 
-{{div: class=half col-md-6 justOne}}
+{{div: class=half col-md-6 justOne txt-center}}
   {{html: <img class="storagMargin" src="/$$space/.files/img/images/storage-pic.jpg">}}
 {{div}}
 

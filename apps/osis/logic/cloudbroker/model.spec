@@ -70,7 +70,7 @@
 
 [rootmodel:CreditTransaction] @dbtype:osis
 	"""
-	Credit transaction (positive and negative) for an account
+  Credit transaction (positive and negative) for an account
 	"""
 	prop:accountId int,,
 	prop:time int,,
@@ -80,6 +80,20 @@
 	prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
 	prop:status str,, status of the transaction
 	prop:comment str,, optional comment
+
+
+[rootmodel:ValidationTransaction] @dbtype:osis
+    """
+    Validation transaction (this is a transcation to validate an account)
+    """
+    prop:accountId int,,
+    prop:time int,,
+    prop:currency str,, the currency the transaction was made in
+    prop:amount float,, the amount of (in currency) of the transaction
+    prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
+    prop:status str,, status of the transaction
+    prop:payerId str,, paypal reference
+    prop:comment str,, optional comment
 
 [rootmodel:CreditBalance] @dbtype:osis
 	"""
@@ -121,6 +135,8 @@
     prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
+    prop:gid int,,Grid id.
+    prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
 
 
 [rootmodel:Disk] @dbtype:osis
@@ -185,8 +201,23 @@
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
     prop:networkId int,, Id of the used network
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
-    prop:status str,, status of the cloudspace, e.g ENABLED/DESTROYED
+    prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
     prop:location str,, datacenterlocation
+    prop:gid int,, Grid ID
+    prop:secret str,, used to identify a space through the cloud robot
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:deletionTime int,, epoch time of destruction, in seconds
+
+[rootmodel:PublicIPv4Pool] @dbtype:osis
+    """
+    public ip pool
+    """
+    prop:id str,,network/cidr
+    prop:gid int,, Grid id
+    prop:network str,,Network of the pool
+    prop:subnetmask str,,Subnetmask of the pool
+    prop:gateway str,,Gateway of th
+    prop:pubips list(str),,list of ips
 
 [rootmodel:Size] @dbtype:osis
     """
@@ -217,7 +248,7 @@
     A export of a vm. Contains one or multiple files.
     """
     prop:id int,, id of the export
-    prop:vmachineId int,, id of the vmachine
+    prop:machineId int,, id of the vmachine
     prop:name str,, name of the export
     prop:type str,, type e.g Raw, condensed, ...
     prop:bucket str,, name of the bucket
@@ -230,3 +261,21 @@
     prop:status str,,status of the vm
     prop:location str,, original machine location
     prop:files str,,json representation of backup content
+
+[rootmodel:resetpasswordtoken]
+    """
+    A token emailed to a user to reset his/her password
+    """
+    prop:id str,, The actual reset password token
+    prop:username str,, User this token is for
+    prop:creationTime int,, epoch time of creation, in seconds
+    prop:userguid str,, Actual id of the user this token is for
+
+[rootmodel:Location] @dbtype:osis
+    """
+    """
+    prop:id int,,id of location
+    prop:gid int,, Grid id
+    prop:name str,,Name of location
+    prop:locationCode str,,Internal code for location
+    prop:flag str,,Flag to use for this location

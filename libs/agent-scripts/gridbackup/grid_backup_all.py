@@ -32,13 +32,13 @@ def action():
 
     def lxcBackup(name, nid):
         args = {'storageparameters': storageparameters, 'name': name, 'backupname': "%s_%s" % (name, timestamp)}
-        acl.executeJumpScript('cloudscalers', 'grid_backup_lxc', args=args, nid=int(nid), queue='io', wait=False)
+        acl.executeJumpscript('cloudscalers', 'grid_backup_lxc', args=args, nid=int(nid), queue='io', wait=False)
 
     #daily stuff
     if now.hour == 3:
         acl = j.clients.agentcontroller.get()
         args = {'storageparameters': storageparameters}
-        acl.executeJumpScript('cloudscalers', 'grid_backup_vfws', args=args, role='master', queue='io', wait=False)
+        acl.executeJumpscript('cloudscalers', 'grid_backup_vfws', args=args, role='master', queue='io', wait=False)
         for name, nid in dailylxc.iteritems():
             lxcBackup(name)
 

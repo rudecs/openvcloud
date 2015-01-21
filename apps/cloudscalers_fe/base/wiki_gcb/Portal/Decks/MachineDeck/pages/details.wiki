@@ -1,82 +1,80 @@
 
 h1. Manage Machine
-{{cssstyle
-h1 { margin-bottom: 20px; }
-}}
 {{html:
-<a ng-click="refreshPage()" class="refresh-page mtl right mTxt" style="margin-bottom: -20px;">
+<tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
+<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
-<tabset style="clear:both;">
+<tabset class="clear-both">
       <tab id="actions" heading="Machine actions" active="tabactive.actions">
-        <div id="actions" class="tab-pane active active2">
+        <div id="actions" class="tab-pane active">
             <div class="row">
                 <div class="span8">
-                    <ul class="list">
+                    <ul class="list padding-left-medium">
                         <li>
-                        	<div class="row">
-                        		<div class="span3">Name</div>
-                        		<div class="span9 mtm word-break">{[machine.name]}</div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">Name</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small word-break">{[machine.name]}</div>
+                            </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">Description</div>
-                                <div class="span9 justify edit-description cursor-pointer width-70">
+                                <div class="span3 line-height">Description</div>
+                                <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small position-default">
                                     <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
-                                        <span style="font-style:italic; display:none;" class="right edit-description-link">Edit</span>
+                                        <em class="right edit-description-link">Edit</em>
                                     </div>
                                 </div>
                             </div>
                         </li>
                         <li>
-                        	<div class="row">
-                        		<div class="span3">Status</div>
-                        		<div class="span9 mtm">{[machine.status]}</div>
-                        	</div>
-                        </li>
-                        <li>
-                        	<div class="row">
-                        		<div class="span3">IP Address</div>
-                        		<div class="span9 mtm">{[machine.interfaces[0].ipAddress]}</div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">Status</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.status]}</div>
+                            </div>
                         </li>
                         <li>
                             <div class="row">
-                                <div class="span3">OS Image</div>
-                                <div class="span9 mtm">{[machine.osImage]}</div>
+                                <div class="span3 line-height">IP Address</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.interfaces[0].ipAddress]}</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="span3 line-height">OS Image</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machine.osImage]}</div>
                             </div>
                         </li>
                         <li class="initial">
-                        	<div class="row">
-                        		<div class="span3">Initial Credentials</div>
-                        		<div class="span9"><span class="mrl">Login: {[machine.accounts[0].login]}</span> <span>Password: {[machine.accounts[0].password]}</span></div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">Initial Credentials</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small"><span class="login-credentials margin-right-xlarge" tourtip="Your private IP address. To access publicly, set a port forward. Advanced users can configure the Defense Shield">Login: {[machine.accounts[0].login]}</span> <span tourtip="Initial login credentials, this is an admin user. Linux: Use sudo to execute commands with root privileges. Windows login is an administrator user.">Password: {[machine.accounts[0].password]}</span></div>
+                            </div>
                         </li>
                         <li>
-                        	<div class="row">
-                        		<div class="span3">CPU</div>
-                        		<div class="span9 mtm">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">CPU</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
+                            </div>
                         </li>
                         <li>
-                        	<div class="row">
-                                <div class="span3">Memory</div>
-                        		<div class="span9 mtm">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">Memory</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
+                            </div>
                         </li>
                         <li>
-                        	<div class="row">
-                        		<div class="span3">Storage</div>
-                        		<div class="span9 mtm">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
-                        	</div>
+                            <div class="row">
+                                <div class="span3 line-height">Storage</div>
+                                <div class="span9 clear-none inline-block margin-vertical-small">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
+                            </div>
                         </li>
                     </ul>
                 </div>
-                <div class="span3 actions">
+                <div class="span3 machine-actions margin-left-large">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
-                    <ul class="actions">
+                    <ul class="actions margin-all-none padding-all-none padding-left-small">
 
                         <li ng-show="machine.status == 'HALTED' && machine.locked == false">
                             <a ng-click="start()">
@@ -107,12 +105,12 @@ h1 { margin-bottom: 20px; }
                         </li>
 
                         <li>
-                            <a ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
+                            <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                 <i class="fa fa-camera"></i>
                                 Take Snapshot
                             </a>
 
-			<script type="text/ng-template" id="createSnapshotDialog.html">
+            <script type="text/ng-template" id="createSnapshotDialog.html">
                             <form name="form" ng-submit="submit(form)">
                                 <div class="modal-header">
                                     <h3>Take snapshot</h3>
@@ -128,7 +126,7 @@ h1 { margin-bottom: 20px; }
                                     <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
                                 </div>
                                 </form>
-			</script>
+            </script>
 
                         </li>
 }}
@@ -140,11 +138,11 @@ h1 { margin-bottom: 20px; }
 #                        </li>
 {{html:
                         <li>
-                            <a ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}">
+                            <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                 <i class="fa fa-copy"></i>
                                 Create Template
                             </a>
-							<script type="text/ng-template" id="createTemplateDialog.html">
+                            <script type="text/ng-template" id="createTemplateDialog.html">
                                 <div class="modal-header">
                                     <h3>Create Template</h3>
                                 </div>
@@ -198,9 +196,9 @@ h1 { margin-bottom: 20px; }
                                 </div>
                                 <div class="modal-body">
                                     <div class="control-group">
-                                        <label class="control-label" for="inputNewCloudSpaceName">Description</label>
+                                        <label class="control-label txt-gray" for="inputNewCloudSpaceName">Description</label>
                                         <div class="controls">
-                                            <textarea style="min-height: 80px; width: 330px;" ng-model="machine.newdescription" type="text" class="input-xlarge ng-pristine ng-valid" placeholder="Description"></textarea>
+                                            <textarea class="description-textarea" ng-model="machine.newdescription" type="text" class="input-xlarge" placeholder="Description"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -215,34 +213,34 @@ h1 { margin-bottom: 20px; }
       <tab id="console" heading="Console" active="tabactive.console">
         <div id="console" class="tab-pane" ng-controller="ConsoleController">
             <div ng-model="machineConsoleUrlResult">
-                <em style="display: block;" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
+                <em class="block" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
                 hit any key to disable the screen saving mode of your virtual machine.</em>
                 <div class="error" ng-show="!!machineConsoleUrlResult.error">
                     The machine is not running.
                 </div>
                 <div class="row" ng-show="machine.status == 'RUNNING'">
-                    <div class="span2">
-                        <h4 class="machine-label mvn">IP Address</h4>
+                    <div class="span2 txt-verdana">
+                        <h4 class="txt-15 txt-normal margin-bottom-none">IP Address</h4>
                         <p>
                             {[machine.interfaces[0].ipAddress]}    
                         </p>
                     </div>
 
-                    <div class="span2">
-                        <h4 class="machine-label mvn">login</h4>
+                    <div class="span2 txt-verdana">
+                        <h4 class="txt-15 txt-normal margin-bottom-none">login</h4>
                         <p>
                             {[machine.accounts[0].login]}
                         </p>
                     </div>
-                    <div class="span2">
-                        <h4 class="machine-label mvn">password</h4>
+                    <div class="span2 txt-verdana">
+                        <h4 class="txt-15 txt-normal margin-bottom-none">password</h4>
                         <p>
                             {[machine.accounts[0].password]}
                         </p>
                     </div>
-                    <div class="span4" style="padding-top: 1%;">
-                        <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info left mrm" value="Capture keyboard"></input>
-                        <div id="noVNC_buttons">
+                    <div class="span6 margin-top-small right txt-right">
+                        <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info float-none margin-right-medium" value="Capture keyboard"></input>
+                        <div id="noVNC_buttons" class="inline-block">
                         <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
                         id="sendCtrlAltDelButton">
                         </div>
@@ -256,14 +254,13 @@ h1 { margin-bottom: 20px; }
       <tab heading="Snapshots" active="tabactive.snapshots">
 
 
-        <div id="snapshots" class="tab-pane tab-pane2">
-            <a class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}">
+        <div id="snapshots" class="tab-pane">
+            <a class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
                 <i class="fa fa-camera"></i>
                 Take Snapshot
             </a>
-            <div class="table-responsive">
-                
-                <table class="table table-bordered table-striped mtm" ng-show="snapshots.snapshots.length > 0">
+            <div class="table-responsive margin-top-medium">
+                <table class="table table-bordered table-striped" ng-show="snapshots.snapshots.length > 0">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -274,12 +271,12 @@ h1 { margin-bottom: 20px; }
                     <tbody>
                         <tr ng-repeat="snapshot in snapshots.snapshots">
                             <td width="45%">{[snapshot.name]}</td>
-                            <td style="white-space:nowrap" >
+                            <td class="nowrap">
                                 {[snapshot.epoch * 1000 | date:'medium']}
                             </td>
                             <td>
-                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
-                                <a style="cursor: pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                                <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
                             </td>
                         </tr>
                     </tbody>
@@ -293,5 +290,5 @@ h1 { margin-bottom: 20px; }
         </div>
       </tab>
 </tabset>
-
+</tour>
 }}

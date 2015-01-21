@@ -1,28 +1,21 @@
 from JumpScale import j
 from JumpScale import portal
+from JumpScale.grid import osis
 import ujson
 
 class pricing(object):
     def __init__(self):
 
-        osiscl = j.core.osis.getClient(user='root')
-
-        class Class():
-            pass
-
-        self.cloudbrokermodels = Class()
-        for ns in osiscl.listNamespaceCategories('cloudbroker'):
-            self.cloudbrokermodels.__dict__[ns] = (j.core.osis.getClientForCategory(osiscl, 'cloudbroker', ns))
-            self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
-
+        self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
         self.base_machine_prices = {}
 
-        for machine_price_key in j.application.config.getKeysFromPrefix('mothership1.billing.machineprices'):
+        for machine_price_key in j.application.config.prefix('mothership1.billing.machineprices'):
             machine_type = machine_price_key.split('.')[-1]
             stringprices = j.application.config.getDict(machine_price_key)
             self.base_machine_prices[machine_type.lower()] = dict([(int(kv[0]),float(kv[1])) for kv in stringprices.items()])
 
         self.primary_storage_price = j.application.config.getFloat('mothership1.billing.primarystorageprice')
+        self.extra_cloudspace_price = j.application.config.getFloat('mothership1.billing.extracloudspaceprice')
 
         self._machine_sizes = None
         self._machine_images = None
@@ -30,18 +23,16 @@ class pricing(object):
     @property
     def machine_sizes(self):
         if not self._machine_sizes:
-            query = {'fields': ['id', 'memory']}
-            results  = self.cloudbrokermodels.size.find(ujson.dumps(query))['result']
-            self._machine_sizes = dict([(res['fields']['id'], res['fields']) for res in results])
+            results  = self.cloudbrokermodels.size.search({})[1:]
+            self._machine_sizes = {size['id']: size for size in results}
         return self._machine_sizes
 
 
     @property
     def machine_images(self):
         if not self._machine_images:
-            query = {'fields': ['id', 'type','name']}
-            results  = self.cloudbrokermodels.image.find(ujson.dumps(query))['result']
-            self._machine_images = dict([(res['fields']['id'], res['fields']) for res in results])
+            results  = self.cloudbrokermodels.image.search({})[1:]
+            self._machine_images = {size['id']: size for size in results}
         return self._machine_images
 
 
@@ -57,6 +48,9 @@ class pricing(object):
         storage_price = (int(diskSize) - 10) * self.primary_storage_price
         return base_price + storage_price
 
+    def get_cloudspace_price_per_hour(self):
+        return self.extra_cloudspace_price
+
     def get_machine_price_per_hour(self, machine):
         machine_imageId = machine['imageId']
         machine_sizeId = machine['sizeId']
@@ -66,27 +60,20 @@ class pricing(object):
 
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
 
+    def _listActiveCloudSpaces(self, accountId):
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+        cloudspaces = self.cloudbrokermodels.cloudspace.search(query)[1:]
+        return cloudspaces
+
     def get_burn_rate(self, accountId):
         burn_rate_report = {'accountId':accountId, 'cloudspaces':[]}
-        query = {'fields': ['id', 'name', 'accountId']}
-        query['query'] = {'term': {'accountId': accountId}}
-        results = self.cloudbrokermodels.cloudspace.find(ujson.dumps(query))['result']
-        cloudspaces = [res['fields'] for res in results]
+        cloudspaces = self._listActiveCloudSpaces(accountId)
 
-        account_hourly_cost = 0.0
+        account_hourly_cost = (len(cloudspaces) - 1) * self.get_cloudspace_price_per_hour()
 
         for cloudspace in cloudspaces:
-            query = {'fields':['id','deletionTime','name','cloudspaceId','imageId','sizeId','disks']}
-
-            query['query'] = {'filtered':{
-                          "query" : {"term" : { "cloudspaceId" : cloudspace['id'] }},
-                          "filter" : { "not":{"range" : {"deletionTime" : {"gt":0}}}
-                                      }
-                                 }
-                              }
-
-            queryresult = self.cloudbrokermodels.vmachine.find(ujson.dumps(query))['result']
-            machines = [res['fields'] for res in queryresult]
+            query = {'cloudspaceId': cloudspace['id'], 'status': {'$nin': ['DESTROYING', 'DESTROYED']}}
+            machines = self.cloudbrokermodels.vmachine.search(query)[1:]
 
             if len(machines) is 0:
                 continue

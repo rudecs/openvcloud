@@ -23,6 +23,7 @@
 
 [rootmodel:ResourceProvider] @dbtype:osis
     prop:id str,,resourceprovider id is the uri of the compute node
+    prop:gid int,, GRID id
     prop:cloudUnitType str,, (CU,VSU,SU,NU)
     prop:images list(str),,list of images ids supported by this resource
    
@@ -40,4 +41,5 @@
     Store vnc proxies
     """
     prop:id int, 0, id of vnc
+    prop:gid int, 0, Grid id
     prop:url str,,Url of vnc proxy

@@ -8,6 +8,7 @@
     prop:UNCPath str,,location of the image (uncpath like used in pylabs); includes the login/passwd info
     prop:size int,, size in MByte
     prop:type str,, dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas)
+    prop:status str,, status of image (always in upper case)
     prop:extra str,, extra data linked to the image
     
 [rootmodel:Size] @dbtype:osis
@@ -23,6 +24,7 @@
 
 [rootmodel:ResourceProvider] @dbtype:osis
     prop:id str,,resourceprovider id is the uri of the compute node
+    prop:gid int,, Grid id
     prop:cloudUnitType str,, (CU,VSU,SU,NU)
     prop:images list(str),,list of images ids supported by this resource
    
@@ -40,4 +42,5 @@
     Store vnc proxies
     """
     prop:id int, 0, id of vnc
+    prop:gid int, 0, Grid id
     prop:url str,,Url of vnc proxy

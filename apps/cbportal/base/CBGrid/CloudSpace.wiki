@@ -2,20 +2,112 @@
 
 {{cbspace id:$$id}}
 
-h2. CloudSpace: $$name
+
+h2. CloudSpace: ${name}
+
+{{toc: start=3}}
+
+{{actions:
+
+- display: Rename
+  action: /restmachine/cloudbroker/cloudspace/updateName
+  input:
+  - newname
+  data:
+   cloudspaceId: $$id
+
+- display: Delete CloudSpace
+  action: /restmachine/cloudbroker/cloudspace/destroy
+  data:
+   cloudspaceId: $$id
+   cloudspaceName: ${name}
+   accountname: ${accountname}
+  input:
+  - reason
+
+- display: Create Machine
+  action: '#createmachine'
+
+- display: Create Machine On Stack
+  action: '#createmachineonstack'
+
+- display: Move VFW
+  action: '#movevfw'
+
+- display: Deploy VFW
+  action: /restmachine/cloudbroker/cloudspace/deployVFW
+  input:
+  - reason
+  data:
+   cloudspaceId: $$id
+
+- display: Remove VFW
+  action: /restmachine/cloudbroker/cloudspace/destroyVFW
+  input:
+  - reason
+  data:
+   cloudspaceId: $$id
+
+- display: Reset VFW
+  action: /restmachine/cloudbroker/cloudspace/resetVFW
+  data:
+   cloudspaceId: $$id
+  input:
+  - reason
+
+- display: Grant User Access
+  action: /restmachine/cloudbroker/cloudspace/addUser
+  data:
+   cloudspaceId: $$id
+  input:
+   - username
+   - accesstype
+
+- display: Revoke User Access
+  action: /restmachine/cloudbroker/cloudspace/deleteUser
+  data:
+   cloudspaceId: $$id
+  input:
+   - username
+
+#- display: Add Extra IP
+#  action: /restmachine/cloudbroker/cloudspace/addExtraIP
+#  data:
+#   cloudspaceId: $$id
+#  input:
+#  - ipaddress
+#  - reason
+
+#- display: Remove IP
+#  action: /restmachine/cloudbroker/cloudspace/removeIP
+#  data:
+#   cloudspaceId: $$id
+#  input:
+#  - ipaddress
+#  - reason
+
+}}
+
+{{createmachine: cloudspaceId:$$id}}
+{{movevfw: cloudspaceId:$$id}}
 
 h3. Details
 |*CloudSpace ID*|$$id|
-|*Account*|[$$accountname|account?id=$$accountid]|
-|*Network ID*|[$$networkid|network?id=$$networkid]|
-|*Stack(s)*|$$resourceproviderstacks|
-|*Status*|$$status|
-|*Location*|$$location|
-|*Access Control List*|$$acl|
-|*Description*|$$descr|
-|*Public IP Adress*|$$publicipaddress|
-|*Resource Limits*|$$resourcelimits|
+|*Account*|[${accountname}|account?id=${accountId}]|
+|*Network ID*|${networkid}|
+|*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
+|*Status*|${status}|
+|*Location*|${location}|
+|*Access Control List*|${acl}|
+|*Description*|${descr}|
+|*Public IP Adress*|${publicipaddress}|
+|*Resource Limits*|${resourcelimits}|
 
+h3. Port Fowardings
+||Source IP||Source Port||Destination IP||Destination Port||
+{% for rule in network.tcpForwardRules -%}
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
+{% endfor %}
 
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}

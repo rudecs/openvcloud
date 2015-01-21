@@ -1,0 +1,58 @@
+@template public
+{{div: class=white container}}
+
+
+h1. Describe your project and get a free start!
+
+Describe your project and we are returning a competitive offer by giving you a month for free!
+ 
+{{contact_form: receiver_email:support@mothership1.com | custom | subject: Pricing Information}}
+    
+    {{html: <label class="control-label" for="sender_email">Email Address</label>}}
+    {{div: class=control-group}}
+        {{div4: class=col-md-4}}
+            {{ email: id=sender_email | name=sender_email | required | placeholder= Your email address | class=form-control}}
+        {{div4}}
+    {{div}}
+    
+    {{html: <label class="control-label" for="sender_name">Contact Name</label>}}
+    {{div: class=control-group}}
+    {{div4: class=col-md-4}}
+        {{ text: id=sender_name | name=sender_name | required=true | placeholder= Your name | class=form-control}}
+    {{div4}}
+    {{div}}
+
+    {{html: <label class="control-label" for="phonenumber">Phone Number</label>}}
+    {{div: class=control-group}}
+    {{div4: class=col-md-4}}
+        {{ text: id=phonenumber | name=phonenumber |  placeholder= Phone number | class=form-control}}
+    {{div4}}
+    {{div}}
+
+    {{html: <div class="clearfix"><label class="control-label">Service type</label></div>}}
+    {{div4: class=col-md-4 margin-top-small}}
+        {{dropdown: name=Select service type | id=selected_type | class=margin-left-large | multiple
+            * Machine
+            * Storage
+            * Desktop
+        }}
+    {{div4}}
+
+    {{div: class=control-group }}
+    {{div4:class=col-md-12}}
+        {{html: <label class="control-label" for="description">Short description of your project!</label>}}
+    {{div4}}
+    {{div4: class=col-md-4 margin-top-small}}
+        {{ textarea: rows=10 | cols=100 | required | id=description | name=body | class=form-control}}
+    {{div4}}
+    {{div}}
+
+    {{div: class=control-group}}
+        {{submit: class=btn btn-primary btn-small | data-loading-text=Sending... }}
+           {{html:KickStart!}} 
+        {{submit}}
+        {{ reset }}
+    {{div}}
+{{ contact_form }}
+
+@divend

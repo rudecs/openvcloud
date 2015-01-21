@@ -4,17 +4,15 @@ class libcloud_libvirt(j.code.classGetBase()):
     """
     libvirt libcloud manager.
     Contains function to access the internal model.
-    
     """
     def __init__(self):
+        pass
         
         self._te={}
         self.actorname="libvirt"
         self.appname="libcloud"
         #libcloud_libvirt_osis.__init__(self)
-    
 
-        pass
 
     def addFreeSubnet(self, subnet, networkid, **kwargs):
         """
@@ -25,7 +23,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method addFreeSubnet")
-    
 
     def getFreeIpaddress(self, networkid, **kwargs):
         """
@@ -35,25 +32,24 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeIpaddress")
-    
 
-    def getFreeMacAddress(self, **kwargs):
+    def getFreeMacAddress(self, gid, **kwargs):
         """
         Get a free macaddres in this libvirt environment
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeMacAddress")
-    
 
-    def getFreeNetworkId(self, **kwargs):
+    def getFreeNetworkId(self, gid, **kwargs):
         """
         Get a free NetworkId
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeNetworkId")
-    
 
     def getNode(self, id, **kwargs):
         """
@@ -63,7 +59,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getNode")
-    
 
     def linkImage(self, imageid, resourceprovider, **kwargs):
         """
@@ -74,7 +69,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method linkImage")
-    
 
     def listImages(self, resourceid, **kwargs):
         """
@@ -86,7 +80,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listImages")
-    
 
     def listNodes(self, **kwargs):
         """
@@ -95,16 +88,15 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listNodes")
-    
 
-    def listResourceProviders(self, **kwargs):
+    def listResourceProviders(self, gid, **kwargs):
         """
         List all registered resource providers
+        param:gid Grid id
         result list
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listResourceProviders")
-    
 
     def listSizes(self, **kwargs):
         """
@@ -113,27 +105,26 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listSizes")
-    
 
-    def listVNC(self, **kwargs):
+    def listVNC(self, gid, **kwargs):
         """
         list vnc urls
+        param:gid Grid id
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listVNC")
-    
 
-    def registerNetworkIdRange(self, start, end, **kwargs):
+    def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
         Add a new network idrange
+        param:gid Grid id
         param:start start of the range
         param:end end of the range
         result 
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerNetworkIdRange")
-    
 
     def registerNode(self, id, macaddress, networkid, **kwargs):
         """
@@ -145,17 +136,16 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerNode")
-    
 
-    def registerVNC(self, url, **kwargs):
+    def registerVNC(self, url, gid, **kwargs):
         """
         register a vnc application
         param:url url of the application
+        param:gid register a vnc app linked to gid
         result int
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerVNC")
-    
 
     def releaseIpaddress(self, networkid, ipaddress, **kwargs):
         """
@@ -166,17 +156,16 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseIpaddress")
-    
 
-    def releaseNetworkId(self, networkid, **kwargs):
+    def releaseNetworkId(self, gid, networkid, **kwargs):
         """
         Release a networkid.
+        param:gid Grid id
         param:networkid int representing the netowrkid to release
         result bool
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseNetworkId")
-    
 
     def retreiveInfo(self, key, reset, **kwargs):
         """
@@ -187,7 +176,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method retreiveInfo")
-    
 
     def storeInfo(self, data, timeout, **kwargs):
         """
@@ -198,7 +186,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method storeInfo")
-    
 
     def unLinkImage(self, imageid, resourceprovider, **kwargs):
         """
@@ -209,7 +196,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method unLinkImage")
-    
 
     def unregisterNode(self, id, **kwargs):
         """
@@ -219,4 +205,3 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method unregisterNode")
-    

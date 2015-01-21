@@ -1,4 +1,3 @@
-import urlparse
 
 def main(j, args, params, tags, tasklet):
 
@@ -6,19 +5,19 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     stackid = args.getTag('stackid')
-    nativequery = None
+    filters = dict()
     if stackid:
+        stackid = int(stackid)
         ccl = j.core.osis.getClientForNamespace('cloudbroker')
         stack = ccl.stack.get(stackid)
-        query = {'query': {'bool': {'must': [{'terms': {'id': stack.images}}]}}}
-        images = ccl.image.simpleSearch({}, nativequery=query)
+        images = ccl.image.search({'id': {'$in': stack.images}})[1:]
         imageids = [ image['referenceId'] for image in images ]
-        nativequery = {'query': {'bool': {'must': [{'terms': {'id': imageids}}]}}}
+        filters['id'] = imageids
 
     fieldnames = ['Name', 'Type', 'Size', 'UNCPath']
     fieldvalues = ["<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>", 'type', '%(size)s GiB', 'UNCPath']
     fieldids = ['name', 'type', 'size', 'uncpath']
-    tableid = modifier.addTableForModel('libvirt', 'image', fieldids, fieldnames, fieldvalues, nativequery=nativequery)
+    tableid = modifier.addTableForModel('libvirt', 'image', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page

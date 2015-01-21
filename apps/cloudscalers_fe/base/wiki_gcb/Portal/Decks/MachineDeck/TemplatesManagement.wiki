@@ -1,7 +1,7 @@
 @usedefault
 h1. Templates Management
 {{html:
-<div ng-controller="TemplateManagementController" style="margin-top: 20px;">
+<div ng-controller="TemplateManagementController" class="margin-top-large">
 <div class="table-responsive">
     <table class="table table-striped table-bordered" ng-show="filteredTemplates">
         <thead>
@@ -19,7 +19,7 @@ h1. Templates Management
                 <td>{[template.description]}</td>
                 <td>{[template.size]}</td>
                 <td>{[template.status]}</td>
-                <!-- <td class="center"><a href="#" ng-click="deleteTemplate( $index )" class="fa fa-times"></a></td> -->
+                <!-- <td class="txt-center"><a href="#" ng-click="deleteTemplate( $index )" class="fa fa-times"></a></td> -->
             </tr>
         </tbody>
     </table>

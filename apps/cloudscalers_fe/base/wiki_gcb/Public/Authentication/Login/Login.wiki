@@ -5,11 +5,11 @@
     <div class="content clearfix padding">
     <div class="login-symbol">
         <form ng-submit="login()">
-            <h1>Sign In</h1>
+            <h1 class="white-header txt-white txt-bold txt-center">Sign In</h1>
 
-            <div class="login-fields">
+            <div class="login-fields margin-bottom-medium">
 
-                
+
                 <div class="alert alert-error ng-hide" ng-show="login_error">Please enter the correct username & password.</div>
                 <div class="field">
                     <div class="loginField">
@@ -27,15 +27,17 @@
                         </div>
                     </div>
                  </div>
-                
+
             </div>
 
-            
+
                 <input type="submit" class="btn btn-primary btn-lg btn-block primaryMine" value="Login" >
-            
-			<div class="sp"></div> 
+                <div class="txt-center">
+                    <a class="txt-dark-gray" href="/$$space/ForgotPassword">I forgot my password</a>
+                </div>
+			<div class="sp"></div>
 			<a href="/$$space/SignUp" class="btn btn-default btn-lg btn-block defaultMine">Sign Up</a>
-            
+
         </form>
         </div>
     </div>

@@ -20,7 +20,7 @@ parser.add_argument("-i", '--showimages', action='store_true', required=False, h
 
 opts = parser.parse_args()
 
-ocl = j.core.osis.getClient(user='root')
+ocl = j.core.osis.getClientByInstance('main')
 
 if opts.action == 'listnodes':
     print "%(id)-40s %(referenceid)3s %(enabled)40s" % {'id': 'ID', 'referenceid': 'Node', 'enabled': 'Enabled'}
@@ -61,7 +61,7 @@ elif opts.action == 'disablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = False
+        stackobj.status = 'DISABLED'
         scl.set(stackobj)
         print 'Node %s was disabled successfully' % nodename
 
@@ -74,7 +74,7 @@ elif opts.action == 'enablenode':
     else:
         stack = stacks[0]
         stackobj = scl.get(stack['id'])
-        stackobj.enabled = True
+        stackobj.status = 'ENABLED'
         scl.set(stackobj)
         print 'Node %s was enabled successfully' % nodename
 

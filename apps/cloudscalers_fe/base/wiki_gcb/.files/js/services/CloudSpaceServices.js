@@ -14,10 +14,15 @@ angular.module('cloudscalers.services')
             setCurrent: function(space) {
                 SessionData.setSpace(space);
             },
-            create: function(name, accountId, userId) {
-            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId)).then(
+            create: function(name, accountId, userId, location) {
+            	return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' + encodeURIComponent(name)+'&accountId=' + accountId + '&access=' + encodeURI(userId) + '&location=' + encodeURIComponent(location)).then(
             			function(result){
-            				return JSON.parse(result.data);
+            				if (result.status == 200){
+            					return result.data;
+            				}
+            				else {
+            					return $q.reject(result);
+            				}
             			},
             			function(reason){
             				return $q.reject(reason);

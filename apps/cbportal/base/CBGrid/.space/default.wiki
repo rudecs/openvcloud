@@ -1,14 +1,17 @@
 
-{{title:CBGrid}}
 
-{{projectname:CloudBroker Grid}}
+{{title:CBGrid}}
 
 {{find}}
 
 {{menu:
+StatusOverview:/grid/checkstatus
+GridPortal:/grid
+MS1Portal:/cbgrid
 }}
 
 {{menuadmin_cbgrid}}
+{{menuspaces: class:brand name:Cloudbroker%20Grid marker:$$$spaces}}
 
 @block
 @row

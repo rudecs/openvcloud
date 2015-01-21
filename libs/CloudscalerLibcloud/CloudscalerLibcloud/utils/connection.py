@@ -33,14 +33,13 @@ class CloudBrokerConnection():
      NAMESPACE = 'libcloud'
      CATEGORY = 'libvirtdomain'
 
-     def __init__(self, ipaddress=None, port=None, secret=None):
+     def __init__(self, client=None):
          from JumpScale import j
          self._j = j
-         import JumpScale.portal
          import JumpScale.grid.geventws
          from JumpScale.grid import agentcontroller
-         if ipaddress:
-             self.client = j.core.portal.getClient(ip=ipaddress, port=port, secret=secret)  
+         if client:
+             self.client = client  
              self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
          else:
              self.libvirt_actor = j.apps.libcloud.libvirt
@@ -50,7 +49,7 @@ class CloudBrokerConnection():
 
      def _getKeyValueStore(self):
          import JumpScale.grid.osis
-         client = self._j.core.osis.getClient()
+         client = self._j.core.osis.getClientByInstance('main')
          if self.NAMESPACE not in client.listNamespaces():
              client.createNamespace(self.NAMESPACE, 'blob')
          if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
@@ -71,8 +70,8 @@ class CloudBrokerConnection():
      def getNode(self,id):
          return self.libvirt_actor.getNode(id)
 
-     def getMacAddress(self):
-         return self.libvirt_actor.getFreeMacAddress()
+     def getMacAddress(self, gid):
+         return self.libvirt_actor.getFreeMacAddress(gid)
 
      def registerMachine(self, id, macaddress, networkid):
          return self.libvirt_actor.registerNode(id, macaddress, networkid)
@@ -86,5 +85,5 @@ class CloudBrokerConnection():
      def storeInfo(self, data, timeout):
          return self.libvirt_actor.storeInfo(data, timeout)
 
-     def listVNC(self):
-         return self.libvirt_actor.listVNC()
+     def listVNC(self, gid):
+         return self.libvirt_actor.listVNC(gid)

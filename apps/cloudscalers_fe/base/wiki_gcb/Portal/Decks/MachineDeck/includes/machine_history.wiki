@@ -9,8 +9,8 @@
         </thead>
         <tbody>
             <tr ng-repeat="history in machineHistory.history">
-                <td>{[history._source.message]}</td>
-                <td>{[history._source.epoch * 1000 | date:'medium']}</td>
+                <td>{[history.message]}</td>
+                <td>{[history.epoch * 1000 | date:'medium']}</td>
             </tr>
         </tbody>
     </table>

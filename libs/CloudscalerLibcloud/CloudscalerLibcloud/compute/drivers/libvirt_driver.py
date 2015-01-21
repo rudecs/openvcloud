@@ -30,9 +30,10 @@ class CSLibvirtNodeDriver():
         7: NodeState.UNKNOWN,  # last
     }
 
-    def __init__(self, id, uri):
+    def __init__(self, id, gid, uri):
         self._rndrbn_vnc = 0
         self.id = id
+        self.gid = gid
         self.name = id
         self.uri = uri
 
@@ -79,7 +80,8 @@ class CSLibvirtNodeDriver():
         @type: C{str}
         @rtype: C{list} of L{NodeImage}
         """
-        images = self.backendconnection.listImages(self.id)
+        providerid = "%s_%s" % (self.gid, self.id)
+        images = self.backendconnection.listImages(providerid)
         return [self._to_image(image) for image in images]
 
     def _to_image(self, image):
@@ -100,13 +102,15 @@ class CSLibvirtNodeDriver():
 
     def _execute_agent_job(self, name_, id=None, wait=True, queue=None, **kwargs):
         if not id:
-            role = self.id
-        job = self.backendconnection.agentcontroller_client.executeJumpScript('cloudscalers', name_, role=role, wait=wait, queue=queue, args=kwargs)
+            id = int(self.id)
+        else:
+            id = int(id)
+        job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name_, nid=id, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                raise RuntimeError('Could not find agent with role:%s' %  role)
+                raise RuntimeError('Could not find agent with nid:%s' %  id)
             if job['result']:
-                raise RuntimeError("Could not execute %s for role:%s, error was:%s"%(name_,role,job['result']))
+                raise RuntimeError("Could not execute %s for nid:%s, error was:%s"%(name_,id,job['result']))
         if wait:
             return job['result']
         else:
@@ -199,7 +203,7 @@ class CSLibvirtNodeDriver():
     def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid 
-        macaddress = self.backendconnection.getMacAddress()
+        macaddress = self.backendconnection.getMacAddress(self.gid)
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
         
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
@@ -247,6 +251,8 @@ class CSLibvirtNodeDriver():
 
     def ex_getDomain(self, node):
         node = self._from_agent_to_node(self._get_domain_for_node(node))
+        backendnode = self.backendconnection.getNode(node.id)
+        node.extra['macaddress'] = backendnode['macaddress']
         return node
 
     def ex_snapshot(self, node, name, snapshottype='external'):
@@ -303,23 +309,8 @@ class CSLibvirtNodeDriver():
         job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
         return True
     
-    def ex_getIpAddress(self, node):
-        backendnode = self.backendconnection.getNode(node.id)
-        networkid = backendnode.networkid
-        macaddress = backendnode.macaddress
-        iphex = "%04x" % networkid
-        first = int(iphex[0:2], 16)
-        second = int(iphex[2:4], 16)
-        ipaddress = '10.199.%s.%s' % (str(first), str(second))
-        try:
-            ro = routeros.routeros(ipaddress)
-            ipaddress = ro.getIpaddress(macaddress)
-        except:
-            ipaddress = 'Undefined'
-        return ipaddress
-
     def ex_get_console_url(self, node):
-        urls = self.backendconnection.listVNC()
+        urls = self.backendconnection.listVNC(self.gid)
         id_ = self._rndrbn_vnc % len(urls)
         url = urls[id_]
         self._rndrbn_vnc += 1
@@ -356,7 +347,7 @@ class CSLibvirtNodeDriver():
 
     def ex_start(self, node):
         backendnode = self.backendconnection.getNode(node.id)
-        networkid = backendnode.networkid
+        networkid = backendnode['networkid']
         xml = self._get_persistent_xml(node)
         machineid = node.id 
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)

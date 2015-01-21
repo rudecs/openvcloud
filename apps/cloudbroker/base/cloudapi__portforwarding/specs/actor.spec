@@ -2,7 +2,7 @@
     """
     Portforwarding api
     uses actor /opt/code/jumpscale/unstable__jumpscale_grid/apps/vfw/actor/jumpscale__netmgr/
-    """ 
+    """
 
     method:list
         """
@@ -39,11 +39,3 @@
         """
         var:cloudspaceid int,, if of the cloudspace
         var:id int,, id of the portforward
-
-    method:listcommonports
-        """
-        List a range of predifined ports
-        """
-
-
-    

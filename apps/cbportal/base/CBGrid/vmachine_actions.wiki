@@ -1,0 +1,211 @@
+
+{{actions:
+- display: Start
+  input: 
+  - reason
+  action: /restmachine/cloudbroker/machine/start
+  data: 
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+
+- display: Stop
+  action: /restmachine/cloudbroker/machine/stop
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Stop For Abusive Resource Usage
+  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+  data:
+   machineId: $$id
+   accountName: $$accountname
+  input:
+  - reason
+
+- display: Reboot
+  action: /restmachine/cloudbroker/machine/reboot
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Pause
+  action: /restmachine/cloudbroker/machine/pause
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Resume
+  action: /restmachine/cloudbroker/machine/resume
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Delete
+  action: /restmachine/cloudbroker/machine/destroy
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+
+- display: Snapshot
+  action: /restmachine/cloudbroker/machine/snapshot
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+  - snapshotName
+
+- display: Rollback Snapshot
+  action: /restmachine/cloudbroker/machine/rollbackSnapshot
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+  - snapshotName
+
+- display: Delete Snapshot
+  action: /restmachine/cloudbroker/machine/deleteSnapshot
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+  - snapshotName
+
+- display: Clone 
+  action: /restmachine/cloudbroker/machine/clone
+  data:
+   machineId: $$id
+   accountName: $$accountname
+   spaceName: $$spacename
+  input:
+  - reason
+  - cloneName
+
+- display: Backup And Destroy
+  action: /restmachine/cloudbroker/machine/backupAndDestroy
+  data:
+   accountName: $$accountname
+   machineId: $$id
+  input:
+  - reason
+
+- display: Create Portforwarding
+  action: /restmachine/cloudbroker/machine/createPortForward
+  data:
+   machineId: $$id
+   spaceName: $$spacename
+  input:
+  - localPort
+  - destPort
+  - proto
+  - reason
+
+- display: Delete Portforwarding
+  action: /restmachine/cloudbroker/machine/deletePortForward
+  data:
+   machineId: $$id
+   spaceName: $$spacename
+  input:
+  - ruleId
+  - reason
+
+#- display: Add Disk 
+#  action: /restmachine/cloudbroker/machine/addDisk
+#  data:
+#   machineId: $$id
+#   spaceName: $$spacename
+#  input:
+#  - diskName
+#  - description
+#  - size
+#  - type
+#  - reason
+#
+#- display: Delete Disk 
+#  action: /restmachine/cloudbroker/machine/deleteDisk
+#  data:
+#   machineId: $$id
+#   spaceName: $$spacename
+#  input:
+#  - diskId
+#  - reason
+
+- display: Create Template 
+  action: /restmachine/cloudbroker/machine/createTemplate
+  data:
+   machineId: $$id
+   spaceName: $$spacename
+  input:
+  - templateName
+  - reason
+
+- display: Update Machine 
+  action: /restmachine/cloudbroker/machine/updateMachine
+  data:
+   machineId: $$id
+   spaceName: $$spacename
+  input:
+  - description
+  - reason
+
+- display: Export
+  action: ./
+  data:
+   machineId: $$id
+  input:
+  - exportName
+
+- display: Restore
+  action: ./
+  data:
+   machineId: $$id
+  input:
+  - exportName
+
+- display: Check Image Chain
+  action: /restmachine/cloudbroker/machine/checkImageChain
+  data:
+   machineId: $$id
+
+- display: Move to a diffrent Compute Node
+  action: "#movemachine"
+
+- display: Tag
+  action: /restmachine/cloudbroker/machine/tag
+  data:
+   machineId: $$id
+  input:
+  - tagName
+
+- display: Remove Tag
+  action: /restmachine/cloudbroker/machine/untag
+  data:
+   machineId: $$id
+  input:
+  - tagName
+
+}}
+
+{{movemachine: machineId:$$id accountName:$$accountname}}
+

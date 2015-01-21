@@ -1,5 +1,74 @@
 @usedefault
 
+h2. Mothership Operations Portal
+
+Welcome to our operations portal.
+
+{{toc: start=3 | depth=2}}
+
+h3. Actions
+{{actions:
+- display: Add User
+  action: /restmachine/cloudbroker/user/create
+  input:
+  - username
+  - emailaddress
+  - password
+
+- display: Add Account
+  action: /restmachine/cloudbroker/account/create
+  input:
+  - username
+  - name
+  - emailaddress
+  - password
+  - location
+}}
+
+h3. Main Links
+
+* [MS1 customer Portal|http://www.mothership1.com]
+
+h3. Documentation
+
+* [Knowledge Base|http://gitlab.mothership1.com/ms1-admin/ms1_ops_knowledgebase/wikis/home]
+
+h3. Support Tools
+
+* [Tickets|http://support.mothership1.com]
+* [Racktables = Asset Management|http://racktables.mothership1.com]
+* [Project Mgmt  Bugtracker|http://youtrack.incubaid.com/dashboard]
+
+h3. Monitoring
+
+* [Monitoring |/grid/checkstatus]
+* [Monitoring Dockers|http://cpu01.bracknell1.vscalers.com:8080/containers/docker]
+
+h3. Dashboard
+
+@row
+
+@col 3
+h5. No. of Active Accounts
+{{nraccountgauge: id:1 width:100 height:100}}
+@colend 
+
+@col 3
+h5. No. of Running vMachines
+#*From Total Deployed:45*
+{{nrvmgauge: id:3 width:100 height:100}}
+@colend
+
+@col 4
+h5. No. of Windows Running vMachines
+{{nrwinvmgauge: id:4 width:100 heigth:100}}^M
+@colend
+@rowend 
+
+h3. Locations
+
+{{locations}}
+
 h3. Accounts
 
 {{cbgrid.accounts}}

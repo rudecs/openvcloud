@@ -1,0 +1,27 @@
+New architecture
+================
+
+Model
+-----
+
+Cloudbroker/Stack:
+* change referenceId to be nid as str
+* add gid 
+Cloudbroker/Cloudspace:
+* add gid
+
+Libvirt/Resourceprovider:
+* resourceprovider change key to be gid_nid
+* add gid
+
+Libvirt/VNC
+* add gid
+
+* blob move lastmacaddress to lastmacaddress_gid
+* blob move networkids to networkids_gid
+
+Cloudbroker hrd:
+* remove public ips and locations stuff
+* add cloudbroker.portalurl
+
+

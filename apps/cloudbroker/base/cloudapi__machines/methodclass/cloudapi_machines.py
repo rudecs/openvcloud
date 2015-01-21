@@ -1,49 +1,27 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator, enums
-import JumpScale.grid.osis
+from cloudbrokerlib.baseactor import BaseActor
 import string, time
-from random import sample, choice
+from random import choice
 from libcloud.compute.base import NodeAuthPassword
-import urlparse
 from billingenginelib import pricing
+from billingenginelib import account as accountbilling
 
-ujson = j.db.serializers.ujson
-
-
-
-class cloudapi_machines(object):
+class cloudapi_machines(BaseActor):
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
 
     """
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "machines"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
-        j.logger.setLogTargetLogForwarder()
-
-        self.osisclient = j.core.osis.getClient(user='root')
+        super(cloudapi_machines, self).__init__()
+        self.osisclient = j.core.portal.active.osis
+        self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
-        
-        self._pricing = pricing.pricing()     
-         
+        self._pricing = pricing.pricing()
+        self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
+        self.netmgr = j.apps.jumpscale.netmgr
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
@@ -107,13 +85,13 @@ class cloudapi_machines(object):
         result int
 
         """
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
-        self.cb.extensions.imp.addDiskToMachine(machine, disk)
+        self.cb.addDiskToMachine(machine, disk)
         diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
         self.models.vmachine.set(machine)
@@ -168,7 +146,7 @@ class cloudapi_machines(object):
 
     def _getProvider(self, machine):
         if machine.referenceId and machine.stackId:
-            return self.cb.extensions.imp.getProviderByStackId(machine.stackId)
+            return self.cb.getProviderByStackId(machine.stackId)
         return None
 
     def _assertName(self, cloudspaceId, name, **kwargs):
@@ -183,22 +161,6 @@ class cloudapi_machines(object):
         brokersize = self.models.size.get(machine.sizeId)
         firstdisk = self.models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
-
-
-    def _getCreditBalance(self, accountId):
-        """
-        Get the current available credit
-
-        param:accountId id of the account
-        """
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
-        balance = 0.0
-        for transaction in history:
-            balance += float(transaction['credit'])
-        return balance
 
     @authenticator.auth(acl='C')
     @audit()
@@ -222,8 +184,11 @@ class cloudapi_machines(object):
             raise ValueError("Invalid disksize %s" % disksize)
 
         #Check if there is enough credit
+        cloudspaceId = int(cloudspaceId)
+        sizeId = int(sizeId)
+        imageId = int(imageId)
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
-        available_credit = self._getCreditBalance(accountId)
+        available_credit = self._accountbilling.getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine
@@ -231,9 +196,15 @@ class cloudapi_machines(object):
             ctx.start_response('409 Conflict', [])
             return 'Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required
 
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        #create a public ip and virtual firewall on the cloudspace if needed
+        if cloudspace.status != 'DEPLOYED':
+            args = {'cloudspaceId': cloudspaceId}
+            self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
+
         machine = self.models.vmachine.new()
         image = self.models.image.get(imageId)
-        networkid = self.models.cloudspace.get(cloudspaceId).networkId
+        networkid = cloudspace.networkId
         machine.cloudspaceId = cloudspaceId
         machine.descr = description
         machine.name = name
@@ -267,8 +238,13 @@ class cloudapi_machines(object):
         machine.id = self.models.vmachine.set(machine)[0]
 
         try:
-            stack = self.cb.extensions.imp.getBestProvider(imageId)
-            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
+            stack = self.cb.getBestProvider(cloudspace.gid, imageId)
+            if stack == -1:
+                self.models.vmachine.delete(machine.id)
+                ctx = kwargs['ctx']
+                ctx.start_response('503 Service Unavailable', [])
+                return 'Not enough resource available to provision the requested machine'
+            provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
@@ -280,14 +256,14 @@ class cloudapi_machines(object):
         excludelist = [stack['id']]
         while(node == -1):
             #problem during creation of the machine on the node, we should create the node on a other machine
-            stack = self.cb.extensions.imp.getBestProvider(imageId, excludelist)
+            stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
             if stack == -1:
                   self.models.vmachine.delete(machine.id)
                   ctx = kwargs['ctx']
                   ctx.start_response('503 Service Unavailable', [])
                   return 'Not enough resource available to provision the requested machine'
             excludelist.append(stack['id'])
-            provider = self.cb.extensions.imp.getProviderByStackId(stack['id'])
+            provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
             node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
@@ -323,7 +299,7 @@ class cloudapi_machines(object):
         result bool
 
         """
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         diskfound = diskId in machine.disks
         if diskfound:
             machine.disks.remove(diskId)
@@ -340,7 +316,7 @@ class cloudapi_machines(object):
         result
 
         """
-        vmachinemodel = self.models.vmachine.get(machineId)
+        vmachinemodel = self._getMachine(machineId)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
             vmachinemodel.status = 'DESTROYED'
@@ -363,7 +339,7 @@ class cloudapi_machines(object):
     def _getStorage(self, machine):
         if not machine['stackId']:
             return None
-        provider = self.cb.extensions.imp.getProviderByStackId(machine['stackId'])
+        provider = self.cb.getProviderByStackId(machine['stackId'])
         firstdisk = self.models.disk.get(machine['disks'][0])
         storage = provider.getSize(self.models.size.get(machine['sizeId']), firstdisk)
         return storage
@@ -379,7 +355,7 @@ class cloudapi_machines(object):
 
         """
         provider, node = self._getProviderAndNode(machineId)
-        machine = self.models.vmachine.get(machineId)
+        machine = self._getMachine(machineId)
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
@@ -387,15 +363,23 @@ class cloudapi_machines(object):
         osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
         node = provider.client.ex_getDomain(node)
-        if machine.nics:
-            if machine.nics[0].ipAddress == 'Undefined':
-                ipaddress = provider.client.ex_getIpAddress(node)
+        if machine.nics and machine.nics[0].ipAddress == 'Undefined':
+            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+            fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+            try:
+                ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
                 if ipaddress:
                     machine.nics[0].ipAddress= ipaddress
                     self.models.vmachine.set(machine)
+            except:
+                pass # VFW not deployed yet
+        realstatus = enums.MachineStatusMap.getByValue(node.state)
+        if realstatus != machine.status:
+            machine.status = realstatus
+            self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
+                'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
     @authenticator.auth(acl='R')
@@ -408,29 +392,33 @@ class cloudapi_machines(object):
         result list
 
         """
-        query = {'fields': ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']}
-        query['query'] = {'bool':{'must':[{'term': {'cloudspaceId':cloudspaceId}}],'must_not':{'term':{'status':'DESTROYED'.lower()}}}}
-        results = self.models.vmachine.find(ujson.dumps(query))['result']
+        cloudspaceId = int(cloudspaceId)
+        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+        q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        query = {'$query': q, '$fields': fields}
+        results = self.models.vmachine.search(query)[1:]
         machines = []
         for res in results:
-            storage = self._getStorage(res['fields'])
+            storage = self._getStorage(res)
             if storage:
-                res['fields']['storage'] = storage.disk
+                res['storage'] = storage.disk
             else:
-                res['fields']['storage'] = 0
-            machines.append(res['fields'])
+                res['storage'] = 0
+            machines.append(res)
         return machines
 
     def _getMachine(self, machineId):
+        machineId = int(machineId)
         return self.models.vmachine.get(machineId)
 
     def _getNode(self, referenceId):
-        return self.cb.extensions.imp.Dummy(id=referenceId)
+        return self.cb.Dummy(id=referenceId)
 
     def _getProviderAndNode(self, machineId):
+        machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.extensions.imp.Dummy(id=machine.referenceId)
+        return provider, self.cb.Dummy(id=machine.referenceId)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -591,8 +579,8 @@ class cloudapi_machines(object):
         Gets the machine actions history
         """
         tags = str(machineId)
-        query = {"query": {"bool": {"must": [{"term": {"category": "machine_history_ui"}}, {"term": {"tags": tags}}]}}, "size": size}
-        return self.osis_logs.search(query)['hits']['hits']
+        query = {'category': 'machine_history_ui', 'tags': tags}
+        return self.osis_logs.search(query, size=size)[1:]
 
     @authenticator.auth(acl='R')
     @audit()
@@ -630,14 +618,14 @@ class cloudapi_machines(object):
         storageparameters['mdbucketname'] = bucket
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nodes = system_cl.node.simpleSearch({'name':stack.referenceId})
+        nodes = system_cl.node.search({'name':stack.referenceId})[:1]
         if len(nodes) != 1:
             ctx.start_response('409', headers)
             return 'Incorrect model structure'
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
     
@@ -686,7 +674,7 @@ class cloudapi_machines(object):
 
         agentcontroller = j.clients.agentcontroller.get()
 
-        id = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
+        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
     @authenticator.auth(acl='R')
@@ -703,10 +691,9 @@ class cloudapi_machines(object):
             query['status'] = status
         if machineId:
             query['machineId'] = machineId
-        exports = self.models.vmexport.simpleSearch(query)
+        exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
-       

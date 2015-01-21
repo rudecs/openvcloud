@@ -1,34 +1,14 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
-import ujson
+from cloudbrokerlib.baseactor import BaseActor
 
 
-class cloudapi_accounts(object):
+class cloudapi_accounts(BaseActor):
     """
     API Actor api for managing account
 
     """
-    def __init__(self):
-
-        self._te = {}
-        self.actorname = "accounts"
-        self.appname = "cloudapi"
-        self._cb = None
-        self._models = None
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
-
     @authenticator.auth(acl='A')
     @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
@@ -40,8 +20,9 @@ class cloudapi_accounts(object):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self.models.account.new()
-        account.dict2obj(self.models.account.get(accountId))
+        if not self.models.account.exists(accountId):
+            return False
+        account = self.models.account.get(accountId)
         acl = account.new_acl()
         acl.userGroupId = userId
         acl.type = 'U'
@@ -59,6 +40,8 @@ class cloudapi_accounts(object):
         """
         account = self.models.account.new()
         account.name = name
+        if isinstance(access, basestring):
+            access = [ access ]
         for userid in access:
             ace = account.new_acl()
             ace.userGroupId = userid
@@ -87,8 +70,7 @@ class cloudapi_accounts(object):
         """
         #put your code here to implement this method
 
-        return self.models.account.get(accountId)
-
+        return self.models.account.get(int(accountId))
 
     @authenticator.auth(acl='R')
     @audit()
@@ -98,14 +80,11 @@ class cloudapi_accounts(object):
         param:accountId id of the account
         result dict
         """
-        query = {'fields': ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']}
-        query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.image.find(ujson.dumps(query))['result']
-        images = [res['fields'] for res in results]
-        return images
-
-        
-
+        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        q = {'accountId': int(accountId)}
+        query = {'$query': q, '$fields': fields}
+        results = self.models.image.search(query)[1:]
+        return results
 
     @authenticator.auth(acl='A')
     @audit()
@@ -136,10 +115,10 @@ class cloudapi_accounts(object):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'fields': ['id', 'name', 'acl']}
-        query['query'] = {'term': {"userGroupId": user}}
-        results = self.models.account.find(ujson.dumps(query))['result']
-        accounts = [res['fields'] for res in results]
+        fields = ['id', 'name', 'acl']
+        q = {'acl.userGroupId': user}
+        query = {'$query': q, '$fields': fields}
+        accounts = self.models.account.search(query)[1:]
         return accounts
 
     @authenticator.auth(acl='A')
@@ -173,10 +152,10 @@ class cloudapi_accounts(object):
         
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
 
-        query = {'fields': ['time', 'credit', 'status']}
-        query['query'] = {'bool':{'must':[{'term': {"accountId": accountId}}],'must_not':[{'term':{'status':'UNCONFIRMED'.lower()}}]}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        fields = ['time', 'credit', 'status']
+        q = {'accountId': int(accountId), 'status': {'$ne': 'UNCONFIRMED'}}
+        query = {'$query': q, '$fields': fields}
+        history = self.models.credittransaction.search(query)[1:]
         balance = 0.0
         for transaction in history:
             balance += float(transaction['credit'])
@@ -192,8 +171,8 @@ class cloudapi_accounts(object):
         result:[] A json list with the transactions details.
         """
 
-        query = {'fields': ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']}
-        query['query'] = {'term': {"accountId": accountId}}
-        results = self.models.credittransaction.find(ujson.dumps(query))['result']
-        history = [res['fields'] for res in results]
+        fields = ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']
+        q = {"accountId": int(accountId)}
+        query = {'$query': q, '$fields': fields}
+        history = self.models.credittransaction.search(query)[1:]
         return history

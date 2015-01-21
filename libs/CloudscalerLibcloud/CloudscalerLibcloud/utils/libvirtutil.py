@@ -6,6 +6,7 @@ import time
 import shutil
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
+from JumpScale.lib.btrfs import *
 
 
 LOCKCREATED = 1
@@ -20,7 +21,6 @@ class LibvirtUtil(object):
         self.readonly = libvirt.openReadOnly()
         self.basepath = '/mnt/vmstor'
         self.templatepath = '/mnt/vmstor/templates'
-        self.backuppath   = '/mnt/cephfs'
         self.env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
@@ -50,6 +50,18 @@ class LibvirtUtil(object):
             return True
         return domain.shutdown() == 0
 
+    def reboot(self, id):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't reboot a locked machine")
+        domain = self._get_domain(id)
+        if domain:
+            if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+                domain.create()
+            else:
+                domain.reboot()
+        else:
+            raise Exception("Machine is currently not running")
+
     def suspend(self, id):
         domain = self._get_domain(id)
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_PAUSED:
@@ -62,7 +74,7 @@ class LibvirtUtil(object):
             return True
         return domain.resume() == 0
 
-    def backup_machine_cephfs(self,machineid):
+    def backup_machine_to_filesystem(self,machineid, backuppath):
         from shutil import make_archive
         if self.isCurrentStorageAction(machineid):
             raise Exception("Can't delete a locked machine")
@@ -456,4 +468,19 @@ class LibvirtUtil(object):
         networkxml = self.env.get_template('network.xml').render(networkname=networkname, bridge=bridge)
         self.connection.networkCreateXML(networkxml)
 
+    def createVMStorSnapshot(self, name):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        if not j.system.fs.exists(vmstor_snapshot_path):
+            j.system.btrfs.subvolumeCreate(self.basepath, 'snapshots')
+        vmstorsnapshotpath = j.system.fs.joinPaths(vmstor_snapshot_path, name)
+        j.system.btrfs.snapshotReadOnlyCreate(self.basepath, vmstorsnapshotpath)
+        return True
 
+    def deleteVMStorSnapshot(self, name):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        j.system.btrfs.subvolumeDelete(vmstor_snapshot_path,name)
+        return True
+
+    def listVMStorSnapshots(self):
+        vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
+        return j.system.btrfs.subvolumeList(vmstor_snapshot_path)

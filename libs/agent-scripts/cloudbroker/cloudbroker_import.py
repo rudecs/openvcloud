@@ -24,6 +24,6 @@ def action(path, metadata ,storageparameters,nid):
 
     args = {'path':path, 'metadata':metadata, 'storageparameters': storageparameters, 'qcow_only':False, 'filename': None}
 
-    result = agentcontroller.executeJumpScript('cloudscalers', 'cloudbroker_import_onnode', args=args, nid=nid, wait=True)['result']
+    result = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_onnode', args=args, nid=nid, wait=True)['result']
 
     return True

@@ -10,7 +10,8 @@ def main(j, args, params, tags, tasklet):
         out = 'Missing account id param "id"'
         params.result = (out, args.doc)
         return params
-
+    
+    id = int(id)
     cbclient = j.core.osis.getClientForNamespace('cloudbroker')
     sclient = j.core.osis.getClientForNamespace('system')
 

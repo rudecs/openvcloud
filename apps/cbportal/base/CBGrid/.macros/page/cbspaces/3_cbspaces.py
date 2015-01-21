@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
     accountId = args.getTag('accountId')
     if accountId:
-        filters['accountId'] = accountId
+        filters['accountId'] = int(accountId)
 
     fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
 
@@ -15,11 +15,16 @@ def main(j, args, params, tags, tasklet):
         for rps in row[field]:
             links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
         return ', '.join(links)
+    def makeNetworkLink(row, field):
+        if row[field]:
+            return '[%(networkId)s|/CBGrid/network?id=%(networkId)s&gid=%(gid)s]' % row
+        else:
+            return ''
 
     fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'location', 'status', 'publicipaddress']
     fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
-                   '[%(networkId)s|/CBGrid/network?id=%(networkId)s]', makeRPS, 'location', 'status', 
+                   makeNetworkLink, makeRPS, 'location', 'status', 
                    'publicipaddress']
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)

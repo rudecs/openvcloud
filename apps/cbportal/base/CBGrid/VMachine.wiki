@@ -1,18 +1,19 @@
 @usedefaults
-
 {{vmachine: id:$$id}}
+{{include:vmachine_actions}}
 
 h2. vMachine: $$name
 
 |*ID*| $$id|
 |*Description*| $$descr|
+|*Tags*| $$tags|
 |*CPU Node*| [$$stackrefid|stack?id=$$stackid]|
 |*Account*| [$$accountname|account?id=$$accountid]|
 |*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
 |*Created at*| $$createdat|
 |*Deleted at*| $$deletedat|
 |*Size*| $$size|
-|*Image*| [$$image|image?id=$$imageid]|
+|*Image*| $$image|
 |*Status*| $$status|
 |*Host Name*| $$hostname|
 |*Hypervisor Type*| $$hypervisortype|
@@ -21,7 +22,7 @@ $$nics
 *Disks*
 $$disks
 
-h3. VMachine Status Details
+h3. vMachine Status Details
 |*Status*|$$stats_state|
 |*Ping*|$$stats_ping|
 |*HardDrive Test*|$$stats_hdtest|
@@ -29,3 +30,15 @@ h3. VMachine Status Details
 |*Parent Image*|$$stats_parent_image|
 |*Disk Size*|$$stats_disk_size|
 |*Last Checked*|$$stats_epoch|
+
+h3. Machine Exports
+{{vmexports machineid:$$id}}
+
+h3. Machine Snapshots
+{{snapshots machineid:$$id}} 
+
+h3. Machine History
+{{machinehistory machineid:$$id}}
+
+h3. Machine PortForwarding Rules
+{{machinePortForwarding machineid:$$id}}

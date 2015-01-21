@@ -8,13 +8,14 @@ def main(j, args, params, tags, tasklet):
         val = args.getTag(tag)
         filters[tag] = val
 
-    fieldnames = ['ID', 'CloudSpace', 'Public IPs', 'Management IP' ]
+    fieldnames = ['GID', 'ID', 'CloudSpace', 'Public IPs', 'Management IP' ]
 
     def makeNS(row, field):
         return str(', '.join(row[field]))
 
-    fieldids = ['id', 'domain', 'pubips', 'host']
-    fieldvalues = ['[%(id)s|/CBGrid/network?id=%(id)s]',
+    fieldids = ['gid', 'id', 'domain', 'pubips', 'host']
+    fieldvalues = ['gid',
+                   '[%(id)s|/CBGrid/network?id=%(id)s&gid=%(gid)s] (%(id)04x)',
                    '[%(domain)s|/CBGrid/cloudspace?id=%(domain)s]',
                    makeNS,
                    'host'

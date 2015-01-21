@@ -1,10 +1,10 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
-import ujson
+from cloudbrokerlib.baseactor import BaseActor
 
 
-class cloudapi_portforwarding(j.code.classGetBase()):
+class cloudapi_portforwarding(BaseActor):
 
     """
     Portforwarding api
@@ -13,43 +13,14 @@ class cloudapi_portforwarding(j.code.classGetBase()):
     """
 
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "portforwarding"
-        self.appname = "cloudapi"
-        # cloudapi_portforwarding_osis.__init__(self)
-        self._cb = None
-        self._models = None
+        super(cloudapi_portforwarding, self).__init__()
         self.netmgr = j.apps.jumpscale.netmgr
-        self.gridid = j.application.config.get('grid.id')
-        pass
-
-    @property
-    def cb(self):
-        if not self._cb:
-            self._cb = j.apps.cloud.cloudbroker
-        return self._cb
-
-    @property
-    def models(self):
-        if not self._models:
-            self._models = self.cb.extensions.imp.getModel()
-        return self._models
 
     def _getLocalIp(self, machine):
-        localIp = None
-        if machine.nics:
-            if machine.nics[0].ipAddress == 'Undefined':
-                provider = self.cb.extensions.imp.getProviderByStackId(machine.stackId)
-                n = self.cb.extensions.imp.Dummy(id=machine.referenceId)
-                ipaddress = provider.client.ex_getIpAddress(n)
-                if ipaddress:
-                    machine.nics[0].ipAddress = ipaddress
-                    self.models.vmachine.set(machine)
-                    localIp = ipaddress
-            else:
-                localIp = machine.nics[0].ipAddress
-        return localIp
+        for nic in  machine['interfaces']:
+            if nic.ipAddress != 'Undefined':
+                return nic.ipAddress
+        return None
 
     @authenticator.auth(acl='C')
     @audit()
@@ -62,43 +33,54 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         param:vmid id of the vm
         param:localPort private port
         """
+        vmid = int(vmid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
+        grid_id = fw[0]['gid']
 
-        machine = self.models.vmachine.get(vmid)
+        machine = j.apps.cloudapi.machines.get(vmid)
         localIp = self._getLocalIp(machine)
-        if not localIp:
+        if localIp is None:
             ctx.start_response('404 Not Found', [])
             return 'No correct ipaddress found for this machine'
 
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
-            return "Forward to %s with port %s already exists" % (localIp, localPort)
-        return self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
+            return "Forward to %s with port %s already exists" % (publicIp, publicPort)
+        return self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
 
     def deleteByVM(self, machine, **kwargs):
-        cloudspaceid = str(machine.cloudspaceId)
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        def getIP():
+            for nic in machine.nics:
+                if nic.ipAddress != 'Undefined':
+                    return nic.ipAddress
+            return None
+        localIp = getIP()
+        if localIp is None:
+            return True
+        cloudspaceid = machine.cloudspaceId
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if not fw:
             return True
         fw_id = fw[0]['guid']
-        localIp = self._getLocalIp(machine)
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        grid_id = fw[0]['gid']
+        forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
         for idx, fw in enumerate(forwards):
             if fw['localIp'] == localIp:
                 self._delete(cloudspaceid, idx)
         return True
 
-    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol):
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
+        forwards = self.netmgr.fw_forward_list(fw_id, gid)
         for fw in forwards:
-            if fw['localIp'] == localIp \
-               and fw['localPort'] == localPort \
-               and fw['publicIp'] == publicIp \
+            if fw['publicIp'] == publicIp \
                and fw['publicPort'] == publicPort \
                and fw['protocol'] == protocol:
                 return True
@@ -114,7 +96,7 @@ class cloudapi_portforwarding(j.code.classGetBase()):
 
         """
         ctx = kwargs['ctx']
-        result = self._delete(cloudspaceid, id)
+        result = self._delete(int(cloudspaceid), id)
         if result == -1:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
@@ -124,30 +106,35 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         return result
 
     def _delete(self, cloudspaceid, id, **kwargs):
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             return -1
         fw_id = fw[0]['guid']
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        fw_gid = fw[0]['gid']
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         id = int(id)
         if not id < len(forwards):
             return -2
         forward = forwards[id]
-        self.netmgr.fw_forward_delete(fw_id, self.gridid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
+        return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='C')
     @audit()
     def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
+        vmid = int(vmid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
 
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
+        forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         id = int(id)
         if not id < len(forwards):
             ctx.start_response('404 Not Found', [])
@@ -160,27 +147,33 @@ class cloudapi_portforwarding(j.code.classGetBase()):
             else:
                 ctx.start_response('404 Not Found', [])
                 return 'No correct ipaddress found for machine with id %s' % vmid
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
-            return "Forward for %s with port %s already exists" % (localIp, localPort)
-        self.netmgr.fw_forward_delete(fw_id, self.gridid,
+            return "Forward for %s with port %s already exists" % (publicIp, publicPort)
+        self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
-        self.netmgr.fw_forward_create(fw_id, self.gridid, publicIp, publicPort, localIp, localPort, protocol)
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
+        forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
+        return self._process_list(forwards, cloudspaceid)
 
-    def _process_list(self, forwards):
+    def _process_list(self, forwards, cloudspaceid):
         result = list()
+        query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROYED'}}
+        machines = self.models.vmachine.search(query)[1:]
+        def getMachineByIP(ip):
+            for machine in machines:
+                for nic in machine['nics']:
+                    if nic['ipAddress'] == ip:
+                        return machine
+
         for index, f in enumerate(forwards):
             f['id'] = index
-            query = {}
-            query['query'] = {'term': {'ipAddress': f['localIp']}}
-            machine = self.models.vmachine.find(ujson.dumps(query))
-            if machine['total'] != 1:
+            machine = getMachineByIP(f['localIp'])
+            if machine is None:
                 f['vmName'] = f['localIp']
             else:
-                f['vmName'] = "%s (%s)" % (machine['result'][0]['_source']['name'], f['localIp'])
-                f['vmid'] = machine['result'][0]['_source']['id']
+                f['vmName'] = "%s (%s)" % (machine['name'], f['localIp'])
+                f['vmid'] = machine['id']
             if not f['protocol']:
                 f['protocol'] = 'tcp'
             result.append(f)
@@ -194,13 +187,16 @@ class cloudapi_portforwarding(j.code.classGetBase()):
         param:cloudspaceid id of the cloudspace
         """
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(self.gridid, cloudspaceid)
+        cloudspaceid = int(cloudspaceid)
+        cloudspace = self.models.cloudspace.get(cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
-        forwards = self.netmgr.fw_forward_list(fw_id, self.gridid)
-        return self._process_list(forwards)
+        fw_gid = fw[0]['gid']
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
+        return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='R')
     @audit()

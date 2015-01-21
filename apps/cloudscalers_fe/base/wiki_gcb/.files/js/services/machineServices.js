@@ -214,9 +214,9 @@ angular.module('cloudscalers.services')
     })
     .factory('Image', function ($http) {
         return {
-            list: function (accountid) {
+            list: function (accountid, cloudspaceid) {
                 var images = [];
-                url = cloudspaceconfig.apibaseurl + '/images/list?accountid=' + accountid;
+                url = cloudspaceconfig.apibaseurl + '/images/list?accountid=' + accountid + '&cloudspaceid=' + cloudspaceid;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function(image) {

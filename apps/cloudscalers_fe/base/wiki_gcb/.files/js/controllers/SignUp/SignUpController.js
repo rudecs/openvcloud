@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('SignUpController', ['$scope', 'User', 'LoadingDialog','$window', '$modal', function($scope, User, LoadingDialog, $window, $modal) {
+    .controller('SignUpController', ['$scope', 'User', 'LocationsService', 'LoadingDialog','$window', '$modal', function($scope, User, LocationsService, LoadingDialog, $window, $modal) {
         $scope.passwordConfirmation = '';
 
         $scope.isPasswordConfirmed = true;
@@ -13,6 +13,24 @@ angular.module('cloudscalers.controllers')
 
         var acceptTerms = '';
         var acceptBelgian = '';
+
+        $scope.locations = {};
+        LocationsService.list().then(function(locations) {
+            $scope.locations = locations;
+        });
+
+        $scope.selectedLocation = 'ca1';
+        $scope.$watch('locations',function(){
+        	if (!($scope.selectedLocation in $scope.locations)){
+            	$scope.selectedLocation = $scope.locations[0].locationCode;
+            }
+        });
+        
+        
+        $scope.changeLocation = function (location) {
+            $scope.selectedLocation = location.locationCode;
+        };
+        
         $scope.$watch('user.username + user.password + email + passwordConfirmation + acceptTerms', function() {
                 $scope.canSignUp =  $scope.user.username && $scope.email && $scope.acceptTerms
                 	&& $scope.user.password && $scope.passwordConfirmation
@@ -41,9 +59,9 @@ angular.module('cloudscalers.controllers')
             if ($scope.signUpResult) {
                 $scope.signUpError = $scope.signUpResult.error;
                 if ($scope.signUpResult.success) {
-                    var uri = new URI($window.location);
-                    uri.filename('SignUpValidation');
-                    $window.location = uri.toString();
+                    LoadingDialog.show('Creating account', 1000).then(function() {
+                        $scope.login();
+                    });
                 }
             }
         }, true);

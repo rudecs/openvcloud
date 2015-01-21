@@ -4,11 +4,11 @@ from JumpScale.baselib.cmdutils import ArgumentParser
 from jinja2 import Template
 import os
 
-DOMAIN = 'cloudscalers'
+DOMAIN = 'mothership1'
 
 def getJPackage(name, description):
-    jps = j.packages.find(DOMAIN, name)
-    if jps:
+    if j.packages.exists(DOMAIN, name, '1.0'):
+        jps = j.packages.find(DOMAIN, name)
         print 'Found JPackage %s will update' % name
         return jps[0]
     print 'Could not find JPackage with name %s will create new' % name

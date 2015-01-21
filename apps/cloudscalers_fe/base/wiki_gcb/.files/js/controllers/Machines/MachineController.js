@@ -6,21 +6,25 @@ angular.module('cloudscalers.controllers')
 
         $scope.$watch('currentspace.accountId',function(){
         	if ($scope.currentSpace){
-        		$scope.images = Image.list($scope.currentSpace.accountId);
+        		$scope.images = Image.list($scope.currentSpace.accountId, $scope.currentSpace.id);
         	}
         });
 
-    	$scope.$watch('currentSpace.id',function(){
-    		if ($scope.currentSpace){
-    			Machine.list($scope.currentSpace.id).then(
-            function(machines){
-    				      $scope.machines = machines;
-    			  },
-            function(reason){
-              $ErrorResponseAlert(reason);
-            }
-          );
+        $scope.updateMachineList = function(){
+        	if ($scope.currentSpace){
+        		Machine.list($scope.currentSpace.id).then(
+					function(machines){
+				      $scope.machines = machines;
+					},
+					function(reason){
+						$ErrorResponseAlert(reason);
+					}
+        		);
     		}
+        }
+        
+    	$scope.$watch('currentSpace.id',function(){
+    		$scope.updateMachineList();
     	});
 
     	$scope.machineIsManageable = function(machine){

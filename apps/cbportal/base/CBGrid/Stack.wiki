@@ -3,10 +3,37 @@
 {{stack_data: id:$$id}}
 
 h3. Stack: $$name
+{{actions:
+- display: Enable
+  action: /restmachine/cloudbroker/computenode/enable
+  data:
+   name: $$name
+   gid: $$gid
+  input:
+   - message
+
+- display: Disable
+  action: /restmachine/cloudbroker/computenode/disable
+  data:
+   name: $$name
+   gid: $$gid
+  input:
+   - message
+
+- display: Offline
+  action: /restmachine/cloudbroker/computenode/setStatus
+  data:
+   name: $$name
+   gid: $$gid
+   status: OFFLINE
+  input:
+   - message
+}}
 
 * *ApiURL*: $$apiurl
 * *Description*: $$descr
-* *ReferenceId*: $$referenceid
+* *ReferenceId*: [$$gid:$$referenceid|/grid/Node?id=$$referenceid&gid=$$gid]
+* *Status*: $$status
 
 h3. Images:
 

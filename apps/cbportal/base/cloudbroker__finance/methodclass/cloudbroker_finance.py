@@ -1,24 +1,15 @@
 from JumpScale import j
 import time
-import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudbroker_finance(j.code.classGetBase()):
+class cloudbroker_finance(BaseActor):
     """
     gateway to grid
     """
-    def __init__(self):
-        self._te={}
-        self.actorname="finance"
-        self.appname="cloudbroker"
-
-        cl = j.core.osis.getClient(user='root')
-        self.acclient = j.core.osis.getClientForCategory(cl,'cloudbroker','account')
-        self.credittransactionclient = j.core.osis.getClientForCategory(cl,'cloudbroker','credittransaction')
-
     @auth(['finance',])
-    def addCredit(self, accountname, amount, message, **kwargs):
-        accounts = self.acclient.simpleSearch({'name': accountname})
+    def changeCredit(self, accountname, amount, message, **kwargs):
+        accounts = self.models.account.search({'name': accountname})[1:]
         if not accounts:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
@@ -32,14 +23,14 @@ class cloudbroker_finance(j.code.classGetBase()):
             ctx.start_response("400", headers)
             return 'Message is too long'
 
-        credittransaction = self.credittransactionclient.new()
+        credittransaction = self.models.credittransaction.new()
         credittransaction.accountId = account_id
         credittransaction.amount = float(amount)
         credittransaction.credit = float(amount)
         credittransaction.currency = 'USD'
         credittransaction.comment = message
-        credittransaction.status = 'CREDIT'
+        credittransaction.status = 'CREDIT' if float(amount) >= 0 else 'DEBIT'
         credittransaction.time = int(time.time())
 
-        self.credittransactionclient.set(credittransaction)
+        self.models.credittransaction.set(credittransaction)
         return True

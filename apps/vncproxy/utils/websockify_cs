@@ -51,12 +51,12 @@ Traffic Legend:
         self.unix_target    = kwargs.pop('unix_target', None)
         self.ssl_target     = kwargs.pop('ssl_target', None)
         self.target_cfg     = kwargs.pop('target_cfg', None)
-        cloudbrokerhost = kwargs.pop('cloudbrokerhost', None)
+        portalclient = kwargs.pop('portal_client', None)
 
-        self.cloudbroker = None
-        if cloudbrokerhost:
+        self.portalclient = None
+        if portalclient:
             import jumpscaleclient
-            self.cloudbroker = jumpscaleclient.getClient(cloudbrokerhost)
+            self.portalclient = jumpscaleclient.getClient(portalclient)
         # Last 3 timestamps command was run
         self.wrap_times    = [0, 0, 0]
 
@@ -171,9 +171,9 @@ Traffic Legend:
         # for a valid target for it then
         if self.target_cfg:
             (self.target_host, self.target_port) = self.get_target(self.target_cfg, self.path)
-        elif self.cloudbroker:
+        elif self.portalclient:
             token = self._get_token(self.path)
-            consoleinfo = self.cloudbroker.retreiveInfo(token, True)
+            consoleinfo = self.portalclient.retreiveInfo(token, True)
             (self.target_host, self.target_port) = consoleinfo['ipaddress'], consoleinfo['port']
 
         # Connect to the target
@@ -353,8 +353,8 @@ def websockify_init():
     parser.add_option("--prefer-ipv6", "-6",
             action="store_true", dest="source_is_ipv6",
             help="prefer IPv6 when resolving source_addr")
-    parser.add_option("--cloudbrokerhost", dest="cloudbrokerhost",
-            help="Host of cloudbroker app")
+    parser.add_option("--portal-client", dest="portal_client",
+            help="Portal client instance")
     parser.add_option("--target-config", metavar="FILE",
             dest="target_cfg",
             help="Configuration file containing valid targets "
@@ -363,7 +363,7 @@ def websockify_init():
     (opts, args) = parser.parse_args()
 
     # Sanity checks
-    if len(args) < 2 and not (opts.target_cfg or opts.unix_target or opts.cloudbrokerhost):
+    if len(args) < 2 and not (opts.target_cfg or opts.unix_target or opts.portal_client):
         parser.error("Too few arguments")
     if sys.argv.count('--'):
         opts.wrap_cmd = args[1:]
@@ -388,7 +388,7 @@ def websockify_init():
     try:    opts.listen_port = int(opts.listen_port)
     except: parser.error("Error parsing listen port")
 
-    if opts.wrap_cmd or opts.unix_target or opts.target_cfg or opts.cloudbrokerhost:
+    if opts.wrap_cmd or opts.unix_target or opts.target_cfg or opts.portal_client:
         opts.target_host = None
         opts.target_port = None
     else:

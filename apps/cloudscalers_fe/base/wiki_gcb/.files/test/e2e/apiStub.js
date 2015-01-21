@@ -438,7 +438,7 @@ defineApiStub = function ($httpBackend) {
 
     var cloudspaces = [
        {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
-       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
@@ -729,4 +729,30 @@ defineApiStub = function ($httpBackend) {
             return [500, "Templates couldn't found!"];
         }
     });
+    $httpBackend.whenGET('/locations/list?authkey=yep123456789').respond(
+        [{'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'uk',
+        'gid': 500,
+        'guid': 1,
+        'id': 1,
+        'locationCode': 'eu1',
+        'name': 'UK'},
+        {'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'belgium',
+        'gid': 600,
+        'guid': 2,
+        'id': 2,
+        'locationCode': 'eu2',
+        'name': 'Belgium'},
+        {'_ckey': '',
+        '_meta': ['osismodel', 'cloudbroker', 'location', 1],
+        'flag': 'canada',
+        'gid': 600,
+        'guid': 2,
+        'id': 2,
+        'locationCode': 'ca1',
+        'name': 'Canada'}]
+        );
 };

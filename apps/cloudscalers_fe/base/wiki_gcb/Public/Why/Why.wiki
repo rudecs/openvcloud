@@ -1,12 +1,4 @@
 @template public
-{{html:
-<head>
-<style type="text/css">
-	.table.table-condensed.table-hover th { font-weight: bold; font-size: 14px;padding: 6px 5px !important; border: 0;}
-</style>
-</head> 
-}}
-
 {{div: class=white}}
 {{div2: class=container why-page}}
 
@@ -19,13 +11,13 @@ h1. Mothership{{html:<sup>1</sup>}}
 
 {{div3}}
 
-#{{div3: class=half col-md-4 justOne centerPic}}
+#{{div3: class=half col-md-4 justOne txt-center}}
 # {{html: <img class="appMargin2" src="/$$space/.files/img/images/logo-colored2.png">}}
 #  {{html: <img class="appMargin" src="/$$space/.files/img/why/why_mothership.png">}}
 #{{div3}}
 
 
-{{div3: class=seperateDecks}}
+{{div3: class=seperateDecks clear-both}}
 {{div3}}
 
 {{div3: class=col-md-4 boxDecks2}}
@@ -44,7 +36,7 @@ h1. Mothership{{html:<sup>1</sup>}}
       An innovative way to enhance your security while providing more flexibility than ever, thanks to the integrated enterprise-class firewall and router. VPN functions allow seamless and secure two-way integration with your local offices.
 {{div3}}
 
-{{div3: class=seperateDecks}}
+{{div3: class=seperateDecks clear-both}}
 
 h1. Select your Cloud Deck
 

@@ -29,7 +29,7 @@ def action():
             try:
                 if vm['status'] == 'RUNNING':
                     args = {'name': name, 'networkId': cloudspace['networkId']}
-                    acl.executeJumpScript('cloudscalers', 'vm_start', role=role, args=args, wait=False)
+                    acl.executeJumpscript('cloudscalers', 'vm_start', role=role, args=args, wait=False)
             except Exception, e:
                 failedvms.append((name, e))
     if failedvms:

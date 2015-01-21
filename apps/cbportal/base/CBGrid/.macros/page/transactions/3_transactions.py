@@ -8,6 +8,8 @@ def main(j, args, params, tags, tasklet):
     for tag, val in args.tags.tags.iteritems():
         if tag in fieldids:
             val = args.getTag(tag)
+            if tag in ('accountId',):
+                val = int(val)
             filters[tag] = val
 
     #[u'comment', u'status', u'reference', u'currency', u'credit', u'amount', u'time', u'guid', u'id', u'accountId']

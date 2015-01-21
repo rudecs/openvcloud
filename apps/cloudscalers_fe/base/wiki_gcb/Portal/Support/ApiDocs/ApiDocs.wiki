@@ -2,26 +2,28 @@ h1. Machine Deck API Documentation
 {{css:/$$space/.files/css/custom.css}}
 {{css:/$$space/.files/css/mothership1.css}}
 {{css:/$$space/.files/css/oocss.css}}
+{{css:/$$space/.files/css/media-queries.css}}
 
 @col9
 
 {{html:
 	<link href='//fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'/>
-    <link href='/lib/swagger/css/hightlight.default.css' media='screen' rel='stylesheet' type='text/css'/>
-    <link href='/lib/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
-    <link href='/lib/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/jslib/old/swagger/css/hightlight.default.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/jslib/old/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/jslib/old/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/$$space/.files/css/custom.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/$$space/.files/css/mothership1.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/$$space/.files/css/oocss.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/$$space/.files/css/media-queries.css' media='screen' rel='stylesheet' type='text/css'/>
 
-    <script src='/lib/swagger/lib/jquery.slideto.min.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/jquery.wiggle.min.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/handlebars-1.0.rc.1.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/backbone-min.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/swagger.js' type='text/javascript'></script>
-    <script src='/lib/swagger/swagger-ui.js' type='text/javascript'></script>
-    <script src='/lib/swagger/lib/highlight.7.3.pack.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/jquery.slideto.min.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/jquery.wiggle.min.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/handlebars-1.0.rc.1.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/backbone-min.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/swagger.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/swagger-ui.js' type='text/javascript'></script>
+    <script src='/jslib/old/swagger/lib/highlight.7.3.pack.js' type='text/javascript'></script>
     
 
 

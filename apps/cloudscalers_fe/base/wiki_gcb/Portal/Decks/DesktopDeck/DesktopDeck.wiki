@@ -28,7 +28,7 @@ Note that we select new trials in limited batches and there is currently a waiti
         {{html: <label class="control-label col-md-2" for="interests">Interested to use for</label>}}
         {{div4: class=col-md-5}}
             {{dropdown: name=interests | id=multiple_options | multiple
-                * MS Office
+                * MS Office | class=test
                 * Free Office Tools
                 * Linux Desktop Apps
                 * Legacy Apps

@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.core.osis.getClient(user='root')
+    oscl = j.core.osis.getClientByInstance('main')
     userclient = j.core.osis.getClientForCategory(oscl, 'system', 'user')
 
     if not userclient.exists(id):
@@ -19,19 +19,32 @@ def main(j, args, params, tags, tasklet):
         return params
 
     user = userclient.get(id)
+   
+    obj = user.dump()
+    obj['lastcheck'] = j.base.time.epoch2HRDateTime(obj['lastcheck']) if obj['lastcheck'] else 'Never'
 
-    def objFetchManipulate(id):
-        #u'domain', u'description', u'roles', u'emails', u'authkey', u'lastcheck', u'gid', u'groups', u'active', u'guid', u'id'
-        obj = user.__dict__
-        obj['lastcheck'] = j.base.time.epoch2HRDateTime(obj['lastcheck']) if obj['lastcheck'] else 'Never'
+    for attr in ['roles', 'groups']:
+        obj[attr] = ', '.join(obj[attr])
 
-        for attr in ['roles', 'groups']:
-            obj[attr] = ', '.join(obj[attr])
-        return obj
+    obj['passwd'] = unicode(obj['passwd'], errors='ignore')
+    authkey = user.authkey
+    if user.authkey:
+        session = args.requestContext.env['beaker.session']
+        if not session.get_by_id(user.authkey):
+            authkey = None
+    if not authkey:
+        newsession = args.requestContext.env['beaker.get_session']()
+        newsession['user'] = user.id
+        newsession['account_status'] = 'CONFIRMED'
+        newsession.save()
+        authkey = user.authkey = newsession.id
+        userclient.set(user)
+    portalurl = j.apps.cloudbroker.iaas.cb.actors.cloudapi.locations.getUrl()
+    obj['loginurl'] = "%s/wiki_gcb/login#?username=%s&apiKey=%s" % (portalurl, user.id, authkey)
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
-
-    return push2doc(args,params,objFetchManipulate)
+    args.doc.applyTemplate(obj)
+    params.result = (args.doc, args.doc)
+    return params
 
 def match(j, args, params, tags, tasklet):
     return True

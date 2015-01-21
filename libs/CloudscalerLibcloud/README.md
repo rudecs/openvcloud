@@ -23,7 +23,7 @@ or for the dummy backend
 
 from CloudscalerLibcloud.utils.connection import DummyConnection
 
-cb = CloudBrokerConnection(ipaddress, port, secret)
+cb = CloudBrokerConnection(cloudbrokerportalclient)
 
 Set the the cloudbroker on the libvirt libcloud connection:
 

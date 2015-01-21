@@ -25,7 +25,7 @@ class libcloud_libvirt(object):
 
     def __init__(self):
         self._te={}
-        self._client = j.core.osis.getClient(user='root')
+        self._client = j.core.osis.getClientByInstance('main')
         self.cache = memcache.Client(['localhost:11211'])
         self.blobdb = self._getKeyValueStore()
         self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc'])
@@ -54,9 +54,7 @@ class libcloud_libvirt(object):
             for i in rp.images:
                 images.append(j.code.object2dict(self._models.image.get(i)))
             return images
-        query = {'fields': ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'extra']}
-        results = self._models.image.search(query)['result']
-        images = [res['fields'] for res in results]
+        images = self._models.image.search({})[1:]
         return images
 
     def listSizes(self, **kwargs):
@@ -64,9 +62,7 @@ class libcloud_libvirt(object):
         List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
         result
         """
-        query = {'fields': ['id', 'name', 'vcpus', 'memory', 'disk']}
-        results = self._models.size.search(query)['result']
-        sizes = [res['fields'] for res in results]
+        sizes = self._models.size.search({})[1:]
         return sizes
 
     def addFreeSubnet(self, subnet, networkid, **kwargs):
@@ -105,24 +101,23 @@ class libcloud_libvirt(object):
         self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return ipaddress
 
-    def getFreeMacAddress(self, **kwargs):
+    def getFreeMacAddress(self, gid, **kwargs):
         """
         Get a free macaddres in this libvirt environment
         result
         """
-        try:
-            lastMac = self.blobdb.get('lastmacaddress')
-        except:
+        key = 'lastmacaddress_%s'% gid
+        if self.blobdb.exists(key):
+            lastMac = self.blobdb.get(key)
+        else:
             newmacaddr = netaddr.EUI('52:54:00:00:00:00')
-            self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(int(newmacaddr)))
+            self.blobdb.set(key=key, obj=ujson.dumps(int(newmacaddr)))
             lastMac = int(newmacaddr)
         newmacaddr = lastMac + 1
         macaddr = netaddr.EUI(newmacaddr)
         macaddr.dialect = netaddr.mac_unix
-        self.blobdb.set(key='lastmacaddress', obj=ujson.dumps(newmacaddr))
+        self.blobdb.set(key=key, obj=ujson.dumps(newmacaddr))
         return str(macaddr)
-
-    
 
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
@@ -136,51 +131,54 @@ class libcloud_libvirt(object):
         self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
         return True
 
-    def registerNetworkIdRange(self, start, end, **kwargs):
+    def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
         Add a new network idrange
         param:start start of the range
         param:end end of the range
         result 
         """
-        try:
-           networkids  = self.blobdb.get('networkids')
-        except:
+        key = 'networkids_%s' % gid
+        if self.blobdb.exists(key):
+            networkids  = self.blobdb.get(key)
+        else:
             #no list yet
             networkids = []
-            self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+            self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         toappend = [i for i in range(int(start), int(end) + 1) if i not in networkids]
         networkids = networkids + toappend
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         return True
 
 
-    def getFreeNetworkId(self, **kwargs):
+    def getFreeNetworkId(self, gid, **kwargs):
         """
         Get a free NetworkId
         result 
         """
-        networkids = self.blobdb.get('networkids')
+        key = 'networkids_%s' % gid
+        networkids = self.blobdb.get(key)
         if networkids:
             networkid = networkids.pop(0)
         else:
             networkid = None
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         return networkid
 
 
 
-    def releaseNetworkId(self, networkid, **kwargs):
+    def releaseNetworkId(self, gid, networkid, **kwargs):
         """
         Release a networkid.
         param:networkid int representing the netowrkid to release
         result bool
         """
-        networkids = self.blobdb.get('networkids')
+        key = 'networkids_%s' % gid
+        networkids = self.blobdb.get(key)
         if int(networkid) not in networkids:
             networkids.insert(0,int(networkid))
-        self.blobdb.set(key='networkids', obj=ujson.dumps(networkids))
-        return True 
+        self.blobdb.set(key=key, obj=ujson.dumps(networkids))
+        return True
 
     def registerNode(self, id, macaddress, networkid, **kwargs):
         """
@@ -215,7 +213,7 @@ class libcloud_libvirt(object):
         param: id of the node to get 
         result node
         """
-        node = self._models.node.get(id)
+        node = self._models.node.get(id).dump()
         return node
 
     def listNodes(self, **kwargs):
@@ -224,22 +222,23 @@ class libcloud_libvirt(object):
         result
 
         """
-        query = {'fields': ['id', 'ipaddress', 'macaddress']}
-        results = self._models.node.search(query)['result']
+        results = self._models.node.search({})[1:]
         nodes = {}
         for res in results:
-            node = {'ipaddress': res['fields'].get('ipaddress')}
-            nodes[res['fields']['id']] = node
+            node = {'ipaddress': res.get('ipaddress')}
+            nodes[res['id']] = node
         return nodes
 
-    def listResourceProviders(self, **kwargs):
-        query = {'fields': ['id', 'cloudUnitType', 'images']}
-        results = self._models.resourceprovider.search(query)['result']
+    def listResourceProviders(self, gid=None, **kwargs):
+        query = dict()
+        if gid is not None:
+            query['gid'] = gid
+        results = self._models.resourceprovider.search(query)[1:]
         nodes = {}
         for res in results:
-            node = {'cloudunittype': res['fields']['cloudUnitType']}
-            node['images'] = res['fields']['images']
-            nodes[res['fields']['id']] = node
+            node = {'cloudunittype': res['cloudUnitType']}
+            node['images'] = res['images']
+            nodes[res['id']] = node
         return nodes
 
     def unLinkImage(self, imageid, resourceprovider, **kwargs):
@@ -272,9 +271,10 @@ class libcloud_libvirt(object):
         self._models.resourceprovider.set(res)
         return True
 
-    def registerVNC(self, url, **kwargs):
+    def registerVNC(self, url, gid, **kwargs):
         vnc = self._models.vnc.new()
         vnc.url = url
+        vnc.gid = gid
         return self._models.vnc.set(vnc)
 
     def retreiveInfo(self, key, reset=False, **kwargs):
@@ -300,12 +300,12 @@ class libcloud_libvirt(object):
         self.cache.set(key, data, timeout)
         return key
 
-    def listVNC(self, **kwargs):
+    def listVNC(self, gid, **kwargs):
         """
         list vnc urls
-        result 
+        result
         """
-        query = {'fields': ['url']}
-        results = self._models.vnc.search(query)['result']
-        return [res['fields']['url'] for res in results]
+        gid = int(gid)
+        results = self._models.vnc.search({'gid': gid})[1:]
+        return [res['url'] for res in results]
 
