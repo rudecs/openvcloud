@@ -362,7 +362,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .boxDecks2 { text-align: center; margin: 15px 18px 35px; border: 1px solid #06a7e2; padding: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; width: 30.333333%; min-height: 286px; }
 .boxDecks2 h3 + p { padding: 5px 20px 0; text-align: left; }
 .appMargin2 { margin: 53px 0 0 0; }
-.flags-list { margin: 20px 0 0 37%; }
+.flags-list { margin: 20px 0 0 25%; }
 .flags-list li { list-style: none; float: left; text-align: center; padding: 4px 4px 0 4px; cursor: pointer; }
 .flags-list li:hover, .flags-list li.selected { background-color: rgb(234, 235, 245); border-radius: 5px; }
 .flags-list li:hover span, .flags-list li.selected span { color: #3E4753; }
