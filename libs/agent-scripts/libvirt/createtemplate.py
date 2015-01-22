@@ -50,6 +50,7 @@ def action(machineid, templatename, imageid, createfrom):
         if not image_id in rp.images:
             rp.images.append(image_id)
     catresourceclient.set(rp)
+    return image
 
 
 

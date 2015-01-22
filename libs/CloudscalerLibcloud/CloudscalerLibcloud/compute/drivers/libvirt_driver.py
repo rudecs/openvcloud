@@ -34,7 +34,7 @@ class CSLibvirtNodeDriver():
         self._rndrbn_vnc = 0
         self.id = id
         self.gid = gid
-        self.name = id
+        self.name = 'libvirt'
         self.uri = uri
 
 
@@ -245,11 +245,10 @@ class CSLibvirtNodeDriver():
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
-        self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
-        return True
+        return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
 
     def ex_get_node_details(self, node_id):
-        node = Node(id=node_id)
+        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
         node = self._from_agent_to_node(self._get_domain_for_node(node))
         backendnode = self.backendconnection.getNode(node.id)
         node.extra['macaddress'] = backendnode['macaddress']
@@ -329,7 +328,7 @@ class CSLibvirtNodeDriver():
             noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
-    def ex_shutdown(self, node):
+    def ex_stop_node(self, node):
         machineid = node.id
         return self._execute_agent_job('stopmachine', queue='hypervisor', machineid = machineid)
 

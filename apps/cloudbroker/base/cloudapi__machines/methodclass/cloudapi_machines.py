@@ -113,7 +113,6 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
         image.name = templatename
-        image.referenceId = ""
         image.type = 'Custom Templates'
         m = {}
         m['stackId'] = machine.stackId
@@ -128,10 +127,11 @@ class cloudapi_machines(BaseActor):
         stack = self.models.stack.get(machine.stackId)
         stack.images.append(imageid)
         self.models.stack.set(stack)
-        provider.client.ex_create_template(node, templatename, imageid, basename)
+        template = provider.client.ex_create_template(node, templatename, imageid, basename)
         # Change status of image to created after successful creation
         image = self.models.image.get(imageid)
         image.status = 'CREATED'
+        image.referenceId = str(template['id'])
         imageid = self.models.image.set(image)[0]
         return imageid
 
@@ -359,6 +359,7 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node = self._getProviderAndNode(machineId)
+        state = node.state
         machine = self._getMachine(machineId)
         m = {}
         m['stackId'] = machine.stackId
@@ -366,6 +367,7 @@ class cloudapi_machines(BaseActor):
         m['sizeId'] = machine.sizeId
         osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
+        node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
 	        machine.nics[0].ipAddress = node.private_ips[0]
@@ -380,7 +382,7 @@ class cloudapi_machines(BaseActor):
                 except:
                     pass # VFW not deployed yet
 
-        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name)
+        realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name)
         if realstatus != machine.status:
             machine.status = realstatus
             self.models.vmachine.set(machine)

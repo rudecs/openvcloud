@@ -371,7 +371,8 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
         
         :rtype: ``class: NodeImage``
         """
-        return self.create_image(node, name, {'image_type':'image'})
+        
+        return DictLikecNodeImage(self.create_image(node, name, {'image_type':'image'}))
     
     # This is different from list_images that gets all images including snapshots
     def ex_list_images(self):
