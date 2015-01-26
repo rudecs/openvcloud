@@ -36,8 +36,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             'password': defaultpasswd
             }
 
-    j.packages.findNewest('', 'routeros_config').install()
-
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
     networkname = "space_%s"  % networkidHex
@@ -90,7 +88,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         j.system.fs.createDir(destinationdir)
         destinationfile = 'routeros-small-%s.qcow2' % networkidHex
         destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
-        imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros_template/routeros_template_backup')
+        imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
         xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
