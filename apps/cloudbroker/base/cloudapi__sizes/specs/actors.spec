@@ -8,11 +8,5 @@
 		"""
 		List the availabe flavors, filtering can be based on the user which is doing the request
 		"""
+		var:cloudspaceId int,, id of the space
 		result:list of flavors contains id CU and disksize for every flavor.
-
-
-  
-
-
-
-	

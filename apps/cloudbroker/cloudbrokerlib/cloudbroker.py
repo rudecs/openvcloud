@@ -49,7 +49,7 @@ class CloudProvider(object):
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
         for s in providersizes:
-             if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk:
+            if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk and s.extra['vcpus'] == brokersize.vcpus:
                 return s
         return None
 
@@ -116,6 +116,42 @@ class CloudBroker(object):
                 resourcesdata.append(stack)
         return resourcesdata
 
+    def stackImportSizes(self, stackId):
+        provider = CloudProvider(stackId)
+        if not provider:
+            raise RuntimeError('Provider not found')
+        
+        stack = models.stack.get(stackId)
+        gridId = stack.gid
+        cb_sizes = models.size.search({'gid':gridId})[1:]
+
+        #provider sizes
+        psizes = set()
+        for p in provider.client.list_sizes():
+            psizes.add((p.memory, p.disk, p.extra['vcpus']))
+            
+        for cb_size in cb_sizes:
+            record = (p.memory, p.disk, p.extra['vcpus'])
+            # obsolete size
+            if record not in psizes:
+                # remove gid from cb_size.gids, delete cb_size if gids is empty
+                cb_size.gids.remove(gridId)
+                if not cb_size.gids:
+                    models.size.delete(cb_size.id)
+                else:
+                    models.size.set(cb_size)
+            else:
+                # clean existing sizes from set(), then later add all remaining/new records to cloudbroker
+                psizes.remove(record)
+
+        # add new
+        for e in psizes:
+            s = models.size.new()
+            s.ram = e[0]
+            s.gids = [gridId]
+            #
+            models.size.set(s)
+        
     def stackImportImages(self, stackId):
         """
         Sync Provider images [Deletes obsolete images that are deleted from provider side/Add new ones]        

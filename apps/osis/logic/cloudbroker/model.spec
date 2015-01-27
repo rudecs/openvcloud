@@ -117,6 +117,7 @@
     prop:accountId int,,id of account to which this image belongs
     prop:acl list(ACE),,access control list
     prop:username str,, specific username for this image
+    prop:provider_name str,, provider name for this image openstack/libvirt, ...
 
 
 
@@ -137,7 +138,7 @@
     prop:referenceId str,,Optional reference id.
     prop:gid int,,Grid id.
     prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
-
+	prop:type str,,Indicates the type of stack [libvirt/openstack]
 
 [rootmodel:Disk] @dbtype:osis
     """
@@ -230,6 +231,8 @@
     prop:memory int,, Memory in Mb
     prop:vcpus int,, Number of vcpus assigned to the machine
     prop:description str,,Description of the size
+	prop:gids list(int),,Grid IDS
+	prop:disks list(int),, DISK SIZES
 
 [rootmodel:S3user]
     """
