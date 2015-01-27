@@ -18,5 +18,5 @@ class cloudapi_sizes(BaseActor):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fields = ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']
-        results  = self.models.size.search({'$fields': fields, 'gid':cloudspace.gid})[1:]
+        results  = self.models.size.search({'$fields': fields, 'gids':cloudspace.gid})[1:]
         return results
