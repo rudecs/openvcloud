@@ -290,7 +290,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .machineList ul li, .storage-size-list li { float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px; }
 .machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; width:250px; height: 137px; background: url(../img/images/machine.jpg) no-repeat; text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle; }/**/
 .machineList ul li a:hover, .storage-size-list button:hover, .storage-size-list button.active { background: url(../img/images/machine-hover.jpg) no-repeat; color: #FFF; }
-.machineList ul li a.active { background: url(../img/images/machine-hover.jpg); color: #FFF; }
+.machineList ul li a.active, .packages li a.active-package  { background: url(../img/images/machine-hover.jpg); color: #FFF; }
 .storage-size-list li button { box-shadow: none !important; border: 0; }
 .storage-size-list li button:focus { outline: 0 !important; outline-offset: 0 !important; }
 .storage-size-list { padding-left: 6%; }

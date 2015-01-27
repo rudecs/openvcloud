@@ -187,63 +187,72 @@ defineApiStub = function ($httpBackend) {
         "description": "10GB at SSD Speed, Unlimited Transfer - 70 USD/month",
         "id": 4,
         "name": "",
-        "memory": 8192
+        "memory": 8192,
+        "disks": [10, 20, 30, 280]
         },
         {
         "vcpus": 8,
         "description": "10GB at SSD Speed, Unlimited Transfer - 140 USD/month",
         "id": 5,
         "name": "",
-        "memory": 16384
+        "memory": 16384,
+        "disks": [40, 50, 60]
         },
         {
         "vcpus": 1,
         "description": "10GB at SSD Speed, Unlimited Transfer - 7.5 USD/month",
         "id": 1,
         "name": "",
-        "memory": 512
+        "memory": 512,
+        "disks": [70, 80, 90]
         },
         {
         "vcpus": 12,
         "description": "10GB at SSD Speed, Unlimited Transfer - 250 USD/month",
         "id": 6,
         "name": "",
-        "memory": 32768
+        "memory": 32768,
+        "disks": [100, 110, 120]
         },
         {
         "vcpus": 1,
         "description": "10GB at SSD Speed, Unlimited Transfer - 15 USD/month",
         "id": 2,
         "name": "",
-        "memory": 1024
+        "memory": 1024,
+        "disks": [130, 140, 150]
         },
         {
         "vcpus": 16,
         "description": "10GB at SSD Speed, Unlimited Transfer - 350 USD/month",
         "id": 7,
         "name": "",
-        "memory": 49152
+        "memory": 49152,
+        "disks": [160, 170, 180]
         },
         {
         "vcpus": 2,
         "description": "10GB at SSD Speed, Unlimited Transfer - 18 USD/month",
         "id": 3,
         "name": "",
-        "memory": 2048
+        "memory": 2048,
+        "disks": [190, 200, 210]
         },
         {
         "vcpus": 20,
         "description": "10GB at SSD Speed, Unlimited Transfer - 465 USD/month",
         "id": 8,
         "name": "",
-        "memory": 65536
+        "memory": 65536,
+        "disks": [220, 230, 240]
         },
         {
         "vcpus": 2,
         "description": "10GB at SSD Speed, Unlimited Transfer - 36 USD/month",
         "id": 10,
         "name": "",
-        "memory": 4096
+        "memory": 4096,
+        "disks": [250, 260, 270]
         }
     ];
 
@@ -729,7 +738,7 @@ defineApiStub = function ($httpBackend) {
             return [500, "Templates couldn't found!"];
         }
     });
-    $httpBackend.whenGET('/locations/list?authkey=yep123456789').respond(
+    $httpBackend.whenGET('/locations/list').respond(
         [{'_ckey': '',
         '_meta': ['osismodel', 'cloudbroker', 'location', 1],
         'flag': 'uk',
