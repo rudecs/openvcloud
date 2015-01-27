@@ -30,9 +30,10 @@ angular.module('cloudscalers.controllers')
             return machine.status != 'DESTROYED';
         }
 
-        $scope.sizes = Size.list();
+        $scope.sizes = Size.list($scope.currentSpace.id);
         
         $scope.packageDisks = "";
+
 
         $scope.machineinfo = {};
         $scope.numeral = numeral;

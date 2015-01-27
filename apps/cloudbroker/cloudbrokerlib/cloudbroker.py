@@ -49,7 +49,7 @@ class CloudProvider(object):
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
         for s in providersizes:
-             if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk:
+            if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk and s.extra['vcpus'] == brokersize.vcpus:
                 return s
         return None
 
@@ -115,6 +115,58 @@ class CloudBroker(object):
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 resourcesdata.append(stack)
         return resourcesdata
+
+    def stackImportSizes(self, stackId):
+        """
+        Import disk sizes from a provider
+        
+        :param      stackId: Stack ID
+        :type       id: ``int``
+
+        :rtype: ``int``
+        """
+        provider = CloudProvider(stackId)
+        if not provider:
+            raise RuntimeError('Provider not found')
+        
+        stack = models.stack.get(stackId)
+        gridId = stack.gid
+        cb_sizes = models.size.search({})[1:] # cloudbroker sizes
+        psizes = {} #provider sizes
+        
+        
+        # provider sizes formated as {(memory, cpu):[disks]}. i.e {(2048, 2):[10, 20, 30]}
+        for s in provider.client.list_sizes():
+            md = (s.ram, s.extra['vcpus'])
+            psizes[md] = psizes.get(md, []) + [s.disk]
+
+        for cb_size in cb_sizes:
+            record = (cb_size['memory'], cb_size['vcpus'])
+            if record not in psizes:  # obsolete sizes
+                if gridId in cb_size['gids']:
+                    cb_size['gids'].remove(gridId) # remove gid from obsolete size
+                    if not cb_size['gids']:
+                        models.size.delete(cb_size['id']) # delete obsolete size if having no gids
+                    else:
+                        models.size.set(cb_size) # update obsolete size [Save without the gridId of the stack]
+            else:
+                # Update existing sizes (disks and gids)
+                if cb_size['disks'] == psizes[record]:
+                    if gridId not in cb_size['gids']:
+                        cb_size['gids'].append(gridId)
+                        models.size.set(cb_size)
+                    psizes.pop(record) # remove from dict
+        # add new
+        for k, v in psizes.iteritems():
+            s = models.size.new()
+            s.memory = k[0]
+            s.vcpus = k[1]
+            s.gids = [gridId]
+            s.disks = v
+            models.size.set(s)
+
+        # Return length of newly added sizes
+        return len(psizes)
 
     def stackImportImages(self, stackId):
         """

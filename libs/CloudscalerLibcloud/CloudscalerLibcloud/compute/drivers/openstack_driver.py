@@ -205,6 +205,20 @@ class OpenStackNodeDriver(OpenStack_1_1_NodeDriver):
             if s.id == id:
                 return s
     
+    def list_sizes(self, location=None):
+        """
+        RETRUN ALL FLAVORS/SIZES
+        
+        @overrides :class:`OpenStack_1_1_NodeDriver.ex_list_snapshots`
+        """
+        sizes = self._to_sizes(
+            self.connection.request('/flavors/detail').object)
+        
+        # make it compatible with libvirt_driver where vcpus are in extra
+        for s in sizes:
+            s.extra['vcpus'] = s.vcpus
+        return sizes
+    
     def ex_rollback_snapshot(self, node, name):
         """
         Delete Old instance and use the current snapshot to create a new machine
