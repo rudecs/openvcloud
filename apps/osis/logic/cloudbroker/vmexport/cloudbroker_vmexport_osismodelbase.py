@@ -34,7 +34,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property id input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property id input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_id=value
@@ -53,7 +53,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property machineId input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property machineId input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_machineId=value
@@ -72,7 +72,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property name input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property name input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_name=value
@@ -91,7 +91,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property type input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property type input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_type=value
@@ -110,7 +110,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property bucket input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property bucket input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_bucket=value
@@ -129,7 +129,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property server input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property server input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_server=value
@@ -148,7 +148,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property storagetype input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property storagetype input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_storagetype=value
@@ -167,7 +167,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property size input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property size input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_size=value
@@ -186,7 +186,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property original_size input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property original_size input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_original_size=value
@@ -205,7 +205,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.integer.checkString(value):
                 value = j.basetype.integer.fromString(value)
             else:
-                msg="property timestamp input error, needs to be int, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property timestamp input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_timestamp=value
@@ -224,7 +224,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property config input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property config input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_config=value
@@ -243,7 +243,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property status input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property status input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_status=value
@@ -262,7 +262,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property location input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property location input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_location=value
@@ -281,7 +281,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property files input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property files input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_files=value
@@ -300,7 +300,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.string.checkString(value):
                 value = j.basetype.string.fromString(value)
             else:
-                msg="property guid input error, needs to be str, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property guid input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P_guid=value
@@ -319,7 +319,7 @@ class cloudbroker_vmexport_osismodelbase(j.code.classGetJSRootModelBase()):
             if isinstance(value, basestring) and j.basetype.list.checkString(value):
                 value = j.basetype.list.fromString(value)
             else:
-                msg="property _meta input error, needs to be list, specfile: /opt/jumpscale/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
+                msg="property _meta input error, needs to be list, specfile: /opt/jumpscale7/apps/osis/logic/cloudbroker/model.spec, name model: vmexport, value was:" + str(value)
                 raise TypeError(msg)
 
         self._P__meta=value
