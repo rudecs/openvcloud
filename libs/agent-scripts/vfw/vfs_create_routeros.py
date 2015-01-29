@@ -23,10 +23,11 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import time
     import netaddr
 
-    DEFAULTGWIP = j.application.config.get("vfw.default.ip")
+    hrd = j.packages.get(name='vfwnode', instance='main').hrd
+    DEFAULTGWIP = hrd.get("vfw.default.ip")
     BACKPLANE = 'vxbackend'
-    netrange = j.application.config.get("vfw.netrange.internal")
-    defaultpasswd=j.application.config.get("vfw.admin.passwd")
+    netrange = hrd.get("vfw.netrange.internal")
+    defaultpasswd=hrd.get("vfw.admin.passwd")
     nc = j.system.ovsnetconfig
     con = libvirt.open()
 

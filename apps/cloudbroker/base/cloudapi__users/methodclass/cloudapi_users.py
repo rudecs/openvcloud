@@ -6,8 +6,8 @@ from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
 import md5
 
-def _send_signup_mail(**kwargs):
-    notifysupport = j.application.config.get("mothership1.cloudbroker.notifysupport")
+def _send_signup_mail(hrd, **kwargs):
+    notifysupport = hrd.get("mothership1.cloudbroker.notifysupport")
     fromaddr = 'support@mothership1.com'
     toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
@@ -300,7 +300,7 @@ class cloudapi_users(BaseActor):
         ace.right = 'CXDRAU'
         accountid = self.models.account.set(account)[0]
 
-        signupcredit = j.application.config.getFloat('mothership1.cloudbroker.signupcredit')
+        signupcredit = self.hrd.getFloat('mothership1.cloudbroker.signupcredit')
         creditcomment = 'Getting you started'
         if signupcredit > 0.0:
             credittransaction = self.models.credittransaction.new()
@@ -315,7 +315,7 @@ class cloudapi_users(BaseActor):
             self.models.credittransaction.set(credittransaction)
 
         j.apps.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
-        _send_signup_mail(username=username, user=user, email=emailaddress, portalurl=locationurl)
+        _send_signup_mail(hrd=self.hrd, username=username, user=user, email=emailaddress, portalurl=locationurl)
 
         return True
 

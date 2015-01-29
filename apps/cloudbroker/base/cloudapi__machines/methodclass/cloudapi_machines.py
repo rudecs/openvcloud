@@ -20,7 +20,7 @@ class cloudapi_machines(BaseActor):
         self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
-        self._minimum_days_of_credit_required = float(j.application.config.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
+        self._minimum_days_of_credit_required = float(self.hrd.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):

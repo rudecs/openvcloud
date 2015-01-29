@@ -21,8 +21,7 @@ def action(path, metadata ,storageparameters,qcow_only,filename):
     from JumpScale.baselib.backuptools import object_store
     from JumpScale.baselib.backuptools import backup
 
-    nodeid = j.application.config.get('cloudscalers.compute.nodeid')
-    
+    nodeid = "%(gid)s_%(nid)s" % j.applicaton.whoAmI._asdict()
 
     store = object_store.ObjectStore(storageparameters['storage_type'])
     bucketname = storageparameters['bucket']

@@ -18,7 +18,7 @@ queue ='io'
 def action():
     import JumpScale.grid.osis
     import tarfile
-    import JumpScale.baselib.mailclient
+    hrd = j.packages.get(name='vfwnode', instance='main').hrd
 
     backuppath = j.system.fs.joinPaths(j.dirs.tmpDir, 'backup', 'vfw')
     timestamp = j.base.time.getTimeEpoch()
@@ -32,7 +32,7 @@ def action():
         osiscl = j.core.osis.client
         vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
 
-        routeros_password = j.application.config.get('vfw.admin.passwd')
+        routeros_password = hrd.get('vfw.admin.passwd')
 
         alivevfws = {'nid': j.application.whoAmI.nid, 'gid': j.application.whoAmI.gid}
         vfws = vfwcl.search(alivevfws)[1:]

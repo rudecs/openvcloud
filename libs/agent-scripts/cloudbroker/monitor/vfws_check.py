@@ -24,7 +24,8 @@ def action():
     osiscl = j.core.osis.getClientByInstance('main')
     vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-    ROUTEROS_PASSWORD = j.application.config.get('vfw.admin.passwd')
+    hrd = j.packages.get(name='vfwnode', instance='main').hrd
+    ROUTEROS_PASSWORD = hrd.get('vfw.admin.passwd')
 
     pools = dict()
 

@@ -18,18 +18,19 @@ def action():
     import JumpScale.grid.osis
     import JumpScale.grid.agentcontroller
     ccl = j.core.osis.getClientForNamespace('cloudbroker')
-    stacks = { x['id']: x for x in ccl.stacks.simpleSearch({}) }
     acl = j.clients.agentcontroller.get()
     failedvms = list()
-    whereami = j.application.config.get('cloudbroker.where.am.i')
-    for cloudspace in ccl.cloudspace.simpleSearch({'location': whereami}):
-        for vm in ccl.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
+    stacks = { stack['id']: stack for stack in ccl.stack.search({})[1:] }
+    for cloudspace in ccl.cloudspace.search({'status': 'DEPLOYED'})[1:]:
+        for vm in ccl.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': 'RUNNING'})[1:]:
             name = 'vm-%s' % vm['id']
-            role = stacks[vm['stackId']]['referenceId']
+            stack = stacks[vm['stackId']]
+            nid = int(stack['referenceId'])
+            gid = stacks.gid
             try:
                 if vm['status'] == 'RUNNING':
                     args = {'name': name, 'networkId': cloudspace['networkId']}
-                    acl.executeJumpscript('cloudscalers', 'vm_start', role=role, args=args, wait=False)
+                    acl.executeJumpscript('cloudscalers', 'vm_start', nid=nid, gid=gid, args=args, wait=False)
             except Exception, e:
                 failedvms.append((name, e))
     if failedvms:
