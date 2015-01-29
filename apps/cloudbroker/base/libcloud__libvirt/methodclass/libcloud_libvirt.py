@@ -107,7 +107,7 @@ class libcloud_libvirt(object):
         """
         key = 'lastmacaddress_%s'% gid
         if self.blobdb.exists(key):
-            lastMac = self.blobdb.get(key)
+            lastMac = ujson.loads(self.blobdb.get(key))
         else:
             newmacaddr = netaddr.EUI('52:54:00:00:00:00')
             self.blobdb.set(key=key, obj=ujson.dumps(int(newmacaddr)))
@@ -139,11 +139,11 @@ class libcloud_libvirt(object):
         """
         key = 'networkids_%s' % gid
         if self.blobdb.exists(key):
-            networkids  = self.blobdb.get(key)
+            networkids  = ujson.loads(self.blobdb.get(key))
         else:
             #no list yet
             networkids = []
-            self.blobdb.set(key=key, obj=ujson.dumps(networkids))
+            #self.blobdb.set(key=key, obj=ujson.dumps(networkids))
         toappend = [i for i in range(int(start), int(end) + 1) if i not in networkids]
         networkids = networkids + toappend
         self.blobdb.set(key=key, obj=ujson.dumps(networkids))
@@ -156,7 +156,7 @@ class libcloud_libvirt(object):
         result 
         """
         key = 'networkids_%s' % gid
-        networkids = self.blobdb.get(key)
+        networkids = ujson.loads(self.blobdb.get(key))
         if networkids:
             networkid = networkids.pop(0)
         else:
@@ -173,7 +173,7 @@ class libcloud_libvirt(object):
         result bool
         """
         key = 'networkids_%s' % gid
-        networkids = self.blobdb.get(key)
+        networkids = ujson.loads(self.blobdb.get(key))
         if int(networkid) not in networkids:
             networkids.insert(0,int(networkid))
         self.blobdb.set(key=key, obj=ujson.dumps(networkids))
