@@ -24,7 +24,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     try:
-        cl = j.clients.redis.getByInstanceName('system')
+        cl = j.clients.redis.getByInstance('system')
     except:
         cl = None
 
@@ -145,7 +145,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     try:
-        cl = j.clients.redis.getByInstanceName('system')
+        cl = j.clients.redis.getByInstance('system')
     except:
         cl = None
 

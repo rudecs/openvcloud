@@ -25,7 +25,7 @@ def action(gid=None):
     import JumpScale.grid.agentcontroller
     import ujson as json
 
-    rediscl = j.clients.redis.getByInstanceName('system')
+    rediscl = j.clients.redis.getByInstance('system')
     accl = j.clients.agentcontroller.get()
     osiscl = j.core.osis.getClientByInstance('main')
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')

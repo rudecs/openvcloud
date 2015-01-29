@@ -9,7 +9,7 @@ class cloudbroker_health(j.code.classGetBase()):
         #self.actorname="health"
         #self.appname="cloudbroker"
         self.acl = j.clients.agentcontroller.get()
-        self.rcl = j.clients.redis.getByInstanceName('system')
+        self.rcl = j.clients.redis.getByInstance('system')
         #cloudbroker_health_osis.__init__(self)
 
     def status(self, **kwargs):

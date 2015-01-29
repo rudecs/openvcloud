@@ -22,7 +22,7 @@ def action():
     except ProcessNotFoundException:
         state['alerter'] = False
 
-    rediscl = j.clients.redis.getByInstanceName('system')
+    rediscl = j.clients.redis.getByInstance('system')
     if rediscl.hexists('healthcheck:monitoring', 'lastcheck'):
         lastchecked = j.basetype.float.fromString(rediscl.hget('healthcheck:monitoring', 'lastcheck'))
         if lastchecked < (j.base.time.getTimeEpoch() - j.base.time.getDeltaTime('15m')):

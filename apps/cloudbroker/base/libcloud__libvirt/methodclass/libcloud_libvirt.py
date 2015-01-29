@@ -25,7 +25,7 @@ class libcloud_libvirt(object):
     def __init__(self):
         self._te={}
         self._client = j.core.osis.getClientByInstance('main')
-        self.cache = j.clients.redis.getByInstanceName('system')
+        self.cache = j.clients.redis.getByInstance('system')
         self.blobdb = self._getKeyValueStore()
         self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc'])
 
