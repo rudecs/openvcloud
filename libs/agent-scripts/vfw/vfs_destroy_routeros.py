@@ -19,8 +19,6 @@ def action(networkid):
 
     con = libvirt.open()
 
-    j.packages.findNewest('', 'routeros_config').install()
-
     networkidHex = '%04x' % int(networkid)
     networkname = "space_%s"  % networkidHex
     name = 'routeros_%s' % networkidHex
