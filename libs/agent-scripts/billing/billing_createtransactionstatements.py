@@ -21,7 +21,7 @@ def action():
     import JumpScale.grid.osis
     import JumpScale.portal
 
-    cl = j.core.portal.getClientByInstance('billing')
+    cl = j.core.portal.getClientByInstance('cloudbroker')
     cloudspaceapi = cl.getActor('billingengine','billingengine')
 
     cbcl = j.core.osis.getClientForNamespace('cloudbroker')
