@@ -1,9 +1,8 @@
 #Add extra specific cloudscaler functions for libvirt libcloud driver
 
-from CloudscalerLibcloud.utils import connection, routeros
+from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
 from jinja2 import Environment, PackageLoader
-from JumpScale.baselib.dnsmasq import DNSMasq
 from xml.etree import ElementTree
 import urlparse
 import json
