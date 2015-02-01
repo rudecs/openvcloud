@@ -6,7 +6,7 @@ from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
 ujson = j.db.serializers.ujson
-models = j.core.osis.getClientForNamespace('cloudbroker')
+models = j.clients.osis.getForNamespace('cloudbroker')
 
 class Dummy(object):
     def __init__(self, **kwargs):
@@ -38,7 +38,7 @@ class CloudProvider(object):
                 driver = CSLibvirtNodeDriver(**kwargs)
                 client = None
                 if 'libcloud__libvirt' not in j.apps.system.contentmanager.getActors():
-                    client = j.core.portal.getClientByInstance('cloudbroker')
+                    client = j.clients.portal.getByInstance('cloudbroker')
                 cb = CloudBrokerConnection(client)
                 driver.set_backend(cb)
                 CloudProvider._providers[stackId] = driver
@@ -69,7 +69,7 @@ class CloudBroker(object):
     @property
     def actors(self):
         if not self._actors:
-            cl = j.core.portal.getClientByInstance('cloudbroker')
+            cl = j.clients.portal.getByInstance('cloudbroker')
             self._actors = cl.actors
         return self._actors
 

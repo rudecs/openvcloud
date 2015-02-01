@@ -2,7 +2,7 @@ from JumpScale import j
 import JumpScale.portal
 import uuid
 
-cl = j.core.portal.getPortalClient('127.0.0.1', 80, '1234')
+cl = j.clients.portal.get('127.0.0.1', 80, '1234')
 cl.getActor('cloud','cloudbroker')
 cl.getActor('cloudapi','accounts')
 cl.getActor('cloudapi','cloudspaces')

@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     if cloudspaceid:
         cloudspaceid = int(cloudspaceid)
         args.tags.tags.pop('space')
-        cbclient = j.core.osis.getClientForNamespace('cloudbroker')
+        cbclient = j.clients.osis.getForNamespace('cloudbroker')
 
         if not cbclient.cloudspace.exists(cloudspaceid):
             page.addMessage('could not find cloudspace with id "%s"' % cloudspaceid)

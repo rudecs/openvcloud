@@ -5,7 +5,7 @@ from cloudbrokerlib.baseactor import BaseActor
 class cloudbroker_image(BaseActor):
     def __init__(self):
         super(cloudbroker_image, self).__init__()
-        self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
+        self.libvirtcl = j.clients.osis.getForNamespace('libvirt')
 
     def _checkimage(self, imageId, ctx):
         cbimage = self.models.image.search({'referenceId': imageId})[1:]

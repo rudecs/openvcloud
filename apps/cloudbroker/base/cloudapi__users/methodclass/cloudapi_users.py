@@ -117,8 +117,8 @@ class cloudapi_users(BaseActor):
                  if not self._isValidPassword(newPassword):
                     return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
                  else:
-                    cl = j.core.osis.getClientByInstance('main')
-                    usercl = j.core.osis.getClientForCategory(cl, 'system', 'user')
+                    cl = j.clients.osis.getByInstance('main')
+                    usercl = j.clients.osis.getForCategory(cl, 'system', 'user')
                     user.passwd =  md5.new(newPassword).hexdigest()
                     usercl.set(user)
                     return [200, "Your password has been changed."]
@@ -172,7 +172,7 @@ class cloudapi_users(BaseActor):
         """
         ctx = kwargs['ctx']
         
-        cl = j.core.osis.getClientForNamespace('system')
+        cl = j.clients.osis.getForNamespace('system')
         existingusers = cl.user.search({'emails':emailaddress})[1:]
 
         if (len(existingusers) == 0):
@@ -240,7 +240,7 @@ class cloudapi_users(BaseActor):
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
-        systemcl = j.core.osis.getClientForNamespace('system')
+        systemcl = j.clients.osis.getForNamespace('system')
         user = systemcl.user.get(actual_reset_token.userguid)
         user.passwd =  md5.new(newpassword).hexdigest()
         systemcl.user.set(user)
@@ -271,7 +271,7 @@ class cloudapi_users(BaseActor):
         if j.core.portal.active.auth.userExists(username):
             ctx.start_response('409 Conflict', [])
             return 'Username already exists'
-        cl = j.core.osis.getClientForNamespace('system')
+        cl = j.clients.osis.getForNamespace('system')
         existingusers = cl.user.search({'emails':emailaddress})[1:]
 
         if (len(existingusers) > 0):

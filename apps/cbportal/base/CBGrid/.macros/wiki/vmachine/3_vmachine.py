@@ -14,8 +14,8 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    osiscl = j.core.osis.getClientByInstance('main')
-    cbosis = j.core.osis.getClientForNamespace('cloudbroker', osiscl)
+    osiscl = j.clients.osis.getByInstance('main')
+    cbosis = j.clients.osis.getForNamespace('cloudbroker', osiscl)
     try:
         obj = cbosis.vmachine.get(id)
     except:
@@ -46,7 +46,7 @@ def main(j, args, params, tags, tasklet):
             stack = {'name': 'N/A', 'referenceId': 'N/A'}
         try: 
             image = cbosis.image.get(obj.imageId).dump()
-            ccl = j.core.osis.getClientForNamespace('libvirt')
+            ccl = j.clients.osis.getForNamespace('libvirt')
             imagedata = ccl.image.search({'name': image['name']})[1:]
             imageid = imagedata[0]['id'] if imagedata else None
         except Exception:
@@ -72,7 +72,7 @@ def main(j, args, params, tags, tasklet):
 
         nwinfo = dict()
         try:
-            libvirtclient = j.core.osis.getClientForNamespace('libvirt', osiscl)
+            libvirtclient = j.clients.osis.getForNamespace('libvirt', osiscl)
             nwinfo = libvirtclient.node.get(str(obj.referenceId)).dump()
             data['nics'] = '||Name||MAC Address||IP Address||\n'
 
@@ -135,8 +135,8 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    osiscl = j.core.osis.getClientByInstance('main')
-    cbosis = j.core.osis.getClientForNamespace('cloudbroker', osiscl)
+    osiscl = j.clients.osis.getByInstance('main')
+    cbosis = j.clients.osis.getForNamespace('cloudbroker', osiscl)
     try:
         obj = cbosis.vmachine.get(id)
     except:
@@ -167,7 +167,7 @@ def main(j, args, params, tags, tasklet):
             stack = {'name': 'N/A', 'referenceId': 'N/A'}
         try: 
             image = cbosis.image.get(obj.imageId).dump()
-            ccl = j.core.osis.getClientForNamespace('libvirt')
+            ccl = j.clients.osis.getForNamespace('libvirt')
             imagedata = ccl.image.search({'name': image['name']})[1:]
             imageid = imagedata[0]['id'] if imagedata else None
         except Exception:
@@ -193,7 +193,7 @@ def main(j, args, params, tags, tasklet):
 
         nwinfo = dict()
         try:
-            libvirtclient = j.core.osis.getClientForNamespace('libvirt', osiscl)
+            libvirtclient = j.clients.osis.getForNamespace('libvirt', osiscl)
             nwinfo = libvirtclient.node.get(str(obj.referenceId)).dump()
             data['nics'] = '||Name||MAC Address||IP Address||\n'
 

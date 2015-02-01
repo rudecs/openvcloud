@@ -1,7 +1,7 @@
 from JumpScale import j
 import JumpScale.portal
 
-cl = j.core.portal.getPortalClient(secret='1234')
+cl = j.clients.portal.get(secret='1234')
 cl.getActor('cloud', 'cloudbroker')
 #create network
 api = j.apps.cloud.cloudbroker

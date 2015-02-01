@@ -2,16 +2,16 @@ import json
 import sys
 from JumpScale import j
 import JumpScale.grid
-ccl = j.core.osis.getClientForNamespace('cloudbroker')
+ccl = j.clients.osis.getForNamespace('cloudbroker')
 
 def do(username):
     data = {}
-    scl = j.core.osis.getClientForNamespace('system')
-    ccl = j.core.osis.getClientForNamespace('cloudbroker')
-    bcl = j.core.osis.getClientForNamespace('billing')
-    lcl = j.core.osis.getClientForNamespace('libcloud')
-    lclvrt = j.core.osis.getClientForNamespace('libvirt')
-    vcl = j.core.osis.getClientForNamespace('vfw')
+    scl = j.clients.osis.getForNamespace('system')
+    ccl = j.clients.osis.getForNamespace('cloudbroker')
+    bcl = j.clients.osis.getForNamespace('billing')
+    lcl = j.clients.osis.getForNamespace('libcloud')
+    lclvrt = j.clients.osis.getForNamespace('libvirt')
+    vcl = j.clients.osis.getForNamespace('vfw')
     grid = scl.grid.get(j.application.whoAmI.gid)
     locationname = grid.name
     user = scl.user.simpleSearch({'id': username})

@@ -12,7 +12,7 @@ class Models(object):
         for category in categories:
             if category not in osiscats:
                 client.createNamespaceCategory(namespace, category)
-            setattr(self, category, j.core.osis.getClientForCategory(client, namespace, category))
+            setattr(self, category, j.clients.osis.getForCategory(client, namespace, category))
 
 class libcloud_libvirt(object):
     """
@@ -24,7 +24,7 @@ class libcloud_libvirt(object):
 
     def __init__(self):
         self._te={}
-        self._client = j.core.osis.getClientByInstance('main')
+        self._client = j.clients.osis.getByInstance('main')
         self.cache = j.clients.redis.getByInstance('system')
         self.blobdb = self._getKeyValueStore()
         self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc'])
@@ -34,7 +34,7 @@ class libcloud_libvirt(object):
             self._client.createNamespace(self.NAMESPACE, template='blob')
         if self.CATEGORY not in self._client.listNamespaceCategories(self.NAMESPACE):
            self._client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
-        return j.core.osis.getClientForCategory(self._client, self.NAMESPACE, self.CATEGORY)
+        return j.clients.osis.getForCategory(self._client, self.NAMESPACE, self.CATEGORY)
 
     def listImages(self, resourceid, **kwargs):
         """

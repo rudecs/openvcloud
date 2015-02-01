@@ -27,10 +27,10 @@ def action(gid=None):
 
     rediscl = j.clients.redis.getByInstance('system')
     accl = j.clients.agentcontroller.get()
-    osiscl = j.core.osis.getClientByInstance('main')
-    cbcl = j.core.osis.getClientForNamespace('cloudbroker')
-    portalclient = j.core.portal.getClientByInstance('cloudbroker').actors
-    nodecl = j.core.osis.getClientForCategory(osiscl, 'system', 'node')
+    osiscl = j.clients.osis.getByInstance('main')
+    cbcl = j.clients.osis.getForNamespace('cloudbroker')
+    portalclient = j.clients.portal.getByInstance('cloudbroker').actors
+    nodecl = j.clients.osis.getForCategory(osiscl, 'system', 'node')
 
     # get all stacks and nodes data, save trips to osis
     stacks = dict([(s['id'], s) for s in cbcl.stack.search({})[1:]])

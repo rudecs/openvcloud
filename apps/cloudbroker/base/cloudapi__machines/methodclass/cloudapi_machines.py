@@ -17,7 +17,7 @@ class cloudapi_machines(BaseActor):
         super(cloudapi_machines, self).__init__()
         self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
-        self.osis_logs = j.core.osis.getClientForCategory(self.osisclient, "system", "log")
+        self.osis_logs = j.clients.osis.getForCategory(self.osisclient, "system", "log")
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(self.hrd.get("mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
@@ -597,7 +597,7 @@ class cloudapi_machines(BaseActor):
         """
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
-        system_cl = j.core.osis.getClientForNamespace('system')
+        system_cl = j.clients.osis.getForNamespace('system')
         machine = self.models.vmachine.get(machineId)
         if not machine:
             ctx.start_response('400', headers)

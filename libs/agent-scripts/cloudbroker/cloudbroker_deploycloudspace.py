@@ -20,7 +20,7 @@ def action(cloudspaceId):
     import JumpScale.grid.osis
     import JumpScale.portal
 
-    cl = j.core.portal.getClientByInstance('cloudbroker') 
+    cl = j.clients.portal.getByInstance('cloudbroker') 
     cloudspaceapi = cl.getActor('cloudapi','cloudspaces')
 
     return cloudspaceapi.deploy(cloudspaceId)

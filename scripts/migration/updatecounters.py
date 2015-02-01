@@ -10,7 +10,7 @@ config = j.application.config
 host = config.get('mongodb.host') if config.exists('mongodb.host') else 'localhost'
 port = config.getInt('mongodb.port') if config.exists('mongodb.port') else 27017
 mongodb_client = j.clients.mongodb.get(host, port)
-client = j.core.osis.getClientByInstance('main')
+client = j.clients.osis.getByInstance('main')
 
 namespace = 'cloudbroker'
 

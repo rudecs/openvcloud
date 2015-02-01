@@ -19,7 +19,7 @@ def action(age, gid=None):
     except Exception:
         return False
     import JumpScale.grid.osis
-    syscl = j.core.osis.getClientForNamespace('system')
+    syscl = j.clients.osis.getForNamespace('system')
     query = {'epoch':{'$lt':start}}
     if gid:
         query['gid'] = int(gid)

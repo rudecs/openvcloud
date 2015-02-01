@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
     gid = args.getTag('gid')
     filters = dict()
     filters['status'] = ['RUNNING','HALTED','PAUSED']
-    ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    ccl = j.clients.osis.getForNamespace('cloudbroker')
 
     if stackid:
         stackid = int(stackid)

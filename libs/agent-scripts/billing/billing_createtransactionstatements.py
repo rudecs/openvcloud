@@ -21,10 +21,10 @@ def action():
     import JumpScale.grid.osis
     import JumpScale.portal
 
-    cl = j.core.portal.getClientByInstance('cloudbroker')
+    cl = j.clients.portal.getByInstance('cloudbroker')
     cloudspaceapi = cl.getActor('billingengine','billingengine')
 
-    cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getForNamespace('cloudbroker')
     accountIds = cbcl.account.list()
     for accountId in accountIds:
         cloudspaceapi.createTransactionStaments(accountId)

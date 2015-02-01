@@ -6,7 +6,7 @@ import ujson
 class pricing(object):
     def __init__(self):
         hrd = j.packages.get(name='billingenginelib', instance='main').hrd
-        self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
+        self.cloudbrokermodels = j.clients.osis.getForNamespace('cloudbroker')
         self.base_machine_prices = {}
 
         for machine_price_key in hrd.prefix('mothership1.billing.machineprices'):

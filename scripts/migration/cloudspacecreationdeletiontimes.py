@@ -5,7 +5,7 @@ from JumpScale.baselib.cmdutils import ArgumentParser
 
 def migrate():
     import JumpScale.grid.osis
-    ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    ccl = j.clients.osis.getForNamespace('cloudbroker')
     cloudspaces = ccl.cloudspace.simpleSearch({})
     for spaced in cloudspaces:
         if spaced['status'] != 'DESTROYED':

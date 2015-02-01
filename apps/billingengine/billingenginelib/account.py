@@ -5,7 +5,7 @@ import ujson
 class account(object):
     def __init__(self):
 
-        self.cloudbrokermodels = j.core.osis.getClientForNamespace('cloudbroker')
+        self.cloudbrokermodels = j.clients.osis.getForNamespace('cloudbroker')
 
     def isPayingCustomer(self, accountId):
         query = {'accountId': accountId, 'status': {'$ne': 'PROCESSED'}}

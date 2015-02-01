@@ -13,7 +13,7 @@ def _release_resources(cloudspaceId):
         
         
     whereami = j.application.config.get('cloudbroker.where_am_i')
-    cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getForNamespace('cloudbroker')
     libvirt_actor = j.apps.libcloud.libvirt
     gridid = j.application.config.get('grid.id')
     netmgr = j.apps.jumpscale.netmgr
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--cloudspaceid")
     opts = parser.parse_args()
 
-    cl = j.core.portal.getClient('127.0.0.1', port, secret)
+    cl = j.clients.portal.get('127.0.0.1', port, secret)
     
     cl.getActor('libcloud','libvirt')
     cl.getActor('jumpscale','netmgr')

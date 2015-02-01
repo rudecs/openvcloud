@@ -17,7 +17,7 @@ async = True
 def action():
     import JumpScale.grid.osis
     import JumpScale.grid.agentcontroller
-    ccl = j.core.osis.getClientForNamespace('cloudbroker')
+    ccl = j.clients.osis.getForNamespace('cloudbroker')
     acl = j.clients.agentcontroller.get()
     failedvms = list()
     stacks = { stack['id']: stack for stack in ccl.stack.search({})[1:] }

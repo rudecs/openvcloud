@@ -1,8 +1,8 @@
 
 def main(j, args, params, tags, tasklet):
     gid = args.getTag('gid')
-    syscl = j.core.osis.getClientForNamespace('system')
-    vcl = j.core.osis.getClientForNamespace('vfw')
+    syscl = j.clients.osis.getForNamespace('system')
+    vcl = j.clients.osis.getForNamespace('vfw')
     
     def _formatdata(fwdata):
         aaData = list()

@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
     if stackid:
         stackid = int(stackid)
-        ccl = j.core.osis.getClientForNamespace('cloudbroker')
+        ccl = j.clients.osis.getForNamespace('cloudbroker')
         stack = ccl.stack.get(stackid)
         images = ccl.image.search({'id': {'$in': stack.images}})[1:]
         imageids = [ image['referenceId'] for image in images ]

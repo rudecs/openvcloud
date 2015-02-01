@@ -19,7 +19,7 @@ log = False
 
 def action():
     import libvirt
-    cbcl = j.core.osis.getClientForNamespace('cloudbroker', j.core.osis.client)
+    cbcl = j.clients.osis.getForNamespace('cloudbroker', j.core.osis.client)
     stacks = cbcl.stack.search({'gid': j.application.whoAmI.gid, 'referenceId': str(j.application.whoAmI.nid)})[1:]
     if not stacks:
         return # not registered as a stack
@@ -42,5 +42,5 @@ def action():
 
 if __name__ == '__main__':
     import JumpScale.grid.osis
-    j.core.osis.client = j.core.osis.getClientByInstance('main')
+    j.core.osis.client = j.clients.osis.getByInstance('main')
     action()

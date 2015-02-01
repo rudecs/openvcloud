@@ -11,8 +11,8 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    oscl = j.core.osis.getClientByInstance('main')
-    userclient = j.core.osis.getClientForCategory(oscl, 'system', 'user')
+    oscl = j.clients.osis.getByInstance('main')
+    userclient = j.clients.osis.getForCategory(oscl, 'system', 'user')
 
     if not userclient.exists(id):
         params.result = ('User with id %s not found' % id, args.doc)

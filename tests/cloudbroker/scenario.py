@@ -8,7 +8,7 @@ SESSION_DATA = {}
 class ScenarioTest(unittest.TestCase):
 
     def setUp(self):
-        cl = j.core.portal.getPortalClient(secret='1234')
+        cl = j.clients.portal.get(secret='1234')
         cl.getActor('cloud', 'cloudbroker')
         cl.getActor('cloudapi', 'accounts')
         cl.getActor('cloudapi', 'cloudspaces')
@@ -58,7 +58,7 @@ class ScenarioTest(unittest.TestCase):
         self.assertIsNotNone(machineid)
 
 def tearDownModule():
-    cl = j.core.portal.getPortalClient(secret='1234')
+    cl = j.clients.portal.get(secret='1234')
     cl.getActor('cloud', 'cloudbroker')
     cl.getActor('cloudapi', 'accounts')
     cl.getActor('cloudapi', 'cloudspaces')

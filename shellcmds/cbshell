@@ -21,14 +21,14 @@ if __name__ == '__main__':
     port = int(portalcfg.get('webserverport', 9999))
     secret = portalcfg.get('secret') if opts.secret == '1234' else opts.secret
 
-    cl = j.core.portal.getClient('127.0.0.1', port, secret)
+    cl = j.clients.portal.get('127.0.0.1', port, secret)
     if opts.username and opts.password:
         import requests
         url = "http://127.0.0.1:%s" % (port)
         resp = requests.post(url, {'user_login_': opts.username, 'passwd': opts.password})
         newsecret = resp.cookies.get('beaker.session.id')
         print "Next time you can use %s as secret" % newsecret
-        cl = j.core.portal.getClient('127.0.0.1', port, newsecret)
+        cl = j.clients.portal.get('127.0.0.1', port, newsecret)
         j.apps = cl.actors
 
     cl.getActor('system', 'contentmanager')

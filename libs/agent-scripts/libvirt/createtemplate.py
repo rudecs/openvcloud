@@ -18,15 +18,15 @@ def action(machineid, templatename, imageid, createfrom):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     image_id, imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
-    osiscl = j.core.osis.getClientByInstance('main')
-    imagemodel = j.core.osis.getClientForCategory(osiscl, 'cloudbroker', 'image')
+    osiscl = j.clients.osis.getByInstance('main')
+    imagemodel = j.clients.osis.getForCategory(osiscl, 'cloudbroker', 'image')
     image = imagemodel.get(imageid)
     image.referenceId = image_id
     image.status = 'CREATED'
     imagemodel.set(image)
 
-    catimageclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'image')
-    catresourceclient = j.core.osis.getClientForCategory(osiscl, 'libvirt', 'resourceprovider')
+    catimageclient = j.clients.osis.getForCategory(osiscl, 'libvirt', 'image')
+    catresourceclient = j.clients.osis.getForCategory(osiscl, 'libvirt', 'resourceprovider')
 
     imagename = j.system.fs.getBaseName(imagepath)
     installed_images = catimageclient.list()

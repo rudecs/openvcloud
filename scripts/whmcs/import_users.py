@@ -5,8 +5,8 @@ from JumpScale import grid
 import whmcsusers
 
 def main():
-    cb = j.core.osis.getClientForNamespace('cloudbroker')
-    system = j.core.osis.getClientForNamespace('system')
+    cb = j.clients.osis.getForNamespace('cloudbroker')
+    system = j.clients.osis.getForNamespace('system')
     
     accounts = cb.account.list()
     users = whmcsusers.list_users()

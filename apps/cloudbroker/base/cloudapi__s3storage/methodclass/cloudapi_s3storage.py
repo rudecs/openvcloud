@@ -9,7 +9,7 @@ class cloudapi_s3storage(BaseActor):
     """
     def __init__(self):
         super(cloudapi_s3storage, self).__init__()
-        self.osis_logs = j.core.osis.getClientForCategory(j.core.portal.active.osis, "system", "log")
+        self.osis_logs = j.clients.osis.getForCategory(j.core.portal.active.osis, "system", "log")
 
     def _get(self, cloudspaceId):
         cloudspace = self.models.cloudspace.get(int(cloudspaceId)) 

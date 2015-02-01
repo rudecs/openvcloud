@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    vcl = j.core.osis.getClientForNamespace('vfw')
+    vcl = j.clients.osis.getForNamespace('vfw')
     key = "%s_%s" % (gid, id)
 
     if not vcl.virtualfirewall.exists(key):

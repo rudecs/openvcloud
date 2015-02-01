@@ -20,12 +20,12 @@ parser.add_argument("-i", '--showimages', action='store_true', required=False, h
 
 opts = parser.parse_args()
 
-ocl = j.core.osis.getClientByInstance('main')
+ocl = j.clients.osis.getByInstance('main')
 
 if opts.action == 'listnodes':
     print "%(id)-40s %(referenceid)3s %(enabled)40s" % {'id': 'ID', 'referenceid': 'Node', 'enabled': 'Enabled'}
-    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
-    icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
+    scl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'stack')
+    icl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'image')
     images = dict()
     if opts.showimages:
         images = { x['id']:x for x in icl.simpleSearch({}) }
@@ -37,8 +37,8 @@ if opts.action == 'listnodes':
 
 elif opts.action == 'listimages':
     print "%(name)-40s %(size)3s %(cpus)40s" % {'name': 'Name', 'size': 'Size', 'cpus': 'CPU Nodes'}
-    icl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'image')
-    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    icl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'image')
+    scl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'stack')
     nodename = opts.nodename if opts.nodename else None
     imagedict = dict()
     stacks = scl.simpleSearch({'referenceId': nodename})
@@ -53,7 +53,7 @@ elif opts.action == 'listimages':
             print "%(name)-40s %(size)3s %(cpus)40s" % image
 
 elif opts.action == 'disablenode':
-    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    scl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'stack')
     nodename = opts.nodename
     stacks = scl.simpleSearch({'referenceId': nodename})
     if not stacks:
@@ -66,7 +66,7 @@ elif opts.action == 'disablenode':
         print 'Node %s was disabled successfully' % nodename
 
 elif opts.action == 'enablenode':
-    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    scl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'stack')
     nodename = opts.nodename
     stacks = scl.simpleSearch({'referenceId': nodename})
     if not stacks:
@@ -79,7 +79,7 @@ elif opts.action == 'enablenode':
         print 'Node %s was enabled successfully' % nodename
 
 elif opts.action == 'deletenode':
-    scl = j.core.osis.getClientForCategory(ocl, 'cloudbroker', 'stack')
+    scl = j.clients.osis.getCategory(ocl, 'cloudbroker', 'stack')
     nodename = opts.nodename
     stacks = scl.simpleSearch({'referenceId': nodename})
     if not stacks:

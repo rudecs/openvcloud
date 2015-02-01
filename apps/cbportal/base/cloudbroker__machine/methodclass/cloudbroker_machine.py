@@ -14,8 +14,8 @@ import JumpScale.lib.whmcs
 class cloudbroker_machine(BaseActor):
     def __init__(self):
         super(cloudbroker_machine, self).__init__()
-        self.libvirtcl = j.core.osis.getClientForNamespace('libvirt')
-        self.vfwcl = j.core.osis.getClientForNamespace('vfw')
+        self.libvirtcl = j.clients.osis.getForNamespace('libvirt')
+        self.vfwcl = j.clients.osis.getForNamespace('vfw')
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()

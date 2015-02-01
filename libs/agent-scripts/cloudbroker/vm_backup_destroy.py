@@ -21,7 +21,7 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     import JumpScale.lib.whmcs
     import time
 
-    cl = j.core.portal.getClientByInstance('cbportal')
+    cl = j.clients.portal.getByInstance('cbportal')
 
     try:
         cl.getActor('cloudbroker', 'machine')
@@ -30,7 +30,7 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     cloudbrokermachine = cl.actors.cloudbroker.machine
 
     agentcontrollerclient = j.clients.agentcontroller.get()
-    cbcl = j.core.osis.getClientForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getForNamespace('cloudbroker')
 
     subject = 'Backing up Machine %s for destruction' % vmachineName
     ticketid = j.tools.whmcs.tickets.create_ticket(subject, subject, "High")

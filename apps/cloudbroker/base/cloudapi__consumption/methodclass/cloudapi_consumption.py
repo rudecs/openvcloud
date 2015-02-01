@@ -9,7 +9,7 @@ class cloudapi_consumption(object):
 
     """
     def __init__(self):
-        self.models = j.core.osis.getClientForNamespace('billing')
+        self.models = j.clients.osis.getForNamespace('billing')
         self._pricing = pricing.pricing()
 
     @authenticator.auth(acl='R')

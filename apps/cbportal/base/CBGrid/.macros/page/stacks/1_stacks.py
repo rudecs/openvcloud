@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     if imageid:
         args.tags.tags.pop('imageid')
         imageid = str(imageid)
-        ccl = j.core.osis.getClientForNamespace('cloudbroker')
+        ccl = j.clients.osis.getForNamespace('cloudbroker')
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['images'] = images[0]['id']

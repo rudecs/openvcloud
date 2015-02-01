@@ -6,10 +6,10 @@ def main(j, args, params, tags, tasklet):
     params.merge(args)
     doc = params.doc
     out = ""
-    cl = j.core.osis.getClientByInstance('main')
+    cl = j.clients.osis.getByInstance('main')
 
-    osis_ecos = j.core.osis.getClientForCategory(cl, "system", "eco")
-    osis_logs = j.core.osis.getClientForCategory(cl, "system", "log")
+    osis_ecos = j.clients.osis.getForCategory(cl, "system", "eco")
+    osis_logs = j.clients.osis.getForCategory(cl, "system", "log")
 
     #last 20 logs
 

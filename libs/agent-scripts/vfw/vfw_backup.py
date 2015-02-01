@@ -30,7 +30,7 @@ def action():
             j.system.fs.removeDirTree(backuppath)
 
         osiscl = j.core.osis.client
-        vfwcl = j.core.osis.getClientForCategory(osiscl, 'vfw', 'virtualfirewall')
+        vfwcl = j.clients.osis.getForCategory(osiscl, 'vfw', 'virtualfirewall')
 
         routeros_password = hrd.get('vfw.admin.passwd')
 
@@ -84,5 +84,5 @@ These vfws have failed to backup:
 
 if __name__ == '__main__':
     import JumpScale.grid.osis
-    j.core.osis.client = j.core.osis.getClientByInstance('processmanager')
+    j.core.osis.client = j.clients.osis.getByInstance('processmanager')
     action()
