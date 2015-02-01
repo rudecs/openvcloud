@@ -15,8 +15,8 @@ class billingengine_billingengine(j.code.classGetBase()):
         self.actorname="billingengine"
         self.appname="billingengine"
 
-        self.billingenginemodels = j.clients.osis.getForNamespace('billing')
-        self.cloudbrokermodels = j.clients.osis.getForNamespace('cloudbroker')
+        self.billingenginemodels = j.clients.osis.getNamespace('billing')
+        self.cloudbrokermodels = j.clients.osis.getNamespace('cloudbroker')
 
         self._pricing = pricing.pricing()
 

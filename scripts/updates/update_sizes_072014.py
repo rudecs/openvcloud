@@ -1,8 +1,8 @@
 from JumpScale import grid
 from JumpScale import j
 
-cloudbroker = j.clients.osis.getForNamespace('cloudbroker')
-libvirt = j.clients.osis.getForNamespace('libvirt')
+cloudbroker = j.clients.osis.getNamespace('cloudbroker')
+libvirt = j.clients.osis.getNamespace('libvirt')
 
 osis_lsize = libvirt.size
 

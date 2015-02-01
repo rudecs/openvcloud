@@ -1,7 +1,7 @@
 from JumpScale import j
 from JumpScale import grid
 import ujson
-cloudbroker = j.clients.osis.getForNamespace('cloudbroker')
+cloudbroker = j.clients.osis.getNamespace('cloudbroker')
 #this script except user information created on a ceph cluster in the correct
 #format.
 #The information in the user file should be in the correct order

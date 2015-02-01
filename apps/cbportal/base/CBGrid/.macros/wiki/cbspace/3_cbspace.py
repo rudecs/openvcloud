@@ -12,8 +12,8 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    cbclient = j.clients.osis.getForNamespace('cloudbroker')
-    vcl = j.clients.osis.getForNamespace('vfw')
+    cbclient = j.clients.osis.getNamespace('cloudbroker')
+    vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
         params.result = ('CloudSpace with id %s not found' % id, args.doc)

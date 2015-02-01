@@ -19,12 +19,12 @@ def load(path, credit):
 
 def do(username, data, credit):
     import JumpScale.grid
-    scl = j.clients.osis.getForNamespace('system')
-    ccl = j.clients.osis.getForNamespace('cloudbroker')
-    bcl = j.clients.osis.getForNamespace('billing')
-    vcl = j.clients.osis.getForNamespace('vfw')
-    lcl = j.clients.osis.getForNamespace('libcloud')
-    lclvrt = j.clients.osis.getForNamespace('libvirt')
+    scl = j.clients.osis.getNamespace('system')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
+    bcl = j.clients.osis.getNamespace('billing')
+    vcl = j.clients.osis.getNamespace('vfw')
+    lcl = j.clients.osis.getNamespace('libcloud')
+    lclvrt = j.clients.osis.getNamespace('libvirt')
     locations = { location['locationCode']: location['gid'] for location in ccl.location.search({})[1:] }
     locationmap = {301: 'lenoir2.vscalers.com', 400: 'york1.vscalers.com'}
     disksbyid = { disk['id']: disk for disk in data['disks'] }

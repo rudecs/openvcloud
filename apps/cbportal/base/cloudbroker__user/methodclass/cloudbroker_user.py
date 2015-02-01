@@ -9,7 +9,7 @@ class cloudbroker_user(BaseActor):
     """
     def __init__(self):
         super(cloudbroker_user, self).__init__()
-        self.syscl = j.clients.osis.getForNamespace('system')
+        self.syscl = j.clients.osis.getNamespace('system')
         self.users_actor = self.cb.actors.cloudapi.users
 
     def _checkUser(self, username):

@@ -30,7 +30,7 @@ def action():
             j.system.fs.removeDirTree(backuppath)
 
         osiscl = j.core.osis.client
-        vfwcl = j.clients.osis.getForCategory(osiscl, 'vfw', 'virtualfirewall')
+        vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
 
         routeros_password = hrd.get('vfw.admin.passwd')
 

@@ -6,7 +6,7 @@ from cloudbrokerlib.baseactor import BaseActor
 class cloudbroker_account(BaseActor):
     def __init__(self):
         super(cloudbroker_account, self).__init__()
-        self.syscl = j.clients.osis.getForNamespace('system')
+        self.syscl = j.clients.osis.getNamespace('system')
         self.accounts_actor = self.cb.actors.cloudapi.accounts
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.users_actor = self.cb.actors.cloudapi.users

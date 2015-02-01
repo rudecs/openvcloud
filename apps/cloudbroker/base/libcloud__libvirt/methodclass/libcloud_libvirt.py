@@ -12,7 +12,7 @@ class Models(object):
         for category in categories:
             if category not in osiscats:
                 client.createNamespaceCategory(namespace, category)
-            setattr(self, category, j.clients.osis.getForCategory(client, namespace, category))
+            setattr(self, category, j.clients.osis.getCategory(client, namespace, category))
 
 class libcloud_libvirt(object):
     """
@@ -34,7 +34,7 @@ class libcloud_libvirt(object):
             self._client.createNamespace(self.NAMESPACE, template='blob')
         if self.CATEGORY not in self._client.listNamespaceCategories(self.NAMESPACE):
            self._client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
-        return j.clients.osis.getForCategory(self._client, self.NAMESPACE, self.CATEGORY)
+        return j.clients.osis.getCategory(self._client, self.NAMESPACE, self.CATEGORY)
 
     def listImages(self, resourceid, **kwargs):
         """

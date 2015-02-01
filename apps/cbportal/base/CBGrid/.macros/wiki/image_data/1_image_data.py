@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    ccl = j.clients.osis.getForNamespace('libvirt')
+    ccl = j.clients.osis.getNamespace('libvirt')
 
     if not ccl.image.exists(imageid):
         params.result = ('Image with id %s not found' % imageid, args.doc)

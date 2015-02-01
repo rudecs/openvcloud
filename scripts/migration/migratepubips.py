@@ -8,7 +8,7 @@ def migrate(network, gateway):
     import JumpScale.grid.osis
     allips = set(j.application.config.getDict('cloudscalers.networks.public_ip').values())
     whereami = j.application.config.get("cloudbroker.where.am.i")
-    ccl = j.clients.osis.getForNamespace('cloudbroker')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
     cloudspaces = ccl.cloudspace.simpleSearch({'location': whereami})
     usedpublicips = set()
     for space in cloudspaces:

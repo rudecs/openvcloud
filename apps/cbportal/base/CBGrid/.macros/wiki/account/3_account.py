@@ -12,8 +12,8 @@ def main(j, args, params, tags, tasklet):
         return params
     
     id = int(id)
-    cbclient = j.clients.osis.getForNamespace('cloudbroker')
-    sclient = j.clients.osis.getForNamespace('system')
+    cbclient = j.clients.osis.getNamespace('cloudbroker')
+    sclient = j.clients.osis.getNamespace('system')
 
     if not cbclient.account.exists(id):
         params.result = ('Account with id %s not found' % id, args.doc)

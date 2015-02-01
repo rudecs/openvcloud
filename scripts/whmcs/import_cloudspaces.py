@@ -12,8 +12,8 @@ def add_cloudspace(userId, cloudspace):
     whmcsorders.accept_order(order['orderid'])
     
 def main():
-    cb = j.clients.osis.getForNamespace('cloudbroker')
-    system = j.clients.osis.getForNamespace('system')
+    cb = j.clients.osis.getNamespace('cloudbroker')
+    system = j.clients.osis.getNamespace('system')
     
     accounts = cb.account.list()
     users = whmcsusers.list_users()

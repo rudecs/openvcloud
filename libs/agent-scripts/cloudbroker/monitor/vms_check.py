@@ -28,9 +28,9 @@ def action(gid=None):
     rediscl = j.clients.redis.getByInstance('system')
     accl = j.clients.agentcontroller.get()
     osiscl = j.clients.osis.getByInstance('main')
-    cbcl = j.clients.osis.getForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getNamespace('cloudbroker')
     portalclient = j.clients.portal.getByInstance('cloudbroker').actors
-    nodecl = j.clients.osis.getForCategory(osiscl, 'system', 'node')
+    nodecl = j.clients.osis.getCategory(osiscl, 'system', 'node')
 
     # get all stacks and nodes data, save trips to osis
     stacks = dict([(s['id'], s) for s in cbcl.stack.search({})[1:]])

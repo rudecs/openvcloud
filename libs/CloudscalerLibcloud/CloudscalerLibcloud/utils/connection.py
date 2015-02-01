@@ -54,7 +54,7 @@ class CloudBrokerConnection():
              client.createNamespace(self.NAMESPACE, 'blob')
          if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
             client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
-         return self._j.clients.osis.getForCategory(client, self.NAMESPACE, self.CATEGORY)
+         return self._j.clients.osis.getCategory(client, self.NAMESPACE, self.CATEGORY)
 
      def listSizes(self):
          return self.libvirt_actor.listSizes()

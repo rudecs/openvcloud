@@ -2,9 +2,9 @@ from JumpScale.portal.docgenerator.popup import Popup
 
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
-    ccl = j.clients.osis.getForNamespace('cloudbroker')
-    vcl = j.clients.osis.getForNamespace('vfw')
-    scl = j.clients.osis.getForNamespace('system')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
+    vcl = j.clients.osis.getNamespace('vfw')
+    scl = j.clients.osis.getNamespace('system')
     cloudspaceId = args.getTag('cloudspaceId')
     cloudspace = ccl.cloudspace.get(int(cloudspaceId))
 

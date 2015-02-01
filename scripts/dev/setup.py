@@ -8,7 +8,7 @@ def main():
     from libcloud.compute.providers import get_driver
     from libcloud.compute.types import Provider
     pcl = j.clients.portal.getByInstance('cloudbroker')
-    ccl = j.clients.osis.getForNamespace('cloudbroker')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
     dummy = get_driver(Provider.DUMMY)(1)
     for size in dummy.list_sizes():
         if not ccl.size.search({'name': size.name})[1:]:

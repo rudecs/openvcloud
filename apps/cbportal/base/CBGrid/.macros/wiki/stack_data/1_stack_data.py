@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     stid = int(stid)
-    ccl = j.clients.osis.getForNamespace('cloudbroker')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
 
     if not ccl.stack.exists(stid):
         params.result = ('Stack with id %s not found' % stid, args.doc)

@@ -25,9 +25,9 @@ def action(name, cloudspaceId, vmexportId, sizeId, description, storageparameter
     from JumpScale.baselib.backuptools import backup
 
     agentcontroller = j.clients.agentcontroller.get()
-    cloudbrokermodel = j.clients.osis.getForNamespace('cloudbroker')
-    libvirtmodel = j.clients.osis.getForNamespace('libvirt')
-    system_cl = j.clients.osis.getForNamespace('system')
+    cloudbrokermodel = j.clients.osis.getNamespace('cloudbroker')
+    libvirtmodel = j.clients.osis.getNamespace('libvirt')
+    system_cl = j.clients.osis.getNamespace('system')
     
     #first we need to upload the image on a correct location
     #At this moment we select a random value

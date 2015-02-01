@@ -9,7 +9,7 @@ class cloudbroker_computenode(BaseActor):
     """
     def __init__(self):
         super(cloudbroker_computenode, self).__init__()
-        self._ncl = j.clients.osis.getForCategory(j.core.portal.active.osis, 'system', 'node')
+        self._ncl = j.clients.osis.getCategory(j.core.portal.active.osis, 'system', 'node')
 
     @auth(['level1', 'level2', 'level3'])
     def setStatus(self, name, gid, status, **kwargs):

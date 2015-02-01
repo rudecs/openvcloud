@@ -22,8 +22,8 @@ def action():
     import JumpScale.lib.routeros
 
     osiscl = j.clients.osis.getByInstance('main')
-    vfwcl = j.clients.osis.getForCategory(osiscl, 'vfw', 'virtualfirewall')
-    cbcl = j.clients.osis.getForNamespace('cloudbroker')
+    vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
+    cbcl = j.clients.osis.getNamespace('cloudbroker')
     hrd = j.packages.get(name='vfwnode', instance='main').hrd
     ROUTEROS_PASSWORD = hrd.get('vfw.admin.passwd')
 

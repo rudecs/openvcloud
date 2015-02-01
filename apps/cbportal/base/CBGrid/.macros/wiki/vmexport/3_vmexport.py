@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
         return params
     
     id = int(id)
-    cbclient = j.clients.osis.getForNamespace('cloudbroker')
+    cbclient = j.clients.osis.getNamespace('cloudbroker')
 
     if not cbclient.vmexport.exists(id):
         params.result = ('VMExport with id %s not found' % id, args.doc)

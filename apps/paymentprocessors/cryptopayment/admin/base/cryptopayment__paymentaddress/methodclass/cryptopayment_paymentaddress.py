@@ -19,7 +19,7 @@ class cryptopayment_paymentaddress(j.code.classGetBase()):
         
         self.models = Class()
         for ns in osiscl.listNamespaceCategories('cryptopayment'):
-            self.models.__dict__[ns] = (j.clients.osis.getForCategory(osiscl, 'cryptopayment', ns))
+            self.models.__dict__[ns] = (j.clients.osis.getCategory(osiscl, 'cryptopayment', ns))
             self.models.__dict__[ns].find = self.models.__dict__[ns].search
 
 

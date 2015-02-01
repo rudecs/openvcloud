@@ -5,9 +5,9 @@ def main(j, args, params, tags, tasklet):
     width = args.getTag('width')
     height = args.getTag('height')
     result = "{{jgauge width:%(width)s id:%(id)s height:%(height)s val:%(running)s start:0 end:%(total)s}}"
-    vmcl = j.clients.osis.getForCategory(j.core.portal.active.osis, 'cloudbroker', 'vmachine')
-    stackcl = j.clients.osis.getForCategory(j.core.portal.active.osis, 'cloudbroker', 'stack')
-    imgcl = j.clients.osis.getForCategory(j.core.portal.active.osis, 'cloudbroker', 'image')
+    vmcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'cloudbroker', 'vmachine')
+    stackcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'cloudbroker', 'stack')
+    imgcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'cloudbroker', 'image')
     images = [ x['id'] for x in imgcl.search({'type':'Windows'})[1:] ]
     query = {'status': 'RUNNING', 'imageId': {'$in': images}}
     if gid:

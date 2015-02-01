@@ -7,8 +7,8 @@ def registerImage(jp, name, imagepath, type, disksize, username = None):
     node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid)
     image_id = str(int(j.tools.hash.md5_string(jp.name)[0:9], 16))
     osiscl = j.clients.osis.getByInstance('main')
-    catimageclient = j.clients.osis.getForCategory(osiscl, 'libvirt', 'image')
-    catresourceclient = j.clients.osis.getForCategory(osiscl, 'libvirt', 'resourceprovider')
+    catimageclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'image')
+    catresourceclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'resourceprovider')
 
     installed_images = catimageclient.list()
     if image_id not in installed_images:

@@ -21,7 +21,7 @@ def action(storageparameters):
     acl = j.clients.agentcontroller.get()
     TEMPSTORE = '/mnt/vmstor2/backups_temp'
 
-    vcl = j.clients.osis.getForNamespace('vfw')
+    vcl = j.clients.osis.getNamespace('vfw')
     for guid in vcl.virtualfirewall.list():
         vfw = vcl.virtualfirewall.get(guid)
         networkid = "%04x" % vfw.id

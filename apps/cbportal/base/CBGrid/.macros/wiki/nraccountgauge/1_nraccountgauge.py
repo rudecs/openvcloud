@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     width = args.getTag('width')
     height = args.getTag('height')
     result = "{{jgauge width:%(width)s id:%(id)s height:%(height)s val:%(running)s start:0 end:%(total)s}}"
-    ac = j.clients.osis.getForCategory(j.core.portal.active.osis, 'cloudbroker', 'account')
+    ac = j.clients.osis.getCategory(j.core.portal.active.osis, 'cloudbroker', 'account')
     query = {'status': 'CONFIRMED'}
     active = ac.count(query)
     total = ac.count() 

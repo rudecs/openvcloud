@@ -13,7 +13,7 @@ def _release_resources(cloudspaceId):
         
         
     whereami = j.application.config.get('cloudbroker.where_am_i')
-    cbcl = j.clients.osis.getForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getNamespace('cloudbroker')
     libvirt_actor = j.apps.libcloud.libvirt
     gridid = j.application.config.get('grid.id')
     netmgr = j.apps.jumpscale.netmgr

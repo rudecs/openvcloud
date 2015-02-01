@@ -4,7 +4,7 @@ def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     machineId = int(args.getTag('machineId'))
     accountName = args.getTag('accountName')
-    scl = j.clients.osis.getForNamespace('cloudbroker')
+    scl = j.clients.osis.getNamespace('cloudbroker')
 
     vmachine = scl.vmachine.get(machineId)
     cloudspace = scl.cloudspace.get(vmachine.cloudspaceId)

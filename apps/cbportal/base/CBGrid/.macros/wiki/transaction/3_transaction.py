@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     id = int(id)
-    cbclient = j.clients.osis.getForNamespace('cloudbroker')
+    cbclient = j.clients.osis.getNamespace('cloudbroker')
 
     if not cbclient.credittransaction.exists(id):
         params.result = ('credit transaction with id %s not found' % id, args.doc)

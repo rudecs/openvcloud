@@ -19,7 +19,7 @@ log = False
 
 def action():
     import libvirt
-    cbcl = j.clients.osis.getForNamespace('cloudbroker', j.core.osis.client)
+    cbcl = j.clients.osis.getNamespace('cloudbroker', j.core.osis.client)
     stacks = cbcl.stack.search({'gid': j.application.whoAmI.gid, 'referenceId': str(j.application.whoAmI.nid)})[1:]
     if not stacks:
         return # not registered as a stack

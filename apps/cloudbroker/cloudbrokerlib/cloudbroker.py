@@ -6,7 +6,7 @@ from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 import random
 
 ujson = j.db.serializers.ujson
-models = j.clients.osis.getForNamespace('cloudbroker')
+models = j.clients.osis.getNamespace('cloudbroker')
 
 class Dummy(object):
     def __init__(self, **kwargs):

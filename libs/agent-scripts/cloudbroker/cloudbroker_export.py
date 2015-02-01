@@ -22,7 +22,7 @@ def action(path, name, machineId,storageparameters,nid,backup_type):
     import ujson, time
     from JumpScale.baselib.backuptools import object_store
     from JumpScale.baselib.backuptools import backup
-    cloudbrokermodel = j.clients.osis.getForNamespace('cloudbroker')
+    cloudbrokermodel = j.clients.osis.getNamespace('cloudbroker')
 
     vm = cloudbrokermodel.vmachine.get(machineId)
     agentcontroller = j.clients.agentcontroller.get()

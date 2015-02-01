@@ -24,7 +24,7 @@ def action():
     cl = j.clients.portal.getByInstance('cloudbroker')
     cloudspaceapi = cl.getActor('billingengine','billingengine')
 
-    cbcl = j.clients.osis.getForNamespace('cloudbroker')
+    cbcl = j.clients.osis.getNamespace('cloudbroker')
     accountIds = cbcl.account.list()
     for accountId in accountIds:
         cloudspaceapi.createTransactionStaments(accountId)

@@ -23,7 +23,7 @@ import JumpScale.grid.osis
 import JumpScale.portal
 j.clients.portal.get('127.0.0.1', 9999, '1234') #lazy load actors
 cl = j.clients.osis.get(user='root')
-ccl = j.clients.osis.getForCategory(cl, 'cloudbroker', 'stack')
+ccl = j.clients.osis.getCategory(cl, 'cloudbroker', 'stack')
 stack = ccl.new()
 stack.apiUrl = 'qemu+ssh://%(host)s/system'
 stack.descr = 'Libvirt Stack'

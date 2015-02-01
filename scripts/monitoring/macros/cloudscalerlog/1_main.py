@@ -8,8 +8,8 @@ def main(j, args, params, tags, tasklet):
     out = ""
     cl = j.clients.osis.getByInstance('main')
 
-    osis_ecos = j.clients.osis.getForCategory(cl, "system", "eco")
-    osis_logs = j.clients.osis.getForCategory(cl, "system", "log")
+    osis_ecos = j.clients.osis.getCategory(cl, "system", "eco")
+    osis_logs = j.clients.osis.getCategory(cl, "system", "log")
 
     #last 20 logs
 

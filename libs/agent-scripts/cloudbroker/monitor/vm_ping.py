@@ -20,7 +20,7 @@ def action(vm_ip_address, vm_cloudspace_id):
     import JumpScale.lib.routeros
 
     osiscl = j.clients.osis.getByInstance('main')
-    vfwcl = j.clients.osis.getForCategory(osiscl, 'vfw', 'virtualfirewall')
+    vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
     hrd = j.packages.get(name='vfwnode', instance='main').hrd
     ROUTEROS_PASSWORD = hrd.get('vfw.admin.passwd')
 

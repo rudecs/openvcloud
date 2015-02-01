@@ -31,12 +31,12 @@ class CryptopaymentProcessor(object):
         
         self.models = Class()
         for ns in osiscl.listNamespaceCategories('cryptopayment'):
-            self.models.__dict__[ns] = (j.clients.osis.getForCategory(osiscl, 'cryptopayment', ns))
+            self.models.__dict__[ns] = (j.clients.osis.getCategory(osiscl, 'cryptopayment', ns))
             self.models.__dict__[ns].find = self.models.__dict__[ns].search
         
         self.cloudbrokermodels = Class()
         for ns in osiscl.listNamespaceCategories('cloudbroker'):
-            self.cloudbrokermodels.__dict__[ns] = (j.clients.osis.getForCategory(osiscl, 'cloudbroker', ns))
+            self.cloudbrokermodels.__dict__[ns] = (j.clients.osis.getCategory(osiscl, 'cloudbroker', ns))
             self.cloudbrokermodels.__dict__[ns].find = self.cloudbrokermodels.__dict__[ns].search
 
     def _get_wallet_connection(self,coin):

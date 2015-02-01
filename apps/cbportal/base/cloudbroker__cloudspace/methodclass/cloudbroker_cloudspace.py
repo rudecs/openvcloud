@@ -7,9 +7,9 @@ from cloudbrokerlib import network
 class cloudbroker_cloudspace(BaseActor):
     def __init__(self):
         super(cloudbroker_cloudspace, self).__init__()
-        self.syscl = j.clients.osis.getForNamespace('system')
+        self.syscl = j.clients.osis.getNamespace('system')
         self.network = network.Network(self.models)
-        self.vfwcl = j.clients.osis.getForNamespace('vfw')
+        self.vfwcl = j.clients.osis.getNamespace('vfw')
         self.netmgr = self.cb.actors.jumpscale.netmgr
         self.libvirt_actor = self.cb.actors.libcloud.libvirt
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces

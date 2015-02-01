@@ -15,8 +15,8 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.appname = "jumpscale"
         #jumpscale_netmgr_osis.__init__(self)
         self.client = j.clients.osis.getByInstance('main')
-        self.osisvfw = j.clients.osis.getForCategory(self.client, 'vfw', 'virtualfirewall')
-        self.nodeclient = j.clients.osis.getForCategory(self.client, 'system', 'node')
+        self.osisvfw = j.clients.osis.getCategory(self.client, 'vfw', 'virtualfirewall')
+        self.nodeclient = j.clients.osis.getCategory(self.client, 'system', 'node')
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
 
