@@ -11,7 +11,7 @@ author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
 roles = []
-queue = "hypervisor"
+queue = "io"
 async = True
 
 
