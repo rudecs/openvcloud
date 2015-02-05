@@ -286,6 +286,8 @@ class libcloud_libvirt(object):
         info = self.cache.get(key)
         if reset:
             self.cache.delete(key)
+        if info:
+            info = ujson.loads(info)
         return info
 
     def storeInfo(self, data, timeout, **kwargs):
@@ -296,7 +298,7 @@ class libcloud_libvirt(object):
         result str
         """
         key = str(uuid.uuid4())
-        self.cache.set(key, data, timeout)
+        self.cache.set(key, ujson.dumps(data), timeout)
         return key
 
     def listVNC(self, gid, **kwargs):
