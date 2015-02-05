@@ -12,6 +12,7 @@ as taken from http://docs.python.org/dev/library/ssl.html#certificates
 '''
 
 import signal, socket, optparse, time, os, sys, subprocess
+sys.path.insert(0, '.')
 from select import select
 import websocket
 try:
@@ -173,6 +174,7 @@ Traffic Legend:
             (self.target_host, self.target_port) = self.get_target(self.target_cfg, self.path)
         elif self.portalclient:
             token = self._get_token(self.path)
+            print token
             consoleinfo = self.portalclient.retreiveInfo(token, True)
             (self.target_host, self.target_port) = consoleinfo['ipaddress'], consoleinfo['port']
 
