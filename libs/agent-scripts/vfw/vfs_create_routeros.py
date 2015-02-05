@@ -49,7 +49,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         print "CLEANUP: %s/%s"%(networkid,networkidHex)
         try:
             dom = con.lookupByName(name)
-            dom.destroy()
+            if dom.isActive():
+                dom.destroy()
             dom.undefine()
         except libvirt.libvirtError:
             pass
