@@ -20,6 +20,28 @@ angular.module('cloudscalers.controllers')
             $scope.machine.sizeId = _.min($scope.sizes, function(size) { return size.vcpus;}).id;
         }, true);
 
+        $scope.$watch('machine.sizeId', function() {
+            if($scope.machine.sizeId){
+                var disks = _.findWhere($scope.sizes, { id: $scope.machine.sizeId }).disks;
+                $scope.packageDisks = disks;
+                $scope.machine.disksize = disks[0];
+            }
+            
+        }, true);
+
+        $scope.activePackage = function(packageID) {
+            elementClass = ".package-" + packageID;
+            angular.element('.active-package').removeClass('active-package');
+            angular.element('.packages').find(elementClass).addClass('active-package');
+        }
+
+        $scope.activeDisk = function(diskSize) {
+            elementClass = ".disk-" + diskSize;
+            angular.element('.storage-size-list').find('.active').removeClass('active');
+            angular.element('.storage-size-list').find(elementClass).addClass('active');
+            $scope.machine.disksize = diskSize;
+        }
+
 
         $scope.$watch('machine.imageId', function() {
             machinedisksize = _.findWhere($scope.images, {id:parseInt($scope.machine.imageId)});

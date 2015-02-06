@@ -4,7 +4,7 @@ descr = """
 Libvirt script to suspend a virtual machine
 """
 
-name = "suspendmachine"
+name = "pausemachine"
 category = "libvirt"
 organization = "cloudscalers"
 author = "hendrik@awingu.com"

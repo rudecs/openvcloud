@@ -21,6 +21,11 @@ h2. Grid $$gid
   action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
   data:
    gid: $$gid
+   
+- display: Sync Available Sizes to CloudBroker
+  action: /restmachine/cloudbroker/iaas/syncAvailableSizesToCloudbroker
+  data:
+   gid: $$gid
 
 - display: Add Public IPv4 Subnet
   action: /restmachine/cloudbroker/iaas/addPublicIPv4Subnet

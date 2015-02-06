@@ -472,3 +472,13 @@ class LibvirtUtil(object):
     def listVMStorSnapshots(self):
         vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
         return j.system.btrfs.subvolumeList(vmstor_snapshot_path)
+
+    def soft_reboot(self, id):
+        domain = self._get_domain(id)
+        return domain.reboot() == 0
+    
+    def hard_reboot(self, node):
+        domain = self._get_domain(id)
+        return domain.reset() == 0
+    
+    

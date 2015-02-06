@@ -39,17 +39,17 @@ def action(machineid, templatename, imageid, createfrom):
         image['size'] = 0
         catimageclient.set(image)
 
-    node_id = j.application.config.get("cloudscalers.compute.nodeid")
-    if not node_id in catresourceclient.list():
+    nodekey = "%(gid)s_%(nid)s" % j.application.whoAmI._asdict()
+    if not catresourceclient.exists(nodekey):
         rp = dict()
         rp['cloudUnitType'] = 'CU'
-        rp['id'] = node_id
+        rp['id'] = j.application.whoAmI.nid
+        rp['gid'] = j.application.whoAmI.gid
+        rp['guid'] = nodekey
         rp['images'] = [image_id]
     else:
-        rp = catresourceclient.get(node_id)
+        rp = catresourceclient.get(nodekey)
         if not image_id in rp.images:
             rp.images.append(image_id)
     catresourceclient.set(rp)
-
-
-
+    return image

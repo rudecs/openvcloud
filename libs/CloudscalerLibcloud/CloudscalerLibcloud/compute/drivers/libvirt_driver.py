@@ -34,7 +34,7 @@ class CSLibvirtNodeDriver():
         self._rndrbn_vnc = 0
         self.id = id
         self.gid = gid
-        self.name = id
+        self.name = 'libvirt'
         self.uri = uri
 
 
@@ -71,7 +71,7 @@ class CSLibvirtNodeDriver():
             driver=self,
             disk=size['disk'])
 
-    def list_images(self, location=None):
+    def ex_list_images(self, location=None):
         """
         Libvirt doesn't has a idea of images, because of this we are using
         the cloudscalers internal images api.
@@ -243,13 +243,12 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+    def ex_create_template(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
-        self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
-        return True
+        return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
 
     def ex_get_node_details(self, node_id):
-        node = Node(id=node_id)
+        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
         node = self._from_agent_to_node(self._get_domain_for_node(node))
         backendnode = self.backendconnection.getNode(node.id)
         node.extra['macaddress'] = backendnode['macaddress']
@@ -329,7 +328,7 @@ class CSLibvirtNodeDriver():
             noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
-    def ex_shutdown(self, node):
+    def ex_stop_node(self, node):
         machineid = node.id
         return self._execute_agent_job('stopmachine', queue='hypervisor', machineid = machineid)
 
@@ -429,5 +428,11 @@ class CSLibvirtNodeDriver():
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+    
+    def ex_snapshots_can_be_deleted_while_running(self):
+        """
+        FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
+        """
+        return False
 
 
