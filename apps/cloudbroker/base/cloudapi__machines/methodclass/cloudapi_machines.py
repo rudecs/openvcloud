@@ -380,7 +380,10 @@ class cloudapi_machines(BaseActor):
         if realstatus != machine.status:
             machine.status = realstatus
             self.models.vmachine.set(machine)
-        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
+        acl = list()
+        for ace in machine.acl:
+            acl.append({'userGroupId': ace.userGroupId, 'type': ace.type, 'right': ace.right})
+        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
