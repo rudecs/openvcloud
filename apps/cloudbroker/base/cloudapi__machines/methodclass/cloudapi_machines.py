@@ -702,3 +702,47 @@ class cloudapi_machines(BaseActor):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
+    @authenticator.auth(acl='C')
+    @audit()
+    def addUser(self, machineId, userId, accessType, **kwargs):
+        """
+        Gives a user access to a vmachine
+        machineId -- ID of a vmachine to share
+        userId -- ID of a user to share with
+        accessType -- 'R' for read only access, 'W' for Write access
+        return bool
+        """
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'),]
+        if not j.core.portal.active.auth.userExists(userId):
+            ctx.start_response('404 Not Found', headers)
+            return False
+        else:
+            vmachine = self.models.vmachine.get(machineId)
+            for ace in vmachine.acl:
+                if ace.userGroupId == userId and ace.right == accessType:
+                    return True
+            acl = vmachine.new_acl()
+            acl.userGroupId = userId
+            acl.type = 'U'
+            acl.right = accessType
+            return self.models.vmachine.set(vmachine)[0]
+
+    @authenticator.auth(acl='D')
+    @audit()
+    def deleteUser(self, machineId, userId, **kwargs):
+        """
+        Revokes user's access to a vmachine
+        machineId -- ID of a vmachine
+        userId -- ID of a user to revoke their access
+        return bool
+        """
+        machineId = int(machineId)
+        vmachine = self.models.vmachine.get(machineId)
+        for ace in vmachine.acl[:]:
+            if ace.userGroupId == userId:
+                vmachine.acl.remove(ace)
+                self.models.vmachine.set(vmachine)
+                return True
+        return False
