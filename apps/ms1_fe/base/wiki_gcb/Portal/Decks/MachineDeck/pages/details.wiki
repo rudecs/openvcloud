@@ -1,4 +1,8 @@
-
+{{html:
+<div class="txt-center">
+    <div class="alert alert-danger width-40" style="padding: 3px; margin: 0 auto !important;">Test</div>
+</div>
+}}
 h1. Manage Machine
 {{html:
 <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
@@ -287,6 +291,11 @@ h1. Manage Machine
       <tab heading="Change Log" active="tabactive.changelog">
         <div id="logging" class="tab-pane">
             {{include:machine_history}}
+        </div>
+      </tab>
+      <tab heading="Sharing" active="tabactive.sharing">
+        <div id="sharing" class="tab-pane">
+            {{include:machine_share}}
         </div>
       </tab>
 </tabset>

@@ -132,6 +132,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 0,
             "id": 0,
+            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}]
         }, {
             "cloudspaceId":1,
             "status": "HALTED",
@@ -143,6 +144,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 1,
             "id": 1,
+            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}]
         }]);
     }
 
@@ -729,7 +731,7 @@ defineApiStub = function ($httpBackend) {
             return [500, "Templates couldn't found!"];
         }
     });
-    $httpBackend.whenGET('/locations/list?authkey=yep123456789').respond(
+    $httpBackend.whenGET('/locations/list').respond(
         [{'_ckey': '',
         '_meta': ['osismodel', 'cloudbroker', 'location', 1],
         'flag': 'uk',
@@ -755,4 +757,13 @@ defineApiStub = function ($httpBackend) {
         'locationCode': 'ca1',
         'name': 'Canada'}]
         );
+
+    $httpBackend.whenGET(/^\/machines\/addUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        machine.acl.push({ type: 'U', guid: '', right: params.accessType , userGroupId: params.userId });
+        MachinesList.save(machine);
+        
+        return [200, '15'];
+    });
 };
