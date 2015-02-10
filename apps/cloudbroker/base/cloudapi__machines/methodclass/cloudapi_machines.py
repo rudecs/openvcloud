@@ -385,7 +385,7 @@ class cloudapi_machines(BaseActor):
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl='A')
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
@@ -446,7 +446,7 @@ class cloudapi_machines(BaseActor):
         snapshot = provider.client.ex_snapshot(node, name)
         return snapshot['name']
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='R')
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
@@ -457,7 +457,7 @@ class cloudapi_machines(BaseActor):
                 result.append(snapshot)
         return result
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='D')
     @audit()
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
@@ -586,7 +586,7 @@ class cloudapi_machines(BaseActor):
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl='C')
     @audit()
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
         """
@@ -681,7 +681,7 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl='A')
     @audit()
     def listExports(self, machineId, status, **kwargs):
         """
@@ -720,7 +720,9 @@ class cloudapi_machines(BaseActor):
         else:
             vmachine = self.models.vmachine.get(machineId)
             for ace in vmachine.acl:
-                if ace.userGroupId == userId and ace.right == accessType:
+                if ace.userGroupId == userId:
+                    ace.right = accessType
+                    self.models.vmachine.set(vmachine)
                     return True
             acl = vmachine.new_acl()
             acl.userGroupId = userId
@@ -746,3 +748,15 @@ class cloudapi_machines(BaseActor):
                 self.models.vmachine.set(vmachine)
                 return True
         return False
+
+    @authenticator.auth(acl='C')
+    @audit()
+    def updateUser(self, machineId, userId, accessType, **kwargs):
+        """
+        Updates user's access rights to a vmachine
+        machineId -- ID of a vmachine to share
+        userId -- ID of a user to share with
+        accessType -- 'R' for read only access, 'W' for Write access
+        return bool
+        """
+        return self.addUser(machineId, userId, accessType, **kwargs)
