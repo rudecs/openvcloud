@@ -42,8 +42,9 @@ Configure your virtual machine by choosing your package, server OS and additiona
         <div class="machineList" >
             <ul class="storage-size-list inline-block margin-all-none padding-all-none">
              <li ng-repeat="diskSize in packageDisks">
+             <h1></h1>
                 <button type="button" class="btn btn-selector table-cell disk disk-{[diskSize]}" ng-class="{active : $first}" ng-model="machine.disksize" ng-click='activeDisk(diskSize)'>
-                  {[diskSize]} GB at SSD speed<br>Included
+                  {[diskSize]} GB at SSD speed<br><span ng-if="$first">Included</span>
                 </button>
               </li>
             </ul>

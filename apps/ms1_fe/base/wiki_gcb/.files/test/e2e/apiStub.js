@@ -153,7 +153,7 @@ defineApiStub = function ($httpBackend) {
             "description": "",
             "type": "Windows",
             "id": 0,
-            "size": 50
+            "size": 65
         },
         {
             "name": "Linux 13.04 image",
@@ -161,7 +161,7 @@ defineApiStub = function ($httpBackend) {
             "description": "",
             "type": "Ubuntu",
             "id": 1,
-            "size": 50
+            "size": 100
         },
         {
             "name": "first template",
@@ -169,7 +169,7 @@ defineApiStub = function ($httpBackend) {
             "description": "description for first template",
             "type": "Custom Templates",
             "id": 2,
-            "size": 50
+            "size": 150
         },
         {
             "name": "ssssss template",
@@ -177,7 +177,7 @@ defineApiStub = function ($httpBackend) {
             "description": "",
             "type": "Custom Templates",
             "id": 3,
-            "size": 50
+            "size": 200
         }
     ];
 
@@ -204,7 +204,7 @@ defineApiStub = function ($httpBackend) {
         "id": 1,
         "name": "",
         "memory": 512,
-        "disks": [70, 80, 90]
+        "disks": [80, 90, 70]
         },
         {
         "vcpus": 12,
@@ -220,7 +220,7 @@ defineApiStub = function ($httpBackend) {
         "id": 2,
         "name": "",
         "memory": 1024,
-        "disks": [130, 140, 150]
+        "disks": [150, 130, 140]
         },
         {
         "vcpus": 16,
