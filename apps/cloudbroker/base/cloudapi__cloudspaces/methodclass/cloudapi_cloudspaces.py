@@ -249,6 +249,7 @@ class cloudapi_cloudspaces(BaseActor):
             self.models.cloudspace.set(cloudspace)
         return change
 
+    @authenticator.auth(acl='A')
     @audit()
     def list(self, **kwargs):
         """
@@ -296,7 +297,7 @@ class cloudapi_cloudspaces(BaseActor):
     @authenticator.auth(acl='C')
     def getDefenseShield(self, cloudspaceId, **kwargs):
         """
-        Get informayion about the defense sheild
+        Get information about the defense shield
         param:cloudspaceId id of the cloudspace
         """
         ctx = kwargs['ctx']
