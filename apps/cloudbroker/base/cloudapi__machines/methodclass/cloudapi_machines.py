@@ -37,7 +37,7 @@ class cloudapi_machines(BaseActor):
         actionname = "%s_node" % actiontype.lower()
         method = getattr(provider.client, actionname, None)
         if not method:
-            method = getattr(provider.client, "ex_%s" % actiontype.lower(), None)
+            method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
             if not method:
                 raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
         if newstatus and newstatus != machine.status:
@@ -65,7 +65,7 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='X')
     @audit()
     def pause(self, machineId, **kwargs):
-        return self._action(machineId, 'suspend', enums.MachineStatus.SUSPENDED)
+        return self._action(machineId, 'pause', enums.MachineStatus.PAUSED)
 
     @authenticator.auth(acl='X')
     @audit()
@@ -113,7 +113,6 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
         image.name = templatename
-        image.referenceId = ""
         image.type = 'Custom Templates'
         m = {}
         m['stackId'] = machine.stackId
@@ -128,7 +127,12 @@ class cloudapi_machines(BaseActor):
         stack = self.models.stack.get(machine.stackId)
         stack.images.append(imageid)
         self.models.stack.set(stack)
-        provider.client.ex_createTemplate(node, templatename, imageid, basename)
+        template = provider.client.ex_create_template(node, templatename, imageid, basename)
+        # Change status of image to created after successful creation
+        image = self.models.image.get(imageid)
+        image.status = 'CREATED'
+        image.referenceId = str(template['id'])
+        imageid = self.models.image.set(image)[0]
         return imageid
 
     @authenticator.auth(acl='C')
@@ -355,6 +359,7 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node = self._getProviderAndNode(machineId)
+        state = node.state
         machine = self._getMachine(machineId)
         m = {}
         m['stackId'] = machine.stackId
@@ -362,25 +367,29 @@ class cloudapi_machines(BaseActor):
         m['sizeId'] = machine.sizeId
         osImage = self.models.image.get(machine.imageId).name
         storage = self._getStorage(m)
-        node = provider.client.ex_getDomain(node)
+        node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
-            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-            fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-            try:
-                ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
-                if ipaddress:
-                    machine.nics[0].ipAddress= ipaddress
-                    self.models.vmachine.set(machine)
-            except:
-                pass # VFW not deployed yet
-        realstatus = enums.MachineStatusMap.getByValue(node.state)
+            if node.private_ips:
+	        machine.nics[0].ipAddress = node.private_ips[0]
+            else: 
+                cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+                fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+                try:
+                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+                    if ipaddress:
+                        machine.nics[0].ipAddress= ipaddress
+                        self.models.vmachine.set(machine)
+                except:
+                    pass # VFW not deployed yet
+
+        realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name)
         if realstatus != machine.status:
             machine.status = realstatus
             self.models.vmachine.set(machine)
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
+                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
     @authenticator.auth(acl='R')
     @audit()
@@ -399,6 +408,9 @@ class cloudapi_machines(BaseActor):
         results = self.models.vmachine.search(query)[1:]
         machines = []
         for res in results:
+            provider, node = self._getProviderAndNode(res['id'])
+            if node.state == 'DESTROYED':
+                continue
             storage = self._getStorage(res)
             if storage:
                 res['storage'] = storage.disk
@@ -418,7 +430,16 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        return provider, self.cb.Dummy(id=machine.referenceId)
+        state = 'DESTROYED'
+        try:
+            info = provider.client.ex_get_node_details(machine.referenceId)
+            state = info.state
+        except Exception:
+            # Machine is no more valid / mark it as destroyed
+            machine = self.models.vmachine.get(machineId)
+            machine.status = "DESTROYED"
+            self.models.vmachine.set(machine)
+        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
 
     @authenticator.auth(acl='C')
     @audit()
@@ -434,20 +455,20 @@ class cloudapi_machines(BaseActor):
         if not modelmachine.status == enums.MachineStatus.RUNNING:
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be created from a running Machine bucket'
-        snapshots = provider.client.ex_listsnapshots(node)
+        snapshots = provider.client.ex_list_snapshots(node)
         if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
             return 'Max 5 snapshots allowed'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
-        snapshot = provider.client.ex_snapshot(node, name)
+        snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot['name']
 
     @authenticator.auth(acl='C')
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        snapshots = provider.client.ex_listsnapshots(node)
+        snapshots = provider.client.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:
             if not snapshot['name'].endswith('_DELETING'):
@@ -459,13 +480,15 @@ class cloudapi_machines(BaseActor):
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
-        if not modelmachine.status == enums.MachineStatus.RUNNING:
+        
+        if not modelmachine.status == enums.MachineStatus.RUNNING and\
+                not provider.client.ex_snapshots_can_be_deleted_while_running():
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'A snapshot can only be removed from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
-        return provider.client.ex_snapshot_delete(node, name)
+        return provider.client.ex_delete_snapshot(node, name)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -478,7 +501,13 @@ class cloudapi_machines(BaseActor):
            return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
-        return provider.client.ex_snapshot_rollback(node, name)
+        res =  provider.client.ex_rollback_snapshot(node, name, )
+        if isinstance(res, str):
+             modelmachine.referenceId = res
+             modelmachine.status = enums.MachineStatus.RUNNING
+             self.models.vmachine.set(modelmachine)
+             return True
+        return res
 
     @authenticator.auth(acl='C')
     @audit()

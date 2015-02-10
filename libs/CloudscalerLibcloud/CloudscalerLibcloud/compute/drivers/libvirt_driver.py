@@ -33,7 +33,7 @@ class CSLibvirtNodeDriver():
         self._rndrbn_vnc = 0
         self.id = id
         self.gid = gid
-        self.name = id
+        self.name = 'libvirt'
         self.uri = uri
 
 
@@ -70,7 +70,7 @@ class CSLibvirtNodeDriver():
             driver=self,
             disk=size['disk'])
 
-    def list_images(self, location=None):
+    def ex_list_images(self, location=None):
         """
         Libvirt doesn't has a idea of images, because of this we are using
         the cloudscalers internal images api.
@@ -242,19 +242,18 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
-
-    def ex_createTemplate(self, node, name, imageid, snapshotbase=None):
+    def ex_create_template(self, node, name, imageid, snapshotbase=None):
         domain = self._get_domain_for_node(node=node)
-        self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
-        return True
+        return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
 
-    def ex_getDomain(self, node):
+    def ex_get_node_details(self, node_id):
+        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
         node = self._from_agent_to_node(self._get_domain_for_node(node))
         backendnode = self.backendconnection.getNode(node.id)
         node.extra['macaddress'] = backendnode['macaddress']
         return node
 
-    def ex_snapshot(self, node, name, snapshottype='external'):
+    def ex_create_snapshot(self, node, name, snapshottype='external'):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain['XMLDesc'])
         diskfiles = self._get_domain_disk_file_names(xml)
@@ -263,13 +262,13 @@ class CSLibvirtNodeDriver():
         snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype, time=t, poolpath=POOLPATH)
         return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
 
-    def ex_listsnapshots(self, node):
+    def ex_list_snapshots(self, node):
         return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
 
-    def ex_snapshot_delete(self, node, name):
+    def ex_delete_snapshot(self, node, name):
         return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, name=name)
 
-    def ex_snapshot_rollback(self, node, name):
+    def ex_rollback_snapshot(self, node, name):
         return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, name=name)
 
     def _get_domain_disk_file_names(self, dom):
@@ -313,7 +312,7 @@ class CSLibvirtNodeDriver():
         id_ = self._rndrbn_vnc % len(urls)
         url = urls[id_]
         self._rndrbn_vnc += 1
-        token = self.backendconnection.storeInfo(self.ex_get_console_info(node), 300)
+        token = self.backendconnection.storeInfo(self.ex_get_console_output(node), 300)
         return url + "%s" % token
 
     def list_nodes(self):
@@ -328,23 +327,39 @@ class CSLibvirtNodeDriver():
             noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
-    def ex_stop(self, node):
+    def ex_stop_node(self, node):
         machineid = node.id
         return self._execute_agent_job('stopmachine', queue='hypervisor', machineid = machineid)
 
-    def ex_suspend(self, node):
+    def ex_suspend_node(self, node):
         machineid = node.id
         return self._execute_agent_job('suspendmachine', queue='hypervisor', machineid = machineid)
 
-    def ex_resume(self, node):
+    def ex_resume_node(self, node):
         machineid = node.id
         return self._execute_agent_job('resumemachine', queue='hypervisor', machineid = machineid)
 
-    def ex_reboot(self, node):
-        machineid = node.id
-        return self._execute_agent_job('rebootmachine', queue='hypervisor', machineid = machineid)
 
-    def ex_start(self, node):
+    def ex_pause_node(self, node):
+        machineid = node.id
+        return self._execute_agent_job('pausemachine', queue='hypervisor', machineid = machineid)
+
+
+    def ex_unpause_node(self, node):
+        machineid = node.id
+        return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid = machineid)
+    
+
+    def ex_soft_reboot_node(self, node):
+        machineid = node.id
+        return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid = machineid)
+
+
+    def ex_hard_reboot_node(self, node):
+        machineid = node.id
+        return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid = machineid)
+
+    def ex_start_node(self, node):
         backendnode = self.backendconnection.getNode(node.id)
         networkid = backendnode['networkid']
         xml = self._get_persistent_xml(node)
@@ -354,7 +369,7 @@ class CSLibvirtNodeDriver():
             return -1
         return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)    
  
-    def ex_get_console_info(self, node):
+    def ex_get_console_output(self, node):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain['XMLDesc'])
         graphics = xml.find('devices/graphics')
@@ -365,7 +380,7 @@ class CSLibvirtNodeDriver():
         return info
 
     def ex_clone(self, node, size, name):
-        snap = self.ex_snapshot(node, None, 'external')
+        snap = self.ex_create_snapshot(node, None, 'external')
         snapname = snap['name']
         snapxml = snap['xml']
         diskname = self._get_snapshot_disk_file_names(snapxml)[0]
@@ -377,7 +392,11 @@ class CSLibvirtNodeDriver():
         machineid = node.id
         return self._execute_agent_job('backupmachine', wait=False, machineid=machineid, backupname=exportname, location=uncpath, emailaddress=emailaddress)
 
-    def ex_storageaction(self, node):
+    def ex_is_storage_action_running(self, node):
+        """
+        Check if an action is being running that is doing some interactions
+        with the disk
+        """
         machineid = node.id
         return self._execute_agent_job('checkstorageaction', wait=True, machineid=machineid)
 
@@ -408,5 +427,11 @@ class CSLibvirtNodeDriver():
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
+    
+    def ex_snapshots_can_be_deleted_while_running(self):
+        """
+        FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
+        """
+        return False
 
 
