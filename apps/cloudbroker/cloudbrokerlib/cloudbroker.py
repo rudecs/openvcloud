@@ -119,7 +119,7 @@ class CloudBroker(object):
     def stackImportSizes(self, stackId):
         """
         Import disk sizes from a provider
-        
+
         :param      stackId: Stack ID
         :type       id: ``int``
 
@@ -128,13 +128,12 @@ class CloudBroker(object):
         provider = CloudProvider(stackId)
         if not provider:
             raise RuntimeError('Provider not found')
-        
+
         stack = models.stack.get(stackId)
         gridId = stack.gid
         cb_sizes = models.size.search({})[1:] # cloudbroker sizes
         psizes = {} #provider sizes
-        
-        
+
         # provider sizes formated as {(memory, cpu):[disks]}. i.e {(2048, 2):[10, 20, 30]}
         for s in provider.client.list_sizes():
             md = (s.ram, s.extra['vcpus'])
