@@ -48,12 +48,28 @@ class cloudapi_cloudspaces(BaseActor):
             return 'Unexisting user'
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cs = cloudspace
-            acl = cs.new_acl()
+            for ace in cloudspace.acl:
+                if ace.userGroupId == userId:
+                    ace.right = accesstype
+                    return self.models.cloudspace.set(cloudspace)[0]
+            acl = cloudspace.new_acl()
             acl.userGroupId = userId
             acl.type = 'U'
             acl.right = accesstype
-            return self.models.cloudspace.set(cs)[0]
+            return self.models.cloudspace.set(cloudspace)[0]
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
+        """
+        Updates a user access rights.
+        Access rights can be 'R' or 'W'
+        params:cloudspaceId id of the cloudspace
+        param:userId id of the user to give access
+        param:accesstype 'R' for read only access, 'W' for Write access
+        result bool
+        """
+        return self.addUser(cloudspaceId, userId, accesstype)
 
     def _listActiveCloudSpaces(self, accountId):
         account = self.models.account.get(accountId)
