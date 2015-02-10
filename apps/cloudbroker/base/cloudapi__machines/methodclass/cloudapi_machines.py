@@ -219,9 +219,6 @@ class cloudapi_machines(BaseActor):
         diskid = self.models.disk.set(disk)[0]
         machine.disks.append(diskid)
 
-        # inherit cloudspace acl
-        machine.acl = cloudspace.acl
-
         account = machine.new_account()
         if image.type == 'Custom Templates':
             account.login = 'Custom login'
@@ -550,7 +547,6 @@ class cloudapi_machines(BaseActor):
             ctx = kwargs['ctx']
             ctx.start_response('409 Conflict', [])
             return 'Selected name already exists'
-        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         clone = self.cb.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
         clone.name = name
@@ -558,7 +554,7 @@ class cloudapi_machines(BaseActor):
         clone.sizeId = machine.sizeId
         clone.imageId = machine.imageId
         clone.cloneReference = machine.id
-        clone.acl = cloudspace.acl
+        clone.acl = machine.acl
 
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -730,7 +726,8 @@ class cloudapi_machines(BaseActor):
             acl.userGroupId = userId
             acl.type = 'U'
             acl.right = accessType
-            return self.models.vmachine.set(vmachine)[0]
+            self.models.vmachine.set(vmachine)
+            return True
 
     @authenticator.auth(acl='D')
     @audit()
