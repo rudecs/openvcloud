@@ -385,7 +385,6 @@ class cloudapi_machines(BaseActor):
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-    @authenticator.auth(acl='A')
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
@@ -395,9 +394,20 @@ class cloudapi_machines(BaseActor):
         result list
 
         """
+        ctx = kwargs['ctx']
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+
+        user = ctx.env['beaker.session']['user']
+        userobj = j.core.portal.active.auth.getUserInfo(user)
+        groups = userobj.groups
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        auth = authenticator.auth([])
+        acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
         q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        if 'R' not in acl and 'A' not in acl:
+            q['acl.userGroupId'] = user
+
         query = {'$query': q, '$fields': fields}
         results = self.models.vmachine.search(query)[1:]
         machines = []
@@ -681,7 +691,7 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl='R')
     @audit()
     def listExports(self, machineId, status, **kwargs):
         """
