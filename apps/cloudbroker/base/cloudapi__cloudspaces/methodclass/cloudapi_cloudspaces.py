@@ -265,7 +265,6 @@ class cloudapi_cloudspaces(BaseActor):
             self.models.cloudspace.set(cloudspace)
         return change
 
-    @authenticator.auth(acl='A')
     @audit()
     def list(self, **kwargs):
         """

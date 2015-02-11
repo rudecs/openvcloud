@@ -385,7 +385,6 @@ class cloudapi_machines(BaseActor):
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra['locked']}
 
-    @authenticator.auth(acl='A')
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
@@ -395,9 +394,20 @@ class cloudapi_machines(BaseActor):
         result list
 
         """
+        ctx = kwargs['ctx']
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+
+        user = ctx.env['beaker.session']['user']
+        userobj = j.core.portal.active.auth.getUserInfo(user)
+        groups = userobj.groups
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        auth = authenticator.auth([])
+        acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
         q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        if 'R' not in acl and 'A' not in acl:
+            q['acl.userGroupId'] = user
+
         query = {'$query': q, '$fields': fields}
         results = self.models.vmachine.search(query)[1:]
         machines = []
@@ -681,7 +691,7 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl='R')
     @audit()
     def listExports(self, machineId, status, **kwargs):
         """
@@ -701,7 +711,7 @@ class cloudapi_machines(BaseActor):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='U')
     @audit()
     def addUser(self, machineId, userId, accessType, **kwargs):
         """
@@ -731,7 +741,7 @@ class cloudapi_machines(BaseActor):
             self.models.vmachine.set(vmachine)
             return True
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl='U')
     @audit()
     def deleteUser(self, machineId, userId, **kwargs):
         """
@@ -749,7 +759,7 @@ class cloudapi_machines(BaseActor):
                 return True
         return False
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='U')
     @audit()
     def updateUser(self, machineId, userId, accessType, **kwargs):
         """

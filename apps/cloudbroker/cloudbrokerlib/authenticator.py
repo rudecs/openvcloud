@@ -6,6 +6,12 @@ class auth(object):
         self.acl = set(acl)
         self.models = models
 
+    def expandAclFromVMachine(self, users, groups, vmachine):
+        fullacl = self.expandAcl(users, groups, vmachine.acl)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        fullacl.update(self.expandAclFromCloudspace(users, groups, cloudspace))
+        return fullacl
+
     def expandAclFromCloudspace(self, users, groups, cloudspace):
         fullacl = self.expandAcl(users, groups, cloudspace.acl)
         account = self.models.account.get(cloudspace.accountId)
@@ -46,20 +52,20 @@ class auth(object):
                     return func(*args, **kwargs)
                 account = None
                 cloudspace = None
+                machine = None
                 if 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(int(kwargs['accountId']))
                     fullacl.update(self.expandAclFromAccount(user, groups, account))
                 elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
-                elif 'machineId' in kwargs:
+                elif 'machineId' in kwargs and kwargs['machineId']:
                     machine = self.models.vmachine.get(int(kwargs['machineId']))
-                    cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-                    fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
+                    fullacl.update(self.expandAclFromVMachine(user, groups, machine))
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:
                     fullacl.update('CXDRU')
-                if ((cloudspace or account) and not self.acl.issubset(fullacl)):
+                if ((cloudspace or account or machine) and not self.acl.issubset(fullacl)):
                     ctx.start_response('403 No ace rule found for user %s for access %s' % (user, ''.join(self.acl)), [])
                     return ''
                 elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
