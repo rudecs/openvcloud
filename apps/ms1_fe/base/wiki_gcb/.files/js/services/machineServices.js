@@ -232,9 +232,9 @@ angular.module('cloudscalers.services')
     })
     .factory('Size', function ($http) {
         return {
-            list: function () {
+            list: function (cloudspaceId) {
                 var sizes = [];
-                url = cloudspaceconfig.apibaseurl + '/sizes/list';
+                url = cloudspaceconfig.apibaseurl + '/sizes/list?cloudspaceId=' + cloudspaceId;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function (size) {

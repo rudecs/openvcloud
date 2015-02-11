@@ -9,12 +9,14 @@ class cloudapi_sizes(BaseActor):
 
     """
     @audit()
-    def list(self, **kwargs):
+    def list(self, cloudspaceId=None, **kwargs):
         """
         List the availabe flavors, filtering can be based on the user which is doing the request
         result list
 
         """
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
         fields = ['id', 'name', 'vcpus', 'memory', 'description', 'CU', 'disks']
-        results  = self.models.size.search({'$fields': fields})[1:]
+        results  = self.models.size.search({'$fields': fields, 'gids':cloudspace.gid})[1:]
         return results

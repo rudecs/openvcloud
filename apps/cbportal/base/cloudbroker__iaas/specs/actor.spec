@@ -30,3 +30,9 @@
         """
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:freeips list,, list of ips to mark as free in the subnet
+        
+    method:syncAvailableSizesToCloudbroker
+        """
+        synchronize IaaS Sizes/flavors from the libcloud model to the cloudbroker model
+        """
+        result:boolean
