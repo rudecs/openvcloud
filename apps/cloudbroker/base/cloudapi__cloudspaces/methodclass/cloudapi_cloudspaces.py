@@ -274,11 +274,28 @@ class cloudapi_cloudspaces(BaseActor):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'status': {'$ne': 'DISABLED'}}
-        disabledaccounts = self.models.account.search(query)[1:]
-        disabled = [account['id'] for account in disabledaccounts]
+        nondisabledaccounts = self.models.account.search(query)[1:]
+        nondisabled = [account['id'] for account in nondisabledaccounts]
+        cloudspaceaccess = set()
+
+        # get cloudspaces access via account
+        q = {'acl.userGroupId': user, 'status': {'$ne': 'DISABLED'}}
+        query = {'$query': q, '$fields': ['id']}
+        accountaccess = set(ac['id'] for ac in self.models.account.search(query)[1:])
+        q = {'accountId': {'$in': list(accountaccess)}}
+        query = {'$query': q, '$fields': ['id']}
+        cloudspaceaccess.update(cs['id'] for cs in self.models.cloudspace.search(query)[1:])
+
+        # get cloudspaces access via atleast one vm
+        q = {'acl.userGroupId': user, 'status': {'$ne': 'DESTROYED'}}
+        query = {'$query': q, '$fields': ['cloudspaceId']}
+        cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        q = {"accountId": {"$in": disabled}, "acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        q = {"accountId": {"$in": nondisabled}, 
+             "$or": [{"acl.userGroupId": user}, 
+                     {"id": {"$in": list(cloudspaceaccess)} }],
+             "status": {"$ne": "DESTROYED"}}
         query = {'$query': q, '$fields': fields}
         cloudspaces = self.models.cloudspace.search(query)[1:]
 
