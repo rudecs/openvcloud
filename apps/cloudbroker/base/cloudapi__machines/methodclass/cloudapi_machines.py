@@ -711,7 +711,7 @@ class cloudapi_machines(BaseActor):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='U')
     @audit()
     def addUser(self, machineId, userId, accessType, **kwargs):
         """
@@ -741,7 +741,7 @@ class cloudapi_machines(BaseActor):
             self.models.vmachine.set(vmachine)
             return True
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl='U')
     @audit()
     def deleteUser(self, machineId, userId, **kwargs):
         """
@@ -759,7 +759,7 @@ class cloudapi_machines(BaseActor):
                 return True
         return False
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='U')
     @audit()
     def updateUser(self, machineId, userId, accessType, **kwargs):
         """
