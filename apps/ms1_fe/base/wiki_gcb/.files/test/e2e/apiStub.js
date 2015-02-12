@@ -132,6 +132,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 0,
             "id": 0,
+            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}, {"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 4"}]
         }, {
             "cloudspaceId":1,
             "status": "HALTED",
@@ -143,6 +144,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 1,
             "id": 1,
+            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}]
         }]);
     }
 
@@ -764,4 +766,32 @@ defineApiStub = function ($httpBackend) {
         'locationCode': 'ca1',
         'name': 'Canada'}]
         );
+
+    $httpBackend.whenGET(/^\/machines\/addUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        machine.acl.push({ type: 'U', guid: '', right: params.accessType , userGroupId: params.userId });
+        MachinesList.save(machine);
+        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/deleteUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
+        machine.acl.splice(machine.acl.indexOf(userAcl), 1);
+        MachinesList.save(machine);
+        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/updateUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
+        machine.acl[machine.acl.indexOf(userAcl)].right = params.accessType;
+        MachinesList.save(machine);        
+        return [200, '15'];
+    });
 };

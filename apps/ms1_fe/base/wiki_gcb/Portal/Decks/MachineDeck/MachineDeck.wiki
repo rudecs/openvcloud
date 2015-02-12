@@ -16,5 +16,6 @@
     <script src="/$$space/.files/js/controllers/Machines/MachinePricingController.js" type="text/javascript"></script>
 
     <script src="/$$space/.files/js/controllers/Machines/ConsoleController.js" type="text/javascript"></script>
+    <script src="/$$space/.files/js/controllers/Machines/MachineShareController.js" type="text/javascript"></script>
 
 }}

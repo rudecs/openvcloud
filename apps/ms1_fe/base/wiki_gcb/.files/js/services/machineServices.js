@@ -128,7 +128,7 @@ angular.module('cloudscalers.services')
             },
             get: function (machineid) {
                 var machine = {
-                    id: machineid
+                    id: machineid,
                 };
                 url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
                 $http.get(url).success(
@@ -137,6 +137,11 @@ angular.module('cloudscalers.services')
                                 data.status = 'PAUSED';
                             }
                         _.extend(machine, data);
+                        _.each(data.acl, function (acl, i) {
+                            if(acl.right.indexOf("U") > -1 && acl.right.indexOf("U") > -1){
+                                data.acl[i].right = "ACDRUX";
+                            }
+                        });
                     }).error(
                     function (data, status, headers, config) {
                         machine.error = status;
@@ -209,7 +214,41 @@ angular.module('cloudscalers.services')
                         return result.data; },
                           function(reason) { 
                             return $q.reject(reason); });
-            }
+            },
+            addUser: function(machineId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/addUser?machineId=' + machineId +
+                          '&accessType=' + accessType + '&userId=' + user)
+                    .then(
+                            function(result){ return result.data;},
+                            function(reason) { return $q.reject(reason);});
+            },
+            deleteUser: function(machineId, user) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/deleteUser?machineId=' + machineId +
+                                 '&userId=' + user)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
+            macineAccessRights: function(machineId, user) {
+                var accessRights = [{
+                  name: 'Read',
+                  value: 'R'
+                }, 
+                {
+                  name: 'Read/Write',
+                  value: 'RCX'
+                },
+                {
+                  name: 'Admin',
+                  value: 'ACDRUX'
+                }];
+                return accessRights;
+            },
+            updateUser: function(machineId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/updateUser?machineId=' + machineId +
+                                 '&userId=' + user + '&accessType=' + accessType)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
         }
     })
     .factory('Image', function ($http) {

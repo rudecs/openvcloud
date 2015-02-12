@@ -1,0 +1,72 @@
+<div ng-controller="MachineShareController">
+	<div ng-show="shareMachineMessage" class="txt-center">
+	    <div class="share-machine-message alert alert-{[shareMachineMessageStyle]} width-40">{[shareMachineMessageTxt]}</div>
+	</div>
+	<em>Provide other users access to {[machine.name]} machine by adding their Mothership1 user name and specify access right.</em>
+	<form ng-submit="addUser()">
+	<div class="table-responsive margin-top-medium">
+	    <table class="table users-table">
+	        <tr class="header">
+	            <th class="username-text-container width-60">
+	                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
+	            </th>
+	            <th class="txt-center">
+	                <select class="access-rights" ng-model="newUser.access" required>
+	                	<option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
+	                </select>
+	            </th>
+	            <th class="txt-center"><input type="submit" class="btn" style="padding: 2px 10px;" value="Add"></input></th>
+	        </tr>
+	        <tr>
+	            <td colspan=2 ng-cloak ng-show="userError">
+	                <div class="alert alert-error margin-bottom-none">
+	                    {[ userError ]}
+	                </div>
+	            </td>
+	        </tr>
+	        <tr ng-cloak ng-repeat="user in machine.acl">
+	            <td>{[user.userGroupId]}</td>
+			    <td class="txt-center">
+			    	<span ng-switch on="user.right">
+			    		<span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>
+			    		<span class="access-right alert alert-warning" ng-switch-when="RCX" style="padding: 3px 7px;"> Read/Write </span>
+			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
+			    	</span>
+			    </td>
+	            <td class="txt-center"><a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a><a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17"></a></td>
+	        </tr>
+	    </table>
+        <script type="text/ng-template" id="deleteUserDialog.html">
+            <form name="deleteUserform" ng-submit="cancelRemoveUser()">
+                <div class="modal-header">
+                    <h3>Remove user access right</h3>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove user access right?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+                    <button type="submit" class="btn btn-primary" autofocus>Cancel</button>
+                </div>
+            </form>
+        </script>
+        <script type="text/ng-template" id="editUserDialog.html">
+            <form name="editUserform" ng-submit="cancelEditUser()">
+                <div class="modal-header">
+                    <h3>Update access right for {[userName]}</h3>
+                </div>
+                <div class="modal-body txt-center width-full">
+                    <select class="access-rights update width-40" ng-model="editUserAccess">
+	                	<option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
+	                </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ok btn-primary" ng-click="ok(editUserAccess)">Ok</button>
+                    <button type="submit" class="btn" autofocus>Cancel</button>
+                </div>
+            </form>
+        </script>
+	</div>
+	</form>	
+</div>
+
