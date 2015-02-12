@@ -1,8 +1,3 @@
-{{html:
-<div class="txt-center">
-    <div class="alert alert-danger width-40" style="padding: 3px; margin: 0 auto !important;">Test</div>
-</div>
-}}
 h1. Manage Machine
 {{html:
 <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">

@@ -310,6 +310,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .access-rights { border: 1px solid #FFF; padding: 4px 12px; color: #333; background: #fff; }
 .users-table tr:hover{ background-color: #EBF3F5; }
 .access-right { font-size: 85%; border-radius: 5px; width: 15px; }
+.share-machine-message { margin: 0 auto !important; top: -15px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.access-rights.update { border: 1px solid rgb(205, 194, 194); }
 /* end of machine details page*/
 
 /* Decks Public Pages */
