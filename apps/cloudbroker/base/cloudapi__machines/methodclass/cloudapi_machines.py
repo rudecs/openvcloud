@@ -472,6 +472,10 @@ class cloudapi_machines(BaseActor):
         if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
             return 'Max 5 snapshots allowed'
+        node = provider.client.ex_get_node_details(node.id)
+        if node.extra.get('locked', False):
+            ctx.start_response('409 Conflict', [])
+            return 'Cannot create snapshot on a locked machine'
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
