@@ -16,6 +16,10 @@ log = False
 
 def action(vm_id):
     import JumpScale.lib.qemu_img
+    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    lv = LibvirtUtil()
+    vm = lv.connection.lookupByName('vm-%s' % vm_id)
 
-    DISK_PATH = j.system.fs.joinPaths('/mnt', 'vmstor', 'vm-%s' % vm_id, 'vm-%s-base.qcow2' % vm_id)
+    DISK_PATH = lv._getDomainDiskFiles(vm)[0]
+
     return j.system.platform.qemu_img.info(DISK_PATH)
