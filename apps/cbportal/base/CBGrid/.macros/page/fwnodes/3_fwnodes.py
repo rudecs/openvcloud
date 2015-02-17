@@ -1,5 +1,6 @@
 
 def main(j, args, params, tags, tasklet):
+    import json
     gid = args.getTag('gid')
     syscl = j.clients.osis.getNamespace('system')
     vcl = j.clients.osis.getNamespace('vfw')
@@ -10,10 +11,9 @@ def main(j, args, params, tags, tasklet):
             itemdata = ['<a href=/grid/node?id=%s>%s</a>' % (nid, name)]
             itemdata.append(str(nr))
             aaData.append(itemdata)
-        aaData = str(aaData)
-        return aaData.replace('[[', '[ [').replace(']]', '] ]')
+        return json.dumps(aaData)
 
-    query = {'roles':{'$in':['fw']}}
+    query = {'roles':'fw'}
     if gid:
         query['gid'] = int(gid)
     fwnodes = syscl.node.search(query)[1:]

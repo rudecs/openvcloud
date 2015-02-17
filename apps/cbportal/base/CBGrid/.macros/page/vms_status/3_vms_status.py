@@ -15,8 +15,7 @@ def main(j, args, params, tags, tasklet):
             itemdata.append(str('<a href=node?id=%s>%s</a>' % (data['cpu_node_id'], data['cpu_node_name'])))
             itemdata.append(j.base.time.epoch2HRDateTime(data["epoch"]))
             aaData.append(itemdata)
-        aaData = str(aaData)
-        return aaData.replace('[[', '[ [').replace(']]', '] ]')
+        return json.dumps(aaData)
 
     cl = j.clients.redis.getByInstance('system')
 
