@@ -67,10 +67,10 @@ class auth(object):
                     fullacl.update('CXDRU')
                 if ((cloudspace or account or machine) and not self.acl.issubset(fullacl)):
                     ctx.start_response('403 Forbidden', [])
-                    return str('No ace rule found for user %s for access %s' % (user, ''.join(self.acl)))
+                    return str('User: "%s" isn\'t allowed to execute this action. No enough permissions' % user)
                 elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
                     ctx.start_response('403 Forbidden', [])
-                    return str('Method requires admin privileges')
+                    return str('Method requires "admin" privileges')
 
             return func(*args, **kwargs)
         return wrapper
