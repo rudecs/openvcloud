@@ -284,7 +284,7 @@ class cloudapi_users(BaseActor):
 
         locationurl = j.apps.cloudapi.locations.getUrl()
 
-        j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
+        j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
         account = self.models.account.new()
         account.name = username
         account.creationTime = now

@@ -10,7 +10,17 @@ GridPortal:/grid
 MS1Portal:/cbgrid
 }}
 
-{{menuadmin_cbgrid}}
+{{menuadmin:
+Accounts:/cbgrid/accounts
+Cloud Spaces:/cbgrid/cloudspaces
+Grid Nodes:/grid/nodes
+CPU Nodes:/cbgrid/stacks
+Status Overview:/grid/checkstatus
+Images:/cbgrid/images
+Networks:/cbgrid/networks
+Users:/cbgrid/users
+Virtual Machines:/cbgrid/vmachines
+}}
 {{menuspaces: class:brand name:Cloudbroker%20Grid marker:$$$spaces}}
 
 @block
