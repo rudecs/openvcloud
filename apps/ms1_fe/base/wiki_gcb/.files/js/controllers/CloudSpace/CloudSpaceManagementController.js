@@ -1,8 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceManagementController', ['$scope', 'CloudSpace', 'LoadingDialog','$ErrorResponseAlert','$modal','$window', '$timeout','LocationsService', function($scope, CloudSpace, LoadingDialog, $ErrorResponseAlert, $modal, $window, $timeout, LocationsService) {
 
-        $scope.cloudSpace = $scope.$parent.currentSpace.name;
-
 	$scope.getLocationInfo = function(locationcode){
         	return LocationsService.get(locationcode);
         }

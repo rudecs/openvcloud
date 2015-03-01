@@ -1,6 +1,6 @@
 {{html:
 <div ng-controller="CloudSpaceManagementController">
-	<h1>Settings for Cloud Space {[currentAccount.name]} / {[cloudSpace]}</h1>
+	<h1>Settings for Cloud Space {[currentAccount.name]} / {[currentSpace.name]}</h1>
 	<br>
 	<tabset class="clear-both">
 
