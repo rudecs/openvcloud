@@ -131,29 +131,26 @@ angular.module('cloudscalers.services')
                     id: machineid
                 };
                 url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        if(data.status === 'SUSPENDED'){
-                                data.status = 'PAUSED';
-                            }
-                        _.extend(machine, data);
-                    }).error(
-                    function (data, status, headers, config) {
-                        machine.error = status;
+                return $http.get(url).then(
+                    function(result) {
+                        if(result.data.status === 'SUSPENDED'){
+                            result.data.status = 'PAUSED';
+                        }
+                        return _.extend(machine, result.data);
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
-                return machine;
             },
             listSnapshots: function (machineid) {
-                var snapshotsResult = {};
                 var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        snapshotsResult.snapshots = data;
-                    }).error(
-                    function (data, status, headers, config) {
-                        snapshotsResult.error = status;
+                return $http.get(url).then(
+                    function(result) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
-                return snapshotsResult;
             },
             createSnapshot: function (machineId, name) {
             	var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
@@ -201,7 +198,13 @@ angular.module('cloudscalers.services')
             },
             getHistory: function(machineId) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/getHistory?size=100&machineId=' + machineId;
-                return $http.get(url);
+                return $http.get(url).then(
+                    function(result) {
+                        return _.sortBy(result.data, function(h) { return -h.epoch; });
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
+                    });
             },
             deleteTemplate: function(templateIndex) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)

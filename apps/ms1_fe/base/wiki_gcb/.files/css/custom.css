@@ -313,6 +313,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .edit-description-link:hover { text-decoration: underline; }
 .refresh-page { margin-bottom: -25px; }
 .description-textarea { min-height: 130px; width: 330px; }
+.gray-loader { font-size: 175%; text-align: center; margin-top: 5%; color: rgb(194, 190, 190); }
 /* end of machine details page*/
 
 /* Decks Public Pages */

@@ -2,7 +2,7 @@
 h1. Manage Machine
 {{html:
 <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
-<a ng-click="refreshPage()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
+<a ng-click="refreshData()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
     <i class="fa fa-refresh"></i>
     Refresh
 </a>
@@ -260,6 +260,9 @@ h1. Manage Machine
                 Take Snapshot
             </a>
             <div class="table-responsive margin-top-medium">
+                <div class="gray-loader" ng-hide="snapshots.length > 0">
+                    Loading Snapshots, Please wait..
+                </div>
                 <table class="table table-bordered table-striped" ng-show="snapshots.snapshots.length > 0">
                     <thead>
                         <tr>
@@ -269,7 +272,7 @@ h1. Manage Machine
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="snapshot in snapshots.snapshots">
+                        <tr ng-repeat="snapshot in snapshots">
                             <td width="45%">{[snapshot.name]}</td>
                             <td class="nowrap">
                                 {[snapshot.epoch * 1000 | date:'medium']}
