@@ -89,14 +89,17 @@ angular.module('cloudscalers.controllers')
                 if (machine){
                     machine.status = 'DESTROYED';
                 }
-                $scope.machines.splice( _.where($scope.machines, {id: $scope.machine.id}) , 1);
+                $scope.machines.splice( _.lwhere($scope.machines, {id: $scope.machine.id}) , 1);
                 $location.path("/list");
             });
         };
 
         var updatesnapshots = function(){
+            $scope.snapshots = {};
+            $scope.snapshotsLoader = true;
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
+                $scope.snapshotsLoader = false;
                 LoadingDialog.hide();
             }, function(reason) {
                 $ErrorResponseAlert(reason);

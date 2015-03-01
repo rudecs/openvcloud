@@ -13,7 +13,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 
 <tour step="steps.machineListTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineListTourStep')">
 <div id="tabbable">
-  <h1 ng-cloak>Machine Deck</h1>
+  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
     <fieldset>
 
@@ -29,7 +29,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
 
 <div class="table-responsive">
   <div class="gray-loader" ng-show="machinesLoader">
-   Loading machines, Please wait..
+      Loading, Please wait..
   </div>
   <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">
     <tr>
