@@ -24,6 +24,7 @@ angular.module('cloudscalers.controllers')
         changeSelectedTab($routeParams.activeTab);
         
         var retrieveMachineHistory = function() {
+            $scope.machineHistory = {};
             Machine.getHistory($routeParams.machineId)
                 .then(function(data) {
                     $scope.machineHistory = data;
