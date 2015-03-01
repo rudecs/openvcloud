@@ -184,7 +184,7 @@ class cloudapi_cloudspaces(BaseActor):
         results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
             ctx.start_response('409 Conflict', [])
-            return 'In order to delete a CloudSpace it can not contain Machine Buckets.'
+            return 'In order to delete a CloudSpace it can not contain Machines.'
         #The last cloudspace in a space may not be deleted
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         query  = {'accountId': cloudspace.accountId,
