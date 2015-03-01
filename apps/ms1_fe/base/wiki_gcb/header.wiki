@@ -106,7 +106,7 @@
             <li><a href="/$$space/ApiDocs">Machine API</a></li>
             <li><a href="/$$space/ApiS3">Storage API</a></li>
             <li><a href="../kb/">Knowledge Base</a></li>
-            <li><a href="http://support.mothership1.com">Support</a></li>
+            <li><a href="http://support.mothership1.com" target="_blank">Support</a></li>
             <li ng-show="userRightsOnAccountBilling"><a href="/$$space/AccountSettings">Billing</a></li>
             <li><a href="/$$space/CloudSpaceSettings" tourtip-step="1" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom">Cloud Space Settings</a></li>
           </ul>

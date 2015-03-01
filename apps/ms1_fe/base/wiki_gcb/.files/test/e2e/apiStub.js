@@ -73,6 +73,9 @@ defineApiStub = function ($httpBackend) {
     }
 
     var UsersList = LocalStorageItem('gcb:users');
+    if (!UsersList.get()) {
+        UsersList.set([{"username": "admin", "password": "admin"}]);
+    }
 
     $httpBackend.whenPOST('/users/authenticate').
     respond(function (method, url, data) {
