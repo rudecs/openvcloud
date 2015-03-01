@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert',
-        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window' , 
+        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
             $scope.isCollapsed = true;
 
             $scope.locations = {};
@@ -73,6 +73,11 @@ angular.module('cloudscalers.controllers')
                         function (cloudspaceId) {
                             //Wait a second, consistency on the api is not garanteed before that
                             $timeout(function(){
+                                var ua = window.navigator.userAgent;
+                                var msie = ua.indexOf("MSIE ");
+                                if (msie > 0){
+                                    $window.location.reload();
+                                }
                                 $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
                                 $scope.loadSpaces();
                                 LoadingDialog.hide();
