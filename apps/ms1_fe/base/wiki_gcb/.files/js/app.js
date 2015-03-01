@@ -25,6 +25,12 @@ cloudscalers
 var cloudscalersServices = angular.module('cloudscalers.services',['ng'])
 	.config(['$httpProvider',function($httpProvider) {
 		$httpProvider.interceptors.push('authenticationInterceptor');
+        //initialize get if not there
+        if (!$httpProvider.defaults.headers.get) {
+            $httpProvider.defaults.headers.get = {};
+        }
+        //disable IE ajax request caching
+        $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 	}]);
 
 
