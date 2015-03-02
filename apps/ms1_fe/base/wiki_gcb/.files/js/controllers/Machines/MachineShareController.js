@@ -1,5 +1,18 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineShareController', ['$scope', 'Machine', '$ErrorResponseAlert', '$timeout', '$modal', function($scope, Machine, $ErrorResponseAlert, $timeout, $modal) {
+        
+        $scope.currentUserIsAdmin = true;
+
+        $scope.$watch('machine.acl', function () {
+            if($scope.currentUser.username && $scope.machine.acl){
+                var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
+                // if user isn't admin
+                if(currentUserAccessright.indexOf('U') == -1 && currentUserAccessright.indexOf('D') == -1){
+                    $scope.currentUserIsAdmin = false;
+                }
+            }
+        });
+
         $scope.shareMachineMessage = false;
         $scope.accessTypes = Machine.macineAccessRights();
 
@@ -70,16 +83,16 @@ angular.module('cloudscalers.controllers')
                 templateUrl: 'editUserDialog.html',
                 controller: function($scope, $modalInstance){
                     $scope.accessTypes = Machine.macineAccessRights();
-                    $scope.editUserAccess = "";
-                    $timeout(function () {
-                        $scope.$apply(function () {
-                            $scope.editUserAccess = right;
-                        });
-                    }, 5);
-                    $scope.userName = user;
-
+                    $scope.editUserAccess = right;
+                    $scope.changeAccessRight = function(accessRight) {
+                        $scope.editUserAccess = accessRight.value;
+                    };
                     $scope.ok = function (editUserAccess) {
-                        $modalInstance.close('ok');
+                        $modalInstance.close({
+                            machineId: machineId,
+                            user: user,
+                            editUserAccess: editUserAccess
+                        });
                     };
                     $scope.cancelEditUser = function () {
                         $modalInstance.dismiss('cancel');
@@ -88,16 +101,16 @@ angular.module('cloudscalers.controllers')
                 resolve: {
                 }
             });
-            modalInstance.result.then(function (result) {
-                // Finalize edit here
-                // Machine.updateUser(machineId, user, editUserAccess).
-                // then(function() {
-                //     console.log($scope.machine);
-                //     // console.log($scope.machine.acl[_.where($scope.machine.acl, {userGroupId: user})]);
-                // },
-                // function(reason){
-                //     $ErrorResponseAlert(reason);
-                // });
+            modalInstance.result.then(function (accessRight) {
+                Machine.updateUser(accessRight.machineId, accessRight.user, accessRight.editUserAccess).
+                then(function() {
+                    var userAcl = _.find($scope.machine.acl , function(acl) { return acl.userGroupId == accessRight.user; });
+                    $scope.machine.acl[$scope.machine.acl.indexOf(userAcl)].right = accessRight.editUserAccess;
+                    userMessage("Access right updated successfully for " + user , 'success');
+                },
+                function(reason){
+                    $ErrorResponseAlert(reason);
+                });
             });
         };
         

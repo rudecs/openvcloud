@@ -311,7 +311,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .users-table tr:hover{ background-color: #EBF3F5; }
 .access-right { font-size: 85%; border-radius: 5px; width: 15px; }
 .share-machine-message { margin: 0 auto !important; top: -15px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
-.access-rights.update { border: 1px solid rgb(205, 194, 194); }
+.access-rights.update .access-right-block{ margin-right: 15px; padding: 10px; display: inline; }
+.access-rights.update .access-right-block:hover, .access-rights.update .access-right-block.selected { background-color: rgb(234, 234, 234); border-radius: 5px; cursor: pointer; }
 /* end of machine details page*/
 
 /* Decks Public Pages */
