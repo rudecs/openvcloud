@@ -21,8 +21,11 @@ h1. Manage Machine
                             <div class="row">
                                 <div class="span3 line-height">Description</div>
                                 <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small position-default">
-                                    <div ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
+                                    <div ng-show="currentUserAccess != 'Read'" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                         <em class="right edit-description-link">Edit</em>
+                                    </div>
+                                    <div class="cursor-default" ng-hide="currentUserAccess != 'Read'">
+                                        {[machine.description]}
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +74,7 @@ h1. Manage Machine
                         </li>
                     </ul>
                 </div>
-                <div class="span3 machine-actions margin-left-large">
+                <div class="span3 machine-actions margin-left-large" ng-show="currentUserAccess != 'Read'">
                     <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
                     <ul class="actions margin-all-none padding-all-none padding-left-small">
 
@@ -103,7 +106,7 @@ h1. Manage Machine
                             </a>
                         </li>
 
-                        <li>
+                        <li ng-show="currentUserAccess != 'Read'">
                             <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                 <i class="fa fa-camera"></i>
                                 Take Snapshot
@@ -136,7 +139,7 @@ h1. Manage Machine
 #                            </a>
 #                        </li>
 {{html:
-                        <li>
+                        <li ng-show="currentUserAccess != 'Read'">
                             <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                 <i class="fa fa-copy"></i>
                                 Create Template
@@ -164,7 +167,7 @@ h1. Manage Machine
 #                            </a>
 #                        </li>
 {{html:
-                        <li>
+                        <li ng-show="currentUserAccess == 'Admin'">
                             <a ng-click="destroy()">
                                 <i class=" fa fa-times-circle-o"></i>
                                 Destroy
@@ -254,7 +257,7 @@ h1. Manage Machine
 
 
         <div id="snapshots" class="tab-pane">
-            <a class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
+            <a ng-show="currentUserAccess != 'Read'" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
                 <i class="fa fa-camera"></i>
                 Take Snapshot
             </a>
@@ -264,7 +267,7 @@ h1. Manage Machine
                         <tr>
                             <th>Name</th>
                             <th>Date</th>
-                            <th>Action</th>
+                            <th ng-show="currentUserAccess != 'Read'">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -273,9 +276,9 @@ h1. Manage Machine
                             <td class="nowrap">
                                 {[snapshot.epoch * 1000 | date:'medium']}
                             </td>
-                            <td>
+                            <td ng-show="currentUserAccess != 'Read'">
                                 <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
-                                <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                                <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
                             </td>
                         </tr>
                     </tbody>

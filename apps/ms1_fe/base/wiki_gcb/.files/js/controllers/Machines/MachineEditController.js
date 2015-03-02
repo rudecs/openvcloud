@@ -4,6 +4,19 @@ angular.module('cloudscalers.controllers')
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.machine = Machine.get($routeParams.machineId);
 
+        $scope.$watch('machine.acl', function () {
+            if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
+                var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
+                if(currentUserAccessright == "R"){
+                    $scope.currentUserAccess = 'Read';
+                }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
+                    $scope.currentUserAccess = "ReadWrite";
+                }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
+                    $scope.currentUserAccess = "Admin";
+                }
+            }
+        });
+
         $scope.tabactive = {actions: true, console: false, snapshots: false, changelog: false};
 
         var changeSelectedTab = function(tab){

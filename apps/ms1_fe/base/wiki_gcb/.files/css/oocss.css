@@ -379,6 +379,9 @@
 .cursor-pointer{
 	cursor: pointer;
 }
+.cursor-default{
+	cursor: default;
+}
 
 /* background colors */
 .background-black{

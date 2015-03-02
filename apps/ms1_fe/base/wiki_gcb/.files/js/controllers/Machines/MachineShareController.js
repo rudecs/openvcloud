@@ -1,18 +1,5 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineShareController', ['$scope', 'Machine', '$ErrorResponseAlert', '$timeout', '$modal', function($scope, Machine, $ErrorResponseAlert, $timeout, $modal) {
-        
-        $scope.currentUserIsAdmin = true;
-
-        $scope.$watch('machine.acl', function () {
-            if($scope.currentUser.username && $scope.machine.acl){
-                var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
-                // if user isn't admin
-                if(currentUserAccessright.indexOf('U') == -1 && currentUserAccessright.indexOf('D') == -1){
-                    $scope.currentUserIsAdmin = false;
-                }
-            }
-        });
-
         $scope.shareMachineMessage = false;
         $scope.accessTypes = Machine.macineAccessRights();
 

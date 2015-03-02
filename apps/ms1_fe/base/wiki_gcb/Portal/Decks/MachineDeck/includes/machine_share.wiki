@@ -2,12 +2,12 @@
 	<div ng-show="shareMachineMessage" class="txt-center">
 	    <div class="share-machine-message alert alert-{[shareMachineMessageStyle]} width-40">{[shareMachineMessageTxt]}</div>
 	</div>
-	<em ng-show="currentUserIsAdmin">Provide other users access to {[machine.name]} machine by adding their Mothership1 user name and specify access right.</em>
-	<em ng-hide="currentUserIsAdmin">Users access to {[machine.name]} machine.</em>
+	<em ng-show="currentUserAccess == 'Admin'">Provide other users access to {[machine.name]} machine by adding their Mothership1 user name and specify access right.</em>
+	<em ng-hide="currentUserAccess == 'Admin'">Users access to {[machine.name]} machine.</em>
 	<form ng-submit="addUser()">
 	<div class="table-responsive margin-top-medium">
 	    <table class="table users-table">
-	        <tr class="header" ng-show="currentUserIsAdmin">
+	        <tr class="header" ng-show="currentUserAccess == 'Admin'">
 	            <th class="username-text-container width-60">
 	                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
 	            </th>
@@ -34,7 +34,7 @@
 			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
 			    	</span>
 			    </td>
-	            <td ng-show="currentUserIsAdmin" class="txt-center"><a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a><a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17"></a></td>
+	            <td ng-show="currentUserAccess == 'Admin'" class="txt-center"><a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a><a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17"></a></td>
 	        </tr>
 	    </table>
         <script type="text/ng-template" id="deleteUserDialog.html">
