@@ -53,7 +53,13 @@ class cloudapi_portforwarding(BaseActor):
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
             ctx.start_response('403 Forbidden', [])
             return "Forward to %s with port %s already exists" % (publicIp, publicPort)
-        return self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
+        try:
+            result = self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
+        except:
+            ctx.start_response('503 Service Unavailable', [])
+            return "Forward to %s with port %s failed to create." % (publicIp, publicPort)
+        return result
+
 
     def deleteByVM(self, machine, **kwargs):
         def getIP():
@@ -96,7 +102,12 @@ class cloudapi_portforwarding(BaseActor):
 
         """
         ctx = kwargs['ctx']
-        result = self._delete(int(cloudspaceid), id)
+        try:
+            result = self._delete(int(cloudspaceid), id)
+        except:
+            ctx.start_response('503 Service Unavailable', [])
+            return 'Failed to remove Portforwarding'
+
         if result == -1:
             ctx.start_response('404 Not Found', [])
             return 'Incorrect cloudspace or there is no corresponding gateway'

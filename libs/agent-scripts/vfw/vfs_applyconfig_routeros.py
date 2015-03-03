@@ -14,14 +14,11 @@ roles = []
 async = True 
 
 def action(name, fwobject):
-    import JumpScale.baselib.remote
-    from JumpScale.lib import routeros
-
     host = fwobject['host']
     username = fwobject['username']
     password = fwobject['password']
 
-    ro = routeros.RouterOS.RouterOS(host, username, password)
+    ro = j.clients.routeros.get(host, username, password)
     ro.deletePortForwardRules(tags='cloudbroker')
     for rule in fwobject['tcpForwardRules']:  
         protocol = rule.get('protocol', 'tcp')
