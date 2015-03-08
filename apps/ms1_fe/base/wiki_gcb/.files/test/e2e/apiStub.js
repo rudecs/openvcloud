@@ -678,8 +678,8 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var portforwardsList = portforwardingList.get('gcb:portforwarding');
         if(params.id == undefined){
-            if(params.machineID){
-                return[200, _.where(portforwardsList, {vmid: parseInt(params.machineID), cloudspaceid: parseInt(params.cloudspaceid) })];
+            if(params.machineId){
+                return[200, _.where(portforwardsList, {vmid: parseInt(params.machineId), cloudspaceid: parseInt(params.cloudspaceid) })];
             }else{
                 return[200, _.where(portforwardsList, { cloudspaceid: parseInt(params.cloudspaceid) })];
             }

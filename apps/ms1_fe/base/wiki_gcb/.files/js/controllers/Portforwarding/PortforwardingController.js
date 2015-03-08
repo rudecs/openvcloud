@@ -120,11 +120,11 @@ angular.module('cloudscalers.controllers')
                 modalInstance.result.then(function(data){
                 	LoadingDialog.show('Creating');
                   if($routeParams.machineId){
-                    var machineID = $routeParams.machineId;
+                    var machineId = $routeParams.machineId;
                   }else{
-                    var machineID = data.vmid;
+                    var machineId = data.vmid;
                   }
-                	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, machineID, data.localport, data.protocol).then(
+                	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, machineId, data.localport, data.protocol).then(
                     function (result) {
                     	LoadingDialog.hide();
                     	$scope.updatePortforwardList();
