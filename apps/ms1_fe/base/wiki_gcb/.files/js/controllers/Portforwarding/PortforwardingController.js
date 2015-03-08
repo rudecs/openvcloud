@@ -15,10 +15,12 @@ angular.module('cloudscalers.controllers')
                         $scope.currentUserAccessrightOnCloudSpace = "Admin";
                     }
                 }
-                if($scope.currentUserAccessrightOnCloudSpace != 'Admin'){
-                  var uri = new URI($window.location);
-                  uri.filename('Decks');
-                  $window.location = uri.toString();
+                var uri = new URI($window.location);
+                if(uri._parts.path.indexOf('Portforwarding') > -1){
+                  if($scope.currentUserAccessrightOnCloudSpace != 'Admin'){
+                    uri.filename('Decks');
+                    $window.location = uri.toString();
+                  }
                 }
             });
 
