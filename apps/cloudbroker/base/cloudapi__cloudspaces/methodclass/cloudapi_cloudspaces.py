@@ -234,8 +234,9 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspaceObject.secret = str(uuid.uuid4())
             self.models.cloudspace.set(cloudspaceObject)
 
+        cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceObject.id)
         cloudspace = { "accountId": cloudspaceObject.accountId,
-                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl],
+                        "acl": [{"right": ace.right, "type": ace.type, "userGroupId": ace.userGroupId} for _, ace in cloudspace_acl.iteritems()],
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
