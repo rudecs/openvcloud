@@ -370,7 +370,7 @@ class cloudapi_machines(BaseActor):
         node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
-	        machine.nics[0].ipAddress = node.private_ips[0]
+                machine.nics[0].ipAddress = node.private_ips[0]
             else: 
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
@@ -387,7 +387,8 @@ class cloudapi_machines(BaseActor):
             machine.status = realstatus
             self.models.vmachine.set(machine)
         acl = list()
-        for ace in machine.acl:
+        machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
+        for _, ace in machine_acl.iteritems():
             acl.append({'userGroupId': ace.userGroupId, 'type': ace.type, 'right': ace.right})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
