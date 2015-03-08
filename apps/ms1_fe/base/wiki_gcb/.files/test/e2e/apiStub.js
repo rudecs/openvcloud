@@ -448,7 +448,7 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"CXDRAU","type":"U","userGroupId":"Lenny Miller"},{"guid":"","right":"RCX","type":"U","userGroupId":"karim"},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3"},{"guid":"","right":"CXDRAU","type":"U","userGroupId":"user 4"}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
        {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
@@ -654,25 +654,37 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 
     var portforwarding = [
-       {id: 0, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0 , publicPort: 8080, localPort: 80},
-       {id: 1, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
-       {id: 2, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 7070, localPort: 70},
-       {id: 3, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 9090, localPort: 90},
-       {id: 4, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
-       {id: 5, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 8080, localPort: 80},
-       {id: 6, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
-       {id: 7, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 4040, localPort: 40},
-       {id: 8, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 6060, localPort: 60},
-       {id: 9, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 1010, localPort: 10},
-       {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
-       {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50},
+       {id: 0, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0 , publicPort: 8080, localPort: 80, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 1, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20, cloudspaceid: 0, protocol: 'udp'},
+       {id: 2, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 7070, localPort: 70, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 3, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 9090, localPort: 90, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 4, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 5, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 8080, localPort: 80, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 6, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 7, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 4040, localPort: 40, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 8, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 6060, localPort: 60, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 9, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 1010, localPort: 10, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50, cloudspaceid: 1, protocol: 'tcp'},
     ];
+    
+    var portforwardingList = LocalStorageItem('gcb:portforwarding');
+    if(!portforwardingList.get('gcb:portforwarding')){
+        portforwardingList.set(portforwarding);
+    }
+    var portforwardingListResult = portforwardingList.get('gcb:portforwarding');
+
     $httpBackend.whenGET(/^\/portforwarding\/list.*cloudspaceid.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
+        var portforwardsList = portforwardingList.get('gcb:portforwarding');
         if(params.id == undefined){
-            return [200, portforwarding];
+            if(params.machineID){
+                return[200, _.where(portforwardsList, {vmid: parseInt(params.machineID), cloudspaceid: parseInt(params.cloudspaceid) })];
+            }else{
+                return[200, _.where(portforwardsList, { cloudspaceid: parseInt(params.cloudspaceid) })];
+            }
         }else{
-            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            var filteredPorts = _.where(portforwardsList, {id: parseInt(params.id)});
             return[200, filteredPorts];
         }
     });
@@ -682,11 +694,16 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        portforwarding.push({
-            ip: params.ip,
-            vmName: params.vmName,
-            puplicPort: params.puplicPort,
-            localPort: params.localPort
+        var id = portforwardingListResult.length + 1;
+        portforwardingList.add({
+            id: id,
+            cloudspaceid: parseInt(params.cloudspaceid),
+            localPort: parseInt(params.localPort),
+            publicIp: params.publicIp,
+            publicPort: parseInt(params.publicPort),
+            vmid: parseInt(params.vmid),
+            vmName: MachinesList.getById(params.vmid).name,
+            protocol: params.protocol
         });
         return [200, params.ip];
     });
@@ -694,9 +711,9 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/portforwarding\/list.*authkey.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         if(params.id == undefined){
-            return [200, portforwarding];
+            return [200, portforwardingListResult];
         }else{
-            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            var filteredPorts = _.where(portforwardingListResult, {id: parseInt(params.id)});
             return[200, filteredPorts];
         }
     });
@@ -709,25 +726,22 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/portforwarding\/update.*/).respond(function(method, url, data) {
             var params = new URI(url).search(true);
-            console.log(params);
-            for (var i = 0, l = portforwarding.length; i < l; i++) {
-                if (portforwarding[i].id === parseInt(params.id)) {
-                    portforwarding[i].publicIp = params.ip;
-                    portforwarding[i].publicPort = params.puplicPort;
-                    // portforwarding[i].vmName = params.vmName;
-                    portforwarding[i].vmid = params.vmid;
-                    portforwarding[i].localPort = params.localPort;
-                    console.log(portforwarding[i]);
-                    break;
-                }
-            }
-            return [200, portforwarding];
+            var portforward = portforwardingList.getById(params.id);
+            portforward.cloudspaceid = parseInt(params.cloudspaceid);
+            portforward.localPort = parseInt(params.localPort);
+            portforward.protocol = params.protocol;
+            portforward.publicIp = params.publicIp;
+            portforward.publicPort = parseInt(params.publicPort);
+            portforward.vmName = MachinesList.getById(params.vmid).name;
+            portforward.vmid = parseInt(params.vmid);
+            portforwardingList.save(portforward);
+            return [200, portforwardingListResult];
         });
 
     $httpBackend.whenGET(/^\/portforwarding\/delete.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
-        return [200, portforwarding];
+        portforwardingList.remove(parseInt(params.id));
+        return [200, portforwardingListResult];
     });
 
     $httpBackend.whenGET(/^\/template\/delete\?.*/).respond(function (method, url, data) {

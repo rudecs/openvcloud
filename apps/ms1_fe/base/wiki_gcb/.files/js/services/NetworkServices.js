@@ -1,7 +1,7 @@
 angular.module('cloudscalers.services')
      .factory('Networks',function ($http, $q) {
         return {
-            listPortforwarding: function(id) {
+            listPortforwarding: function(id, machineID) {
                 if(encodeURIComponent(id) == "undefined"){
                     return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list').then(
                         function(result){
@@ -13,7 +13,7 @@ angular.module('cloudscalers.services')
                     );
                 }
                 else{
-                    return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id)).then(
+                    return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id) + '&machineID=' + encodeURIComponent(machineID)).then(
                         function(result){
                             return result.data;
                         },

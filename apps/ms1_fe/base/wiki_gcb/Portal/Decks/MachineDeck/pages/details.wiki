@@ -254,8 +254,6 @@ h1. Manage Machine
         </div>
       </tab>
       <tab heading="Snapshots" active="tabactive.snapshots">
-
-
         <div id="snapshots" class="tab-pane">
             <a ng-show="currentUserAccess != 'Read'" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
                 <i class="fa fa-camera"></i>
@@ -294,6 +292,11 @@ h1. Manage Machine
       <tab heading="Sharing" active="tabactive.sharing">
         <div id="sharing" class="tab-pane">
             {{include:machine_share}}
+        </div>
+      </tab>
+      <tab heading="Port Forwards" active="tabactive.portForwards">
+        <div id="portForwards" class="tab-pane">
+            {{include:machine_portforwards}}
         </div>
       </tab>
 </tabset>
