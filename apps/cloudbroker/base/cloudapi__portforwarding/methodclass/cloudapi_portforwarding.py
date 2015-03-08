@@ -188,6 +188,7 @@ class cloudapi_portforwarding(BaseActor):
         """
         machine = None
         if machineId:
+            machineId = int(machineId)
             machine = self.models.vmachine.get(machineId)
         def getIP():
             if machine:
