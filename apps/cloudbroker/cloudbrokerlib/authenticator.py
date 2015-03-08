@@ -6,6 +6,26 @@ class auth(object):
         self.acl = set(acl)
         self.models = models
 
+    def getAccountAcl(self, accountId):
+        account = self.models.account.get(accountId)
+        return dict((ace.userGroupId, ace) for ace in account.acl if ace.type == 'U')
+
+    def getCloudspaceAcl(self, cloudspaceId):
+        result = dict()
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        result.update(dict((ace.userGroupId, ace) for ace in cloudspace.acl if ace.type == 'U'))
+        result.update(self.getAccountAcl(cloudspace.accountId))
+        return result
+
+    def getVMachineAcl(self, machineId):
+        result = dict()
+        machine = self.models.vmachine.get(machineId)
+        result.update(dict((ace.userGroupId, ace) for ace in machine.acl if ace.type == 'U'))
+        result.update(self.getCloudspaceAcl(machine.cloudspaceId))
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        result.update(self.getAccountAcl(cloudspace.accountId))
+        return result
+
     def expandAclFromVMachine(self, users, groups, vmachine):
         fullacl = self.expandAcl(users, groups, vmachine.acl)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
