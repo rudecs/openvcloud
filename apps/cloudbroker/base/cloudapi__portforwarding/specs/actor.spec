@@ -9,6 +9,7 @@
         list all portforwarding rules.
         """
         var:cloudspaceid int,,id of the cloudspace
+        var:machineId int,,id of vmachine @tags: optional
 
     method:create
         """

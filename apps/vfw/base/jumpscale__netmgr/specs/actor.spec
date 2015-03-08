@@ -78,6 +78,7 @@
         """
         var:fwid int,,firewall id
         var:gid int,,grid id
+        var:localip str,,vmachine local ip address to filter with @tags: optional
 
     method:fw_forward_create @noauth
         """     
