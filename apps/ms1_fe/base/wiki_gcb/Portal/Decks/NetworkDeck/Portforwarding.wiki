@@ -11,7 +11,7 @@
 	<div class="margin-vertical-large" ng-controller="PortforwardingController">
 		<div>
 			<div class="margin-bottom-small">
-				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED' + currentUserAccessrightOnCloudSpace == 'Admin'" ng-click="portForwardPopup()">Add</button>
+				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED' && currentUserAccessrightOnCloudSpace != 'Admin'" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
 			<table class="table table-striped table-bordered" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">

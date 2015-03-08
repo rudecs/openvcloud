@@ -1,15 +1,23 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert', function($scope, CloudSpace, $ErrorResponseAlert) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, $ErrorResponseAlert, $timeout, $modal) {
+        
+        $scope.shareCloudSpaceMessage = false;
+        $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
+
+        function userMessage(message, style) {
+            $scope.shareCloudSpaceMessage = true;
+            $scope.shareCloudSpaceStyle = style;
+            $scope.shareCloudSpaceTxt = message;
+            $scope.resetUser();
+            $timeout(function () {
+                $scope.shareCloudSpaceMessage = false;
+            }, 3000);
+        }
+
         $scope.resetUser = function() {
             $scope.newUser = {
                 nameOrEmail: '', 
-                access: {
-                    R: true,
-                    X: true,
-                    C: true,
-                    U: true,
-                    A: true
-                }
+                access: $scope.accessTypes[0].value
             };
         };
 
@@ -24,17 +32,24 @@ angular.module('cloudscalers.controllers')
         $scope.userError = false;
 
         $scope.addUser = function() {
-            return CloudSpace.addUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
-                $scope.loadSpaceAcl().then(function() {
-                    $scope.resetUser();
-                });
-                $scope.userError = false;
-            }, function(reason) {
-                if (reason.status == 404)
-                    $scope.userError = 'User not found';
-                else
-                    $ErrorResponseAlert(reason);
-            });
+            if($scope.currentSpace.acl){
+                var userInAcl = _.find($scope.currentSpace.acl, function(acl) { return acl.userGroupId == $scope.newUser.nameOrEmail; });
+                if( userInAcl ){
+                    userMessage($scope.newUser.nameOrEmail + " already have access rights.", 'danger');
+                }else{
+                    CloudSpace.addUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
+                        $scope.loadSpaceAcl().then(function() {
+                            $scope.resetUser();
+                        });
+                        userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
+                    }, function(reason) {
+                        if (reason.status == 404)
+                            userMessage($scope.newUser.nameOrEmail + ' not found', 'danger');
+                        else
+                            $ErrorResponseAlert(reason);
+                    });
+                }
+            }
         };
 
         $scope.deleteUser = function(space, user) {
@@ -45,5 +60,42 @@ angular.module('cloudscalers.controllers')
                 function(reason){
                     $ErrorResponseAlert(reason);
                 });
+        };
+
+        $scope.loadEditUser = function(user, right) {
+            var modalInstance = $modal.open({
+                templateUrl: 'editUserDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
+                    $scope.editUserAccess = right;
+                    $scope.userName = user;
+                    $scope.changeAccessRight = function(accessRight) {
+                        $scope.editUserAccess = accessRight.value;
+                    };
+                    $scope.ok = function (editUserAccess) {
+                        $modalInstance.close({
+                            currentSpaceId: $scope.currentSpace.id,
+                            user: user,
+                            editUserAccess: editUserAccess
+                        });
+                    };
+                    $scope.cancelEditUser = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+            modalInstance.result.then(function (accessRight) {
+                // Machine.updateUser(accessRight.machineId, accessRight.user, accessRight.editUserAccess).
+                // then(function() {
+                //     var userAcl = _.find($scope.machine.acl , function(acl) { return acl.userGroupId == accessRight.user; });
+                //     $scope.machine.acl[$scope.machine.acl.indexOf(userAcl)].right = accessRight.editUserAccess;
+                //     userMessage("Access right updated successfully for " + user , 'success');
+                // },
+                // function(reason){
+                //     $ErrorResponseAlert(reason);
+                // });
+            });
         };
     }]);

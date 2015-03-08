@@ -132,7 +132,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 0,
             "id": 0,
-            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}, {"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 4"}]
+            "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}, {"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 4"}]
         }, {
             "cloudspaceId":1,
             "status": "HALTED",
@@ -144,7 +144,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 1,
             "id": 1,
-            "acl": [{"guid": "", "right": "CXDRAU", "type": "U", "userGroupId": "user 1"}]
+            "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}]
         }]);
     }
 
@@ -448,31 +448,55 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"CXDRAU","type":"U","userGroupId":"Lenny Miller"},{"guid":"","right":"RCX","type":"U","userGroupId":"karim"},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3"},{"guid":"","right":"CXDRAU","type":"U","userGroupId":"user 4"}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
-       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
-       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
-       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"ACDRUX","type":"U","userGroupId":"Lenny Miller"},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"karim"},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3"},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"user 4"}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
     ];
 
     
     var cloudSpace = {
         name: 'Development',
         descr: 'Development machine',
-        acl: [{
+        acl: [
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"Lenny Miller"
+            },
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"karim"
+            },
+            {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "user 1"
             }, {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "user 2"
-            }
-        ]
+            },
+            {
+                "guid":"",
+                "right":"RCX",
+                "type":"U",
+                "userGroupId":"user 3"
+            },
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"user 4"
+            }]
     };
 
     $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond(cloudspaces);
@@ -480,22 +504,14 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        var userId = params.userId.toLowerCase();
-        if (userId.indexOf('user') >= 0) {
-            cloudSpace.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
-            return [200, "Success"];
-        } else if (userId.indexOf('not found') >= 0) {
-            return [404, 'User not found'];
-        } else if (userId.indexOf('eee') >= 0) {
-            return [3000, 'Unspecified error'];
-        } else {
-            return [500, 'Server error'];
-        }
+        cloudSpace.acl.push({ guid: '', right: params.accesstype, type: 'U' , userGroupId: params.userId });
+        return [200, 'Success'];
     });
+
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var userId = params.userId;
-        cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});
+        cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});l
         return [200, 'Success'];
     });
 
@@ -512,12 +528,12 @@ defineApiStub = function ($httpBackend) {
                 {
                     "type": "U",
                     "guid": "",
-                    "right": "CXDRAU",
+                    "right": "ACDRUX",
                     "userGroupId": "linny"
                 }, {
                     "type": "U",
                     "guid": "",
-                    "right": "CXDRAU",
+                    "right": "ACDRUX",
                     "userGroupId": "harvey"
                 }
             ],
@@ -543,12 +559,12 @@ defineApiStub = function ($httpBackend) {
         acl: [{
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "linny"
             }, {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "harvey"
             }
         ]
@@ -560,7 +576,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var userId = params.userId.toLowerCase();
         if (userId.indexOf('user') >= 0) {
-            account.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
+            account.acl.push({ type: 'U', guid: '', right: 'ACDRUX', userGroupId: userId});
             return [200, "Success"];
         } else if (userId.indexOf('not found') >= 0) {
             return [404, 'User not found'];

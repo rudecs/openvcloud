@@ -71,6 +71,7 @@ angular.module('cloudscalers.controllers')
                 controller: function($scope, $modalInstance){
                     $scope.accessTypes = Machine.macineAccessRights();
                     $scope.editUserAccess = right;
+                    $scope.userName = user;
                     $scope.changeAccessRight = function(accessRight) {
                         $scope.editUserAccess = accessRight.value;
                     };

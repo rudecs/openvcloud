@@ -55,4 +55,6 @@ angular.module('cloudscalers.controllers')
                     });
             });
         }
+        
+
     }]);
