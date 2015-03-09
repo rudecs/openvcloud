@@ -511,7 +511,7 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var userId = params.userId;
-        cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});l
+        cloudSpace.acl = _.reject(cloudSpace.acl, function(acl) { return acl.userGroupId == userId});
         return [200, 'Success'];
     });
 
@@ -822,6 +822,14 @@ defineApiStub = function ($httpBackend) {
         var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
         machine.acl[machine.acl.indexOf(userAcl)].right = params.accessType;
         MachinesList.save(machine);        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/cloudspaces\/updateUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var cloudSpace = _.find(cloudspaces, function(m) { return m.id == params.cloudspaceId; });
+        var userAcl = _.find(cloudSpace.acl , function(acl) { return acl.userGroupId == params.userId; });
+        cloudSpace.acl[cloudSpace.acl.indexOf(userAcl) ].right = params.accesstype;
         return [200, '15'];
     });
 };

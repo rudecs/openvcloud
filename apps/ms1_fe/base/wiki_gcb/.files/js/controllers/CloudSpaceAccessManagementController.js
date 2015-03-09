@@ -53,16 +53,33 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.deleteUser = function(space, user) {
-            CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).
-            then(function() {
-                    $scope.loadSpaceAcl();
+            var modalInstance = $modal.open({
+                templateUrl: 'deleteUserDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelRemoveUser = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
                 },
-                function(reason){
-                    $ErrorResponseAlert(reason);
-                });
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).
+                    then(function() {
+                        $scope.loadSpaceAcl();
+                        userMessage("Assigned access right removed successfully for " + user.userGroupId , 'success');
+                    },
+                    function(reason){
+                        $ErrorResponseAlert(reason);
+                    });
+            });
         };
 
-        $scope.loadEditUser = function(user, right) {
+        $scope.loadEditUser = function(currentSpace, user, right) {
             var modalInstance = $modal.open({
                 templateUrl: 'editUserDialog.html',
                 controller: function($scope, $modalInstance){
@@ -74,7 +91,7 @@ angular.module('cloudscalers.controllers')
                     };
                     $scope.ok = function (editUserAccess) {
                         $modalInstance.close({
-                            currentSpaceId: $scope.currentSpace.id,
+                            currentSpaceId: currentSpace.id,
                             user: user,
                             editUserAccess: editUserAccess
                         });
@@ -87,15 +104,16 @@ angular.module('cloudscalers.controllers')
                 }
             });
             modalInstance.result.then(function (accessRight) {
-                // Machine.updateUser(accessRight.machineId, accessRight.user, accessRight.editUserAccess).
-                // then(function() {
-                //     var userAcl = _.find($scope.machine.acl , function(acl) { return acl.userGroupId == accessRight.user; });
-                //     $scope.machine.acl[$scope.machine.acl.indexOf(userAcl)].right = accessRight.editUserAccess;
-                //     userMessage("Access right updated successfully for " + user , 'success');
-                // },
-                // function(reason){
-                //     $ErrorResponseAlert(reason);
-                // });
+                CloudSpace.updateUser(accessRight.currentSpaceId, accessRight.user, accessRight.editUserAccess).
+                then(function() {
+                    $scope.loadSpaceAcl().then(function() {
+                        $scope.resetUser();
+                    });
+                    userMessage("Access right updated successfully for " + user , 'success');
+                },
+                function(reason){
+                    $ErrorResponseAlert(reason);
+                });
             });
         };
     }]);

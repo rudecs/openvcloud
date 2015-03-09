@@ -82,5 +82,11 @@ angular.module('cloudscalers.services')
                 }];
                 return accessRights;
             },
+            updateUser: function(cloudspaceId, userId, accesstype) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/updateUser?cloudspaceId=' + cloudspaceId +
+                                 '&userId=' + userId + '&accesstype=' + accesstype)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
         };
     });
