@@ -161,8 +161,11 @@ angular.module('cloudscalers.controllers')
             }
 
             $scope.tableRowClicked = function (index) {
-              if($scope.currentUserAccess != 'Admin'){
-                return;
+              var uri = new URI($window.location);
+              if(uri._parts.path.indexOf('Portforwarding') == -1){
+                if($scope.currentUserAccess != 'Admin'){
+                  return;
+                }
               }
             	var selectForwardRule = _.findWhere($scope.portforwarding, { id: parseInt(index.id) });
             	var editRule = {
