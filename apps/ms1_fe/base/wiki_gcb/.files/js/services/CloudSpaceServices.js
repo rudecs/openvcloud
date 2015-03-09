@@ -74,7 +74,7 @@ angular.module('cloudscalers.services')
                 }, 
                 {
                   name: 'Read/Write',
-                  value: 'RCX'
+                  value: 'CRX'
                 },
                 {
                   name: 'Admin',
