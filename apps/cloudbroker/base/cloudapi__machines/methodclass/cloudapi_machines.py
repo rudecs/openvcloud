@@ -389,7 +389,7 @@ class cloudapi_machines(BaseActor):
         acl = list()
         machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
-            acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'right': ''.join(sorted(ace['right']))})
+            acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right']))})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
