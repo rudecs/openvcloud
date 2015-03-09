@@ -69,7 +69,7 @@ class cloudapi_cloudspaces(BaseActor):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        return self.addUser(cloudspaceId, userId, accesstype)
+        return self.addUser(cloudspaceId, userId, accesstype, **kwargs)
 
     def _listActiveCloudSpaces(self, accountId):
         account = self.models.account.get(accountId)
