@@ -13,8 +13,8 @@ class auth(object):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.type == 'U':
-                ace.right = set(ace.right)
-                result[ace.userGroupId] = ace
+                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U')
+                result[ace.userGroupId] = ace_dict
         return result
 
     def getCloudspaceAcl(self, cloudspaceId):
@@ -22,14 +22,14 @@ class auth(object):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         for ace in cloudspace.acl:
             if ace.type == 'U':
-                ace.right = set(ace.right)
-                result[ace.userGroupId] = ace
+                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U')
+                result[ace.userGroupId] = ace_dict
 
-        for _, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
-            if ace.userGroupId in result:
-                result[ace.userGroupId].right.update(ace.right)
+        for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
+            if user_id in result:
+                result[user_id]['right'].update(ace['right'])
             else:
-                result[ace.userGroupId] = ace
+                result[user_id] = ace
         return result
 
     def getVMachineAcl(self, machineId):
@@ -37,15 +37,14 @@ class auth(object):
         machine = self.models.vmachine.get(machineId)
         for ace in machine.acl:
             if ace.type == 'U':
-                ace.right = set(ace.right)
-                result[ace.userGroupId] = ace
+                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U')
+                result[ace.userGroupId] = ace_dict
 
-        for _, ace in self.getCloudspaceAcl(machine.cloudspaceId).iteritems():
-            if ace.userGroupId in result:
-                result[ace.userGroupId].right.update(ace.right)
+        for user_id, ace in self.getCloudspaceAcl(machine.cloudspaceId).iteritems():
+            if user_id in result:
+                result[user_id]['right'].update(ace['right'])
             else:
-                result[ace.userGroupId] = ace
-
+                result[user_id] = ace
         return result
 
     def expandAclFromVMachine(self, users, groups, vmachine):
