@@ -236,7 +236,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceObject.id)
         cloudspace = { "accountId": cloudspaceObject.accountId,
-                        "acl": [{"right": ace['right'], "type": ace['type'], "userGroupId": ace['userGroupId']} for _, ace in cloudspace_acl.iteritems()],
+                        "acl": [{"right": ''.join(ace['right']), "type": ace['type'], "userGroupId": ace['userGroupId']} for _, ace in cloudspace_acl.iteritems()],
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
