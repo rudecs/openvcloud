@@ -34,7 +34,10 @@
 			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
 			    	</span>
 			    </td>
-	            <td ng-show="currentUserAccess == 'Admin'" class="txt-center"><a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a><a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17"></a></td>
+	            <td ng-show="currentUserAccess == 'Admin'" class="txt-center">
+		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" ng-show="user.canBeDeleted"></a>
+		            <a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17" ng-show="user.canBeDeleted"></a>
+	            </td>
 	        </tr>
 	    </table>
         <script type="text/ng-template" id="deleteUserDialog.html">
