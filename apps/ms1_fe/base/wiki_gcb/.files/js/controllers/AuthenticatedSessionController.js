@@ -60,8 +60,13 @@ angular.module('cloudscalers.controllers')
 			$window.location = uri.toString();
         };
 
-        $scope.$watch('currentSpace.acl', function () {
-            if($scope.currentUser.username && $scope.currentSpace.acl && !$scope.currentUserAccessrightOnCloudSpace){
+        $scope.$watch('currentSpace', function () {
+            CloudSpace.get($scope.currentSpace.id).then(function (data) {
+                if($scope.currentSpace.acl.length != data.acl.length){
+                    $scope.currentSpace.acl = data.acl;
+                }
+            });
+            if($scope.currentUser.username && $scope.currentSpace.acl){
                 var currentUserAccessright =  _.find($scope.currentSpace.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; })
                 if(currentUserAccessright){
                     currentUserAccessright = currentUserAccessright.right.toUpperCase();
