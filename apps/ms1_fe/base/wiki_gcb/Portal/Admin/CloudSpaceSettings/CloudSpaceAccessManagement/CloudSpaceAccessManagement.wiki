@@ -28,7 +28,7 @@
                     </span>
                 </td>
             <td class="txt-center" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'">
-                <a ng-click="loadEditUser(currentSpace, user.userGroupId, user.right)" ng-show="user.canBeDeleted" class="fa fa-edit margin-right-small txt-17"></a>
+                <a ng-click="loadEditUser(currentSpace, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a>
                 <a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times txt-17" ng-show="user.canBeDeleted"></a>
             </td>
         </tr>
