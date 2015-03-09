@@ -30,7 +30,7 @@
 			    <td class="txt-center">
 			    	<span ng-switch on="user.right">
 			    		<span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>
-			    		<span class="access-right alert alert-warning" ng-switch-when="RCX" style="padding: 3px 7px;"> Read/Write </span>
+			    		<span class="access-right alert alert-warning" ng-switch-when="CRX" style="padding: 3px 7px;"> Read/Write </span>
 			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
 			    	</span>
 			    </td>
