@@ -2,29 +2,27 @@ h1. Storage Deck
 
 The Storage Deck provides you with a secure, distributed storage solution with an Object Gateway S3 API.
 
-{{html:
-<p>Each Cloud Space is activated with a S3 capacity of 1GB. Contact <a href="http://support.mothership1.com/open.php" target="_blank">Support</a> and go to the Service Deck to upgrade your S3 capacity. Check <a href="/$$space/Pricing">here</a> the pricing for extra S3 capacity.</p>
-}}
+Each Cloud Space is activated with a S3 capacity of 1GB. Contact [Support|http://support.mothership1.com/open.php] and go to the Service Deck to upgrade your S3 capacity. Check [here|Pricing] the pricing for extra S3 capacity.
 
 {{html:
-	<div ng-controller="StorageController">
+    <div ng-controller="StorageController">
 
-		<a href="" ng-click="showKeys()">Show S3 keys</a><br><br>
+        <a href="" ng-click="showKeys()">Show S3 keys</a><br><br>
 <div class="table-responsive">
-	    <table class="table table-striped table-bordered" ng-cloak>
-	    <tr>
-	      <th>S3 Bucket</th>
-	      <th>S3 Server</th>
-	    </tr>
-	    <tbody>
-	      <tr ng-repeat="storage in storages">
-		<td>{[ storage.name ]}</td>
-	        <td>{[ storage.s3url ]}</td>
-	      </tr>
-	    </tbody>
-	  </table>
+        <table class="table table-striped table-bordered" ng-cloak>
+        <tr>
+          <th>S3 Bucket</th>
+          <th>S3 Server</th>
+        </tr>
+        <tbody>
+          <tr ng-repeat="storage in storages">
+        <td>{[ storage.name ]}</td>
+            <td>{[ storage.s3url ]}</td>
+          </tr>
+        </tbody>
+      </table>
 </div>
-	</div>
+    </div>
 
 <script type="text/ng-template" id="showCredentialsModal.html">
         <div class="modal-header">

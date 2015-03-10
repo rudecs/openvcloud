@@ -11,12 +11,9 @@ angular.module('cloudscalers.controllers')
 
         $scope.updateMachineList = function(){
             if ($scope.currentSpace){
-                $scope.machines = {};
-                $scope.machinesLoader = true;
                 Machine.list($scope.currentSpace.id).then(
                     function(machines){
                       $scope.machines = machines;
-                      $scope.machinesLoader = false;
                     },
                     function(reason){
                         $ErrorResponseAlert(reason);

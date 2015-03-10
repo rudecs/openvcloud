@@ -23,24 +23,18 @@ cloudscalers
     }]);
 
 var cloudscalersServices = angular.module('cloudscalers.services',['ng'])
-	.config(['$httpProvider',function($httpProvider) {
-		$httpProvider.interceptors.push('authenticationInterceptor');
-        //initialize get if not there
-        if (!$httpProvider.defaults.headers.get) {
-            $httpProvider.defaults.headers.get = {};
-        }
-        //disable IE ajax request caching
-        $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
-	}]);
+    .config(['$httpProvider',function($httpProvider) {
+        $httpProvider.interceptors.push('authenticationInterceptor');
+    }]);
 
 
 var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
 
 if(cloudspaceconfig.apibaseurl == ''){
-	cloudscalersControllers.config(function($provide) {
+    cloudscalersControllers.config(function($provide) {
     $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator)
   });
-	cloudscalersControllers.run(defineApiStub);
+    cloudscalersControllers.run(defineApiStub);
 
 
 };

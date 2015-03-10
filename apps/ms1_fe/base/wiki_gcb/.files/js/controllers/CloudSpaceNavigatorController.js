@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window' , 
-        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert',
+        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert) {
             $scope.isCollapsed = true;
 
             $scope.locations = {};
@@ -15,10 +15,10 @@ angular.module('cloudscalers.controllers')
                 var cloudspacesGroups = _.groupBy($scope.cloudspaces, 'accountId');
                 var accountCloudSpaceHierarchy = [];
                 for (accountId in cloudspacesGroups){
-                	var firstCloudSpace = cloudspacesGroups[accountId][0];
+                    var firstCloudSpace = cloudspacesGroups[accountId][0];
                     var account = {id:accountId, name:firstCloudSpace['accountName'], DCLocation:firstCloudSpace['accountDCLocation'] }
                     if ('accountAcl' in firstCloudSpace){
-                    	account.acl = firstCloudSpace['accountAcl']
+                        account.acl = firstCloudSpace['accountAcl']
                     }
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
@@ -32,13 +32,13 @@ angular.module('cloudscalers.controllers')
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
                 $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
-                		function(account){return account.acl != null;}
-                	);
+                        function(account){return account.acl != null;}
+                    );
                 var selectedAccount = _.find($scope.accounts, function(account1){return account1.id == $scope.currentAccount.id;});
                 if (selectedAccount == null){
-                	selectedAccount = $scope.accounts[0];
+                    selectedAccount = $scope.accounts[0];
                 }
-            	$scope.newCloudSpace = {
+                $scope.newCloudSpace = {
                     name: '',
                     account: selectedAccount
                 };
@@ -73,11 +73,6 @@ angular.module('cloudscalers.controllers')
                         function (cloudspaceId) {
                             //Wait a second, consistency on the api is not garanteed before that
                             $timeout(function(){
-                                var ua = window.navigator.userAgent;
-                                var msie = ua.indexOf("MSIE ");
-                                if (msie > 0){
-                                    $window.location.reload();
-                                }
                                 $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
                                 $scope.loadSpaces();
                                 LoadingDialog.hide();
