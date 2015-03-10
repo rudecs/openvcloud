@@ -107,8 +107,11 @@ angular.module('cloudscalers.controllers')
         };
 
         var updatesnapshots = function(){
+            $scope.snapshots = {};
+            $scope.snapshotsLoader = true;
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
+                $scope.snapshotsLoader = false;
                 LoadingDialog.hide();
             }, function(reason) {
                 $ErrorResponseAlert(reason);
