@@ -71,6 +71,7 @@ angular.module('cloudscalers.controllers')
                 CloudSpace.deleteUser($scope.currentSpace, user.userGroupId).
                     then(function() {
                         $scope.loadSpaceAcl();
+                        $scope.currentSpace.acl.splice(_.where($scope.currentSpace.acl, {userGroupId: user.userGroupId}), 1);
                         userMessage("Assigned access right removed successfully for " + user.userGroupId , 'success');
                     },
                     function(reason){
