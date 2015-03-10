@@ -60,7 +60,12 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='X')
     @audit()
     def reboot(self, machineId, **kwargs):
-        return self._action(machineId, 'reboot', enums.MachineStatus.RUNNING)
+        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
+
+    @authenticator.auth(acl='X')
+    @audit()
+    def reset(self, machineId, **kwargs):
+        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
     @audit()

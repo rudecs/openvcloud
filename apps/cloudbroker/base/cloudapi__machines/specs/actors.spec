@@ -71,6 +71,13 @@
         var:machineId int,, id of the machine
         result:bool
 
+    method:reset
+        """
+        Reset a machine, force reboot.
+        """
+        var:machineId int,, id of the machine
+        result:bool
+
     method:pause
         """
         pause a machine.
