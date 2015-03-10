@@ -566,9 +566,9 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/cloudspaces\/delete\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
-        var cloudSpaceItem = _.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId});
+        var cloudSpaceItem = _.where(cloudspaces, {id: params.cloudspaceId});
         if(cloudSpaceItem.length > 0){
-            cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId, accountId: params.userId}), 1);
+            cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId}), 1);
             return [200, true];
         }else{
             return [500, "Cloudspace couldn't found!"];
