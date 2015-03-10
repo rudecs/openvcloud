@@ -304,6 +304,8 @@ class cloudapi_cloudspaces(BaseActor):
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name
+            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspace['id'])
+            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
