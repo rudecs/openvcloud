@@ -26,10 +26,11 @@ class auth(object):
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
-            ace['canBeDeleted'] = False
             if user_id in result:
+                result[user_id]['canBeDeleted'] = False
                 result[user_id]['right'].update(ace['right'])
             else:
+                ace['canBeDeleted'] = False
                 result[user_id] = ace
         return result
 
@@ -42,10 +43,11 @@ class auth(object):
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getCloudspaceAcl(machine.cloudspaceId).iteritems():
-            ace['canBeDeleted'] = False
             if user_id in result:
+                result[user_id]['canBeDeleted'] = False
                 result[user_id]['right'].update(ace['right'])
             else:
+                ace['canBeDeleted'] = False
                 result[user_id] = ace
         return result
 
