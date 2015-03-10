@@ -20,7 +20,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     <!-- Button -->
     <div class="control-group padding-all-none block">
       <div class="">
-        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</button>
+        <a href="MachineDeck?singlebutton=#/new" id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</a>
       </div>
     </div>
 
