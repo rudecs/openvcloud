@@ -313,6 +313,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .edit-description-link:hover { text-decoration: underline; }
 .refresh-page { margin-bottom: -25px; }
 .description-textarea { min-height: 130px; width: 330px; }
+.gray-loader { font-size: 175%; text-align: center; margin-top: 5%; color: rgb(194, 190, 190); }
 .access-rights { border: 1px solid #FFF; padding: 4px 12px; color: #333; background: #fff; }
 .users-table tr:hover{ background-color: #EBF3F5; }
 .access-right { font-size: 85%; border-radius: 5px; width: 15px; }

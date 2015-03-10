@@ -2,7 +2,12 @@ angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
-        $scope.machine = Machine.get($routeParams.machineId);
+        Machine.get($routeParams.machineId).then(function(data) {
+            $scope.machine = data;
+            },
+            function(reason) {
+                $ErrorResponseAlert(reason);
+            });
 
         $scope.$watch('machine.acl', function () {
             if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
@@ -31,21 +36,12 @@ angular.module('cloudscalers.controllers')
         changeSelectedTab($routeParams.activeTab);
         
         var retrieveMachineHistory = function() {
-            if (!$scope.machineHistory)
-                $scope.machineHistory = {};
-
             Machine.getHistory($routeParams.machineId)
-                .success(function(data, status, headers, config) {
-                    if (data == 'None') {
-                        $scope.machineHistory.error = status;
-                        $scope.machineHistory.history = [];
-                    } else {
-                        $scope.machineHistory.history = _.sortBy(data, function(h) { return -h.epoch; });
-                        $scope.machineHistory.error = undefined;
-                    }
-                }).error(function (data, status, headers, config) {
-                    $scope.machineHistory.error = status;
-                    $scope.machineHistory.history = [];
+                .then(function(data) {
+                    $scope.machineHistory = data;
+                },
+                function(reason) {
+                    $ErrorResponseAlert(reason);
                 });
         };
 
@@ -56,20 +52,20 @@ angular.module('cloudscalers.controllers')
         }, true);
 
         $scope.oldMachine = {};
-        
-        
-        
-
         $scope.imagesList = [];
         $scope.machineinfo = {};
 
         var updateMachineSize = function(){
-            $scope.machineinfo = {};
-            size = _.findWhere($scope.sizes, { id: $scope.machine.sizeid });
-            $scope.machineinfo['size'] = size;
-            image = _.findWhere($scope.images, { id: $scope.machine.imageid });
-            $scope.machineinfo['image'] = image;
-            $scope.machineinfo['storage'] = $scope.machine.storage;
+            $scope.$watch('machine', function() {
+                if($scope.machine){
+                    $scope.machineinfo = {};
+                    size = _.findWhere($scope.sizes, { id: $scope.machine.sizeid });
+                    $scope.machineinfo['size'] = size;
+                    image = _.findWhere($scope.images, { id: $scope.machine.imageid });
+                    $scope.machineinfo['image'] = image;
+                    $scope.machineinfo['storage'] = $scope.machine.storage;
+                    }
+            }, true);
         };
 
         $scope.$watch('images', function() {
@@ -110,7 +106,12 @@ angular.module('cloudscalers.controllers')
         };
 
         var updatesnapshots = function(){
-            $scope.snapshots = Machine.listSnapshots($routeParams.machineId);
+            Machine.listSnapshots($routeParams.machineId).then(function(data) {
+                $scope.snapshots = data;
+                LoadingDialog.hide();
+            }, function(reason) {
+                $ErrorResponseAlert(reason);
+            });
         }
         updatesnapshots();
         
@@ -151,7 +152,6 @@ angular.module('cloudscalers.controllers')
                 LoadingDialog.show('Creating snapshot');
                 Machine.createSnapshot($scope.machine.id, snapshotname).then(
                     function(result){
-                        LoadingDialog.hide();
                         updatesnapshots();
                     },
                     function(reason){
@@ -267,8 +267,14 @@ angular.module('cloudscalers.controllers')
                 });
         };
         $scope.refreshPage = function() {
-            $scope.machine = Machine.get($routeParams.machineId);
+            Machine.get($routeParams.machineId).then(function(data) {
+                $scope.machine = data;
+            },
+            function(reason) {
+                $ErrorResponseAlert(reason);
+            });
             updatesnapshots();
+            retrieveMachineHistory();
         };
         $scope.start = function() {
             LoadingDialog.show('Starting');

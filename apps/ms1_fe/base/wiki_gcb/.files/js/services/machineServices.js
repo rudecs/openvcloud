@@ -139,37 +139,34 @@ angular.module('cloudscalers.services')
             },
             get: function (machineid) {
                 var machine = {
-                    id: machineid,
+                    id: machineid
                 };
                 url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        if(data.status === 'SUSPENDED'){
-                                data.status = 'PAUSED';
-                            }
-                        _.extend(machine, data);
-                        _.each(data.acl, function (acl, i) {
-                            if(acl.right.indexOf("U") > -1 && acl.right.indexOf("U") > -1){
-                                data.acl[i].right = "ACDRUX";
-                            }
-                        });
-                    }).error(
-                    function (data, status, headers, config) {
-                        machine.error = status;
+                return $http.get(url).then(
+                    function(result) {
+                        if(result.data.status === 'SUSPENDED'){
+                            result.data.status = 'PAUSED';
+                            _.each(result.data.acl, function (acl, i) {
+                                if(acl.right.indexOf("U") > -1 && acl.right.indexOf("U") > -1){
+                                    result.data.acl[i].right = "ACDRUX";
+                                }
+                            });
+                        }
+                        return _.extend(machine, result.data);
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
-                return machine;
             },
             listSnapshots: function (machineid) {
-                var snapshotsResult = {};
                 var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        snapshotsResult.snapshots = data;
-                    }).error(
-                    function (data, status, headers, config) {
-                        snapshotsResult.error = status;
+                return $http.get(url).then(
+                    function(result) {
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
                     });
-                return snapshotsResult;
             },
             createSnapshot: function (machineId, name) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
