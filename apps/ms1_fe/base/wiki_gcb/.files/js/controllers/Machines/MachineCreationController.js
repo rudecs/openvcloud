@@ -86,7 +86,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.saveNewMachine = function() {
-            LoadingDialog.show('Creating')
+            LoadingDialog.show('Creating');
             Machine.create($scope.currentSpace.id, $scope.machine.name, $scope.machine.description, 
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,
@@ -95,6 +95,10 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     $scope.createredirect(result);
+                    $scope.machines.push({ cloudspaceId: $scope.currentSpace.id, name: $scope.machine.name, description: $scope.machine.description, 
+                        sizeId: $scope.machine.sizeId, imageId: $scope.machine.imageId, disksize: $scope.machine.disksize,
+                        archive: $scope.machine.archive,
+                        region: $scope.machine.region, replication: $scope.machine.replication });
                 },
                 function(reason){
                     LoadingDialog.hide();

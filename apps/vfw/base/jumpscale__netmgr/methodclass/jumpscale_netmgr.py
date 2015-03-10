@@ -132,10 +132,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
 
     def _applyconfig(self, gid, nid, args):
         if args['fwobject']['type'] == 'routeros':
-            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)['result']
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)
         else:
-            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)['result']
-        return result
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
+
+        if job['state'] != 'OK':
+            raise RuntimeError('Failed to apply config')
+        return job['result']
 
 
     def fw_forward_create(self, fwid, gid, fwip, fwport, destip, destport, protocol='tcp', **kwargs):

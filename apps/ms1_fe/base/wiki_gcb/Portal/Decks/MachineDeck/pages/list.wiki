@@ -20,7 +20,7 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
     <!-- Button -->
     <div class="control-group padding-all-none block">
       <div class="">
-        <button id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</button>
+        <a href="MachineDeck?singlebutton=#/new" id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</a>
       </div>
     </div>
 
@@ -28,6 +28,9 @@ New users can find useful info about the Machine Deck in our [Quick Tutorial Gui
   </form>
 
 <div class="table-responsive">
+  <div class="gray-loader" ng-show="machinesLoader">
+      Loading, Please wait..
+  </div>
   <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">
     <tr>
       <th>Status</th>

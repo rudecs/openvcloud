@@ -1,8 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceManagementController', ['$scope', 'CloudSpace', 'LoadingDialog','$ErrorResponseAlert','$modal','$window', '$timeout','LocationsService', function($scope, CloudSpace, LoadingDialog, $ErrorResponseAlert, $modal, $window, $timeout, LocationsService) {
 
-        $scope.cloudSpace = $scope.$parent.currentSpace.name;
-
 	$scope.getLocationInfo = function(locationcode){
         	return LocationsService.get(locationcode);
         }
@@ -41,14 +39,19 @@ angular.module('cloudscalers.controllers')
         		LoadingDialog.show('Deleting cloudspace');
                 CloudSpace.delete($scope.currentSpace.id)
                     .then(function() {
-                        $timeout(function(){
                             $scope.cloudspaces.splice(_.where($scope.cloudspaces, {id: $scope.currentSpace.id, accountId: $scope.currentSpace.accountId}), 1);
+                            $scope.setCurrentCloudspace($scope.cloudspaces[0]);
                             $scope.loadSpaces();
-                            LoadingDialog.hide();
-                            var uri = new URI($window.location);
-                			uri.filename('Decks');
-                            $window.location = uri.toString();
-                        }, 1000);
+                            var ua = window.navigator.userAgent;
+                            var msie = ua.indexOf("MSIE ");
+                            if (msie > 0){
+                                $window.location.reload();
+                            }
+                            else{
+                                var uri = new URI($window.location);
+                                uri.filename('Decks');
+                                $window.location = uri.toString();
+                            }
                     }, function(reason) {
                         LoadingDialog.hide();
                         $ErrorResponseAlert(reason);

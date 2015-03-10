@@ -2,7 +2,9 @@ h1. Storage Deck
 
 The Storage Deck provides you with a secure, distributed storage solution with an Object Gateway S3 API.
 
-Each Cloud Space is activated with a S3 capacity of 1GB. Contact [Support|http://support.mothership1.com/open.php] and go to the Service Deck to upgrade your S3 capacity. Check [here|Pricing] the pricing for extra S3 capacity.
+{{html:
+<p>Each Cloud Space is activated with a S3 capacity of 1GB. Contact <a href="http://support.mothership1.com/open.php" target="_blank">Support</a> and go to the Service Deck to upgrade your S3 capacity. Check <a href="/$$space/Pricing">here</a> the pricing for extra S3 capacity.</p>
+}}
 
 {{html:
 	<div ng-controller="StorageController">
