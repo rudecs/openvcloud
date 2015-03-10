@@ -285,6 +285,21 @@ angular.module('cloudscalers.controllers')
 
         };
 
+        $scope.reboot = function() {
+            LoadingDialog.show('Rebooting');
+            Machine.reboot($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                    changeSelectedTab('console');
+                },
+                function(reason){
+                    LoadingDialog.hide();
+                    $alert(reason.data.backtrace);
+                }
+            );
+
+        };
+
          $scope.stop = function() {
             LoadingDialog.show('Stopping');
              Machine.stop($scope.machine).then(

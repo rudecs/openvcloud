@@ -398,6 +398,19 @@ defineApiStub = function ($httpBackend) {
         return [200, 'HALTED'];
     });
 
+    $httpBackend.whenGET(/^\/machines\/reboot\?machineId=\d+.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
+            return [500, 'Machine not found'];
+        }
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'RUNNING';
+        MachinesList.save(machine);
+        return [200, 'RUNNING'];
+    });
+
     $httpBackend.whenGET(/^\/machines\/pause\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;

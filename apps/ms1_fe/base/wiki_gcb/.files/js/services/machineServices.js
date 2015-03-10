@@ -31,6 +31,17 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason);
                     });
             },
+            reboot: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/reboot?machineId=' + machine.id;
+                return $http.get(url).then(
+                    function(result) {
+                        machine.status = machineStates['start'];
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
+                    });
+            },
             pause: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
                 return $http.get(url).then(

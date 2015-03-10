@@ -106,6 +106,13 @@ h1. Manage Machine
                             </a>
                         </li>
 
+                        <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
+                            <a ng-click="reboot()">
+                                <i class="fa fa-refresh "></i>
+                                Reboot
+                            </a>
+                        </li>
+
                         <li ng-show="currentUserAccess != 'Read'">
                             <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                 <i class="fa fa-camera"></i>
