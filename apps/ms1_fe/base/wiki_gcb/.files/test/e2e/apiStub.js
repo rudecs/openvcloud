@@ -448,7 +448,7 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"ACDRUX","type":"U","userGroupId":"Lenny Miller"},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"karim"},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3"},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"user 4"}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"ACDRUX","type":"U","userGroupId":"Lenny Miller","canBeDeleted": false},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"karim","canBeDeleted": false},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3", "canBeDeleted": true},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"user 4", "canBeDeleted": true}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
        {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
        {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
@@ -466,36 +466,42 @@ defineApiStub = function ($httpBackend) {
                 "guid":"",
                 "right":"ACDRUX",
                 "type":"U",
-                "userGroupId":"Lenny Miller"
+                "userGroupId":"Lenny Miller",
+                "canBeDeleted": false
             },
             {
                 "guid":"",
                 "right":"ACDRUX",
                 "type":"U",
-                "userGroupId":"karim"
+                "userGroupId":"karim",
+                "canBeDeleted": false
             },
             {
                 "type": "U",
                 "guid": "",
                 "right": "ACDRUX",
-                "userGroupId": "user 1"
+                "userGroupId": "user 1",
+                "canBeDeleted": true
             }, {
                 "type": "U",
                 "guid": "",
                 "right": "ACDRUX",
-                "userGroupId": "user 2"
+                "userGroupId": "user 2",
+                "canBeDeleted": true
             },
             {
                 "guid":"",
                 "right":"RCX",
                 "type":"U",
-                "userGroupId":"user 3"
+                "userGroupId":"user 3",
+                "canBeDeleted": true
             },
             {
                 "guid":"",
                 "right":"ACDRUX",
                 "type":"U",
-                "userGroupId":"user 4"
+                "userGroupId":"user 4",
+                "canBeDeleted": true
             }]
     };
 
