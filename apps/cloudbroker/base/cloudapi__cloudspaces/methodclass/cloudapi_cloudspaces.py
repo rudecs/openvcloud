@@ -48,15 +48,25 @@ class cloudapi_cloudspaces(BaseActor):
             return 'Unexisting user'
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            for ace in cloudspace.acl:
-                if ace.userGroupId == userId:
-                    ace.right = accesstype
-                    return self.models.cloudspace.set(cloudspace)[0]
-            acl = cloudspace.new_acl()
-            acl.userGroupId = userId
-            acl.type = 'U'
-            acl.right = accesstype
-            return self.models.cloudspace.set(cloudspace)[0]
+            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
+            if userId in cloudspace_acl:
+                if set(accesstype).issubset(cloudspace_acl[userId]['right']):
+                    # user already has same or higher access level
+                    ctx.start_response('412 Precondition Failed', [])
+                    return 'User already has a higher access level'
+                else:
+                    # grant higher access level
+                    for ace in cloudspace.acl:
+                        if ace.userGroupId == userId and ace.type == 'U':
+                            ace.right = accesstype
+                            break
+            else:
+                ace = cloudspace.new_acl()
+                ace.userGroupId = userId
+                ace.type = 'U'
+                ace.right = accesstype
+            self.models.cloudspace.set(cloudspace)
+            return True
 
     @authenticator.auth(acl='U')
     @audit()

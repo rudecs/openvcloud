@@ -768,15 +768,23 @@ class cloudapi_machines(BaseActor):
             return False
         else:
             vmachine = self.models.vmachine.get(machineId)
-            for ace in vmachine.acl:
-                if ace.userGroupId == userId:
-                    ace.right = accessType
-                    self.models.vmachine.set(vmachine)
-                    return True
-            acl = vmachine.new_acl()
-            acl.userGroupId = userId
-            acl.type = 'U'
-            acl.right = accessType
+            vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
+            if userId in vmachine_acl:
+                if set(accessType).issubset(vmachine_acl[userId]['right']):
+                    # user already has same or higher access level
+                    ctx.start_response('412 Precondition Failed', [])
+                    return 'User already has a higher access level'
+                else:
+                    # grant higher access level
+                    for ace in vmachine.acl:
+                        if ace.userGroupId == userId and ace.type == 'U':
+                            ace.right = accesstype
+                            break
+            else:
+                ace = vmachine.new_acl()
+                ace.userGroupId = userId
+                ace.type = 'U'
+                ace.right = accessType
             self.models.vmachine.set(vmachine)
             return True
 
@@ -808,4 +816,4 @@ class cloudapi_machines(BaseActor):
         accessType -- 'R' for read only access, 'W' for Write access
         return bool
         """
-        return self.addUser(machineId, userId, accessType, **kwargs)    
+        return self.addUser(machineId, userId, accessType, **kwargs)
