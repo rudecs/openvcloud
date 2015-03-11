@@ -778,7 +778,7 @@ class cloudapi_machines(BaseActor):
                     # grant higher access level
                     for ace in vmachine.acl:
                         if ace.userGroupId == userId and ace.type == 'U':
-                            ace.right = accesstype
+                            ace.right = accessType
                             break
             else:
                 ace = vmachine.new_acl()
