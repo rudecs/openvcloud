@@ -25,7 +25,6 @@ angular.module('cloudscalers.services')
            'responseError': function(rejection) {
         	   if (rejection.status == 401 || rejection.status == 419){
         		   var uri = new URI($window.location);
-
        				uri.filename('Login');
        				uri.fragment('');
        				$window.location = uri.toString();
@@ -37,21 +36,21 @@ angular.module('cloudscalers.services')
     .factory('SessionData', function($window) {
         return {
         	getUser : function(){
-        			var userdata = $window.sessionStorage.getItem('gcb:currentUser');
+        			var userdata = $window.localStorage.getItem('gcb:currentUser');
         			if (userdata){
         				return JSON.parse(userdata);
         			}
         		},
         	setUser : function(userdata){
         			if (userdata){
-        				$window.sessionStorage.setItem('gcb:currentUser', JSON.stringify(userdata));
+        				$window.localStorage.setItem('gcb:currentUser', JSON.stringify(userdata));
         			}
         			else{
-        				$window.sessionStorage.removeItem('gcb:currentUser');
+        				$window.localStorage.removeItem('gcb:currentUser');
         			}
         		},
             getSpace : function() {
-                var space = $window.sessionStorage.getItem('gcb:currentSpace');
+                var space = $window.localStorage.getItem('gcb:currentSpace');
                 if (!space) {
                     space = $window.localStorage.getItem('gcb:currentSpace');
                 }
@@ -62,10 +61,10 @@ angular.module('cloudscalers.services')
             },
             setSpace : function(space){
                     if (space){
-                        $window.sessionStorage.setItem('gcb:currentSpace', JSON.stringify(space));
+                        $window.localStorage.setItem('gcb:currentSpace', JSON.stringify(space));
                     }
                     else{
-                        $window.sessionStorage.removeItem('gcb:currentSpace');
+                        $window.localStorage.removeItem('gcb:currentSpace');
                     }
                 },
             };
