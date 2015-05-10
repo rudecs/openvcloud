@@ -99,7 +99,7 @@ table.table th a, table.table th a:hover {color: #FFF;}
 .dropdown-menu { box-shadow: none; }
 hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; border-top: 1px solid #E3E3E3; }
 p { color:#77777b; }
-body { background: url(../img/images/earth4.jpg) no-repeat center 0 #000; background-size: 100%; color: #666; background-size: 100%; background-position: center 0; }
+body { background: url(../img/images/space&mountain.jpg) no-repeat center 0 #000; background-size: 100%; color: #666; background-size: 100%; background-position: center 0; }
 html { -ms-overflow-style: scrollbar; }
 a:hover, a:focus { text-decoration: none; color: #FFF; cursor: pointer; }
 ul { list-style: none; }
@@ -208,11 +208,11 @@ canvas { display: block; float: left; }
 .navbar-default { background-color: #06a7e2; }
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background: inherit; color: #000 !important; }
 .navbar-nav>li>.dropdown-menu { /* border-color: #06a7e2; */ border-top: 0; }
-.sticky .navbar.navbar-inverse .subnavbar-inner { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%; }
+.sticky .navbar.navbar-inverse .subnavbar-inner { background: url(../img/images/space&mountain.jpg) no-repeat center top #000; background-size: 100%; }
 .navbar-collapse.collapse { box-shadow: none; border-top: 0; }
 .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form { border: 0; }
 .nav.navbar-nav > li:first-child a { padding-left:0; }
-.sticky2 > .navbar.navbar-inverse { background: url(../img/images/bg-mask3.jpg) no-repeat center top #000; background-size: 100%; }
+.sticky2 > .navbar.navbar-inverse { background: url(../img/images/space&mountain.jpg) no-repeat center top #000; background-size: 100%; }
 .gray h4 > a { background: #BEE4F2; padding: 14px 25px; }
 .gray a { color: #4f4f4f; font-family: arial, sans-serif; }
 .gray a:hover { color: #06a7e2; }
