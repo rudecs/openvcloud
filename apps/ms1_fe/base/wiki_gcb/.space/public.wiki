@@ -74,6 +74,4 @@
 
 }}
 
-{{include:footer_public}}
-
 

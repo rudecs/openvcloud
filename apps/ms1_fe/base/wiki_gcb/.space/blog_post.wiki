@@ -97,5 +97,3 @@
 </div><!-- ng-app="cloudscalers" -->
 
 }}
-
-{{include:footer_public}}

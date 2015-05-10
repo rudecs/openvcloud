@@ -78,8 +78,6 @@ jQuery.fn.modal.defaults = {};
 
 }}
 
-{{include:footer_public}}
-
 
 {{html:
 	<!--[if lt IE 9]>
