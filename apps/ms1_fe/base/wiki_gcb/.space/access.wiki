@@ -10,7 +10,7 @@
 }}
 
 
-{{title:Mothership1}}
+{{title:OpenvCloud}}
 
 {{projectname:Mothership1}}
 

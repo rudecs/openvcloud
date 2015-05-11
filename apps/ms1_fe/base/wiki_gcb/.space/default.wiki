@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 }}
-{{title:Mothership1 - $$page}}
+{{title:OpenvCloud - $$page}}
 {{projectname:Mothership1.com}}
 {{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/font-awesome.min.css}}

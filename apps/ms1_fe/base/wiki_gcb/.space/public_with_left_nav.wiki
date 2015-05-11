@@ -8,7 +8,7 @@
 }}
 
 
-{{title:Mothership1.com - $$page}}
+{{title:OpenvCloud - $$page}}
 
 {{projectname:Mothership<sup>1</sup>}}
 

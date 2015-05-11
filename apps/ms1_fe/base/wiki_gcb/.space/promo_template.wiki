@@ -8,7 +8,7 @@
 }}
 
 
-{{title:Mothership1: Security! Speed! Simplicity!}}
+{{title:OpenvCloud: Security! Speed! Simplicity!}}
 
 {{projectname:Mothership<sup>1</sup>}}
 
