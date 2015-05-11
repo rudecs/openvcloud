@@ -5,17 +5,17 @@ import ujson
 
 class pricing(object):
     def __init__(self):
-        hrd = j.packages.get(name='billingenginelib', instance='main').hrd
+        hrd = j.atyourservice.get(name='billingenginelib', instance='main').hrd
         self.cloudbrokermodels = j.clients.osis.getNamespace('cloudbroker')
         self.base_machine_prices = {}
 
-        for machine_price_key in hrd.prefix('mothership1.billing.machineprices'):
+        for machine_price_key in hrd.prefix('instance.mothership1.billing.machineprices'):
             machine_type = machine_price_key.split('.')[-1]
             stringprices = hrd.getDict(machine_price_key)
             self.base_machine_prices[machine_type.lower()] = dict([(int(kv[0]),float(kv[1])) for kv in stringprices.items()])
 
-        self.primary_storage_price = hrd.getFloat('mothership1.billing.primarystorageprice')
-        self.extra_cloudspace_price = hrd.getFloat('mothership1.billing.extracloudspaceprice')
+        self.primary_storage_price = hrd.getFloat('instance.mothership1.billing.primarystorageprice')
+        self.extra_cloudspace_price = hrd.getFloat('instance.mothership1.billing.extracloudspaceprice')
 
         self._machine_sizes = None
         self._machine_images = None

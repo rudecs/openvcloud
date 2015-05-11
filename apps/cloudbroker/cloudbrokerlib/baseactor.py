@@ -9,5 +9,5 @@ class BaseActor(object):
             packagename = 'cloudbroker'
         elif self.__class__.__name__.startswith('cloudbroker'):
             packagename = 'cbportal'
-        self.hrd = j.packages.get(name=packagename, instance='main').hrd
+        self.hrd = j.atyourservice.get(name=packagename, instance='main').hrd
 

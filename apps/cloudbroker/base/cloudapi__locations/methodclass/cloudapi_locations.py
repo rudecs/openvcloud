@@ -12,4 +12,4 @@ class cloudapi_locations(BaseActor):
         return self.models.location.search({})[1:]
 
     def getUrl(self, **kwargs):
-        return self.hrd.getStr('cloudbroker.portalurl')
+        return self.hrd.getStr('instance.cloudbroker.portalurl')
