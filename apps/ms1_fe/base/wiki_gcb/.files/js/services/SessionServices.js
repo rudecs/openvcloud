@@ -133,54 +133,6 @@ angular.module('cloudscalers.services')
         	SessionData.setUser(undefined);
         };
 
-        user.signUp = function(username, name, email, password, company, companyurl, preferredDataLocation, promocode) {
-            var signUpResult = {};
-			var querystring = '?username='
-					+ encodeURIComponent(username)
-					+ '&user=' + encodeURIComponent(name)
-					+ '&emailaddress=' + encodeURIComponent(email)
-					+ '&password=' + encodeURIComponent(password)
-					+ '&company=' + encodeURIComponent(company)
-					+ '&companyurl=' + encodeURIComponent(companyurl)
-					+ '&location=' + encodeURIComponent(preferredDataLocation)
-					+ '&promocode=' + encodeURIComponent(promocode);
-            $http({
-                method: 'GET',
-                url: cloudspaceconfig.apibaseurl + '/users/register' + querystring
-            })
-            .success(function(data, status, headers, config) {
-                signUpResult.success = true;
-            })
-            .error(function(data, status, headers, config) {
-                if (status == 451) {
-					$http({
-						method: 'JSONP',
-						url: headers('Location') + querystring + '&_jsonp=JSON_CALLBACK'
-					})
-					.success(function(data, status, headers, config) {
-						signUpResult.success = true;
-					})
-					.error(function(data, status, headers, config) {
-						signUpResult.error = "An unexpected error has occurred";
-					});
-				}
-				else {signUpResult.error = data;}
-
-            });
-            return signUpResult;
-        };
-
-        user.activateAccount = function(activationToken){
-        	return $http.get(cloudspaceconfig.apibaseurl + '/users/validate?validationtoken=' + encodeURIComponent(activationToken)).then(
-        			function(result){
-        				return result.data;
-        			},
-        			function(reason){
-        				return $q.reject(reason);
-        			}
-        	);
-        };
-
         return user;
 
     });

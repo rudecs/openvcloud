@@ -51,15 +51,6 @@
     prop:companyurl str,, Website of the company holding the account
     prop:displayname str,, The name as the account should be displayed
 
-[rootmodel:AccountActivationToken]
-    """
-    Token for accountactivation
-    """
-    prop:id str,, The activation token the user will user
-    prop:accountId int,, Account this token is for
-    prop:creationTime int,, epoch time of creation, in seconds
-    prop:deletionTime int,, epoch time of deletion (inactivation), in seconds
-
 [model:ACE]
     """
     Access control list

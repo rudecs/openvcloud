@@ -67,7 +67,6 @@
 <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
 <script src="/$$space/.files/js/services/LocationsService.js" type="text/javascript"></script>
 <script src="/$$space/.files/js/controllers/SessionController.js" type="text/javascript"></script>
-<script src="/$$space/.files/js/controllers/SignUp/SignUpController.js" type="text/javascript"></script>
 
 
 }}
