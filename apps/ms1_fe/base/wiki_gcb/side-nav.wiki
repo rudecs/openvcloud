@@ -15,14 +15,6 @@
           </li>
         </ul>
       </li>
-      <li class="header green">
-        <a href="DesktopDeck">Desktop Deck <span>2</span></a>
-        <ul class="body">
-          <li>
-            <a href="DesktopDeck" menu-link-active-location="(DesktopDeck$|DesktopDeck.*list)">Desktop Deck</a>
-          </li>
-        </ul>
-      </li>
       <li class="header darkOrange">
         <a href="StorageDeck" tourtip-step="3" tourtip="Get started with Mothership1 S3 compatible storage"  tourtip-placement="left">Storage Deck <span>3</span></a>
         <ul class="body">

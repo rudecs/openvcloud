@@ -25,7 +25,6 @@ The Cloud Space provides access to 4 different Cloud Decks:
 
 		* Machine Deck: Virtual Machines creation and management via the web portal or API.
 		* Storage Deck: S3 compatible storage buckets
-		* Desktop Deck: Complete Desktop in the cloud solution, available in trial mode
 		* Application Deck: Ready to go private applications, available in Q4
 
 The Cloud Space is protected by the Defense Shield, your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
