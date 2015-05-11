@@ -31,19 +31,9 @@
 Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1">
+        <!-- <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1"> -->
            }}
-[Desktop Deck|DesktopDeck]
-
-                [!/$$space/.files/img/icon1.png! | DesktopDeck]
     {{html:        
-            <div class="padding-right-none txt-justify">
-            <h2>
-
-</h2>
-Your Desktop Deck provides you an innovative way to deliver critical applications from the Cloud to your laptop, tablet and smartphone.
-        </div>
-        </div>
         <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color3 clear-none">
           }}
 [Storage Deck|StorageDeck]
@@ -57,7 +47,7 @@ Your Desktop Deck provides you an innovative way to deliver critical application
 Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
         </div>
         </div>
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color2">
+        <div class="col-md-4 boxes margin-vertical-large txt-center font color2">
            }}
 [Machine Deck|MachineDeck]
 
@@ -70,20 +60,9 @@ Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
 On Your Machine Deck, configure, launch and manage your Virtual Machines. Automate using the simple API.
         </div>
         </div>
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color4">
+        
        }}
-[Application Deck (Q1)|ApplicationDeck]
-
-            
-            [!/$$space/.files/img/icon4.png! | ApplicationDeck]
        {{html: 
-        <div class="padding-right-none txt-justify">
-            <h2>
-
-</h2>
-Your Application Deck provides users with access to your portfolio of private applications.
-        </div>
-        </div>
     </div>
 </div>
 
