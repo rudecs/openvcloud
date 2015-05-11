@@ -7,7 +7,7 @@ import re, string, random, time
 import md5
 
 def _send_signup_mail(hrd, **kwargs):
-    notifysupport = hrd.get("mothership1.cloudbroker.notifysupport")
+    notifysupport = hrd.get("instance.mothership1.cloudbroker.notifysupport")
     fromaddr = 'support@mothership1.com'
     toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
@@ -300,7 +300,7 @@ class cloudapi_users(BaseActor):
         ace.right = 'CXDRAU'
         accountid = self.models.account.set(account)[0]
 
-        signupcredit = self.hrd.getFloat('mothership1.cloudbroker.signupcredit')
+        signupcredit = self.hrd.getFloat('instance.mothership1.cloudbroker.signupcredit')
         creditcomment = 'Getting you started'
         if signupcredit > 0.0:
             credittransaction = self.models.credittransaction.new()
