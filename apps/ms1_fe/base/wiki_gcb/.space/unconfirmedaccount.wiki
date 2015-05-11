@@ -10,7 +10,7 @@
 
 {{title:OpenvCloud - $$page}}
 
-{{projectname:Mothership1.com}}
+{{projectname:OpenvCloud}}
 
 {{favicon:.files/img/favicon.jpg}}
 {{css:/$$space/.files/css/font-awesome.min.css}}

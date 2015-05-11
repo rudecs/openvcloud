@@ -1,5 +1,5 @@
 {{html:
-<em>Provide other users access to your Cloud Space by adding their Mothership1 user name.</em>
+<em>Provide other users access to your Cloud Space by adding their OpenvCloud user name.</em>
 <form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController">
 <div class="table-responsive margin-top-medium">
     <table class="table users-table">
