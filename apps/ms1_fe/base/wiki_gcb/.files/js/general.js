@@ -1,13 +1,6 @@
 var __lc = {};
 __lc.license = 4357241;
 
-(function() {
-	var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
-	lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
-})();
-
-
  // Collapse accordion every time dropdown is shown
   $('.dropdown-accordion').on('show.bs.dropdown', function (event) {
     var accordion = $(this).find($(this).data('accordion'));
