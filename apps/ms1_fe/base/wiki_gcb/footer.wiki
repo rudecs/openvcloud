@@ -1,13 +1,4 @@
 {{html:
 	<footer class="font background-white">
-	    <div class="container">
-			<div class="bottomFooter">
-	            <div class="col-md-12">
-	                <ul class="first-list ">
-	                    <li><a href="/$$space/" class="txt-black">Copyright © 2014 Mothership1</a></li>
-	                </ul>
-	            </div>
-	        </div>
-	    </div>
 	</footer>
 }}
