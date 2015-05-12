@@ -33,20 +33,7 @@ Your private Defense Shield providing privacy and secure access to your Cloud Sp
         </div>
         <!-- <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1"> -->
            }}
-    {{html:        
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color3 clear-none">
-          }}
-[Storage Deck|StorageDeck]
-
-            [!/$$space/.files/img/icon3.png! | StorageDeck]
    {{html:       
-          <div class="padding-right-none txt-justify">
-            <h2>
-
-</h2>
-Your Storage Deck provides ultra-reliable & scalable S3 compatible storage API.
-        </div>
-        </div>
         <div class="col-md-4 boxes margin-vertical-large txt-center font color2">
            }}
 [Machine Deck|MachineDeck]
