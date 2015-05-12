@@ -40,13 +40,9 @@ The Cloud Space is protected by the Defense Shield, your personal firewall that 
 {{div2: class=col-md-11}}
 h2. Cloud Space
 
-	*# Go to Billing to view your balance and upload credit
 	*# Optionally Go to Cloud Space Settings to provide access to other registered users in the OpenvCloud cloud.
 	*# Optionally create an additional Cloud Space, allowing you to divide your resources into 2 private networks, managed fron the same portal!
 
-	h2. Cloud Credits
-
-	The Cloud Space handles no commitments or built-in limits to the number of services you can create, but uses a minimal credit balance policy. Your created services or actions taken on active services should be able to last for at least 4 days with your remaining credit. For example, you have a credit balance of 5 USD, that will allow you to create either several small Linux virtual machines up to one 4GB Linux package.
 {{div2}}
 
 	
