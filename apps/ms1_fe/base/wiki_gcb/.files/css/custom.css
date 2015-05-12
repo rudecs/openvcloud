@@ -184,7 +184,7 @@ canvas { display: block; float: left; }
 .panel-title>a { padding: 8px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
 .sideNav .header > a { padding: 5px 15px; display: block; color: #000 !important; font-family: arial, sans-serif; }
 .sideNav .header > a.active { font-weight: bold; text-decoration: underline; }
-.blue h4 > a, .sideNav .header.blue > a { background: #16A085; }
+.blue h4 > a, .sideNav .header.blue > a { background: #C0392B; color: #fff !important; }
 .sideNav .header a { text-align: center; }
 .sideNav .header span { font-size: 11px; top: 3px; position: absolute; margin-left: 5px; }
 .sideNav .header { position: relative; }
@@ -192,12 +192,12 @@ canvas { display: block; float: left; }
 .orange h4 > a, .sideNav .header.orange > a { background: #f6b332; }
 .red h4 > a, .sideNav .header.red > a { background: #ff3d3d; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a { background: #d97804; }
-.blue + .panel-collapse, .sideNav .blue.header { background: #ebfaff; }
+.blue + .panel-collapse, .sideNav .blue.header { background: #F6DFDD; }
 .green + .panel-collapse, .sideNav .green.header { background: #edffc9; }
 .orange + .panel-collapse, .sideNav .orange.header { background: #ffefd0; }
 .red + .panel-collapse, .sideNav .red.header { background: #ffdada; }
 .darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #f9dfc0; }
-.blue h4 > a, .sideNav .header.blue > a:hover { background: #1ABC9C; }
+.blue h4 > a, .sideNav .header.blue > a:hover { background: #E74C3C; }
 .green h4 > a, .sideNav .header.green > a:hover { background: #8ED300; }
 .orange h4 > a, .sideNav .header.orange > a:hover { background: #FFC75C; }
 .red h4 > a, .sideNav .header.red > a:hover { background: #ff6060; }
@@ -353,7 +353,6 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .boxes h2 + .font.andP { float: left; width: 400px; color: #FFF; letter-spacing: 1px; font-family: arial, sans-serif; list-style: inherit; }
 .boxes h2 p a:hover { color: inherit; }
 .newDecks .boxes { margin: 10px 0; }
-.newDecks .color2 { clear: left; }
 .newDecks .color3 { clear:none; }
 .leftIcon { margin: 0 0 50px 215px; }
 .loginFieldName { color: #FFF; font-size: 19px; float: left; width: 113px; padding: 6px 0 0 0; }
