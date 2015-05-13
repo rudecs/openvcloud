@@ -17,34 +17,35 @@
         Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
         </div>
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color5 clear-left">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color2 clear-left">
          }}
-[Defense Shields|NetworkDeck]
 
-            [!/$$space/.files/img/icon5.png! | NetworkDeck]
+[Machines|MachineDeck]
+                [!/$$space/.files/img/icon2.png! | MachineDeck]
+
 
     {{html:      
           <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
-Your private Defense Shield providing privacy and secure access to your Cloud Space.
+Configure, launch and manage your Virtual Machines. Automate using the simple API.
         </div>
         </div>
         <!-- <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1"> -->
            }}
    {{html:       
-        <div class="col-md-4 boxes margin-vertical-large txt-center font color2">
+        <div class="col-md-4 boxes margin-vertical-large txt-center font color5">
            }}
-[Machine Deck|MachineDeck]
+[Defense Shields|NetworkDeck]
 
-                [!/$$space/.files/img/icon2.png! | MachineDeck]
+            [!/$$space/.files/img/icon5.png! | NetworkDeck]
       {{html:      
             <div class="padding-right-none txt-justify">
             <h2>
 
 </h2>
-On Your Machine Deck, configure, launch and manage your Virtual Machines. Automate using the simple API.
+Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
         

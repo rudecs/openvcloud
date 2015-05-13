@@ -2,7 +2,7 @@
   <div class="sideNav">
     <ul class="padding-left-none">
       <li class="header orange" >
-        <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machine Deck</a>
+        <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machines</a>
         <ul class="body">
           <li>
             <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)">Machines</a>

@@ -2,18 +2,18 @@
 <div ng-controller="MachineListController">
    <div ng-cloak ng-show="(machines | filter:machineIsManageable).length == 0">
   }}
-  h1. Machine Deck
+  h1. Machines
 
-Welcome to the Machine Deck. Hit Create Machine and in less than 5 seconds it will be starting!
+Welcome to the Machines. Hit Create Machine and in less than 5 seconds it will be starting!
 
-New users can find useful info about the Machine Deck in our [Quick Tutorial Guide|Getting Started].
+New users can find useful info about the Machines in our [Quick Tutorial Guide|Getting Started].
 
 {{html:
     </div>
 
 <tour step="steps.machineListTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineListTourStep')">
 <div id="tabbable">
-  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machine Deck</h1>
+  <h1 ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">Machines</h1>
   <form class="form-horizontal" method="get" action="MachineDeck#/new">
     <fieldset>
 

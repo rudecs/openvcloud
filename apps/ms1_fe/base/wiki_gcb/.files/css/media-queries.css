@@ -28,7 +28,6 @@
 	.nameField { width: 57% !important; }
 	.leftIcon { margin: 0 0 0 204px; }
 	.machineList ul li, .storage-size-list li { margin: 17px 4px !important; }
-	.logo img { width: 240px; height: auto; }
 	.signUp { font-size: 10px; }
 	.navbar-nav>li>a { padding-top: 5px; padding-bottom: 5px; }
 	.navbar.navbar-default { min-height: 31px; }
@@ -76,7 +75,6 @@
 	.nameField { width: 76% !important; }
 	.leftIcon { margin: 0 0 0 90px !important; }
 	.machineList ul li, .storage-size-list li { margin: 17px 4px !important; }
-	.logo img { width: 240px; height: auto; }
 	.signUp { font-size: 11px !important; }
 	.navbar-nav>li>a { padding-top: 5px 0; }
 	.navbar.navbar-default { min-height: 31px; }
