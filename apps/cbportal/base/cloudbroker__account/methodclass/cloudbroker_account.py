@@ -1,15 +1,50 @@
 from JumpScale import j
 import time
+import re
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor
+
+def _send_signup_mail(hrd, **kwargs):
+    notifysupport = hrd.get("instance.mothership1.cloudbroker.notifysupport")
+    fromaddr = 'support@mothership1.com'
+    toaddrs  =  [kwargs['email']]
+    if notifysupport == '1':
+        toaddrs.append('support@mothership1.com')
+
+
+    html = """
+<html>
+<head></head>
+<body>
+
+
+    Dear,<br>
+    <br>
+    Thank you for registering with Mothership<sup>1</sup>.
+    <br>
+    <br>
+    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
+    <br>
+    <br>
+    In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
+    <br>
+    <br>
+    Best Regards,<br>
+    <br>
+    The Mothership<sup>1</sup> Team<br>
+    <a href="%(portalurl)s">www.mothership1.com</a><br>
+</body>
+</html>
+""" % kwargs
+
+    j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
+
 
 class cloudbroker_account(BaseActor):
     def __init__(self):
         super(cloudbroker_account, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
-        self.accounts_actor = self.cb.actors.cloudapi.accounts
-        self.machines_actor = self.cb.actors.cloudapi.machines
-        self.users_actor = self.cb.actors.cloudapi.users
+        self.cloudapi = self.cb.actors.cloudapi
 
     def _checkAccount(self, accountname, ctx):
         account = self.models.account.simpleSearch({'name':accountname})
@@ -29,6 +64,15 @@ class cloudbroker_account(BaseActor):
         if not user:
             return False, 'Username "%s" not found' % username
         return True, user[0]
+
+    def _isValidUserName(self, username):
+        r = re.compile('^[a-z0-9]{1,20}$')
+        return r.match(username) is not None
+
+    def _isValidPassword(self, password):
+        if len(password) < 8 or len (password) > 80:
+            return False
+        return re.search(r"\s",password) is None
 
     @auth(['level1', 'level2', 'level3'])
     def disable(self, accountname, reason, **kwargs):
@@ -55,19 +99,71 @@ class cloudbroker_account(BaseActor):
             for cs in cloudspaces:
                 vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
                 for vmachine in vmachines:
-                    self.machines_actor.stop(vmachine['id'])
+                    self.cloudapi.machines.stop(vmachine['id'])
             j.tools.whmcs.tickets.close_ticket(ticketId)
             return True
 
     @auth(['level1', 'level2', 'level3'])
     def create(self, username, name, emailaddress, password, location, **kwargs):
-        ctx = kwargs["ctx"]
-        check, result = self._checkUser(username)
-        if check:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("409", headers)
-            return "Username %s already exists" % username
-        return self.users_actor.register(username=username, user=name, emailaddress=emailaddress, password=password, location=location)
+        ctx = kwargs['ctx']
+        if not self._isValidUserName(username):
+            ctx.start_response('400 Bad Request', [])
+            return '''An account name may not exceed 20 characters
+             and may only contain a-z and 0-9'''
+        if not self._isValidPassword(password):
+            ctx.start_response('400 Bad Request', [])
+            return '''A password must be at least 8 and maximum 80 characters long
+                      and may not contain whitespace'''
+
+        if j.core.portal.active.auth.userExists(username):
+            ctx.start_response('409 Conflict', [])
+            return 'Username already exists'
+        existingusers = self.syscl.user.search({'emails':emailaddress})[1:]
+
+        if (len(existingusers) > 0):
+            ctx.start_response('409 Conflict', [])
+            return 'An account with this email address already exists'
+
+        now = int(time.time())
+
+        location = location.lower()
+
+        locationurl = j.apps.cloudapi.locations.getUrl()
+
+        j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
+        account = self.models.account.new()
+        account.name = username
+        account.creationTime = now
+        account.DCLocation = location
+        account.company = ''
+        account.companyurl = ''
+        account.status = 'CONFIRMED'
+        account.displayname = name
+
+        ace = account.new_acl()
+        ace.userGroupId = username
+        ace.type = 'U'
+        ace.right = 'CXDRAU'
+        accountid = self.models.account.set(account)[0]
+
+        signupcredit = self.hrd.getFloat('instance.mothership1.cloudbroker.signupcredit')
+        creditcomment = 'Getting you started'
+        if signupcredit > 0.0:
+            credittransaction = self.models.credittransaction.new()
+            credittransaction.accountId = accountid
+            credittransaction.amount = signupcredit
+            credittransaction.credit = signupcredit
+            credittransaction.currency = 'USD'
+            credittransaction.comment = creditcomment
+            credittransaction.status = 'CREDIT'
+            credittransaction.time = now
+
+            self.models.credittransaction.set(credittransaction)
+
+        self.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
+        _send_signup_mail(hrd=self.hrd, username=username, user=name, email=emailaddress, portalurl=locationurl)
+
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     def enable(self, accountname, reason, **kwargs):
@@ -154,7 +250,7 @@ class cloudbroker_account(BaseActor):
             ctx.start_response("404", headers)
             return result
         userId = result['id']
-        self.accounts_actor.addUser(accountId, userId, accesstype)
+        self.cloudapi.accounts.addUser(accountId, userId, accesstype)
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -173,5 +269,5 @@ class cloudbroker_account(BaseActor):
             ctx.start_response("404", headers)
             return result
         userId = result['id']
-        self.accounts_actor.deleteUser(accountId, userId)
+        self.cloudapi.accounts.deleteUser(accountId, userId)
         return True

@@ -6,41 +6,6 @@ from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
 import md5
 
-def _send_signup_mail(hrd, **kwargs):
-    notifysupport = hrd.get("instance.mothership1.cloudbroker.notifysupport")
-    fromaddr = 'support@mothership1.com'
-    toaddrs  =  [kwargs['email']]
-    if notifysupport == '1':
-        toaddrs.append('support@mothership1.com')
-
-
-    html = """
-<html>
-<head></head>
-<body>
-
-
-    Dear,<br>
-    <br>
-    Thank you for registering with Mothership<sup>1</sup>.
-    <br>
-    <br>
-    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
-    <br>
-    <br>
-    In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
-    <br>
-    <br>
-    Best Regards,<br>
-    <br>
-    The Mothership<sup>1</sup> Team<br>
-    <a href="%(portalurl)s">www.mothership1.com</a><br>
-</body>
-</html>
-""" % kwargs
-
-    j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
-
 class cloudapi_users(BaseActor):
     """
     User management
@@ -95,10 +60,6 @@ class cloudapi_users(BaseActor):
         else:
             ctx.start_response('404 Not Found', [])
             return 'User not found'
-
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
 
     def _isValidPassword(self, password):
         if len(password) < 8 or len (password) > 80:
@@ -248,76 +209,6 @@ class cloudapi_users(BaseActor):
         self.models.resetpasswordtoken.delete(resettoken)
         
         return [200, "Your password has been changed."]
-
-    def register(self, username, user, emailaddress, password, company, companyurl, location, promocode, **kwargs):
-        """
-        Register a new user, a user is registered with a login, password and a new account is created.
-        param:username unique username for the account
-        param:emailaddress unique emailaddress for the account
-        param:password unique password for the account
-        result bool
-        """
-
-        ctx = kwargs['ctx']
-        if not self._isValidUserName(username):
-            ctx.start_response('400 Bad Request', [])
-            return '''An account name may not exceed 20 characters
-             and may only contain a-z and 0-9'''
-        if not self._isValidPassword(password):
-            ctx.start_response('400 Bad Request', [])
-            return '''A password must be at least 8 and maximum 80 characters long
-                      and may not contain whitespace'''
-
-        if j.core.portal.active.auth.userExists(username):
-            ctx.start_response('409 Conflict', [])
-            return 'Username already exists'
-        cl = j.clients.osis.getNamespace('system')
-        existingusers = cl.user.search({'emails':emailaddress})[1:]
-
-        if (len(existingusers) > 0):
-            ctx.start_response('409 Conflict', [])
-            return 'An account with this email address already exists'
-
-        now = int(time.time())
-
-        location = location.lower()
-
-        locationurl = j.apps.cloudapi.locations.getUrl()
-
-        j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
-        account = self.models.account.new()
-        account.name = username
-        account.creationTime = now
-        account.DCLocation = location
-        account.company = company
-        account.companyurl = companyurl
-        account.status = 'CONFIRMED'
-        account.displayname = user
-
-        ace = account.new_acl()
-        ace.userGroupId = username
-        ace.type = 'U'
-        ace.right = 'CXDRAU'
-        accountid = self.models.account.set(account)[0]
-
-        signupcredit = self.hrd.getFloat('instance.mothership1.cloudbroker.signupcredit')
-        creditcomment = 'Getting you started'
-        if signupcredit > 0.0:
-            credittransaction = self.models.credittransaction.new()
-            credittransaction.accountId = accountid
-            credittransaction.amount = signupcredit
-            credittransaction.credit = signupcredit
-            credittransaction.currency = 'USD'
-            credittransaction.comment = creditcomment
-            credittransaction.status = 'CREDIT'
-            credittransaction.time = now
-
-            self.models.credittransaction.set(credittransaction)
-
-        j.apps.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
-        _send_signup_mail(hrd=self.hrd, username=username, user=user, email=emailaddress, portalurl=locationurl)
-
-        return True
 
     def validate(self, validationtoken, **kwargs):
         ctx = kwargs['ctx']
