@@ -46,7 +46,7 @@ h3. Monitoring
 
 h3. Dashboard
 
-@row
+@row clearfix
 
 @col 3
 h5. No. of Active Accounts
