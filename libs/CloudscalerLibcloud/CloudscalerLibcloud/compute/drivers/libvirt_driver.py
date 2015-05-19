@@ -118,7 +118,7 @@ class CSLibvirtNodeDriver():
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id + '-' + disk_role + '.qcow2'
+        diskname = vm_id + '-' + disk_role + '.img'
         diskbasevolume = image.extra['path']
         disksize = size.disk
         diskbasevolumepath = IMAGEPOOL + '/' + diskbasevolume
@@ -131,7 +131,7 @@ class CSLibvirtNodeDriver():
 
     def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id+ '-' + disk_role + '.qcow2'
+        diskname = vm_id+ '-' + disk_role + '.img'
         diskbasevolume = clone_disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': size.disk})
