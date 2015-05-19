@@ -88,13 +88,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         private.setAutostart(True)
 
         j.system.fs.createDir(destinationdir)
-        destinationfile = 'routeros-small-%s.qcow2' % networkidHex
+        destinationfile = 'routeros-small-%s.raw' % networkidHex
         destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
         xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
-        j.system.fs.copyFile(imagefile, destinationfile)
+        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
 
         try:
             dom = con.defineXML(xmlsource)
