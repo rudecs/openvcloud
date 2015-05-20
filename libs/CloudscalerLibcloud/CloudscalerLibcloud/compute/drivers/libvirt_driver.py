@@ -249,13 +249,7 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_snapshot(self, node, name, snapshottype='external'):
-        domain = self._get_domain_for_node(node=node)
-        xml = ElementTree.fromstring(domain['XMLDesc'])
-        diskfiles = self._get_domain_disk_file_names(xml)
-        t = int(time.time())
-        POOLPATH = '%s/%s' % (BASEPOOLPATH, domain['name'])
-        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype, time=t, poolpath=POOLPATH)
-        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
+        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
 
     def ex_list_snapshots(self, node):
         return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)

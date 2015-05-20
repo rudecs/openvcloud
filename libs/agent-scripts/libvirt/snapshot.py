@@ -14,7 +14,15 @@ roles = []
 async = True
 
 
-def action(machineid, xml, snapshottype):
+def action(machineid, name, snapshottype):
+    import sys
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.vmachinelist import VMachineList
+    from ovs.lib.vmachine import VMachineController
+
     connection = LibvirtUtil()
-    return connection.snapshot(machineid, xml, snapshottype)
+    vmname = connection.get_domain(machineid)['name']
+    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    VMachineController.snapshot(vmachine.guid, name)
+    return {'name': name}
