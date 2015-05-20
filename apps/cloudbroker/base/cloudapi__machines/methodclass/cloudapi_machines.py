@@ -60,7 +60,12 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='X')
     @audit()
     def reboot(self, machineId, **kwargs):
-        return self._action(machineId, 'reboot', enums.MachineStatus.RUNNING)
+        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
+
+    @authenticator.auth(acl='X')
+    @audit()
+    def reset(self, machineId, **kwargs):
+        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
     @audit()
@@ -370,7 +375,7 @@ class cloudapi_machines(BaseActor):
         node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
-	        machine.nics[0].ipAddress = node.private_ips[0]
+                machine.nics[0].ipAddress = node.private_ips[0]
             else: 
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
@@ -386,12 +391,15 @@ class cloudapi_machines(BaseActor):
         if realstatus != machine.status:
             machine.status = realstatus
             self.models.vmachine.set(machine)
-        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId,
+        acl = list()
+        machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
+        for _, ace in machine_acl.iteritems():
+            acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right']))})
+        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
-    @authenticator.auth(acl='R')
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
@@ -401,9 +409,20 @@ class cloudapi_machines(BaseActor):
         result list
 
         """
+        ctx = kwargs['ctx']
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+
+        user = ctx.env['beaker.session']['user']
+        userobj = j.core.portal.active.auth.getUserInfo(user)
+        groups = userobj.groups
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        auth = authenticator.auth([])
+        acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
         q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        if 'R' not in acl and 'A' not in acl:
+            q['acl.userGroupId'] = user
+
         query = {'$query': q, '$fields': fields}
         results = self.models.vmachine.search(query)[1:]
         machines = []
@@ -468,7 +487,7 @@ class cloudapi_machines(BaseActor):
         snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot['name']
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='R')
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
@@ -479,7 +498,7 @@ class cloudapi_machines(BaseActor):
                 result.append(snapshot)
         return result
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl='D')
     @audit()
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
@@ -584,6 +603,7 @@ class cloudapi_machines(BaseActor):
         clone.sizeId = machine.sizeId
         clone.imageId = machine.imageId
         clone.cloneReference = machine.id
+        clone.acl = machine.acl
 
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -615,7 +635,7 @@ class cloudapi_machines(BaseActor):
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl='C')
     @audit()
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
         """
@@ -730,3 +750,70 @@ class cloudapi_machines(BaseActor):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
+    @authenticator.auth(acl='U')
+    @audit()
+    def addUser(self, machineId, userId, accessType, **kwargs):
+        """
+        Gives a user access to a vmachine
+        machineId -- ID of a vmachine to share
+        userId -- ID of a user to share with
+        accessType -- 'R' for read only access, 'W' for Write access
+        return bool
+        """
+        machineId = int(machineId)
+        ctx = kwargs['ctx']
+        headers = [('Content-Type', 'application/json'),]
+        if not j.core.portal.active.auth.userExists(userId):
+            ctx.start_response('404 Not Found', headers)
+            return False
+        else:
+            vmachine = self.models.vmachine.get(machineId)
+            vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
+            if userId in vmachine_acl:
+                if set(accessType).issubset(vmachine_acl[userId]['right']):
+                    # user already has same or higher access level
+                    ctx.start_response('412 Precondition Failed', [])
+                    return 'User already has a higher access level'
+                else:
+                    # grant higher access level
+                    for ace in vmachine.acl:
+                        if ace.userGroupId == userId and ace.type == 'U':
+                            ace.right = accessType
+                            break
+            else:
+                ace = vmachine.new_acl()
+                ace.userGroupId = userId
+                ace.type = 'U'
+                ace.right = accessType
+            self.models.vmachine.set(vmachine)
+            return True
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def deleteUser(self, machineId, userId, **kwargs):
+        """
+        Revokes user's access to a vmachine
+        machineId -- ID of a vmachine
+        userId -- ID of a user to revoke their access
+        return bool
+        """
+        machineId = int(machineId)
+        vmachine = self.models.vmachine.get(machineId)
+        for ace in vmachine.acl[:]:
+            if ace.userGroupId == userId:
+                vmachine.acl.remove(ace)
+                self.models.vmachine.set(vmachine)
+                return True
+        return False
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def updateUser(self, machineId, userId, accessType, **kwargs):
+        """
+        Updates user's access rights to a vmachine
+        machineId -- ID of a vmachine to share
+        userId -- ID of a user to share with
+        accessType -- 'R' for read only access, 'W' for Write access
+        return bool
+        """
+        return self.addUser(machineId, userId, accessType, **kwargs)

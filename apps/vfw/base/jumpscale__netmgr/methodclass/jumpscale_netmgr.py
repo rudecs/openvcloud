@@ -185,7 +185,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return result
 
 
-    def fw_forward_list(self, fwid, gid, **kwargs):
+    def fw_forward_list(self, fwid, gid, localip=None, **kwargs):
         """
         list all portformarding rules,
         is list of list [[$fwport,$destip,$destport]]
@@ -195,8 +195,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
         """
         fwobj = self.osisvfw.get(fwid)
         result = list()
-        for rule in fwobj.tcpForwardRules:
-            result.append({'publicIp':rule.fromAddr, 'publicPort':rule.fromPort, 'localIp':rule.toAddr, 'localPort':rule.toPort, 'protocol': rule.protocol})
+        if localip:
+            for rule in fwobj.tcpForwardRules:
+                if localip == rule.toAddr:
+                    result.append({'publicIp':rule.fromAddr, 'publicPort':rule.fromPort, 'localIp':rule.toAddr, 'localPort':rule.toPort, 'protocol': rule.protocol})
+        else:
+            for rule in fwobj.tcpForwardRules:
+                result.append({'publicIp':rule.fromAddr, 'publicPort':rule.fromPort, 'localIp':rule.toAddr, 'localPort':rule.toPort, 'protocol': rule.protocol})
         return result
 
     def fw_list(self, gid, domain=None, **kwargs):

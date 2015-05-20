@@ -73,6 +73,7 @@ defineApiStub = function ($httpBackend) {
     }
 
     var UsersList = LocalStorageItem('gcb:users');
+
     if (!UsersList.get()) {
         UsersList.set([{"username": "admin", "password": "admin"}]);
     }
@@ -135,6 +136,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 0,
             "id": 0,
+            "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}, {"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 4"}]
         }, {
             "cloudspaceId":1,
             "status": "HALTED",
@@ -146,6 +148,7 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 1,
             "id": 1,
+            "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}]
         }]);
     }
 
@@ -399,6 +402,19 @@ defineApiStub = function ($httpBackend) {
         return [200, 'HALTED'];
     });
 
+    $httpBackend.whenGET(/^\/machines\/reboot\?machineId=\d+.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machineid = params.machineId;
+        var machines = MachinesList.get();
+        if (!_.find(machines, function(m) { return m.id == machineid; })) {
+            return [500, 'Machine not found'];
+        }
+        var machine = MachinesList.getById(machineid);
+        machine.status = 'RUNNING';
+        MachinesList.save(machine);
+        return [200, 'RUNNING'];
+    });
+
     $httpBackend.whenGET(/^\/machines\/pause\?machineId=\d+.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var machineid = params.machineId;
@@ -449,31 +465,61 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     var cloudspaces = [
-       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
-       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
-       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
-       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
-       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "CXDRAU", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '1', name: 'Default', accountId: '1', publicipaddress: '173.194.39.40', location: "ca1", acl:[{"guid":"","right":"ACDRUX","type":"U","userGroupId":"Lenny Miller","canBeDeleted": false},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"karim","canBeDeleted": false},{"guid":"","right":"RCX","type":"U","userGroupId":"user 3", "canBeDeleted": true},{"guid":"","right":"ACDRUX","type":"U","userGroupId":"user 4", "canBeDeleted": true}], status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Lenny Miller"} ,userRightsOnAccountBilling: true, accountName: "Lenny Miller"} ,
+       {id: '2', name: 'Development', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "DEPLOYED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '3', name: 'Training', accountId: '2', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '4', name: 'Production', accountId: '2', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Awingu"} ,userRightsOnAccountBilling: true, accountName: "Awingu"},
+       {id: '5', name: 'Development', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '6', name: 'Acceptance', accountId: '4', publicipaddress: '173.194.39.40', location: "ca1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
+       {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
     ];
 
     
     var cloudSpace = {
         name: 'Development',
         descr: 'Development machine',
-        acl: [{
+        acl: [
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"Lenny Miller",
+                "canBeDeleted": false
+            },
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"karim",
+                "canBeDeleted": false
+            },
+            {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
-                "userGroupId": "user 1"
+                "right": "ACDRUX",
+                "userGroupId": "user 1",
+                "canBeDeleted": true
             }, {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
-                "userGroupId": "user 2"
-            }
-        ]
+                "right": "ACDRUX",
+                "userGroupId": "user 2",
+                "canBeDeleted": true
+            },
+            {
+                "guid":"",
+                "right":"RCX",
+                "type":"U",
+                "userGroupId":"user 3",
+                "canBeDeleted": true
+            },
+            {
+                "guid":"",
+                "right":"ACDRUX",
+                "type":"U",
+                "userGroupId":"user 4",
+                "canBeDeleted": true
+            }]
     };
 
     $httpBackend.whenGET(/^\/cloudspaces\/list.*/).respond(cloudspaces);
@@ -481,18 +527,10 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/cloudspaces\/addUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        var userId = params.userId.toLowerCase();
-        if (userId.indexOf('user') >= 0) {
-            cloudSpace.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
-            return [200, "Success"];
-        } else if (userId.indexOf('not found') >= 0) {
-            return [404, 'User not found'];
-        } else if (userId.indexOf('eee') >= 0) {
-            return [3000, 'Unspecified error'];
-        } else {
-            return [500, 'Server error'];
-        }
+        cloudSpace.acl.push({ guid: '', right: params.accesstype, type: 'U' , userGroupId: params.userId });
+        return [200, 'Success'];
     });
+
     $httpBackend.whenGET(/^\/cloudspaces\/deleteUser\?.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         var userId = params.userId;
@@ -513,12 +551,12 @@ defineApiStub = function ($httpBackend) {
                 {
                     "type": "U",
                     "guid": "",
-                    "right": "CXDRAU",
+                    "right": "ACDRUX",
                     "userGroupId": "linny"
                 }, {
                     "type": "U",
                     "guid": "",
-                    "right": "CXDRAU",
+                    "right": "ACDRUX",
                     "userGroupId": "harvey"
                 }
             ],
@@ -529,7 +567,6 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/cloudspaces\/delete\?.*/).respond(function (method, url, data) {
         var params = new URI(url).search(true);
         var cloudSpaceItem = _.where(cloudspaces, {id: params.cloudspaceId});
-        console.log(cloudSpaceItem);
         if(cloudSpaceItem.length > 0){
             cloudspaces.splice(_.where(cloudspaces, {id: params.cloudspaceId}), 1);
             return [200, true];
@@ -545,12 +582,12 @@ defineApiStub = function ($httpBackend) {
         acl: [{
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "linny"
             }, {
                 "type": "U",
                 "guid": "",
-                "right": "CXDRAU",
+                "right": "ACDRUX",
                 "userGroupId": "harvey"
             }
         ]
@@ -562,7 +599,7 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         var userId = params.userId.toLowerCase();
         if (userId.indexOf('user') >= 0) {
-            account.acl.push({ type: 'U', guid: '', right: 'CXDRAU', userGroupId: userId});
+            account.acl.push({ type: 'U', guid: '', right: 'ACDRUX', userGroupId: userId});
             return [200, "Success"];
         } else if (userId.indexOf('not found') >= 0) {
             return [404, 'User not found'];
@@ -656,25 +693,37 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/storagebuckets\/list\?cloudspaceId=\d+.*/).respond(storages);
 
     var portforwarding = [
-       {id: 0, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0 , publicPort: 8080, localPort: 80},
-       {id: 1, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
-       {id: 2, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 7070, localPort: 70},
-       {id: 3, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 9090, localPort: 90},
-       {id: 4, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
-       {id: 5, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 8080, localPort: 80},
-       {id: 6, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20},
-       {id: 7, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 4040, localPort: 40},
-       {id: 8, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 6060, localPort: 60},
-       {id: 9, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 1010, localPort: 10},
-       {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30},
-       {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50},
+       {id: 0, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0 , publicPort: 8080, localPort: 80, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 1, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20, cloudspaceid: 0, protocol: 'udp'},
+       {id: 2, publicIp: '125.85.7.1', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 7070, localPort: 70, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 3, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 9090, localPort: 90, cloudspaceid: 0, protocol: 'tcp'},
+       {id: 4, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 5, publicIp: '125.85.7.1', vmName: "CloudBroker" , vmid: 1, publicPort: 8080, localPort: 80, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 6, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 2020, localPort: 20, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 7, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 4040, localPort: 40, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 8, publicIp: '126.84.3.9', vmName: "CloudScalers Jenkins" , vmid: 0, publicPort: 6060, localPort: 60, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 9, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 1010, localPort: 10, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30, cloudspaceid: 1, protocol: 'tcp'},
+       {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50, cloudspaceid: 1, protocol: 'tcp'},
     ];
+    
+    var portforwardingList = LocalStorageItem('gcb:portforwarding');
+    if(!portforwardingList.get('gcb:portforwarding')){
+        portforwardingList.set(portforwarding);
+    }
+    var portforwardingListResult = portforwardingList.get('gcb:portforwarding');
+
     $httpBackend.whenGET(/^\/portforwarding\/list.*cloudspaceid.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
+        var portforwardsList = portforwardingList.get('gcb:portforwarding');
         if(params.id == undefined){
-            return [200, portforwarding];
+            if(params.machineId){
+                return[200, _.where(portforwardsList, {vmid: parseInt(params.machineId), cloudspaceid: parseInt(params.cloudspaceid) })];
+            }else{
+                return[200, _.where(portforwardsList, { cloudspaceid: parseInt(params.cloudspaceid) })];
+            }
         }else{
-            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            var filteredPorts = _.where(portforwardsList, {id: parseInt(params.id)});
             return[200, filteredPorts];
         }
     });
@@ -684,11 +733,16 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/portforwarding\/create.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        portforwarding.push({
-            ip: params.ip,
-            vmName: params.vmName,
-            puplicPort: params.puplicPort,
-            localPort: params.localPort
+        var id = portforwardingListResult.length + 1;
+        portforwardingList.add({
+            id: id,
+            cloudspaceid: parseInt(params.cloudspaceid),
+            localPort: parseInt(params.localPort),
+            publicIp: params.publicIp,
+            publicPort: parseInt(params.publicPort),
+            vmid: parseInt(params.vmid),
+            vmName: MachinesList.getById(params.vmid).name,
+            protocol: params.protocol
         });
         return [200, params.ip];
     });
@@ -696,9 +750,9 @@ defineApiStub = function ($httpBackend) {
     $httpBackend.whenGET(/^\/portforwarding\/list.*authkey.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         if(params.id == undefined){
-            return [200, portforwarding];
+            return [200, portforwardingListResult];
         }else{
-            var filteredPorts = _.where(portforwarding, {id: parseInt(params.id)});
+            var filteredPorts = _.where(portforwardingListResult, {id: parseInt(params.id)});
             return[200, filteredPorts];
         }
     });
@@ -711,25 +765,22 @@ defineApiStub = function ($httpBackend) {
 
     $httpBackend.whenGET(/^\/portforwarding\/update.*/).respond(function(method, url, data) {
             var params = new URI(url).search(true);
-            console.log(params);
-            for (var i = 0, l = portforwarding.length; i < l; i++) {
-                if (portforwarding[i].id === parseInt(params.id)) {
-                    portforwarding[i].publicIp = params.ip;
-                    portforwarding[i].publicPort = params.puplicPort;
-                    // portforwarding[i].vmName = params.vmName;
-                    portforwarding[i].vmid = params.vmid;
-                    portforwarding[i].localPort = params.localPort;
-                    console.log(portforwarding[i]);
-                    break;
-                }
-            }
-            return [200, portforwarding];
+            var portforward = portforwardingList.getById(params.id);
+            portforward.cloudspaceid = parseInt(params.cloudspaceid);
+            portforward.localPort = parseInt(params.localPort);
+            portforward.protocol = params.protocol;
+            portforward.publicIp = params.publicIp;
+            portforward.publicPort = parseInt(params.publicPort);
+            portforward.vmName = MachinesList.getById(params.vmid).name;
+            portforward.vmid = parseInt(params.vmid);
+            portforwardingList.save(portforward);
+            return [200, portforwardingListResult];
         });
 
     $httpBackend.whenGET(/^\/portforwarding\/delete.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
-        portforwarding.splice(_.where(portforwarding, {id: parseInt(params.id)}) , 1);
-        return [200, portforwarding];
+        portforwardingList.remove(parseInt(params.id));
+        return [200, portforwardingListResult];
     });
 
     $httpBackend.whenGET(/^\/template\/delete\?.*/).respond(function (method, url, data) {
@@ -768,4 +819,40 @@ defineApiStub = function ($httpBackend) {
         'locationCode': 'ca1',
         'name': 'Canada'}]
         );
+
+    $httpBackend.whenGET(/^\/machines\/addUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        machine.acl.push({ type: 'U', guid: '', right: params.accessType , userGroupId: params.userId });
+        MachinesList.save(machine);
+        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/deleteUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
+        machine.acl.splice(machine.acl.indexOf(userAcl), 1);
+        MachinesList.save(machine);
+        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/machines\/updateUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
+        var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
+        machine.acl[machine.acl.indexOf(userAcl)].right = params.accessType;
+        MachinesList.save(machine);        
+        return [200, '15'];
+    });
+
+    $httpBackend.whenGET(/^\/cloudspaces\/updateUser.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        var cloudSpace = _.find(cloudspaces, function(m) { return m.id == params.cloudspaceId; });
+        var userAcl = _.find(cloudSpace.acl , function(acl) { return acl.userGroupId == params.userId; });
+        cloudSpace.acl[cloudSpace.acl.indexOf(userAcl) ].right = params.accesstype;
+        return [200, '15'];
+    });
 };

@@ -48,12 +48,38 @@ class cloudapi_cloudspaces(BaseActor):
             return 'Unexisting user'
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cs = cloudspace
-            acl = cs.new_acl()
-            acl.userGroupId = userId
-            acl.type = 'U'
-            acl.right = accesstype
-            return self.models.cloudspace.set(cs)[0]
+            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
+            if userId in cloudspace_acl:
+                if set(accesstype).issubset(cloudspace_acl[userId]['right']):
+                    # user already has same or higher access level
+                    ctx.start_response('412 Precondition Failed', [])
+                    return 'User already has a higher access level'
+                else:
+                    # grant higher access level
+                    for ace in cloudspace.acl:
+                        if ace.userGroupId == userId and ace.type == 'U':
+                            ace.right = accesstype
+                            break
+            else:
+                ace = cloudspace.new_acl()
+                ace.userGroupId = userId
+                ace.type = 'U'
+                ace.right = accesstype
+            self.models.cloudspace.set(cloudspace)
+            return True
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
+        """
+        Updates a user access rights.
+        Access rights can be 'R' or 'W'
+        params:cloudspaceId id of the cloudspace
+        param:userId id of the user to give access
+        param:accesstype 'R' for read only access, 'W' for Write access
+        result bool
+        """
+        return self.addUser(cloudspaceId, userId, accesstype, **kwargs)
 
     def _listActiveCloudSpaces(self, accountId):
         account = self.models.account.get(accountId)
@@ -218,8 +244,9 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspaceObject.secret = str(uuid.uuid4())
             self.models.cloudspace.set(cloudspaceObject)
 
+        cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceObject.id)
         cloudspace = { "accountId": cloudspaceObject.accountId,
-                        "acl": [{"right": acl.right, "type": acl.type, "userGroupId": acl.userGroupId} for acl in cloudspaceObject.acl],
+                        "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()],
                         "description": cloudspaceObject.descr,
                         "id": cloudspaceObject.id,
                         "name": cloudspaceObject.name,
@@ -258,11 +285,28 @@ class cloudapi_cloudspaces(BaseActor):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         query = {'status': {'$ne': 'DISABLED'}}
-        disabledaccounts = self.models.account.search(query)[1:]
-        disabled = [account['id'] for account in disabledaccounts]
+        nondisabledaccounts = self.models.account.search(query)[1:]
+        nondisabled = [account['id'] for account in nondisabledaccounts]
+        cloudspaceaccess = set()
+
+        # get cloudspaces access via account
+        q = {'acl.userGroupId': user, 'status': {'$ne': 'DISABLED'}}
+        query = {'$query': q, '$fields': ['id']}
+        accountaccess = set(ac['id'] for ac in self.models.account.search(query)[1:])
+        q = {'accountId': {'$in': list(accountaccess)}}
+        query = {'$query': q, '$fields': ['id']}
+        cloudspaceaccess.update(cs['id'] for cs in self.models.cloudspace.search(query)[1:])
+
+        # get cloudspaces access via atleast one vm
+        q = {'acl.userGroupId': user, 'status': {'$ne': 'DESTROYED'}}
+        query = {'$query': q, '$fields': ['cloudspaceId']}
+        cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        q = {"accountId": {"$in": disabled}, "acl.userGroupId": user, "status": {"$ne": "DESTROYED"}}
+        q = {"accountId": {"$in": nondisabled}, 
+             "$or": [{"acl.userGroupId": user}, 
+                     {"id": {"$in": list(cloudspaceaccess)} }],
+             "status": {"$ne": "DESTROYED"}}
         query = {'$query': q, '$fields': fields}
         cloudspaces = self.models.cloudspace.search(query)[1:]
 
@@ -270,6 +314,8 @@ class cloudapi_cloudspaces(BaseActor):
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name
+            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspace['id'])
+            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
@@ -296,7 +342,7 @@ class cloudapi_cloudspaces(BaseActor):
     @authenticator.auth(acl='C')
     def getDefenseShield(self, cloudspaceId, **kwargs):
         """
-        Get informayion about the defense sheild
+        Get information about the defense shield
         param:cloudspaceId id of the cloudspace
         """
         ctx = kwargs['ctx']

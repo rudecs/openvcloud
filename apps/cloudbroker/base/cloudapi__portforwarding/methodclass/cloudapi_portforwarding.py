@@ -192,11 +192,22 @@ class cloudapi_portforwarding(BaseActor):
 
     @authenticator.auth(acl='R')
     @audit()
-    def list(self, cloudspaceid, **kwargs):
+    def list(self, cloudspaceid, machineId=None, **kwargs):
         """
         list all portforwarding rules.
         param:cloudspaceid id of the cloudspace
         """
+        machine = None
+        if machineId:
+            machineId = int(machineId)
+            machine = self.models.vmachine.get(machineId)
+        def getIP():
+            if machine:
+                for nic in machine.nics:
+                    if nic.ipAddress != 'Undefined':
+                        return nic.ipAddress
+            return None
+        localip = getIP()
         ctx = kwargs['ctx']
         cloudspaceid = int(cloudspaceid)
         cloudspace = self.models.cloudspace.get(cloudspaceid)
@@ -206,7 +217,7 @@ class cloudapi_portforwarding(BaseActor):
             return 'Incorrect cloudspace or there is no corresponding gateway'
         fw_id = fw[0]['guid']
         fw_gid = fw[0]['gid']
-        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid, localip)
         return self._process_list(forwards, cloudspaceid)
 
     @authenticator.auth(acl='R')

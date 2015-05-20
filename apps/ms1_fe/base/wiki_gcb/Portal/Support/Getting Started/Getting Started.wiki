@@ -26,7 +26,7 @@ The Cloud Space provides access to different Cloud Decks:
 The Cloud Space is protected by the Defense Shield, your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing, port fowards and firewall settings.
 
 {{div2}}
-	
+    
 {{html:
   </div>
 
@@ -45,7 +45,7 @@ h2. Cloud Space
 
 {{div2}}
 
-	
+    
 {{html:
   </div>
   <div class="tab-pane padding-vertical-medium fade" id="MachineDeck">
@@ -76,7 +76,7 @@ h2. Cloud Space
 !/$$space/.files/img/icon5.png!
 {{div2}}
 {{div2: class=col-md-11}}
-		 h2. Defense Shield
+         h2. Defense Shield
 
 		*# Go to Defense Shield
 		*# Login with user 'admin' and your portal password
@@ -93,7 +93,6 @@ h2. Cloud Space
 }}
 
 h2. Questions?
-
 {{html:
 <p>In case of any questions, go to our Documentation Center or contact <a href="http://support.mothership1.com" target="_blank">Support</a></p>
 }}

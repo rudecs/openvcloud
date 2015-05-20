@@ -1,11 +1,11 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceManagementController', ['$scope', 'CloudSpace', 'LoadingDialog','$ErrorResponseAlert','$modal','$window', '$timeout','LocationsService', function($scope, CloudSpace, LoadingDialog, $ErrorResponseAlert, $modal, $window, $timeout, LocationsService) {
 
-	$scope.getLocationInfo = function(locationcode){
-        	return LocationsService.get(locationcode);
+    $scope.getLocationInfo = function(locationcode){
+            return LocationsService.get(locationcode);
         }
 
-    	$scope.$watch('currentSpace.id',function(){
+        $scope.$watch('currentSpace.id',function(){
 
             CloudSpace.get($scope.currentSpace.id).then(
                     function(data) {
@@ -36,26 +36,28 @@ angular.module('cloudscalers.controllers')
                 }
             });
             modalInstance.result.then(function (result) {
-        		LoadingDialog.show('Deleting cloudspace');
+                LoadingDialog.show('Deleting cloudspace');
                 CloudSpace.delete($scope.currentSpace.id)
                     .then(function() {
-                            $scope.cloudspaces.splice(_.where($scope.cloudspaces, {id: $scope.currentSpace.id, accountId: $scope.currentSpace.accountId}), 1);
-                            $scope.setCurrentCloudspace($scope.cloudspaces[0]);
-                            $scope.loadSpaces();
-                            var ua = window.navigator.userAgent;
-                            var msie = ua.indexOf("MSIE ");
-                            if (msie > 0){
-                                $window.location.reload();
-                            }
-                            else{
-                                var uri = new URI($window.location);
-                                uri.filename('Decks');
-                                $window.location = uri.toString();
-                            }
+                        $scope.cloudspaces.splice(_.where($scope.cloudspaces, {id: $scope.currentSpace.id, accountId: $scope.currentSpace.accountId}), 1);
+                        $scope.setCurrentCloudspace($scope.cloudspaces[0]);
+                        $scope.loadSpaces();
+                        var ua = window.navigator.userAgent;
+                        var msie = ua.indexOf("MSIE ");
+                        if (msie > 0){
+                            $window.location.reload();
+                        }
+                        else{
+                            var uri = new URI($window.location);
+                            uri.filename('Decks');
+                            $window.location = uri.toString();
+                        }
                     }, function(reason) {
                         LoadingDialog.hide();
                         $ErrorResponseAlert(reason);
                     });
             });
         }
+        
+
     }]);

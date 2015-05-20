@@ -29,7 +29,7 @@ New users can find useful info about the Machines in our [Quick Tutorial Guide|G
 
 <div class="table-responsive">
   <div class="gray-loader" ng-show="machinesLoader">
-      Loading, Please wait..
+    Loading, Please wait..
   </div>
   <table id="machine_buckets_list"  class="table table-striped table-bordered" ng-cloak ng-show="(machines | filter:machineIsManageable).length > 0">
     <tr>

@@ -2,23 +2,35 @@ angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
-        
         Machine.get($routeParams.machineId).then(function(data) {
             $scope.machine = data;
-        },
-        function(reason) {
-            $ErrorResponseAlert(reason);
+            },
+            function(reason) {
+                $ErrorResponseAlert(reason);
+            });
+
+        $scope.$watch('machine.acl', function () {
+            if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
+                var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
+                if(currentUserAccessright == "R"){
+                    $scope.currentUserAccess = 'Read';
+                }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
+                    $scope.currentUserAccess = "ReadWrite";
+                }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
+                    $scope.currentUserAccess = "Admin";
+                }
+            }
         });
 
         $scope.tabactive = {actions: true, console: false, snapshots: false, changelog: false};
 
         var changeSelectedTab = function(tab){
-        	if (tab){
-        		$scope.tabactive.actions = (tab=='actions');
-        		$scope.tabactive.console = (tab == 'console');
-        		$scope.tabactive.snapshots = (tab=='snapshots');
-        		$scope.tabactive.changelog = (tab=='changelog');
-        	}
+            if (tab){
+                $scope.tabactive.actions = (tab=='actions');
+                $scope.tabactive.console = (tab == 'console');
+                $scope.tabactive.snapshots = (tab=='snapshots');
+                $scope.tabactive.changelog = (tab=='changelog');
+            }
         }
 
         changeSelectedTab($routeParams.activeTab);
@@ -54,7 +66,7 @@ angular.module('cloudscalers.controllers')
                     $scope.machineinfo['image'] = image;
                     $scope.machineinfo['storage'] = $scope.machine.storage;
                     }
-                }, true);
+            }, true);
         };
 
         $scope.$watch('images', function() {
@@ -108,18 +120,18 @@ angular.module('cloudscalers.controllers')
         }
         updatesnapshots();
         
-    	var CreateSnapshotController = function ($scope, $modalInstance) {
+        var CreateSnapshotController = function ($scope, $modalInstance) {
 
-    		$scope.snapshotname= '';
+            $scope.snapshotname= '';
 
             $scope.submit = function (result) {
-            	$modalInstance.close(result.newSnapshotName);
+                $modalInstance.close(result.newSnapshotName);
             };
 
             $scope.cancel = function () {
-            	$modalInstance.dismiss('cancel');
+                $modalInstance.dismiss('cancel');
             };
-    	};
+        };
 
         $scope.$watch('tabactive.snapshots', function() {
             if (!$scope.tabactive.snapshots)
@@ -129,49 +141,49 @@ angular.module('cloudscalers.controllers')
 
         $scope.createSnapshot = function() {
 
-        	if ($scope.machine.status != "RUNNING"){
-        		$alert("A snapshot can only be taken from a running machine.");
-        		return;
-        	}
+            if ($scope.machine.status != "RUNNING"){
+                $alert("A snapshot can only be taken from a running machine.");
+                return;
+            }
 
-        	var modalInstance = $modal.open({
-      			templateUrl: 'createSnapshotDialog.html',
-      			controller: CreateSnapshotController,
-      			resolve: {
-      			}
-    		});
+            var modalInstance = $modal.open({
+                templateUrl: 'createSnapshotDialog.html',
+                controller: CreateSnapshotController,
+                resolve: {
+                }
+            });
 
-    		modalInstance.result.then(function (snapshotname) {
+            modalInstance.result.then(function (snapshotname) {
                 LoadingDialog.show('Creating snapshot');
-    			Machine.createSnapshot($scope.machine.id, snapshotname).then(
-					function(result){
-						updatesnapshots();
-					},
-					function(reason){
-						LoadingDialog.hide();
-						$ErrorResponseAlert(reason);
+                Machine.createSnapshot($scope.machine.id, snapshotname).then(
+                    function(result){
+                        updatesnapshots();
+                    },
+                    function(reason){
+                        LoadingDialog.hide();
+                        $ErrorResponseAlert(reason);
                     }
-				);
-    		});
+                );
+            });
         };
 
         $scope.rollbackSnapshot = function(snapshot) {
 
-        	if ($scope.machine.status != "HALTED"){
-        		$alert("A snapshot can only be rolled back to a stopped machine.");
-        		return;
-        	}
+            if ($scope.machine.status != "HALTED"){
+                $alert("A snapshot can only be rolled back to a stopped machine.");
+                return;
+            }
 
             LoadingDialog.show('Rolling back snapshot');
             Machine.rollbackSnapshot($scope.machine.id, snapshot.name).then(
-            		function(result){
-						LoadingDialog.hide();
-			            location.reload();
-					}, function(reason){
-						LoadingDialog.hide();
-						$alert(reason.data);
+                    function(result){
+                        LoadingDialog.hide();
+                        location.reload();
+                    }, function(reason){
+                        LoadingDialog.hide();
+                        $alert(reason.data);
                     }
-            	) ;
+                ) ;
         };
 
         $scope.deleteSnapshot = function(snapshot) {
@@ -180,18 +192,18 @@ angular.module('cloudscalers.controllers')
         };
 
 
-    	var CloneMachineController= function ($scope, $modalInstance) {
+        var CloneMachineController= function ($scope, $modalInstance) {
 
-    		$scope.clone ={name: ''};
+            $scope.clone ={name: ''};
 
-      		$scope.ok = function () {
-        			$modalInstance.close($scope.clone.name);
-      		};
+            $scope.ok = function () {
+                    $modalInstance.close($scope.clone.name);
+            };
 
-      		$scope.cancel = function () {
-        			$modalInstance.dismiss('cancel');
-      		};
-    	};
+            $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+            };
+        };
 
         var CreateTemplateController= function ($scope, $modalInstance) {
 
@@ -208,30 +220,30 @@ angular.module('cloudscalers.controllers')
 
         $scope.cloneMachine = function() {
 
-        	if ($scope.machine.status != "HALTED"){
-        		$alert("A clone can only be taken from a stopped machine.");
-        		return;
-        	}
-    		var modalInstance = $modal.open({
-          			templateUrl: 'cloneMachineDialog.html',
-          			controller: CloneMachineController,
-          			resolve: {
-          			}
-        		});
+            if ($scope.machine.status != "HALTED"){
+                $alert("A clone can only be taken from a stopped machine.");
+                return;
+            }
+            var modalInstance = $modal.open({
+                    templateUrl: 'cloneMachineDialog.html',
+                    controller: CloneMachineController,
+                    resolve: {
+                    }
+                });
 
-        		modalInstance.result.then(function (cloneName) {
+                modalInstance.result.then(function (cloneName) {
                     LoadingDialog.show('Creating clone');
                     Machine.clone($scope.machine, cloneName).then(
-    					function(result){
-    						LoadingDialog.hide();
-    	                    $location.path("/edit/" + result);
-    					},
-    					function(reason){
-    						LoadingDialog.hide();
-    						$alert(reason.data);
+                        function(result){
+                            LoadingDialog.hide();
+                            $location.path("/edit/" + result);
+                        },
+                        function(reason){
+                            LoadingDialog.hide();
+                            $alert(reason.data);
                         }
-    				);
-        		});
+                    );
+                });
         };
 
 
@@ -272,6 +284,21 @@ angular.module('cloudscalers.controllers')
         $scope.start = function() {
             LoadingDialog.show('Starting');
             Machine.start($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                    changeSelectedTab('console');
+                },
+                function(reason){
+                    LoadingDialog.hide();
+                    $alert(reason.data.backtrace);
+                }
+            );
+
+        };
+
+        $scope.reboot = function() {
+            LoadingDialog.show('Rebooting');
+            Machine.reboot($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
