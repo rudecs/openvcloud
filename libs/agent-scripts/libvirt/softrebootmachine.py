@@ -4,7 +4,7 @@ descr = """
 Libvirt script to stop a virtual machine
 """
 
-name = "stopmachine"
+name = "softrebootmachine"
 category = "libvirt"
 organization = "cloudscalers"
 author = "hamdy.farag@codescalers.com"

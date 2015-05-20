@@ -15,6 +15,15 @@ async = True
 
 
 def action(machineid, name):
+    import sys
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.vmachinelist import VMachineList
+    from ovs.lib.vmachine import VMachineController
+
     connection = LibvirtUtil()
-    return connection.deleteSnapshot(machineid, name)
+    vmname = connection.get_domain(machineid)['name']
+    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    #VMachineController.snapshot(vmachine.guid, name)
+    return True
+
