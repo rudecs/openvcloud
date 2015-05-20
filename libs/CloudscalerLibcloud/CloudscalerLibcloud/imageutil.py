@@ -2,6 +2,7 @@ from JumpScale import j
 import JumpScale.grid.osis
 import requests
 import sys
+import time
 
 
 def copyImageToOVS(imagepath):
@@ -20,7 +21,11 @@ def copyImageToOVS(imagepath):
         j.system.platform.qemu_img.convert(src, 'qcow2', dst, 'raw')
 
     pool = VPoolList.get_vpool_by_name('vmstor')
-    disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % newimagepath, pool)
+    disk = None
+    start = time.time()
+    while not disk or start + 60 < time.time():
+        time.sleep(2)
+        disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % newimagepath, pool)
     VDiskController.set_as_template(disk.guid)
     return disk.guid, newimagepath
 

@@ -8,7 +8,7 @@
     <allocation unit='bytes'>{{disksize}}</allocation>
     <target>
         <path>{{diskname}}</path>
-        <format type='iso'/>
+        <format type='qcow2'/>
         <permissions>
             <mode>0660</mode>
             <owner>106</owner>
