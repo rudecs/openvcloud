@@ -15,15 +15,12 @@ h3. Actions
   - emailaddress
   - password
 
+
 - display: Add Account
-  action: /restmachine/cloudbroker/account/create
-  input:
-  - username
-  - name
-  - emailaddress
-  - password
-  - location
+  action: '#createaccount'
 }}
+
+{{createaccount}}
 
 h3. Main Links
 
