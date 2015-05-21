@@ -132,7 +132,7 @@
         Delete a snapshot of a machine
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the snapshot to delete
+        var:epoch str,, epoch time of snapshot
         result:str
 
 
@@ -141,7 +141,7 @@
         Rollback a snapshot of a machine
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the snapshot to rollback
+        var:epoch str,, epoch time of snapshot
         result:str
 
     method:createTemplate
