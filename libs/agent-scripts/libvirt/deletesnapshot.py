@@ -19,11 +19,14 @@ def action(machineid, name):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     sys.path.append('/opt/OpenvStorage')
     from ovs.dal.lists.vmachinelist import VMachineList
-    from ovs.lib.vmachine import VMachineController
+    from ovs.lib.vdisk import VDiskController
 
     connection = LibvirtUtil()
     vmname = connection.get_domain(machineid)['name']
     vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
-    #VMachineController.snapshot(vmachine.guid, name)
+    for snap in vmachine.snapshots:
+        if snap['label'] == name:
+            for diskguid, snapid in snap['snapshots'].iteritems():
+                VDiskController.delete_snapshot(diskguid, snapid)
     return True
 

@@ -140,12 +140,6 @@ angular.module('cloudscalers.controllers')
         }, true);
 
         $scope.createSnapshot = function() {
-
-            if ($scope.machine.status != "RUNNING"){
-                $alert("A snapshot can only be taken from a running machine.");
-                return;
-            }
-
             var modalInstance = $modal.open({
                 templateUrl: 'createSnapshotDialog.html',
                 controller: CreateSnapshotController,

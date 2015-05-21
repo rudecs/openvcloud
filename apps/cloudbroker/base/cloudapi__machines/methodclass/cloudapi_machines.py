@@ -469,11 +469,7 @@ class cloudapi_machines(BaseActor):
         result int
         """
         provider, node = self._getProviderAndNode(machineId)
-        modelmachine = self._getMachine(machineId)
         ctx = kwargs['ctx']
-        if not modelmachine.status == enums.MachineStatus.RUNNING:
-            ctx.start_response('409 Conflict', [])
-            return 'A snapshot can only be created from a running Machine bucket'
         snapshots = provider.client.ex_list_snapshots(node)
         if len(snapshots) > 5:
             ctx.start_response('409 Conflict', [])
@@ -502,13 +498,6 @@ class cloudapi_machines(BaseActor):
     @audit()
     def deleteSnapshot(self, machineId, name, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        modelmachine = self._getMachine(machineId)
-        
-        if not modelmachine.status == enums.MachineStatus.RUNNING and\
-                not provider.client.ex_snapshots_can_be_deleted_while_running():
-            ctx = kwargs['ctx']
-            ctx.start_response('409 Conflict', [])
-            return 'A snapshot can only be removed from a running Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_delete_snapshot(node, name)

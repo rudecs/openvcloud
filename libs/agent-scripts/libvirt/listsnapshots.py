@@ -25,5 +25,6 @@ def action(machineid):
     vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
     snapshots = list()
     for snap in vmachine.snapshots:
-        snapshots.append({'name': snap['label'], 'epoch': int(snap['timestamp'])})
+        if not snap['is_automatic']:
+            snapshots.append({'name': snap['label'], 'epoch': int(snap['timestamp'])})
     return snapshots
