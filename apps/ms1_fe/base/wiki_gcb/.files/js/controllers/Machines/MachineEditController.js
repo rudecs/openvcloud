@@ -168,16 +168,32 @@ angular.module('cloudscalers.controllers')
                 return;
             }
 
-            LoadingDialog.show('Rolling back snapshot');
-            Machine.rollbackSnapshot($scope.machine.id, snapshot.name).then(
-                    function(result){
-                        LoadingDialog.hide();
-                        location.reload();
-                    }, function(reason){
-                        LoadingDialog.hide();
-                        $alert(reason.data);
-                    }
-                ) ;
+            var modalInstance = $modal.open({
+                templateUrl: 'rollbackSnapshotDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                LoadingDialog.show('Rolling back snapshot');
+                Machine.rollbackSnapshot($scope.machine.id, snapshot.epoch).then(
+                        function(result){
+                            LoadingDialog.hide();
+                            $scope.snapshots.splice( _.where($scope.snapshots, {id: $scope.epoch}) , 1);
+                        }, function(reason){
+                            LoadingDialog.hide();
+                            $alert(reason.data);
+                        }
+                    ) ;
+            });
         };
 
         $scope.deleteSnapshot = function(snapshot) {

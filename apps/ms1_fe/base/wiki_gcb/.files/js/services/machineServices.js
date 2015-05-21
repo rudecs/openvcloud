@@ -178,8 +178,8 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         });
             },
-            rollbackSnapshot: function (machineId, name) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+            rollbackSnapshot: function (machineId, epoch) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&epoch=' + encodeURIComponent(epoch);
                 return $http.get(url).then(
                         function(result) {
                             return result.data;
@@ -188,8 +188,8 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         });
             },
-            deleteSnapshot: function (machineId, name) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+            deleteSnapshot: function (machineId, epoch) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&epoch=' + encodeURIComponent(epoch);
                 return $http.get(url).then(
                         function(result) {
                             return result.data;

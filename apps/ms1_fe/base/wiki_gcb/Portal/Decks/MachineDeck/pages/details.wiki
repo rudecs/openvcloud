@@ -289,6 +289,21 @@ h1. Manage Machine
                                 </td>
                                 <td ng-show="currentUserAccess != 'Read'">
                                     <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                    <script type="text/ng-template" id="rollbackSnapshotDialog.html">
+                                        <form name="destroyform" ng-submit="cancelDestroy()">
+                                            <div class="modal-header">
+                                                <h3>Rollback snapshot?</h3>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+                                                Are you sure you want to rollback snapshot?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+                                                <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
+                                            </div>
+                                        </form>
+                                    </script>
                                     <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
                                     <script type="text/ng-template" id="deleteSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
