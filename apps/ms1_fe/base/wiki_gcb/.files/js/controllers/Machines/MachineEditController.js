@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
-                function($scope, $routeParams, $timeout, $location, Machine, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
+                function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         Machine.get($routeParams.machineId).then(function(data) {
             $scope.machine = data;
             },
@@ -30,6 +30,8 @@ angular.module('cloudscalers.controllers')
                 $scope.tabactive.console = (tab == 'console');
                 $scope.tabactive.snapshots = (tab=='snapshots');
                 $scope.tabactive.changelog = (tab=='changelog');
+                $scope.tabactive.portForwards = (tab=='portForwards');
+                $scope.tabactive.sharing = (tab=='sharing');
             }
         }
 
@@ -187,7 +189,8 @@ angular.module('cloudscalers.controllers')
                 Machine.rollbackSnapshot($scope.machine.id, snapshot.epoch).then(
                         function(result){
                             LoadingDialog.hide();
-                            $scope.snapshots.splice( _.where($scope.snapshots, {id: $scope.epoch}) , 1);
+                            var removedSnapshot = _.where($scope.snapshots, {epoch: snapshot.epoch})[0];
+                            $scope.snapshots.splice( $scope.snapshots.indexOf(removedSnapshot) , 1);
                         }, function(reason){
                             LoadingDialog.hide();
                             $alert(reason.data);
@@ -216,7 +219,8 @@ angular.module('cloudscalers.controllers')
                 Machine.deleteSnapshot($scope.machine.id, snapshot.epoch).then(
                     function(result){
                         LoadingDialog.hide();
-                        $scope.snapshots.splice( _.where($scope.snapshots, {id: $scope.epoch}) , 1);
+                        var removedSnapshot = _.where($scope.snapshots, {epoch: snapshot.epoch})[0];
+                        $scope.snapshots.splice( $scope.snapshots.indexOf(removedSnapshot) , 1);
                     }, function(reason){
                         LoadingDialog.hide();
                         $alert(reason.data);
@@ -306,16 +310,32 @@ angular.module('cloudscalers.controllers')
                     );
                 });
         };
-        $scope.refreshPage = function() {
-            Machine.get($routeParams.machineId).then(function(data) {
-                $scope.machine = data;
-            },
-            function(reason) {
-                $ErrorResponseAlert(reason);
-            });
-            updatesnapshots();
-            retrieveMachineHistory();
+        $scope.refreshData = function() {
+            if($scope.tabactive.actions || $scope.tabactive.sharing){
+                Machine.get($routeParams.machineId).then(function(data) {
+                    $scope.machine = data;
+                },
+                function(reason) {
+                    $ErrorResponseAlert(reason);
+                });
+            }else if($scope.tabactive.changelog){
+                retrieveMachineHistory();
+            }
+            else if($scope.tabactive.portForwards){
+                Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
+                    function(data) {
+                      $scope.portforwarding = data;
+                    },
+                    function(reason) {
+                      $ErrorResponseAlert(reason);
+                    }
+                );
+            }else if($scope.tabactive.snapshots){
+                updatesnapshots();
+            }
+
         };
+
         $scope.start = function() {
             LoadingDialog.show('Starting');
             Machine.start($scope.machine).then(
