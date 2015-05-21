@@ -197,10 +197,10 @@ angular.module('cloudscalers.controllers')
 
             modalInstance.result.then(function (result) {
                 LoadingDialog.show('Deleting snapshot');
-                Machine.deleteSnapshot($scope.machine.id, snapshot.name).then(
+                Machine.deleteSnapshot($scope.machine.id, snapshot.epoch).then(
                     function(result){
                         LoadingDialog.hide();
-                        console.log($scope);
+                        $scope.snapshots.splice( _.where($scope.snapshots, {id: $scope.epoch}) , 1);
                     }, function(reason){
                         LoadingDialog.hide();
                         $alert(reason.data);

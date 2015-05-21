@@ -282,7 +282,7 @@ h1. Manage Machine
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="snapshot in snapshots orderBy:'-snapshot.epoch'">
+                            <tr ng-repeat="snapshot in snapshots | orderBy:'-epoch'">
                                 <td width="45%">{[snapshot.name]}</td>
                                 <td class="nowrap">
                                     {[snapshot.epoch * 1000 | date:'medium']}
