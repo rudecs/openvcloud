@@ -496,15 +496,15 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    def deleteSnapshot(self, machineId, name, **kwargs):
+    def deleteSnapshot(self, machineId, epoch, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
-        return provider.client.ex_delete_snapshot(node, name)
+        return provider.client.ex_delete_snapshot(node, epoch)
 
     @authenticator.auth(acl='C')
     @audit()
-    def rollbackSnapshot(self, machineId, name, **kwargs):
+    def rollbackSnapshot(self, machineId, epoch, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         modelmachine = self._getMachine(machineId)
         if not modelmachine.status == enums.MachineStatus.HALTED:
@@ -513,7 +513,7 @@ class cloudapi_machines(BaseActor):
            return 'A snapshot can only be rolled back to a stopped Machine bucket'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
-        res =  provider.client.ex_rollback_snapshot(node, name, )
+        res =  provider.client.ex_rollback_snapshot(node, epoch)
         if isinstance(res, str):
              modelmachine.referenceId = res
              modelmachine.status = enums.MachineStatus.RUNNING

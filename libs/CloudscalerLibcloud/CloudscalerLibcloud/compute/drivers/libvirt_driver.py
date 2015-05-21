@@ -254,11 +254,11 @@ class CSLibvirtNodeDriver():
     def ex_list_snapshots(self, node):
         return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
 
-    def ex_delete_snapshot(self, node, name):
-        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, name=name)
+    def ex_delete_snapshot(self, node, timestamp):
+        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
 
-    def ex_rollback_snapshot(self, node, name):
-        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, name=name)
+    def ex_rollback_snapshot(self, node, timestamp):
+        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, timestamp=timestamp)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
