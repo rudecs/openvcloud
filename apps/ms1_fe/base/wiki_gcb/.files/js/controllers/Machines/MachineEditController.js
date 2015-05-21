@@ -181,8 +181,33 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.deleteSnapshot = function(snapshot) {
-            Machine.deleteSnapshot($scope.machine.id, snapshot.name);
-            location.reload();
+            var modalInstance = $modal.open({
+                templateUrl: 'deleteSnapshotDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                LoadingDialog.show('Deleting snapshot');
+                Machine.deleteSnapshot($scope.machine.id, snapshot.name).then(
+                    function(result){
+                        LoadingDialog.hide();
+                        console.log($scope);
+                    }, function(reason){
+                        LoadingDialog.hide();
+                        $alert(reason.data);
+                    }
+                );
+            });
+
         };
 
 
