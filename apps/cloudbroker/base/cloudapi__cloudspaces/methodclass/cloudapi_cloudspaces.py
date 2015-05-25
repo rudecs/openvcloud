@@ -284,9 +284,9 @@ class cloudapi_cloudspaces(BaseActor):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'status': {'$ne': 'DISABLED'}}
-        nondisabledaccounts = self.models.account.search(query)[1:]
-        nondisabled = [account['id'] for account in nondisabledaccounts]
+        query = {'status': 'DISABLED'}
+        disabledaccounts = self.models.account.search(query)[1:]
+        disabled = [account['id'] for account in disabledaccounts]
         cloudspaceaccess = set()
 
         # get cloudspaces access via account
@@ -303,7 +303,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        q = {"accountId": {"$in": nondisabled}, 
+        q = {"accountId": {"$nin": disabled}, 
              "$or": [{"acl.userGroupId": user}, 
                      {"id": {"$in": list(cloudspaceaccess)} }],
              "status": {"$ne": "DESTROYED"}}
