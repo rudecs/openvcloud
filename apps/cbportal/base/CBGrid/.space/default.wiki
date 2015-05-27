@@ -4,6 +4,7 @@
 {{ApplyFlatTheme}}
 
 {{find}}
+{{logo:/system/.files/img/green.png}}
 
 {{menu:
 StatusOverview:/grid/checkstatus
