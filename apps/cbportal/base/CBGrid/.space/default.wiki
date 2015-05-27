@@ -8,7 +8,7 @@
 {{menu:
 StatusOverview:/grid/checkstatus
 GridPortal:/grid
-MS1Portal:/cbgrid
+OVC Portal:/cbgrid
 }}
 
 {{menuadmin:

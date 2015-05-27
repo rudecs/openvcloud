@@ -1,6 +1,6 @@
 @usedefault
 
-h2. Mothership Operations Portal
+h2. Operations Portal
 
 Welcome to our operations portal.
 
@@ -22,24 +22,14 @@ h3. Actions
 
 {{createaccount}}
 
-h3. Main Links
 
-* [MS1 customer Portal|http://www.mothership1.com]
+h3. External Portals
 
-h3. Documentation
-
-* [Knowledge Base|http://gitlab.mothership1.com/ms1-admin/ms1_ops_knowledgebase/wikis/home]
-
-h3. Support Tools
-
-* [Tickets|http://support.mothership1.com]
-* [Racktables = Asset Management|http://racktables.mothership1.com]
-* [Project Mgmt  Bugtracker|http://youtrack.incubaid.com/dashboard]
+{{portallinks}}
 
 h3. Monitoring
 
 * [Monitoring |/grid/checkstatus]
-* [Monitoring Dockers|http://cpu01.bracknell1.vscalers.com:8080/containers/docker]
 
 h3. Dashboard
 
