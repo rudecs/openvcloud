@@ -1,30 +1,16 @@
 {{html:
 <div class="container">
     <div class="span11 newDecks newDecks2">
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color6">
-        }} 
-[Cloud Space|AccountSettings]
 
-            
-                [!/$$space/.files/img/icon6.png! | AccountSettings]
-
-          {{html:
-            
-            <div class="padding-right-none txt-justify">
-            <h2>
-
-</h2>
-        Your private cloud resource pool including compute, storage, applications, desktop & networking capacity.
         </div>
-        </div>
-        <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color2 clear-left">
+        <div class="col-md-4 boxes margin-vertical-large clear-none txt-left font color2 clear-left">
          }}
 
 [Machines|MachineDeck]
                 [!/$$space/.files/img/icon2.png! | MachineDeck]
 
 
-    {{html:      
+    {{html:
           <div class="padding-right-none txt-justify">
             <h2>
 
@@ -32,15 +18,13 @@
 Configure, launch and manage your Virtual Machines. Automate using the simple API.
         </div>
         </div>
-        <!-- <div class="col-md-4 boxes margin-vertical-large clear-none txt-center font color1"> -->
+        <div class="col-md-2 boxes margin-vertical-large txt-center font color5"></div>
+        <div class="col-md-4 boxes margin-vertical-large txt-left font color5">
            }}
-   {{html:       
-        <div class="col-md-4 boxes margin-vertical-large txt-center font color5">
-           }}
-[Defense Shields|NetworkDeck]
+[Defense Shield|NetworkDeck]
 
             [!/$$space/.files/img/icon5.png! | NetworkDeck]
-      {{html:      
+      {{html:
             <div class="padding-right-none txt-justify">
             <h2>
 
@@ -48,9 +32,9 @@ Configure, launch and manage your Virtual Machines. Automate using the simple AP
 Your private Defense Shield providing privacy and secure access to your Cloud Space.
         </div>
         </div>
-        
+
        }}
-       {{html: 
+       {{html:
     </div>
 </div>
 
