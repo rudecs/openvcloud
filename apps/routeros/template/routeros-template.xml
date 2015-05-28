@@ -20,8 +20,8 @@
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='none' io='native'/>
-      <source file='/mnt/vmstor/routeros/NETWORK-ID/routeros-small-NETWORK-ID.qcow2'/>
+      <driver name='qemu' type='raw' cache='none' io='native'/>
+      <source file='/mnt/vmstor/routeros/NETWORK-ID/routeros-small-NETWORK-ID.raw'/>
       <target dev='hda' bus='ide'/>
     </disk>
     <controller type='usb' index='0'>

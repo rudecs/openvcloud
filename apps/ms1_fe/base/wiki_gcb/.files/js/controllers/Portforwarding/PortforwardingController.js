@@ -1,19 +1,41 @@
 angular.module('cloudscalers.controllers')
-    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace','$timeout',
-        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace,$timeout) {
+    .controller('PortforwardingController', ['$scope', 'Networks', 'Machine', '$modal', '$interval','$ErrorResponseAlert','LoadingDialog', 'CloudSpace','$timeout', '$routeParams', '$window' ,
+        function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace,$timeout, $routeParams, $window) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
             
-            
-            $scope.updatePortforwardList = function(){
-                Networks.listPortforwarding($scope.currentSpace.id).then(
-                  function(data) {
-                          $scope.portforwarding = data;
-                  },
-                  function(reason) {
-                          $ErrorResponseAlert(reason);
+            $scope.$watch('currentSpace.acl', function () {
+                if($scope.currentUser.username && $scope.currentSpace.acl && !$scope.currentUserAccessrightOnCloudSpace){
+                    var currentUserAccessright =  _.find($scope.currentSpace.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
+                    if(currentUserAccessright == "R"){
+                        $scope.currentUserAccessrightOnCloudSpace = 'Read';
+                    }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
+                        $scope.currentUserAccessrightOnCloudSpace = "ReadWrite";
+                    }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
+                        $scope.currentUserAccessrightOnCloudSpace = "Admin";
+                    }
+                }
+                var uri = new URI($window.location);
+                if(uri._parts.path.indexOf('Portforwarding') > -1){
+                  if($scope.currentUserAccessrightOnCloudSpace != 'Admin'){
+                    uri.filename('Decks');
+                    $window.location = uri.toString();
                   }
-                );
+                }
+            });
+
+            $scope.updatePortforwardList = function(){
+              if(!$routeParams.machineId){
+                $routeParams.machineId = '';
+              }
+              Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
+                function(data) {
+                  $scope.portforwarding = data;
+                },
+                function(reason) {
+                  $ErrorResponseAlert(reason);
+                }
+              );
             };
             
             $scope.updateData = function(){
@@ -99,16 +121,21 @@ angular.module('cloudscalers.controllers')
                 });
                 modalInstance.result.then(function(data){
                 	LoadingDialog.show('Creating');
-                	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, data.vmid, data.localport, data.protocol).then(
-                            function (result) {
-                            	LoadingDialog.hide();
-                            	$scope.updatePortforwardList();
-                            },
-                            function(reason){
-                            	LoadingDialog.hide();
-                            	$ErrorResponseAlert(reason);
-                            }
-                        );
+                  if($routeParams.machineId){
+                    var machineId = $routeParams.machineId;
+                  }else{
+                    var machineId = data.vmid;
+                  }
+                	Networks.createPortforward(data.cloudspaceId, data.publicipaddress, data.publicport, machineId, data.localport, data.protocol).then(
+                    function (result) {
+                    	LoadingDialog.hide();
+                    	$scope.updatePortforwardList();
+                    },
+                    function(reason){
+                    	LoadingDialog.hide();
+                    	$ErrorResponseAlert(reason);
+                    }
+                  );
                 });
             };
 
@@ -134,7 +161,13 @@ angular.module('cloudscalers.controllers')
             }
 
             $scope.tableRowClicked = function (index) {
-            	var selectForwardRule = $scope.portforwarding[index.id];
+              var uri = new URI($window.location);
+              if(uri._parts.path.indexOf('Portforwarding') == -1){
+                if($scope.currentUserAccess != 'Admin'){
+                  return;
+                }
+              }
+            	var selectForwardRule = _.findWhere($scope.portforwarding, { id: parseInt(index.id) });
             	var editRule = {
                          id: index.id,
                          ip: selectForwardRule.publicIp,

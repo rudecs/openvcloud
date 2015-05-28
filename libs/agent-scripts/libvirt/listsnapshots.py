@@ -15,6 +15,16 @@ async = True
 
 
 def action(machineid):
+    import sys
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.vmachinelist import VMachineList
+
     connection = LibvirtUtil()
-    return connection.listSnapshots(machineid)
+    vmname = connection.get_domain(machineid)['name']
+    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    snapshots = list()
+    for snap in vmachine.snapshots:
+        if not snap['is_automatic']:
+            snapshots.append({'name': snap['label'], 'epoch': int(snap['timestamp'])})
+    return snapshots

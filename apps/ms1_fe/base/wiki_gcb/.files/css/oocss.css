@@ -239,7 +239,7 @@
 	width: 60%;
 }
 .width-70{
-	width: 70%;
+	width: 70% !important;
 }
 .width-80{
 	width: 80%;
@@ -378,6 +378,9 @@
 /*cursors*/
 .cursor-pointer{
 	cursor: pointer;
+}
+.cursor-default{
+	cursor: default;
 }
 
 /* background colors */

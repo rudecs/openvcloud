@@ -31,6 +31,17 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason);
                     });
             },
+            reboot: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/reboot?machineId=' + machine.id;
+                return $http.get(url).then(
+                    function(result) {
+                        machine.status = machineStates['start'];
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
+                    });
+            },
             pause: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
                 return $http.get(url).then(
@@ -59,11 +70,11 @@ angular.module('cloudscalers.services')
                     '&description=' + encodeURIComponent(description) + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 return $http.get(url).then(
-                		function (result) {
+                        function (result) {
                             return result.data;
                         },
                         function (reason){
-                        	return $q.reject(reason);
+                            return $q.reject(reason);
                         }
                 );
             },
@@ -107,7 +118,7 @@ angular.module('cloudscalers.services')
                         return;
                     },
                     function(reason){
-                    	return $q.reject(reason);
+                        return $q.reject(reason);
                     }
                     );
             },
@@ -115,7 +126,7 @@ angular.module('cloudscalers.services')
                 url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
                 
                 return $http.get(url).then(function(result) {
-                	_.each(result.data, function (machine) {
+                    _.each(result.data, function (machine) {
                         if(machine.status === 'SUSPENDED'){
                             machine.status = 'PAUSED';
                         }
@@ -123,7 +134,7 @@ angular.module('cloudscalers.services')
                     return result.data;
                     
                 }, function(reason) {
-                	return $q.reject(reason);
+                    return $q.reject(reason);
                 });
             },
             get: function (machineid) {
@@ -135,6 +146,11 @@ angular.module('cloudscalers.services')
                     function(result) {
                         if(result.data.status === 'SUSPENDED'){
                             result.data.status = 'PAUSED';
+                            _.each(result.data.acl, function (acl, i) {
+                                if(acl.right.indexOf("U") > -1 && acl.right.indexOf("U") > -1){
+                                    result.data.acl[i].right = "ACDRUX";
+                                }
+                            });
                         }
                         return _.extend(machine, result.data);
                     },
@@ -153,17 +169,7 @@ angular.module('cloudscalers.services')
                     });
             },
             createSnapshot: function (machineId, name) {
-            	var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
-            	return $http.get(url).then(
-                        function(result) {
-                            return result.data;
-                        },
-                        function(reason) {
-                            return $q.reject(reason);
-                        });
-            },
-            rollbackSnapshot: function (machineId, name) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+                var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
                 return $http.get(url).then(
                         function(result) {
                             return result.data;
@@ -172,8 +178,18 @@ angular.module('cloudscalers.services')
                             return $q.reject(reason);
                         });
             },
-            deleteSnapshot: function (machineId, name) {
-                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&name=' + encodeURIComponent(name);
+            rollbackSnapshot: function (machineId, epoch) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' + machineId + '&epoch=' + encodeURIComponent(epoch);
+                return $http.get(url).then(
+                        function(result) {
+                            return result.data;
+                        },
+                        function(reason) {
+                            return $q.reject(reason);
+                        });
+            },
+            deleteSnapshot: function (machineId, epoch) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' + machineId + '&epoch=' + encodeURIComponent(epoch);
                 return $http.get(url).then(
                         function(result) {
                             return result.data;
@@ -198,13 +214,7 @@ angular.module('cloudscalers.services')
             },
             getHistory: function(machineId) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/getHistory?size=100&machineId=' + machineId;
-                return $http.get(url).then(
-                    function(result) {
-                        return _.sortBy(result.data, function(h) { return -h.epoch; });
-                    },
-                    function(reason) {
-                        return $q.reject(reason);
-                    });
+                return $http.get(url);
             },
             deleteTemplate: function(templateIndex) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)
@@ -212,7 +222,41 @@ angular.module('cloudscalers.services')
                         return result.data; },
                           function(reason) { 
                             return $q.reject(reason); });
-            }
+            },
+            addUser: function(machineId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/addUser?machineId=' + machineId +
+                          '&accessType=' + accessType + '&userId=' + user)
+                    .then(
+                            function(result){ return result.data;},
+                            function(reason) { return $q.reject(reason);});
+            },
+            deleteUser: function(machineId, user) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/deleteUser?machineId=' + machineId +
+                                 '&userId=' + user)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
+            macineAccessRights: function(machineId, user) {
+                var accessRights = [{
+                  name: 'Read',
+                  value: 'R'
+                }, 
+                {
+                  name: 'Read/Write',
+                  value: 'CRX'
+                },
+                {
+                  name: 'Admin',
+                  value: 'ACDRUX'
+                }];
+                return accessRights;
+            },
+            updateUser: function(machineId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/updateUser?machineId=' + machineId +
+                                 '&userId=' + user + '&accessType=' + accessType)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
         }
     })
     .factory('Image', function ($http) {

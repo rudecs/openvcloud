@@ -4,11 +4,11 @@
         <device path='/dev/sdb1'>
         </device>
     </source>
-    <capacity unit='GB'>{{disksize}}</capacity>
-    <allocation unit='GB'>{{disksize}}</allocation>
+    <capacity unit='bytes'>{{disksize}}</capacity>
+    <allocation unit='bytes'>{{disksize}}</allocation>
     <target>
         <path>{{diskname}}</path>
-        <format type='raw'/>
+        <format type='qcow2'/>
         <permissions>
             <mode>0660</mode>
             <owner>106</owner>
@@ -16,9 +16,5 @@
         </permissions>
         <compat>1.1</compat>
     </target>
-    <backingStore>
-        <format type='raw'/>
-        <path>{{diskbasevolume}}</path>
-    </backingStore>
 </volume> 
 

@@ -71,6 +71,13 @@
         var:machineId int,, id of the machine
         result:bool
 
+    method:reset
+        """
+        Reset a machine, force reboot.
+        """
+        var:machineId int,, id of the machine
+        result:bool
+
     method:pause
         """
         pause a machine.
@@ -125,7 +132,7 @@
         Delete a snapshot of a machine
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the snapshot to delete
+        var:epoch str,, epoch time of snapshot
         result:str
 
 
@@ -134,7 +141,7 @@
         Rollback a snapshot of a machine
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the snapshot to rollback
+        var:epoch str,, epoch time of snapshot
         result:str
 
     method:createTemplate
@@ -204,4 +211,28 @@
         var:status str,, filter on specific status @tags: optional
         result:dict a json list
 
-    
+    method:addUser
+        """
+        Gives a user access to a vmachine
+        """
+        var:machineId int,, ID of a vmachine to share
+        var:userId str,, ID of a user to share with
+        var:accessType str,, 'R' for read only access, 'W' for Write access
+        result:bool
+
+    method:deleteUser
+        """
+        Revokes user's access to a vmachine
+        """
+        var:machineId int,, ID of a vmachine
+        var:userId str,, ID of a user to revoke their access
+        result:bool
+
+    method:updateUser
+        """
+        Updates user's access rights to a vmachine
+        """
+        var:machineId int,, ID of a vmachine to share
+        var:userId str,, ID of a user to share with
+        var:accessType str,, 'R' for read only access, 'W' for Write access
+        result:bool

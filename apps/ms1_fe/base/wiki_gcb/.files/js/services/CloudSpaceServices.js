@@ -50,14 +50,8 @@ angular.module('cloudscalers.services')
                     );
             },
             addUser: function(space, user, accessType) {
-                var accessString = '';
-                for (var x in accessType) {
-                    if (accessType[x])
-                        accessString += x;
-                }
-
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser?cloudspaceId=' + space.id +
-                          '&accesstype=' + accessString + '&userId=' + user)
+                          '&accesstype=' + accessType + '&userId=' + user)
                     .then(
                             function(result){ return result.data;},
                             function(reason) { return $q.reject(reason);});
@@ -72,6 +66,27 @@ angular.module('cloudscalers.services')
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspaceId)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
-            }
+            },
+            cloudspaceAccessRights: function(machineId, user) {
+                var accessRights = [{
+                  name: 'Read',
+                  value: 'R'
+                }, 
+                {
+                  name: 'Read/Write',
+                  value: 'CRX'
+                },
+                {
+                  name: 'Admin',
+                  value: 'ACDRUX'
+                }];
+                return accessRights;
+            },
+            updateUser: function(cloudspaceId, userId, accesstype) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/updateUser?cloudspaceId=' + cloudspaceId +
+                                 '&userId=' + userId + '&accesstype=' + accesstype)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
         };
     });

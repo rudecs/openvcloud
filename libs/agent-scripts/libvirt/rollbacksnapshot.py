@@ -14,7 +14,18 @@ roles = []
 async = True
 
 
-def action(machineid, name):
+def action(machineid, timestamp):
+    import sys
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.vmachinelist import VMachineList
+    from ovs.lib.vmachine import VMachineController
+
     connection = LibvirtUtil()
-    return connection.rollbackSnapshot(machineid, name)
+    vmname = connection.get_domain(machineid)['name']
+    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    for snap in vmachine.snapshots:
+        if snap['timestamp'] == str(timestamp):
+            VMachineController.rollback(vmachine.guid, snap['timestamp'])
+            return True
+    return False

@@ -6,6 +6,7 @@ from jinja2 import Environment, PackageLoader
 from xml.etree import ElementTree
 import urlparse
 import json
+import uuid
 import os
 import crypt, random
 import time
@@ -117,21 +118,15 @@ class CSLibvirtNodeDriver():
 
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
-        disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id + '-' + disk_role + '.qcow2'
-        diskbasevolume = image.extra['path']
-        disksize = size.disk
-        diskbasevolumepath = IMAGEPOOL + '/' + diskbasevolume
-        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-                                       diskbasevolumepath, 'disksize': disksize})
+        templateguid = str(uuid.UUID(image.id))
 
-        poolname = vm_id
-        self._execute_agent_job('createdisk', diskxml=diskxml, poolname=poolname)
-        return diskname
+        pmachineip = self._get_connection_ip()
+        disksize = size.disk * (1000 ** 3) # from GB to bytes
+        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, templateguid=templateguid, pmachineip=pmachineip)
 
     def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id+ '-' + disk_role + '.qcow2'
+        diskname = vm_id+ '-' + disk_role + '.raw'
         diskbasevolume = clone_disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': size.disk})
@@ -254,22 +249,16 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_snapshot(self, node, name, snapshottype='external'):
-        domain = self._get_domain_for_node(node=node)
-        xml = ElementTree.fromstring(domain['XMLDesc'])
-        diskfiles = self._get_domain_disk_file_names(xml)
-        t = int(time.time())
-        POOLPATH = '%s/%s' % (BASEPOOLPATH, domain['name'])
-        snapshot = self.env.get_template('snapshot.xml').render(name=name, diskfiles=diskfiles, type=snapshottype, time=t, poolpath=POOLPATH)
-        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, xml=snapshot)
+        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
 
     def ex_list_snapshots(self, node):
         return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
 
-    def ex_delete_snapshot(self, node, name):
-        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, name=name)
+    def ex_delete_snapshot(self, node, timestamp):
+        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
 
-    def ex_rollback_snapshot(self, node, name):
-        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, name=name)
+    def ex_rollback_snapshot(self, node, timestamp):
+        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, timestamp=timestamp)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):

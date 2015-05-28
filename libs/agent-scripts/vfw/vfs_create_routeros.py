@@ -23,11 +23,11 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import time
     import netaddr
 
-    hrd = j.packages.get(name='vfwnode', instance='main').hrd
-    DEFAULTGWIP = hrd.get("vfw.default.ip")
+    hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
+    DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
     BACKPLANE = 'vxbackend'
-    netrange = hrd.get("vfw.netrange.internal")
-    defaultpasswd=hrd.get("vfw.admin.passwd")
+    netrange = hrd.get("instance.vfw.netrange.internal")
+    defaultpasswd=hrd.get("instance.vfw.admin.passwd")
     nc = j.system.ovsnetconfig
     con = libvirt.open()
 
@@ -88,13 +88,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         private.setAutostart(True)
 
         j.system.fs.createDir(destinationdir)
-        destinationfile = 'routeros-small-%s.qcow2' % networkidHex
+        destinationfile = 'routeros-small-%s.raw' % networkidHex
         destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
         xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
-        j.system.fs.copyFile(imagefile, destinationfile)
+        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
 
         try:
             dom = con.defineXML(xmlsource)

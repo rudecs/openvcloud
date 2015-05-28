@@ -1,5 +1,5 @@
 {{html:
-  <div class="sideNav">
+  <div class="sideNav" ng-controller="sideNavController">
     <ul class="padding-left-none">
       <li class="header orange" >
         <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machines</a>
@@ -10,7 +10,7 @@
           <li>
             <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
           </li>
-          <li>
+          <li ng-show="currentUserAccessrightOnCloudSpace == 'Admin'">
             <a href="Portforwarding" menu-link-active-location="Portforwarding">Port Forwards</a>
           </li>
         </ul>

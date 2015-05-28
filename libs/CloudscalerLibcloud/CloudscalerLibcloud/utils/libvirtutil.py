@@ -328,7 +328,7 @@ class LibvirtUtil(object):
     def _clone(self, id, name, clonefrom):
         domain = self.connection.lookupByUUIDString(id)
         domainconfig = domain.XMLDesc()
-        name = '%s_%s.qcow2' % (name, time.time())
+        name = '%s_%s.raw' % (name, time.time())
         destination_path = os.path.join(self.templatepath, name)
         if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED, libvirt.VIR_DOMAIN_PAUSED] or not self._isRootVolume(domain, clonefrom):
             if not self.isLocked(id):
