@@ -23,7 +23,7 @@
 
 
 {{html:
-<div id="wrap" class="sticky2" ng-app="cloudscalers">
+<div id="wrap" ng-app="cloudscalers">
 }}
 
 
