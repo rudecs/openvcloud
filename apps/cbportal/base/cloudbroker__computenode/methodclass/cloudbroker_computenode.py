@@ -12,7 +12,7 @@ class cloudbroker_computenode(BaseActor):
         self._ncl = j.clients.osis.getCategory(j.core.portal.active.osis, 'system', 'node')
 
     @auth(['level1', 'level2', 'level3'])
-    def setStatus(self, name, gid, status, **kwargs):
+    def setStatus(self, id, gid, status, **kwargs):
         """
         Set different stack statusses, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'OFFLINE(Machine is not available'
         param:statckid id of the stack to update
@@ -26,11 +26,11 @@ class cloudbroker_computenode(BaseActor):
             ctx.start_response("400", headers)
             return 'Invalid status %s should be in %s' % (status, ', '.join(statusses))
         if status == 'DISABLED':
-            return self.disable(name, gid, '')
-        return self._changeStackStatus(name, gid, status, kwargs)
+            return self.disable(id, gid, '')
+        return self._changeStackStatus(id, gid, status, kwargs)
 
-    def _changeStackStatus(self, name, gid, status, kwargs):
-        stack = self.models.stack.search({'name':name, 'gid': int(gid)})[1:]
+    def _changeStackStatus(self, id, gid, status, kwargs):
+        stack = self.models.stack.search({'id':int(id), 'gid': int(gid)})[1:]
         if stack:
             stack = stack[0]
             stack['status'] = status
@@ -41,23 +41,21 @@ class cloudbroker_computenode(BaseActor):
                     node = nodes[0]
                     node['active'] =  True if status == 'ENABLED' else False
                     self._ncl.set(node)
-            return stack['status']
+            return stack, stack['status']
         else:
             ctx = kwargs["ctx"]
             headers = [('Content-Type', 'application/json'), ]
             ctx.start_response("404", headers)
-            return 'ComputeNode with name %s not found' % name
+            return stack, 'ComputeNode with id %s not found' % id
 
     @auth(['level2','level3'], True)
-    def enable(self, name, gid, message, **kwargs):
-        return self._changeStackStatus(name, gid, 'ENABLED', kwargs)
+    def enable(self, id, gid, message, **kwargs):
+        return self._changeStackStatus(id, gid, 'ENABLED', kwargs)[1]
 
     @auth(['level2','level3'], True)
-    def disable(self, name, gid, message, **kwargs):
-        stack = self.models.stack.search({'name':name, 'gid': int(gid)})[1:]
+    def disable(self, id, gid, message, **kwargs):
+        stack, status = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
         if stack:
-            self._changeStackStatus(name, gid, 'DISABLED', kwargs)
-            stack = stack[0]
             machines_actor = j.apps.cloudbroker.machine
             stackmachines = self.models.vmachine.search({'stackId': stack['id']})[1:]
             for machine in stackmachines:  

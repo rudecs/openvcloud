@@ -7,7 +7,7 @@ h3. Stack: $$name
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
   data:
-   name: $$name
+   id: $$id
    gid: $$gid
   input:
    - message
@@ -15,7 +15,7 @@ h3. Stack: $$name
 - display: Disable
   action: /restmachine/cloudbroker/computenode/disable
   data:
-   name: $$name
+   id: $$id
    gid: $$gid
   input:
    - message
@@ -23,7 +23,7 @@ h3. Stack: $$name
 - display: Offline
   action: /restmachine/cloudbroker/computenode/setStatus
   data:
-   name: $$name
+   id: $$id
    gid: $$gid
    status: OFFLINE
   input:
