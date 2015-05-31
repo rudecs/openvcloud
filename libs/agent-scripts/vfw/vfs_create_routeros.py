@@ -21,13 +21,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import libvirt
     import JumpScale.lib.ovsnetconfig
     import time
-    import netaddr
+    import os
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
     BACKPLANE = 'vxbackend'
     netrange = hrd.get("instance.vfw.netrange.internal")
-    defaultpasswd=hrd.get("instance.vfw.admin.passwd")
+    defaultpasswd = hrd.get("instance.vfw.admin.passwd")
     nc = j.system.ovsnetconfig
     con = libvirt.open()
 
@@ -39,14 +39,12 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
-    networkname = "space_%s"  % networkidHex
+    networkname = "space_%s" % networkidHex
     name = 'routeros_%s' % networkidHex
     destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
-
-
     def cleanup():
-        print "CLEANUP: %s/%s"%(networkid,networkidHex)
+        print "CLEANUP: %s/%s" % (networkid, networkidHex)
         try:
             dom = con.lookupByName(name)
             if dom.isActive():
@@ -55,6 +53,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         except libvirt.libvirtError:
             pass
         j.system.fs.removeDirTree(destinationdir)
+
         def deleteNet(net):
             try:
                 net.destroy()
@@ -75,7 +74,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     cleanup()
 
     try:
-        #setup network vxlan
+        # setup network vxlan
         nc.ensureVXNet(int(networkid), BACKPLANE)
         xml = '''  <network>
         <name>%(networkname)s</name>
@@ -95,6 +94,11 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
         xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
         j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
+        size = int(j.system.platform.qemu_img.info(destinationfile)['virtual size'] * 1024)
+        fd = os.open(destinationfile, os.O_RDWR|os.O_CREAT)
+        os.ftruncate(fd, size)
+        os.close(fd)
+
 
         try:
             dom = con.defineXML(xmlsource)
