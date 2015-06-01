@@ -22,7 +22,7 @@ def action(machineid):
 
     connection = LibvirtUtil()
     vmname = connection.get_domain(machineid)['name']
-    vmachines = VMachineList.get_vmachine_by_name(vmname)
+    vmachines = VMachineList.get_vmachine_by_name(vmname) or []
     snapshots = list()
     for vmachine in vmachines:
         for snap in vmachine.snapshots:

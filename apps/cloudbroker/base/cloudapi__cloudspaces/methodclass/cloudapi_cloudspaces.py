@@ -359,6 +359,6 @@ class cloudapi_cloudspaces(BaseActor):
         location = self.hrd.get('instance.mothership1.cloudbroker.defense_proxy')                    
 
 
-        url = 'https://%s.defense.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
+        url = 'https://%s.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
