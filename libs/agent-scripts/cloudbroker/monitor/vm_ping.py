@@ -21,7 +21,7 @@ def action(vm_ip_address, vm_cloudspace_id):
 
     osiscl = j.clients.osis.getByInstance('main')
     vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
-    hrd = j.packages.get(name='vfwnode', instance='main').hrd
+    hrd = j.atyourervice.get(name='vfwnode', instance='main').hrd
     ROUTEROS_PASSWORD = hrd.get('vfw.admin.passwd')
 
     vfws = vfwcl.simpleSearch({'domain': str(vm_cloudspace_id)})
