@@ -18,7 +18,7 @@ queue ='io'
 def action():
     import JumpScale.grid.osis
     import tarfile
-    hrd = j.packages.get(name='vfwnode', instance='main').hrd
+    hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
 
     backuppath = j.system.fs.joinPaths(j.dirs.tmpDir, 'backup', 'vfw')
     timestamp = j.base.time.getTimeEpoch()
