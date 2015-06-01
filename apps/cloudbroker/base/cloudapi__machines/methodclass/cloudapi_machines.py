@@ -252,7 +252,7 @@ class cloudapi_machines(BaseActor):
                 self.models.vmachine.delete(machine.id)
                 ctx = kwargs['ctx']
                 ctx.start_response('503 Service Unavailable', [])
-                return 'Not enough resource available to provision the requested machine'
+                return 'Not enough resources available to provision the requested machine'
             provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)

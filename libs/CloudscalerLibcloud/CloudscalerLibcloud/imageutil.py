@@ -1,6 +1,6 @@
 from JumpScale import j
-import JumpScale.grid.osis
-import requests
+import JumpScale.grid
+import os
 import sys
 import time
 
@@ -20,7 +20,7 @@ def copyImageToOVS(imagepath):
     if not j.system.fs.exists(dst):
         j.system.platform.qemu_img.convert(src, 'qcow2', dst, 'raw')
         size = int(j.system.platform.qemu_img.info(dst)['virtual size'] * 1024)
-        fd = os.open(dst, os.O_RDWR|os.O_CREAT)
+        fd = os.open(dst, os.O_RDWR | os.O_CREAT)
         os.ftruncate(fd, size)
         os.close(fd)
 
