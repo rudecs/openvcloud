@@ -22,9 +22,10 @@ def action(machineid):
 
     connection = LibvirtUtil()
     vmname = connection.get_domain(machineid)['name']
-    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    vmachines = VMachineList.get_vmachine_by_name(vmname) or []
     snapshots = list()
-    for snap in vmachine.snapshots:
-        if not snap['is_automatic']:
-            snapshots.append({'name': snap['label'], 'epoch': int(snap['timestamp'])})
+    for vmachine in vmachines:
+        for snap in vmachine.snapshots:
+            if not snap['is_automatic']:
+                snapshots.append({'name': snap['label'], 'epoch': int(snap['timestamp'])})
     return snapshots
