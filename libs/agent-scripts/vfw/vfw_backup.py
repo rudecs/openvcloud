@@ -32,7 +32,7 @@ def action():
         osiscl = j.core.osis.client
         vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
 
-        routeros_password = hrd.get('vfw.admin.passwd')
+        routeros_password = hrd.get('instance.vfw.admin.passwd')
 
         alivevfws = {'nid': j.application.whoAmI.nid, 'gid': j.application.whoAmI.gid}
         vfws = vfwcl.search(alivevfws)[1:]
