@@ -85,12 +85,10 @@ def action(gid=None):
     for idx, (vm_id, job) in enumerate(disk_check_jobs.iteritems()):
         print 'Waiting for %s/%s disk_check_jobs' % (idx, len(disk_check_jobs))
         result = accl.waitJumpscript(job=job, timeout=0)
-        if result['result']:
+        if result['state'] == 'OK' and result['result']:
             result = result['result']
+            vmachines_data[vm_id]['diskinfo'] = result
             vmachines_data[vm_id]['hdtest'] = True
-            vmachines_data[vm_id]['image'] = result.get('image', 'N/A')
-            vmachines_data[vm_id]['parent_image'] = result.get('backing file', 'N/A')
-            vmachines_data[vm_id]['disk_size'] = result.get('disk size', 'N/A')
 
     for vm_id, vm_data in vmachines_data.iteritems():
         rediscl.hset('vmachines.status', vm_id, json.dumps(vm_data))

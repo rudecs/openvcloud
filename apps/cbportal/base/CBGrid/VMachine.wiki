@@ -26,9 +26,6 @@ h3. vMachine Status Details
 |*Status*|$$stats_state|
 |*Ping*|$$stats_ping|
 |*HardDrive Test*|$$stats_hdtest|
-|*Image*|$$stats_image|
-|*Parent Image*|$$stats_parent_image|
-|*Disk Size*|$$stats_disk_size|
 |*Last Checked*|$$stats_epoch|
 
 h3. Machine Exports
