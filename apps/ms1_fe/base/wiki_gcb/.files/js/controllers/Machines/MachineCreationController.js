@@ -23,6 +23,7 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('machine.imageId', function() {
             if($scope.machine.imageId){
                 $scope.packageDisks = [];
+                angular.element('.storage-size-list').find('.active').removeClass('active')
                 var selectedImageSize = _.findWhere($scope.images, { id: parseInt($scope.machine.imageId)}).size;
                 var disks = _.findWhere($scope.sizes, { id: $scope.machine.sizeId }).disks;
                 for(var i = 0; i <= disks.length -1 ; i++){
@@ -31,10 +32,10 @@ angular.module('cloudscalers.controllers')
                     }
                 }
                 if($scope.packageDisks.length > 0){
-                    $scope.packageDisks.sort(function (a, b) { 
+                    $scope.packageDisks.sort(function (a, b) {
                         return a - b;
                     });
-                    $scope.machine.disksize = disks[0];
+                    $scope.machine.disksize = $scope.packageDisks[0];
                 }else{
                     $scope.machine.disksize = "";
                 }
