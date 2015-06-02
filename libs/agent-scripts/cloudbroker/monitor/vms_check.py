@@ -77,7 +77,9 @@ def action(gid=None):
     for idx, (vm_id, job) in enumerate(ping_jobs.iteritems()):
         print 'Waiting for %s/%s pingjobs' % (idx, len(ping_jobs))
         result = accl.waitJumpscript(job=job, timeout=0)
-        if result['result']:
+        if result['status'] != 'OK':
+            vmachines_data[vm_id]['ping'] = False
+        elif isinstance(result['result'], bool):
             vmachines_data[vm_id]['ping'] = result['result']
 
     for idx, (vm_id, job) in enumerate(disk_check_jobs.iteritems()):
