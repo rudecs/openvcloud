@@ -12,11 +12,15 @@ import (
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
 
 	"github.com/RangelReale/osin"
+	"github.com/gorilla/sessions"
 	"github.com/naoina/toml"
 )
 
+var cookiestore *sessions.CookieStore
+
 type settingsConfig struct {
-	Bind string
+	Bind              string
+	CookieStoreSecret string
 }
 
 type authorizationsConfig struct {
@@ -53,12 +57,25 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 	data := struct {
 		Error bool
 	}{false}
+
+	session, _ := cookiestore.Get(r, "openvcloudsession")
+	if r.Method == "GET" {
+		if !session.IsNew {
+			return true
+		}
+	}
 	if r.Method == "POST" {
 		username := r.FormValue("login")
 		if u, found := users[username]; found {
 			password := r.FormValue("password")
 			if keyderivation.Check(password, u.Password.Key, u.Password.Salt) {
 				log.Printf("Authenticated %s ( %s )\n", username, u.Name)
+				{
+					session.Options.HttpOnly = true
+					session.Options.MaxAge = 3600 * 12
+					session.Values["user"] = username
+					session.Save(r, w)
+				}
 				ar.UserData = struct {
 					Login string
 					Name  string
@@ -68,6 +85,7 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 		}
 		data.Error = true
 	}
+
 	t, _ := template.ParseFiles("html/login.html")
 
 	t.Execute(w, data)
@@ -90,6 +108,8 @@ func main() {
 	storagebackend := storage.NewSimpleStorage(authorizations.Clients)
 
 	osinServer := osin.NewServer(sconfig, storagebackend)
+
+	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 
 	//Handle authorize endpoint
 	http.HandleFunc("/login/oauth/authorize", func(w http.ResponseWriter, r *http.Request) {
