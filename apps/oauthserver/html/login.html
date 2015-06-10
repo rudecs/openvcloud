@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GreenITGlobe Login</title>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<style type="text/css">
+html, body {height: 100%;}
+#wrap {min-height: 100%; background-color: #C8C8C8;}
+.btn {
+  transition: all .2s ease-in-out;
+  padding: 7px 20px;
+  font-size: 14px;
+  margin: 10px 0;
+}
+.btn, .btn-sm {
+  line-height: 1.46666667;
+  border-radius: 3px;
+}
+.form-block ul {
+  padding-left: 0;
+  list-style-position: inside;
+}
+.space-top {
+  padding-top: 20px;
+}
+.btn.btn-group.btn-default.btn-animated, .btn-default:hover, .btn-default:focus, .btn-default.focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+  color: #ffffff;
+  background-color: #1f9123;
+  border-color: #1f9123;
+}
+header {
+  background-color: #f2f2f2;
+  height:85px;
+  width: 100%
+}
+.login {
+
+  padding-top: 15px;
+  padding-top: 85px;
+  color: #777;
+}
+header img {
+  width: 181px;
+  margin: 0 auto;
+  display: inherit;
+}
+footer {
+  height: 60px;
+  background-color: rgb(221, 221, 221);
+}
+footer span {
+  width: 150px;
+  margin: 0 auto;
+  display: block;
+  padding: 20px 0 0 0;
+}
+.light-gray-bg.form-block, .light-gray-bg.form-block a, .light-gray-bg.form-block a:hover, .light-gray-bg.form-block h2 {
+  color: #777;
+}
+.form-block {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  width: 630px;
+}
+.border-clear {
+  border: none!important;
+}
+.p-30 {
+  padding: 30px;
+}
+.light-gray-bg {
+  background-color: #fafafa;
+  border-top: 1px solid #f3f3f3;
+  border-bottom: 1px solid #f3f3f3;
+}
+.center-block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+block h2 {
+  color: #777;
+}
+.h2, h2 {
+  font-size: 30px;
+  text-align: center;
+  margin: 0 0 28px;
+}
+</style>
+</head>
+
+
+<header> <img src="http://www.greenitglobe.com/gig/.files/img/logo.png"> </header>
+<div id="wrap">
+
+  <div id="main">
+
+<div class="login">
+  <div class="container">
+    <div class="row">
+      <!-- main start -->
+      <!-- ================ -->
+      <div class="main object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
+        <div class="form-block center-block p-30 light-gray-bg border-clear">
+          <h2 class="title">OpenvCloud</h2>
+          <form method="POST" class="form-horizontal">
+            <div class="form-group has-feedback">
+              <label for="inputUserName" class="col-sm-3 control-label">User Name</label>
+              <div class="col-sm-8">
+                <input type="text" name="login" class="form-control" id="inputUserName" placeholder="User Name" required>
+                <i class="fa fa-user form-control-feedback"></i> </div>
+            </div>
+            <div class="form-group has-feedback">
+              <label for="inputPassword" class="col-sm-3 control-label">Password</label>
+              <div class="col-sm-8">
+                <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Password" required>
+                <i class="fa fa-lock form-control-feedback"></i> </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-8">
+                {{ if .Error }}
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                        Wrong user/password combination
+                </div>
+                {{ end }}
+                <button type="submit" class="btn btn-group btn-default btn-animated">Sign In <i class="fa fa-user"></i></button>
+
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- main end -->
+    </div>
+  </div>
+</div>
+  </div>
+
+</div>
+</body></html>
