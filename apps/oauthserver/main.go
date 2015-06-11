@@ -3,17 +3,15 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
-	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/keyderivation"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
 
 	"github.com/RangelReale/osin"
 	"github.com/gorilla/sessions"
-	"github.com/naoina/toml"
 )
 
 var cookiestore *sessions.CookieStore
@@ -23,36 +21,7 @@ type settingsConfig struct {
 	CookieStoreSecret string
 }
 
-type authorizationsConfig struct {
-	Users   map[string]user
-	Clients []osin.DefaultClient
-}
-
-type user struct {
-	Email    string
-	Name     string
-	Password struct {
-		Key  string
-		Salt string
-	}
-}
-
-func loadTomlFile(filename string, v interface{}) {
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	buf, err := ioutil.ReadAll(f)
-	if err != nil {
-		panic(err)
-	}
-	if err := toml.Unmarshal(buf, v); err != nil {
-		panic(err)
-	}
-}
-
-func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request, users map[string]user) (validlogin bool) {
+func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request, userStore users.UserStore) (validlogin bool) {
 	r.ParseForm()
 	data := struct {
 		Error bool
@@ -66,23 +35,22 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 	}
 	if r.Method == "POST" {
 		username := r.FormValue("login")
-		if u, found := users[username]; found {
-			password := r.FormValue("password")
-			if keyderivation.Check(password, u.Password.Key, u.Password.Salt) {
-				log.Printf("Authenticated %s ( %s )\n", username, u.Name)
-				{
-					session.Options.HttpOnly = true
-					session.Options.MaxAge = 3600 * 12
-					session.Values["user"] = username
-					session.Save(r, w)
-				}
-				ar.UserData = struct {
-					Login string
-					Name  string
-				}{Login: username, Name: u.Name}
-				return true
+		password := r.FormValue("password")
+		if userStore.Validate(username, password) {
+			log.Printf("Authenticated %s\n", username)
+			{
+				session.Options.HttpOnly = true
+				session.Options.MaxAge = 3600 * 12
+				session.Values["user"] = username
+				session.Save(r, w)
 			}
+			ar.UserData = struct {
+				Login string
+				Name  string
+			}{Login: username}
+			return true
 		}
+
 		data.Error = true
 	}
 
@@ -96,18 +64,22 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 func main() {
 	//Load the settings
 	var settings settingsConfig
-	loadTomlFile("settings.toml", &settings)
+	util.LoadTomlFile("settings.toml", &settings)
 
-	var authorizations authorizationsConfig
-	loadTomlFile("authorizations.toml", &authorizations)
+	var clients struct {
+		Clients []osin.DefaultClient
+	}
+	util.LoadTomlFile("clients.toml", &clients)
 
 	// Create the oauth configuration
 	sconfig := osin.NewServerConfig()
 	sconfig.AllowGetAccessRequest = true
 	sconfig.AllowClientSecretInParams = true
-	storagebackend := storage.NewSimpleStorage(authorizations.Clients)
+	storagebackend := storage.NewSimpleStorage(clients.Clients)
 
 	osinServer := osin.NewServer(sconfig, storagebackend)
+
+	userStore := users.NewTomlStore("users.toml")
 
 	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 
@@ -117,7 +89,7 @@ func main() {
 		defer resp.Close()
 
 		if ar := osinServer.HandleAuthorizeRequest(resp, r); ar != nil {
-			if !handleLoginPage(ar, w, r, authorizations.Users) {
+			if !handleLoginPage(ar, w, r, userStore) {
 				return
 			}
 			ar.Authorized = true
