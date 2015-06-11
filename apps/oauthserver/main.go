@@ -19,6 +19,11 @@ var cookiestore *sessions.CookieStore
 type settingsConfig struct {
 	Bind              string
 	CookieStoreSecret string
+	Jumpscale         struct {
+		Mongo struct {
+			Connectionstring string
+		}
+	}
 }
 
 func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request, userStore users.UserStore) (validlogin bool) {
@@ -78,8 +83,13 @@ func main() {
 	storagebackend := storage.NewSimpleStorage(clients.Clients)
 
 	osinServer := osin.NewServer(sconfig, storagebackend)
-
-	userStore := users.NewTomlStore("users.toml")
+	var userStore users.UserStore
+	if settings.Jumpscale.Mongo.Connectionstring != "" {
+		userStore = users.NewJumpscaleStore(settings.Jumpscale.Mongo.Connectionstring)
+	} else {
+		userStore = users.NewTomlStore("users.toml")
+	}
+	defer userStore.Close()
 
 	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 

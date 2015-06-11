@@ -3,7 +3,6 @@ package users
 import (
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users/keyderivation"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
-	"github.com/RangelReale/osin"
 )
 
 //TomlStore implements the UserStore interface for a local file
@@ -33,6 +32,10 @@ func NewTomlStore(filename string) (userStore *TomlStore) {
 	return
 }
 
+//Close does nothing since we don't hold any resources
+func (store *TomlStore) Close() {
+}
+
 type user struct {
 	Email    string
 	Name     string
@@ -40,9 +43,4 @@ type user struct {
 		Key  string
 		Salt string
 	}
-}
-
-type authorizationsConfig struct {
-	Users   map[string]user
-	Clients []osin.DefaultClient
 }
