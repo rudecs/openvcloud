@@ -1,0 +1,10 @@
+#In OAuth, clients are the applications that use an external OAuth service
+[[clients]]
+id = "dcpm"
+secret = "WhateverSecretYouWant"
+redirect_uri = "http://localhost:8000/authcallback"
+
+[[clients]]
+id = "ovs"
+secret = "WhateverSecretYouWant"
+redirect_uri = "http://localhost:8000/authcallback"

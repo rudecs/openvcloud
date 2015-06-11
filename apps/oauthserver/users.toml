@@ -1,5 +1,4 @@
 [users]
-
 [users.rob]
 email = "rob@incubaid.com"
 name = "Rob Van Mieghem"
@@ -13,14 +12,3 @@ name = "kristof De Spiegeleer"
 [users.kds.password]
 key = "4N2v4UxbatBMAcMPMT8aeskjqw3ZuMZBvP325qHAFLTUGey6zWZ1QNkSsBX5PZP49b17c9sVPDAHPVpqfF7WXA1f"
 salt = "EzdUkeoVqmm83zKwFMihsv"
-
-#In OAuth, clients are the applications that use an external OAuth service
-[[clients]]
-id = "dcpm"
-secret = "WhateverSecretYouWant"
-redirect_uri = "http://localhost:8000/authcallback"
-
-[[clients]]
-id = "ovs"
-secret = "WhateverSecretYouWant"
-redirect_uri = "http://localhost:8000/authcallback"
