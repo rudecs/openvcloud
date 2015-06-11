@@ -16,16 +16,16 @@ type SimpleStorage struct {
 }
 
 //NewSimpleStorage creates and initializes a SimpleStorage instance
-func NewSimpleStorage(clients map[string]osin.DefaultClient) *SimpleStorage {
+func NewSimpleStorage(clients []osin.DefaultClient) *SimpleStorage {
 	r := &SimpleStorage{
 		clients:   make(map[string]osin.Client),
 		authorize: make(map[string]*osin.AuthorizeData),
 		access:    make(map[string]*osin.AccessData),
 		refresh:   make(map[string]string),
 	}
-	for clientmapkey := range clients {
-		client := clients[clientmapkey]
-		r.clients[clientmapkey] = &client
+	for i := range clients {
+		client := clients[i]
+		r.clients[client.Id] = &client
 	}
 
 	return r

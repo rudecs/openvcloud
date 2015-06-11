@@ -25,7 +25,7 @@ type settingsConfig struct {
 
 type authorizationsConfig struct {
 	Users   map[string]user
-	Clients map[string]osin.DefaultClient
+	Clients []osin.DefaultClient
 }
 
 type user struct {
