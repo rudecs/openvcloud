@@ -1,6 +1,8 @@
 package users
 
 import (
+	"errors"
+
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users/keyderivation"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
 )
@@ -8,6 +10,16 @@ import (
 //TomlStore implements the UserStore interface for a local file
 type TomlStore struct {
 	users map[string]user
+}
+
+//Get user profile information
+func (store *TomlStore) Get(username string) (ret *UserDetails, err error) {
+	if u, found := store.users[username]; found {
+		ret = &UserDetails{Login: username, Name: u.Name, Email: []string{u.Email}}
+		return
+	}
+	err = errors.New("User not found")
+	return
 }
 
 //Validate checks if a given password is correct for a username

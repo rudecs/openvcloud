@@ -14,6 +14,24 @@ type JumpscaleStore struct {
 	session *mgo.Session
 }
 
+//Get user profile information
+func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) {
+	type user struct {
+		ID     string
+		Passwd string
+		Emails []string
+	}
+	var jumpscaleUser user
+	collection := store.session.DB("js_system").C("user")
+	err = collection.Find(bson.M{"id": username, "domain": "jumpscale"}).One(&jumpscaleUser)
+	if err != nil {
+		return
+	}
+
+	ret = &UserDetails{Login: username, Name: jumpscaleUser.ID, Email: jumpscaleUser.Emails}
+	return
+}
+
 //Validate checks if a given password is correct for a username
 func (store *JumpscaleStore) Validate(username, password string) (match bool) {
 	type user struct {

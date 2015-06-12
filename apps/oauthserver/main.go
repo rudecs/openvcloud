@@ -26,6 +26,10 @@ type settingsConfig struct {
 	}
 }
 
+type userData struct {
+	Login string
+}
+
 func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.Request, userStore users.UserStore) (validlogin bool) {
 	r.ParseForm()
 	data := struct {
@@ -35,6 +39,8 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 	session, _ := cookiestore.Get(r, "openvcloudsession")
 	if r.Method == "GET" {
 		if !session.IsNew {
+			username := session.Values["user"].(string)
+			ar.UserData = userData{Login: username}
 			return true
 		}
 	}
@@ -49,10 +55,7 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 				session.Values["user"] = username
 				session.Save(r, w)
 			}
-			ar.UserData = struct {
-				Login string
-				Name  string
-			}{Login: username}
+			ar.UserData = userData{Login: username}
 			return true
 		}
 
@@ -112,23 +115,48 @@ func main() {
 	})
 
 	// Access token endpoint
-	http.HandleFunc("/login/oauth/token", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/login/oauth/access_token", func(w http.ResponseWriter, r *http.Request) {
 		resp := osinServer.NewResponse()
 		defer resp.Close()
 
+		//osin expects this to be set in the request
+		//for compatibility with github oauht, set this
+		r.ParseForm()
+		r.Form.Set("grant_type", "authorization_code")
+
 		if ar := osinServer.HandleAccessRequest(resp, r); ar != nil {
-			switch ar.Type {
-			case osin.AUTHORIZATION_CODE:
-				ar.Authorized = true
-			case osin.REFRESH_TOKEN:
-				ar.Authorized = true
-			}
+			ar.Authorized = true
 			osinServer.FinishAccessRequest(resp, r, ar)
 		}
 		if resp.IsError && resp.InternalError != nil {
 			fmt.Printf("ERROR: %s\n", resp.InternalError)
 		}
 
+		osin.OutputJSON(resp, w, r)
+	})
+
+	// User information
+	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+		resp := osinServer.NewResponse()
+		defer resp.Close()
+
+		accesstoken, err := osinServer.Storage.LoadAccess(r.FormValue("access_token"))
+		if err != nil {
+			log.Println("Invalid accesstoken")
+			return //TODO return the proper errormessage
+		}
+
+		user, err := userStore.Get(accesstoken.UserData.(userData).Login)
+		if err != nil {
+			log.Println("Unable to get user details", err)
+			return //TODO return the proper errormessage
+		}
+
+		resp.Output["login"] = user.Login
+		resp.Output["name"] = user.Name
+		if len(user.Email) > 0 {
+			resp.Output["email"] = user.Email[0]
+		}
 		osin.OutputJSON(resp, w, r)
 	})
 
