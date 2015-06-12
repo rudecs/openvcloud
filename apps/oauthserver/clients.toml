@@ -2,9 +2,9 @@
 [[clients]]
 id = "dcpm"
 secret = "WhateverSecretYouWant"
-redirect_uri = "http://localhost:8000/authcallback"
+redirect_uri = "https://localhost:1543/callback"
 
 [[clients]]
 id = "ovs"
 secret = "WhateverSecretYouWant"
-redirect_uri = "http://localhost:8000/authcallback"
+redirect_uri = "https://localhost:1543/callback"

@@ -2,26 +2,31 @@ package storage
 
 import (
 	"errors"
-	"fmt"
+	"time"
 
 	"github.com/RangelReale/osin"
+	"github.com/pmylund/go-cache"
 )
 
 //SimpleStorage is an in-memory storage backend for osin
 type SimpleStorage struct {
 	clients   map[string]osin.Client
-	authorize map[string]*osin.AuthorizeData
-	access    map[string]*osin.AccessData
-	refresh   map[string]string
+	authorize *cache.Cache
+	access    *cache.Cache
+	refresh   *cache.Cache
 }
+
+//MaxCacheEntries limits the number of cached authorization and access tokens
+//It would be a little to easy to trash the system if this was not present
+const MaxCacheEntries = 20000
 
 //NewSimpleStorage creates and initializes a SimpleStorage instance
 func NewSimpleStorage(clients []osin.DefaultClient) *SimpleStorage {
 	r := &SimpleStorage{
 		clients:   make(map[string]osin.Client),
-		authorize: make(map[string]*osin.AuthorizeData),
-		access:    make(map[string]*osin.AccessData),
-		refresh:   make(map[string]string),
+		authorize: cache.New(1*time.Minute, 10*time.Second),
+		access:    cache.New(1*time.Minute, 30*time.Second),
+		refresh:   cache.New(1*time.Minute, 30*time.Second),
 	}
 	for i := range clients {
 		client := clients[i]
@@ -45,7 +50,6 @@ func (s *SimpleStorage) Close() {
 
 // GetClient loads the client by id (client_id)
 func (s *SimpleStorage) GetClient(id string) (osin.Client, error) {
-	fmt.Printf("GetClient: %s\n", id)
 	if c, ok := s.clients[id]; ok {
 		return c, nil
 	}
@@ -54,8 +58,10 @@ func (s *SimpleStorage) GetClient(id string) (osin.Client, error) {
 
 // SaveAuthorize saves authorize data.
 func (s *SimpleStorage) SaveAuthorize(data *osin.AuthorizeData) error {
-	fmt.Printf("SaveAuthorize: %s\n", data.Code)
-	s.authorize[data.Code] = data
+	if s.authorize.ItemCount() >= MaxCacheEntries {
+		return errors.New("Maximum number of Authorize tokens reached")
+	}
+	s.authorize.Set(data.Code, data, cache.DefaultExpiration)
 	return nil
 }
 
@@ -63,46 +69,49 @@ func (s *SimpleStorage) SaveAuthorize(data *osin.AuthorizeData) error {
 // Client information MUST be loaded together.
 // Optionally can return error if expired.
 func (s *SimpleStorage) LoadAuthorize(code string) (*osin.AuthorizeData, error) {
-	fmt.Printf("LoadAuthorize: %s\n", code)
-	if d, ok := s.authorize[code]; ok {
-		return d, nil
+	if d, ok := s.authorize.Get(code); ok {
+		return d.(*osin.AuthorizeData), nil
 	}
 	return nil, errors.New("Authorize not found")
 }
 
 // RemoveAuthorize revokes or deletes the authorization code.
 func (s *SimpleStorage) RemoveAuthorize(code string) error {
-	fmt.Printf("RemoveAuthorize: %s\n", code)
-	delete(s.authorize, code)
+	s.authorize.Delete(code)
 	return nil
 }
 
 // SaveAccess writes AccessData.
 // If RefreshToken is not blank, it must save in a way that can be loaded using LoadRefresh.
 func (s *SimpleStorage) SaveAccess(data *osin.AccessData) error {
-	fmt.Printf("SaveAccess: %s\n", data.AccessToken)
-	s.access[data.AccessToken] = data
+	if s.access.ItemCount() >= MaxCacheEntries {
+		return errors.New("Maximum number of Access tokens reached")
+	}
+	cacheduration := data.ExpireAt().Sub(time.Now())
+	s.access.Set(data.AccessToken, data, cacheduration)
 	if data.RefreshToken != "" {
-		s.refresh[data.RefreshToken] = data.AccessToken
+		s.refresh.Set(data.RefreshToken, data.AccessToken, cacheduration)
 	}
 	return nil
 }
 
 // LoadAccess retrieves access data by token. Client information MUST be loaded together.
 // AuthorizeData and AccessData DON'T NEED to be loaded if not easily available.
-// Optionally can return error if expired.
+// Returns error if expired.
 func (s *SimpleStorage) LoadAccess(code string) (*osin.AccessData, error) {
-	fmt.Printf("LoadAccess: %s\n", code)
-	if d, ok := s.access[code]; ok {
-		return d, nil
+	if d, ok := s.access.Get(code); ok {
+		data := d.(*osin.AccessData)
+		if !data.IsExpired() {
+			return data, nil
+		}
+		s.RemoveAccess(code)
 	}
 	return nil, errors.New("Access not found")
 }
 
 // RemoveAccess revokes or deletes an AccessData.
 func (s *SimpleStorage) RemoveAccess(code string) error {
-	fmt.Printf("RemoveAccess: %s\n", code)
-	delete(s.access, code)
+	s.access.Delete(code)
 	return nil
 }
 
@@ -110,16 +119,14 @@ func (s *SimpleStorage) RemoveAccess(code string) error {
 // AuthorizeData and AccessData DON'T NEED to be loaded if not easily available.
 // Optionally can return error if expired.
 func (s *SimpleStorage) LoadRefresh(code string) (*osin.AccessData, error) {
-	fmt.Printf("LoadRefresh: %s\n", code)
-	if d, ok := s.refresh[code]; ok {
-		return s.LoadAccess(d)
+	if d, ok := s.refresh.Get(code); ok {
+		return s.LoadAccess(d.(string))
 	}
 	return nil, errors.New("Refresh not found")
 }
 
 // RemoveRefresh revokes or deletes refresh AccessData.
 func (s *SimpleStorage) RemoveRefresh(code string) error {
-	fmt.Printf("RemoveRefresh: %s\n", code)
-	delete(s.refresh, code)
+	s.refresh.Delete(code)
 	return nil
 }
