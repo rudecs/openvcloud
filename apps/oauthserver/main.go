@@ -160,6 +160,21 @@ func main() {
 		osin.OutputJSON(resp, w, r)
 	})
 
+	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		redirectUri := r.Form.Get("redirect_uri")
+
+		session, _ := cookiestore.Get(r, "openvcloudsession")
+		//invalidate the session by setting age to -1
+		session.Options.MaxAge = -1
+
+		session.Save(r, w)
+
+		if redirectUri != "" {
+			http.Redirect(w, r, redirectUri, 302)
+		}
+	})
+
 	log.Printf("Listening on %s\n", settings.Bind)
 	http.ListenAndServe(settings.Bind, nil)
 }
