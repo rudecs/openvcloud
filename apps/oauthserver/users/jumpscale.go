@@ -3,6 +3,7 @@ package users
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"log"
 
 	"gopkg.in/mgo.v2"
@@ -20,6 +21,7 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 		ID     string
 		Passwd string
 		Emails []string
+		Groups []string
 	}
 	var jumpscaleUser user
 	collection := store.session.DB("js_system").C("user")
@@ -28,19 +30,20 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 		return
 	}
 
-	ret = &UserDetails{Login: username, Name: jumpscaleUser.ID, Email: jumpscaleUser.Emails}
+	ret = &UserDetails{Login: username, Name: jumpscaleUser.ID, Email: jumpscaleUser.Emails, Scopes: jumpscaleUser.Groups}
 	return
 }
 
-//Validate checks if a given password is correct for a username
-func (store *JumpscaleStore) Validate(username, password string) (match bool) {
+//Validate checks if a given password is correct for a username, it returns the groups it belongs to as scopes
+func (store *JumpscaleStore) Validate(username, password string) (scopes []string, err error) {
 	type user struct {
 		ID     string
 		Passwd string
+		Groups []string
 	}
 	var jumpscaleUser user
 	collection := store.session.DB("js_system").C("user")
-	err := collection.Find(bson.M{"id": username, "domain": "jumpscale"}).One(&jumpscaleUser)
+	err = collection.Find(bson.M{"id": username, "domain": "jumpscale"}).One(&jumpscaleUser)
 	if err != nil {
 		log.Print("Failed to load user ", username, " - ", err)
 		return
@@ -51,7 +54,13 @@ func (store *JumpscaleStore) Validate(username, password string) (match bool) {
 	md5hash := hasher.Sum(nil)
 
 	md5hashedPassword := hex.EncodeToString(md5hash)
-	return md5hashedPassword == jumpscaleUser.Passwd
+	if md5hashedPassword != jumpscaleUser.Passwd {
+		err = errors.New("Invalid password")
+		return
+	}
+	scopes = jumpscaleUser.Groups
+
+	return
 }
 
 //Close releases the mongo session

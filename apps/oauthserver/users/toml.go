@@ -15,7 +15,7 @@ type TomlStore struct {
 //Get user profile information
 func (store *TomlStore) Get(username string) (ret *UserDetails, err error) {
 	if u, found := store.users[username]; found {
-		ret = &UserDetails{Login: username, Name: u.Name, Email: []string{u.Email}}
+		ret = &UserDetails{Login: username, Name: u.Name, Email: []string{u.Email}, Scopes: u.Scopes}
 		return
 	}
 	err = errors.New("User not found")
@@ -23,10 +23,18 @@ func (store *TomlStore) Get(username string) (ret *UserDetails, err error) {
 }
 
 //Validate checks if a given password is correct for a username
-func (store *TomlStore) Validate(username, password string) (match bool) {
-	if u, found := store.users[username]; found {
-		return keyderivation.Check(password, u.Password.Key, u.Password.Salt)
+func (store *TomlStore) Validate(username, password string) (scopes []string, err error) {
+
+	u, found := store.users[username]
+	if !found {
+		err = errors.New("User not found")
+		return
 	}
+	if !keyderivation.Check(password, u.Password.Key, u.Password.Salt) {
+		err = errors.New("Invalid password")
+		return
+	}
+	scopes = u.Scopes
 	return
 }
 
@@ -51,6 +59,7 @@ func (store *TomlStore) Close() {
 type user struct {
 	Email    string
 	Name     string
+	Scopes   []string
 	Password struct {
 		Key  string
 		Salt string

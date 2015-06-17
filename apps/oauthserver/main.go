@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
@@ -37,19 +38,26 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 	}{false}
 
 	session, _ := cookiestore.Get(r, "openvcloudsession")
+
+	requestedScopes := strings.Split(r.FormValue("scope"), ",")
+
 	if r.Method == "GET" {
 		if !session.IsNew {
 			username := session.Values["user"].(string)
 			ar.UserData = userData{Login: username}
-			return true
+			user, err := userStore.Get(username)
+			if err != nil && util.ScopesAreAllowed(requestedScopes, user.Scopes) {
+				return true
+			}
 		}
 	}
 	if r.Method == "POST" {
 		username := r.FormValue("login")
 		password := r.FormValue("password")
-		if userStore.Validate(username, password) {
-			log.Printf("Authenticated %s\n", username)
-			{
+		availableScopes, err := userStore.Validate(username, password)
+		log.Println("Validate-error:", err)
+		if err == nil {
+			if util.ScopesAreAllowed(requestedScopes, availableScopes) {
 				session.Options.HttpOnly = true
 				session.Options.MaxAge = 3600 * 12
 				session.Values["user"] = username
@@ -162,7 +170,7 @@ func main() {
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-		redirectUri := r.Form.Get("redirect_uri")
+		redirectURI := r.Form.Get("redirect_uri")
 
 		session, _ := cookiestore.Get(r, "openvcloudsession")
 		//invalidate the session by setting age to -1
@@ -170,8 +178,8 @@ func main() {
 
 		session.Save(r, w)
 
-		if redirectUri != "" {
-			http.Redirect(w, r, redirectUri, 302)
+		if redirectURI != "" {
+			http.Redirect(w, r, redirectURI, 302)
 		}
 	})
 

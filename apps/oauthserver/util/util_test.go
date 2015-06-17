@@ -20,3 +20,15 @@ func TestLoadTomlFile(t *testing.T) {
 		t.Error("Something went wrong loading the toml file")
 	}
 }
+
+func TestScopesAreAllowed(t *testing.T) {
+	allowedScopes := []string{"user", "ovs:admin"}
+	requestedScopes := []string{"ovs:admin "}
+	if !ScopesAreAllowed(requestedScopes, allowedScopes) {
+		t.Error("The requested scopes should be allowed\nRequested:", requestedScopes, "\nAllowed:", allowedScopes)
+	}
+	requestedScopes = []string{"ovs:admin", "grid:admin"}
+	if ScopesAreAllowed(requestedScopes, allowedScopes) {
+		t.Error("The requested scopes should be not allowed\nRequested:", requestedScopes, "\nAllowed:", allowedScopes)
+	}
+}

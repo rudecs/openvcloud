@@ -3,6 +3,7 @@ package util
 import (
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/naoina/toml"
 )
@@ -21,4 +22,24 @@ func LoadTomlFile(filename string, v interface{}) {
 	if err := toml.Unmarshal(buf, v); err != nil {
 		panic(err)
 	}
+}
+
+func contains(value string, collection []string) bool {
+	for _, v := range collection {
+		if value == v {
+			return true
+		}
+	}
+	return false
+}
+
+//ScopesAreAllowed checks if the requestedScopes are a subset of the allowedScopes
+//Pretty naive implementation for now, does not check child scopes (like user:email)
+func ScopesAreAllowed(requestedScopes, allowedScopes []string) bool {
+	for _, s := range requestedScopes {
+		if !contains(strings.TrimSpace(s), allowedScopes) {
+			return false
+		}
+	}
+	return true
 }
