@@ -15,11 +15,15 @@ async = True
 log = False
 
 def action(vm_id):
-    import JumpScale.lib.qemu_img
+    import sys
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
-    lv = LibvirtUtil()
-    vm = lv.connection.lookupByName('vm-%s' % vm_id)
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.vmachinelist import VMachineList
+    from ovs.lib.vmachine import VMachineController
 
-    DISK_PATH = lv._getDomainDiskFiles(vm)[0]
-
-    return j.system.platform.qemu_img.info(DISK_PATH)
+    vmname = 'vm-%s' % vm_id
+    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    for vdisk in vmachine.vdisks:
+        info = vdisk.info.copy()
+        info['devicename'] = vdisk.devicename
+        return info
