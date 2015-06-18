@@ -1,35 +1,52 @@
-angular.module('cloudscalers.controllers')
-    .controller('SessionController', ['$scope', 'User', '$window', '$timeout','$location', 'SessionData', function($scope, User, $window, $timeout,$location, SessionData) {
+angular.module('cloudscalers.controllers', ['ngCookies'])
+    .controller('SessionController', ['$scope', 'User', '$window', '$timeout','$location', 'SessionData', '$cookies', function($scope, User, $window, $timeout,$location, SessionData, $cookies) {
         $scope.user = {username : '', password:'', company: '', vat: ''};
         
         $scope.login_error = undefined;
+        var portal_session_cookie = $cookies["beaker.session.id"];
+        if(portal_session_cookie){
+            User.getPortalLoggedinUser().then(function(username) {
+                if(username != "guest"){
+                    User.portalLogin(username, portal_session_cookie);
+        			var target = 'Decks';
+                    var uri = new URI($window.location);
+                    uri.filename(target);
+                    $window.location = uri.toString();
+                }
+            },
+            function(reason){
+                $scope.login_error = reason.status
+            })
 
-        $scope.login = function() {
+        }
+
+         $scope.login = function() {
             $scope.$broadcast("autofill:update");
-        	var usertologin = $scope.user.username;
+            var usertologin = $scope.user.username;
             User.login(usertologin, $scope.user.password).
             then(
-            		function(result) {
-            			$scope.login_error = undefined;
-            			var target = 'Decks';
-                    	if (result.status == 409){
-                    		target = 'AccountValidation';
-                    	}
-            			User.updateUserDetails(usertologin).then(
+                    function(result) {
+                        $scope.login_error = undefined;
+                        User.updateUserDetails(usertologin).then(
                                 function(result) {
-                                	var uri = new URI($window.location);
-                        			uri.filename(target);
-                        			$window.location = uri.toString();
+                                    var target = 'Decks';
+                                    if (result.status == 409){
+                                        target = 'AccountValidation';
+                                    }
+                                    var uri = new URI($window.location);
+                                    uri.filename(target);
+                                    $window.location = uri.toString();
                                 },
                                 function(reason){
-                                	$scope.login_error = reason.status
+                                    $scope.login_error = reason.status
                                 });
-            		},
-            		function(reason) {
-            			$scope.login_error = reason.status;
-            		}
+                    },
+                    function(reason) {
+                        $scope.login_error = reason.status;
+                    }
             );
         };
+
 
         if($location.search().username && $location.search().apiKey){
             SessionData.setUser({ username: $location.search().username, api_key: $location.search().apiKey });

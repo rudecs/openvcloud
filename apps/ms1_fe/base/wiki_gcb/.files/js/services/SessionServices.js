@@ -24,10 +24,10 @@ angular.module('cloudscalers.services')
 
            'responseError': function(rejection) {
         	   if (rejection.status == 401 || rejection.status == 419){
-        		   var uri = new URI($window.location);
-       				uri.filename('Login');
-       				uri.fragment('');
-       				$window.location = uri.toString();
+        		 //   var uri = new URI($window.location);
+       				// uri.filename('Login');
+       				// uri.fragment('');
+       				// $window.location = uri.toString();
         	   }
                return $q.reject(rejection);
             }
@@ -41,14 +41,14 @@ angular.module('cloudscalers.services')
         				return JSON.parse(userdata);
         			}
         		},
-        	setUser : function(userdata){
-        			if (userdata){
-        				$window.localStorage.setItem('gcb:currentUser', JSON.stringify(userdata));
-        			}
-        			else{
-        				$window.localStorage.removeItem('gcb:currentUser');
-        			}
-        		},
+            setUser : function(userdata){
+                    if (userdata){
+                        $window.localStorage.setItem('gcb:currentUser', JSON.stringify(userdata));
+                    }
+                    else{
+                        $window.localStorage.removeItem('gcb:currentUser');
+                    }
+                },
             getSpace : function() {
                 var space = $window.localStorage.getItem('gcb:currentSpace');
                 if (!space) {
@@ -85,51 +85,75 @@ angular.module('cloudscalers.services')
                 },
                 url: cloudspaceconfig.apibaseurl + '/users/authenticate'
             }).then(
-            		function (result) {
-            			SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
-            			return result;
-            		},
-            		function (reason) {
-            			if (reason.status == 409){
-            				SessionData.setUser({username: username, api_key: reason.data});
-                			return reason;
-            			}
-            			else{
-            				SessionData.setUser(undefined);
-            				return $q.reject(reason); 
-            			}
-            		}
+                    function (result) {
+                        SessionData.setUser({username: username, api_key: JSON.parse(result.data)});
+                        return result;
+                    },
+                    function (reason) {
+                        if (reason.status == 409){
+                            SessionData.setUser({username: username, api_key: reason.data});
+                            return reason;
+                        }
+                        else{
+                            SessionData.setUser(undefined);
+                            return $q.reject(reason); 
+                        }
+                    }
             );
         };
 
+        user.getPortalLoggedinUser = function(){
+            var url = '/restmachine//system/usermanager/whoami';
+            return $http.get(url).then(
+                function(result) {
+                    return JSON.parse(result.data);
+                }, 
+                function(reason){
+                    return $q.reject(reason);
+                });
+        };
+
+        user.portalLogin = function (username, api_key) {
+            return SessionData.setUser({username: username, api_key: api_key});
+        };
+
         user.get = function(username){
-        	url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
-        	var currentUser = SessionData.getUser();
-        	if (currentUser){
-        		var uri = new URI(url);
-           		uri.addSearch('authkey', currentUser.api_key);
-           		url = uri.toString();
+            url = cloudspaceconfig.apibaseurl +'/users/get?username=' + encodeURIComponent(username)
+            var currentUser = SessionData.getUser();
+            if (currentUser){
+                var uri = new URI(url);
+                uri.addSearch('authkey', currentUser.api_key);
+                url = uri.toString();
 			}
         	return $http.get(url);
         }
 
         user.updateUserDetails= function(username){
         	return user.get(username).then(
-        			function(result){
-        				storedUser = SessionData.getUser();
-        				storedUser.emailaddresses = result.data.emailaddresses;
-        				SessionData.setUser(storedUser);
-        				return storedUser;
-        			},
-        			function(reason){
-                        return $q.reject(reason);
-                    }
-        			);
+            			function(result){
+            				storedUser = SessionData.getUser();
+            				storedUser.emailaddresses = result.data.emailaddresses;
+            				SessionData.setUser(storedUser);
+            				return storedUser;
+            			},
+            			function(reason){
+                            return $q.reject(reason);
+                        }
+                    );
 
         }
 
+
         user.logout = function() {
-        	SessionData.setUser(undefined);
+        	var url = "/restmachine//system/oauth/getOauthLogoutURl";
+            return $http.get(url).then(
+                function(result) {
+                    $cookies["beaker.session.id"] = "";
+                    $window.location(JSON.parse(result.data));
+                },
+                function(reason) {
+                    return $q.reject(reason);
+                });
         };
 
         return user;

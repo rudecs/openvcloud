@@ -54,6 +54,7 @@
 <script src="/$$space/.files/lib/angular-1.2.6/angular-mocks.min.js"></script>
 <script src="/$$space/.files/lib/angular-1.2.6/angular-route.min.js"></script>
 <script src="/$$space/.files/lib/angular-1.2.6/angular-resource.min.js"></script>
+<script src="/jslib/angular/angular-cookies-1.4.0.min.js"></script>
 <script src="/$$space/.files/lib/URI.js"></script>
 <script src="/$$space/.files/lib/underscore/underscore-min.js"></script>
 <script src="/$$space/.files/lib/angular-ui/ui-bootstrap-tpls-0.6.0.min.js"></script>
