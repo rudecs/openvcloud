@@ -25,7 +25,7 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 	}
 	var jumpscaleUser user
 	collection := store.session.DB("js_system").C("user")
-	err = collection.Find(bson.M{"id": username, "domain": "jumpscale"}).One(&jumpscaleUser)
+	err = collection.Find(bson.M{"id": username}).One(&jumpscaleUser)
 	if err != nil {
 		return
 	}
@@ -43,7 +43,7 @@ func (store *JumpscaleStore) Validate(username, password string) (scopes []strin
 	}
 	var jumpscaleUser user
 	collection := store.session.DB("js_system").C("user")
-	err = collection.Find(bson.M{"id": username, "domain": "jumpscale"}).One(&jumpscaleUser)
+	err = collection.Find(bson.M{"id": username}).One(&jumpscaleUser)
 	if err != nil {
 		log.Print("Failed to load user ", username, " - ", err)
 		return
