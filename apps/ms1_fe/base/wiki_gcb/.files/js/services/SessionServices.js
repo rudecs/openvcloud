@@ -11,7 +11,6 @@ angular.module('cloudscalers.services')
                     	var currentUser = SessionData.getUser();
                     	if (currentUser){
                     		var uri = new URI(url);
-                       		uri.addSearch('authkey', currentUser.api_key);
                        		config.url = uri.toString();
     					}
                     }
@@ -24,10 +23,7 @@ angular.module('cloudscalers.services')
 
            'responseError': function(rejection) {
         	   if (rejection.status == 401 || rejection.status == 419){
-        		 //   var uri = new URI($window.location);
-       				// uri.filename('Login');
-       				// uri.fragment('');
-       				// $window.location = uri.toString();
+       				 $window.location = "/restmachine/system/oauth/authenticate?type=oauth&redirect=" + encodeURIComponent(window.location);
         	   }
                return $q.reject(rejection);
             }
@@ -122,7 +118,6 @@ angular.module('cloudscalers.services')
             var currentUser = SessionData.getUser();
             if (currentUser){
                 var uri = new URI(url);
-                uri.addSearch('authkey', currentUser.api_key);
                 url = uri.toString();
 			}
         	return $http.get(url);
