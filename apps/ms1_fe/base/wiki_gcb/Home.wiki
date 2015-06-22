@@ -1,5 +1,5 @@
 {{html:
     <script>
-        document.location = "/$$space/login";
+        document.location = "/$$space/decks";
     </script>
 }}
