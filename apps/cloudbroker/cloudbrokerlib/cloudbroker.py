@@ -9,20 +9,24 @@ import random
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
+
 class Dummy(object):
+
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
+
 class CloudProvider(object):
     _providers = dict()
+
     def __init__(self, stackId):
         if stackId not in CloudProvider._providers:
             stack = models.stack.get(stackId)
             providertype = getattr(Provider, stack.type)
             kwargs = dict()
             if stack.type == 'OPENSTACK':
-                args = [ stack.login, stack.passwd]
+                args = [stack.login, stack.passwd]
                 kwargs['ex_force_auth_url'] = stack.apiUrl
                 kwargs['ex_force_auth_version'] = '2.0_password'
                 kwargs['ex_tenant_name'] = stack.login
@@ -30,7 +34,7 @@ class CloudProvider(object):
                 CloudProvider._providers[stackId] = driver
             if stack.type == 'DUMMY':
                 DriverClass = get_driver(providertype)
-                args = [1,]
+                args = [1, ]
                 CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
             if stack.type == 'LIBVIRT':
                 kwargs['id'] = stack.referenceId
@@ -59,6 +63,7 @@ class CloudProvider(object):
             if image.id == iimage.referenceId:
                 return image, image
         return None, None
+
 
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
@@ -101,7 +106,7 @@ class CloudBroker(object):
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             return -1
-        #return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
+        # return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
         l = len(capacityinfo)
         i = random.randint(0, l - 1)
         provider = capacityinfo[i]
@@ -131,8 +136,8 @@ class CloudBroker(object):
 
         stack = models.stack.get(stackId)
         gridId = stack.gid
-        cb_sizes = models.size.search({})[1:] # cloudbroker sizes
-        psizes = {} #provider sizes
+        cb_sizes = models.size.search({})[1:]  # cloudbroker sizes
+        psizes = {}  # provider sizes
 
         # provider sizes formated as {(memory, cpu):[disks]}. i.e {(2048, 2):[10, 20, 30]}
         for s in provider.client.list_sizes():
@@ -143,18 +148,18 @@ class CloudBroker(object):
             record = (cb_size['memory'], cb_size['vcpus'])
             if record not in psizes:  # obsolete sizes
                 if gridId in cb_size['gids']:
-                    cb_size['gids'].remove(gridId) # remove gid from obsolete size
+                    cb_size['gids'].remove(gridId)  # remove gid from obsolete size
                     if not cb_size['gids']:
-                        models.size.delete(cb_size['id']) # delete obsolete size if having no gids
+                        models.size.delete(cb_size['id'])  # delete obsolete size if having no gids
                     else:
-                        models.size.set(cb_size) # update obsolete size [Save without the gridId of the stack]
+                        models.size.set(cb_size)  # update obsolete size [Save without the gridId of the stack]
             else:
                 # Update existing sizes (disks and gids)
                 if cb_size['disks'] == psizes[record]:
                     if gridId not in cb_size['gids']:
                         cb_size['gids'].append(gridId)
                         models.size.set(cb_size)
-                    psizes.pop(record) # remove from dict
+                    psizes.pop(record)  # remove from dict
         # add new
         for k, v in psizes.iteritems():
             s = models.size.new()
@@ -169,24 +174,24 @@ class CloudBroker(object):
 
     def stackImportImages(self, stackId):
         """
-        Sync Provider images [Deletes obsolete images that are deleted from provider side/Add new ones]        
+        Sync Provider images [Deletes obsolete images that are deleted from provider side/Add new ones]
         """
         provider = CloudProvider(stackId)
         if not provider:
             raise RuntimeError('Provider not found')
-        
+
         pname = provider.client.name.lower()
         stack = models.stack.get(stackId)
         stack.images = list()
-        
+
         pimages = {}
         for p in provider.client.ex_list_images():
             pimages[p.id] = p
         pimages_ids = set(pimages.keys())
-        
-        images_current = models.image.search({'provider_name':pname})[1:]
+
+        images_current = models.image.search({'provider_name': pname})[1:]
         images_current_ids = set([p['referenceId'] for p in images_current])
-        
+
         new_images_ids = pimages_ids - images_current_ids
         deleted_images_ids = images_current_ids - pimages_ids
         updated_images_ids = pimages_ids & images_current_ids
@@ -203,16 +208,17 @@ class CloudBroker(object):
             image.username = pimage.extra.get('username', 'cloudscalers')
             image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
             image.accountId = 0
-            
+
             imageid = models.image.set(image)[0]
             stack.images.append(imageid)
-        
-        # Delete obsolete images
+
+        # Disable obsolete images
         for image in models.image.search({'referenceId':{'$in':list(deleted_images_ids)}})[1:]:
-            models.image.delete(image['id'])
+            image['status'] = 'DISABLED'
+            models.image.set(image)
 
         # Update current images
-        for image in models.image.search({'referenceId':{'$in':list(updated_images_ids)}})[1:]:
+        for image in models.image.search({'referenceId': {'$in': list(updated_images_ids)}})[1:]:
             pimage = pimages[image['referenceId']]
             image['name'] = pimage.name
             image['type'] = pimage.extra.get('imagetype', 'Unknown')
@@ -220,9 +226,9 @@ class CloudBroker(object):
             image['username'] = pimage.extra.get('username', 'cloudscalers')
             image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
             image['provider_name'] = pname
-            
+
             imageid = models.image.set(image)[0]
             stack.images.append(imageid)
-        
+
         models.stack.set(stack)
         return len(new_images_ids)

@@ -35,6 +35,7 @@ def copyImageToOVS(imagepath):
 
 def registerImage(jp, name, imagepath, type, disksize, username=None):
     templateguid, imagepath = copyImageToOVS(imagepath)
+    templateguid = templateguid.replace('-', '') # osis strips dashes
     #register image on cloudbroker
     node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid)
     osiscl = j.clients.osis.getByInstance('main')
