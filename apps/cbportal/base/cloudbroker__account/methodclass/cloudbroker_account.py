@@ -116,13 +116,11 @@ class cloudbroker_account(BaseActor):
                       and may not contain whitespace'''
 
         if j.core.portal.active.auth.userExists(username):
-            ctx.start_response('409 Conflict', [])
-            return 'Username already exists'
-        existingusers = self.syscl.user.search({'emails':emailaddress})[1:]
-
-        if (len(existingusers) > 0):
-            ctx.start_response('409 Conflict', [])
-            return 'An account with this email address already exists'
+            if not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
+                ctx.start_response('409 Conflict', [])
+                return 'An user with this email address already exists'
+        else:
+            j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
 
         now = int(time.time())
 
@@ -130,7 +128,6 @@ class cloudbroker_account(BaseActor):
 
         locationurl = j.apps.cloudapi.locations.getUrl()
 
-        j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
         account = self.models.account.new()
         account.name = username
         account.creationTime = now
