@@ -143,19 +143,6 @@ angular.module('cloudscalers.services')
 
         }
 
-
-        user.logout = function() {
-        	var url = "/restmachine//system/oauth/getOauthLogoutURl";
-            return $http.get(url).then(
-                function(result) {
-                    $cookies["beaker.session.id"] = "";
-                    $window.location(JSON.parse(result.data));
-                },
-                function(reason) {
-                    return $q.reject(reason);
-                });
-        };
-
         return user;
 
     });

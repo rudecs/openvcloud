@@ -5,7 +5,7 @@
             <a class="logo" href="../$$space/Decks"><img src="/$$space/.files/img/logo-colored.png" title="Home" class="margin-vertical-small" width='132' height='56'></a>
             <ul class="pull-right span7">
                 <li class="right">
-                    <a class="signUp login right" ng-click="logout()" href="" >
+                    <a class="signUp login right" href="/restmachine//system/oauth/getOauthLogoutURl" >
                         <i class="fa fa-lock"></i>
                         <span>Logout</span>
                     </a>
