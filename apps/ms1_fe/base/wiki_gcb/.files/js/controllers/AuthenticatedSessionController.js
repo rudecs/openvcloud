@@ -7,7 +7,7 @@ angular.module('cloudscalers.controllers')
             if(!User.current() || User.current().api_key != portal_session_cookie){
                 User.getPortalLoggedinUser().then(function(username) {
                     if(username != "guest"){
-                        loginAndRedirect(username);
+                        autoLogin(username);
                     }
                 },
                 function(reason){
@@ -15,19 +15,15 @@ angular.module('cloudscalers.controllers')
                 });
 
             }else{
-                loginAndRedirect(User.current().username);
+                autoLogin(User.current().username);
             }
         }
 
-        function loginAndRedirect(username) {
+        function autoLogin(username) {
             User.portalLogin(username, portal_session_cookie);
             $scope.currentUser = User.current();
             $scope.currentSpace = CloudSpace.current();
             $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
-            var target = 'Decks';
-            var uri = new URI($window.location);
-            uri.filename(target);
-            $window.location = uri.toString();
         }
 
 
