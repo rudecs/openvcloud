@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
@@ -12,6 +13,7 @@ import (
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
 
 	"github.com/RangelReale/osin"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 )
 
@@ -104,83 +106,87 @@ func main() {
 	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 
 	//Handle authorize endpoint
-	http.HandleFunc("/login/oauth/authorize", func(w http.ResponseWriter, r *http.Request) {
-		resp := osinServer.NewResponse()
-		defer resp.Close()
+	http.Handle("/login/oauth/authorize", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			resp := osinServer.NewResponse()
+			defer resp.Close()
 
-		if ar := osinServer.HandleAuthorizeRequest(resp, r); ar != nil {
-			if !handleLoginPage(ar, w, r, userStore) {
-				return
+			if ar := osinServer.HandleAuthorizeRequest(resp, r); ar != nil {
+				if !handleLoginPage(ar, w, r, userStore) {
+					return
+				}
+				ar.Authorized = true
+				osinServer.FinishAuthorizeRequest(resp, r, ar)
 			}
-			ar.Authorized = true
-			osinServer.FinishAuthorizeRequest(resp, r, ar)
-		}
-		if resp.IsError && resp.InternalError != nil {
-			fmt.Printf("ERROR: %s\n", resp.InternalError)
-		}
-		osin.OutputJSON(resp, w, r)
-	})
+			if resp.IsError && resp.InternalError != nil {
+				fmt.Printf("ERROR: %s\n", resp.InternalError)
+			}
+			osin.OutputJSON(resp, w, r)
+		})))
 
 	// Access token endpoint
-	http.HandleFunc("/login/oauth/access_token", func(w http.ResponseWriter, r *http.Request) {
-		resp := osinServer.NewResponse()
-		defer resp.Close()
+	http.Handle("/login/oauth/access_token", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			resp := osinServer.NewResponse()
+			defer resp.Close()
 
-		//osin expects this to be set in the request
-		//for compatibility with github oauht, set this
-		r.ParseForm()
-		r.Form.Set("grant_type", "authorization_code")
+			//osin expects this to be set in the request
+			//for compatibility with github oauht, set this
+			r.ParseForm()
+			r.Form.Set("grant_type", "authorization_code")
 
-		if ar := osinServer.HandleAccessRequest(resp, r); ar != nil {
-			ar.Authorized = true
-			osinServer.FinishAccessRequest(resp, r, ar)
-		}
-		if resp.IsError && resp.InternalError != nil {
-			fmt.Printf("ERROR: %s\n", resp.InternalError)
-		}
+			if ar := osinServer.HandleAccessRequest(resp, r); ar != nil {
+				ar.Authorized = true
+				osinServer.FinishAccessRequest(resp, r, ar)
+			}
+			if resp.IsError && resp.InternalError != nil {
+				fmt.Printf("ERROR: %s\n", resp.InternalError)
+			}
 
-		osin.OutputJSON(resp, w, r)
-	})
+			osin.OutputJSON(resp, w, r)
+		})))
 
 	// User information
-	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
-		resp := osinServer.NewResponse()
-		defer resp.Close()
+	http.Handle("/user", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			resp := osinServer.NewResponse()
+			defer resp.Close()
 
-		accesstoken, err := osinServer.Storage.LoadAccess(r.FormValue("access_token"))
-		if err != nil {
-			log.Println("Invalid accesstoken")
-			return //TODO return the proper errormessage
-		}
+			accesstoken, err := osinServer.Storage.LoadAccess(r.FormValue("access_token"))
+			if err != nil {
+				log.Println("Invalid accesstoken")
+				return //TODO return the proper errormessage
+			}
 
-		user, err := userStore.Get(accesstoken.UserData.(userData).Login)
-		if err != nil {
-			log.Println("Unable to get user details", err)
-			return //TODO return the proper errormessage
-		}
+			user, err := userStore.Get(accesstoken.UserData.(userData).Login)
+			if err != nil {
+				log.Println("Unable to get user details", err)
+				return //TODO return the proper errormessage
+			}
 
-		resp.Output["login"] = user.Login
-		resp.Output["name"] = user.Name
-		if len(user.Email) > 0 {
-			resp.Output["email"] = user.Email[0]
-		}
-		osin.OutputJSON(resp, w, r)
-	})
+			resp.Output["login"] = user.Login
+			resp.Output["name"] = user.Name
+			if len(user.Email) > 0 {
+				resp.Output["email"] = user.Email[0]
+			}
+			osin.OutputJSON(resp, w, r)
+		})))
 
-	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
-		redirectURI := r.Form.Get("redirect_uri")
+	http.Handle("/logout", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			r.ParseForm()
+			redirectURI := r.Form.Get("redirect_uri")
 
-		session, _ := cookiestore.Get(r, "openvcloudsession")
-		//invalidate the session by setting age to -1
-		session.Options.MaxAge = -1
+			session, _ := cookiestore.Get(r, "openvcloudsession")
+			//invalidate the session by setting age to -1
+			session.Options.MaxAge = -1
 
-		session.Save(r, w)
+			session.Save(r, w)
 
-		if redirectURI != "" {
-			http.Redirect(w, r, redirectURI, 302)
-		}
-	})
+			if redirectURI != "" {
+				http.Redirect(w, r, redirectURI, 302)
+			}
+		})))
 
 	log.Printf("Listening on %s\n", settings.Bind)
 	http.ListenAndServe(settings.Bind, nil)
