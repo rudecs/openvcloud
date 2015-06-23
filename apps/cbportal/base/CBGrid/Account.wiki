@@ -32,7 +32,16 @@ h2. Account: ${name}
    accountname: ${name}
   input:
   - username
-  - accesstype
+  - name: accesstype
+    type: dropdown
+    label: ACL
+    values:
+     - label: Admin
+       value: ARCXDU
+     - label: Write
+       value: RCX
+     - label: Read
+       value: R
 
 - display: Delete User
   action: /restmachine/cloudbroker/account/deleteUser

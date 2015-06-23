@@ -60,8 +60,17 @@ h2. CloudSpace: ${name}
   data:
    cloudspaceId: $$id
   input:
-   - username
-   - accesstype
+  - username
+  - name: accesstype
+    label: ACL
+    type: dropdown
+    values:
+     - label: Admin
+       value: ARCXDU
+     - label: Write
+       value: RCX
+     - label: Read
+       value: R
 
 - display: Revoke User Access
   action: /restmachine/cloudbroker/cloudspace/deleteUser
