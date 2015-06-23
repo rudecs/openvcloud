@@ -82,3 +82,46 @@ class cloudbroker_image(BaseActor):
             else:
                 return 'Image could not be DISABLED'
         return result
+
+
+    @auth(['level1', 'level2', 'level3'])
+    def updateNodes(self, imageId, enabledStacks, **kwargs):
+        enabledStacks = enabledStacks or list()
+        referenceId = imageId
+
+        def getResource(stack):
+            resourceid = '%(gid)s_%(referenceId)s' % stack
+            return self.libvirtcl.resourceprovider.get(resourceid)
+
+        ctx = kwargs.get('ctx')
+        enabledStacks = [ int(x) for x in enabledStacks ]
+        images = self.models.image.search({'referenceId': referenceId})[1:]
+        if not images:
+            headers = [('Content-Type', 'application/json'), ]
+            ctx.start_response('400', headers)
+            return "Invalid Image"
+        image = images[0]
+        for stack in self.models.stack.search({'images': image['id']})[1:]:
+            resourceprovider = getResource(stack)
+            if stack['id'] not in enabledStacks:
+                if image['id'] in stack['images']:
+                    stack['images'].remove(image['id'])
+                    self.models.stack.set(stack)
+                if referenceId in resourceprovider.images:
+                    resourceprovider.images.remove(referenceId)
+                    self.libvirtcl.resourceprovider.set(resourceprovider)
+            else:
+                enabledStacks.remove(stack['id'])
+
+        for stackid in enabledStacks:
+            stack = self.models.stack.get(stackid)
+            resourceprovider = getResource(stack.dump())
+            if image['id'] not in stack.images:
+                stack.images.append(image['id'])
+                self.models.stack.set(stack)
+
+            if referenceId not in resourceprovider.images:
+                resourceprovider.images.append(referenceId)
+                self.libvirtcl.resourceprovider.set(resourceprovider)
+
+        return True

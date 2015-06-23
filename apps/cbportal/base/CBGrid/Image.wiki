@@ -4,6 +4,9 @@
 h3. Image: ${name}
 
 {{actions:
+- display: Change CPU Nodes
+  action: '#image_update_cpu_nodes'
+
 - display: Delete
   input: 
   - reason
@@ -25,6 +28,8 @@ h3. Image: ${name}
   data: 
    imageId: $$id
 }}
+
+{{image_update_cpu_nodes: imageId:$$id}}
 
 * *Type*: ${type}
 * *Size*: ${size}

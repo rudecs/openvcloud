@@ -193,7 +193,6 @@ class CloudBroker(object):
         images_current_ids = set([p['referenceId'] for p in images_current])
 
         new_images_ids = pimages_ids - images_current_ids
-        deleted_images_ids = images_current_ids - pimages_ids
         updated_images_ids = pimages_ids & images_current_ids
 
         # Add new Images
@@ -211,11 +210,6 @@ class CloudBroker(object):
 
             imageid = models.image.set(image)[0]
             stack.images.append(imageid)
-
-        # Disable obsolete images
-        for image in models.image.search({'referenceId':{'$in':list(deleted_images_ids)}})[1:]:
-            image['status'] = 'DISABLED'
-            models.image.set(image)
 
         # Update current images
         for image in models.image.search({'referenceId': {'$in': list(updated_images_ids)}})[1:]:
