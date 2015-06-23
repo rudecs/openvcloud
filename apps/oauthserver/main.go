@@ -63,9 +63,9 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 				session.Options.MaxAge = 3600 * 12
 				session.Values["user"] = username
 				session.Save(r, w)
+				ar.UserData = userData{Login: username}
+				return true
 			}
-			ar.UserData = userData{Login: username}
-			return true
 		}
 
 		data.Error = true
