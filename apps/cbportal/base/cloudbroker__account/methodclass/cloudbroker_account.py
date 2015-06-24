@@ -2,7 +2,7 @@ from JumpScale import j
 import time
 import re
 from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 def _send_signup_mail(hrd, **kwargs):
     notifysupport = hrd.get("instance.mothership1.cloudbroker.notifysupport")
@@ -75,6 +75,7 @@ class cloudbroker_account(BaseActor):
         return re.search(r"\s",password) is None
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def disable(self, accountname, reason, **kwargs):
         """
         Disable an account
@@ -104,6 +105,7 @@ class cloudbroker_account(BaseActor):
             return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def create(self, username, name, emailaddress, password, location, **kwargs):
         ctx = kwargs['ctx']
         if not self._isValidUserName(username):
@@ -227,6 +229,7 @@ class cloudbroker_account(BaseActor):
             return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def addUser(self, accountname, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -251,6 +254,7 @@ class cloudbroker_account(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deleteUser(self, accountname, username, **kwargs):
         """
         Delete a user from the account

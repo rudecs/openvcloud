@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 class cloudbroker_computenode(BaseActor):
     """
@@ -53,6 +53,7 @@ class cloudbroker_computenode(BaseActor):
         return self._changeStackStatus(id, gid, 'ENABLED', kwargs)[1]
 
     @auth(['level2','level3'], True)
+    @wrap_remote
     def disable(self, id, gid, message, **kwargs):
         stack, status = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
         if stack:

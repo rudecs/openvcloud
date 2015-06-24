@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import md5
 
 class cloudbroker_user(BaseActor):
@@ -55,6 +55,7 @@ class cloudbroker_user(BaseActor):
         return j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def sendResetPasswordLink(self, username, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
@@ -77,7 +78,7 @@ class cloudbroker_user(BaseActor):
         
         #delete all acls
         #delete from accounts
-        query = {'acl.userGroupId': 'reem', 'acl.type':'U'}
+        query = {'acl.userGroupId': username, 'acl.type':'U'}
         accountswiththisuser = self.models.account.search(query)[1:]
         for account in accountswiththisuser:
             rights = {acl['userGroupId']: acl['right'] for acl in account['acl']}

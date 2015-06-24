@@ -1,7 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
 
 class cloudbroker_cloudspace(BaseActor):
@@ -15,6 +15,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
@@ -67,6 +68,7 @@ class cloudbroker_cloudspace(BaseActor):
         return False
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNid, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
@@ -103,6 +105,7 @@ class cloudbroker_cloudspace(BaseActor):
         return True
     
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deployVFW(self, cloudspaceId, **kwargs):
         """
         Deploy VFW 
@@ -118,6 +121,7 @@ class cloudbroker_cloudspace(BaseActor):
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def resetVFW(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
@@ -134,6 +138,7 @@ class cloudbroker_cloudspace(BaseActor):
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
@@ -160,6 +165,7 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def create(self, accountname, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create a cloudspace
@@ -191,6 +197,7 @@ class cloudbroker_cloudspace(BaseActor):
         return True, user[0]
     
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def addUser(self, cloudspaceId, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -217,6 +224,7 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deleteUser(self, cloudspaceId, username, **kwargs):
         """
         Delete a user from the account

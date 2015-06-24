@@ -1,5 +1,5 @@
 from JumpScale import j
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import time, string
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
@@ -21,9 +21,12 @@ class cloudbroker_machine(BaseActor):
         self.acl = j.clients.agentcontroller.get()
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
         return self.machines_actor.create(cloudspaceId, name, description, sizeId, imageId, disksize)
+
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, **kwargs):
         """
         Create a machine on a specific stackid
@@ -113,6 +116,7 @@ class cloudbroker_machine(BaseActor):
         self.models.cloudspace.set(cloudspace)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -140,6 +144,7 @@ class cloudbroker_machine(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -170,6 +175,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -200,6 +206,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def pause(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -230,6 +237,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def resume(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -260,6 +268,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -290,6 +299,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -320,6 +330,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -350,6 +361,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -380,6 +392,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -410,6 +423,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -727,6 +741,7 @@ class cloudbroker_machine(BaseActor):
         self.acl.executeJumpscript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def listSnapshots(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
@@ -743,6 +758,7 @@ class cloudbroker_machine(BaseActor):
         return self.machines_actor.listSnapshots(machineId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def getHistory(self, machineId, **kwargs):
         ctx = kwargs.get('ctx')
         headers = [('Content-Type', 'application/json'), ]
@@ -784,6 +800,7 @@ class cloudbroker_machine(BaseActor):
         return results
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -804,6 +821,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deletePortForward(self, machineId, spaceName, ruleId, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -824,6 +842,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def addDisk(self, machineId, spaceName, diskName, description, reason, size=10, type='D', **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -844,6 +863,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def deleteDisk(self, machineId, spaceName, diskId, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -864,6 +884,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def createTemplate(self, machineId, spaceName, templateName, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
@@ -884,6 +905,7 @@ class cloudbroker_machine(BaseActor):
         j.tools.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def updateMachine(self, machineId, spaceName, description, reason, **kwargs):
         machineId = int(machineId)
         ctx = kwargs['ctx']
