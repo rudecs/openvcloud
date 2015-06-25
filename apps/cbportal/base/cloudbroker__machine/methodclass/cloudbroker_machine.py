@@ -19,6 +19,10 @@ class cloudbroker_machine(BaseActor):
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
+        try:
+            self.whmcs = j.clients.whmcs.get()
+        except:
+            self.whmcs = j.clients.whmcs.getDummy()
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -170,9 +174,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Starting machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.start(machineId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -201,9 +205,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Stopping machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.stop(machineId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -232,9 +236,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Pausing machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.pause(machineId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -263,9 +267,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Resuming machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.resume(machineId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -294,9 +298,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Rebooting machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.reboot(machineId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -325,9 +329,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Snapshotting machine: %s' % vmachine.name
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.snapshot(machineId, snapshotName)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -356,9 +360,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Rolling back snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.rollbackSnapshot(machineId, snapshotName)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -387,9 +391,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Deleting snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.deleteSnapshot(machineId, snapshotName)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -418,9 +422,9 @@ class cloudbroker_machine(BaseActor):
 
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nClone name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, cloneName, reason)
         subject = 'Cloning machine: %s into machine: %s' % (vmachine.name, cloneName)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.clone(machineId, cloneName)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -709,10 +713,10 @@ class cloudbroker_machine(BaseActor):
         stack = self.models.stack.get(vmachine.stackId)
         subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
         msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, "High")
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
         self.acl.executeJumpscript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
@@ -816,9 +820,9 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
         subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -837,9 +841,9 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (account.name, spaceName, vmachine.name, ruleId, reason)
         subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.delete(cloudspace.id, ruleId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -858,9 +862,9 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskName, reason)
         subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -879,9 +883,9 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskId, reason)
         subject = 'Deleting disk: %s for machine %s' % (diskId, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.delDisk(machineId, diskId)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -900,9 +904,9 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (account.name, spaceName, vmachine.name, templateName, reason)
         subject = 'Creating template: %s for machine %s' % (templateName, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.createTemplate(machineId, templateName, None)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -921,6 +925,6 @@ class cloudbroker_machine(BaseActor):
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (account.name, spaceName, vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.update(machineId, description=description)
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+        self.whmcs.tickets.close_ticket(ticketId)
