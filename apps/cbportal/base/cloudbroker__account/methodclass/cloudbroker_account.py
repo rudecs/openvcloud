@@ -122,7 +122,7 @@ class cloudbroker_account(BaseActor):
                 ctx.start_response('409 Conflict', [])
                 return 'An user with this email address already exists'
         else:
-            j.core.portal.active.auth.createUser(username, password, emailaddress, [username], None)
+            j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)
 
         now = int(time.time())
 

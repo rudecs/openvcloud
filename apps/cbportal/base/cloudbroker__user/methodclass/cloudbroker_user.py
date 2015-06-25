@@ -52,7 +52,7 @@ class cloudbroker_user(BaseActor):
         if check:
             ctx.start_response('409', headers)
             return "Username %s already exists" % username
-        return j.core.portal.active.auth.createUser(username, password, emailaddress, username, None)
+        return j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -75,7 +75,7 @@ class cloudbroker_user(BaseActor):
             ctx.start_response('404', headers)
             return result
         user = result
-        
+
         #delete all acls
         #delete from accounts
         query = {'acl.userGroupId': username, 'acl.type':'U'}
