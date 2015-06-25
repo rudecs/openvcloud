@@ -9,18 +9,14 @@ Welcome to our operations portal.
 h3. Actions
 {{actions:
 - display: Add User
-  action: /restmachine/cloudbroker/user/create
-  input:
-  - username
-  - emailaddress
-  - password
-
+  action: "#user_create"
 
 - display: Add Account
   action: '#createaccount'
 }}
 
 {{createaccount}}
+{{user_create: noreload}}
 
 
 h3. External Portals
@@ -38,7 +34,7 @@ h3. Dashboard
 @col 3
 h5. No. of Active Accounts
 {{nraccountgauge: id:1 width:100 height:100}}
-@colend 
+@colend
 
 @col 3
 h5. No. of Running vMachines
@@ -50,7 +46,7 @@ h5. No. of Running vMachines
 h5. No. of Windows Running vMachines
 {{nrwinvmgauge: id:4 width:100 heigth:100}}^M
 @colend
-@rowend 
+@rowend
 
 h3. Locations
 

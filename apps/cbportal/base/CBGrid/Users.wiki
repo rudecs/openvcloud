@@ -2,4 +2,11 @@
 
 h2. Users
 
+{{actions:
+- display: Add User
+  action: '#user_create'
+
+}}
+
+{{user_create}}
 {{cbgrid.users}}
