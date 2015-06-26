@@ -1,0 +1,19 @@
+server {
+    listen 21001;
+
+	# Setting up cookie on first request
+	location ~ /ovcinit/(\d+).(\d+).(\d+).(\d+)/? {
+		add_header Set-Cookie "ovc_proxy_target=$1.$2.$3.$4;Path=/;
+		return 301 $scheme://$host;
+	}
+
+	# Forward to cookie value
+	location ~ ^/ {
+		if ($http_cookie ~* "ovc_proxy_target=(\d+).(\d+).(\d+).(\d+)(?:;|$)") {
+			proxy_pass   http://$1.$2.$3.$4$request_uri;
+			break;
+		}
+
+		return 404;
+	}
+}
