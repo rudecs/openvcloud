@@ -485,6 +485,14 @@ class LibvirtUtil(object):
         vmstor_snapshot_path = j.system.fs.joinPaths(self.basepath,'snapshots')
         return j.system.btrfs.subvolumeList(vmstor_snapshot_path)
 
-    def reset(self, node):
+    def reset(self, id):
+        if self.isCurrentStorageAction(id):
+            raise Exception("Can't reboot a locked machine")
         domain = self._get_domain(id)
-        return domain.reset() == 0
+        if domain:
+            if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+                domain.create()
+            else:
+                domain.reset()
+        else:
+            raise Exception("Machine is currently not running")
