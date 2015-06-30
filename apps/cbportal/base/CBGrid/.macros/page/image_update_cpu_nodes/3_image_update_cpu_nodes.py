@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
 
     options = list()
     for stack in ccl.stack.search({})[1:]:
-        available = image['id'] in stack['images']
+        available = image['id'] in stack.get('images', [])
         options.append((stack['name'], stack['id'], available))
 
     popup.addCheckboxes('Select Stacks', 'enabledStacks', options)
@@ -21,4 +21,3 @@ def main(j, args, params, tags, tasklet):
     popup.write_html(page)
 
     return params
-
