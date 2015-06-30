@@ -9,4 +9,4 @@ h2. Users
 }}
 
 {{user_create}}
-{{cbgrid.users}}
+{{users: userdetails:/CBgrid/user?id}}
