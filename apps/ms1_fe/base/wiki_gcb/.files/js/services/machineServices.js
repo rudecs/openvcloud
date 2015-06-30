@@ -15,7 +15,7 @@ angular.module('cloudscalers.services')
                     function(result) {
                         machine.status = machineStates['start'];
                         return result.data;
-                    }, 
+                    },
                     function(reason){
                         return $q.reject(reason);
                     });
@@ -33,6 +33,17 @@ angular.module('cloudscalers.services')
             },
             reboot: function(machine) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/reboot?machineId=' + machine.id;
+                return $http.get(url).then(
+                    function(result) {
+                        machine.status = machineStates['start'];
+                        return result.data;
+                    },
+                    function(reason) {
+                        return $q.reject(reason);
+                    });
+            },
+            reset: function(machine) {
+                var url = cloudspaceconfig.apibaseurl + '/machines/reset?machineId=' + machine.id;
                 return $http.get(url).then(
                     function(result) {
                         machine.status = machineStates['start'];
@@ -66,7 +77,7 @@ angular.module('cloudscalers.services')
             },
             create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + encodeURIComponent(name) + 
+                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + encodeURIComponent(name) +
                     '&description=' + encodeURIComponent(description) + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 return $http.get(url).then(
@@ -80,7 +91,7 @@ angular.module('cloudscalers.services')
             },
             updateDescription: function (id, newdescription) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + encodeURIComponent(id) + '&description=' + 
+                url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + encodeURIComponent(id) + '&description=' +
                 encodeURIComponent(newdescription);
                 return $http.get(url).then(
                         function (result) {
@@ -124,7 +135,7 @@ angular.module('cloudscalers.services')
             },
             list: function (cloudspaceid) {
                 url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
-                
+
                 return $http.get(url).then(function(result) {
                     _.each(result.data, function (machine) {
                         if(machine.status === 'SUSPENDED'){
@@ -132,7 +143,7 @@ angular.module('cloudscalers.services')
                         }
                     });
                     return result.data;
-                    
+
                 }, function(reason) {
                     return $q.reject(reason);
                 });
@@ -218,9 +229,9 @@ angular.module('cloudscalers.services')
             },
             deleteTemplate: function(templateIndex) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)
-                    .then(function(result) { 
+                    .then(function(result) {
                         return result.data; },
-                          function(reason) { 
+                          function(reason) {
                             return $q.reject(reason); });
             },
             addUser: function(machineId, user, accessType) {
@@ -240,7 +251,7 @@ angular.module('cloudscalers.services')
                 var accessRights = [{
                   name: 'Read',
                   value: 'R'
-                }, 
+                },
                 {
                   name: 'Read/Write',
                   value: 'CRX'

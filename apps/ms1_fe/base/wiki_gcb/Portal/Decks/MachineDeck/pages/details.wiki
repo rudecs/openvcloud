@@ -115,6 +115,12 @@ h1. Manage Machine
                                     Reboot
                                 </a>
                             </li>
+                            <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
+                                <a ng-click="reset()">
+                                    <i class="fa fa-repeat "></i>
+                                    Reset
+                                </a>
+                            </li>
                             <li ng-show="currentUserAccess != 'Read'">
                                 <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                     <i class="fa fa-camera"></i>
@@ -223,7 +229,7 @@ h1. Manage Machine
           <tab id="console" heading="Console" active="tabactive.console">
             <div id="console" class="tab-pane" ng-controller="ConsoleController">
                 <div ng-model="machineConsoleUrlResult">
-                    <em class="block" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen, 
+                    <em class="block" ng-show="machine.status == 'RUNNING'">Click the console screen or use the control buttons below to get access to the screen. In case of a black screen,
                     hit any key to disable the screen saving mode of your virtual machine.</em>
                     <div class="error" ng-show="!!machineConsoleUrlResult.error">
                         The machine is not running.
@@ -232,7 +238,7 @@ h1. Manage Machine
                         <div class="span2 txt-verdana">
                             <h4 class="txt-15 txt-normal margin-bottom-none">IP Address</h4>
                             <p>
-                                {[machine.interfaces[0].ipAddress]}    
+                                {[machine.interfaces[0].ipAddress]}
                             </p>
                         </div>
 

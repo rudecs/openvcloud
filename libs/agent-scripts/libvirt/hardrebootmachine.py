@@ -18,7 +18,4 @@ queue = "hypervisor"
 def action(machineid):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    return connection.hard_reboot_node(machineid, soft=False)
-
-
-
+    return connection.reset(machineid, soft=False)

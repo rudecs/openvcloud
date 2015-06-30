@@ -36,7 +36,7 @@ angular.module('cloudscalers.controllers')
         }
 
         changeSelectedTab($routeParams.activeTab);
-        
+
         var retrieveMachineHistory = function() {
             $scope.machineHistory = {};
             Machine.getHistory($routeParams.machineId)
@@ -121,7 +121,7 @@ angular.module('cloudscalers.controllers')
             });
         }
         updatesnapshots();
-        
+
         var CreateSnapshotController = function ($scope, $modalInstance) {
 
             $scope.snapshotname= '';
@@ -354,6 +354,21 @@ angular.module('cloudscalers.controllers')
         $scope.reboot = function() {
             LoadingDialog.show('Rebooting');
             Machine.reboot($scope.machine).then(
+                function(result){
+                    LoadingDialog.hide();
+                    changeSelectedTab('console');
+                },
+                function(reason){
+                    LoadingDialog.hide();
+                    $alert(reason.data.backtrace);
+                }
+            );
+
+        };
+
+        $scope.reset = function() {
+            LoadingDialog.show('Reseting');
+            Machine.reset($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
