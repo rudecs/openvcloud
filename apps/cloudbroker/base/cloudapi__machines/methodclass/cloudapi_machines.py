@@ -376,7 +376,7 @@ class cloudapi_machines(BaseActor):
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
                 machine.nics[0].ipAddress = node.private_ips[0]
-            else: 
+            else:
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
                 try:
@@ -506,20 +506,14 @@ class cloudapi_machines(BaseActor):
     @audit()
     def rollbackSnapshot(self, machineId, epoch, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        modelmachine = self._getMachine(machineId)
-        if not modelmachine.status == enums.MachineStatus.HALTED:
-           ctx = kwargs['ctx']
-           ctx.start_response('409 Conflict', [])
-           return 'A snapshot can only be rolled back to a stopped Machine bucket'
+        machine = self.get(machineId)
+        if not machine['status'] == enums.MachineStatus.HALTED:
+            ctx = kwargs['ctx']
+            ctx.start_response('409 Conflict', [])
+            return 'A snapshot can only be rolled back to a stopped Machine'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
-        res =  provider.client.ex_rollback_snapshot(node, epoch)
-        if isinstance(res, str):
-             modelmachine.referenceId = res
-             modelmachine.status = enums.MachineStatus.RUNNING
-             self.models.vmachine.set(modelmachine)
-             return True
-        return res
+        return provider.client.ex_rollback_snapshot(node, epoch)
 
     @authenticator.auth(acl='C')
     @audit()
@@ -670,7 +664,7 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-    
+
     @authenticator.auth(acl='C')
     @audit()
     def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
