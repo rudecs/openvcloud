@@ -28,5 +28,5 @@ def action(machineid, timestamp):
         if snap['timestamp'] == str(timestamp):
             for diskguid, snapid in snap['snapshots'].iteritems():
                 VDiskController.delete_snapshot(diskguid, snapid)
+    vmachine.invalidate_dynamics(['snapshots'])
     return True
-
