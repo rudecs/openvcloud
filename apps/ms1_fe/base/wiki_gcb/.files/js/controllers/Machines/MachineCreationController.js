@@ -4,7 +4,7 @@ angular.module('cloudscalers.controllers')
             name: '',
             description: '',
             sizeId: '',
-            imageId: '',
+            imageId: String($scope.images[0].id),
             disksize: ''
         };
 

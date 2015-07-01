@@ -32,7 +32,7 @@
 .creditForm .nameField { width: 64%; }
 .creditForm .nameField h2 { max-width: 127px; }
 .mainButton { color: #fff; background-color: #345E79;/* padding: 10px 20px;*/ font-size: 16px; margin: 5px 10px 5px 0; }
-.mainButton:hover, .mainButton:active, .mainButton:focus, .mainButton:visited { background-color: #345E79 !important; outline-offset: -2px !important; color: #fff; outline: 0 !important;}
+.mainButton:hover, .mainButton:active, .mainButton:focus, .mainButton:visited { background-color: #345E79; outline-offset: -2px !important; color: #fff; outline: 0 !important;}
 #tabbable .tab-pane ul .mainButton:active { outline: 5px auto -webkit-focus-ring-color !important; outline-offset: -2px !important; }
 input:-webkit-autofill { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
 input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 50px white inset !important; -webkit-text-fill-color: #333; font-size: 19px !important; }
@@ -318,6 +318,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .storage-size-list { padding-left: 6%; }
 .machineWrap { clear: both; margin: 0 0 38px 0; }
 .controls2 { display: inline-block; width: 88%; float: left; }
+.osImage-btn { background-color: #DDDDDF; color: #77777b; }
+.osImage-btn.active { background-color: #345E79; color: #fff; }
 /* End of new machine page*/
 
 /* Machine Details Page */

@@ -9,7 +9,7 @@
         <div id="{[ type[0].replace(' ', '-') ]}" class="tab-pane" ng-repeat="type in groupedImages" ng-class="{active : $first}">
             <ul class="padding-left-none">
                 <button ng-repeat="image in type[1]"
-                    type="button" class="btn btn-selector btn-large mainButton" ng-model="machine.imageId" btn-radio="'{[ image.id ]}'">{[ image.name  ]}</button>
+                    type="button" class="btn btn-selector btn-large mainButton osImage-btn" ng-model="machine.imageId" btn-radio="'{[ image.id ]}'">{[ image.name  ]}</button>
             </ul>
         </div>
     </div>
