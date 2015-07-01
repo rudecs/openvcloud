@@ -318,7 +318,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .storage-size-list { padding-left: 6%; }
 .machineWrap { clear: both; margin: 0 0 38px 0; }
 .controls2 { display: inline-block; width: 88%; float: left; }
-.osImage-btn { background-color: #DDDDDF; color: #77777b; }
+.osImage-btn { background-color: #DDDDDF; color: #77777b; border: rgb(194, 194, 194) 1px solid;}
 .osImage-btn.active { background-color: #345E79; color: #fff; }
 /* End of new machine page*/
 
