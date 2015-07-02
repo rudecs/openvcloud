@@ -384,8 +384,7 @@ class LibvirtUtil(object):
 
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)
-        pool.createXML(diskxml, 0)
-        return True
+        return pool.createXML(diskxml, 0)
 
     def _getSnapshotDisks(self, id, name):
         domain = self._get_domain(id)

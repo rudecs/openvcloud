@@ -83,10 +83,10 @@ class CloudBroker(object):
         return CloudProvider(stackId)
 
     def addDiskToMachine(self, machine, disk):
-        provider = self.getProvider(machine)
-        volume = provider.client.create_volume(disk.sizeMax, disk.name)
+        provider = self.getProviderByStackId(machine.stackId)
+        volume = provider.client.create_volume(disk.sizeMax, disk.id)
         disk.referenceId = volume.id
-        provider.client.attach_volume(machine.referenceId, volume)
+        provider.client.attach_volume(Dummy(id=machine.referenceId), volume)
         return True
 
     def getIdByReferenceId(self, objname, referenceId):

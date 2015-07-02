@@ -90,14 +90,28 @@ class cloudapi_machines(BaseActor):
         result int
 
         """
+        provider, node = self._getProviderAndNode(machineId)
+        try:
+            machine = self.get(machineId)
+            if not machine['status'] == enums.MachineStatus.HALTED:
+                ctx = kwargs['ctx']
+                ctx.start_response('409 Conflict', [('Content-Type', 'text/plain')])
+                return 'Can only add a disk to a stopped machine'
+        except:
+            pass  # machine does not exist atm
         machine = self._getMachine(machineId)
         disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
-        self.cb.addDiskToMachine(machine, disk)
         diskid = self.models.disk.set(disk)[0]
+        disk = self.models.disk.get(diskid)
+        try:
+            self.cb.addDiskToMachine(machine, disk)
+        except:
+            self.models.disk.delete(disk.id)
+            raise
         machine.disks.append(diskid)
         self.models.vmachine.set(machine)
         return diskid
@@ -267,10 +281,10 @@ class cloudapi_machines(BaseActor):
             #problem during creation of the machine on the node, we should create the node on a other machine
             stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
             if stack == -1:
-                  self.models.vmachine.delete(machine.id)
-                  ctx = kwargs['ctx']
-                  ctx.start_response('503 Service Unavailable', [])
-                  return 'Not enough resource available to provision the requested machine'
+                self.models.vmachine.delete(machine.id)
+                ctx = kwargs['ctx']
+                ctx.start_response('503 Service Unavailable', [])
+                return 'Not enough resource available to provision the requested machine'
             excludelist.append(stack['id'])
             provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)

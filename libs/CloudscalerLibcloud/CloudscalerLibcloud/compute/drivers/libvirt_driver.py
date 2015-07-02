@@ -1,20 +1,18 @@
-#Add extra specific cloudscaler functions for libvirt libcloud driver
+# Add extra specific cloudscaler functions for libvirt libcloud driver
 
 from CloudscalerLibcloud.utils import connection
-from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState
+from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, StorageVolume
 from jinja2 import Environment, PackageLoader
 from xml.etree import ElementTree
 import urlparse
 import json
 import uuid
 import os
-import crypt, random
-import time
-from JumpScale import j
+import crypt
+import random
 
 BASEPOOLPATH = '/mnt/vmstor/'
 IMAGEPOOL = '/mnt/vmstor/templates'
-
 
 
 class CSLibvirtNodeDriver():
@@ -36,7 +34,6 @@ class CSLibvirtNodeDriver():
         self.gid = gid
         self.name = 'libvirt'
         self.uri = uri
-
 
     env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
     backendconnection = connection.DummyConnection()
@@ -116,17 +113,48 @@ class CSLibvirtNodeDriver():
         else:
             return job
 
-
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
 
         pmachineip = self._get_connection_ip()
-        disksize = size.disk * (1000 ** 3) # from GB to bytes
+        disksize = size.disk * (1000 ** 3)  # from GB to bytes
         return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, templateguid=templateguid, pmachineip=pmachineip)
+
+    def create_volume(self, size, name):
+        bytesize = size * (1000 ** 3)
+        volumeid = self._execute_agent_job('createvolume', queue='hypervisor', name=name, size=bytesize)
+        return StorageVolume(id=volumeid, name=name, size=size, driver=self)
+
+    def attach_volume(self, node, volume):
+        def getNextDev(devices):
+            devid = 0
+
+            for target in devices.iterfind('disk/target'):
+                if target.attrib['bus'] != 'virtio':
+                    continue
+                dev = ord(target.attrib.get('dev', 'vda')[2:]) - ord('a')
+                if dev > devid:
+                    devid = dev
+            return 'vd%s' % chr(devid + 1 + ord('a'))
+
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        dev = getNextDev(devices)
+        disk = ElementTree.SubElement(devices, 'disk')
+        disk.attrib['type'] = 'block'
+        disk.attrib['device'] = 'disk'
+        ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'native'}
+        ElementTree.SubElement(disk, 'source').attrib = {'dev': volume.id}
+        ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
+        newxml = ElementTree.tostring(dom)
+        self._execute_agent_job('redefinemachine', queue='hypervisor', xml=newxml, domainid=node.id)
+        self._set_persistent_xml(node, newxml)
+        return True
 
     def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id+ '-' + disk_role + '.raw'
+        diskname = vm_id + '-' + disk_role + '.raw'
         diskbasevolume = clone_disk
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': size.disk})
@@ -146,7 +174,6 @@ class CSLibvirtNodeDriver():
             return ''.join([random.choice(salt_set) for c in salt])
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
-
 
     def create_node(self, name, size, image, location=None, auth=None, networkid=None):
         """
@@ -179,7 +206,7 @@ class CSLibvirtNodeDriver():
         metadata_iso = None
 
         if auth:
-            #At this moment we handle only NodeAuthPassword
+            # At this moment we handle only NodeAuthPassword
             password = auth.password
             if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
                 userdata = {'password': password, 'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True, 'chpasswd': {'expire': False }}
@@ -190,22 +217,22 @@ class CSLibvirtNodeDriver():
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
         diskname = self._create_disk(name, size, image)
         if not diskname or diskname == -1:
-            #not enough free capcity to create a disk on this node
+            # not enough free capcity to create a disk on this node
             return -1
         return self._create_node(name, diskname, size, metadata_iso, networkid)
 
     def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
         machinetemplate = self.env.get_template("machine.xml")
-        vxlan = '%04x' % networkid 
+        vxlan = '%04x' % networkid
         macaddress = self.backendconnection.getMacAddress(self.gid)
         POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
-        
+
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
 
         networkname = result['networkname']
-        
+
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
@@ -214,24 +241,16 @@ class CSLibvirtNodeDriver():
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
 
-
         # 0 means default behaviour, e.g machine is auto started.
-
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
         if not result or result == -1:
-            #Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
+            # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
                 self._execute_agent_job('deletevolume', queue='hypervisor', path=os.path.join(POOLPATH, diskname))
             return -1
 
         vmid = result['id']
-        #dnsmasq = DNSMasq()
-        #nsid = '%04d' % networkid
-        #namespace = 'ns-%s' % nsid
-        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
-        #dnsmasq.setConfigPath(nsid, config_path)
         self.backendconnection.registerMachine(vmid, macaddress, networkid)
-        #dnsmasq.addHost(macaddress, ipaddress,name)
         ipaddress = 'Undefined'
         node = self._from_agent_to_node(result, ipaddress)
         self._set_persistent_xml(node, result['XMLDesc'])
@@ -272,7 +291,7 @@ class CSLibvirtNodeDriver():
         for disk in disks:
             if disk.attrib['device'] == 'disk':
                 source = disk.find('source')
-                if source != None:
+                if source is not None:
                     if 'dev' in source.attrib:
                         diskfiles.append(source.attrib['dev'])
                     if 'file' in source.attrib:
@@ -285,17 +304,10 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        #dnsmasq = DNSMasq()
-        backendnode = self.backendconnection.getNode(node.id)
-        #nsid = '%04d' % backendnode['networkid']
-        #namespace = 'ns-%s' % nsid
-        #config_path = j.system.fs.joinPaths(j.dirs.varDir, 'vxlan',nsid)
-        #dnsmasq.setConfigPath(nsid, config_path)
-        #dnsmasq.removeHost(backendnode['macaddress'])
         self.backendconnection.unregisterMachine(node.id)
-        job = self._execute_agent_job('deletemachine',queue='hypervisor', machineid = node.id)
+        self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id)
         return True
-    
+
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
         id_ = self._rndrbn_vnc % len(urls)
@@ -337,7 +349,7 @@ class CSLibvirtNodeDriver():
     def ex_unpause_node(self, node):
         machineid = node.id
         return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid = machineid)
-    
+
 
     def ex_soft_reboot_node(self, node):
         machineid = node.id
@@ -352,12 +364,12 @@ class CSLibvirtNodeDriver():
         backendnode = self.backendconnection.getNode(node.id)
         networkid = backendnode['networkid']
         xml = self._get_persistent_xml(node)
-        machineid = node.id 
+        machineid = node.id
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
-        return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)    
- 
+        return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)
+
     def ex_get_console_output(self, node):
         domain = self._get_domain_for_node(node=node)
         xml = ElementTree.fromstring(domain['XMLDesc'])
@@ -416,11 +428,9 @@ class CSLibvirtNodeDriver():
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)
         return node
-    
+
     def ex_snapshots_can_be_deleted_while_running(self):
         """
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
-
-
