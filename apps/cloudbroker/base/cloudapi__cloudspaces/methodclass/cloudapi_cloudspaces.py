@@ -27,7 +27,7 @@ class cloudapi_cloudspaces(BaseActor):
         self.network = network.Network(self.models)
         self._accountbilling = accountbilling.account()
         self._pricing = pricing.pricing()
-        self._minimum_days_of_credit_required = float(self.hrd.get("instance.mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
+        self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
 
     @authenticator.auth(acl='U')
     @audit()
@@ -356,7 +356,7 @@ class cloudapi_cloudspaces(BaseActor):
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)
-        location = self.hrd.get('instance.mothership1.cloudbroker.defense_proxy')                    
+        location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')                    
 
 
         url = 'https://%s.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)

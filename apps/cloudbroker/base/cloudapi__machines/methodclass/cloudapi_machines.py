@@ -20,7 +20,7 @@ class cloudapi_machines(BaseActor):
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
-        self._minimum_days_of_credit_required = float(self.hrd.get("instance.mothership1.cloudbroker.creditcheck.daysofcreditrequired"))
+        self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):

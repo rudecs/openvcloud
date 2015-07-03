@@ -13,11 +13,11 @@ class cloudapi_paypal(BaseActor):
     """
     def __init__(self):
         super(cloudapi_paypal, self).__init__()
-        self.paypal_user = self.hrd.get('instance.mothership1.cloudbroker.paypal.apiuser')
-        self.paypal_secret = self.hrd.get('instance.mothership1.cloudbroker.paypal.apisecret')
+        self.paypal_user = self.hrd.get('instance.openvcloud.cloudbroker.paypal.apiuser')
+        self.paypal_secret = self.hrd.get('instance.openvcloud.cloudbroker.paypal.apisecret')
 
         self.paypal_url = 'https://api.sandbox.paypal.com'
-        usesandbox = self.hrd.get('instance.mothership1.cloudbroker.paypal.sandbox')
+        usesandbox = self.hrd.get('instance.openvcloud.cloudbroker.paypal.sandbox')
         if usesandbox is not '1':
             self.paypal_url = 'https://api.paypal.com'
         else:
