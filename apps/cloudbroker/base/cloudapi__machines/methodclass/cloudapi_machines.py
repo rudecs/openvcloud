@@ -4,9 +4,32 @@ from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
 import string, time
 from random import choice
-from libcloud.compute.base import NodeAuthPassword
+from libcloud.compute.base import NodeAuthPassword, StorageVolume
 from billingenginelib import pricing
 from billingenginelib import account as accountbilling
+
+
+class RequireState(object):
+    def __init__(self, state, msg):
+        self.state = state
+        self.msg = msg
+
+    def __call__(self, func):
+        def wrapper(s, **kwargs):
+            ctx = kwargs['ctx']
+            machineId = int(kwargs['machineId'])
+            if not s.models.vmachine.exists(machineId):
+                ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
+                return "Machine with id %s was not found" % machineId
+
+            machine = s.get(machineId)
+            if not machine['status'] == self.state:
+                ctx.start_response('409 Conflict', [('Content-Type', 'text/plain')])
+                return self.msg
+            return func(s, **kwargs)
+
+        return wrapper
+
 
 class cloudapi_machines(BaseActor):
     """
@@ -79,6 +102,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'Can only add a disk to a stopped machine')
     def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
         """
         Add a disk to a machine
@@ -90,31 +114,82 @@ class cloudapi_machines(BaseActor):
         result int
 
         """
-        provider, node = self._getProviderAndNode(machineId)
-        try:
-            machine = self.get(machineId)
-            if not machine['status'] == enums.MachineStatus.HALTED:
-                ctx = kwargs['ctx']
-                ctx.start_response('409 Conflict', [('Content-Type', 'text/plain')])
-                return 'Can only add a disk to a stopped machine'
-        except:
-            pass  # machine does not exist atm
         machine = self._getMachine(machineId)
         disk = self.models.disk.new()
         disk.name = diskName
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
+        disk.stackId = machine.stackId
         diskid = self.models.disk.set(disk)[0]
         disk = self.models.disk.get(diskid)
         try:
-            self.cb.addDiskToMachine(machine, disk)
+            provider, node = self._getProviderAndNode(machineId)
+            volume = provider.client.create_volume(disk.sizeMax, disk.id)
+            disk.referenceId = volume.id
+            try:
+                provider.client.attach_volume(node, volume)
+            except:
+                provider.client.destroy_volume(volume)
+                raise
         except:
             self.models.disk.delete(disk.id)
             raise
         machine.disks.append(diskid)
+        self.models.disk.set(disk)
         self.models.vmachine.set(machine)
         return diskid
+
+    @authenticator.auth(acl='D')
+    @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'Can only detach a disk from a stopped machine')
+    def detachDisk(self, machineId, diskId, **kwargs):
+        diskId = int(diskId)
+        machine = self._getMachine(machineId)
+        if diskId not in machine.disks:
+            return True
+        provider, node = self._getProviderAndNode(machineId)
+        disk = self.models.disk.get(int(diskId))
+        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        provider.client.detach_volume(volume)
+        machine.disks.remove(diskId)
+        self.models.vmachine.set(machine)
+        return True
+
+    @authenticator.auth(acl='D')
+    @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'Can only attch a disk to a stopped machine')
+    def attachDisk(self, machineId, diskId, **kwargs):
+        diskId = int(diskId)
+        machine = self._getMachine(machineId)
+        if diskId in machine.disks:
+            return True
+        provider, node = self._getProviderAndNode(machineId)
+        disk = self.models.disk.get(int(diskId))
+        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        provider.client.attach_volume(node, volume)
+        machine.disks.append(diskId)
+        self.models.vmachine.set(machine)
+        return True
+
+    @authenticator.auth(acl='D')
+    @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'Can only delete a disk from a stopped machine')
+    def delDisk(self, machineId, diskId, **kwargs):
+        """
+        Delete a disk from machine
+        param:machineId id of machine
+        param:diskId id of disk to delete
+        result bool
+
+        """
+        machine = self._getMachine(machineId)
+        diskfound = diskId in machine.disks
+        if diskfound:
+            machine.disks.remove(diskId)
+            self.models.vmachine.set(machine)
+            self.models.disk.delete(diskId)
+        return diskfound
 
     @authenticator.auth(acl='C')
     @audit()
@@ -306,29 +381,17 @@ class cloudapi_machines(BaseActor):
             nic.ipAddress = ipaddress
         self.models.vmachine.set(machine)
 
+        for diskid in machine.disks:
+            disk = self.models.disk.get(diskid)
+            disk.stackId = stackId
+            self.models.disk.set(disk)
+
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         providerstacks = set(cloudspace.resourceProviderStacks)
         providerstacks.add(stackId)
         cloudspace.resourceProviderStacks = list(providerstacks)
         self.models.cloudspace.set(cloudspace)
 
-    @authenticator.auth(acl='D')
-    @audit()
-    def delDisk(self, machineId, diskId, **kwargs):
-        """
-        Delete a disk from machine
-        param:machineId id of machine
-        param:diskId id of disk to delete
-        result bool
-
-        """
-        machine = self._getMachine(machineId)
-        diskfound = diskId in machine.disks
-        if diskfound:
-            machine.disks.remove(diskId)
-            self.models.vmachine.set(machine)
-            self.models.disk.delete(diskId)
-        return diskfound
 
     @authenticator.auth(acl='D')
     @audit()
@@ -518,13 +581,9 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'A snapshot can only be rolled back to a stopped Machine')
     def rollbackSnapshot(self, machineId, epoch, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
-        machine = self.get(machineId)
-        if not machine['status'] == enums.MachineStatus.HALTED:
-            ctx = kwargs['ctx']
-            ctx.start_response('409 Conflict', [])
-            return 'A snapshot can only be rolled back to a stopped Machine'
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_rollback_snapshot(node, epoch)
@@ -571,6 +630,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
+    @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped machine bucket')
     def clone(self, machineId, name, **kwargs):
         """
         clone a machine
@@ -580,10 +640,6 @@ class cloudapi_machines(BaseActor):
 
         """
         machine = self._getMachine(machineId)
-        if not machine.status == enums.MachineStatus.HALTED:
-            ctx = kwargs['ctx']
-            ctx.start_response('409 Conflict', [])
-            return 'A clone can only be taken from a stopped machine bucket'
         if machine.clone or machine.cloneReference:
             ctx = kwargs['ctx']
             ctx.start_response('405 Method not Allowed', [])

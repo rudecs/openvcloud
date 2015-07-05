@@ -1,29 +1,29 @@
 [actor] @dbtype:mem,osis
     """
     API Actor api, this actor is the final api a enduser uses to manage his resources
-    """    
+    """
 
     method:create
         """
         Create a machine based on the available sizes, in a certain space.
-        The user needs write access rights on the space.    
+        The user needs write access rights on the space.
         """
         var:cloudspaceId int,,id of space in which we want to create a machine
         var:name str,,name of machine
-        var:description str,,optional description @tags: optional 
+        var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
-        result:bool    
+        result:bool
 
 
     method:list
         """
         List the deployed machines in a space. Filtering based on status is possible.
         """
-        var:cloudspaceId int,,id of space in which machine exists @tags: optional 
-        var:type str,,when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT) @tags: optional 
-        result:list 
+        var:cloudspaceId int,,id of space in which machine exists @tags: optional
+        var:type str,,when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT) @tags: optional
+        result:list
 
     method:get
         """
@@ -104,13 +104,28 @@
         result:int
 
     method:delDisk
-        """     
+        """
         Delete a disk from machine
         """
-        var:machineId int,, id of machine       
+        var:machineId int,, id of machine
         var:diskId int,,id of disk to delete
-        result:bool    
+        result:bool
 
+    method:attachDisk
+        """
+        Attach a disk to a machine
+        """
+        var:machineId int,, id of machine
+        var:diskId int,,id of disk to attach
+        result:bool
+
+    method:detachDisk
+        """
+        Detach a disk to a machine
+        """
+        var:machineId int,, id of machine
+        var:diskId int,,id of disk to detach
+        result:bool
 
     method:snapshot
         """
@@ -124,7 +139,7 @@
         List the snapshot of a machine
         """
         var:machineId int,, id of the machine
-        result:list 
+        result:list
 
 
     method:deleteSnapshot
@@ -150,7 +165,7 @@
         """
         var:machineId int,, id of the machine
         var:templatename str,, name of the template
-        var:basename str,, Snapshot id on which the template is based @tags: optional 
+        var:basename str,, Snapshot id on which the template is based @tags: optional
         result:str
 
 
@@ -160,10 +175,10 @@
         """
         var:name str,,name of the new machine
         var:cloudspaceId int,, id of the cloudspace
-        var:vmexportId int,, id of the export 
+        var:vmexportId int,, id of the export
         var:sizeId int,,id of the specific size
-        var:description str,,optional description @tags: optional 
-        var:aws_access_key str,,s3 access key  
+        var:description str,,optional description @tags: optional
+        var:aws_access_key str,,s3 access key
         var:aws_secret_key str,,s3 secret key
         result:jobid
 
@@ -175,7 +190,7 @@
         var:machineId int,, id of the machine to backup
         var:name str,, Usefull name for this backup
         var:host str,, host to export(if s3)
-        var:aws_access_key str,,s3 access key 
+        var:aws_access_key str,,s3 access key
         var:aws_secret_key str,,s3 secret key
         var:bucket str,,s3 bucket name
         result:jobid
@@ -184,15 +199,15 @@
         """
         get url to connect to console
         """
-        var:machineId str,, id of machine to connect to console 
-        result:str #returns one time url used to connect ot console 
+        var:machineId str,, id of machine to connect to console
+        result:str #returns one time url used to connect ot console
 
     method:clone
         """
         clone machine
         """
         var:machineId str,,id of machine to clone
-        var:name str,, name of cloned machine 
+        var:name str,, name of cloned machine
         result:int #returns id of new machine cloned
 
     method:getHistory
