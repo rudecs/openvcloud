@@ -4,7 +4,7 @@ angular.module('cloudscalers.controllers')
             name: '',
             description: '',
             sizeId: '',
-            imageId: String($scope.images[0].id),
+            imageId: '',
             disksize: ''
         };
 
@@ -12,7 +12,10 @@ angular.module('cloudscalers.controllers')
         $scope.groupedImages = [];
 
         $scope.$watch('images', function() {
-            _.extend($scope.groupedImages, _.pairs(_.groupBy($scope.images, function(img) { return img.type; })));
+            if($scope.images){
+                $scope.machine.imageId = String($scope.images[0].id);
+                _.extend($scope.groupedImages, _.pairs(_.groupBy($scope.images, function(img) { return img.type; })));
+            }
         }, true);
 
         $scope.$watch('sizes', function() {
