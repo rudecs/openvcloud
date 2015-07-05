@@ -115,30 +115,17 @@ class cloudapi_machines(BaseActor):
 
         """
         machine = self._getMachine(machineId)
-        disk = self.models.disk.new()
-        disk.name = diskName
-        disk.descr = description
-        disk.sizeMax = size
-        disk.type = type
-        disk.stackId = machine.stackId
-        diskid = self.models.disk.set(disk)[0]
-        disk = self.models.disk.get(diskid)
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
+                                    name=diskname, description=description, size=size, type=type, **kwargs)
+        provider, node = self._getProviderAndNode(machineId)
         try:
-            provider, node = self._getProviderAndNode(machineId)
-            volume = provider.client.create_volume(disk.sizeMax, disk.id)
-            disk.referenceId = volume.id
-            try:
-                provider.client.attach_volume(node, volume)
-            except:
-                provider.client.destroy_volume(volume)
-                raise
+            provider.client.attach_volume(node, volume)
         except:
-            self.models.disk.delete(disk.id)
             raise
-        machine.disks.append(diskid)
-        self.models.disk.set(disk)
+        machine.disks.append(disk.id)
         self.models.vmachine.set(machine)
-        return diskid
+        return disk.id
 
     @authenticator.auth(acl='D')
     @audit()
@@ -150,7 +137,7 @@ class cloudapi_machines(BaseActor):
             return True
         provider, node = self._getProviderAndNode(machineId)
         disk = self.models.disk.get(int(diskId))
-        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.detach_volume(volume)
         machine.disks.remove(diskId)
         self.models.vmachine.set(machine)
@@ -166,30 +153,11 @@ class cloudapi_machines(BaseActor):
             return True
         provider, node = self._getProviderAndNode(machineId)
         disk = self.models.disk.get(int(diskId))
-        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
         self.models.vmachine.set(machine)
         return True
-
-    @authenticator.auth(acl='D')
-    @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only delete a disk from a stopped machine')
-    def delDisk(self, machineId, diskId, **kwargs):
-        """
-        Delete a disk from machine
-        param:machineId id of machine
-        param:diskId id of disk to delete
-        result bool
-
-        """
-        machine = self._getMachine(machineId)
-        diskfound = diskId in machine.disks
-        if diskfound:
-            machine.disks.remove(diskId)
-            self.models.vmachine.set(machine)
-            self.models.disk.delete(diskId)
-        return diskfound
 
     @authenticator.auth(acl='C')
     @audit()
