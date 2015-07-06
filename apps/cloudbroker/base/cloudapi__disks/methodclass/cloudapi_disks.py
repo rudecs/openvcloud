@@ -1,8 +1,9 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-from libcloud.compute.base import NodeAuthPassword, StorageVolume
+from libcloud.compute.base import StorageVolume
 from billingenginelib import pricing
 from billingenginelib import account as accountbilling
 
@@ -65,10 +66,8 @@ class cloudapi_disks(BaseActor):
     @authenticator.auth(acl='R')
     @audit()
     def get(self, diskId, **kwargs):
-        ctx = kwargs['ctx']
         if not self.models.disk.exists(diskId):
-            ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
-            return 'Can not find disk with id %s' % diskId
+            raise exceptions.NotFound('Can not find disk with id %s' % diskId)
         return self.models.disk.get(diskId).dump()
 
     @authenticator.auth(acl='R')
@@ -89,18 +88,14 @@ class cloudapi_disks(BaseActor):
         result bool
 
         """
-        ctx = kwargs['ctx']
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
         machines = self.models.vmachine.search({'disks': diskId})[1:]
         if machines and not dettach:
-            ctx.start_response('409 Conflict', [('Content-Type', 'text/plain')])
-            return 'Can not delete disk which is attached'
+            raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:
-            res = j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
-            if ctx.response_started:
-                return res
+            j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
         provider.client.destroy_volume(volume)

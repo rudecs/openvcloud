@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, network
 from billingenginelib import account as accountbilling
 from billingenginelib import pricing
@@ -42,18 +43,15 @@ class cloudapi_cloudspaces(BaseActor):
 
         """
         cloudspaceId = int(cloudspaceId)
-        ctx = kwargs['ctx']
         if not j.core.portal.active.auth.userExists(userId):
-            ctx.start_response('404 Not Found', [])
-            return 'Unexisting user'
+            raise exceptions.NotFound('Unexisting user')
         else:
             cloudspace = self.models.cloudspace.get(cloudspaceId)
             cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
             if userId in cloudspace_acl:
                 if set(accesstype).issubset(cloudspace_acl[userId]['right']):
                     # user already has same or higher access level
-                    ctx.start_response('412 Precondition Failed', [])
-                    return 'User already has a higher access level'
+                    raise exceptions.PreconditionFailed('User already has a higher access level')
                 else:
                     # grant higher access level
                     for ace in cloudspace.acl:
@@ -104,26 +102,20 @@ class cloudapi_cloudspaces(BaseActor):
         accountId = int(accountId)
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
-            ctx = kwargs['ctx']
-            ctx.start_response('400 Bad Request', [])
-            return 'Location %s does not exists' % location
+            raise exceptions.BadRequest('Location %s does not exists' % location)
         location = locations[0]
-       
 
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
         if (len(active_cloudspaces) > 0):
-            ctx = kwargs['ctx']
             if (not self._accountbilling.isPayingCustomer(accountId)):
-               ctx.start_response('409 Conflict', [])
-               return 'Creating an extra cloudspace is only available if you made at least 1 payment'
- 
+                raise exceptions.Conflict('Creating an extra cloudspace is only available if you made at least 1 payment')
+
             available_credit = self._accountbilling.getCreditBalance(accountId)
             burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
             new_burnrate = burnrate + self._pricing.get_cloudspace_price_per_hour()
             if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
-                ctx.start_response('409 Conflict', [])
-                return 'Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required
+                raise exceptions.Conflict('Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
 
         cs = self.models.cloudspace.new()
         cs.name = name
@@ -203,14 +195,12 @@ class cloudapi_cloudspaces(BaseActor):
         param:cloudspaceId id of the cloudspace
         result bool,
         """
-        ctx = kwargs['ctx']
         cloudspaceId = int(cloudspaceId)
-        #A cloudspace may not contain any resources any more
+        # A cloudspace may not contain any resources any more
         query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
         results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
-            ctx.start_response('409 Conflict', [])
-            return 'In order to delete a CloudSpace it can not contain Machines.'
+            raise exceptions.Conflict('In order to delete a CloudSpace it can not contain Machines.')
         #The last cloudspace in a space may not be deleted
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         query  = {'accountId': cloudspace.accountId,
@@ -218,8 +208,7 @@ class cloudapi_cloudspaces(BaseActor):
                   'id': {'$ne': cloudspaceId}}
         results = self.models.cloudspace.search(query)[1:]
         if len(results) == 0:
-            ctx.start_response('409 Conflict', [])
-            return 'The last CloudSpace of an account can not be deleted.'
+            raise exceptions.Conflict('The last CloudSpace of an account can not be deleted.')
 
         cloudspace.status = "DESTROYING"
         self.models.cloudspace.set(cloudspace)
@@ -303,8 +292,8 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId','acl','publicipaddress','location']
-        q = {"accountId": {"$nin": disabled}, 
-             "$or": [{"acl.userGroupId": user}, 
+        q = {"accountId": {"$nin": disabled},
+             "$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)} }],
              "status": {"$ne": "DESTROYED"}}
         query = {'$query': q, '$fields': fields}
@@ -345,18 +334,16 @@ class cloudapi_cloudspaces(BaseActor):
         Get information about the defense shield
         param:cloudspaceId id of the cloudspace
         """
-        ctx = kwargs['ctx']
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if len(fw) == 0:
-            ctx.start_response('404 Not Found', [])
-            return 'Incorrect cloudspace or there is no corresponding gateway'
+            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)
-        location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')                    
+        location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')
 
 
         url = 'https://%s.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
