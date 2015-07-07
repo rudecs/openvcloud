@@ -7,6 +7,7 @@ build: ssh-key
 run:
 	docker run -itd --name oauth \
 		-v ${HOME}/dockerfs/oauth:/root/go \
+		-p 11080:8080 \
 		oauth
 
 enter:
