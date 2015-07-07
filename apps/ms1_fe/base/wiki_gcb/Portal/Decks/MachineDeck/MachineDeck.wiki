@@ -10,7 +10,6 @@
     <script src="/$$space/.files/js/services/machineServices.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/services/others.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Machines/MachineController.js" type="text/javascript"></script>
-    <script src="/$$space/.files/js/controllers/Machines/MachineListController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Machines/MachineEditController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Machines/MachineCreationController.js" type="text/javascript"></script>
     <script src="/$$space/.files/js/controllers/Machines/MachinePricingController.js" type="text/javascript"></script>

@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', 'ipCookie', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location, ipCookie) {
+    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', 'ipCookie', '$ErrorResponseAlert', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location, ipCookie, $ErrorResponseAlert) {
 
 
         var portal_session_cookie = ipCookie("beaker.session.id");
@@ -48,6 +48,8 @@ angular.module('cloudscalers.controllers')
             return CloudSpace.list().then(function(cloudspaces){
                 $scope.cloudspaces = cloudspaces;
                 return cloudspaces;
+            }, function(reason){
+                $ErrorResponseAlert(reason);
             });
         };
 

@@ -5,8 +5,15 @@ angular.module('cloudscalers.services')
             list: function() {
             	 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list').then(
             			 function(result){
-            				 return result.data;
-            			 });
+                            if(result.data.length > 0){
+            				    return result.data;
+                            }else{
+                                var reason = {data: "Cloud spaces list is empty", status: 204}
+                                return $q.reject(reason);
+                            }
+            			 },function (reason) {
+                             return $q.reject(reason);
+                         });
             },
             current: function() {
                 return SessionData.getSpace();
