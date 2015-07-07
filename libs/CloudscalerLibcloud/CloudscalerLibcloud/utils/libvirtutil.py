@@ -117,7 +117,7 @@ class LibvirtUtil(object):
             pass
         if os.path.exists(poolpath):
             shutil.rmtree(poolpath)
-y        return True
+        return True
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
