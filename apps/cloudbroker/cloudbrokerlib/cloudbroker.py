@@ -83,11 +83,13 @@ class CloudBroker(object):
         return CloudProvider(stackId)
 
     def addDiskToMachine(self, machine, disk):
-        provider = self.getProviderByStackId(machine.stackId)
-        volume = provider.client.create_volume(disk.sizeMax, disk.id)
-        disk.referenceId = volume.id
-        provider.client.attach_volume(Dummy(id=machine.referenceId), volume)
         return True
+
+    def getProviderByGID(self, gid):
+        stacks = models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
+        if stacks:
+            return self.getProviderByStackId(stacks[0]['id'])
+        raise ValueError('No provider available on grid %s' % gid)
 
     def getIdByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)

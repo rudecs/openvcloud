@@ -1,10 +1,11 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
 import string, time
 from random import choice
-from libcloud.compute.base import NodeAuthPassword, StorageVolume
+from libcloud.compute.base import NodeAuthPassword
 from billingenginelib import pricing
 from billingenginelib import account as accountbilling
 
@@ -16,16 +17,13 @@ class RequireState(object):
 
     def __call__(self, func):
         def wrapper(s, **kwargs):
-            ctx = kwargs['ctx']
             machineId = int(kwargs['machineId'])
             if not s.models.vmachine.exists(machineId):
-                ctx.start_response('404 Not Found', [('Content-Type', 'text/plain')])
-                return "Machine with id %s was not found" % machineId
+                raise exceptions.NotFound("Machine with id %s was not found" % machineId)
 
             machine = s.get(machineId)
             if not machine['status'] == self.state:
-                ctx.start_response('409 Conflict', [('Content-Type', 'text/plain')])
-                return self.msg
+                raise exceptions.Conflict(self.msg)
             return func(s, **kwargs)
 
         return wrapper
@@ -115,30 +113,17 @@ class cloudapi_machines(BaseActor):
 
         """
         machine = self._getMachine(machineId)
-        disk = self.models.disk.new()
-        disk.name = diskName
-        disk.descr = description
-        disk.sizeMax = size
-        disk.type = type
-        disk.stackId = machine.stackId
-        diskid = self.models.disk.set(disk)[0]
-        disk = self.models.disk.get(diskid)
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
+                                    name=diskname, description=description, size=size, type=type, **kwargs)
+        provider, node = self._getProviderAndNode(machineId)
         try:
-            provider, node = self._getProviderAndNode(machineId)
-            volume = provider.client.create_volume(disk.sizeMax, disk.id)
-            disk.referenceId = volume.id
-            try:
-                provider.client.attach_volume(node, volume)
-            except:
-                provider.client.destroy_volume(volume)
-                raise
+            provider.client.attach_volume(node, volume)
         except:
-            self.models.disk.delete(disk.id)
             raise
-        machine.disks.append(diskid)
-        self.models.disk.set(disk)
+        machine.disks.append(disk.id)
         self.models.vmachine.set(machine)
-        return diskid
+        return disk.id
 
     @authenticator.auth(acl='D')
     @audit()
@@ -150,7 +135,7 @@ class cloudapi_machines(BaseActor):
             return True
         provider, node = self._getProviderAndNode(machineId)
         disk = self.models.disk.get(int(diskId))
-        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.detach_volume(volume)
         machine.disks.remove(diskId)
         self.models.vmachine.set(machine)
@@ -166,30 +151,11 @@ class cloudapi_machines(BaseActor):
             return True
         provider, node = self._getProviderAndNode(machineId)
         disk = self.models.disk.get(int(diskId))
-        volume = StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
         self.models.vmachine.set(machine)
         return True
-
-    @authenticator.auth(acl='D')
-    @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only delete a disk from a stopped machine')
-    def delDisk(self, machineId, diskId, **kwargs):
-        """
-        Delete a disk from machine
-        param:machineId id of machine
-        param:diskId id of disk to delete
-        result bool
-
-        """
-        machine = self._getMachine(machineId)
-        diskfound = diskId in machine.disks
-        if diskfound:
-            machine.disks.remove(diskId)
-            self.models.vmachine.set(machine)
-            self.models.disk.delete(diskId)
-        return diskfound
 
     @authenticator.auth(acl='C')
     @audit()
@@ -274,10 +240,8 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
-        ctx = kwargs['ctx']
         if not self._assertName(cloudspaceId, name, **kwargs):
-            ctx.start_response('409 Conflict', [])
-            return 'Selected name already exists'
+            raise exceptions.Conflict('Selected name already exists')
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
@@ -291,8 +255,7 @@ class cloudapi_machines(BaseActor):
         hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
         new_burnrate = burnrate + hourly_price_new_machine
         if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
-            ctx.start_response('409 Conflict', [])
-            return 'Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required
+            raise exceptions.Conflict('Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required)
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         #create a public ip and virtual firewall on the cloudspace if needed
@@ -339,9 +302,7 @@ class cloudapi_machines(BaseActor):
             stack = self.cb.getBestProvider(cloudspace.gid, imageId)
             if stack == -1:
                 self.models.vmachine.delete(machine.id)
-                ctx = kwargs['ctx']
-                ctx.start_response('503 Service Unavailable', [])
-                return 'Not enough resources available to provision the requested machine'
+                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
             image, pimage = provider.getImage(machine.imageId)
@@ -357,9 +318,7 @@ class cloudapi_machines(BaseActor):
             stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
             if stack == -1:
                 self.models.vmachine.delete(machine.id)
-                ctx = kwargs['ctx']
-                ctx.start_response('503 Service Unavailable', [])
-                return 'Not enough resource available to provision the requested machine'
+                raise exceptions.ServiceUnavailable('Not enough resource available to provision the requested machine')
             excludelist.append(stack['id'])
             provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
@@ -546,15 +505,12 @@ class cloudapi_machines(BaseActor):
         result int
         """
         provider, node = self._getProviderAndNode(machineId)
-        ctx = kwargs['ctx']
         snapshots = provider.client.ex_list_snapshots(node)
         if len(snapshots) > 5:
-            ctx.start_response('409 Conflict', [])
-            return 'Max 5 snapshots allowed'
+            raise exceptions.Conflict('Max 5 snapshots allowed')
         node = provider.client.ex_get_node_details(node.id)
         if node.extra.get('locked', False):
-            ctx.start_response('409 Conflict', [])
-            return 'Cannot create snapshot on a locked machine'
+            raise exceptions.Conflict('Cannot create snapshot on a locked machine')
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
@@ -641,14 +597,10 @@ class cloudapi_machines(BaseActor):
         """
         machine = self._getMachine(machineId)
         if machine.clone or machine.cloneReference:
-            ctx = kwargs['ctx']
-            ctx.start_response('405 Method not Allowed', [])
-            return 'This machine has already a clone or is a clone or has been cloned in the past'
+            raise exceptions.MethodNotAllowed('This machine has already a clone or is a clone or has been cloned in the past')
 
         if not self._assertName(machine.cloudspaceId, name, **kwargs):
-            ctx = kwargs['ctx']
-            ctx.start_response('409 Conflict', [])
-            return 'Selected name already exists'
+            raise exceptions.Conflict('Selected name already exists')
         clone = self.cb.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
         clone.name = name
@@ -701,18 +653,14 @@ class cloudapi_machines(BaseActor):
         param:aws_secret_key s3 secret key
         result jobid
         """
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
         system_cl = j.clients.osis.getNamespace('system')
         machine = self.models.vmachine.get(machineId)
         if not machine:
-            ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         stack = self.models.stack.get(machine.stackId)
-        storageparameters  = {}
+        storageparameters = {}
         if not aws_access_key or not aws_secret_key or not host:
-            ctx.start_response('400', headers)
-            return 'S3 parameters are not provided'
+            raise exceptions.BadRequest('S3 parameters are not provided')
         storageparameters['aws_access_key'] = aws_access_key
         storageparameters['aws_secret_key'] = aws_secret_key
         storageparameters['host'] = host
@@ -726,8 +674,7 @@ class cloudapi_machines(BaseActor):
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nodes = system_cl.node.search({'name':stack.referenceId})[:1]
         if len(nodes) != 1:
-            ctx.start_response('409', headers)
-            return 'Incorrect model structure'
+            raise exceptions.Conflict('Incorrect model structure')
         nid = nodes[0]['id']
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
@@ -748,12 +695,9 @@ class cloudapi_machines(BaseActor):
         param:aws_secret_key s3 secret key
         result jobid
         """
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
         vmexport = self.models.vmexport.get(vmexportId)
         if not vmexport:
-            ctx.start_response('400', headers)
-            return 'Export definition with id %s not found' % vmexportId
+            raise exceptions.NotFound('Export definition with id %s not found' % vmexportId)
         host = vmexport.server
         bucket = vmexport.bucket
         import_name = vmexport.name
@@ -762,8 +706,7 @@ class cloudapi_machines(BaseActor):
         storageparameters = {}
 
         if not aws_access_key or not aws_secret_key:
-            ctx.start_response('400', headers)
-            return 'S3 parameters are not provided'
+            raise exceptions.BadRequest('S3 parameters are not provided')
 
         storageparameters['aws_access_key'] = aws_access_key
         storageparameters['aws_secret_key'] = aws_secret_key
@@ -814,19 +757,15 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'),]
         if not j.core.portal.active.auth.userExists(userId):
-            ctx.start_response('404 Not Found', headers)
-            return False
+            raise exceptions.NotFound("User doest not exists")
         else:
             vmachine = self.models.vmachine.get(machineId)
             vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
             if userId in vmachine_acl:
                 if set(accessType).issubset(vmachine_acl[userId]['right']):
                     # user already has same or higher access level
-                    ctx.start_response('412 Precondition Failed', [])
-                    return 'User already has a higher access level'
+                    raise exceptions.PreconditionFailed('User already has a higher access level')
                 else:
                     # grant higher access level
                     for ace in vmachine.acl:

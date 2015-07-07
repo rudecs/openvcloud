@@ -144,7 +144,8 @@
     prop:realityDeviceNumber int,, Number a device gets after connect
     prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
     prop:type str,,(RAW,ISCSI)
-    prop:stackId int,,ID of the stack
+    prop:gid int,,ID of the grid
+    prop:accountId int,,ID of the account
     prop:acl dict(ACE),,access control list
     prop:role str,,role of disk (BOOT; DATA; TEMP)
     prop:order int,,order of the disk (as will be shown in OS)

@@ -5,7 +5,7 @@ from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 def _send_signup_mail(hrd, **kwargs):
-    notifysupport = hrd.get("instance.mothership1.cloudbroker.notifysupport")
+    notifysupport = hrd.get("instance.openvcloud.cloudbroker.notifysupport")
     fromaddr = 'support@mothership1.com'
     toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
@@ -145,7 +145,7 @@ class cloudbroker_account(BaseActor):
         ace.right = 'CXDRAU'
         accountid = self.models.account.set(account)[0]
 
-        signupcredit = self.hrd.getFloat('instance.mothership1.cloudbroker.signupcredit')
+        signupcredit = self.hrd.getFloat('instance.openvcloud.cloudbroker.signupcredit')
         creditcomment = 'Getting you started'
         if signupcredit > 0.0:
             credittransaction = self.models.credittransaction.new()

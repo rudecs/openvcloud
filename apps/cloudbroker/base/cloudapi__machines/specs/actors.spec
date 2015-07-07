@@ -103,14 +103,6 @@
         var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
         result:int
 
-    method:delDisk
-        """
-        Delete a disk from machine
-        """
-        var:machineId int,, id of machine
-        var:diskId int,,id of disk to delete
-        result:bool
-
     method:attachDisk
         """
         Attach a disk to a machine

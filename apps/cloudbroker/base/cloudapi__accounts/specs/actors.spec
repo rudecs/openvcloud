@@ -37,7 +37,7 @@
 	    Access rights can be 'R' or 'W'
 	    """
 	    var:accountId int,, id of the account
-	    var:userId int,, id of the user to give access
+	    var:userId str,, id of the user to give access
 	    var:accesstype str,, 'R' for read only access, 'W' for Write access
 	    result:bool 
 
@@ -46,7 +46,7 @@
 		Delete a user from the account
 		"""
 	    var:accountId int,, id of the account
-		var:userId int,, id of the user to remove
+		var:userId str,, id of the user to remove
 		result: bool
 
 	method:get

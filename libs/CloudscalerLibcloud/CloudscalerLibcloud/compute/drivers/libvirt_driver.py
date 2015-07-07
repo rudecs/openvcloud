@@ -154,12 +154,15 @@ class CSLibvirtNodeDriver():
         self._set_persistent_xml(node, xml)
         return True
 
+    def destroy_volume(self, volume):
+        return self._execute_agent_job('destroyvolume', queue='hypervisor', path=volume.id)
+
     def detach_volume(self, volume):
         node = volume.extra['node']
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
-        
+
         for disk in devices.iterfind('disk'):
             if disk.attrib['device'] != 'disk':
                 continue

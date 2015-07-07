@@ -26,7 +26,7 @@
     method:fw_delete @noauth
         """     
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
 
 
@@ -48,7 +48,7 @@
         """     
         will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
 
     method:fw_move @noauth
@@ -61,13 +61,13 @@
     method:fw_stop @noauth
         """     
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
 
     method:fw_start @noauth
         """     
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
         
     method:fw_forward_list @noauth
@@ -76,14 +76,14 @@
         is list of list [[$fwport,$destip,$destport]]
         1 port on source can be forwarded to more ports at back in which case the FW will do loadbalancing
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
         var:localip str,,vmachine local ip address to filter with @tags: optional
 
     method:fw_forward_create @noauth
         """     
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
         var:fwip str,,addr on fw which will be visible to extenal world
         var:fwport int,,port on fw which will be visble to external world
@@ -93,7 +93,7 @@
     method:fw_forward_delete @noauth
         """     
         """
-        var:fwid int,,firewall id
+        var:fwid str,,firewall id
         var:gid int,,grid id
         var:fwip str,,adr where we forward to e.g. a ssh server in DMZ
         var:fwport int,,port on fw which will be visble to external world
@@ -107,13 +107,13 @@
         is list of list [[$sourceurl,$desturl],..]
         can be 1 in which case its like simple forwarding, if more than 1 then is loadbalancing
         """
-        var:wsid int,,firewall id (is also the loadbalancing webserver)
+        var:wsid str,,firewall id (is also the loadbalancing webserver)
         var:gid int,,grid id
 
     method:ws_forward_create @noauth
         """     
         """
-        var:wsid int,,firewall id
+        var:wsid str,,firewall id
         var:gid int,,grid id
         var:sourceurl str,,url which will match (e.g. http://www.incubaid.com:80/test/)
         var:desturls str,,url which will be forwarded to (e.g. http://192.168.10.1/test/) can be more than 1 then loadbalancing; if only 1 then like a portforward but matching on url
@@ -121,7 +121,7 @@
     method:ws_forward_delete @noauth
         """     
         """
-        var:wsid int,,firewall id
+        var:wsid str,,firewall id
         var:gid int,,grid id
         var:sourceurl str,,url which will match (e.g. http://www.incubaid.com:80/test/)
         var:desturls str,,url which will be forwarded to
