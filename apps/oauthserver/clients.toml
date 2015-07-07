@@ -8,3 +8,8 @@ redirect_uri = "https://localhost:1543/callback"
 id = "ovs"
 secret = "WhateverSecretYouWant"
 redirect_uri = "https://localhost:1543/callback"
+
+[[clients]]
+id = "safekeeper"
+secret = "safekeeper_secret"
+redirect_uri = 'http://127.0.0.1:12080/login/authorized'
