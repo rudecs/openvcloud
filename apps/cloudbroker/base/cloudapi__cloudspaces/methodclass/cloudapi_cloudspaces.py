@@ -346,6 +346,6 @@ class cloudapi_cloudspaces(BaseActor):
         location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')
 
 
-        url = 'https://%s.%s/webfig' % ('-'.join(getIP(cloudspace.publicipaddress).split('.')),location)
+        url = 'https://%s/ovcinit/%s/' % (location,getIP(cloudspace.publicipaddress))
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
