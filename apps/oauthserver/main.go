@@ -179,6 +179,7 @@ func main() {
 
 			resp.Output["login"] = user.Login
 			resp.Output["name"] = user.Name
+			resp.Output["scopes"] = user.Scopes
 			if len(user.Email) > 0 {
 				resp.Output["email"] = user.Email[0]
 			}
