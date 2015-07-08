@@ -12,4 +12,5 @@ redirect_uri = "https://localhost:1543/callback"
 [[clients]]
 id = "safekeeper"
 secret = "safekeeper_secret"
+#redirect_uri = 'https://safekeeper.dev.rivine.io:12443/login/authorized'
 redirect_uri = 'http://127.0.0.1:12080/login/authorized'
