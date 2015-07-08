@@ -153,9 +153,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
         fwobj = self.osisvfw.get(fwid)
         rule = fwobj.new_tcpForwardRule()
         rule.fromAddr = fwip
-        rule.fromPort = fwport
+        rule.fromPort = str(fwport)
         rule.toAddr = destip
-        rule.toPort = destport
+        rule.toPort = str(destport)
         rule.protocol = protocol
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
         result = self._applyconfig(fwobj.gid, fwobj.nid, args)
@@ -172,6 +172,8 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
+        fwport = str(fwport)
+        destport = str(destport)
         fwobj = self.osisvfw.get(fwid)
         for rule in fwobj.tcpForwardRules:
             if rule.fromPort == fwport and rule.toAddr == destip and rule.toPort == destport and rule.fromAddr == fwip:
