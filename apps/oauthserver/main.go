@@ -152,7 +152,13 @@ func main() {
 			resp := osinServer.NewResponse()
 			defer resp.Close()
 
-			accesstoken, err := osinServer.Storage.LoadAccess(r.FormValue("access_token"))
+			token := osin.CheckBearerAuth(r)
+			if token == nil {
+				log.Println("No access token in request")
+				return //TODO return the proper errormessage
+			}
+
+			accesstoken, err := osinServer.Storage.LoadAccess(token.Code)
 			if err != nil {
 				log.Println("Invalid accesstoken")
 				return //TODO return the proper errormessage
