@@ -4,7 +4,7 @@ server {
 	# Setting up cookie on first request
 	location ~ /ovcinit/(\d+).(\d+).(\d+).(\d+)/? {
 		add_header Set-Cookie "ovc_proxy_target=$1.$2.$3.$4;Path=/";
-		return 301 $scheme://$host;
+		return 301 $scheme://$host/webfig;
 	}
 
 	# Forward to cookie value
