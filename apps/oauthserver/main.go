@@ -150,24 +150,31 @@ func main() {
 	http.Handle("/user", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			resp := osinServer.NewResponse()
+			defer osin.OutputJSON(resp, w, r)
 			defer resp.Close()
 
 			token := osin.CheckBearerAuth(r)
 			if token == nil {
 				log.Println("No access token in request")
-				return //TODO return the proper errormessage
+				resp.Output["error"] = "Authorization Required"
+				resp.StatusCode = 401
+				return
 			}
 
 			accesstoken, err := osinServer.Storage.LoadAccess(token.Code)
 			if err != nil {
 				log.Println("Invalid accesstoken")
-				return //TODO return the proper errormessage
+				resp.Output["error"] = "Bad Credentials"
+				resp.StatusCode = 401
+				return
 			}
 
 			user, err := userStore.Get(accesstoken.UserData.(userData).Login)
 			if err != nil {
 				log.Println("Unable to get user details", err)
-				return //TODO return the proper errormessage
+				resp.Output["error"] = "Internal Server Error"
+				resp.StatusCode = 500
+				return
 			}
 
 			resp.Output["login"] = user.Login
@@ -175,7 +182,6 @@ func main() {
 			if len(user.Email) > 0 {
 				resp.Output["email"] = user.Email[0]
 			}
-			osin.OutputJSON(resp, w, r)
 		})))
 
 	http.Handle("/logout", handlers.CombinedLoggingHandler(os.Stdout, http.HandlerFunc(
