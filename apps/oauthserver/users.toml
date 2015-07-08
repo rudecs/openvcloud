@@ -22,7 +22,8 @@ scopes = [
     "request_available",
     "lenoir2",
     "bracknell1",
-    "york1",
+    "york1:cpu03.york1.vscalers.com",
+    "york1:cpu04.york1.vscalers.com:ssh",
     "dco1",
 ]
 
