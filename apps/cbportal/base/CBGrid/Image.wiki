@@ -8,24 +8,24 @@ h3. Image: ${name}
   action: '#image_update_cpu_nodes'
 
 - display: Delete
-  input: 
+  input:
   - reason
   action: /restmachine/cloudbroker/image/delete
-  data: 
+  data:
    imageId: $$id
 
 - display: Enable
-  input: 
+  input:
   - reason
   action: /restmachine/cloudbroker/image/enable
-  data: 
+  data:
    imageId: $$id
 
 - display: Disable
-  input: 
+  input:
   - reason
   action: /restmachine/cloudbroker/image/disable
-  data: 
+  data:
    imageId: $$id
 }}
 
@@ -33,7 +33,8 @@ h3. Image: ${name}
 
 * *Type*: ${type}
 * *Size*: ${size}
-* *UNCPath*: ${uncpath}
+* *UNCPath*: ${UNCPath}
+* *Status*: ${status or "CREATED"}
 
 h4. Stacks which have this Image
 

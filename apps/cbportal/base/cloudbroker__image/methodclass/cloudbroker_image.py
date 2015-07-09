@@ -1,24 +1,23 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor
+
 
 class cloudbroker_image(BaseActor):
     def __init__(self):
         super(cloudbroker_image, self).__init__()
         self.libvirtcl = j.clients.osis.getNamespace('libvirt')
 
-    def _checkimage(self, imageId, ctx):
+    def _checkimage(self, imageId):
         cbimage = self.models.image.search({'referenceId': imageId})[1:]
         if not cbimage:
-            if ctx:
-                headers = [('Content-Type', 'application/json'), ]
-                ctx.start_response('400', headers)
-            return False, 'Image with id "%s" not found' % imageId, None
+            raise exceptions.BadRequest('Image with id "%s" not found' % imageId)
         cbimage = cbimage[0]
         libvirtimage = None
         if self.libvirtcl.image.exists(imageId):
             libvirtimage = self.libvirtcl.image.get(imageId)
-        return True, cbimage, libvirtimage
+        return cbimage, libvirtimage
 
     @auth(['level1', 'level2', 'level3'])
     def delete(self, imageId, **kwargs):
@@ -27,17 +26,13 @@ class cloudbroker_image(BaseActor):
         param:imageId id of image
         result bool
         """
-        ctx = kwargs.get('ctx')
-        check, result, libvirtimage = self._checkimage(imageId, ctx)
-        if check:
-            result['status'] = 'DESTROYED'
-            self.models.image.set(result)
-            if libvirtimage:
-                libvirtimage.status = 'DESTROYED'
-                self.libvirtcl.image.set(libvirtimage)
-            return True
-        return result
-
+        cbimage, libvirtimage = self._checkimage(imageId)
+        cbimage['status'] = 'DESTROYED'
+        self.models.image.set(cbimage)
+        if libvirtimage:
+            libvirtimage.status = 'DESTROYED'
+            self.libvirtcl.image.set(libvirtimage)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     def enable(self, imageId, **kwargs):
@@ -46,20 +41,17 @@ class cloudbroker_image(BaseActor):
         param:imageId id of image
         result bool
         """
-        ctx = kwargs.get('ctx')
-        check, result, libvirtimage = self._checkimage(imageId, ctx)
-        if check:
-            if not libvirtimage:
-                result['status'] = 'DESTROYED'
-                return self.models.image.set(result)
-            if libvirtimage.status == 'DISABLED':
-                result['status'] = 'CREATED'
-                libvirtimage.status = 'CREATED'
-                self.libvirtcl.image.set(libvirtimage)
-                return self.models.image.set(result)
-            else:
-                return 'Image was not DISABLED'
-        return result
+        cbimage, libvirtimage = self._checkimage(imageId)
+        if not libvirtimage:
+            cbimage['status'] = 'DESTROYED'
+            return self.models.image.set(cbimage)
+        if libvirtimage.status == 'DISABLED':
+            cbimage['status'] = 'CREATED'
+            libvirtimage.status = 'CREATED'
+            self.libvirtcl.image.set(libvirtimage)
+            return self.models.image.set(cbimage)
+        else:
+            return 'Image was not DISABLED'
 
     @auth(['level1', 'level2', 'level3'])
     def disable(self, imageId, **kwargs):
@@ -68,21 +60,17 @@ class cloudbroker_image(BaseActor):
         param:imageId id of image
         result bool
         """
-        ctx = kwargs.get('ctx')
-        check, result, libvirtimage = self._checkimage(imageId, ctx)
-        if check:
-            if not libvirtimage:
-                result.status = 'DESTROYED'
-                return self.models.image.set(result)
-            if libvirtimage.status == 'CREATED' or libvirtimage.status == '':
-                result['status'] = 'DISABLED'
-                libvirtimage.status = 'DISABLED'
-                self.libvirtcl.image.set(libvirtimage)
-                return self.models.image.set(result)
-            else:
-                return 'Image could not be DISABLED'
-        return result
-
+        cbimage, libvirtimage = self._checkimage(imageId)
+        if not libvirtimage:
+            cbimage['status'] = 'DESTROYED'
+            return self.models.image.set(cbimage)
+        if libvirtimage.status == 'CREATED' or libvirtimage.status == '':
+            cbimage['status'] = 'DISABLED'
+            libvirtimage.status = 'DISABLED'
+            self.libvirtcl.image.set(libvirtimage)
+            return self.models.image.set(cbimage)
+        else:
+            return 'Image could not be DISABLED'
 
     @auth(['level1', 'level2', 'level3'])
     def updateNodes(self, imageId, enabledStacks, **kwargs):
@@ -93,13 +81,10 @@ class cloudbroker_image(BaseActor):
             resourceid = '%(gid)s_%(referenceId)s' % stack
             return self.libvirtcl.resourceprovider.get(resourceid)
 
-        ctx = kwargs.get('ctx')
-        enabledStacks = [ int(x) for x in enabledStacks ]
+        enabledStacks = [int(x) for x in enabledStacks]
         images = self.models.image.search({'referenceId': referenceId})[1:]
         if not images:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Invalid Image"
+            raise exceptions.BadRequest("Image Unavailable, is it synced?")
         image = images[0]
         for stack in self.models.stack.search({'images': image['id']})[1:]:
             resourceprovider = getResource(stack)

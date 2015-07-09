@@ -6,21 +6,21 @@
         """
         delete image
         """
-        var:imageId int,,id of image to be deleted
+        var:imageId str,,id of image to be deleted
         result:bool
 
     method:enable
         """
         enable image
         """
-        var:imageId int,,id of image to be enabled
+        var:imageId str,,id of image to be enabled
         result:bool
 
     method:disable
         """
         disable image
         """
-        var:imageId int,,id of image to be disabled
+        var:imageId str,,id of image to be disabled
         result:bool
 
 
