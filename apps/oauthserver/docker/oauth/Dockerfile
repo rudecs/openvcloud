@@ -15,7 +15,7 @@ RUN chmod 0600 /root/.ssh/id_rsa
 RUN git config --global url."git@git.aydo.com:".insteadOf "https://git.aydo.com/"
 
 ENV GOPATH /root/go
-RUN echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc
+RUN echo 'export PATH=/usr/local/go/bin:$PATH' > ~/.bashrc
 
 RUN mkdir -p /root/.ssh/ && echo "" > /root/.ssh/known_hosts
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
@@ -23,4 +23,6 @@ RUN ssh-keyscan git.aydo.com >> /root/.ssh/known_hosts
 RUN cd && mkdir -p go
 
 ADD setup_oauth.sh /root/setup_oauth.sh
+ADD run.sh /root/run.sh
 
+CMD [ "/root/run.sh" ]
