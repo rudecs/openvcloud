@@ -21,6 +21,9 @@ def main(j, args, params, tags, tasklet):
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['imageId'] = images[0]['id']
+        else:
+            filters['imageId'] = imageid
+
     if gid:
         gid = int(gid)
         stacks = ccl.stack.simpleSearch({'gid':gid})

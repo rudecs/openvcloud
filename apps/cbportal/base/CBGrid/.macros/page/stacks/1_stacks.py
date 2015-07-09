@@ -14,6 +14,8 @@ def main(j, args, params, tags, tasklet):
         images = ccl.image.search({'referenceId': imageid})[1:]
         if images:
             filters['images'] = images[0]['id']
+        else:
+            filters['images'] = imageid
 
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)

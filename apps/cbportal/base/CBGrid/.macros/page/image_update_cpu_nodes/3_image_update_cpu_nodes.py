@@ -5,9 +5,10 @@ def main(j, args, params, tags, tasklet):
     referenceId = args.getTag('imageId')
     ccl = j.clients.osis.getNamespace('cloudbroker')
     images = ccl.image.search({'referenceId': referenceId})[1:]
-    if not images:
-        return params
-    image = images[0]
+    if images:
+        image = images[0]
+    else:
+        image = {'id': None}
 
     popup = Popup(id='image_update_cpu_nodes', header='Change CPU Nodes for Image', submit_url='/restmachine/cloudbroker/image/updateNodes')
 
