@@ -107,10 +107,15 @@ h3. Details
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*Status*|${status}|
 |*Location*|${location}|
-|*Access Control List*|${acl}|
 |*Description*|${descr}|
 |*Public IP Adress*|${publicipaddress}|
 |*Resource Limits*|${resourcelimits}|
+
+h3. Users Access
+||User Name||ACL||
+{% for ace in acl -%}
+    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}|
+{% endfor %}
 
 h3. Port Fowardings
 ||Source IP||Source Port||Destination IP||Destination Port||
