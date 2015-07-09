@@ -4,6 +4,7 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
 import string, time
+import itertools
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
 from billingenginelib import pricing
@@ -462,15 +463,12 @@ class cloudapi_machines(BaseActor):
         query = {'$query': q, '$fields': fields}
         results = self.models.vmachine.search(query)[1:]
         machines = []
+        alldisks = list(itertools.chain(*[m['disks'] for m in results]))
+        query = {'$query': {'id': {'$in': alldisks}}, '$fields': ['id', 'sizeMax']}
+        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query)[1:]}
         for res in results:
-            provider, node = self._getProviderAndNode(res['id'])
-            if node.state == 'DESTROYED':
-                continue
-            storage = self._getStorage(res)
-            if storage:
-                res['storage'] = storage.disk
-            else:
-                res['storage'] = 0
+            size = sum(disks.get(diskid, 0) for diskid in res['disks'])
+            res['storage'] = size
             machines.append(res)
         return machines
 
