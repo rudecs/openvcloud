@@ -19,13 +19,9 @@ h3. Actions
 {{user_create: noreload}}
 
 
-h3. External Portals
-
-{{portallinks}}
-
 h3. Monitoring
 
-* [Monitoring |/grid/checkstatus]
+[Monitoring |/grid/checkstatus]
 
 h3. Dashboard
 

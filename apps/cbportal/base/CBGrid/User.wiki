@@ -1,6 +1,6 @@
 @usedefault
 
-
+{{timestamp}}
 {{include:user space:system}}
 
 h3. OVC Actions
@@ -15,7 +15,7 @@ h3. OVC Actions
 
 h3. OVC Details
 |*Login to OVC*|[click me|${loginurl}]|
-|*Last Checked*|${lastcheck}|
+|*Last Checked*|{{div: class=jstimestamp|data-ts=${lastcheck}}}{{div}}|
 |*Active*|${active}|
 |*Description*|${description}|
 
