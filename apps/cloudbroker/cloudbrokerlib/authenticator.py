@@ -1,4 +1,5 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 from .cloudbroker import models
 
 
@@ -37,6 +38,7 @@ class auth(object):
     def getVMachineAcl(self, machineId):
         result = dict()
         machine = self.models.vmachine.get(machineId)
+
         for ace in machine.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U', canBeDeleted=True)
@@ -86,8 +88,7 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
             if account_status != 'CONFIRMED':
-              ctx.start_response('409 Conflict', [])
-              return 'Unconfirmed Account'
+                raise exceptions.Conflict('Unconfirmed Account')
             fullacl = set()
             if self.acl:
                 userobj = j.core.portal.active.auth.getUserInfo(user)
@@ -111,11 +112,9 @@ class auth(object):
                 if 'A' in fullacl:
                     fullacl.update('CXDRU')
                 if ((cloudspace or account or machine) and not self.acl.issubset(fullacl)):
-                    ctx.start_response('403 Forbidden', [])
-                    return str('User: "%s" isn\'t allowed to execute this action. No enough permissions' % user)
+                    raise exceptions.Forbidden('User: "%s" isn\'t allowed to execute this action. No enough permissions' % user)
                 elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
-                    ctx.start_response('403 Forbidden', [])
-                    return str('Method requires "admin" privileges')
+                    raise exceptions.Forbidden('Method requires "admin" privileges')
 
             return func(*args, **kwargs)
         return wrapper
