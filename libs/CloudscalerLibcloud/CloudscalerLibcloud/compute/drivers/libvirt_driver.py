@@ -194,7 +194,7 @@ class CSLibvirtNodeDriver():
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
 
-    def create_node(self, name, size, image, location=None, auth=None, networkid=None):
+    def create_node(self, name, size, image, location=None, auth=None, networkid=None, datadisks=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -234,13 +234,20 @@ class CSLibvirtNodeDriver():
                 userdata = {}
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        diskname = self._create_disk(name, size, image)
-        if not diskname or diskname == -1:
+        bootdiskname = self._create_disk(name, size, image)
+        if not bootdiskname or bootdiskname == -1:
             # not enough free capcity to create a disk on this node
             return -1
-        return self._create_node(name, diskname, size, metadata_iso, networkid)
+        volumes = list()
+        if datadisks:
+            for idx, (diskname, disksize) in enumerate(datadisks.iteritems()):
+                volume = self.create_volume(disksize, diskname)
+                volume.dev = 'vd%c' % (ord('b') + idx)
+                volumes.append(volume)
+        return self._create_node(name, bootdiskname, size, metadata_iso, networkid, volumes)
 
-    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None):
+    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None, volumes=None):
+        volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
         macaddress = self.backendconnection.getMacAddress(self.gid)
@@ -254,11 +261,13 @@ class CSLibvirtNodeDriver():
 
         if not metadata_iso:
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
+                                             'network': networkname, 'poolpath': POOLPATH, volumes: volumes})
         else:
             machinetemplate = self.env.get_template("machine_iso.xml")
             machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress, 'network': networkname, 'poolpath': POOLPATH})
+                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
+                                             'network': networkname, 'poolpath': POOLPATH, 'volumes': volumes})
 
         # 0 means default behaviour, e.g machine is auto started.
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
@@ -271,7 +280,7 @@ class CSLibvirtNodeDriver():
         vmid = result['id']
         self.backendconnection.registerMachine(vmid, macaddress, networkid)
         ipaddress = 'Undefined'
-        node = self._from_agent_to_node(result, ipaddress)
+        node = self._from_agent_to_node(result, ipaddress, volumes=volumes)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
@@ -440,9 +449,10 @@ class CSLibvirtNodeDriver():
     def _get_domain_for_node(self, node):
         return self._execute_agent_job('getmachine', queue='default', machineid = node.id)
 
-    def _from_agent_to_node(self, domain, publicipaddress=''):
+    def _from_agent_to_node(self, domain, publicipaddress='', volumes=None):
         state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
         extra = domain['extra']
+        extra['volumes'] = volumes or []
         node = Node(id=domain['id'], name=domain['name'], state=domain['state'],
                     public_ips=[publicipaddress], private_ips=[], driver=self,
                     extra=extra)

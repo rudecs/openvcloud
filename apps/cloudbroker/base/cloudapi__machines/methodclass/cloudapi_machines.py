@@ -229,7 +229,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
         """
         Create a machine based on the available flavors, in a certain space.
         The user needs write access rights on the space.
@@ -241,15 +241,21 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
+        def cleanup(machine):
+            for diskid in machine.disks:
+                self.models.disk.delete(diskid)
+            self.models.vmachine.delete(machine.id)
+
         if not self._assertName(cloudspaceId, name, **kwargs):
             raise exceptions.Conflict('Selected name already exists')
         if not disksize:
             raise ValueError("Invalid disksize %s" % disksize)
 
-        #Check if there is enough credit
         cloudspaceId = int(cloudspaceId)
         sizeId = int(sizeId)
         imageId = int(imageId)
+        datadisks = datadisks or []
+        #Check if there is enough credit
         accountId = self.models.cloudspace.get(cloudspaceId).accountId
         available_credit = self._accountbilling.getCreditBalance(accountId)
         burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
@@ -274,12 +280,24 @@ class cloudapi_machines(BaseActor):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
 
-        disk = self.models.disk.new()
-        disk.name = '%s_1'
-        disk.descr = 'Machine boot disk'
-        disk.sizeMax = disksize
-        diskid = self.models.disk.set(disk)[0]
-        machine.disks.append(diskid)
+        def addDisk(order, size, type):
+            disk = self.models.disk.new()
+            disk.name = 'Disk nr %s' % order
+            disk.descr = 'Machine disk of type %s' % type
+            disk.sizeMax = disksize
+            disk.accountId = accountId
+            disk.gid = cloudspace.gid
+            disk.order = order
+            disk.type = type
+            diskid = self.models.disk.set(disk)[0]
+            machine.disks.append(diskid)
+            return diskid
+
+        addDisk(-1, disksize, 'B')
+        diskinfo = {}
+        for order, datadisksize in enumerate(datadisks):
+            diskid = addDisk(order, datadisksize, 'D')
+            diskinfo[diskid] = datadisksize
 
         account = machine.new_account()
         if image.type == 'Custom Templates':
@@ -302,7 +320,7 @@ class cloudapi_machines(BaseActor):
         try:
             stack = self.cb.getBestProvider(cloudspace.gid, imageId)
             if stack == -1:
-                self.models.vmachine.delete(machine.id)
+                cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             provider = self.cb.getProviderByStackId(stack['id'])
             psize = self._getSize(provider, machine)
@@ -310,21 +328,9 @@ class cloudapi_machines(BaseActor):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
         except:
-            self.models.vmachine.delete(machine.id)
+            cleanup(machine)
             raise
-        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
-        excludelist = [stack['id']]
-        while(node == -1):
-            #problem during creation of the machine on the node, we should create the node on a other machine
-            stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
-            if stack == -1:
-                self.models.vmachine.delete(machine.id)
-                raise exceptions.ServiceUnavailable('Not enough resource available to provision the requested machine')
-            excludelist.append(stack['id'])
-            provider = self.cb.getProviderByStackId(stack['id'])
-            psize = self._getSize(provider, machine)
-            image, pimage = provider.getImage(machine.imageId)
-            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
+        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid, datadisks=diskinfo)
         self._updateMachineFromNode(machine, node, stack['id'], psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
@@ -341,9 +347,11 @@ class cloudapi_machines(BaseActor):
             nic.ipAddress = ipaddress
         self.models.vmachine.set(machine)
 
-        for diskid in machine.disks:
+        for order, diskid in enumerate(machine.disks):
             disk = self.models.disk.get(diskid)
             disk.stackId = stackId
+            if order != 0:
+                disk.referenceId = node.extra['volumes'][order - 1].id
             self.models.disk.set(disk)
 
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)

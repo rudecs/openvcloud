@@ -91,7 +91,7 @@ class cloudapi_disks(BaseActor):
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
-        machines = self.models.vmachine.search({'disks': diskId})[1:]
+        machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if machines and not dettach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:

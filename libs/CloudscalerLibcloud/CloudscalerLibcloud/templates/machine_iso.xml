@@ -24,6 +24,13 @@
                 <target dev='vda' bus='virtio'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
             </disk>
+            {% for volume in volumes %}
+            <disk type='block' device='disk'>
+                <driver name='qemu' type='raw' cache='none' io='native'/>
+                <source dev='{{volume.id}}'/>
+                <target dev='{{volume.dev}}' bus='virtio'/>
+            </disk>
+            {% endfor %}
             <disk type='file' device='cdrom'>
                 <driver name='qemu' type='raw'/>
                 <source file='{{poolpath}}/{{isoname}}'/>
@@ -69,5 +76,4 @@
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
             </memballoon>
         </devices>
- </domain> 
-
+ </domain>

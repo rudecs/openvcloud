@@ -1,5 +1,6 @@
 from . import cloudbroker
 from JumpScale.baselib.http_client.HttpClient import HTTPError
+from JumpScale.portal.portal import exceptions
 
 from JumpScale import j
 
@@ -15,14 +16,12 @@ class BaseActor(object):
 
 def wrap_remote(func):
     def wrapper(*args, **kwargs):
-        ctx = kwargs['ctx']
         try:
             return func(*args, **kwargs)
         except HTTPError, e:
             ctype = e.httperror.headers.type or 'text/plain'
             headers = [('Content-Type', ctype), ]
             statuscode = e.status_code or 500
-            ctx.start_response("%s" % statuscode, headers)
-            return e.msg
+            raise exceptions.BaseError(statuscode, headers, e.msg)
 
     return wrapper

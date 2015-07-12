@@ -14,6 +14,7 @@
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
+        var:datadisks list,, list of extra data disks  @optional
         result:bool
 
 
