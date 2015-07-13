@@ -153,15 +153,21 @@ func main() {
 			defer osin.OutputJSON(resp, w, r)
 			defer resp.Close()
 
-			token := osin.CheckBearerAuth(r)
-			if token == nil {
+			var code string
+			if token := osin.CheckBearerAuth(r); token != nil {
+				code = token.Code
+			} else {
+				code = r.FormValue("access_token")
+			}
+
+			if code == "" {
 				log.Println("No access token in request")
 				resp.Output["error"] = "Authorization Required"
 				resp.StatusCode = 401
 				return
 			}
 
-			accesstoken, err := osinServer.Storage.LoadAccess(token.Code)
+			accesstoken, err := osinServer.Storage.LoadAccess(code)
 			if err != nil {
 				log.Println("Invalid accesstoken")
 				resp.Output["error"] = "Bad Credentials"
