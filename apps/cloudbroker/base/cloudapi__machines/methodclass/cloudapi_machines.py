@@ -102,7 +102,7 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='C')
     @audit()
     @RequireState(enums.MachineStatus.HALTED, 'Can only add a disk to a stopped machine')
-    def addDisk(self, machineId, diskName, description, size=10, type='B', **kwargs):
+    def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
         Add a disk to a machine
         param:machineId id of machine
@@ -150,8 +150,11 @@ class cloudapi_machines(BaseActor):
         machine = self._getMachine(machineId)
         if diskId in machine.disks:
             return True
-        provider, node = self._getProviderAndNode(machineId)
+        vmachines = self.models.vmachine.search({'disks': diskId})[1:]
+        if vmachines:
+            self.detachDisk(vmachines[0]['id'], diskId)
         disk = self.models.disk.get(int(diskId))
+        provider, node = self._getProviderAndNode(machineId)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
@@ -390,14 +393,6 @@ class cloudapi_machines(BaseActor):
                     provider.client.destroy_node(pnode)
                     break
 
-    def _getStorage(self, machine):
-        if not machine['stackId']:
-            return None
-        provider = self.cb.getProviderByStackId(machine['stackId'])
-        firstdisk = self.models.disk.get(machine['disks'][0])
-        storage = provider.getSize(self.models.size.get(machine['sizeId']), firstdisk)
-        return storage
-
     @authenticator.auth(acl='R')
     @audit()
     def get(self, machineId, **kwargs):
@@ -411,12 +406,9 @@ class cloudapi_machines(BaseActor):
         provider, node = self._getProviderAndNode(machineId)
         state = node.state
         machine = self._getMachine(machineId)
-        m = {}
-        m['stackId'] = machine.stackId
-        m['disks'] = machine.disks
-        m['sizeId'] = machine.sizeId
+        disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
+        storage = sum(disk['sizeMax'] for disk in disks)
         osImage = self.models.image.get(machine.imageId).name
-        storage = self._getStorage(m)
         node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
@@ -440,10 +432,10 @@ class cloudapi_machines(BaseActor):
         machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
             acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right']))})
-        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl,
+        return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage.disk, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
+                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
