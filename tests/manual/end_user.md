@@ -19,3 +19,4 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 |1.10| | Take a snapshot of test3 named "pristine" | | |
 |1.11| | Log in again on test3 and create a new file aftersnapshot.txt on the desktop. Roll back to the snapshot named "pristine". Log in again on test3 and check if beforesnapshot.txt is there but not aftersnapshot.txt | | |
 |1.12| | Repeat test 1.11 | | |
+|1.13| | Open the defense shield of the cloudspace | | |
