@@ -30,6 +30,6 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 
 ## Other isses
 File any other issues you noticed in this section
-| # |Result|Description  | Youtrack issue |
-|---|------|-------------|----------------|
-| | | | |
+
+| # | Result | Description  | Youtrack issue |
+|---|--------|--------------|----------------|
