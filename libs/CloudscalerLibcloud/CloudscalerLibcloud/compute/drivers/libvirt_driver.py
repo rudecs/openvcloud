@@ -240,7 +240,7 @@ class CSLibvirtNodeDriver():
             return -1
         volumes = list()
         if datadisks:
-            for idx, (diskname, disksize) in enumerate(datadisks.iteritems()):
+            for idx, (diskname, disksize) in enumerate(datadisks):
                 volume = self.create_volume(disksize, diskname)
                 volume.dev = 'vd%c' % (ord('b') + idx)
                 volumes.append(volume)

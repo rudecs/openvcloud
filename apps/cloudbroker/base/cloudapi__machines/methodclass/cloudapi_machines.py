@@ -287,7 +287,7 @@ class cloudapi_machines(BaseActor):
             disk = self.models.disk.new()
             disk.name = 'Disk nr %s' % order
             disk.descr = 'Machine disk of type %s' % type
-            disk.sizeMax = disksize
+            disk.sizeMax = size
             disk.accountId = accountId
             disk.gid = cloudspace.gid
             disk.order = order
@@ -297,10 +297,10 @@ class cloudapi_machines(BaseActor):
             return diskid
 
         addDisk(-1, disksize, 'B')
-        diskinfo = {}
+        diskinfo = []
         for order, datadisksize in enumerate(datadisks):
             diskid = addDisk(order, datadisksize, 'D')
-            diskinfo[diskid] = datadisksize
+            diskinfo.append((diskid, datadisksize))
 
         account = machine.new_account()
         if image.type == 'Custom Templates':
