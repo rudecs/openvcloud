@@ -7,7 +7,7 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 ## 1. Platform
 | #  | Result|Test | Comment  | Youtrack issue |
 |----|-------|-----|----------|----------------|
-|1.1 | :white_check_mark: |Log in to mountaintop by going to https://[env].demo.greenitglobe.com | | |
+|1.1 | :white_check_mark: |Log in to mountaintop by going to https://[env].demo.greenitglobe.com . Your browser should not give security warnings.| | |
 
 
 
