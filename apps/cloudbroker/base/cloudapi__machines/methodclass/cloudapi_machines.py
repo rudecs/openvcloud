@@ -152,7 +152,7 @@ class cloudapi_machines(BaseActor):
             return True
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
-            self.detachDisk(vmachines[0]['id'], diskId)
+            self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
         disk = self.models.disk.get(int(diskId))
         provider, node = self._getProviderAndNode(machineId)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
@@ -426,6 +426,8 @@ class cloudapi_machines(BaseActor):
 
         realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name)
         if realstatus != machine.status:
+            if realstatus == 'DESTROYED':
+                realstatus = 'HALTED'
             machine.status = realstatus
             self.models.vmachine.set(machine)
         acl = list()

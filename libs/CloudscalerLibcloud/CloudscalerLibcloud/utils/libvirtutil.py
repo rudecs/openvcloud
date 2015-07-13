@@ -247,7 +247,7 @@ class LibvirtUtil(object):
     def isCurrentStorageAction(self, domainid):
         domain = self._get_domain(domainid)
         #at this moment we suppose the machine is following the default naming of disks
-        if domain.state()[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+        if domain and domain.state()[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
             status = domain.blockJobInfo('vda',0)
             if 'cur' in status:
                 return True
