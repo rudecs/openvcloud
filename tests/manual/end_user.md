@@ -27,3 +27,9 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 |2.11| | Log in again on test3 and create a new file aftersnapshot.txt on the desktop. Roll back to the snapshot named "pristine". Log in again on test3 and check if beforesnapshot.txt is there but not aftersnapshot.txt | | |
 |2.12| | Repeat test 2.11 | | |
 |2.13| | Open the defense shield of the cloudspace | | |
+
+
+## Other isses
+File any other issues you noticed in this section
+| # |Result|Description  | Youtrack issue |
+|---|------|-------------|----------------|
