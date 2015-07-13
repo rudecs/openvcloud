@@ -14,19 +14,3 @@ scopes = [ "ovs" , "dcpm"]
 [users.kds.password]
 key = "4N2v4UxbatBMAcMPMT8aeskjqw3ZuMZBvP325qHAFLTUGey6zWZ1QNkSsBX5PZP49b17c9sVPDAHPVpqfF7WXA1f"
 salt = "EzdUkeoVqmm83zKwFMihsv"
-
-[users.henri]
-email = "henriverroken@gmail.com"
-name = "Henri Verroken"
-scopes = [
-    "request_available",
-    "lenoir2",
-    "bracknell1",
-    "york1:cpu03.york1.vscalers.com",
-    "york1:cpu04.york1.vscalers.com:ssh",
-    "dco1",
-]
-
-[users.henri.password]
-key = "3QZUFNzhQZ6khdfFbM4tfYt2VHqNJt6gFzfezfoKZHmm3MJ3pt8cCMQLZvwQAxowq8wPmDas6pUUYEkaLBwhSjuL"
-salt = "DpU9KdDWbeix8GXFcNwqp"

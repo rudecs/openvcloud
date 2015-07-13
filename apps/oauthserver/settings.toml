@@ -4,5 +4,5 @@ cookie_store_secret = "vTQ9gCk8QAoQS83zefY3XzcXqyHUEew1DvqprABkKic6ZBBmJhu"
 
 #Connectionsettings for the jumpscale mongo users database
 #If commented, the local toml file is used
-#[jumpscale.mongo]
-#connectionstring = "localhost:27017"
+[jumpscale.mongo]
+connectionstring = "localhost:27017"
