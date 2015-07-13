@@ -26,7 +26,17 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 |2.12| | Repeat test 2.11 | | |
 |2.13| | Open the defense shield of the cloudspace | | |
 
-
+## 3. Cloudspaces
+| #  | Result|Test | Comment  | Youtrack issue |
+|----|-------|-----|----------|----------------|
+|3.1 | | Create a new cloudspace named "secondcloudspace"| | |
+|3.2 | | Create extra users named "seconduser" and "thirduser" using the cbgrid portal | | |
+|3.3 | | Grant "seconduser" access to the cloudspace "secondcloudspace" | | |
+|3.4 | | Log in as "thirduser", you should not be able to see "secondcloudspace" | | |
+|3.5 | | Log in as "seconduser", create a new windows vm in "secondcloudspace" | | |
+|3.6 | | As "seconduser", create a portforward on the public port 3389 to the new vm port 3389 | | |
+|3.7 | | Use an rdp client to log in to this vm on the public ip with the provided credentials | | |
+|3.8 | | Delete "secondcloudspace | | |
 
 ## Other isses
 File any other issues you noticed in this section
