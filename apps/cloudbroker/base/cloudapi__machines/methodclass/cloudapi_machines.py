@@ -116,7 +116,7 @@ class cloudapi_machines(BaseActor):
         machine = self._getMachine(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
-                                    name=diskname, description=description, size=size, type=type, **kwargs)
+                                    name=diskName, description=description, size=size, type=type, **kwargs)
         provider, node = self._getProviderAndNode(machineId)
         try:
             provider.client.attach_volume(node, volume)

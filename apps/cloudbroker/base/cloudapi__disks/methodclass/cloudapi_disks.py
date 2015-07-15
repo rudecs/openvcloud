@@ -54,7 +54,7 @@ class cloudapi_disks(BaseActor):
         diskid = self.models.disk.set(disk)[0]
         disk = self.models.disk.get(diskid)
         try:
-            provider, node = self.cb.getProviderByGID(gid)
+            provider = self.cb.getProviderByGID(gid)
             volume = provider.client.create_volume(disk.sizeMax, disk.id)
             disk.referenceId = volume.id
         except:
