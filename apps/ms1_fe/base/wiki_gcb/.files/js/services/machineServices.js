@@ -268,6 +268,17 @@ angular.module('cloudscalers.services')
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
+            addDisk: function (machineId, diskName, description, size, type) {
+                url = cloudspaceconfig.apibaseurl + '/machines/addDisk?machineId=' + machineId + '&diskName=' + diskName + '&description=' + description + '&size=' + size + '&type=' + type;
+                return $http.get(url).then(
+                        function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                            return $q.reject(reason);
+                        }
+                );
+            },
         }
     })
     .factory('Image', function ($http) {

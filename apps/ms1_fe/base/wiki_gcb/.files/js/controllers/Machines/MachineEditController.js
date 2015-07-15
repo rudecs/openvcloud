@@ -2,12 +2,29 @@ angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
+        $scope.tabState = "currentDisks";
+        function clearDisk(){
+            $scope.disk = {name: "", size: "", description: ""};
+        }
+        clearDisk();
+
         Machine.get($routeParams.machineId).then(function(data) {
             $scope.machine = data;
             },
             function(reason) {
                 $ErrorResponseAlert(reason);
             });
+
+        $scope.createDisks = function() {
+            LoadingDialog.show('Creating disk');
+            Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
+                $scope.tabState = 'currentDisks';
+                clearDisk();
+                LoadingDialog.hide();
+            },function(reason){
+                $ErrorResponseAlert(reason);
+            });
+        };
 
         $scope.$watch('machine.acl', function () {
             if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){

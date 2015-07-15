@@ -855,4 +855,9 @@ defineApiStub = function ($httpBackend) {
         cloudSpace.acl[cloudSpace.acl.indexOf(userAcl) ].right = params.accesstype;
         return [200, '15'];
     });
+
+    $httpBackend.whenGET(/^\/machines\/addDisk.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        return [200, params.ip];
+    });
 };

@@ -315,11 +315,22 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .machineList ul li a.active, .packages li a.active-package  { background: url(../img/images/machine-hover.jpg); color: #FFF; }
 .storage-size-list li button { box-shadow: none !important; border: 0; }
 .storage-size-list li button:focus { outline: 0 !important; outline-offset: 0 !important; }
+.storage-size-list button.small {   background-size: 92%; padding: 0; height: 110px; width: 215px; font-size: 100%; }
 .storage-size-list { padding-left: 6%; }
 .machineWrap { clear: both; margin: 0 0 38px 0; }
 .controls2 { display: inline-block; width: 88%; float: left; }
 .osImage-btn { background-color: #DDDDDF; color: #77777b; border: rgb(194, 194, 194) 1px solid;}
 .osImage-btn.active { background-color: #345E79; color: #fff; }
+.disk-control-bar { width: 75%; margin: 0 auto; padding-right: 15px; visibility: hidden; }
+.disk-control-bar .disk-control { font-size: 22px; color: rgb(53, 94, 122); cursor: pointer; }
+.disk-control-bar .detach { color: #A94442; }
+.disk-container:hover .disk-control-bar { visibility: visible; }
+.storage-size-list li.small { margin: 15px; }
+.storage-size-list li .disk-control-bar { width: 65%; }
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus{ background: rgba(52, 94, 121, 1) !important; border-bottom-color: transparent !important; }
+.nav-pills>li>a{ padding: 4px 11px; border-bottom-right-radius: 0; border-bottom-left-radius: 0; margin-left: -2px; border: 1px solid transparent; border-bottom: 1px solid #345E79; }
+.nav-pills>li>a:hover, .nav-pills>li>a:focus, .nav-pills>li>a:active { background: #fff; color: #345E79; border: 1px solid #ddd; border-bottom: 1px solid #345E79; outline: 0; }
+.border-bottom-gray { border-bottom: 1px solid rgb(202, 200, 200); }
 /* End of new machine page*/
 
 /* Machine Details Page */
@@ -339,6 +350,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .access-rights.update .access-right-block{ margin-right: 15px; padding: 10px; display: inline; }
 .access-rights.update .access-right-block:hover, .access-rights.update .access-right-block.selected { background-color: rgb(234, 234, 234); border-radius: 5px; cursor: pointer; }
 .share-cloudspace-message { margin: 0 auto !important; top: -25px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.demo-disks button:hover { background: url(../img/images/machine.jpg) no-repeat; color: #77777b; cursor: default; }
 /* end of machine details page*/
 
 /* Decks Public Pages */
@@ -427,7 +439,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .nav-stacked li a {display: block;padding: 9px 19px;color: #e4e4e4;}
 .nav-stacked li a strong {color: #FFF;}
 .videoBox2 { background: rgba(6,167,226,0.2); box-shadow: 0px 0px 9px #345E79; }
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {background: rgba(0,143,237,0.5); }
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus { background: #fff !important; color: rgba(52, 94, 121, 1); border: 1px solid #345E79; /*border-bottom-color: transparent; border-bottom: 3px solid transparent;*/ }
 .video-tour-container { margin-bottom: 45px; }
 .tab-pane video { border: 1px solid #345E79; }
 .revolutionary-cloud-container { margin-top: -7px; margin-bottom: 20px; }

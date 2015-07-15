@@ -11,7 +11,7 @@ h1. Manage Machine
         Refresh
     </a>
     <tabset class="clear-both">
-          <tab id="actions" heading="Machine actions" active="tabactive.actions">
+          <tab id="actions" heading="Actions" active="tabactive.actions">
             <div id="actions" class="tab-pane active">
                 <div class="row">
                     <div class="span8">
@@ -267,6 +267,24 @@ h1. Manage Machine
                 </div>
             </div>
           </tab>
+            <tab id="Disks" heading="Disks" active="tabactive.newDisks">
+                <div id="Disks" class="tab-pane">
+                  <ul class="nav nav-pills">
+                    <li class="active"><a data-toggle="pill" href="" ng-click="tabState = 'currentDisks'">Current disk</a></li>
+                    <li class=""><a data-toggle="pill" ng-click="tabState = 'createDisks'">Create disks</a></li>
+                  </ul>
+                  <div class="marginTopXlarge">
+                    <div ng-show="tabState == 'currentDisks'">
+                      
+                    </div>
+                    <div ng-show="tabState == 'createDisks'">
+                        <div class="machineList container" >
+                            {{include:storage_list}}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </tab>
           <tab heading="Snapshots" active="tabactive.snapshots">
 
 
