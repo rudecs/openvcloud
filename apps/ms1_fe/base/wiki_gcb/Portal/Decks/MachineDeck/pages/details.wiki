@@ -275,12 +275,10 @@ h1. Manage Machine
                   </ul>
                   <div class="marginTopXlarge">
                     <div ng-show="tabState == 'currentDisks'">
-                      
+                      {{include:storage_list}}
                     </div>
                     <div ng-show="tabState == 'createDisks'">
-                        <div class="machineList container" >
-                            {{include:storage_list}}
-                        </div>
+                        {{include:create_disk}}
                     </div>
                   </div>
                 </div>
