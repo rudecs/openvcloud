@@ -8,16 +8,20 @@ angular.module('cloudscalers.controllers')
         }
         clearDisk();
 
-        Machine.get($routeParams.machineId).then(function(data) {
-            $scope.machine = data;
-            },
-            function(reason) {
-                $ErrorResponseAlert(reason);
-            });
+        function getMachine(){
+            Machine.get($routeParams.machineId).then(function(data) {
+                $scope.machine = data;
+                },
+                function(reason) {
+                    $ErrorResponseAlert(reason);
+                });
+        }
+        getMachine();
 
         $scope.createDisks = function() {
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
+                getMachine();
                 $scope.tabState = 'currentDisks';
                 clearDisk();
                 LoadingDialog.hide();
@@ -25,6 +29,48 @@ angular.module('cloudscalers.controllers')
                 $ErrorResponseAlert(reason);
             });
         };
+
+        $scope.removeDisk = function(disk) {
+            if($scope.machine.status != "HALTED"){
+                $alert("Machine must be stopped to remove disk.");
+                return;
+            }
+            var modalInstance = $modal.open({
+                templateUrl: 'removeDiskDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.disk = disk;
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                    LoadingDialog.show('Remoing disk');
+                    Machine.removeDisk(disk.id).then(function(result){
+                        $scope.machine.disks.splice( $scope.machine.disks.indexOf(disk), 1);
+                        LoadingDialog.hide();
+                    },function(reason){
+                        $ErrorResponseAlert(reason);
+                    });
+            });
+
+        };
+
+
+
+        $scope.moveDisk = function(disk) {
+            
+        };
+
+        $scope.isDataDisk = function(disk){
+           return disk.type != 'D';
+        }
 
         $scope.$watch('machine.acl', function () {
             if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){

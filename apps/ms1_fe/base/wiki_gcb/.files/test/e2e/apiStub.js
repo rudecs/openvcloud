@@ -136,6 +136,105 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 0,
             "id": 0,
+            "disks": [
+              {
+              "referenceId": "",
+              "diskPath": "",
+              "images": [],
+              "guid": 53,
+              "id": 53,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Machine disk of type B",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "B",
+              "status": "",
+              "stackId": 2,
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 10,
+              "realityUpdateEpoch": 0,
+              "name": "Disk nr -1",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": -1,
+              "_ckey": ""
+            },
+            {
+              "referenceId": "/mnt/vmstor/volume/54.raw",
+              "diskPath": "",
+              "images": [],
+              "guid": 54,
+              "id": 54,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Test data disk",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "D",
+              "status": "",
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 5,
+              "realityUpdateEpoch": 0,
+              "name": "disj",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": 0,
+              "_ckey": ""
+            },
+            {
+              "referenceId": "/mnt/vmstor/volume/54.raw",
+              "diskPath": "",
+              "images": [],
+              "guid": 54,
+              "id": 54,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Test Boot disk",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "B",
+              "status": "",
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 5,
+              "realityUpdateEpoch": 0,
+              "name": "disj",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": 0,
+              "_ckey": ""
+            }
+          ],
             "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}, {"guid": "", "right": "R", "type": "U", "userGroupId": "user 2"}, {"guid": "", "right": "RCX", "type": "U", "userGroupId": "user 3"}, {"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 4"}]
         }, {
             "cloudspaceId":1,
@@ -148,6 +247,105 @@ defineApiStub = function ($httpBackend) {
             "sizeId": 0,
             "imageId": 1,
             "id": 1,
+            "disks": [
+              {
+              "referenceId": "",
+              "diskPath": "",
+              "images": [],
+              "guid": 53,
+              "id": 53,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Machine disk of type B",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "B",
+              "status": "",
+              "stackId": 2,
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 10,
+              "realityUpdateEpoch": 0,
+              "name": "Disk nr -1",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": -1,
+              "_ckey": ""
+            },
+            {
+              "referenceId": "/mnt/vmstor/volume/54.raw",
+              "diskPath": "",
+              "images": [],
+              "guid": 54,
+              "id": 54,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Test data disk",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "D",
+              "status": "",
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 5,
+              "realityUpdateEpoch": 0,
+              "name": "disj",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": 0,
+              "_ckey": ""
+            },
+            {
+              "referenceId": "/mnt/vmstor/volume/54.raw",
+              "diskPath": "",
+              "images": [],
+              "guid": 54,
+              "id": 54,
+              "accountId": 7,
+              "sizeUsed": 0,
+              "descr": "Test Boot disk",
+              "gid": 1,
+              "role": "",
+              "params": "",
+              "type": "B",
+              "status": "",
+              "realityDeviceNumber": 0,
+              "passwd": "",
+              "_meta": [
+                "osismodel",
+                "cloudbroker",
+                "disk",
+                1
+              ],
+              "sizeMax": 5,
+              "realityUpdateEpoch": 0,
+              "name": "disj",
+              "acl": {},
+              "iqn": "",
+              "bootPartition": 0,
+              "login": "",
+              "order": 0,
+              "_ckey": ""
+            }
+          ],
             "acl": [{"guid": "", "right": "ACDRUX", "type": "U", "userGroupId": "user 1"}]
         }]);
     }
@@ -857,6 +1055,11 @@ defineApiStub = function ($httpBackend) {
     });
 
     $httpBackend.whenGET(/^\/machines\/addDisk.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        return [200, params.ip];
+    });
+
+    $httpBackend.whenGET(/^\/disks\/delete.*/).respond(function(method, url, data) {
         var params = new URI(url).search(true);
         return [200, params.ip];
     });

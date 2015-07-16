@@ -279,6 +279,17 @@ angular.module('cloudscalers.services')
                         }
                 );
             },
+            removeDisk: function (diskId) {
+                url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId;
+                return $http.get(url).then(
+                        function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                            return $q.reject(reason);
+                        }
+                );
+            },
         }
     })
     .factory('Image', function ($http) {

@@ -101,6 +101,7 @@ table.table th a, table.table th a:hover {color: #FFF;}
 /* General Syle */
 *,body ,input, button, select, textarea, h1, h2, .white ol li, .white h1, .white h2, .white p, .white ul li,
 .loading, .loader h2, .white-header { font-family: arial, sans-serif; }
+.loader h2 { color: #fff !important; }
 .white ol li { color: #000; font-size: 16px; line-height: 30px; }
 .white { background: #FFF; padding: 30px 0 79px 0; min-height: 537px; }
 .white h1 { color: #345E79; font-size: 35px; font-weight: normal !important; margin: 0 0 10px 0; }
