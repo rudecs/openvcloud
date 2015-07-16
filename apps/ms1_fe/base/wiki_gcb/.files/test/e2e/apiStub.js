@@ -1063,4 +1063,9 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         return [200, params.ip];
     });
+
+    $httpBackend.whenGET(/^\/machines\/attachDisk.*/).respond(function(method, url, data) {
+        var params = new URI(url).search(true);
+        return [200, params.ip];
+    });
 };

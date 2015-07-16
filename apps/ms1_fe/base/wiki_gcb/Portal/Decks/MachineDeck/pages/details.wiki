@@ -273,7 +273,7 @@ h1. Manage Machine
                     <li class="active"><a data-toggle="pill" href="" ng-click="tabState = 'currentDisks'">Current disk</a></li>
                     <li class=""><a data-toggle="pill" ng-click="tabState = 'createDisks'">Create disks</a></li>
                   </ul>
-                  <div class="marginTopXlarge">
+                  <div class="marginTopXlarge machine-disks">
                     <div ng-show="tabState == 'currentDisks'">
                       {{include:storage_list}}
                     </div>
