@@ -27,6 +27,7 @@ angular.module('cloudscalers.controllers')
                 LoadingDialog.hide();
             },function(reason){
                 $ErrorResponseAlert(reason);
+                LoadingDialog.hide();
             });
         };
 
@@ -57,6 +58,7 @@ angular.module('cloudscalers.controllers')
                     LoadingDialog.hide();
                 },function(reason){
                     $ErrorResponseAlert(reason);
+                    LoadingDialog.hide();
                 });
             });
 
@@ -84,6 +86,7 @@ angular.module('cloudscalers.controllers')
                             $modalInstance.close('ok');
                         },function(reason){
                             $ErrorResponseAlert(reason);
+                            LoadingDialog.hide();
                         });
                     };
                     $scope.cancelDestroy = function () {
