@@ -66,6 +66,7 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 				ar.UserData = userData{Login: username}
 				return true
 			}
+			log.Println("User does not have authorization on the requested scope")
 		}
 
 		data.Error = true
