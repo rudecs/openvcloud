@@ -24,6 +24,8 @@ angular.module('cloudscalers.controllers')
                 );
             }
         }
+
+        $scope.updateMachineList();
         
         $scope.$watch('currentSpace.id',function(){
             $scope.updateMachineList();
