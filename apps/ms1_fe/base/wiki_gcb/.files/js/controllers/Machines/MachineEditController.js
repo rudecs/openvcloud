@@ -51,13 +51,13 @@ angular.module('cloudscalers.controllers')
             });
 
             modalInstance.result.then(function (result) {
-                    LoadingDialog.show('Removing disk');
-                    Machine.removeDisk(disk.id, true).then(function(result){
-                        $scope.machine.disks.splice( $scope.machine.disks.indexOf(disk), 1);
-                        LoadingDialog.hide();
-                    },function(reason){
-                        $ErrorResponseAlert(reason);
-                    });
+                LoadingDialog.show('Removing disk');
+                Machine.removeDisk(disk.id, true).then(function(result){
+                    $scope.machine.disks.splice( $scope.machine.disks.indexOf(disk), 1);
+                    LoadingDialog.hide();
+                },function(reason){
+                    $ErrorResponseAlert(reason);
+                });
             });
 
         };
@@ -70,12 +70,16 @@ angular.module('cloudscalers.controllers')
             var modalInstance = $modal.open({
                 templateUrl: 'moveDiskDialog.html',
                 controller: function($scope, $modalInstance){
+                    var currentMachine = _.find(currentSpace.machines , function(machine) { return machine.id == $routeParams.machineId; });
+                    if(currentMachine){
+                        currentSpace.machines.splice( currentSpace.machines.indexOf(currentMachine), 1);
+                    }
                     $scope.currentSpace = currentSpace;
                     $scope.disk = disk;
                     $scope.diskDestination = currentSpace.machines[0];
-                    $scope.ok = function () {
+                    $scope.ok = function (diskDestination) {
                         LoadingDialog.show('Moving disk');
-                        Machine.moveDisk($scope.diskDestination.id, disk.id).then(function(result){
+                        Machine.moveDisk(diskDestination.id, disk.id).then(function(result){
                             LoadingDialog.hide();
                             $modalInstance.close('ok');
                         },function(reason){

@@ -1,5 +1,6 @@
 <div>
 	<ul class="storage-size-list inline-block margin-all-none padding-all-none">
+		<em ng-show="(machine.disks | filter:isDataDisk).length == 0">Machine hasn't data disks.</em>
 		<li ng-repeat="disk in machine.disks | filter:isDataDisk" class="disk-container relative">
 		 	<div class="disk-control-bar clearfix">
 		 		<span class="disk-control detach right margin-left-medium" title="Remove disk" ng-click="removeDisk(disk)"><i class="fa fa-minus-circle"></i></span>
@@ -20,7 +21,7 @@
 	    <div class="modal-body">
 	        Are you sure you want to remove "{[disk.name]}"?
 	        <br />
-	        All disk's data will be lost.
+	        All disk data will be lost.
 	    </div>
 	    <div class="modal-footer">
 	        <button type="button" class="btn ok" ng-click="ok()">Ok</button>
@@ -45,7 +46,7 @@
 	    	</div>
 	    </div>
 	    <div class="modal-footer">
-	        <button type="button" class="btn ok" ng-click="ok()" ng-disabled="diskDestination.status != 'HALTED'">Ok</button>
+	        <button type="button" class="btn ok" ng-click="ok(diskDestination)" ng-disabled="diskDestination.status != 'HALTED'">Ok</button>
 	        <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
 	    </div>
 	</form>
