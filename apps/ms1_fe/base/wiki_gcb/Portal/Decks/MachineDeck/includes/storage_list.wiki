@@ -1,10 +1,9 @@
-{[machine.disks]}
 <div>
 	<ul class="storage-size-list inline-block margin-all-none padding-all-none">
 		<li ng-repeat="disk in machine.disks | filter:isDataDisk" class="disk-container relative">
 		 	<div class="disk-control-bar clearfix">
-		 		<span class="selected-disks-counter" ng-show="items.length > 1">{[ items.length ]}</span>
-		 		<span class="disk-control detach right margin-left-medium" title="Remove disk" ng-hide="items.length == 0" ng-click="removeDisk(disk)"><i class="fa fa-minus-circle"></i></span>
+		 		<span class="disk-control detach right margin-left-medium" title="Remove disk" ng-click="removeDisk(disk)"><i class="fa fa-minus-circle"></i></span>
+		 		<span class="disk-control right margin-left-medium" title="Move disk" ng-click="moveDisk(disk, currentSpace, machine)"><i class="fa fa-share"></i></span>
 		 	</div>
 		    <button type="button" class="btn btn-selector table-cell disk" title="{[disk.descr]}">
 		      {[disk.name]}<br>
@@ -13,25 +12,40 @@
 	  	</li>
 	</ul>
 </div>
-<!-- <div class="marginTopXlarge row">
-	<button class="btn btn-info mainButton" ng-click="createDisks()" ng-disabled="newDisks.length == 0">
-		<i class="fa fa-hdd-o txt-20"></i>
-		<span class="margin-left-small">Create disks</span>
-	</button>
-</div> -->
 <script type="text/ng-template" id="removeDiskDialog.html">
-	<form name="destroyform" ng-submit="cancelDestroy()">
+	<form name="removediskform" ng-submit="cancelDestroy()">
 	    <div class="modal-header">
 	        <h3>Remove disk?</h3>
 	    </div>
 	    <div class="modal-body">
-	        <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-	        All disk's data will be lost.
-	        <br />
 	        Are you sure you want to remove "{[disk.name]}"?
+	        <br />
+	        All disk's data will be lost.
 	    </div>
 	    <div class="modal-footer">
 	        <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+	        <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
+	    </div>
+	</form>
+</script>
+
+<script type="text/ng-template" id="moveDiskDialog.html">
+	<form name="movediskform" ng-submit="cancelDestroy()">
+	    <div class="modal-header">
+	        <h3>Move disk</h3>
+	    </div>
+	    <div class="modal-body">
+	    	<div class="margin-bottom-large">
+		    	<h4>Move disk to:</h4>
+		    	<select ng-model="diskDestination" ng-options="machine.name for machine in currentSpace.machines" class="form-control"></select>
+		    	<em class="block" ng-show="diskDestination.status != 'HALTED'">The Machine you want to move disk to must be stopped.</em>
+	    	</div>
+	    	<div>
+	    		Are you sure you want to move "{[disk.name]}" into "{[diskDestination.name]}"?
+	    	</div>
+	    </div>
+	    <div class="modal-footer">
+	        <button type="button" class="btn ok" ng-click="ok()" ng-disabled="diskDestination.status != 'HALTED'">Ok</button>
 	        <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
 	    </div>
 	</form>

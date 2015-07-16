@@ -51,8 +51,8 @@ angular.module('cloudscalers.controllers')
             });
 
             modalInstance.result.then(function (result) {
-                    LoadingDialog.show('Remoing disk');
-                    Machine.removeDisk(disk.id).then(function(result){
+                    LoadingDialog.show('Removing disk');
+                    Machine.removeDisk(disk.id, true).then(function(result){
                         $scope.machine.disks.splice( $scope.machine.disks.indexOf(disk), 1);
                         LoadingDialog.hide();
                     },function(reason){
@@ -62,10 +62,38 @@ angular.module('cloudscalers.controllers')
 
         };
 
+        $scope.moveDisk = function(disk, currentSpace) {
+            if($scope.machine.status != "HALTED"){
+                $alert("Machine must be stopped to move disk.");
+                return;
+            }
+            var modalInstance = $modal.open({
+                templateUrl: 'moveDiskDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.currentSpace = currentSpace;
+                    $scope.disk = disk;
+                    $scope.diskDestination = currentSpace.machines[0];
+                    $scope.ok = function () {
+                        LoadingDialog.show('Moving disk');
+                        Machine.moveDisk($scope.diskDestination.id, disk.id).then(function(result){
+                            LoadingDialog.hide();
+                            $modalInstance.close('ok');
+                        },function(reason){
+                            $ErrorResponseAlert(reason);
+                        });
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
 
+            modalInstance.result.then(function (result) {
+                $scope.machine.disks.splice( $scope.machine.disks.indexOf(disk), 1);
+            });
 
-        $scope.moveDisk = function(disk) {
-            
         };
 
         $scope.isDataDisk = function(disk){

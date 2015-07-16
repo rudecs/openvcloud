@@ -279,8 +279,19 @@ angular.module('cloudscalers.services')
                         }
                 );
             },
-            removeDisk: function (diskId) {
-                url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId;
+            removeDisk: function (diskId, dettach) {
+                url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId + '&dettach=' + dettach;
+                return $http.get(url).then(
+                        function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                            return $q.reject(reason);
+                        }
+                );
+            },
+            moveDisk: function (machineId, diskId) {
+                url = cloudspaceconfig.apibaseurl + '/machines/attachDisk?machineId=' + machineId + '&diskId=' + diskId;
                 return $http.get(url).then(
                         function (result) {
                             return result.data;
