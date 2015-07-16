@@ -97,7 +97,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.isDataDisk = function(disk){
-           return disk.type != 'D';
+           return disk.type != 'B';
         }
 
         $scope.$watch('machine.acl', function () {
