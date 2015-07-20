@@ -24,7 +24,7 @@
         Delete a disk
         """
         var:diskId int,, id of the machine
-        var:dettach bool,,detach disk from machine first @optional
+        var:detach bool,,detach disk from machine first @optional
         result: bool
 
     method:create

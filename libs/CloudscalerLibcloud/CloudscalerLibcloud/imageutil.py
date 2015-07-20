@@ -19,7 +19,7 @@ def copyImageToOVS(imagepath):
 
     if not j.system.fs.exists(dst):
         j.system.platform.qemu_img.convert(src, 'qcow2', dst, 'raw')
-        size = int(j.system.platform.qemu_img.info(dst)['virtual size'] * 1024)
+        size = int(j.system.platform.qemu_img.info(dst)['virtual size'], unit='')
         fd = os.open(dst, os.O_RDWR | os.O_CREAT)
         os.ftruncate(fd, size)
         os.close(fd)

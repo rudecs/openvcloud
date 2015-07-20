@@ -24,7 +24,9 @@ class cloudapi_disks(BaseActor):
         self.netmgr = j.apps.jumpscale.netmgr
 
     def getStorageVolume(self, disk, provider, node=None):
-        return StorageVolume(id=disk.referenceId, name=disk.name, size=disk.sizeMax, driver=provider.client, extra={'node': node})
+        if not isinstance(disk, dict):
+            disk = disk.dump()
+        return StorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
 
     @authenticator.auth(acl='C')
     @audit()
@@ -80,7 +82,7 @@ class cloudapi_disks(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    def delete(self, diskId, dettach, **kwargs):
+    def delete(self, diskId, detach, **kwargs):
         """
         Delete a disk from machine
         param:machineId id of machine
@@ -91,13 +93,16 @@ class cloudapi_disks(BaseActor):
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
+        if disk.status == 'DESTROYED':
+            return True
         machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
-        if machines and not dettach:
+        if machines and not detach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:
             j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
         provider.client.destroy_volume(volume)
-        self.models.disk.delete(diskId)
+        disk.status = 'DESTROYED'
+        self.models.disk.set(disk)
         return True

@@ -392,6 +392,10 @@ class cloudapi_machines(BaseActor):
                 if node.id == pnode.id:
                     provider.client.destroy_node(pnode)
                     break
+        for disk in vmachinemodel.disks:
+            j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+        return True
+
 
     @authenticator.auth(acl='R')
     @audit()
@@ -409,7 +413,6 @@ class cloudapi_machines(BaseActor):
         disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
         osImage = self.models.image.get(machine.imageId).name
-        node = provider.client.ex_get_node_details(node.id)
         if machine.nics and machine.nics[0].ipAddress == 'Undefined':
             if node.private_ips:
                 machine.nics[0].ipAddress = node.private_ips[0]
@@ -487,14 +490,14 @@ class cloudapi_machines(BaseActor):
         provider = self._getProvider(machine)
         state = 'DESTROYED'
         try:
-            info = provider.client.ex_get_node_details(machine.referenceId)
-            state = info.state
+            node = provider.client.ex_get_node_details(machine.referenceId)
+            state = node.state
         except Exception:
             # Machine is no more valid / mark it as destroyed
-            machine = self.models.vmachine.get(machineId)
             machine.status = "DESTROYED"
             self.models.vmachine.set(machine)
-        return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
+            return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
+        return provider, node
 
     @authenticator.auth(acl='C')
     @audit()

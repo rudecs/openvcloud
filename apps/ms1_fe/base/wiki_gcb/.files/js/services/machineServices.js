@@ -279,8 +279,8 @@ angular.module('cloudscalers.services')
                         }
                 );
             },
-            removeDisk: function (diskId, dettach) {
-                url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId + '&dettach=' + dettach;
+            removeDisk: function (diskId, detach) {
+                url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId + '&detach=' + detach;
                 return $http.get(url).then(
                         function (result) {
                             return result.data;
