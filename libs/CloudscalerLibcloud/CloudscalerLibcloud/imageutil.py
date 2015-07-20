@@ -4,12 +4,21 @@ import os
 import sys
 import time
 
-
-def copyImageToOVS(imagepath):
+def setAsTemplate(imagepath):
     sys.path.append('/opt/OpenvStorage')
     from ovs.lib.vdisk import VDiskController
     from ovs.dal.lists.vdisklist import VDiskList
     from ovs.dal.lists.vpoollist import VPoolList
+    pool = VPoolList.get_vpool_by_name('vmstor')
+    disk = None
+    start = time.time()
+    while not disk and start + 60 > time.time():
+        time.sleep(2)
+        disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % imagepath, pool)
+    VDiskController.set_as_template(disk.guid)
+    return disk.guid
+
+def copyImageToOVS(imagepath):
 
     newimagepath = imagepath.replace('.qcow2', '.raw')
     dstdir = '/mnt/vmstor/templates'
@@ -19,19 +28,12 @@ def copyImageToOVS(imagepath):
 
     if not j.system.fs.exists(dst):
         j.system.platform.qemu_img.convert(src, 'qcow2', dst, 'raw')
-        size = int(j.system.platform.qemu_img.info(dst)['virtual size'], unit='')
+        size = int(j.system.platform.qemu_img.info(dst, unit='')['virtual size'])
         fd = os.open(dst, os.O_RDWR | os.O_CREAT)
         os.ftruncate(fd, size)
         os.close(fd)
-
-    pool = VPoolList.get_vpool_by_name('vmstor')
-    disk = None
-    start = time.time()
-    while not disk or start + 60 < time.time():
-        time.sleep(2)
-        disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % newimagepath, pool)
-    VDiskController.set_as_template(disk.guid)
-    return disk.guid, newimagepath
+    diskguid = setAsTemplate(newimagepath)
+    return diskguid, newimagepath
 
 def registerImage(jp, name, imagepath, type, disksize, username=None):
     templateguid, imagepath = copyImageToOVS(imagepath)

@@ -40,7 +40,7 @@ class Qcow2():
             return data
         except:
             f.close()
-            raise 'A error occured during reading of the file'
+            raise Exception('A error occured during reading of the file')
 
     def export(self, destination, outputtype='qcow2'):
             subprocess.check_call(

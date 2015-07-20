@@ -15,13 +15,26 @@ async = True
 
 
 def action(machineid, templatename, imageid, createfrom):
+    import sys
+    import os
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.lib.vdisk import VDiskController
+    from ovs.dal.lists.vdisklist import VDiskList
+    from ovs.dal.lists.vpoollist import VPoolList
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    from CloudscalerLibcloud import imageutil
     connection = LibvirtUtil()
-    image_id, imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
+    imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
+    size = int(j.system.platform.qemu_img.info(imagepath, unit='')['virtual size'])
+    fd = os.open(imagepath, os.O_RDWR | os.O_CREAT)
+    os.ftruncate(fd, size)
+    os.close(fd)
+    imagebasename = j.system.fs.getBaseName(imagepath)
+    diskguid = imageutil.setAsTemplate(imagebasename).replace('-', '')
     osiscl = j.clients.osis.getByInstance('main')
     imagemodel = j.clients.osis.getCategory(osiscl, 'cloudbroker', 'image')
     image = imagemodel.get(imageid)
-    image.referenceId = image_id
+    image.referenceId = diskguid
     image.status = 'CREATED'
     imagemodel.set(image)
 
@@ -30,10 +43,10 @@ def action(machineid, templatename, imageid, createfrom):
 
     imagename = j.system.fs.getBaseName(imagepath)
     installed_images = catimageclient.list()
-    if image_id not in installed_images:
+    if diskguid not in installed_images:
         image = dict()
         image['name'] = templatename
-        image['id'] = image_id
+        image['id'] = diskguid
         image['UNCPath'] = imagename
         image['type'] = 'custom templates'
         image['size'] = 0
@@ -46,10 +59,13 @@ def action(machineid, templatename, imageid, createfrom):
         rp['id'] = j.application.whoAmI.nid
         rp['gid'] = j.application.whoAmI.gid
         rp['guid'] = nodekey
-        rp['images'] = [image_id]
+        rp['images'] = [diskguid]
     else:
         rp = catresourceclient.get(nodekey)
-        if not image_id in rp.images:
-            rp.images.append(image_id)
+        if not diskguid in rp.images:
+            rp.images.append(diskguid)
     catresourceclient.set(rp)
     return image
+
+if __name__ == '__main__':
+    action('7ecf9fa8-de38-4dc5-8f4c-2d96c09b236a', 'test', 10, None)

@@ -337,9 +337,8 @@ class LibvirtUtil(object):
                     raise Exception('Failed to create lock: %s' % str(lock))
             else:
                 raise Exception("Can't perform this action on a locked domain")
-            q2 = Qcow2(clonefrom)
             try:
-                q2.export(destination_path)
+                j.system.platform.qemu_img.convert(clonefrom, 'raw', destination_path, 'raw')
             finally:
                 if self.isLocked(id):
                     self._unlockDomain(id)
@@ -356,10 +355,6 @@ class LibvirtUtil(object):
                 raise
             self.connection.defineXML(domainconfig)
         return destination_path
-
-
-    def _getImageId(self, path):
-        return j.tools.hash.sha1(path)
 
     def exportToTemplate(self, id, name, clonefrom):
         if self.isCurrentStorageAction(id):
@@ -379,8 +374,7 @@ class LibvirtUtil(object):
             else:
                 raise Exception('No snapshot found')
         destination_path = self._clone(id, name, clonefrom)
-        imageid = self._getImageId(destination_path)
-        return imageid, destination_path
+        return destination_path
 
     def create_disk(self, diskxml, poolname):
         pool = self._get_pool(poolname)
