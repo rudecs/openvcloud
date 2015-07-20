@@ -102,6 +102,7 @@ class LibvirtUtil(object):
         diskfiles = self._get_domain_disk_file_names(domain)
         if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
             domain.destroy()
+        domain.undefine()
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
