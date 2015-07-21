@@ -162,7 +162,7 @@ class cloudbroker_account(BaseActor):
         self.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
         _send_signup_mail(hrd=self.hrd, username=username, user=name, email=emailaddress, portalurl=locationurl)
 
-        return True
+        return accountid
 
     @auth(['level1', 'level2', 'level3'])
     def enable(self, accountname, reason, **kwargs):

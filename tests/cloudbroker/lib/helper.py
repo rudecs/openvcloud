@@ -8,10 +8,12 @@ SESSION_DATA = {'vms':[]}
 
 class API(object):
     API = {}
+
     def __init__(self):
         self._models = None
         self._portalclient = None
         self._cloudapi = None
+        self._cloudbroker = None
 
     def __getattr__(self, item):
         def set_api(attr):
@@ -28,10 +30,10 @@ class API(object):
                 return set_api(j.clients.osis.getNamespace('cloudbroker'))
             elif item == 'portalclient':
                 return set_api(j.clients.portal.getByInstance('main'))
-            elif item == 'cloudapi':
-                return set_api(self.portalclient.actors.cloudapi)
+            else:
+                actor = getattr(self.portalclient.actors, item)
+                return set_api(actor)
         raise AttributeError(item)
-
 
 class BaseTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -56,6 +58,11 @@ class BaseTest(unittest.TestCase):
             logging.info('Checking status %s vs %s',  vm['status'], status)
             vm = self.api.cloudapi.machines.get(vmid)
         self.assertEqual(vm['status'], status)
+
+    def get_location(self):
+        locations = self.api.cloudapi.locations.list()
+        self.assertTrue(locations)
+        return locations[0]
 
     def stop_vm(self, vmid):
         self.api.cloudapi.machines.stop(vmid)
