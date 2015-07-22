@@ -6,6 +6,7 @@ Mark failing tests with a :x: and passing tests with :white_check_mark:
 | # |Result|Test | Comment  | Youtrack issue |
 |---|-----|--------|----------|----------------|
 |1.1| :white_check_mark: | Go to https://[env].demo.greenitglobe.com/cbgrid - you can log in through the common login page and do not have security warnings| | |
+|1.2| :white_check_mark: | Go to https://[env].demo.greenitglobe.com/cbgrid - click actions `create account` fill in form, mail is received and created account can login to https://[env].demo.greenitglobe.com/wiki_gcb| | |
 
 ## OpenvStorage
 | # |Result|Test | Comment  | Youtrack issue |
