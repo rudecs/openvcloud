@@ -31,7 +31,9 @@ h2. Account: ${name}
   data:
    accountname: ${name}
   input:
-  - username
+  - name: username
+    label: Username
+    type: text
   - name: accesstype
     type: dropdown
     label: ACL
@@ -51,15 +53,7 @@ h2. Account: ${name}
   - username
 
 - display: Create Space
-  action: /restmachine/cloudbroker/cloudspace/create
-  data:
-   accountname: ${name}
-  input:
-  - name
-  - location
-  - access
-  - maxMemoryCapacity
-  - maxDiskCapacity
+  action: '#create_space'
 
 - display: Change Credit
   action: /restmachine/cloudbroker/finance/changeCredit
@@ -76,6 +70,8 @@ h2. Account: ${name}
   input:
   - name
 }}
+
+{{createspace: accountId:$$id}}
 
 h3. Details
 |*Account ID*|$$id|

@@ -49,7 +49,6 @@ class AccountTest(helper.BaseTest):
         api = j.clients.portal.get2(secret=self.session)
         api.cloudapi.accounts.deleteUser(accountId=self.accountId, userId=whoami)
         accounts = self.api.cloudapi.accounts.list()
-        self.assertTrue(accounts)
         accountids = [account['id'] for account in accounts]
         self.assertNotIn(self.accountId, accountids)
 
@@ -57,7 +56,7 @@ class AccountTest(helper.BaseTest):
 def tearDown():
     api = helper.API()
     for accountname in CLEANUP:
-        helper.API().cloudbroker.account.delete(accountname, accountname)
+        api.cloudbroker.account.delete(accountname, accountname)
 
 
 if __name__ == '__main__':

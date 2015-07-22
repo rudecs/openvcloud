@@ -3,6 +3,7 @@ import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
+from JumpScale.portal.portal import exceptions
 
 class cloudbroker_cloudspace(BaseActor):
     def __init__(self):
@@ -23,19 +24,13 @@ class cloudbroker_cloudspace(BaseActor):
         cloudspaceId = int(cloudspaceId)
         accounts = self.models.account.simpleSearch({'name':accountname})
         if not accounts:
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Account name not found'
+            raise exceptions.NotFound('Account name not found')
 
         accountid = accounts[0]['id']
 
         cloudspaces = self.models.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Cloudspace with name %s and id %s that has account %s not found' % (cloudspaceName, cloudspaceId, accountname)
+            raise exceptions.NotFound('Cloudspace with name %s and id %s that has account %s not found' % (cloudspaceName, cloudspaceId, accountname))
 
         cloudspace = cloudspaces[0]
 
@@ -75,12 +70,9 @@ class cloudbroker_cloudspace(BaseActor):
         param:cloudspaceId id of the cloudspace
         param:targetNode name of the firewallnode the virtual firewall has to be moved to
         """
-        ctx = kwargs["ctx"]
-        headers = [('Content-Type', 'application/json'), ]
         cloudspace = self.models.cloudspace.get(int(cloudspaceId))
         if cloudspace.status != 'DEPLOYED':
-            ctx.start_response("400", headers)
-            return 'Could not move fw for cloudspace which is not deployed'
+            raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         self.netmgr.fw_move(fwid, int(targetNid))
@@ -113,10 +105,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Cloudspace with id %s not found' % (cloudspaceId)
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         return self.cloudspaces_actor.deploy(cloudspaceId)
 
@@ -129,10 +118,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Cloudspace with id %s not found' % (cloudspaceId)
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         self.destroyVFW(cloudspaceId, **kwargs)
         return self.cloudspaces_actor.deploy(cloudspaceId)
@@ -142,10 +128,7 @@ class cloudbroker_cloudspace(BaseActor):
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Cloudspace with id %s not found' % (cloudspaceId)
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
 
@@ -166,7 +149,7 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, accountname, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
         Create a cloudspace
         param:accountname name of account to create space for
@@ -175,26 +158,18 @@ class cloudbroker_cloudspace(BaseActor):
         param:maxMemoryCapacity max size of memory in space (in GB)
         param:maxDiskCapacity max size of aggregated disks (in GB)
         """
-        ctx = kwargs["ctx"]
-        account = self.models.account.simpleSearch({'name':accountname})
-        if not account:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Account name not found'
-        accountId = account[0]['id']
-        user = self.syscl.user.simpleSearch({'id':access})
+        account = self.models.account.get(accountId)
+        user = self.syscl.user.search({'id': access})[1:]
         if not user:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return 'Username "%s" not found' % access
+            raise exceptions.NotFound('Username "%s" not found' % access)
         self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
         return True
 
     def _checkUser(self, username):
         user = self.syscl.user.simpleSearch({'id':username})
         if not user:
-            return False, 'Username "%s" not found' % username
-        return True, user[0]
+            raise exceptions.NotFound('Username "%s" not found' % username)
+        return user[0]
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -207,19 +182,12 @@ class cloudbroker_cloudspace(BaseActor):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        ctx = kwargs["ctx"]
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return "Cloud space with id %s doest not exists" % cloudspaceId
+            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
 
-        check, result = self._checkUser(username)
-        if not check:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return result
-        userId = result['id']
+        user = self._checkUser(username)
+        userId = user['id']
         self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
         return True
 
@@ -229,17 +197,10 @@ class cloudbroker_cloudspace(BaseActor):
         """
         Delete a user from the account
         """
-        ctx = kwargs["ctx"]
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return "Cloud space with id %s doest not exists" % cloudspaceId
-        check, result = self._checkUser(username)
-        if not check:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return result
-        userId = result['id']
+            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
+        user = self._checkUser(username)
+        userId = user['id']
         self.cloudspaces_actor.deleteUser(cloudspaceId, userId)
         return True
