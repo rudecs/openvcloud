@@ -118,7 +118,14 @@
   input:
   - localPort
   - destPort
-  - proto
+  - name: proto
+    type: dropdown
+    label: Protocol
+    values:
+     - label: TCP
+       value: tcp
+     - label: UDP
+       value: udp
   - reason
 
 - display: Delete Portforwarding
