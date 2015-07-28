@@ -19,8 +19,8 @@ async = True
 
 def action(domainid, temppath, name, storageparameters):
     import ujson, time
-    from JumpScale.baselib.backuptools import object_store
-    from JumpScale.baselib.backuptools import backup
+    from JumpScale.lib.backuptools import object_store
+    from JumpScale.lib.backuptools import backup
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     from CloudscalerLibcloud.utils.qcow2 import Qcow2
 

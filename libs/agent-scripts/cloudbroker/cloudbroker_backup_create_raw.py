@@ -18,8 +18,8 @@ async = True
 
 def action(path, name, storageparameters):
     import ujson, time
-    from JumpScale.baselib.backuptools import object_store
-    from JumpScale.baselib.backuptools import backup
+    from JumpScale.lib.backuptools import object_store
+    from JumpScale.lib.backuptools import backup
 
 
     files = j.system.fs.listFilesInDir(path)

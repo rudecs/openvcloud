@@ -36,7 +36,6 @@ def main(j, args, params, tags, tasklet):
     for stack in sorted(stacks, key=sortName):
         dropstacks.append((stack['name'], stack['id']))
 
-
     popup = Popup(id='createmachine', header='Create Machine', submit_url='/restmachine/cloudbroker/machine/create')
     popup.addText('Machine Name', 'name', required=True)
     popup.addText('Machine Description', 'description', required=True)
