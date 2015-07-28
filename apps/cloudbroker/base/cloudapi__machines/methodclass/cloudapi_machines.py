@@ -209,8 +209,11 @@ class cloudapi_machines(BaseActor):
         result int
 
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method backup")
+        storageparameters = {'storage_type': 'ceph',
+                             'bucket': 'vmbackup',
+                             'mdbucketname': 'mdvmbackup'}
+
+        return self._export(machineId, backupName, storageparameters)
 
     def _getProvider(self, machine):
         if machine.referenceId and machine.stackId:
@@ -646,6 +649,21 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='C')
     @audit()
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
+        storageparameters = {}
+        if not aws_access_key or not aws_secret_key or not host:
+            raise exceptions.BadRequest('S3 parameters are not provided')
+        storageparameters['aws_access_key'] = aws_access_key
+        storageparameters['aws_secret_key'] = aws_secret_key
+        storageparameters['host'] = host
+        storageparameters['is_secure'] = True
+
+        storageparameters['storage_type'] = 'S3'
+        storageparameters['backup_type'] = 'condensed'
+        storageparameters['bucket'] = bucket
+        storageparameters['mdbucketname'] = bucket
+        return self._export(machineId, name, host, storageparameters)
+
+    def _export(self, machineId, name, storageparameters, **kwargs):
         """
         Create a export/backup of a machine
         param:machineId id of the machine to backup
@@ -661,24 +679,9 @@ class cloudapi_machines(BaseActor):
         if not machine:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         stack = self.models.stack.get(machine.stackId)
-        storageparameters = {}
-        if not aws_access_key or not aws_secret_key or not host:
-            raise exceptions.BadRequest('S3 parameters are not provided')
-        storageparameters['aws_access_key'] = aws_access_key
-        storageparameters['aws_secret_key'] = aws_secret_key
-        storageparameters['host'] = host
-        storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = 'S3'
-        storageparameters['backup_type'] = 'condensed'
-        storageparameters['bucket'] = bucket
-        storageparameters['mdbucketname'] = bucket
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nodes = system_cl.node.search({'name':stack.referenceId})[:1]
-        if len(nodes) != 1:
-            raise exceptions.Conflict('Incorrect model structure')
-        nid = nodes[0]['id']
+        nid = int(stack.referenceId)
         args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']

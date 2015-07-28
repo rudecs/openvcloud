@@ -17,17 +17,12 @@ async = True
 
 
 def action(path, name, machineId,storageparameters,nid,backup_type):
-    import JumpScale.grid.osis
-    import JumpScale.grid.agentcontroller
-    import ujson, time
-    from JumpScale.baselib.backuptools import object_store
-    from JumpScale.baselib.backuptools import backup
+    import time
+    import ujson
     cloudbrokermodel = j.clients.osis.getNamespace('cloudbroker')
 
     vm = cloudbrokermodel.vmachine.get(machineId)
     agentcontroller = j.clients.agentcontroller.get()
-
-
 
     vmobject = ujson.dumps(vm.obj2dict())
     vmexport = cloudbrokermodel.vmexport.new()
