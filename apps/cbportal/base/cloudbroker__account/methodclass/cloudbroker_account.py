@@ -2,6 +2,7 @@ from JumpScale import j
 import time
 import re
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 def _send_signup_mail(hrd, **kwargs):
@@ -46,24 +47,20 @@ class cloudbroker_account(BaseActor):
         self.syscl = j.clients.osis.getNamespace('system')
         self.cloudapi = self.cb.actors.cloudapi
 
-    def _checkAccount(self, accountname, ctx):
+    def _checkAccount(self, accountname):
         account = self.models.account.simpleSearch({'name':accountname})
         if not account:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return False, 'Account name not found'
+            raise exceptions.NotFound('Account name not found')
         if len(account) > 1:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'Found multiple accounts for the account name "%s"' % accountname
+            raise exceptions.BadRequest('Found multiple accounts for the account name "%s"' % accountname)
 
-        return True, account[0]
+        return account[0]
 
     def _checkUser(self, username):
         user = self.syscl.user.simpleSearch({'id':username})
         if not user:
-            return False, 'Username "%s" not found' % username
-        return True, user[0]
+            raise exceptions.NotFound('Username "%s" not found' % username)
+        return user[0]
 
     def _isValidUserName(self, username):
         r = re.compile('^[a-z0-9]{1,20}$')
@@ -83,26 +80,21 @@ class cloudbroker_account(BaseActor):
         param:reason reason of disabling
         result
         """
-        ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        else:
-            msg = 'Account: %s\nReason: %s' % (accountname, reason)
-            subject = 'Disabling account: %s' % accountname
-            ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
-            account = result
-            account['deactivationTime'] = time.time()
-            account['status'] = 'DISABLED'
-            self.models.account.set(account)
-            # stop all account's machines
-            cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
-            for cs in cloudspaces:
-                vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
-                for vmachine in vmachines:
-                    self.cloudapi.machines.stop(vmachine['id'])
-            j.tools.whmcs.tickets.close_ticket(ticketId)
-            return True
+        account = self._checkAccount(accountname)
+        msg = 'Account: %s\nReason: %s' % (accountname, reason)
+        subject = 'Disabling account: %s' % accountname
+        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+        account['deactivationTime'] = time.time()
+        account['status'] = 'DISABLED'
+        self.models.account.set(account)
+        # stop all account's machines
+        cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
+        for cs in cloudspaces:
+            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+            for vmachine in vmachines:
+                self.cloudapi.machines.stop(vmachine['id'])
+        j.tools.whmcs.tickets.close_ticket(ticketId)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -120,7 +112,7 @@ class cloudbroker_account(BaseActor):
         if j.core.portal.active.auth.userExists(username):
             if not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
                 ctx.start_response('409 Conflict', [])
-                return 'An user with this email address already exists'
+                return 'The specific user and email do not match.'
         else:
             j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)
 
@@ -172,21 +164,13 @@ class cloudbroker_account(BaseActor):
         param:reason reason of enabling
         result
         """
-        ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        else:
-            account = result
-            if account['status'] != 'DISABLED':
-                ctx = kwargs["ctx"]
-                headers = [('Content-Type', 'application/json'), ]
-                ctx.start_response("400", headers)
-                return 'Account is not disabled'
+        account = self._checkAccount(accountname)
+        if account['status'] != 'DISABLED':
+            raise exceptions.BadRequest('Account is not disabled')
 
-            account['status'] = 'CONFIRMED'
-            self.models.account.set(account)
-            return True
+        account['status'] = 'CONFIRMED'
+        self.models.account.set(account)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     def rename(self, accountname, name, **kwargs):
@@ -196,37 +180,28 @@ class cloudbroker_account(BaseActor):
         param:name new name of the account
         result
         """
-        ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        else:
-            account = result
-            account['name'] = name
-            self.models.account.set(account)
-            return True
+        account = self._checkAccount(accountname)
+        account['name'] = name
+        self.models.account.set(account)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     def delete(self, accountname, reason, **kwargs):
         """
         Complete delete an acount from the system
         """
-        ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        else:
-            accountId = result['id']
-            query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
-            cloudspaces = self.models.cloudspace.search(query)[1:]
-            for cloudspace in cloudspaces:
-                cloudspacename = cloudspace['name']
-                cloudspaceid = cloudspace['id']
-                j.apps.cloudbroker.cloudspace.destroy(accountname, cloudspacename, cloudspaceid, reason, **kwargs)
-            account = self.models.account.get(accountId)
-            account.status = 'DESTROYED'
-            self.models.account.set(account)
-            return True
+        account = self._checkAccount(accountname)
+        accountId = account['id']
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+        cloudspaces = self.models.cloudspace.search(query)[1:]
+        for cloudspace in cloudspaces:
+            cloudspacename = cloudspace['name']
+            cloudspaceid = cloudspace['id']
+            j.apps.cloudbroker.cloudspace.destroy(accountname, cloudspacename, cloudspaceid, reason, **kwargs)
+        account = self.models.account.get(accountId)
+        account.status = 'DESTROYED'
+        self.models.account.set(account)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -240,16 +215,10 @@ class cloudbroker_account(BaseActor):
         result bool
         """
         ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        accountId = result['id']
-        check, result = self._checkUser(username)
-        if not check:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return result
-        userId = result['id']
+        account = self._checkAccount(accountname)
+        accountId = account['id']
+        user = self._checkUser(username)
+        userId = user['id']
         self.cloudapi.accounts.addUser(accountId, userId, accesstype)
         return True
 
@@ -260,15 +229,9 @@ class cloudbroker_account(BaseActor):
         Delete a user from the account
         """
         ctx = kwargs["ctx"]
-        check, result = self._checkAccount(accountname, ctx)
-        if not check:
-            return result
-        accountId = result['id']
-        check, result = self._checkUser(username)
-        if not check:
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return result
-        userId = result['id']
+        account = self._checkAccount(accountname)
+        accountId = account['id']
+        user = self._checkUser(username)
+        userId = user['id']
         self.cloudapi.accounts.deleteUser(accountId, userId)
         return True
