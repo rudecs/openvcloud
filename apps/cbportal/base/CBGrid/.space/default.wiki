@@ -8,8 +8,7 @@
 
 {{menu:
 StatusOverview:/grid/checkstatus
-GridPortal:/grid
-OVC Portal:/cbgrid
+Open vCloud Portal:/cbgrid
 }}
 
 {{menuadmin:
