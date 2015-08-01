@@ -1,4 +1,0 @@
-
-h2. API
-
-{{actorsdocs: actors:cloudapi__machine,cloudapi__cloudspace,cloudapi__images,cloudapi__sizes,cloudapi__account,cloudapi__users}}
