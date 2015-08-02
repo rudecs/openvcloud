@@ -607,7 +607,7 @@ class cloudapi_machines(BaseActor):
 
         if not self._assertName(machine.cloudspaceId, name, **kwargs):
             raise exceptions.Conflict('Selected name already exists')
-        clone = self.cb.models.vmachine.new()
+        clone = self.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
         clone.name = name
         clone.descr = machine.descr
@@ -618,8 +618,12 @@ class cloudapi_machines(BaseActor):
 
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
-            clonedisk = self.cb.models.disk.new()
+            clonedisk = self.models.disk.new()
             clonedisk.name = origdisk.name
+            clonedisk.gid = origdisk.gid
+            clonedisk.order = origdisk.order
+            clonedisk.accountId = origdisk.accountId
+            clonedisk.type = origdisk.type
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.models.disk.set(clonedisk)[0]
