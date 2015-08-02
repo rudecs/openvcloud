@@ -529,7 +529,7 @@ class cloudapi_machines(BaseActor):
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:
-            if not snapshot['name'].endswith('_DELETING'):
+            if snapshot['name'] and not snapshot['name'].endswith('_DELETING'):
                 result.append(snapshot)
         return result
 
