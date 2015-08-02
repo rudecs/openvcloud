@@ -241,4 +241,3 @@ class billingengine_billingengine(j.code.classGetBase()):
         newbalance.time = int(time.time())
         newbalance.credit = balance
         self.cloudbrokermodels.creditbalance.set(newbalance)
-        #TODO: remove older credit balances

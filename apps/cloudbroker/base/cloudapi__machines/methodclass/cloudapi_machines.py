@@ -615,6 +615,9 @@ class cloudapi_machines(BaseActor):
         clone.imageId = machine.imageId
         clone.cloneReference = machine.id
         clone.acl = machine.acl
+        clone.creationTime = int(time.time())
+
+
 
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)

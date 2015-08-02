@@ -22,7 +22,7 @@ class cloudapi_consumption(object):
         result bool
         """
         billingstatement = self.models.billingstatement.get(int(reference))
-        if str(billingstatement.accountId) != accountId:
+        if billingstatement.accountId != accountId:
             ctx = kwargs['ctx']
             ctx.start_response('401 Unauthorized', [])
             return ""
