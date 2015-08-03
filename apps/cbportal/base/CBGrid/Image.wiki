@@ -4,7 +4,7 @@
 h3. Image: ${name}
 
 {{actions:
-- display: Change CPU Nodes
+- display: Image Availability
   action: '#image_update_cpu_nodes'
 
 - display: Delete

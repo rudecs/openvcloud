@@ -10,14 +10,14 @@ def main(j, args, params, tags, tasklet):
     else:
         image = {'id': None}
 
-    popup = Popup(id='image_update_cpu_nodes', header='Change CPU Nodes for Image', submit_url='/restmachine/cloudbroker/image/updateNodes')
+    popup = Popup(id='image_update_cpu_nodes', header='Image Availability', submit_url='/restmachine/cloudbroker/image/updateNodes')
 
     options = list()
     for stack in ccl.stack.search({})[1:]:
         available = image['id'] in stack.get('images', [])
         options.append((stack['name'], stack['id'], available))
 
-    popup.addCheckboxes('Select Stacks', 'enabledStacks', options)
+    popup.addCheckboxes('Select the CPU nodes you want to make this Image available on', 'enabledStacks', options)
     popup.addHiddenField('imageId', referenceId)
     popup.write_html(page)
 
