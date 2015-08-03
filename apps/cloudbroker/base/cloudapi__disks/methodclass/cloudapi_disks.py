@@ -46,6 +46,8 @@ class cloudapi_disks(BaseActor):
         return disk.id
 
     def _create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
+        if size > 2000:
+            raise exceptions.BadRequest("Disk size can not be bigger than 2000 GB")
         disk = self.models.disk.new()
         disk.name = name
         disk.descr = description
