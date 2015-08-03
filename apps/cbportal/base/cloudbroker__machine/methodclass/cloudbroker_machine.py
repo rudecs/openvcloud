@@ -3,12 +3,9 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import time, string
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
-import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal import exceptions
 import ujson
-import JumpScale.baselib.remote.cuisine
-import JumpScale.grid.agentcontroller
-import JumpScale.lib.whmcs
 
 
 class cloudbroker_machine(BaseActor):
@@ -119,59 +116,38 @@ class cloudbroker_machine(BaseActor):
         cloudspace.resourceProviderStacks = list(providerstacks)
         self.models.cloudspace.set(cloudspace)
 
+
+    def _validateMachineRequest(self, machineId, accountName=None, spaceName=None):
+        machineId = int(machineId)
+        if not self.models.vmachine.exists(machineId):
+            raise exceptions.NotFound('Machine ID %s was not found' % machineId)
+
+        vmachine = self.models.vmachine.get(machineId)
+
+        if vmachine.status == 'DESTROYED' or not vmachine.status:
+            raise exceptions.BadRequest('Machine %s is invalid' % machineId)
+
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        if spaceName and cloudspace.name != spaceName:
+            raise exceptions.BadRequest("Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName))
+
+        if accountName:
+            account = self.models.account.get(cloudspace.accountId)
+            if account.name != accountName:
+                raise exceptions.BadRequest("Machine's account %s does not match the given account name %s" % (account.name, accountName))
+        return vmachine
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         self.machines_actor.delete(vmachine.id)
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Starting machine: %s' % vmachine.name
         ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -181,28 +157,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Stopping machine: %s' % vmachine.name
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -212,28 +167,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def pause(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Pausing machine: %s' % vmachine.name
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -243,28 +177,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resume(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Resuming machine: %s' % vmachine.name
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -274,28 +187,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
         subject = 'Rebooting machine: %s' % vmachine.name
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -305,28 +197,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Snapshotting machine: %s' % vmachine.name
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -336,28 +207,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Rolling back snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -367,28 +217,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Deleting snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -398,28 +227,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if not cloudspace.name == spaceName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName)
-
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
+        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nClone name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, cloneName, reason)
         subject = 'Cloning machine: %s into machine: %s' % (vmachine.name, cloneName)
         ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
@@ -429,30 +237,17 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, accountName, None)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
         source_stack = self.models.stack.get(vmachine.stackId)
-        if account.name != accountName:
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
-
         if targetStackId:
             target_stack = self.models.stack.get(int(targetStackId))
             if target_stack.gid != source_stack.gid:
-                ctx.start_response('400', headers)
-                return 'Target stack %(name)s is not on some grid as source' % target_stack
+                raise exceptions.BadRequest('Target stack %(name)s is not on some grid as source' % target_stack)
 
         else:
             target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
-
 
         # validate machine template is on target node
         image = self.models.image.get(vmachine.imageId)
@@ -462,8 +257,7 @@ class cloudbroker_machine(BaseActor):
         srcmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=source_stack.gid, nid=int(source_stack.referenceId), wait=True)['result']
         destmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)['result']
         if srcmd5 != destmd5:
-            ctx.start_response('400', headers)
-            return "Image's MD5sum on target node doesn't match machine base image MD5sum"
+            raise exceptions.BadRequest("Image's MD5sum on target node doesn't match machine base image MD5sum")
 
         # create network on target node
         self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
@@ -487,8 +281,7 @@ class cloudbroker_machine(BaseActor):
                 'snapshots': snapshots}
         job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
         if job['state'] != 'OK':
-            ctx.start_response('500', headers)
-            return "Migrate failed: %s" % (job['result'])
+            raise exceptions.Error("Migrate failed: %s" % (job['result']))
 
         vmachine.stackId = target_stack.id 
         self.models.vmachine.set(vmachine)
@@ -496,18 +289,12 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, bucketname, **kwargs):
         machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        machine = self.models.vmachine.get(machineId)
-        if not machine:
-            ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
+        machine = self._validateMachineRequest(machineId)
         stack = self.models.stack.get(machine.stackId)
         storageparameters  = {}
         if storage == 'S3':
             if not aws_access_key or not aws_secret_key or not host:
-                  ctx.start_response('400', headers)
-                  return 'S3 parameters are not provided'
+                  raise exceptions.BadRequest('S3 parameters are not provided')
             storageparameters['aws_access_key'] = aws_access_key
             storageparameters['aws_secret_key'] = aws_secret_key
             storageparameters['host'] = host
@@ -529,18 +316,14 @@ class cloudbroker_machine(BaseActor):
     def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
         vmexportId = int(vmexportId)
         nid = int(nid)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
         vmexport = self.models.vmexport.get(vmexportId)
         if not vmexport:
-            ctx.start_response('400', headers)
-            return 'Export definition with id %s not found' % vmexportId
+            raise exceptions.NotFound('Export definition with id %s not found' % vmexportId)
         storageparameters = {}
 
         if vmexport.storagetype == 'S3':
             if not aws_access_key or not aws_secret_key:
-                ctx.start_response('400', headers)
-                return 'S3 parameters are not provided'
+                raise exceptions.BadRequest('S3 parameters are not provided')
             storageparameters['aws_access_key'] = aws_access_key
             storageparameters['aws_secret_key'] = aws_secret_key
             storageparameters['host'] = vmexport.server
@@ -549,7 +332,6 @@ class cloudbroker_machine(BaseActor):
         storageparameters['storage_type'] = vmexport.storagetype
         storageparameters['bucket'] = vmexport.bucket
         storageparameters['mdbucketname'] = vmexport.bucket
-
 
         metadata = ujson.loads(vmexport.files)
 
@@ -575,20 +357,10 @@ class cloudbroker_machine(BaseActor):
         param:machineId id of the machine to tag
         param:tagName tag
         """
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'vMachine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId)
         tags = j.core.tags.getObject(vmachine.tags)
         if tags.labelExists(tagName):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'Tag %s is already assigned to this vMachine' % tagName
+            raise exceptions.Conflict('Tag %s is already assigned to this vMachine' % tagName)
 
         tags.labelSet(tagName)
         vmachine.tags = tags.tagstring
@@ -602,20 +374,10 @@ class cloudbroker_machine(BaseActor):
         param:machineId id of the machine to untag
         param:tagName tag
         """
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'vMachine ID %s was not found' % machineId
-
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId)
         tags = j.core.tags.getObject(vmachine.tags)
         if not tags.labelExists(tagName):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'vMachine does not have tag %s' % tagName
+            raise exceptions.NotFound('vMachine does not have tag %s' % tagName)
 
         tags.labelDelete(tagName)
         vmachine.tags = tags.tagstring
@@ -633,10 +395,7 @@ class cloudbroker_machine(BaseActor):
         param:cloudspaceId specific cloudspace
         """
         if not tag and not computeNode and not accountName and not cloudspaceId:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return 'At least one parameter must be passed'
+            raise exceptions.BadRequest('At least one parameter must be passed')
         query = dict()
         if tag:
             query['tags'] = tag
@@ -679,10 +438,7 @@ class cloudbroker_machine(BaseActor):
         stack = self.models.stack.get(vmachine.stackId)
         job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id, 'chain': True}, gid=stack.gid, nid=int(stack.referenceId), wait=True)
         if job['state'] != 'OK':
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('500', headers)
-            return 'Something wrong with image or node see job %s' % job['guid']
+            raise exceptions.Error('Something wrong with image or node see job %s' % job['guid'])
         return job['result']
 
 
@@ -696,19 +452,7 @@ class cloudbroker_machine(BaseActor):
         @param:reason str,,Reason
         '''
         machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+        vmachine = self._validateMachineRequest(machineId, accountName, None)
 
         stack = self.models.stack.get(vmachine.stackId)
         subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
@@ -726,20 +470,7 @@ class cloudbroker_machine(BaseActor):
         * Destroy the machine
         * Close the ticket
         """
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        if not account.name == accountName:
-            ctx = kwargs['ctx']
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response('400', headers)
-            return "Machine's account %s does not match the given account name %s" % (account.name, accountName)
+        vmachine = self._validateMachineRequest(machineId, accountName, None)
         stack = self.models.stack.get(vmachine.stackId)
         args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpscript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
@@ -747,51 +478,18 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def listSnapshots(self, machineId, **kwargs):
-        ctx = kwargs.get('ctx')
-        headers = [('Content-Type', 'application/json'), ]
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
-        if vmachine.status=='DESTROYED' or not vmachine.status:
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s is invalid' % machineId
+        self._validateMachineRequest(machineId)
         return self.machines_actor.listSnapshots(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def getHistory(self, machineId, **kwargs):
-        ctx = kwargs.get('ctx')
-        headers = [('Content-Type', 'application/json'), ]
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
-        if vmachine.status=='DESTROYED' or not vmachine.status:
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s is invalid' % machineId
+        self._validateMachineRequest(machineId)
         return self.machines_actor.getHistory(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     def listPortForwards(self, machineId, **kwargs):
-        ctx = kwargs.get('ctx')
-        headers = [('Content-Type', 'application/json'), ]
-        machineId = int(machineId)
-        if not self.models.vmachine.exists(machineId):
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
-        if vmachine.status=='DESTROYED' or not vmachine.status:
-            if ctx:
-                ctx.start_response('400', headers)
-            return 'Machine %s is invalid' % machineId
+        vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         vfwkey = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         results = list()
@@ -807,100 +505,56 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
         machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
         subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
-        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
         self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deletePortForward(self, machineId, spaceName, ruleId, reason, **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (account.name, spaceName, vmachine.name, ruleId, reason)
         subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
-        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.delete(cloudspace.id, ruleId)
         self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def addDisk(self, machineId, spaceName, diskName, description, reason, size=10, type='D', **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskName, reason)
         subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
-        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
         self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteDisk(self, machineId, spaceName, diskId, reason, **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskId, reason)
         subject = 'Deleting disk: %s for machine %s' % (diskId, vmachine.name)
-        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.delDisk(machineId, diskId)
         self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def createTemplate(self, machineId, spaceName, templateName, reason, **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (account.name, spaceName, vmachine.name, templateName, reason)
         subject = 'Creating template: %s for machine %s' % (templateName, vmachine.name)
@@ -911,17 +565,8 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def updateMachine(self, machineId, spaceName, description, reason, **kwargs):
-        machineId = int(machineId)
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self.models.vmachine.exists(machineId):
-            ctx.start_response('404', headers)
-            return 'Machine ID %s was not found' % machineId
-        vmachine = self.models.vmachine.get(machineId)
+        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName != cloudspace.name:
-            ctx.start_response('400', headers)
-            return "Machine's cloud space %s does not match the given cloud space name %s" % (cloudspace.name, spaceName)
         account = self.models.account.get(cloudspace.accountId)
         msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (account.name, spaceName, vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
