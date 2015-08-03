@@ -1,21 +1,27 @@
-<div class="machineList container" >
+<div class="machineList container">
     <form ng-submit="addDisk()">
         <div class="row margin-bottom-large">
-            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 75px;">Name:</span>
-            <input type="text" ng-model="disk.name" class="form-control width-40 left margin-right-medium" required>
+            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Name:</span>
+            <input type="text" ng-model="disk.name" class="form-control width-40 left margin-right-medium" required placeholder="Disk name..">
         </div>
         <div class="row margin-bottom-large">
-            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 75px;">Size:</span>
-            <input type="number" ng-model="disk.size" class="form-control width-40 left margin-right-medium" ng-pattern="/^[0-9]{1,9}$/" required>
+            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Size:</span>
+            <input type="number" ng-model="disk.size" class="form-control width-40 left margin-right-medium" ng-pattern="/^[0-9]{1,9}$/" required placeholder="Size in Gigabytes..">
+            <span style="padding-top: 6px; display: block;">GB</span>
         </div>
         <div class="row margin-bottom-large">
-            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 75px;">Description:</span>
-            <textarea rows="4" cols="50" class="form-control width-40 left margin-right-medium" ng-model="disk.description"></textarea>
+            <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Description:</span>
+            <textarea rows="4" cols="50" class="form-control width-40 left margin-right-medium" ng-model="disk.description" placeholder="Description notes.."></textarea>
         </div>
     </form>
     <div class="marginTopXlarge row">
-        <em class="block" ng-show="machine.status != 'HALTED'">Machine must be stopped to create disk.</em>
-        <button class="btn btn-info mainButton" ng-click="createDisks()" ng-disabled="!disk.name || !disk.size || machine.status != 'HALTED'">
+        <div class="row">
+            <div class="alert alert-warning span4 margin-bottom-large margin-left-large" ng-show="disk.size == '' || disk.size < 1 || disk.size > 2000">
+                <em class="block margin-bottom-small" ng-show="machine.status != 'HALTED'">Machine must be stopped to create disk.</em>
+                <em class="block" ng-show="disk.size < 1 || disk.size > 2000">Size can only be between 1GB and up to 2000GB.</em>
+            </div>
+        </div>
+        <button class="btn btn-info mainButton" ng-click="createDisk()" ng-disabled="!isValidCreateDisk()">
             <i class="fa fa-hdd-o txt-20"></i>
             <span class="margin-left-small">Create disk</span>
         </button>

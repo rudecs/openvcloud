@@ -18,7 +18,7 @@ angular.module('cloudscalers.controllers')
         }
         getMachine();
 
-        $scope.createDisks = function() {
+        $scope.createDisk = function() {
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
                 getMachine();
@@ -105,6 +105,10 @@ angular.module('cloudscalers.controllers')
 
         $scope.isDataDisk = function(disk){
            return disk.type != 'B';
+        }
+
+        $scope.isValidCreateDisk = function(){
+            return $scope.disk.name != '' && $scope.disk.size != '' && $scope.machine.status == 'HALTED' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
         }
 
         $scope.$watch('machine.acl', function () {
