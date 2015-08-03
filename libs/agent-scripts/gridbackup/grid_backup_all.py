@@ -13,6 +13,7 @@ roles = ['master']
 queue = "io"
 async = True
 period = 3600
+enabled = False
 
 def action():
     import JumpScale.grid.agentcontroller
