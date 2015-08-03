@@ -28,6 +28,7 @@ def action():
         import JumpScale.lib.routeros
         if j.system.fs.exists(backuppath):
             j.system.fs.removeDirTree(backuppath)
+            j.system.fs.createDir(backuppath)
 
         osiscl = j.core.osis.client
         vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
