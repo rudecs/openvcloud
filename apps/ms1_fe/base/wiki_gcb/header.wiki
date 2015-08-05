@@ -61,7 +61,7 @@
                       </li>
                     </ul>
                     <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
-                      <form name="form" class="form-horizontal" ng-submit="submit()">
+                      <form name="form" class="new-cloudspace-modal form-horizontal" ng-submit="submit()">
                         <div class="modal-header">
                           <h2>New Cloud Space</h2>
                         </div>
@@ -111,5 +111,16 @@
         </div>
       </div>
     </nav>
+  </div>
+  <div id="cloudspacesListEmptyDialog" class="modal fade bs-example-modal-lg" data-keyboard="false" data-backdrop="static">
+    <div class="modal-header">
+      <h4 class="modal-title">Error</h4>
+    </div>
+    <div class="modal-body">
+      This user does not have access to a single account, Please contact your administrator to create an account.
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" ng-click="invalidAccount()">Ok</button>
+    </div>
   </div>
 }}
