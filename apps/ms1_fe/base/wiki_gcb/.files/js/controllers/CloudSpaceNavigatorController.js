@@ -1,12 +1,16 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window',
-        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'Account' , 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window',
+        function ($scope, $modal, LocationsService, CloudSpace,Account ,LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
             $scope.isCollapsed = true;
 
             $scope.locations = {};
             
             LocationsService.list().then(function(locations) {
                 $scope.locations = locations;
+            });
+
+            Account.list().then(function(accounts) {
+                $scope.accounts = accounts;
             });
 
             $scope.AccountCloudSpaceHierarchy = undefined;
@@ -31,11 +35,6 @@ angular.module('cloudscalers.controllers')
             });
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
-                $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
-                        function(account){return account.acl != null;}
-                    );
-
-
                 var selectedAccount = _.find($scope.accounts, function(account1){return account1.id == $scope.currentAccount.id;});
                 if (selectedAccount == null){
                     selectedAccount = $scope.accounts[0];
