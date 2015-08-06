@@ -10,7 +10,10 @@
                         <span>Logout</span>
                     </a>
                 </li>
-                <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
+                <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>
+                  <i class="fa fa-user"></i>
+                  {[currentUser.username]}
+                </a> </li>
             </ul>
         </div>
     </div>
