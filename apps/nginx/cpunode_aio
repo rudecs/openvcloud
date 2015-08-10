@@ -11,3 +11,13 @@ server {
 		return 404;
 	}
 }
+
+server {
+	listen 21001;
+	server_name ovs;
+	location / {
+		proxy_pass https://localhost;
+		proxy_set_header Host $http_x_forwarded_host;
+	}
+
+}
