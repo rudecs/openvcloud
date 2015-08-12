@@ -1,0 +1,28 @@
+instance.key.priv              = 
+    -----BEGIN DSA PRIVATE KEY-----
+    MIIBuwIBAAKBgQDc8Ojidjd7BVbXe1tolztx/9z6SvuQDemcdFArA3TAp4S9nb2e
+    MVP89mJxkW74NObwODcili2RjvvELIvx75w2JqBckBtgXEyIgrUd68IvfDDwcNUW
+    7mY2rilSEoZVRKhi8cK6pgg8gjZvQwbEigoEUfxhpDMK7Urs3twx734oEQIVAIJ6
+    w/v3eiNxNPyfFhE8UUjBEz9PAoGBAMMx3Dve2TjTTauEIuGIw1YniJFn13A16GyM
+    iR+NDAZjT9YCHA4bqbza/PI1qMzStBDCCuvCH+BO6RHj7aW77rEGYr/hOE0xYOaa
+    7FzIiY/rkYnzD4uEV9jMBxgZjnmApm64Y+bs1DJuVHQq+jTXArEmtEv4P40w+0+O
+    9R8brKFtAoGAVzXd21jPMuJN/n7KxYxS22OtOUau8WITUy/N5thw+fF88mz7qIJn
+    BIwK/j14rtZeUtk+hPqeKmSpykCQcpXWfXzg9RI/8KhYklhVqnrA8Nm6gHQf6EzE
+    n+um5Khc/qZpQZXvrL13fowyxzk1Y0d1QYZjqATrb5JwkQHnPbVTb+0CFHmpi/SS
+    cYd0Y6/eYf17y3bjEf15
+    -----END DSA PRIVATE KEY-----
+
+instance.key.pub               = 
+    ssh-dss AAAAB3NzaC1kc3MAAACBANzw6OJ2N3sFVtd7W2iXO3H/3PpK+5AN6Zx0UCsDdMCnhL2dvZ4xU/z2YnGRbvg05vA4NyKWLZGO+8Qsi/HvnDYmoFyQG2BcTIiCtR3rwi98MPBw1RbuZjauKVIShlVEqGLxwrqmCDyCNm9DBsSKCgRR/GGkMwrtSuze3DHvfigRAAAAFQCCesP793ojcTT8nxYRPFFIwRM/TwAAAIEAwzHcO97ZONNNq4Qi4YjDVieIkWfXcDXobIyJH40MBmNP1gIcDhupvNr88jWozNK0EMIK68If4E7pEePtpbvusQZiv+E4TTFg5prsXMiJj+uRifMPi4RX2MwHGBmOeYCmbrhj5uzUMm5UdCr6NNcCsSa0S/g/jTD7T471HxusoW0AAACAVzXd21jPMuJN/n7KxYxS22OtOUau8WITUy/N5thw+fF88mz7qIJnBIwK/j14rtZeUtk+hPqeKmSpykCQcpXWfXzg9RI/8KhYklhVqnrA8Nm6gHQf6EzEn+um5Khc/qZpQZXvrL13fowyxzk1Y0d1QYZjqATrb5JwkQHnPbVTb+0= root@dev
+
+service.domain                 = 'jumpscale'
+service.installed.checksum     = 'e7c7f0294dfe24a0250a82d9edc54874'
+service.instance               = 'ovc_git'
+service.link.1                 =
+    action:'ssh',
+    descr:'provide sshkey to access node',
+    name:'node.ssh.key',
+    nr.max:'24',
+    nr.min:'0',
+
+service.name                   = 'sshkey'

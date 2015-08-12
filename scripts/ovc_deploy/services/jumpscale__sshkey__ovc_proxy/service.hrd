@@ -1,0 +1,28 @@
+instance.key.priv              = 
+    -----BEGIN DSA PRIVATE KEY-----
+    MIIBuwIBAAKBgQDuu6lFA4YrfuSz/7fF3muhpxicNSCkbcyhJCSNKaU8DpgsJy86
+    qtZnoPdye56SWGnjgZpQs5pXiQdKclMt09D3qZd+gXMbGWwx2w7A6u/ZyMsdXEF2
+    OT2W7nYruoV4xvjdIfDZsT0M2nu+0aLlLj8QGML6wm6Up/kgbwxwt/RrvQIVANXP
+    PRVOsKOjxYThvm0Ql8XLHq43AoGBAKU4+qv9bEH0kqhyiO69t6EAP8eEebsbSJIb
+    x24xkRqEeUZEEgZoQqttW2qHnPyJJVKN6/ReN1U9J7nn2eqWIm/s8v//QzOCDq9x
+    Krj6kJhKyDqbpiUf+DEEoI93HLg8nlZDNOvr+QyeohgWFWyJT4grXGx7HIiuQDxH
+    Lgj1eDlpAoGAfYZSRdSgowOEw7j3+wy+bPBkteCIo3IwlRW8lcufcgLvwOXxWNCO
+    uPfO//oNm7TLnFfv3PtQdmYoadogdOq5+RpwbnCAhlojHXh55lU9Sgeyxy2UW740
+    A7CCrQzdKFg/v1IhmXLbx3SAuGY6swf/qv9iSecQV2zF7fnUk703OC0CFDLU+uu6
+    UkBVxWjk4K5GqaLcqH2a
+    -----END DSA PRIVATE KEY-----
+
+instance.key.pub               = 
+    ssh-dss AAAAB3NzaC1kc3MAAACBAO67qUUDhit+5LP/t8Xea6GnGJw1IKRtzKEkJI0ppTwOmCwnLzqq1meg93J7npJYaeOBmlCzmleJB0pyUy3T0Pepl36BcxsZbDHbDsDq79nIyx1cQXY5PZbudiu6hXjG+N0h8NmxPQzae77RouUuPxAYwvrCbpSn+SBvDHC39Gu9AAAAFQDVzz0VTrCjo8WE4b5tEJfFyx6uNwAAAIEApTj6q/1sQfSSqHKI7r23oQA/x4R5uxtIkhvHbjGRGoR5RkQSBmhCq21baoec/IklUo3r9F43VT0nuefZ6pYib+zy//9DM4IOr3EquPqQmErIOpumJR/4MQSgj3ccuDyeVkM06+v5DJ6iGBYVbIlPiCtcbHsciK5APEcuCPV4OWkAAACAfYZSRdSgowOEw7j3+wy+bPBkteCIo3IwlRW8lcufcgLvwOXxWNCOuPfO//oNm7TLnFfv3PtQdmYoadogdOq5+RpwbnCAhlojHXh55lU9Sgeyxy2UW740A7CCrQzdKFg/v1IhmXLbx3SAuGY6swf/qv9iSecQV2zF7fnUk703OC0= root@dev
+
+service.domain                 = 'jumpscale'
+service.installed.checksum     = 'e7c7f0294dfe24a0250a82d9edc54874'
+service.instance               = 'ovc_proxy'
+service.link.1                 =
+    action:'ssh',
+    descr:'provide sshkey to access node',
+    name:'node.ssh.key',
+    nr.max:'24',
+    nr.min:'0',
+
+service.name                   = 'sshkey'
