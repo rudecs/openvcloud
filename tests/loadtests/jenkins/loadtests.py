@@ -12,14 +12,14 @@ import pexpect
 URL = 'http://cpu01.lenoir1.vscalers.com/'
 USERNAME = 'loadtester'
 PASSWORD = 'rooterR00t3r'
-CLOUD_SPACE_ID = 90
+CLOUD_SPACE_ID = 91
 SIZEIDS = [2]
 UBUNTU_IMAGE_ID = 2
 WINDOWS_IMAGE_ID = 4
 WINDOWS_DISK_SIZE = 16
 UBUNTU_DISK_SIZE = 10
 
-PUBLICIP = '192.198.94.17'
+PUBLICIP = '192.198.94.16'
 
 def _getPackageName(sizeId):
     """
@@ -63,7 +63,9 @@ def createMachine(id, imageid, disksize, sizeid, authkey):
 def exposeMachine(machineid, publiport, authkey):
     exposeurl = '%s/restmachine/cloudapi/portforwarding/create?cloudspaceid=%s&protocol=tcp&localPort=22&vmid=%s&publicIp=%s&publicPort=%s&authkey=%s' % (
             URL, CLOUD_SPACE_ID, machineid, PUBLICIP, publiport, authkey)
-    import ipdb;ipdb.set_trace()
+    
+    # Make sure machine has IP address
+    vm = getMachine(machineid, authkey)
     res = requests.get(exposeurl)
     if not res.ok:
         raise Exception(res.text)
@@ -96,44 +98,40 @@ def installAndRunUnixBench(machineids, authkey, hosts_public_ports):
         sshusername = vm['accounts'][0]['login']
         sshhost = PUBLICIP
         ssh_newkey = 'Are you sure you want to continue connecting'
-        # my ssh command line
-        p=pexpect.spawn('ssh %s@%s -p %s uname -a' % (sshhost, sshusername, sshport))
+        p=pexpect.spawn('ssh %s@%s -p %s' % (sshusername, sshhost, sshport))
         i=p.expect([ssh_newkey,'password:',pexpect.EOF])
         if i==0:
             print "Continue connection"
             p.sendline('yes')
-            
-        s = pxssh.pxssh()
-        if not s.login(server=sshhost, username=sshusername, password=sshpassword, port=sshport):
+        
+        ssh = pxssh.pxssh()
+        if not ssh.login(sshhost, sshusername, sshpassword, port=sshport):
             print "SSH session failed on login."
-            print str(s)
+            print str(ssh)
         else:
             print "SSH session login successful"
-        #print_file('out2.txt', 'SSH login Successful')
-        s.sendline('echo %s | sudo -S apt-get install tmux' % sshpassword)
-        s.prompt()
-        print s.before
-        s.sendline(
-            'wget https://byte-unixbench.googlecode.com/files/UnixBench5.1.3.tgz')
-        s.prompt()
-        print s.before
-        s.sendline('tar -xzvf UnixBench5.1.3.tgz')
-        s.prompt()
-        print s.before
-        s.sendline('echo %s | sudo -S apt-get install -y gcc make' %
-                   sshpassword)
-        s.prompt()
-        print s.before
-        s.sendline('cd UnixBench')
-        s.prompt()
-        print s.before
-        s.sendline('echo %s | sudo -S make' % sshpassword)
-        s.prompt()
-        print s.before
-        s.sendline('tmux new-session -s Test -d "echo %s | sudo -S ./Run >> UnixBench5screen"' % sshpassword)
-        s.prompt()
-        print s.before
-        s.logout()
+            ssh.sendline('echo %s | sudo -S apt-get install tmux' % sshpassword)
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('wget https://byte-unixbench.googlecode.com/files/UnixBench5.1.3.tgz')
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('tar -xzvf UnixBench5.1.3.tgz')
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('echo %s | sudo -S apt-get install -y gcc make' % sshpassword)
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('cd UnixBench')
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('echo %s | sudo -S make' % sshpassword)
+            ssh.prompt()
+            print ssh.before
+            ssh.sendline('tmux new-session -s Test -d "echo %s | sudo -S ./Run >> UnixBench5screen"' % sshpassword)
+            ssh.prompt()
+            print ssh.before
+            ssh.logout()
         
 def collectNixStats(machineids, authkey, hosts_public_ports):
     result_single = []
