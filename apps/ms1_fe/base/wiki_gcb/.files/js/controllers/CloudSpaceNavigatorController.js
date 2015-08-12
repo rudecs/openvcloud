@@ -1,12 +1,16 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window',
-        function ($scope, $modal, LocationsService, CloudSpace, LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
+    .controller('CloudSpaceNavigatorController', ['$scope', '$modal', 'LocationsService', 'CloudSpace', 'Account' , 'LoadingDialog','$timeout', '$ErrorResponseAlert', '$window',
+        function ($scope, $modal, LocationsService, CloudSpace,Account ,LoadingDialog, $timeout, $ErrorResponseAlert, $window) {
             $scope.isCollapsed = true;
 
             $scope.locations = {};
             
             LocationsService.list().then(function(locations) {
                 $scope.locations = locations;
+            });
+
+            Account.list().then(function(accounts) {
+                $scope.accounts = accounts;
             });
 
             $scope.AccountCloudSpaceHierarchy = undefined;
@@ -31,9 +35,6 @@ angular.module('cloudscalers.controllers')
             });
 
             var CreateCloudSpaceController = function ($scope, $modalInstance) {
-                $scope.accounts = _.filter($scope.AccountCloudSpaceHierarchy,
-                        function(account){return account.acl != null;}
-                    );
                 var selectedAccount = _.find($scope.accounts, function(account1){return account1.id == $scope.currentAccount.id;});
                 if (selectedAccount == null){
                     selectedAccount = $scope.accounts[0];
@@ -53,41 +54,58 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
 
+                $scope.backToPortal = function () {
+                    $window.location = "/";
+                };
+
                 $scope.selectedLocation = $scope.locations[0].locationCode;
 
                 $scope.changeLocation = function(location) {
                     $scope.selectedLocation = location.locationCode;
                 };
+
+                if($scope.accounts.length == 0){
+                    $modalInstance.close({
+                        name: "",
+                        accountId: "",
+                        selectedLocation: ""
+                    });
+                    $timeout(function(){
+                        angular.element('.new-cloudspace-modal').hide();
+                        angular.element("#cloudspacesListEmptyDialog").modal("show");
+                    });
+                }
             };
             $scope.createNewCloudSpace = function () {
                 var modalInstance = $modal.open({
                     templateUrl: 'createNewCloudSpaceDialog.html',
                     controller: CreateCloudSpaceController,
                     resolve: {},
-                    scope: $scope
+                    scope: $scope,
+                    backdrop : 'static'
                 });
 
                 modalInstance.result.then(function (space) {
-                    LoadingDialog.show('Creating cloudspace');
-                    CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, space.selectedLocation).then(
-                        function (cloudspaceId) {
-                            //Wait a second, consistency on the api is not garanteed before that
-                            $timeout(function(){
-                                var ua = window.navigator.userAgent;
-                                var msie = ua.indexOf("MSIE ");
-                                if (msie > 0){
-                                    $window.location.reload();
-                                }
-                                $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
-                                $scope.loadSpaces();
+                        LoadingDialog.show('Creating cloudspace');
+                        CloudSpace.create(space.name, space.accountId, $scope.currentUser.username, space.selectedLocation).then(
+                            function (cloudspaceId) {
+                                //Wait a second, consistency on the api is not garanteed before that
+                                $timeout(function(){
+                                    var ua = window.navigator.userAgent;
+                                    var msie = ua.indexOf("MSIE ");
+                                    if (msie > 0){
+                                        $window.location.reload();
+                                    }
+                                    $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
+                                    $scope.loadSpaces();
+                                    LoadingDialog.hide();
+                                }, 1000);
+                            },
+                            function (reason) {
                                 LoadingDialog.hide();
-                            }, 1000);
-                        },
-                        function (reason) {
-                            LoadingDialog.hide();
-                            $ErrorResponseAlert(reason);
-                        }
-                    );
+                                $ErrorResponseAlert(reason);
+                            }
+                        );
                 });
             };
         }

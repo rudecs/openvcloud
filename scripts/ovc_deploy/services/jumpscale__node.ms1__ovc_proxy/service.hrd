@@ -1,0 +1,23 @@
+
+#param.imagename=@ASK type:dropdown dropdownvals:fedora,windows,ubuntu.13.10,ubuntu.12.04,windows.essentials,ubuntu.14.04,zentyal,debian.7,arch,fedora,centos,opensuse,gitlab,ubuntu.jumpscale
+#we are always going to work with ubuntu 14.04 in this implementation
+instance.param.imagename       = 'ubuntu.14.04.x64'
+instance.param.jumpscale       = 'True'
+instance.param.machine.id      = 6940
+instance.param.machine.ssh.ip  = '37.203.43.122'
+instance.param.machine.ssh.port = '1503'
+instance.param.memsize         = 0.5
+instance.param.ms1.connection  = 'main'
+instance.param.name            = 'ovc_proxy'
+instance.param.ssdsize         = 10
+
+#link to sshkey to be used
+instance.param.ssh.key         = 'ovc_proxy'
+instance.param.ssh.shell       = '/bin/bash -l -c'
+
+service.category               = 'node'
+service.description            = 'is a node running on mothership1'
+service.domain                 = 'jumpscale'
+service.installed.checksum     = '00e10e90a439dbdae78e5d0dc2c4b8b5'
+service.instance               = 'ovc_proxy'
+service.name                   = 'node.ms1'

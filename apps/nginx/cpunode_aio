@@ -1,0 +1,38 @@
+server {
+    listen 21001;
+
+	# Forward to cookie value
+	location ~ ^/ {
+		if ($http_cookie ~* "ovc_proxy_target=(\d+).(\d+).(\d+).(\d+)(?:;|$)") {
+			proxy_pass   http://$1.$2.$3.$4:9080$request_uri;
+			break;
+		}
+
+		return 404;
+	}
+}
+
+server {
+	listen 21001;
+	server_name ovs;
+	location / {
+		proxy_pass https://localhost;
+		proxy_set_header Host $http_x_forwarded_host;
+	}
+
+}
+
+
+
+server {
+	listen 21001;
+	server_name novnc;
+    proxy_set_header Accept-Encoding $http_accept_encoding;
+	location / {
+                proxy_pass http://localhost:8091;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_read_timeout 86400;
+	}
+}

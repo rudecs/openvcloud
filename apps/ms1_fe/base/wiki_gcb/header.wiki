@@ -10,7 +10,10 @@
                         <span>Logout</span>
                     </a>
                 </li>
-                <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>{[currentUser.username]}</a> </li>
+                <li class="right"><a class="user-name" href="../$$space/Profile" ng-cloak>
+                  <i class="fa fa-user"></i>
+                  {[currentUser.username]}
+                </a> </li>
             </ul>
         </div>
     </div>
@@ -61,7 +64,7 @@
                       </li>
                     </ul>
                     <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
-                      <form name="form" class="form-horizontal" ng-submit="submit()">
+                      <form name="form" class="new-cloudspace-modal form-horizontal" ng-submit="submit()">
                         <div class="modal-header">
                           <h2>New Cloud Space</h2>
                         </div>
@@ -76,7 +79,7 @@
                           <div class="form-group">
                               <label class="col-sm-2 control-label" for="inputNewCloudSpaceName">Name</label>
                               <div class="controls col-sm-9">
-                                <input class="form-control" ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name"/>
+                                <input class="form-control" ng-model="newCloudSpace.name" id="inputNewCloudSpaceName" type="text" class="input-large" placeholder="Name" required/>
                               </div>
                           </div>
                           <div class="form-group">
@@ -90,10 +93,12 @@
                                   </ul>
                               </div>
                           </div>
+                          <em ng-show="cloudspaces.length == 0">You should have at least one CloudSpace.</em>
                         </div>
                           <div class="modal-footer">
                             <button type="submit" class="btn btn-primary ok">Ok</button>
                             <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
+                            <button type="button" class="btn" ng-show="cloudspaces.length == 0" ng-click="backToPortal()">Cancel</button>
                           </div>
                       </form>
                     </script>
@@ -111,5 +116,16 @@
         </div>
       </div>
     </nav>
+  </div>
+  <div id="cloudspacesListEmptyDialog" class="modal fade bs-example-modal-lg" data-keyboard="false" data-backdrop="static">
+    <div class="modal-header">
+      <h4 class="modal-title">Error</h4>
+    </div>
+    <div class="modal-body">
+      This user does not have access to a single account, Please contact your administrator to create an account.
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" ng-click="invalidAccount()">Ok</button>
+    </div>
   </div>
 }}

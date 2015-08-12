@@ -1,0 +1,5 @@
+2015/08/12 09:58:30 : init
+2015/08/12 09:58:30 : stop instance
+2015/08/12 09:58:30 : prepare install for instance
+2015/08/12 09:58:30 : install instance
+2015/08/12 09:58:30 : configure instance

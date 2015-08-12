@@ -1,0 +1,10 @@
+instance.param.cloudspace      = 'ovc_deploy'
+instance.param.location        = 'eu1'
+instance.param.login           = 'christophe'
+instance.param.passwd          = 'OshotsAg5'
+instance.param.secret          = '75ea32803d8c40c0aeb6b6a9f0b67d12'
+
+service.domain                 = 'jumpscale'
+service.installed.checksum     = 'afdd4c0edd2f304f471887052af19d86'
+service.instance               = 'main'
+service.name                   = 'ms1_client'
