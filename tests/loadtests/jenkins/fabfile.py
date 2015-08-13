@@ -20,8 +20,8 @@ CLOUD_SPACE_ID = 91
 UBUNNTU_SIZE_IDS = [2]
 WINDOWS_SIZE_IDS = [4]
 UBUNTU_IMAGE_ID = 2
-WINDOWS_IMAGE_ID = 4
-WINDOWS_DISK_SIZE = 16
+WINDOWS_IMAGE_ID = 6
+WINDOWS_DISK_SIZE = 20
 UBUNTU_DISK_SIZE = 10
 
 PUBLICIP = '192.198.94.16'
@@ -246,13 +246,17 @@ def test(win_count=0, linux_count=0):
                 public_ports[mid] = pubport
                 machines['ubuntu'][packagename].append(mid)
 
-        # for sizeif in WINDOWS_SIZE_IDS:
-        #     for i in range(win_count):
-        #         mid = createMachine(
-        #             i, WINDOWS_IMAGE_ID, WINDOWS_DISK_SIZE, sizeid, authkey)
-        #         pubport = exposeMachine(mid, authkey)
-        #         public_ports[mid] = pubport
-        #         machines['windows'][packagename].append(mid)
+        for sizeif in WINDOWS_SIZE_IDS:
+            packagename = _getPackageName(sizeid)
+            machines['windows'].setdefault(packagename, [])
+            stats['windows'].setdefault(packagename, [])
+
+            for i in range(win_count):
+                mid = createMachine(
+                    i, WINDOWS_IMAGE_ID, WINDOWS_DISK_SIZE, sizeid, authkey)
+                pubport = exposeMachine(mid, authkey)
+                public_ports[mid] = pubport
+                machines['windows'][packagename].append(mid)
 
         # Install benchmark on all machines
         all_linux_machines = []
