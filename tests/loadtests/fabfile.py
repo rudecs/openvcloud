@@ -165,7 +165,7 @@ class CloudSpace(object):
     
     def csvs(self, stats):
         """
-        stats = {'ubuntu':{1GB_1CPU:[.9]}}
+        stats = {'ubuntu':{'1GB_1CPU':[.9], '2GB_2CPU':[.9, .3]}}
         """
         print "Generating CSVs"
         sys.stdout.flush()
@@ -329,7 +329,7 @@ class VM(object):
             result_single.append(scoresingle)
             result_multi.append(scoremulti)
         else:
-            self.log('Collecting statistics', 'NOT OK\n%s' % output)
+            self.log('Collecting statistics', 'NOT OK %s' % output)
             return []
         final = [reduce(add, [float(x)
                               for x in result_single]) / len(result_single)]
