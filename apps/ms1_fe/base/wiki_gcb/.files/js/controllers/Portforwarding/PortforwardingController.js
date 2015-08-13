@@ -25,17 +25,26 @@ angular.module('cloudscalers.controllers')
             });
 
             $scope.updatePortforwardList = function(){
-              if(!$routeParams.machineId){
-                $routeParams.machineId = '';
+              if($routeParams.machineId){
+                Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
+                  function(data) {
+                    $scope.portforwarding = data;
+                  },
+                  function(reason) {
+                    $ErrorResponseAlert(reason);
+                  }
+                )
+              }else{
+                Networks.listPortforwarding($scope.currentSpace.id).then(
+                  function(data) {
+                    $scope.portforwarding = data;
+                  },
+                  function(reason) {
+                    $ErrorResponseAlert(reason);
+                  }
+                );
               }
-              Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
-                function(data) {
-                  $scope.portforwarding = data;
-                },
-                function(reason) {
-                  $ErrorResponseAlert(reason);
-                }
-              );
+              
             };
             
             $scope.updateData = function(){
