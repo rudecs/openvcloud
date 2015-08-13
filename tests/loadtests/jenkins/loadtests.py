@@ -1,27 +1,25 @@
 import sys
 import requests
 import uuid
-import pxssh
 import time
 import commands
 import csv
 from operator import add
 import os
-import pexpect
 from os.path import expanduser
 import subprocess
 
-URL = 'http://cpu01.lenoir1.vscalers.com/'
-USERNAME = 'loadtester'
-PASSWORD = 'rooterR00t3r'
-CLOUD_SPACE_ID = 91
-SIZEIDS = [2]
-UBUNTU_IMAGE_ID = 2
-WINDOWS_IMAGE_ID = 4
-WINDOWS_DISK_SIZE = 16
+URL = 'https://demo1.demo.greenitglobe.com'
+USERNAME = 'hamdy'
+PASSWORD = 'changeme'
+CLOUD_SPACE_ID = 11
+SIZEIDS = [2, 3, 4]
+UBUNTU_IMAGE_ID = 1
+WINDOWS_IMAGE_ID = 2
+WINDOWS_DISK_SIZE = 20
 UBUNTU_DISK_SIZE = 10
 
-PUBLICIP = '192.198.94.16'
+PUBLICIP = '10.101.135.8'
 
 def _clearIpFromAuthorizedHosts(ip, port):
     """
@@ -122,51 +120,19 @@ def installAndRunUnixBench(machineids, authkey, hosts_public_ports):
     for machineid in machineids:
         sshhost = PUBLICIP
         sshport = hosts_public_ports[machineid]
-        _clearIpFromAuthorizedHosts(sshhost, sshport)
+#         _clearIpFromAuthorizedHosts(sshhost, sshport)
         
-        print "Installing UnixBench on machine %s" % str(machineid)
+        print "Installing UnixBench on machine %s : START" % str(machineid)
         sys.stdout.flush()
         vm = getMachine(machineid, authkey)
         sshpassword = vm['accounts'][0]['password']
         sshusername = vm['accounts'][0]['login']
-        
-        # First time SSH we need to say yes to continue communication
-        ssh_newkey = 'Are you sure you want to continue connecting'
-        p=pexpect.spawn('ssh %s@%s -p %s' % (sshusername, sshhost, sshport))
-        i=p.expect([ssh_newkey,'password:',pexpect.EOF])
-        if i==0:
-            print "Continue connection"
-            p.sendline('yes')
-        
-        ssh = pxssh.pxssh()
-        if not ssh.login(sshhost, sshusername, sshpassword, port=sshport):
-            print "SSH session failed on login."
-            print str(ssh)
-        else:
-            print "SSH session login successful"
-            ssh.sendline('echo %s | sudo -S apt-get install tmux' % sshpassword)
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('wget https://byte-unixbench.googlecode.com/files/UnixBench5.1.3.tgz')
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('tar -xzvf UnixBench5.1.3.tgz')
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('echo %s | sudo -S apt-get install -y gcc make' % sshpassword)
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('cd UnixBench')
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('echo %s | sudo -S make' % sshpassword)
-            ssh.prompt()
-            print ssh.before
-            ssh.sendline('tmux new-session -s Test -d "echo %s | sudo -S ./Run >> UnixBench5screen"' % sshpassword)
-            ssh.prompt()
-            print ssh.before
-            ssh.logout()
-        
+        command = 'echo %s | sudo -S apt-get install tmux && wget https://byte-unixbench.googlecode.com/files/UnixBench5.1.3.tgz && tar -xzvf UnixBench5.1.3.tgz && echo %s | sudo -S apt-get install -y gcc make && cd UnixBench && echo %s | sudo -S make && tmux new-session -s Test -d "echo %s | sudo -S ./Run >> UnixBench5screen"' % (sshpassword,sshpassword, sshpassword, sshpassword) 
+        fabb_conn = 'fab -H %s -u %s -p %s --port=%s -- \'%s\'' % (sshhost, sshusername, sshpassword, sshport, command)
+        output = commands.getoutput(fabb_conn)
+        print "Installing UnixBench on machine %s : DONE" % str(machineid)
+        sys.stdout.flush()
+
 def collectNixStats(machineids, authkey, hosts_public_ports):
     """
     fab -H 192.198.94.16 -u cloudscalers -p r48mC47bD --port 23 -- 'cat UnixBench/UnixBench5screen | grep -i "System Benchmarks Index Score" |  grep -o [0-9].*'
@@ -176,7 +142,7 @@ def collectNixStats(machineids, authkey, hosts_public_ports):
     for machineid in machineids:
         sshhost = PUBLICIP
         sshport = hosts_public_ports[machineid]
-        _clearIpFromAuthorizedHosts(sshhost, sshport)
+#         _clearIpFromAuthorizedHosts(sshhost, sshport)
         print "Collecting Statistics for machine %s" % str(machineid)
         sys.stdout.flush()
         vm = getMachine(machineid, authkey)
@@ -203,11 +169,13 @@ def collectNixStats(machineids, authkey, hosts_public_ports):
             result_single.append(scoresingle)
             result_multi.append(scoremulti)
         else:
-            raise  ("Invslid data" + output)
+            print "No STATICS RETURNED"
+            print "Error is: " + output
+            return []
     final = [reduce(add, [float(x) for x in result_single]) / len(result_single)]
     if result_multi:
         m = reduce(add, [float(x) for x in result_multi]) / len(result_multi)
-        final.append(m[0])
+        final.append(m)
     return final
 
 def generateStatsCSVs(stats):
@@ -258,11 +226,9 @@ if __name__ == '__main__':
         for _, v in MACHINES['ubuntu'].iteritems():
             all_linux_machines.extend(v)
         installAndRunUnixBench(all_linux_machines, authkey, PUBLIC_PORTS)
-
+        
         for packagename in MACHINES['ubuntu'].keys():
             STATS['ubuntu'][packagename] =  collectNixStats(MACHINES['ubuntu'][packagename], authkey, PUBLIC_PORTS)
-#             STATS['ubuntu'][packagename] =  collectNixStats([169], authkey, PUBLIC_PORTS)
-    
         generateStatsCSVs(STATS)
         
     except (ValueError, IndexError):
