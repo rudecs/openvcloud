@@ -61,8 +61,7 @@ class bootstrap(Resource):
         try:
             # create sshkey to accces the new node
             data = {
-                'instance.key.priv': '%s/keys/%s.dsa' % (args.gitpath, hostname),
-                'instance.key.passphrase': '',
+                'instance.key.priv': '',
             }
             sshkey = j.atyourservice.new(name='sshkey', instance=hostname, args=data)
             sshkey.install(deps=True)
@@ -83,8 +82,8 @@ class bootstrap(Resource):
             j.atyourservice.remove(name='node.ssh', instance=hostname)
             return self.error(500, 'error during creation of the node.ssh service: %s' % e.message)
 
-        _, masterKey, _ = sshMngr.master.actions._getSSHKey(sshMngr.master)
-        _, reflectorKey, _ = sshMngr.reflector.actions._getSSHKey(sshMngr.reflector)
+        _, masterKey = sshMngr.master.actions._getSSHKey(sshMngr.master)
+        _, reflectorKey = sshMngr.reflector.actions._getSSHKey(sshMngr.reflector)
 
         # prepare response
         resp = {
@@ -112,7 +111,7 @@ class bootstrap(Resource):
         return resp
 
     def error(self, statusCode, message):
-        abort(statusCode, error=message)
+        abort(statusCode, message=message)
 
 api.add_resource(bootstrap, '/')
 
