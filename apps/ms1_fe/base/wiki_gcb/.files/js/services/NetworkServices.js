@@ -13,14 +13,25 @@ angular.module('cloudscalers.services')
                     );
                 }
                 else{
-                    return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
-                        function(result){
-                            return result.data;
-                        },
-                        function(reason){
-                            return $q.reject(reason);
-                        }
-                    );
+                    if(machineId){
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
+                            function(result){
+                                return result.data;
+                            },
+                            function(reason){
+                                return $q.reject(reason);
+                            }
+                        );
+                    }else{
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id)).then(
+                            function(result){
+                                return result.data;
+                            },
+                            function(reason){
+                                return $q.reject(reason);
+                            }
+                        );
+                    }
                 }
 
             },
