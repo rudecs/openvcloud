@@ -52,6 +52,12 @@ def _getPackageName(sizeId):
     elif sizeId == 6:
         return '16G_8CPU'
 
+def _get_random_port(exposedmachines):
+    exposed_ports = [int(x['publicPort']) for x in exposedmachines ]
+    for port in range(1024, 30000):
+        if port not in exposed_ports:
+            return port
+
 def _keyGen(url, username, password):
     try:
         r = requests.get(
@@ -74,17 +80,28 @@ def createMachine(id, imageid, disksize, sizeid, authkey):
     sys.stdout.flush()
     return res.json()
 
-def exposeMachine(machineid, publiport, authkey):
-    exposeurl = '%s/restmachine/cloudapi/portforwarding/create?cloudspaceid=%s&protocol=tcp&localPort=22&vmid=%s&publicIp=%s&publicPort=%s&authkey=%s' % (
-            URL, CLOUD_SPACE_ID, machineid, PUBLICIP, publiport, authkey)
-    # Make sure machine has IP address
+
+def exposeMachine(machineid, authkey):
+    # Make sure Machine has Ip address
     getMachine(machineid, authkey)
+    
+    listurl = '%s/restmachine/cloudapi/portforwarding/list?cloudspaceid=%s&protocol=tcp&authkey=%s' % (
+            URL, CLOUD_SPACE_ID, authkey)
+    
+    res = requests.get(listurl)
+    if not res.ok:
+        raise Exception(res.text)
+
+    publicport = _get_random_port(res.json())
+    
+    exposeurl = '%s/restmachine/cloudapi/portforwarding/create?cloudspaceid=%s&protocol=tcp&localPort=22&vmid=%s&publicIp=%s&publicPort=%s&authkey=%s' % (
+            URL, CLOUD_SPACE_ID, machineid, PUBLICIP, publicport, authkey)
     res = requests.get(exposeurl)
     if not res.ok:
         raise Exception(res.text)
-    print "Exposed machine: %s through IP %s and port %s" % (str(machineid),PUBLICIP, str(publiport))
+    print "Exposed machine: %s through IP %s and port %s" % (str(machineid),PUBLICIP, str(publicport))
     sys.stdout.flush()
-    return res.json()
+    return publicport
 
 def getMachine(machineid, authkey):
     host = 'Undefined'
@@ -232,8 +249,7 @@ if __name__ == '__main__':
 
             for i in range(linuxMachinesCount):
                 mid = createMachine(i, UBUNTU_IMAGE_ID, UBUNTU_DISK_SIZE, sizeid, authkey)
-                pubport = 23 + i
-                exposeMachine(mid, pubport, authkey)
+                pubport = exposeMachine(mid, authkey)
                 PUBLIC_PORTS[mid] = pubport
                 MACHINES['ubuntu'][packagename].append(mid)
         
