@@ -226,7 +226,8 @@ if __name__ == '__main__':
         for _, v in MACHINES['ubuntu'].iteritems():
             all_linux_machines.extend(v)
         installAndRunUnixBench(all_linux_machines, authkey, PUBLIC_PORTS)
-        
+        print "Sleeping for 30 minutes until statistics are generated"
+        time.sleep(30*60)
         for packagename in MACHINES['ubuntu'].keys():
             STATS['ubuntu'][packagename] =  collectNixStats(MACHINES['ubuntu'][packagename], authkey, PUBLIC_PORTS)
         generateStatsCSVs(STATS)
