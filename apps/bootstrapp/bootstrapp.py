@@ -76,7 +76,7 @@ class bootstrap(Resource):
             return self.error(500, 'error during creation of the node.ssh service: %s' % e.message)
 
         masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub')
-        if not j.system.fs.exists(path=path):
+        if not j.system.fs.exists(path=masterKeyPath):
             j.atyourservice.remove(name='sshkey', instance=hostname)
             j.atyourservice.remove(name='node.ssh', instance=hostname)
             return self.error(500, 'public master key not available')
