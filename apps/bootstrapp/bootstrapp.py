@@ -12,7 +12,6 @@ class SSHMngr(object):
     """docstring for ConnectionMngr"""
     def __init__(self, hrd):
         self._config = hrd
-        self._masterService = None
         self._reflectorService = None
 
     def _getService(self, service):
@@ -27,12 +26,6 @@ class SSHMngr(object):
         if self._reflectorService is None:
             self._reflectorService = self._getService(self._config.getStr('instance.reflector.name'))
         return self._reflectorService
-
-    @property
-    def master(self):
-        if self._masterService is None:
-            self._masterService = self._getService(self._config.getStr('instance.master.name'))
-        return self._masterService
 
 
 class bootstrap(Resource):
@@ -82,15 +75,20 @@ class bootstrap(Resource):
             j.atyourservice.remove(name='node.ssh', instance=hostname)
             return self.error(500, 'error during creation of the node.ssh service: %s' % e.message)
 
-        _, masterKey = sshMngr.master.actions._getSSHKey(sshMngr.master)
-        _, reflectorKey = sshMngr.reflector.actions._getSSHKey(sshMngr.reflector)
+        masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub')
+        if not j.system.fs.exists(path=path):
+            j.atyourservice.remove(name='sshkey', instance=hostname)
+            j.atyourservice.remove(name='node.ssh', instance=hostname)
+            return self.error(500, 'public master key not available')
+        masterKey = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub'))
 
         # prepare response
         resp = {
             'master.key': masterKey,
-            'reflector.key': reflectorKey,
+            # 'reflector.key': reflectorKey,
             'reflector.ip.priv': hrd.getStr('instance.reflector.ip.priv'),
             'reflector.ip.pub': hrd.getStr('instance.reflector.ip.pub'),
+            'reflector.port': hrd.getStr('instance.reflector.port'),
             'reflector.user': hrd.getStr('instance.reflector.user'),
             'autossh.remote.port': remotePort,
             'autossh.node.port': 22,
@@ -100,7 +98,7 @@ class bootstrap(Resource):
         data = {
             'instance.remote.bind': resp['reflector.ip.priv'],
             'instance.remote.address': resp['reflector.ip.pub'],
-            'instance.remote.connection.port': 22,
+            'instance.remote.connection.port': resp['reflector.port'],
             'instance.remote.login': resp['reflector.user'],
             'instance.remote.port': resp['autossh.remote.port'],
             'instance.local.address': 'localhost',
@@ -122,8 +120,11 @@ if __name__ == '__main__':
     parser = cmdutils.ArgumentParser()
     parser.add_argument("--gitpath", default='/opt/code/OVC_GIT',
                         help='path to the OVC_GIT repo\n')
-    parser.add_argument('--hrd', help='path to config hrd', default='config.hrd')
+    parser.add_argument('--hrd', help='path to config hrd')
     args = parser.parse_args()
+
+    if args.hrd is None:
+        j.events.inputerror_critical('need to provice path to hrd, use --hrd')
 
     hrd = j.core.hrd.get(path=args.hrd, prefixWithName=False)
     sshMngr = SSHMngr(hrd)
