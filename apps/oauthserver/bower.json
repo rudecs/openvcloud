@@ -11,6 +11,7 @@
     "angular-mocks": "~1.4.0",
     "html5-boilerplate": "~5.2.0",
     "angular-gridster": "~0.13.5",
-    "less": "~2.5.1"
+    "less": "~2.5.1",
+    "angular-material": "~0.10.1"
   }
 }
