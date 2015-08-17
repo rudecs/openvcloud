@@ -51,12 +51,25 @@ class bootstrap(Resource):
         except Exception as e:
             return self.error(500, 'Error during pushing of the public key to reflector: %s' % e.messaeg)
 
+
+        masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root')
+        gitKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/git_root')
+        if not j.system.fs.exists(path=masterKeyPath) or not j.system.fs.exists(path=gitKeyPath):
+            j.atyourservice.remove(name='sshkey', instance=hostname)
+            j.atyourservice.remove(name='node.ssh', instance=hostname)
+            return self.error(500, 'public master or git key not available')
+
+        masterPub = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub'))
+        gitPub = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root.pub'))
+        gitPriv = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root'))
+
         try:
             # create sshkey to accces the new node
             data = {
-                'instance.key.priv': '',
+                'instance.key.priv': gitPriv,
+                'instance.key.pub': gitPub,
             }
-            sshkey = j.atyourservice.new(name='sshkey', instance=hostname, args=data)
+            sshkey = j.atyourservice.new(name='sshkey', instance='nodes', args=data)
             sshkey.install(deps=True)
 
             data = {
@@ -75,17 +88,10 @@ class bootstrap(Resource):
             j.atyourservice.remove(name='node.ssh', instance=hostname)
             return self.error(500, 'error during creation of the node.ssh service: %s' % e.message)
 
-        masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub')
-        if not j.system.fs.exists(path=masterKeyPath):
-            j.atyourservice.remove(name='sshkey', instance=hostname)
-            j.atyourservice.remove(name='node.ssh', instance=hostname)
-            return self.error(500, 'public master key not available')
-        masterKey = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub'))
-
         # prepare response
         resp = {
-            'master.key': masterKey,
-            # 'reflector.key': reflectorKey,
+            'master.key': masterPub,
+            'git.key': gitPub,
             'reflector.ip.priv': hrd.getStr('instance.reflector.ip.priv'),
             'reflector.ip.pub': hrd.getStr('instance.reflector.ip.pub'),
             'reflector.port': hrd.getStr('instance.reflector.port'),
