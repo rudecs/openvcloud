@@ -11,8 +11,11 @@ import (
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
+	"git.aydo.com/aydo/safekeeper/webapp/settings"
 
 	"github.com/RangelReale/osin"
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 )
@@ -80,6 +83,21 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 }
 
 func main() {
+	router := gin.Default()
+
+	if _, err := os.Stat("html/"); err != nil {
+		log.Fatal(err)
+	}
+
+	router.Use(static.Serve("/", static.LocalFile("static", true)))
+
+	err := http.ListenAndServe(settings.ListenAddress, router)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func oldMain() {
 	//Load the settings
 	var settings settingsConfig
 	util.LoadTomlFile("settings.toml", &settings)
