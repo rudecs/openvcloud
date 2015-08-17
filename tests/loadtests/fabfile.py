@@ -247,9 +247,16 @@ class VM(object):
 
         self.log('retrieving info', 'OK')
         self.ip = self._info['interfaces'][0]['ipAddress']
-        self.passwd = self._info['accounts'][0]['password']
-        self.username = self._info['accounts'][0]['login']
-        
+
+        if self.type == 'windows':
+            self.passwd = 'MS1rocks'
+            self.username = 'admin'
+            self.log('Booting windows (3 minutes)', 'WAITING')
+            time.sleep(3*60)
+        else:
+            self.passwd = self._info['accounts'][0]['password']
+            self.username = self._info['accounts'][0]['login']
+
     def expose(self):
         self.log('exposing publicly', 'WAITING')
         try:
@@ -296,14 +303,25 @@ class VM(object):
                 run('make')
                 run('tmux new-session -s Test -d "echo %s | sudo -S ./Run >> UnixBench5screen"' % self.passwd)
 
-    def _install_winbench(self):
-        pass
-    
+    def _install_diskspd(self):
+        self.log('Installing Diskspd', 'DOWNLOADING')
+        host_string = '%s@%s:%s' % (self.username, self.cloudspace.publicip, self.publicport)
+        env.passwords[host_string] = self.passwd
+        with settings(host_string=host_string, shell='cmd.exe /c'):
+            run("powershell.exe -command (New-Object Net.WebClient).DownloadFile('https://gallery.technet.microsoft.com/DiskSpd-a-robust-storage-6cd2f223/file/132882/1/Diskspd-v2.0.15.zip', 'C:\Users\Admin\diskspd.zip') < nul")                                                                                            
+            run('mkdir C:\Users\Admin\diskspd')
+            self.log('Installing Diskspd', 'EXTRACTING')
+            run("""powershell.exe -command (new-object -com shell.application).NameSpace("C:\\Users\\admin\\diskspd").Copyhere((new-object -com shell.application).NameSpace("C:\\Users\\admin\diskspd.zip").items()) < nul""")                                                                                        
+            run('echo "" > c:\users\\admin\\testfile.dat')
+            self.log('Installing Diskspd', 'RUNNING')
+            run('START /B c:\\users\\admin\\diskspd\\x86fre\\diskspd.exe -c1G -d60 -r -w50 -t8 -o8 -b8K -Rxml -h -L C:\\Users\\admin\\testfile.dat > c:\\users\\admin\\diskspd\\results.xml')
+        self.log('Installing Diskspd', 'OK')
+
     def install_benchmark_tool(self):
         if self.type == 'ubuntu':
             self._install_unixbench()
         else:
-            self._install_winbench()
+            self._install_diskspd()
     
     def _collect_nix_stats(self):
         
@@ -340,8 +358,13 @@ class VM(object):
         return final
     
     def _collect_windows_stats(self):
-        pass
-    
+        self.log('Collecting statistics', 'WAITING')
+        host_string = '%s@%s:%s' % (self.username, self.cloudspace.publicip, self.publicport)
+        env.passwords[host_string] = self.passwd
+        with settings(host_string=host_string, shell='cmd.exe /c'):
+            out = run('type  c:\\users\\admin\\diskspd\\results.xml')
+            return [open('file.xml', 'w').write(out)]
+
     def statistics(self):
         self.log('Collecting statistics', 'WAITING')
         if self.type == 'ubuntu':
