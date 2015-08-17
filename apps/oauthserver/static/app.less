@@ -1,7 +1,29 @@
+@general-padding: 16px;
+
+body {
+  background: url('assets/background.jpg');
+}
+
 header {
   img {
     margin: 0 auto;
     width: 181px;
     display: inherit;
+  }
+}
+
+@login-page-width: 600px;
+.login-page {
+  width: @login-page-width;
+  margin: 100px auto 20px auto;
+
+  md-whiteframe {
+    background: #fff;
+    margin: 20px;
+
+    .login-form {
+      width: @login-page-width - 2*@general-padding;
+      padding: @general-padding;
+    }
   }
 }
