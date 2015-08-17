@@ -1,0 +1,16 @@
+{
+  "name": "oauthserver",
+  "description": "OAuth Server",
+  "version": "0.0.0",
+  "homepage": "https://git.aydo.com/0-complexity/openvcloud/apps/oauthserver",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-route": "~1.4.0",
+    "angular-loader": "~1.4.0",
+    "angular-mocks": "~1.4.0",
+    "html5-boilerplate": "~5.2.0",
+    "angular-gridster": "~0.13.5",
+    "less": "~2.5.1"
+  }
+}
