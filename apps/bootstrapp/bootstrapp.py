@@ -76,16 +76,18 @@ class bootstrap(Resource):
             return self.error(500, 'error during creation of the node.ssh service: %s' % e.message)
 
         masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub')
-        if not j.system.fs.exists(path=masterKeyPath):
+        gitKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/git_root.pub')
+        if not j.system.fs.exists(path=masterKeyPath) or not j.system.fs.exists(path=gitKeyPath):
             j.atyourservice.remove(name='sshkey', instance=hostname)
             j.atyourservice.remove(name='node.ssh', instance=hostname)
-            return self.error(500, 'public master key not available')
+            return self.error(500, 'public master or git key not available')
         masterKey = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub'))
+        gitKey = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root.pub'))
 
         # prepare response
         resp = {
             'master.key': masterKey,
-            # 'reflector.key': reflectorKey,
+            'git.key': gitKey,
             'reflector.ip.priv': hrd.getStr('instance.reflector.ip.priv'),
             'reflector.ip.pub': hrd.getStr('instance.reflector.ip.pub'),
             'reflector.port': hrd.getStr('instance.reflector.port'),
