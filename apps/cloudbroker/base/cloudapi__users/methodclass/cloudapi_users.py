@@ -4,6 +4,7 @@ import JumpScale.grid.agentcontroller
 import JumpScale.baselib.mailclient
 from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
+import json
 import md5
 
 class cloudapi_users(BaseActor):
@@ -15,6 +16,7 @@ class cloudapi_users(BaseActor):
         super(cloudapi_users, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.acl = j.clients.agentcontroller.get()
+        self.systemodel = j.core.osis.getClientForNamespace('system')
 
     def authenticate(self, username, password, **kwargs):
         """
@@ -56,10 +58,47 @@ class cloudapi_users(BaseActor):
 
         user = j.core.portal.active.auth.getUserInfo(username)
         if user:
-            return {'username':user.id, 'emailaddresses':user.emails}
+            try:
+                data = json.loads(user.data)
+            except:
+                data = {}
+            return {'username':user.id, 'emailaddresses': user.emails, 'data': data}
         else:
             ctx.start_response('404 Not Found', [])
             return 'User not found'
+
+    @audit()
+    def setData(self, data, **kwargs):
+        """
+        Set user data
+        param:username username of the user
+        result:
+        """
+        ctx = kwargs['ctx']
+        username = ctx.env['beaker.session']['user']
+        if username == 'guest':
+            ctx.start_response('403 Forbidden', [])
+            return 'Forbidden'
+
+        user = j.core.portal.active.auth.getUserInfo(username)
+        if user:
+            try:
+                userdata = json.loads(user.data)
+            except:
+                userdata = {}
+            userdata.update(data)
+            user.data = json.dumps(userdata)
+            self.systemodel.user.set(user)
+            return True
+        else:
+            ctx.start_response('404 Not Found', [])
+            return 'User not found'
+
+
+
+    def _isValidUserName(self, username):
+        r = re.compile('^[a-z0-9]{1,20}$')
+        return r.match(username) is not None
 
     def _isValidPassword(self, password):
         if len(password) < 8 or len (password) > 80:
@@ -78,10 +117,8 @@ class cloudapi_users(BaseActor):
                  if not self._isValidPassword(newPassword):
                     return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
                  else:
-                    cl = j.clients.osis.getByInstance('main')
-                    usercl = j.clients.osis.getCategory(cl, 'system', 'user')
                     user.passwd =  md5.new(newPassword).hexdigest()
-                    usercl.set(user)
+                    self.systemodel.user.set(user)
                     return [200, "Your password has been changed."]
               else:
                  return [400, "Your current password doesn't match."]
@@ -133,8 +170,7 @@ class cloudapi_users(BaseActor):
         """
         ctx = kwargs['ctx']
         
-        cl = j.clients.osis.getNamespace('system')
-        existingusers = cl.user.search({'emails':emailaddress})[1:]
+        existingusers = self.systemodel.user.search({'emails':emailaddress})[1:]
 
         if (len(existingusers) == 0):
             ctx.start_response('404 Not Found', [])
@@ -201,10 +237,9 @@ class cloudapi_users(BaseActor):
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
-        systemcl = j.clients.osis.getNamespace('system')
-        user = systemcl.user.get(actual_reset_token.userguid)
+        user = self.systemodel.user.get(actual_reset_token.userguid)
         user.passwd =  md5.new(newpassword).hexdigest()
-        systemcl.user.set(user)
+        self.systemodel.user.set(user)
         
         self.models.resetpasswordtoken.delete(resettoken)
         
