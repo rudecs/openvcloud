@@ -12,10 +12,19 @@
           <label>Login</label>
           <input ng-model="login" name="login" type="text">
         </md-input-container>
+        <div class="form-error" ng-switch="formErrors.login" ng-show="formErrors.login">
+          <div ng-switch-when="required">You must enter a login.</div>
+        </div>
+
         <md-input-container>
           <label>Password</label>
           <input ng-model="password" name="password" type="password">
         </md-input-container>
+        <div class="form-error" ng-switch="formErrors.password" ng-show="formErrors.password">
+          <div ng-switch-when="invalid">The login or password you entered is incorrect.</div>
+          <div ng-switch-when="required">You must enter a password.</div>
+        </div>
+
         <md-input-container ng-if="needsTwoFactorAuthentication">
           <label>Authentication Code</label>
           <input name="tfa" type="text">
