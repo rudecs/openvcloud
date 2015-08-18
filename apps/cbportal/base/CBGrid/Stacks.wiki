@@ -1,5 +1,5 @@
 @usedefaults
 
-h3. Stacks
+h3. Cloud Nodes
 
 {{stacks gid:$$gid}}

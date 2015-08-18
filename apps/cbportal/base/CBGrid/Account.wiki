@@ -80,7 +80,7 @@ h3. Details
 |*Company*|${company}|
 |*Company Site*|${companyurl}|
 |*Status*|${status}|
-|*Balance*|${balance}|
+|*Balance (current USD in account)*|${balance}|
 
 h3. Users Access
 ||User Name||E-Mail||ACL||
