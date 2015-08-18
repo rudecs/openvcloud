@@ -412,7 +412,7 @@ def test(cloudspacename='demo1', win_count=0, linux_count=0):
     time.sleep(10)
     cl.install_benchmark_tool()
     # Wait a little before collecting statistics
-#     time.sleep(35*60)
+    time.sleep(35*60)
     statistics = cl.statistics()
     cl.linux_csvs(statistics)
     cl.windows_xml(statistics)
