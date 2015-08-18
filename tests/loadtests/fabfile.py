@@ -160,18 +160,35 @@ class CloudSpace(object):
         for machine in self.ubuntu_machines + self.windows_machines:
             packagename = self.get_Package_name(machine.sizeid)
             stats[machine.type][packagename] = stats[machine.type].get(packagename, [])
-            stats[machine.type][packagename] = machine.statistics()
+            stats[machine.type][packagename].extend(machine.statistics())
         return stats
     
-    def csvs(self, stats):
+    def windows_xml(self, stats):
         """
         stats = {'ubuntu':{'1GB_1CPU':[.9], '2GB_2CPU':[.9, .3]}}
         """
-        print "Generating CSVs"
+        print "Generating CSVs FOR Linux machines"
         sys.stdout.flush()
+        cwd = os.path.dirname(os.path.abspath(__file__))
         for system, packagestat in stats.iteritems():
+            if system == 'ubuntu':
+                continue
             for packagename, values in packagestat.iteritems():
-                cwd = os.path.dirname(os.path.abspath(__file__))
+                for i, v in enumerate(values):
+                    filename = os.path.join(cwd, '%s.%s.%i.xml' % (system, packagename, i))
+                    open(filename, 'w').write(v)
+        
+    def linux_csvs(self, stats):
+        """
+        stats = {'ubuntu':{'1GB_1CPU':[.9], '2GB_2CPU':[.9, .3]}}
+        """
+        print "Generating CSVs FOR Linux machines"
+        sys.stdout.flush()
+        cwd = os.path.dirname(os.path.abspath(__file__))
+        for system, packagestat in stats.iteritems():
+            if system == 'windows':
+                continue
+            for packagename, values in packagestat.iteritems():
                 filename = os.path.join(cwd, '%s.%s.csv' % (system, packagename))
                 csv_file = open(filename, 'wa')
                 csv_out = csv.writer(csv_file, delimiter=',')
@@ -314,7 +331,8 @@ class VM(object):
             run("""powershell.exe -command (new-object -com shell.application).NameSpace("C:\\Users\\admin\\diskspd").Copyhere((new-object -com shell.application).NameSpace("C:\\Users\\admin\diskspd.zip").items()) < nul""")                                                                                        
             run('echo "" > c:\users\\admin\\testfile.dat')
             self.log('Installing Diskspd', 'RUNNING')
-            run('START /B c:\\users\\admin\\diskspd\\x86fre\\diskspd.exe -c1G -d60 -r -w50 -t8 -o8 -b8K -Rxml -h -L C:\\Users\\admin\\testfile.dat > c:\\users\\admin\\diskspd\\results.xml')
+            # Blocking command -- doing non blocking background task in windows that  survives after ssh termination would be hassle
+            run('c:\\users\\admin\\diskspd\\x86fre\\diskspd.exe -c1G -d60 -r -w50 -t8 -o8 -b8K -Rxml -h -L C:\\Users\\admin\\testfile.dat > c:\\users\\admin\\diskspd\\results.xml')
         self.log('Installing Diskspd', 'OK')
 
     def install_benchmark_tool(self):
@@ -363,7 +381,7 @@ class VM(object):
         env.passwords[host_string] = self.passwd
         with settings(host_string=host_string, shell='cmd.exe /c'):
             out = run('type  c:\\users\\admin\\diskspd\\results.xml')
-            return [open('file.xml', 'w').write(out)]
+            return [out]
 
     def statistics(self):
         self.log('Collecting statistics', 'WAITING')
@@ -390,8 +408,11 @@ def test(cloudspacename='demo1', win_count=0, linux_count=0):
         for _ in range(win_count):
             machine  = VM(cl, sizeid, cl.windows_image_id, cl.windows_disk_size)
             machine.create()
+    
+    time.sleep(10)
     cl.install_benchmark_tool()
     # Wait a little before collecting statistics
-    time.sleep(35*60)
+#     time.sleep(35*60)
     statistics = cl.statistics()
-    cl.csvs(statistics)
+    cl.linux_csvs(statistics)
+    cl.windows_xml(statistics)
