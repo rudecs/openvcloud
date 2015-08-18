@@ -4,7 +4,7 @@ def main(j, args, inparams, tags, tasklet):
     page = args.page
     doc = args.doc
     pagename = doc.original_name.lower()
-    breadcrumbs = [('/CBGrid/', 'Cloudbroker Grid'), ]
+    breadcrumbs = [('/CBGrid/', 'Cloud Broker Portal'), ]
     params = args.requestContext.params.copy()
 
 
