@@ -3,6 +3,7 @@
 angular.module('oauthserver', [
   'ngRoute',
   'ngMaterial',
+  'ngMessages',
 ]);
 
 angular.module('oauthserver').config([
