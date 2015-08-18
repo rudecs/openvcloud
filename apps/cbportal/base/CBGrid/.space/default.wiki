@@ -8,7 +8,7 @@
 
 {{menu:
 StatusOverview:/grid/checkstatus
-Open vCloud Portal:/cbgrid
+Cloud Broker Portal:/cbgrid
 }}
 
 {{menuadmin:
