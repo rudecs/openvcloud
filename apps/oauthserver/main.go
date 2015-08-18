@@ -8,10 +8,10 @@ import (
 	"os"
 	"strings"
 
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/api"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
-	"git.aydo.com/aydo/safekeeper/webapp/settings"
 
 	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/contrib/static"
@@ -83,15 +83,47 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 }
 
 func main() {
+	// Load the settings
+	var settings settingsConfig
+	util.LoadTomlFile("settings.toml", &settings)
+
+	var clients struct {
+		Clients []osin.DefaultClient
+	}
+	util.LoadTomlFile("clients.toml", &clients)
+
+	// Create the oauth configuration
+	sconfig := osin.NewServerConfig()
+	sconfig.AllowGetAccessRequest = true
+	sconfig.AllowClientSecretInParams = true
+	storagebackend := storage.NewSimpleStorage(clients.Clients)
+
+	osinServer := osin.NewServer(sconfig, storagebackend)
+	var userStore users.UserStore
+	if settings.Jumpscale.Mongo.Connectionstring != "" {
+		userStore = users.NewJumpscaleStore(settings.Jumpscale.Mongo.Connectionstring)
+	} else {
+		userStore = users.NewTomlStore("users.toml")
+	}
+	defer userStore.Close()
+
+	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
+
+	var _ = osinServer
+
+	// Start HTTP
 	router := gin.Default()
 
 	if _, err := os.Stat("html/"); err != nil {
 		log.Fatal(err)
 	}
-
 	router.Use(static.Serve("/", static.LocalFile("static", true)))
 
-	err := http.ListenAndServe(settings.ListenAddress, router)
+	if err := api.New("/api", userStore).Install(router); err != nil {
+		log.Fatal(err)
+	}
+
+	err := http.ListenAndServe(settings.Bind, router)
 	if err != nil {
 		log.Fatal(err)
 	}

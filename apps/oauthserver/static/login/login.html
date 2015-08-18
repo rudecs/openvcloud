@@ -1,4 +1,4 @@
-<div class="login-page">
+<div class="login-page" ng-controller="LoginPageController">
   <md-whiteframe class="md-whiteframe-z4" layout="column" layout-fill layout-align="center center">
     <md-toolbar>
       <span flex></span>
@@ -7,22 +7,24 @@
       </h2>
     </md-toolbar>
     <md-content class="login-form">
-      <md-input-container>
-        <label>Login</label>
-        <input name="login" type="text">
-      </md-input-container>
-      <md-input-container>
-        <label>Password</label>
-        <input name="password" type="password">
-      </md-input-container>
-      <md-input-container>
-        <label>Authentication Code</label>
-        <input name="tfa" type="text">
-      </md-input-container>
-      <div layout="row">
-        <span flex></span>
-        <md-button class="md-primary">Next</md-button>
-      </div>
+      <form>
+        <md-input-container>
+          <label>Login</label>
+          <input ng-model="login" name="login" type="text">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input ng-model="password" name="password" type="password">
+        </md-input-container>
+        <md-input-container ng-if="needsTwoFactorAuthentication">
+          <label>Authentication Code</label>
+          <input name="tfa" type="text">
+        </md-input-container>
+        <div layout="row">
+          <span flex></span>
+          <md-button type="submit" class="md-primary" ng-click="next()">Next</md-button>
+        </div>
+      </form>
     </md-content>
   </md-whiteframe>
 </div>
