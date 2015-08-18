@@ -16,7 +16,7 @@ class cloudapi_users(BaseActor):
         super(cloudapi_users, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.acl = j.clients.agentcontroller.get()
-        self.systemodel = j.core.osis.getClientForNamespace('system')
+        self.systemodel = j.clients.osis.getNamespace('system')
 
     def authenticate(self, username, password, **kwargs):
         """
