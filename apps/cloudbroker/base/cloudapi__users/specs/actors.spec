@@ -21,6 +21,13 @@
         var:username str,,username of the user
         result:dict,,user information.
 
+	method:setData
+	    """
+	    Set extra user information
+	    """
+        var:data obj,,data to set on user
+        result:True
+
 	method:updatePassword
 	    """
 	    Change user password

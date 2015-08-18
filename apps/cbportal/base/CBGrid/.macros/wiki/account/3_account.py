@@ -35,10 +35,15 @@ def main(j, args, params, tags, tasklet):
                 user['id'] = acl['userGroupId']
                 user['emails'] = 'N/A'
             users.append(user)
-    
     account['users'] = users
-    args.doc.applyTemplate(account)
 
+    balances = cbclient.credittransaction.search({'accountId': id})[1:]
+    balance = 0
+    if balances:
+        balance = sum([bal['amount'] for bal in balances])
+    account['balance'] = balance
+
+    args.doc.applyTemplate(account)
     params.result = (args.doc, args.doc)
     return params
 

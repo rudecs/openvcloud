@@ -26,7 +26,7 @@ h2. Account: ${name}
   input:
   - reason
 
-- display: Add User
+- display: Grant User Access
   action: /restmachine/cloudbroker/account/addUser
   data:
    accountname: ${name}
@@ -45,7 +45,7 @@ h2. Account: ${name}
      - label: Read
        value: R
 
-- display: Delete User
+- display: Revoke User Access
   action: /restmachine/cloudbroker/account/deleteUser
   data:
    accountname: ${name}
@@ -80,6 +80,7 @@ h3. Details
 |*Company*|${company}|
 |*Company Site*|${companyurl}|
 |*Status*|${status}|
+|*Balance*|${balance}|
 
 h3. Users Access
 ||User Name||E-Mail||ACL||
