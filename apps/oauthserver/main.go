@@ -109,17 +109,15 @@ func main() {
 
 	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 
-	var _ = osinServer
-
 	// Start HTTP
 	router := gin.Default()
 
-	if _, err := os.Stat("html/"); err != nil {
+	if _, err := os.Stat("static/"); err != nil {
 		log.Fatal(err)
 	}
 	router.Use(static.Serve("/", static.LocalFile("static", true)))
 
-	if err := api.New("/api", userStore).Install(router); err != nil {
+	if err := api.New("/api", userStore, osinServer).Install(router); err != nil {
 		log.Fatal(err)
 	}
 

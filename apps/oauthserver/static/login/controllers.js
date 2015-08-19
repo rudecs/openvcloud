@@ -2,9 +2,10 @@
 
 angular.module('oauthserver').controller('LoginPageController', [
   '$scope',
+  '$window',
   'loginService',
   '$log',
-  function($scope, loginService, $log) {
+  function($scope, $window, loginService, $log) {
     $scope.needsTwoFactorAuthentication = false;
     $scope.login = "";
     $scope.password = "";
@@ -35,6 +36,11 @@ angular.module('oauthserver').controller('LoginPageController', [
         .then(function(response) {
           if(response === loginService.responses.ok) {
             $log.debug('OK');
+            loginService
+              .validateOauth($scope.login, $scope.password, $scope.securityCode)
+              .then(function(url) {
+                $window.location.href = url;
+              });
 
           } else if(response === loginService.responses.invalidSecurityCode) {
             if(!$scope.needsTwoFactorAuthentication) {

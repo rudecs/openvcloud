@@ -1,10 +1,16 @@
 package api
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
 
+	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,4 +37,66 @@ func (api *API) validateLogin(c *gin.Context) {
 	} else {
 		c.AbortWithError(http.StatusInternalServerError, status)
 	}
+}
+
+func (api *API) validateOauth(c *gin.Context) {
+	resp := api.OsinServer.NewResponse()
+	defer resp.Close()
+
+	c.Request.ParseForm()
+	log.Println("Form", c.Request.Form)
+
+	if ar := api.OsinServer.HandleAuthorizeRequest(resp, c.Request); ar != nil {
+		if !api.validateOauthRequest(c, ar) {
+			return
+		}
+		ar.Authorized = true
+		api.OsinServer.FinishAuthorizeRequest(resp, c.Request, ar)
+	}
+	if resp.IsError && resp.InternalError != nil {
+		fmt.Printf("ERROR: %s\n", resp.InternalError)
+		c.AbortWithError(http.StatusInternalServerError, resp.InternalError)
+		return
+	}
+
+	log.Println("Response:", resp)
+	if resp.Type == osin.REDIRECT {
+		v := url.Values{}
+		if s := resp.Output["code"].(string); s != "" {
+			v.Set("code", s)
+		}
+		if s := resp.Output["state"].(string); s != "" {
+			v.Set("state", s)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"action": "redirect",
+			"url":    resp.URL + "?" + v.Encode(),
+			"query":  resp.Output,
+		})
+	} else {
+		osin.OutputJSON(resp, c.Writer, c.Request)
+	}
+}
+
+func (api *API) validateOauthRequest(c *gin.Context, ar *osin.AuthorizeRequest) bool {
+	login := c.Request.FormValue("login")
+	password := c.Request.FormValue("password")
+	securityCode := c.Request.FormValue("securityCode")
+	requestedScopes := strings.Split(c.Request.FormValue("scope"), ",")
+
+	availableScopes, err := api.UserStore.Validate(login, password, securityCode)
+	log.Println("Validating", login, password, securityCode, ":", err)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{})
+		return false
+	}
+
+	if !util.ScopesAreAllowed(requestedScopes, availableScopes) {
+		c.JSON(http.StatusUnauthorized, gin.H{})
+		return false
+	}
+
+	ar.UserData = login
+
+	return true
 }
