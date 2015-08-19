@@ -117,7 +117,7 @@ func main() {
 	}
 	router.Use(static.Serve("/", static.LocalFile("static", true)))
 
-	if err := api.New("/api", userStore, osinServer).Install(router); err != nil {
+	if err := api.New(userStore, osinServer).Install(router); err != nil {
 		log.Fatal(err)
 	}
 
