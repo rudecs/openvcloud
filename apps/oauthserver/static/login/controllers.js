@@ -31,14 +31,18 @@ angular.module('oauthserver').controller('LoginPageController', [
       }
 
       loginService
-        .validateLogin($scope.login, $scope.password, "")
+        .validateLogin($scope.login, $scope.password, $scope.securityCode)
         .then(function(response) {
           if(response === loginService.responses.ok) {
             $log.debug('OK');
 
-          } else if(response === loginService.responses.tfaRequired) {
-            $scope.needsTwoFactorAuthentication = true;
-            validate();
+          } else if(response === loginService.responses.invalidSecurityCode) {
+            if(!$scope.needsTwoFactorAuthentication) {
+              $scope.needsTwoFactorAuthentication = true;
+              validate();
+            } else {
+              $scope.formErrors.securityCode = 'invalid';
+            }
 
           } else {
             $log.debug('Invalid');

@@ -25,7 +25,7 @@ type UserStore interface {
 	//
 	// If the user credientials could not be validated, it returns one of the
 	// following errors: UserNotFoundError, InvalidPasswordError,
-	// InvalidSecurityCodeError.
+	// InvalidSecurityCodeError or a custom error
 	Validate(username, password, securityCode string) (scopes []string, err error)
 
 	//Close frees resources like connectionpools for example

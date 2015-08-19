@@ -1,6 +1,10 @@
 package users
 
 import (
+	"encoding/base32"
+	"log"
+
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users/keyderivation"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
 )
@@ -31,6 +35,23 @@ func (store *TomlStore) Validate(username, password, securityCode string) (scope
 	if !keyderivation.Check(password, u.Password.Key, u.Password.Salt) {
 		err = InvalidPasswordError
 		return
+	}
+
+	log.Println("For user token:", u.TFA.Token)
+	if u.TFA.Token != "" {
+		secret, e := base32.StdEncoding.DecodeString(u.TFA.Token)
+		if e != nil {
+			err = e
+			return
+		}
+
+		t := &tfa.Token{Secret: secret}
+		totp := t.TOTP()
+		log.Println("->", totp.Now().Get(), "=", securityCode)
+		if !totp.Now().Verify(securityCode) {
+			err = InvalidSecurityCodeError
+			return
+		}
 	}
 	scopes = u.Scopes
 	return

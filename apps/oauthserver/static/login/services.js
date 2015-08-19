@@ -12,7 +12,7 @@ angular.module('oauthserver').factory('loginService', [
       responses: {
         ok : 'ok',
         invalidPassword: 'invalid_password',
-        tfaRequired: 'tfa_required',
+        invalidSecurityCode: 'invalid_security_code',
       },
     };
 
@@ -33,7 +33,7 @@ angular.module('oauthserver').factory('loginService', [
           var response = result.data.status;
           if(response !== self.responses.ok &&
              response !== self.responses.invalidPassword &&
-             response !== self.responses.tfaRequired)
+             response !== self.responses.invalidSecurityCode)
           {
             $log.error('error: unknown response:', response);
             return;
