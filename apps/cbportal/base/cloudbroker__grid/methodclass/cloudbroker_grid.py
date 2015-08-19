@@ -9,9 +9,14 @@ class cloudbroker_grid(object):
 
     @auth(['level1', 'level2', 'level3'])
     def purgeLogs(self, gid, age='-3d', **kwargs):
-        return self.acl.executeJumpscript('cloudscalers', 'logs_purge', args={'age': age}, role='master', wait=False)['result']
+        return self.acl.executeJumpscript('cloudscalers', 'logs_purge', args={'age': age}, gid=gid, role='master', wait=False)['result']
 
     @auth(['level1', 'level2', 'level3'])
     def checkVMs(self, **kwargs):
-        self.acl.executeJumpscript('jumpscale', 'vms_check', role='master', wait=False)
-        return True
+        sessions = self.acl.listSessions()
+        for nodeid, roles in sessions.iteritems:
+            if 'master' in roles:
+                gid = int(nodeid.split('_')[0])
+                self.acl.executeJumpscript('jumpscale', 'vms_check', gid=gid, role='master', wait=False)
+                return True
+        return False
