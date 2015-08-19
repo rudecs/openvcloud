@@ -100,3 +100,21 @@ func (api *API) validateOauthRequest(c *gin.Context, ar *osin.AuthorizeRequest) 
 
 	return true
 }
+
+func (api *API) oauthAccessToken(c *gin.Context) {
+	resp := api.OsinServer.NewResponse()
+	defer resp.Close()
+
+	c.Request.ParseForm()
+	c.Request.Form.Set("grant_type", "authorization_code")
+
+	if ar := api.OsinServer.HandleAccessRequest(resp, c.Request); ar != nil {
+		ar.Authorized = true
+		api.OsinServer.FinishAccessRequest(resp, c.Request, ar)
+	}
+	if resp.IsError && resp.InternalError != nil {
+		fmt.Printf("ERROR: %s\n", resp.InternalError)
+	}
+
+	osin.OutputJSON(resp, c.Writer, c.Request)
+}
