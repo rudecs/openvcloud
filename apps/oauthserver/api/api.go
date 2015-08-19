@@ -17,6 +17,8 @@ func (api *API) Install(router *gin.Engine) error {
 		u := "/#/login/oauth/authorize?" + c.Request.URL.Query().Encode()
 		c.Redirect(http.StatusFound, u)
 	})
+	router.GET("/user", api.getUser)
+
 	return nil
 }
 
