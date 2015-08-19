@@ -7,31 +7,32 @@ angular.module('oauthserver').factory('loginService', [
   '$log',
   function($http, $q, api, $log) {
     var self = {
-      validatePasswordAndLogin: validatePasswordAndLogin,
+      validateLogin: validateLogin,
 
       responses: {
         ok : 'ok',
-        invalid: 'invalid',
+        invalidPassword: 'invalid_password',
         tfaRequired: 'tfa_required',
       },
     };
 
-    function validatePasswordAndLogin(login, password) {
+    function validateLogin(login, password, securityCode) {
       var d = $q.defer();
 
       var request = {
         'login': login,
         'password': password,
+        'securityCode': securityCode,
       };
 
       $log.debug('request:', request);
 
       $http
-        .post(api.resource('/validate_login_password'), request)
+        .post(api.resource('/login/validate'), request)
         .then(function(result) {
           var response = result.data.status;
           if(response !== self.responses.ok &&
-             response !== self.responses.invalid &&
+             response !== self.responses.invalidPassword &&
              response !== self.responses.tfaRequired)
           {
             $log.error('error: unknown response:', response);

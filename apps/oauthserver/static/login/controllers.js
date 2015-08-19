@@ -31,7 +31,7 @@ angular.module('oauthserver').controller('LoginPageController', [
       }
 
       loginService
-        .validatePasswordAndLogin($scope.login, $scope.password)
+        .validateLogin($scope.login, $scope.password, "")
         .then(function(response) {
           if(response === loginService.responses.ok) {
             $log.debug('OK');

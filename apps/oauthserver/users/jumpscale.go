@@ -3,7 +3,6 @@ package users
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
 	"log"
 
 	"gopkg.in/mgo.v2"
@@ -35,7 +34,7 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 }
 
 //Validate checks if a given password is correct for a username, it returns the groups it belongs to as scopes
-func (store *JumpscaleStore) Validate(username, password string) (scopes []string, err error) {
+func (store *JumpscaleStore) Validate(username, password, securityCode string) (scopes []string, err error) {
 	type user struct {
 		ID     string
 		Passwd string
@@ -55,7 +54,7 @@ func (store *JumpscaleStore) Validate(username, password string) (scopes []strin
 
 	md5hashedPassword := hex.EncodeToString(md5hash)
 	if md5hashedPassword != jumpscaleUser.Passwd {
-		err = errors.New("Invalid password")
+		err = InvalidPasswordError
 		return
 	}
 	scopes = jumpscaleUser.Groups

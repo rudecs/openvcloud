@@ -59,7 +59,7 @@ func handleLoginPage(ar *osin.AuthorizeRequest, w http.ResponseWriter, r *http.R
 	if r.Method == "POST" {
 		username := r.FormValue("login")
 		password := r.FormValue("password")
-		availableScopes, err := userStore.Validate(username, password)
+		availableScopes, err := userStore.Validate(username, password, "")
 		if err == nil {
 			if util.ScopesAreAllowed(requestedScopes, availableScopes) {
 				session.Options.HttpOnly = true

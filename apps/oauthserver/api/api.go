@@ -6,7 +6,7 @@ import (
 )
 
 func (api *API) Install(router *gin.Engine) error {
-	router.POST(api.Prefix+"/validate_login_password", api.validateLoginPassword)
+	router.POST(api.Prefix+"/login/validate", api.validateLogin)
 
 	return nil
 }
