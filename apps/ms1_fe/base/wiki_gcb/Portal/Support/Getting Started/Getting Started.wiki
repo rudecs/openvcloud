@@ -94,5 +94,5 @@ h2. Cloud Space
 
 h2. Questions?
 {{html:
-<p>In case of any questions, go to our Documentation Center or contact <a href="http://support.mothership1.com" target="_blank">Support</a></p>
+<p>In case of any questions, go to our Documentation Center or contact <a href="/$$space/support">Support</a></p>
 }}

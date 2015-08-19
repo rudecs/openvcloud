@@ -1,7 +1,6 @@
-{{html
-<html>
-<body>
-<meta http-equiv="refresh" content=1;"http://support.mothership1.com/open.php">
-</body>
-</html>
+h1. Support
+
+#todo add real email address..
+{{html:
+<!-- If have any problems please contact us <a href="mailto:someone@example.com" target="_top">here</a>. -->
 }}
