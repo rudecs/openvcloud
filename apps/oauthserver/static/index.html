@@ -232,10 +232,10 @@ angular.module('oauthserver').controller('LoginPageController', [
 angular.module('oauthserver').factory('loginService', [
   '$http',
   '$q',
-  '$location',
+  '$window',
   'api',
   '$log',
-  function($http, $q, $location, api, $log) {
+  function($http, $q, $window, api, $log) {
     var self = {
       validateLogin: validateLogin,
       validateOauth: validateOauth,
@@ -246,6 +246,13 @@ angular.module('oauthserver').factory('loginService', [
         invalidSecurityCode: 'invalid_security_code',
       },
     };
+
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
 
     function validateLogin(login, password, securityCode) {
       var d = $q.defer();
@@ -282,14 +289,12 @@ angular.module('oauthserver').factory('loginService', [
     function validateOauth(login, password, securityCode) {
       var d = $q.defer();
 
-      var query = $location.search();
-
       var request = {
-        'client_id': query.client_id,
-        'redirect_url': query.redirect_url,
-        'response_type': query.response_type,
-        'scope': query.scope,
-        'state': query.state,
+        'client_id': getParameterByName('client_id'),
+        'redirect_url': getParameterByName('redirect_url'),
+        'response_type': getParameterByName('response_type'),
+        'scope': getParameterByName('scope'),
+        'state': getParameterByName('state'),
 
         'login': login,
         'password': password,

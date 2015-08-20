@@ -62,6 +62,7 @@ func main() {
 		log.Fatal(err)
 	}
 	router.Use(static.Serve("/", static.LocalFile("static", true)))
+	router.Static("/login/oauth/authorize", "static/")
 
 	if err := api.New(userStore, osinServer).Install(router); err != nil {
 		log.Fatal(err)
