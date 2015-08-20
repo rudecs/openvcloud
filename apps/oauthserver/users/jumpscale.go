@@ -3,6 +3,7 @@ package users
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"log"
 
 	"gopkg.in/mgo.v2"
@@ -60,6 +61,14 @@ func (store *JumpscaleStore) Validate(username, password, securityCode string) (
 	scopes = jumpscaleUser.Groups
 
 	return
+}
+
+func (store *JumpscaleStore) SetTOTPSecret(username, secret string) error {
+	return errors.New("Not implemented")
+}
+
+func (store *JumpscaleStore) GetTOTPSecret(username string) string {
+	return ""
 }
 
 //Close releases the mongo session

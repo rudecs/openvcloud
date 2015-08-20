@@ -57,6 +57,20 @@ func (store *TomlStore) Validate(username, password, securityCode string) (scope
 	return
 }
 
+func (store *TomlStore) SetTOTPSecret(username, secret string) error {
+	// TODO: Actually change
+	return nil
+}
+
+func (store *TomlStore) GetTOTPSecret(username string) string {
+	u, ok := store.users[username]
+	if !ok {
+		return ""
+	}
+
+	return u.TFA.Token
+}
+
 //NewTomlStore creates a new TomlStore instance and loads the users from a local file
 func NewTomlStore(filename string) (userStore *TomlStore) {
 	userStore = new(TomlStore)

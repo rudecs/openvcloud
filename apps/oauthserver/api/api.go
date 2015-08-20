@@ -19,6 +19,11 @@ func (api *API) Install(router *gin.Engine) error {
 	})
 	router.GET("/user", api.getUser)
 
+	// tfa
+	router.POST("/api/tfa/token/update", api.updateToken)
+	router.GET("/api/tfa/token/enabled", api.isTokenEnabled)
+	router.POST("/api/tfa/token/delete", api.deleteToken)
+
 	return nil
 }
 

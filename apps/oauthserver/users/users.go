@@ -35,6 +35,17 @@ type UserStore interface {
 	// InvalidSecurityCodeError or a custom error
 	Validate(username, password, securityCode string) (scopes []string, err error)
 
+	// SetTOTPSecret sets the TOTP shared secret for a given user.
+	//
+	// The secret must be Base32 encoded.
+	SetTOTPSecret(username, secret string) error
+
+	// GetTOTPSecret gets the TOTP shared secret for a given user.
+	//
+	// If no TOTP secret is associated with the given user, an empty string is
+	// returned.
+	GetTOTPSecret(username string) string
+
 	//Close frees resources like connectionpools for example
 	Close()
 }
