@@ -34,8 +34,20 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = cloudspaces[0]
 
+        status = cloudspace['status']
         cloudspace['status'] = 'DESTROYED'
         self.models.cloudspace.set(cloudspace)
+
+        try:
+            #delete machines
+            for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
+                machineId = machine['id']
+                if machine['status'] != 'DESTROYED':
+                    j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
+        except:
+            cloudspace['status'] = status
+            self.models.cloudspace.set(cloudspace)
+            raise
 
         #delete routeros
         gid = cloudspace['gid']
@@ -44,11 +56,6 @@ class cloudbroker_cloudspace(BaseActor):
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
         if cloudspace['publicipaddress']:
             self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
-
-        #delete machines
-        for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
-            machineId = machine['id']
-            j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
 
         cloudspace['networkId'] = None
         cloudspace['publicipaddress'] = None
