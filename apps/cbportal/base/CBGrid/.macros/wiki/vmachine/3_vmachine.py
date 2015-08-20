@@ -97,6 +97,7 @@ def main(j, args, params, tags, tasklet):
         data['stackname'] = stack['name']
         data['spacename'] = space['name']
         data['stackrefid'] = stack['referenceId'] or 'N/A'
+        data['breadcrumbname'] = obj.name
 
         for k, v in stats.iteritems():
             if k == 'epoch':

@@ -16,7 +16,9 @@ def main(j, args, params, tags, tasklet):
         return params
 
     def objFetchManipulate(id):
-        return ccl.stack.get(stid).dump()
+        stack = ccl.stack.get(stid).dump()
+        stack['breadcrumbname'] = stack['name']
+        return stack
 
     push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
 

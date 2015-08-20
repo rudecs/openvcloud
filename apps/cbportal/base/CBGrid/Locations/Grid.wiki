@@ -1,8 +1,10 @@
 @usedefault
 
-h2. Grid $$gid
+h3. Location: ${name}
 
 {{toc: start=3 | depth=2}}
+
+{{location: gid:$$gid}}
 
 {{actions:
 - display: Check VMs

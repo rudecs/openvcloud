@@ -27,6 +27,7 @@ def main(j, args, params, tags, tasklet):
     portalurl = j.apps.cloudbroker.iaas.cb.actors.cloudapi.locations.getUrl()
 
     obj = user.dump()
+    obj['breadcrumbname'] = obj['id']
     obj['loginurl'] = "%s/wiki_gcb/login#?username=%s&apiKey=%s" % (portalurl, user.id, authkey)
 
     args.doc.applyTemplate(obj)
