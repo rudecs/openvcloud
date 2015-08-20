@@ -12,6 +12,7 @@ import (
 //TomlStore implements the UserStore interface for a local file
 type TomlStore struct {
 	users map[string]user
+	dirty chan bool
 }
 
 //Get user profile information
@@ -58,7 +59,16 @@ func (store *TomlStore) Validate(username, password, securityCode string) (scope
 }
 
 func (store *TomlStore) SetTOTPSecret(username, secret string) error {
-	// TODO: Actually change
+	u, ok := store.users[username]
+	if !ok {
+		return UserNotFoundError
+	}
+
+	log.Println("Updating to", secret)
+	u.TFA.Token = secret
+	store.users[username] = u
+	store.dirty <- true
+
 	return nil
 }
 
@@ -81,6 +91,18 @@ func NewTomlStore(filename string) (userStore *TomlStore) {
 
 	util.LoadTomlFile(filename, &data)
 	userStore.users = data.Users
+
+	userStore.dirty = make(chan bool)
+	go func() {
+		for {
+			<-userStore.dirty
+			var data struct {
+				Users map[string]user
+			}
+			data.Users = userStore.users
+			util.WriteTomlFile(filename, data)
+		}
+	}()
 
 	return
 }
