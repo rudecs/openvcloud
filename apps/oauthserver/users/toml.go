@@ -81,6 +81,28 @@ func (store *TomlStore) GetTOTPSecret(username string) string {
 	return u.TFA.Token
 }
 
+func (store *TomlStore) SetRecovery(username string, recovery tfa.Recovery) error {
+	u, ok := store.users[username]
+	if !ok {
+		return UserNotFoundError
+	}
+
+	u.TFA.Recovery = recovery
+	store.users[username] = u
+	store.dirty <- true
+
+	return nil
+}
+
+func (store *TomlStore) GetRecovery(username string) (tfa.Recovery, bool) {
+	u, ok := store.users[username]
+	if !ok {
+		return tfa.Recovery{}, false
+	}
+
+	return u.TFA.Recovery, true
+}
+
 //NewTomlStore creates a new TomlStore instance and loads the users from a local file
 func NewTomlStore(filename string) (userStore *TomlStore) {
 	userStore = new(TomlStore)
@@ -120,6 +142,7 @@ type user struct {
 		Salt string
 	}
 	TFA struct {
-		Token string
+		Token    string
+		Recovery tfa.Recovery
 	}
 }

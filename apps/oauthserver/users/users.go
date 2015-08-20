@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
+
 	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/gin"
 )
@@ -45,6 +47,13 @@ type UserStore interface {
 	// If no TOTP secret is associated with the given user, an empty string is
 	// returned.
 	GetTOTPSecret(username string) string
+
+	// GetTFARecoveryCodes should return the saved recovery codes for the given
+	// user, or a nil slice if none are saved.
+	GetRecovery(username string) (tfa.Recovery, bool)
+
+	// SetTFARecoveryCodes should save new recover codes for the user
+	SetRecovery(username string, recovery tfa.Recovery) error
 
 	//Close frees resources like connectionpools for example
 	Close()

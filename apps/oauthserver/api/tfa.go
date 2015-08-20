@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"net/http"
 
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
 	"github.com/gin-gonic/gin"
 )
@@ -58,6 +59,48 @@ func (api *API) deleteToken(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (api *API) getRecoveryCodes(c *gin.Context) {
+	user := users.RequiresUser(c, api.OsinServer, api.UserStore)
+	if user == nil {
+		return
+	}
+
+	if api.UserStore.GetTOTPSecret(user.Login) == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"reason": "TFA is disabled for this user",
+		})
+		return
+	}
+
+	s, ok := api.UserStore.GetRecovery(user.Login)
+	if !ok {
+		s = tfa.Recovery{}
+		s.GenerateCodes()
+		api.UserStore.SetRecovery(user.Login, s)
+	}
+	c.JSON(http.StatusOK, s)
+}
+
+func (api *API) renewRecoveryCodes(c *gin.Context) {
+	user := users.RequiresUser(c, api.OsinServer, api.UserStore)
+	if user == nil {
+		return
+	}
+
+	if api.UserStore.GetTOTPSecret(user.Login) == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"reason": "TFA is disabled for this user",
+		})
+		return
+	}
+
+	r := tfa.Recovery{}
+	r.GenerateCodes()
+	api.UserStore.SetRecovery(user.Login, r)
 
 	c.JSON(http.StatusOK, gin.H{})
 }

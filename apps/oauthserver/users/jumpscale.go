@@ -6,6 +6,8 @@ import (
 	"errors"
 	"log"
 
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -69,6 +71,14 @@ func (store *JumpscaleStore) SetTOTPSecret(username, secret string) error {
 
 func (store *JumpscaleStore) GetTOTPSecret(username string) string {
 	return ""
+}
+
+func (store *JumpscaleStore) SetRecovery(username string, recovery tfa.Recovery) error {
+	return errors.New("Not implemented")
+}
+
+func (store *JumpscaleStore) GetRecovery(username string) (tfa.Recovery, bool) {
+	return tfa.Recovery{}, false
 }
 
 //Close releases the mongo session

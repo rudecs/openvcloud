@@ -23,6 +23,8 @@ func (api *API) Install(router *gin.Engine) error {
 	router.POST("/api/tfa/token/update", api.updateToken)
 	router.GET("/api/tfa/token/enabled", api.isTokenEnabled)
 	router.POST("/api/tfa/token/delete", api.deleteToken)
+	router.GET("/api/tfa/recovery", api.getRecoveryCodes)
+	router.POST("/api/tfa/recovery/renew", api.renewRecoveryCodes)
 
 	return nil
 }
