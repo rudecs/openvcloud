@@ -44,7 +44,7 @@ def main(j, args, params, tags, tasklet):
             obj['networkid'] = 'N/A'
         obj['network'] = {'tcpForwardRules': []}
 
-
+    obj['breadcrumbname'] = obj['name']
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)
     return params
