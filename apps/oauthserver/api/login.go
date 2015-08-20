@@ -59,6 +59,10 @@ func (api *API) validateOauth(c *gin.Context) {
 		return
 	}
 
+	session, _ := api.CookieStore.Get(c.Request, "openvcloudsession")
+	session.Values["user"] = c.Request.FormValue("login")
+	session.Save(c.Request, c.Writer)
+
 	log.Println("Response:", resp)
 	if resp.Type == osin.REDIRECT {
 		v := url.Values{}

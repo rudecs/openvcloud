@@ -4,6 +4,7 @@ import (
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
 	"github.com/RangelReale/osin"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 )
 
 func (api *API) Install(router *gin.Engine) error {
@@ -24,13 +25,15 @@ func (api *API) Install(router *gin.Engine) error {
 }
 
 type API struct {
-	UserStore  users.UserStore
-	OsinServer *osin.Server
+	UserStore   users.UserStore
+	OsinServer  *osin.Server
+	CookieStore *sessions.CookieStore
 }
 
-func New(userStore users.UserStore, osinServer *osin.Server) *API {
+func New(userStore users.UserStore, osinServer *osin.Server, cookiestore *sessions.CookieStore) *API {
 	return &API{
-		UserStore:  userStore,
-		OsinServer: osinServer,
+		UserStore:   userStore,
+		OsinServer:  osinServer,
+		CookieStore: cookiestore,
 	}
 }
