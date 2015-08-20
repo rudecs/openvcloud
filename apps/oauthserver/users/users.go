@@ -1,6 +1,13 @@
 package users
 
-import "errors"
+import (
+	"errors"
+	"log"
+	"net/http"
+
+	"github.com/RangelReale/osin"
+	"github.com/gin-gonic/gin"
+)
 
 //UserDetails is the profile information
 type UserDetails struct {
@@ -30,4 +37,35 @@ type UserStore interface {
 
 	//Close frees resources like connectionpools for example
 	Close()
+}
+
+func RequiresUser(c *gin.Context, osinServer *osin.Server, u UserStore) *UserDetails {
+	var code string
+	if token := osin.CheckBearerAuth(c.Request); token != nil {
+		code = token.Code
+	} else {
+		code = c.Request.FormValue("access_token")
+	}
+
+	if code == "" {
+		log.Println("No access token in request")
+		c.JSON(http.StatusUnauthorized, gin.H{})
+		return nil
+	}
+
+	accesstoken, err := osinServer.Storage.LoadAccess(code)
+	if err != nil {
+		log.Println("Invalid access token")
+		c.JSON(http.StatusUnauthorized, gin.H{})
+		return nil
+	}
+
+	user, err := u.Get(accesstoken.UserData.(string))
+	if err != nil {
+		log.Println("Unable to get user details:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return nil
+	}
+
+	return user
 }

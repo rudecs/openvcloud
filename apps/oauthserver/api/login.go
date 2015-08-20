@@ -120,37 +120,13 @@ func (api *API) oauthAccessToken(c *gin.Context) {
 }
 
 func (api *API) getUser(c *gin.Context) {
+	user := users.RequiresUser(c, api.OsinServer, api.UserStore)
+	if user == nil {
+		return
+	}
+
 	resp := api.OsinServer.NewResponse()
 	defer osin.OutputJSON(resp, c.Writer, c.Request)
-
-	var code string
-	if token := osin.CheckBearerAuth(c.Request); token != nil {
-		code = token.Code
-	} else {
-		code = c.Request.FormValue("access_token")
-	}
-
-	if code == "" {
-		log.Println("No access token in request")
-		resp.StatusCode = http.StatusUnauthorized
-		return
-	}
-
-	accesstoken, err := api.OsinServer.Storage.LoadAccess(code)
-	if err != nil {
-		log.Println("Invalid accesstoken")
-		resp.Output["error"] = "Bad Credentials"
-		resp.StatusCode = http.StatusUnauthorized
-		return
-	}
-
-	user, err := api.UserStore.Get(accesstoken.UserData.(string))
-	if err != nil {
-		log.Println("Unable to get user details:", err)
-		resp.Output["error"] = "Internal Server Error"
-		resp.StatusCode = http.StatusInternalServerError
-		return
-	}
 
 	resp.Output["login"] = user.Login
 	resp.Output["name"] = user.Name
