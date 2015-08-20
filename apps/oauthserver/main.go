@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -58,11 +59,14 @@ func main() {
 	// Start HTTP
 	router := gin.Default()
 
-	if _, err := os.Stat("static/"); err != nil {
+	if _, err := os.Stat("html/"); err != nil {
 		log.Fatal(err)
 	}
-	router.Use(static.Serve("/", static.LocalFile("static", true)))
-	router.Static("/login/oauth/authorize", "static/")
+	router.Use(static.Serve("/", static.LocalFile("html", true)))
+	router.GET("/login/oauth/authorize", func(c *gin.Context) {
+		t, _ := template.ParseFiles("html/login.html")
+		t.Execute(c.Writer, nil)
+	})
 
 	if err := api.New(userStore, osinServer).Install(router); err != nil {
 		log.Fatal(err)
