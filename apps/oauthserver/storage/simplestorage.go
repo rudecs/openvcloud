@@ -58,6 +58,14 @@ func (s *SimpleStorage) GetClient(id string) (osin.Client, error) {
 	return nil, errors.New("Client not found")
 }
 
+// ClientWithID implements clients.Store
+func (s *SimpleStorage) ClientWithID(id string) *clients.Client {
+	if c, ok := s.clients[id]; ok {
+		return &c
+	}
+	return nil
+}
+
 // SaveAuthorize saves authorize data.
 func (s *SimpleStorage) SaveAuthorize(data *osin.AuthorizeData) error {
 	if s.authorize.ItemCount() >= MaxCacheEntries {

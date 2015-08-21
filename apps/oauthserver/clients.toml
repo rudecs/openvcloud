@@ -9,3 +9,4 @@ scopes = ["client_based_scopes_here"]
 id = "ovs"
 secret = "WhateverSecretYouWant"
 redirectUri = "https://localhost:1543/callback"
+scopes = ["write_user_credentials", "read_user_credentials"]

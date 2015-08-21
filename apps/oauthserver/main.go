@@ -69,7 +69,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("html", true)))
 	router.GET("/login/oauth/authorize", loginPage)
 
-	if err := api.New(userStore, osinServer, cookiestore).Install(router); err != nil {
+	if err := api.New(userStore, storagebackend, osinServer, cookiestore).Install(router); err != nil {
 		log.Fatal(err)
 	}
 
