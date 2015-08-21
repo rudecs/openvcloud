@@ -26,7 +26,7 @@ func (store *TomlStore) Get(username string) (ret *UserDetails, err error) {
 }
 
 //Validate checks if a given password is correct for a username
-func (store *TomlStore) Validate(username, password, securityCode string) (scopes []string, err error) {
+func (store *TomlStore) Validate(username, password, securityCode string, final bool) (scopes []string, err error) {
 
 	u, found := store.users[username]
 	if !found {
@@ -46,11 +46,31 @@ func (store *TomlStore) Validate(username, password, securityCode string) (scope
 			return
 		}
 
+		err = nil
+
 		t := &tfa.Token{Secret: secret}
 		totp := t.TOTP()
 		log.Println("->", totp.Now().Get(), "=", securityCode)
 		if !totp.Now().Verify(securityCode) {
 			err = InvalidSecurityCodeError
+		}
+
+		// Check if the code matches one of the recovery codes
+		if err != nil {
+			if r, ok := store.GetRecovery(username); ok {
+				for _, c := range r.Codes {
+					if !c.Used && c.Code == securityCode {
+						c.Used = final
+						store.SetRecovery(username, r)
+
+						err = nil
+						break
+					}
+				}
+			}
+		}
+
+		if err != nil {
 			return
 		}
 	}

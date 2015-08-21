@@ -26,7 +26,7 @@ func (api *API) validateLogin(c *gin.Context) {
 		return
 	}
 
-	_, status := api.UserStore.Validate(r.Login, r.Password, r.SecurityCode)
+	_, status := api.UserStore.Validate(r.Login, r.Password, r.SecurityCode, false)
 
 	if status == nil {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
@@ -88,7 +88,7 @@ func (api *API) validateOauthRequest(c *gin.Context, ar *osin.AuthorizeRequest) 
 	securityCode := c.Request.FormValue("securityCode")
 	requestedScopes := strings.Split(c.Request.FormValue("scope"), ",")
 
-	availableScopes, err := api.UserStore.Validate(login, password, securityCode)
+	availableScopes, err := api.UserStore.Validate(login, password, securityCode, true)
 	log.Println("Validating", login, password, securityCode, ":", err)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{})

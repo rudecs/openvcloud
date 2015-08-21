@@ -37,7 +37,7 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 }
 
 //Validate checks if a given password is correct for a username, it returns the groups it belongs to as scopes
-func (store *JumpscaleStore) Validate(username, password, securityCode string) (scopes []string, err error) {
+func (store *JumpscaleStore) Validate(username, password, securityCode string, final bool) (scopes []string, err error) {
 	type user struct {
 		ID     string
 		Passwd string

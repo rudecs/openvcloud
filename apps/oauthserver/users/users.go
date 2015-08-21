@@ -35,7 +35,10 @@ type UserStore interface {
 	// If the user credientials could not be validated, it returns one of the
 	// following errors: UserNotFoundError, InvalidPasswordError,
 	// InvalidSecurityCodeError or a custom error
-	Validate(username, password, securityCode string) (scopes []string, err error)
+	//
+	// If final is true and the user entered a recovery code, the recovery code
+	// will be marked as used.
+	Validate(username, password, securityCode string, final bool) (scopes []string, err error)
 
 	// SetTOTPSecret sets the TOTP shared secret for a given user.
 	//
