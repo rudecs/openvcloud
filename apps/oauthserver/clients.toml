@@ -3,6 +3,7 @@
 id = "dcpm"
 secret = "WhateverSecretYouWant"
 redirectUri = "https://localhost:1543/callback"
+scopes = ["client_based_scopes_here"]
 
 [[clients]]
 id = "ovs"

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/api"
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/clients"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/storage"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/util"
@@ -39,7 +40,7 @@ func main() {
 	util.LoadTomlFile("settings.toml", &settings)
 
 	var clients struct {
-		Clients []osin.DefaultClient
+		Clients []clients.Client
 	}
 	util.LoadTomlFile("clients.toml", &clients)
 

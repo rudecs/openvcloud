@@ -4,13 +4,15 @@ import (
 	"errors"
 	"time"
 
+	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/clients"
+
 	"github.com/RangelReale/osin"
 	"github.com/pmylund/go-cache"
 )
 
 //SimpleStorage is an in-memory storage backend for osin
 type SimpleStorage struct {
-	clients   map[string]osin.Client
+	clients   map[string]clients.Client
 	authorize *cache.Cache
 	access    *cache.Cache
 	refresh   *cache.Cache
@@ -21,16 +23,16 @@ type SimpleStorage struct {
 const MaxCacheEntries = 20000
 
 //NewSimpleStorage creates and initializes a SimpleStorage instance
-func NewSimpleStorage(clients []osin.DefaultClient) *SimpleStorage {
+func NewSimpleStorage(cls []clients.Client) *SimpleStorage {
 	r := &SimpleStorage{
-		clients:   make(map[string]osin.Client),
+		clients:   make(map[string]clients.Client),
 		authorize: cache.New(1*time.Minute, 10*time.Second),
 		access:    cache.New(1*time.Minute, 30*time.Second),
 		refresh:   cache.New(1*time.Minute, 30*time.Second),
 	}
-	for i := range clients {
-		client := clients[i]
-		r.clients[client.Id] = &client
+	for i := range cls {
+		client := cls[i]
+		r.clients[client.Id] = client
 	}
 
 	return r
