@@ -7,7 +7,6 @@
 {{logo:/cbgrid/.files/green.png}}
 
 {{menu:
-Status Overview:/grid/checkstatus
 Cloud Broker Portal:/cbgrid
 }}
 
