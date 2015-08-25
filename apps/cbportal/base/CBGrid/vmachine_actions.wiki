@@ -195,7 +195,7 @@
   data:
    machineId: $$id
 
-- display: Move to a diffrent Compute Node
+- display: Move to a different CPU Node
   action: "#movemachine"
 
 - display: Tag

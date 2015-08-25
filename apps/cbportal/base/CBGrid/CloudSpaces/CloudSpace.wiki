@@ -28,7 +28,7 @@ h2. CloudSpace: ${name}
 - display: Create Machine
   action: '#createmachine'
 
-- display: Create Machine On Stack
+- display: Create Machine On CPU Node
   action: '#createmachineonstack'
 
 - display: Move VFW
