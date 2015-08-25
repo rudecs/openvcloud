@@ -45,10 +45,10 @@ def main(j, args, params, tags, tasklet):
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)
 
-    popup = Popup(id='createmachineonstack', header='Create Machine On Stack', submit_url='/restmachine/cloudbroker/machine/createOnStack')
+    popup = Popup(id='createmachineonstack', header='Create Machine On CPU Node', submit_url='/restmachine/cloudbroker/machine/createOnStack')
     popup.addText('Machine Name', 'name', required=True)
     popup.addText('Machine Description', 'description', required=True)
-    popup.addDropdown('Choose Stack', 'stackid', dropstacks)
+    popup.addDropdown('Choose CPU Node', 'stackid', dropstacks)
     popup.addDropdown('Choose Image', 'imageId', dropimages)
     popup.addDropdown('Choose Memory', 'sizeId', dropsizes)
     popup.addDropdown('Choose Disk Size', 'disksize', dropdisksizes)
