@@ -36,9 +36,9 @@ h3. Image: ${name}
 * *UNCPath*: ${UNCPath}
 * *Status*: ${status or "CREATED"}
 
-h4. Stacks which have this Image
+h4. CPU Nodes which have this Image
 
 {{stacks imageid:$$id}}
 
-h4. VMachines which use this image
+h4. Virtual Machines which use this image
 {{vmachines imageid:$$id}}
