@@ -1,3 +1,4 @@
+import ujson as json
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -8,30 +9,32 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'User Name', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
 
-    def makeRPS(row, field):
-        links = list()
-        for rps in row[field]:
-            links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
-        return ', '.join(links)
-    def makeNetworkLink(row, field):
-        if row[field]:
-            return '[%(networkId)s|/CBGrid/network?id=%(networkId)s&gid=%(gid)s]' % row
-        else:
-            return ''
-
-    fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'location', 'status', 'publicipaddress']
-    fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
-                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
-                   makeNetworkLink, makeRPS, 'location', 'status', 
-                   'publicipaddress']
-    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
+    def _formatData():
+        res = list()
+        cl = j.clients.osis.getNamespace('cloudbroker')
+        for cs in cl.cloudspace.list():
+            cloudspace = cl.cloudspace.get(cs)
+            accountId = cloudspace.accountId
+            user  = cl.account.get(accountId)
+            id = '<a href="/CBGrid/cloudspace?id=%s">%s</a>' % (cloudspace.id, cloudspace.id)
+            username = '<a href="/CBGrid/account?id=%s">%s</a>' % (accountId, user.name)
+            networkId = ''
+            rps = ''
+            if cloudspace.networkId:
+                networkId = '<a href="/CBGrid/network?id=%s&gid=%s">%s</a>' % (cloudspace.networkId, cloudspace.gid, cloudspace.networkId)
+            if cloudspace.resourceProviderStacks:
+                rps = ','.join(['<a href="/CBGrid/stack?id=%s">%s</a>' % (sid, sid) for sid in cloudspace.resourceProviderStacks])
+            res.append([id, cloudspace.name, username,  networkId, rps, cloudspace.location, cloudspace.status, cloudspace.publicipaddress or ''])
+        return json.dumps(res)
+    
+    fieldvalues = _formatData()
+    tableid = modifier.addTableFromData(fieldvalues, fieldnames)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
     params.result = page
-
     return params
 
 
