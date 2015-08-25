@@ -2,7 +2,7 @@ import xmlrpclib
 import time
 
 def installFreshComputeNode(nocps_url, macaddress, hostname, ip, profilename):
-    print 'Installing %s on the compute node' % profilename
+    print 'Installing %s on the CPU Node' % profilename
 
     ps = xmlrpclib.ServerProxy(nocps_url)
     if not macaddress or not ip:
