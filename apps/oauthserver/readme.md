@@ -18,6 +18,6 @@ curl "http://localhost:8080/login/oauth/authorize?response_type=code&client_id=d
 
 curl "http://localhost:8080/login/oauth/authorize?response_type=code&client_id=dcpm&redirect_uri=http%3A%2F%2Flocalhost%315430%2Fauthcallback&scope=dcpm" -v -d login=your_user -d password=your_pwd
 
-curl "http://localhost:8080/login/oauth/access_token" -v  -d grant_type=authorization_code -d client_id=dcpm -d client_secret=WhateverSecretYouWant -d redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauthcallback -d code=<frompreviousresponse>
+curl "http://localhost:8080/login/oauth/access_token" -v  -d grant_type=authorization_code -d client_id=dcpm -d client_secret=WhateverSecretYouWant -d redirect_uri=http%3A%2F%2Flocalhost%3A1543%2Fauthcallback -d code=<frompreviousresponse>
 
 ```
