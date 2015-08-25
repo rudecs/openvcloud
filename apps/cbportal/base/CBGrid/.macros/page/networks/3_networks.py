@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
             fw = vfwcl.virtualfirewall.get(fwid)
             id = '<a href="/CBGrid/network?id=%s&gid=%s">%s</a> (%04x)' % (fw.id, fw.gid, fw.id, fw.id)
             cloudspace = cbcl.cloudspace.get(int(fw.domain))
-            domain = '<a href="/CBGrid/cloudspace?id=%s">%s &nbsp; &nbsp; [%s] </a>' % (fw.domain, cloudspace.name, fw.domain)
+            domain = '<a href="/CBGrid/cloudspace?id=%s">%s &nbsp;[%s] </a>' % (fw.domain, cloudspace.name, fw.domain)
             ns = ', '.join(fw.pubips)
             res.append([fw.gid, id, domain, ns, fw.host])
         return json.dumps(res)
