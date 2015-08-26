@@ -31,21 +31,21 @@ def main(j, args, params, tags, tasklet):
         stacksids = [ stack['id'] for stack in stacks ]
         filters['stackId'] = stacksids
 
-    fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space Name', 'Stack']
+    fieldnames = ['Name', 'Host Name' ,'Status', 'Created at', 'Cloud Space', 'CPU Node']
 
     def _formatData():
         res = []
         cbcl = j.clients.osis.getNamespace('cloudbroker')
         for vmid in cbcl.vmachine.list():
             vm = cbcl.vmachine.get(vmid)
-            name = '<a href="vmachine?id=%s">%s</a>' % (vm.id, vm.name)
+            name = '<a href="Virtual Machine?id=%s">%s</a>' % (vm.id, vm.name)
             csname = cbcl.cloudspace.get(int(vm.cloudspaceId)).name
             cloudspace = '<a href="cloudspace?id=%s">%s</a>' % (vm.cloudspaceId,csname)
             stack = ''
             if vm.stackId:
                 stack = '<a href="stack?id=%s">%s</a>' % (vm.stackId, vm.stackId)
             time = '<div class="jstimestamp" data-ts="%s"></div>' % vm.creationTime
-            res.append([name, vm.status, vm.hostName, time, cloudspace, stack])
+            res.append([name, vm.hostName, vm.status, time, cloudspace, stack])
         return json.dumps(res)
     
     fieldvalues = _formatData()

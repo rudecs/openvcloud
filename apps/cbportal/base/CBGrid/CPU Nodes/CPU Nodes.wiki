@@ -1,5 +1,5 @@
 @usedefaults
 
-h3. Cloud Nodes
+h3. CPU Nodes
 
 {{stacks gid:$$gid}}
