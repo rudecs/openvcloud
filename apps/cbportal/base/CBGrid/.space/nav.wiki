@@ -1,7 +1,7 @@
 
 Accounts:/cbgrid/accounts
 Cloud Spaces:/cbgrid/cloudspaces
-CPU Nodes:/cbgrid/stacks
+CPU Nodes:/cbgrid/CPU Nodes
 Images:/cbgrid/images
 Networks:/cbgrid/networks
 Users:/cbgrid/users

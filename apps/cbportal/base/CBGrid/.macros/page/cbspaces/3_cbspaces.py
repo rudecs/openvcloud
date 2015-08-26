@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'User Name', 'Network ID', 'Stacks IDs', 'Location', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'User Name', 'Network ID', 'CPU Node ID', 'Location', 'Status', 'Public IP Address']
 
     def _formatData():
         res = list()
