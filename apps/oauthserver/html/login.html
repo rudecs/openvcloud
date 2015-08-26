@@ -176,13 +176,12 @@ angular.module('oauthserver').controller('LoginPageController', [
 
       loginService
         .validateLogin($scope.login, $scope.password, $scope.securityCode)
-        .then(function(response) {
+        .then(function(result) {
+          var response = result.status;
           if(response === loginService.responses.ok) {
-            loginService
-              .validateOauth($scope.login, $scope.password, $scope.securityCode)
-              .then(function(url) {
-                $window.location.href = url;
-              });
+            if(result.url) {
+              $window.location.href = result.url;
+            }
 
           } else if(response === loginService.responses.invalidSecurityCode) {
             if(!$scope.needsTwoFactorAuthentication) {
@@ -235,7 +234,6 @@ angular.module('oauthserver').factory('loginService', [
   function($http, $q, $window, api, $log) {
     var self = {
       validateLogin: validateLogin,
-      validateOauth: validateOauth,
 
       responses: {
         ok : 'ok',
@@ -255,47 +253,6 @@ angular.module('oauthserver').factory('loginService', [
       var d = $q.defer();
 
       var request = {
-        'login': login,
-        'password': password,
-        'securityCode': securityCode,
-      };
-
-      $http
-        .post(api.resource('/login/oauth/authorize'), request)
-        .then(function(result) {
-          var response = result.data.status;
-          if(response !== self.responses.ok &&
-             response !== self.responses.invalidPassword &&
-             response !== self.responses.invalidSecurityCode)
-          {
-            $log.error('error: unknown response:', response);
-            // TODO: Show md-toast
-            return;
-          }
-
-          d.resolve(response);
-
-        }, function(result) {
-          if(result.status === 401) {
-            if(result.data.status === self.responses.invalidPassword ||
-               result.data.status === self.response_type.invalidSecurityCode)
-            {
-              d.resolve(result.data.status);
-              return;
-            }
-          }
-
-          $log.error('Error:', result);
-          // TODO: Show md-toast
-        });
-
-      return d.promise;
-    }
-
-    function validateOauth(login, password, securityCode) {
-      var d = $q.defer();
-
-      var request = {
         'client_id': getParameterByName('client_id'),
         'redirect_url': getParameterByName('redirect_url'),
         'response_type': getParameterByName('response_type'),
@@ -309,7 +266,7 @@ angular.module('oauthserver').factory('loginService', [
 
       $http({
         method: 'POST',
-        url: api.resource('/oauth/validate'),
+        url: api.resource('/login/oauth/authorize'),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         transformRequest: function(obj) {
           var str = [];
@@ -321,14 +278,30 @@ angular.module('oauthserver').factory('loginService', [
         data: request,
       })
         .then(function(result) {
-          var data = result.data;
-          if(data.action === 'redirect') {
-            d.resolve(data.url);
-          } else {
-            $log.error('error: unknown action:', data.action);
+          var response = result.data.status;
+          if(response !== self.responses.ok &&
+             response !== self.responses.invalidPassword &&
+             response !== self.responses.invalidSecurityCode)
+          {
+            $log.error('error: unknown response:', response);
+            // TODO: Show md-toast
+            return;
           }
+
+          d.resolve(result.data);
+
         }, function(result) {
-          $log.error('error:', result);
+          if(result.status === 401) {
+            if(result.data.status === self.responses.invalidPassword ||
+               result.data.status === self.responses.invalidSecurityCode)
+            {
+              d.resolve(result.data);
+              return;
+            }
+          }
+
+          $log.error('Error:', result);
+          // TODO: Show md-toast
         });
 
       return d.promise;

@@ -21,15 +21,18 @@ func (api *API) authorizeOauth(c *gin.Context) {
 		SecurityCode string `json:"securityCode"`
 	}
 
-	if err := c.BindJSON(&r); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
+	c.Request.ParseForm()
+	log.Println("Form", c.Request.Form)
+
+	r.Login = c.Request.FormValue("login")
+	r.Password = c.Request.FormValue("password")
+	r.SecurityCode = c.Request.FormValue("securityCode")
 
 	_, status := api.UserStore.Validate(r.Login, r.Password, r.SecurityCode, false)
 
 	if status == nil {
-		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		api.validateOauth(c)
+
 	} else if status == users.InvalidPasswordError || status == users.UserNotFoundError {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "invalid_password"})
 	} else if status == users.InvalidSecurityCodeError {
@@ -42,9 +45,6 @@ func (api *API) authorizeOauth(c *gin.Context) {
 func (api *API) validateOauth(c *gin.Context) {
 	resp := api.OsinServer.NewResponse()
 	defer resp.Close()
-
-	c.Request.ParseForm()
-	log.Println("Form", c.Request.Form)
 
 	if ar := api.OsinServer.HandleAuthorizeRequest(resp, c.Request); ar != nil {
 		if !api.validateOauthRequest(c, ar) {
@@ -73,7 +73,7 @@ func (api *API) validateOauth(c *gin.Context) {
 			v.Set("state", s)
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"action": "redirect",
+			"status": "ok",
 			"url":    resp.URL + "?" + v.Encode(),
 			"query":  resp.Output,
 		})
