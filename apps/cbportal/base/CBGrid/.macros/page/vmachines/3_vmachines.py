@@ -1,4 +1,5 @@
 import datetime
+import json
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -32,23 +33,27 @@ def main(j, args, params, tags, tasklet):
 
     fieldnames = ['Name', 'Host Name' ,'Status', 'Created at', 'Cloud Space', 'CPU Node']
 
-    def stackLinkify(row, field):
-        return '[%s|stack?id=%s]' % (row[field], row[field])
-
-    def nameLinkify(row, field):
-        return '[%s|vmachine?id=%s]' % (row[field], row['id'])
-
-    def spaceLinkify(row, field):
-        return '[%s|cloudspace?id=%s]' % (row[field], row[field])
-
-    fieldids = ['name', 'hostName', 'status', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
+    def _formatData():
+        res = []
+        cbcl = j.clients.osis.getNamespace('cloudbroker')
+        for vmid in cbcl.vmachine.list():
+            vm = cbcl.vmachine.get(vmid)
+            name = '<a href="vmachine?id=%s">%s</a>' % (vm.id, vm.name)
+            csname = cbcl.cloudspace.get(int(vm.cloudspaceId)).name
+            cloudspace = '<a href="cloudspace?id=%s">%s</a>' % (vm.cloudspaceId,csname)
+            stack = ''
+            if vm.stackId:
+                stack = '<a href="stack?id=%s">%s</a>' % (vm.stackId, vm.stackId)
+            time = '<div class="jstimestamp" data-ts="%s"></div>' % vm.creationTime
+            res.append([name, vm.hostName, vm.status, time, cloudspace, stack])
+        return json.dumps(res)
+    
+    fieldvalues = _formatData()
+    tableid = modifier.addTableFromData(fieldvalues, fieldnames)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
     params.result = page
-
     return params
 
 
