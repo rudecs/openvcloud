@@ -72,11 +72,15 @@ func (api *API) validateOauth(c *gin.Context) {
 		if s := resp.Output["state"].(string); s != "" {
 			v.Set("state", s)
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-			"url":    resp.URL + "?" + v.Encode(),
-			"query":  resp.Output,
-		})
+
+		if c.Request.Header.Get("Accept") == "application/json" {
+			c.JSON(http.StatusOK, gin.H{
+				"status": "ok",
+				"url":    resp.URL + "?" + v.Encode(),
+			})
+		} else {
+			osin.OutputJSON(resp, c.Writer, c.Request)
+		}
 	} else {
 		osin.OutputJSON(resp, c.Writer, c.Request)
 	}

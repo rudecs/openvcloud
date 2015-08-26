@@ -267,7 +267,10 @@ angular.module('oauthserver').factory('loginService', [
       $http({
         method: 'POST',
         url: api.resource('/login/oauth/authorize'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        },
         transformRequest: function(obj) {
           var str = [];
           for(var p in obj) {
