@@ -38,7 +38,7 @@ def main(j, args, params, tags, tasklet):
         cbcl = j.clients.osis.getNamespace('cloudbroker')
         for vmid in cbcl.vmachine.list():
             vm = cbcl.vmachine.get(vmid)
-            name = '<a href="vmachine?id=%s">%s</a>' % (vm.id, vm.name)
+            name = '<a href="Virtual Machine?id=%s">%s</a>' % (vm.id, vm.name)
             csname = cbcl.cloudspace.get(int(vm.cloudspaceId)).name
             cloudspace = '<a href="cloudspace?id=%s">%s</a>' % (vm.cloudspaceId,csname)
             stack = ''
