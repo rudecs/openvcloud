@@ -8,4 +8,4 @@ Images:/cbgrid/images
 Networks:/cbgrid/networks
 Users:/cbgrid/users
 Groups:/cbgrid/groups
-Virtual Machines:/cbgrid/vmachines
+Virtual Machines:/cbgrid/Virtual Machines
