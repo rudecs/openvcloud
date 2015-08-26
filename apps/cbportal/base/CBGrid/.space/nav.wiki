@@ -1,7 +1,6 @@
 
 Accounts:/cbgrid/accounts
 Cloud Spaces:/cbgrid/cloudspaces
-Grid Nodes:/grid/nodes
 CPU Nodes:/cbgrid/stacks
 Status Overview:/grid/checkstatus
 Images:/cbgrid/images
