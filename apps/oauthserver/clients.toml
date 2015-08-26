@@ -2,9 +2,11 @@
 [[clients]]
 id = "dcpm"
 secret = "WhateverSecretYouWant"
-redirect_uri = "https://localhost:1543/callback"
+redirectUri = "https://localhost:1543/callback"
+scopes = ["client_based_scopes_here"]
 
 [[clients]]
 id = "ovs"
 secret = "WhateverSecretYouWant"
-redirect_uri = "https://localhost:1543/callback"
+redirectUri = "https://localhost:1543/callback"
+scopes = ["write_user_credentials", "read_user_credentials"]
