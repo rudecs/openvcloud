@@ -130,7 +130,10 @@ class cloudapi_users(BaseActor):
     def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
         
         fromaddr = 'support@mothership1.com'
-        toaddrs  =  [emailaddress]
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs  =  [emailaddress]
 
         html = """
 <html>
@@ -159,7 +162,6 @@ class cloudapi_users(BaseActor):
 </body>
 </html>
     """ % {'email':emailaddress, 'username':username, 'resettoken':resettoken, 'portalurl':portalurl}
-
         j.clients.email.send(toaddrs, fromaddr, "Your Mothership1 password reset request", html, files=None)
 
     def sendResetPasswordLink(self, emailaddress, **kwargs):
