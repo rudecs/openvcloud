@@ -72,7 +72,7 @@ header img {
         <form>
           <md-input-container>
             <label>Login</label>
-            <input ng-model="login" ng-change="loginChanged()" name="login" type="text">
+            <input ng-model="login" name="login" type="text">
           </md-input-container>
           <div class="form-error" ng-switch="formErrors.login" ng-show="formErrors.login">
             <div ng-switch-when="required">You must enter a login.</div>
@@ -80,7 +80,7 @@ header img {
 
           <md-input-container>
             <label>Password</label>
-            <input ng-model="password" ng-change="passwordChanged()" name="password" type="password">
+            <input ng-model="password" name="password" type="password">
           </md-input-container>
           <div class="form-error" ng-switch="formErrors.password" ng-show="formErrors.password">
             <div ng-switch-when="invalid">The login or password you entered is incorrect.</div>
@@ -90,7 +90,7 @@ header img {
           <div ng-show="needsTwoFactorAuthentication">
             <md-input-container>
               <label>Authentication Code</label>
-              <input ng-model="securityCode" ng-change="securityCodeChanged()" name="securityCode" type="text">
+              <input ng-model="securityCode" name="securityCode" type="text">
             </md-input-container>
             <div class="form-error security-code-error" ng-switch="formErrors.securityCode">
               <div ng-switch-when="invalid">The code you entered was invalid.</div>
@@ -155,19 +155,19 @@ angular.module('oauthserver').controller('LoginPageController', [
     $scope.securityCode = "";
     $scope.formErrors = {};
 
-    $scope.loginChanged = function() {
+    $scope.$watch('login', function() {
       $scope.securityCode = "";
       $scope.needsTwoFactorAuthentication = false;
-    };
+    });
 
-    $scope.passwordChanged = function() {
+    $scope.$watch('password', function() {
       $scope.securityCode = "";
       $scope.needsTwoFactorAuthentication = false;
-    };
+    });
 
-    $scope.securityCodeChanged = function() {
+    $scope.$watch('securityCode', function() {
       validate();
-    };
+    });
 
     $scope.next = function() {
       if(!validate()) {
