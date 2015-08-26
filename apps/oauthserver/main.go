@@ -68,6 +68,7 @@ func main() {
 	}
 	router.Use(static.Serve("/", static.LocalFile("html", true)))
 	router.GET("/login/oauth/authorize", loginPage)
+	router.GET("/logout", logout)
 
 	if err := api.New(userStore, storagebackend, osinServer, cookiestore).Install(router); err != nil {
 		log.Fatal(err)
@@ -105,4 +106,18 @@ func loginPage(c *gin.Context) {
 
 	t, _ := template.ParseFiles("html/login.html")
 	t.Execute(c.Writer, nil)
+}
+
+func logout(c *gin.Context) {
+	c.Request.ParseForm()
+	redirectURI := c.Request.Form.Get("redirect_uri")
+
+	session, _ := cookiestore.Get(c.Request, "openvcloudsession")
+	session.Options.MaxAge = -1
+
+	session.Save(c.Request, c.Writer)
+
+	if redirectURI != "" {
+		http.Redirect(c.Writer, c.Request, redirectURI, 302)
+	}
 }
