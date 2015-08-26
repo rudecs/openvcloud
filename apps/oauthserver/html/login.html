@@ -288,7 +288,7 @@ angular.module('oauthserver').factory('loginService', [
              response !== self.responses.invalidSecurityCode)
           {
             $log.error('error: unknown response:', response);
-            errors.custom('We can not authorize you at this moment.');
+            errors.custom('An error occurred while communicating with the login server.');
             return;
           }
 
