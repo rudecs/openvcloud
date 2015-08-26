@@ -230,8 +230,9 @@ angular.module('oauthserver').factory('loginService', [
   '$q',
   '$window',
   'api',
+  'errors',
   '$log',
-  function($http, $q, $window, api, $log) {
+  function($http, $q, $window, api, errors, $log) {
     var self = {
       validateLogin: validateLogin,
 
@@ -287,7 +288,7 @@ angular.module('oauthserver').factory('loginService', [
              response !== self.responses.invalidSecurityCode)
           {
             $log.error('error: unknown response:', response);
-            // TODO: Show md-toast
+            errors.custom('We can not authorize you at this moment.');
             return;
           }
 
@@ -303,11 +304,39 @@ angular.module('oauthserver').factory('loginService', [
             }
           }
 
-          $log.error('Error:', result);
-          // TODO: Show md-toast
+          errors.backend(result);
         });
 
       return d.promise;
+    }
+
+    return self;
+  }
+]);
+
+angular.module('oauthserver').factory('errors', [
+  '$mdToast',
+  '$log',
+  function($mdToast, $log) {
+    var self = {
+      backend: backend,
+      custom: custom,
+    };
+
+    function show(message) {
+      $mdToast.show(
+        $mdToast.simple().content(message).hideDelay(0)
+      );
+    }
+
+    function backend(httpError) {
+      $log.error('Backend error:', httpError);
+      show('We could not contact the authorization server.');
+    }
+
+    function custom(message) {
+      $log.error('Custom error:', message);
+      show(message);
     }
 
     return self;
