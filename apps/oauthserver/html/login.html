@@ -178,7 +178,6 @@ angular.module('oauthserver').controller('LoginPageController', [
         .validateLogin($scope.login, $scope.password, $scope.securityCode)
         .then(function(response) {
           if(response === loginService.responses.ok) {
-            $log.debug('OK');
             loginService
               .validateOauth($scope.login, $scope.password, $scope.securityCode)
               .then(function(url) {
@@ -194,7 +193,6 @@ angular.module('oauthserver').controller('LoginPageController', [
             }
 
           } else {
-            $log.debug('Invalid');
             $scope.formErrors.password = 'invalid';
           }
         });
@@ -262,8 +260,6 @@ angular.module('oauthserver').factory('loginService', [
         'securityCode': securityCode,
       };
 
-      $log.debug('request:', request);
-
       $http
         .post(api.resource('/login/validate'), request)
         .then(function(result) {
@@ -306,11 +302,9 @@ angular.module('oauthserver').factory('loginService', [
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         transformRequest: function(obj) {
           var str = [];
-          $log.debug('converting:', obj);
           for(var p in obj) {
             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
           }
-          $log.debug('to:', str.join('&'));
           return str.join("&");
         },
         data: request,
@@ -323,7 +317,7 @@ angular.module('oauthserver').factory('loginService', [
             $log.error('error: unknown action:', data.action);
           }
         }, function(result) {
-          $log.debug('error:', result);
+          $log.error('error:', result);
         });
 
       return d.promise;
