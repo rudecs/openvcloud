@@ -10,8 +10,7 @@ import (
 
 func (api *API) Install(router *gin.Engine) error {
 	// login
-	router.POST("/api/login/validate", api.validateLogin)
-	router.POST("/api/oauth/validate", api.validateOauth)
+	router.POST("/login/oauth/authorize", api.authorizeOauth)
 	router.POST("/login/oauth/access_token", api.oauthAccessToken)
 	router.GET("/user", api.getUser)
 

@@ -130,7 +130,7 @@ angular.module('oauthserver').config([
 angular.module('oauthserver').factory('api', [
   function() {
     var self = {
-      baseURL: '/api',
+      baseURL: '',
 
       resource: resource,
     };
@@ -261,7 +261,7 @@ angular.module('oauthserver').factory('loginService', [
       };
 
       $http
-        .post(api.resource('/login/validate'), request)
+        .post(api.resource('/login/oauth/authorize'), request)
         .then(function(result) {
           var response = result.data.status;
           if(response !== self.responses.ok &&
@@ -269,13 +269,24 @@ angular.module('oauthserver').factory('loginService', [
              response !== self.responses.invalidSecurityCode)
           {
             $log.error('error: unknown response:', response);
+            // TODO: Show md-toast
             return;
           }
 
           d.resolve(response);
 
         }, function(result) {
-          $log.error('error:', result);
+          if(result.status === 401) {
+            if(result.data.status === self.responses.invalidPassword ||
+               result.data.status === self.response_type.invalidSecurityCode)
+            {
+              d.resolve(result.data.status);
+              return;
+            }
+          }
+
+          $log.error('Error:', result);
+          // TODO: Show md-toast
         });
 
       return d.promise;

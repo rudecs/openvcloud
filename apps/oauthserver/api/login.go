@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *API) validateLogin(c *gin.Context) {
+func (api *API) authorizeOauth(c *gin.Context) {
 	var r struct {
 		Login        string `json:"login" binding:"required"`
 		Password     string `json:"password" binding:"required"`
@@ -31,9 +31,9 @@ func (api *API) validateLogin(c *gin.Context) {
 	if status == nil {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	} else if status == users.InvalidPasswordError || status == users.UserNotFoundError {
-		c.JSON(http.StatusOK, gin.H{"status": "invalid_password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "invalid_password"})
 	} else if status == users.InvalidSecurityCodeError {
-		c.JSON(http.StatusOK, gin.H{"status": "invalid_security_code"})
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "invalid_security_code"})
 	} else {
 		c.AbortWithError(http.StatusInternalServerError, status)
 	}
