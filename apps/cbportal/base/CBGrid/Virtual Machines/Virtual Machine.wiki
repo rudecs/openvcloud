@@ -2,7 +2,7 @@
 {{vmachine: id:$$id}}
 {{include:vmachine_actions}}
 
-h2. vMachine: $$name
+h2. Virtual Machine: $$name
 
 |*ID*| $$id|
 |*Description*| $$descr|
@@ -22,7 +22,7 @@ $$nics
 *Disks*
 $$disks
 
-h3. vMachine Status Details
+h3. Virtual Machine Status Details
 |*Status*|$$stats_state|
 |*Ping*|$$stats_ping|
 |*HardDrive Test*|$$stats_hdtest|

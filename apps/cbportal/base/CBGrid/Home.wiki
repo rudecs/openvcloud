@@ -33,13 +33,13 @@ h5. No. of Active Accounts
 @colend
 
 @col 3
-h5. No. of Running vMachines
+h5. No. of Running Virtual Machines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 width:100 height:100}}
 @colend
 
 @col 4
-h5. No. of Windows Running vMachines
+h5. No. of Windows Running Virtual Machines
 {{nrwinvmgauge: id:4 width:100 heigth:100}}^M
 @colend
 @rowend

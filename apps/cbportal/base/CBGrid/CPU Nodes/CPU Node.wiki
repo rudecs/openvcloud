@@ -2,7 +2,7 @@
 
 {{stack_data: id:$$id}}
 
-h3. Stack: $$breadcrumbname
+h3. CPU Node: $$breadcrumbname
 {{actions:
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
@@ -39,6 +39,6 @@ h3. Images:
 
 {{images: stackid:$$id}}
 
-h3. vMachines:
+h3. Virtual Machines:
 
 {{vmachines: stackid:$$id}}

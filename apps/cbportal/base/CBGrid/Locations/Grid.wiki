@@ -53,7 +53,7 @@ h5. No. of Free IPs
 @colend 
 
 @col 4
-h5. No. of Running vMachines
+h5. No. of Running Virtual Machines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 gid:$$gid width:100 height:100}}
 @colend 
@@ -78,11 +78,11 @@ h5. No. of Windows Vmachines Running
 @rowend
 
 
-h3. Stacks
+h3. CPU Nodes
 {{stacks gid:$$gid}}
 
 h3. Firewall Nodes
 {{fwnodes gid:$$gid roles:fw}}
 
-h3. vMachines
+h3. Virtual Machines
 {{vmachines gid:$$gid}}
