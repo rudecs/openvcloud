@@ -11,6 +11,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angular-material/0.10.1/angular-material.min.css">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-aria.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-animate.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material/0.10.1/angular-material.js"></script>
+
   <style>
 body {
   background: url('../html/background.jpg');
@@ -47,6 +53,9 @@ header img {
 .red {
   color: red;
 }
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none;
+}
   </style>
 </head>
 <body>
@@ -74,7 +83,7 @@ header img {
             <label>Login</label>
             <input ng-model="login" name="login" type="text">
           </md-input-container>
-          <div class="form-error" ng-switch="formErrors.login" ng-show="formErrors.login">
+          <div class="form-error" ng-switch="formErrors.login" ng-cloak ng-show="formErrors.login">
             <div ng-switch-when="required">You must enter a login.</div>
           </div>
 
@@ -82,12 +91,12 @@ header img {
             <label>Password</label>
             <input ng-model="password" name="password" type="password">
           </md-input-container>
-          <div class="form-error" ng-switch="formErrors.password" ng-show="formErrors.password">
+          <div class="form-error" ng-switch="formErrors.password" ng-cloak ng-show="formErrors.password">
             <div ng-switch-when="invalid">The login or password you entered is incorrect.</div>
             <div ng-switch-when="required">You must enter a password.</div>
           </div>
 
-          <div ng-show="needsTwoFactorAuthentication">
+          <div ng-cloak ng-show="needsTwoFactorAuthentication">
             <md-input-container>
               <label>Authentication Code</label>
               <input ng-model="securityCode" name="securityCode" type="text">
@@ -106,12 +115,6 @@ header img {
       </md-content>
     </md-whiteframe>
   </div>
-
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-aria.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-animate.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-material/0.10.1/angular-material.js"></script>
 
   <script>
 angular.module('oauthserver', [
