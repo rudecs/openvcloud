@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
     def makeRPS(row, field):
         links = list()
         for rps in row[field]:
-            links.append('[%s|/CBGrid/stack?id=%s]' % (rps, rps))
+            links.append('[%s|/CBGrid/CPU Node?id=%s]' % (rps, rps))
         return ', '.join(links)
     def makeNetworkLink(row, field):
         if row[field]:
@@ -21,7 +21,7 @@ def main(j, args, params, tags, tasklet):
             return ''
 
     fieldids = ['id', 'name', 'accountId', 'networkId', 'resourceProviderStacks', 'location', 'status', 'publicipaddress']
-    fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name', 
+    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name', 
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
                    makeNetworkLink, makeRPS, 'location', 'status', 
                    'publicipaddress']
