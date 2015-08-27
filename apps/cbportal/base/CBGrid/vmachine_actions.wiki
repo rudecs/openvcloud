@@ -185,19 +185,19 @@
   - description
   - reason
 
-- display: Export
-  action: ./
-  data:
-   machineId: $$id
-  input:
-  - exportName
+# - display: Export
+#   action: ./
+#   data:
+#    machineId: $$id
+#   input:
+#   - exportName
 
-- display: Restore
-  action: ./
-  data:
-   machineId: $$id
-  input:
-  - exportName
+# - display: Restore
+#   action: ./
+#   data:
+#    machineId: $$id
+#   input:
+#   - exportName
 
 - display: Check Image Chain
   action: /restmachine/cloudbroker/machine/checkImageChain
