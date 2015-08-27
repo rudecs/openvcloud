@@ -16,9 +16,9 @@ class cloudbroker_machine(BaseActor):
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
-        try:
+#         try:
 #            self.whmcs = j.clients.whmcs.get()
-        except:
+#         except:
 #            self.whmcs = j.clients.whmcs.getDummy()
 
     @auth(['level1', 'level2', 'level3'])
