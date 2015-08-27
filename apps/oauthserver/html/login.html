@@ -149,6 +149,8 @@ angular.module('oauthserver').controller('LoginPageController', [
   'loginService',
   '$log',
   function($scope, $window, loginService, $log) {
+    var clickedLogin = false;
+
     $scope.needsTwoFactorAuthentication = false;
     $scope.login = "";
     $scope.password = "";
@@ -170,6 +172,8 @@ angular.module('oauthserver').controller('LoginPageController', [
     });
 
     $scope.next = function() {
+      clickedLogin = true;
+
       if(!validate()) {
         return;
       }
@@ -202,6 +206,10 @@ angular.module('oauthserver').controller('LoginPageController', [
       $scope.formErrors.login = null;
       $scope.formErrors.password = null;
       $scope.formErrors.securityCode = null;
+
+      if(!clickedLogin) {
+        return true;
+      }
 
       if(!$scope.login) {
         $scope.formErrors.login = 'required';
