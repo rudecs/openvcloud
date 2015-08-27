@@ -58,6 +58,9 @@ func main() {
 	}
 	defer userStore.Close()
 
+	if settings.CookieStoreSecret == "" {
+		log.Println("WARNING: Using an empty cookie secret")
+	}
 	cookiestore = sessions.NewCookieStore([]byte(settings.CookieStoreSecret))
 
 	// Start HTTP
