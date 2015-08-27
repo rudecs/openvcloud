@@ -6,8 +6,6 @@ import (
 	"errors"
 	"log"
 
-	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
-
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -37,7 +35,7 @@ func (store *JumpscaleStore) Get(username string) (ret *UserDetails, err error) 
 }
 
 //Validate checks if a given password is correct for a username, it returns the groups it belongs to as scopes
-func (store *JumpscaleStore) Validate(username, password, securityCode string, final bool) (scopes []string, err error) {
+func (store *JumpscaleStore) Validate(username, password string) (scopes []string, err error) {
 	type user struct {
 		ID     string
 		Passwd string
@@ -57,28 +55,12 @@ func (store *JumpscaleStore) Validate(username, password, securityCode string, f
 
 	md5hashedPassword := hex.EncodeToString(md5hash)
 	if md5hashedPassword != jumpscaleUser.Passwd {
-		err = InvalidPasswordError
+		err = errors.New("Invalid password")
 		return
 	}
 	scopes = jumpscaleUser.Groups
 
 	return
-}
-
-func (store *JumpscaleStore) SetTOTPSecret(username, secret string) error {
-	return errors.New("Not implemented")
-}
-
-func (store *JumpscaleStore) GetTOTPSecret(username string) string {
-	return ""
-}
-
-func (store *JumpscaleStore) SetRecovery(username string, recovery tfa.Recovery) error {
-	return errors.New("Not implemented")
-}
-
-func (store *JumpscaleStore) GetRecovery(username string) (tfa.Recovery, bool) {
-	return tfa.Recovery{}, false
 }
 
 //Close releases the mongo session

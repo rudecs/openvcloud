@@ -1,6 +1,6 @@
 
 Accounts:/cbgrid/accounts
-Cloud Spaces:/cbgrid/cloudspaces
+Cloud Spaces:/cbgrid/Cloud Spaces
 Locations:/cbgrid/locations
 CPU Nodes:/cbgrid/CPU Nodes
 Images:/cbgrid/images

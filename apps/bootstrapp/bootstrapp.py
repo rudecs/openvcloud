@@ -34,11 +34,10 @@ class bootstrap(Resource):
         nodeKey = data['key.pub']
         hostname = data['hostname']
         login = data['login']
-        nid = data['nid']
         remotePort = None
 
         try:
-            remotePort = 21000 + int(nid)
+            remotePort = 21000 + int(hostname.strip('node'))
         except ValueError:
             return self.error(400, 'hostname should be something like node$nbr')
 

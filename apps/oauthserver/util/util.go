@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/BurntSushi/toml"
+	"github.com/naoina/toml"
 )
 
 //LoadTomlFile loads toml using "github.com/naoina/toml"
@@ -20,18 +20,6 @@ func LoadTomlFile(filename string, v interface{}) {
 		panic(err)
 	}
 	if err := toml.Unmarshal(buf, v); err != nil {
-		panic(err)
-	}
-}
-
-func WriteTomlFile(filename string, v interface{}) {
-	f, err := os.Create(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	if err := toml.NewEncoder(f).Encode(v); err != nil {
 		panic(err)
 	}
 }

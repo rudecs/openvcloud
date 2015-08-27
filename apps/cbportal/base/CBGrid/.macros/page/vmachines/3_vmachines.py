@@ -36,13 +36,13 @@ def main(j, args, params, tags, tasklet):
         return '[%s|stack?id=%s]' % (row[field], row[field])
 
     def nameLinkify(row, field):
-        return '[%s|vmachine?id=%s]' % (row[field], row['id'])
+        return '[%s|Virtual Machine?id=%s]' % (row[field], row['id'])
 
     def spaceLinkify(row, field):
         return '[%s|cloudspace?id=%s]' % (row[field], row[field])
 
-    fieldids = ['name', 'status', 'hostName', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'status', 'hostName', modifier.makeTime, spaceLinkify, stackLinkify]
+    fieldids = ['name', 'hostName', 'status', 'creationTime', 'cloudspaceId', 'stackId']
+    fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
