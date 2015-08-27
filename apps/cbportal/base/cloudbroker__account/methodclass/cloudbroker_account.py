@@ -80,7 +80,7 @@ class cloudbroker_account(BaseActor):
         account = self._checkAccount(accountname)
         msg = 'Account: %s\nReason: %s' % (accountname, reason)
         subject = 'Disabling account: %s' % accountname
-        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
+#        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account['deactivationTime'] = time.time()
         account['status'] = 'DISABLED'
         self.models.account.set(account)
@@ -90,7 +90,7 @@ class cloudbroker_account(BaseActor):
             vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
             for vmachine in vmachines:
                 self.cloudapi.machines.stop(vmachine['id'])
-        j.tools.whmcs.tickets.close_ticket(ticketId)
+#        j.tools.whmcs.tickets.close_ticket(ticketId)
         return True
 
     @auth(['level1', 'level2', 'level3'])
