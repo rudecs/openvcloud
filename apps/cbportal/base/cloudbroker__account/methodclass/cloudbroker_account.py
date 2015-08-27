@@ -7,10 +7,10 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 def _send_signup_mail(hrd, **kwargs):
     notifysupport = hrd.get("instance.openvcloud.cloudbroker.notifysupport")
-    fromaddr = 'support@greenitglobe.com'
+    fromaddr = hrd.get('instance.openvcloud.supportemail')
     toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
-        toaddrs.append('support@greenitglobe.com')
+        toaddrs.append(fromaddr)
 
 
     html = """
