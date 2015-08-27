@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base32"
 	"fmt"
-	"log"
 	"math/big"
 
 	"github.com/hgfischer/go-otp"
@@ -55,7 +54,6 @@ func (token *Token) Base32() string {
 }
 
 func (token *Token) QRCode() (*qr.Code, error) {
-	log.Println("Encoding:", token.TOTPURL())
 	return qr.Encode(token.TOTPURL(), qr.L)
 }
 

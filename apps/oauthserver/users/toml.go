@@ -2,7 +2,6 @@ package users
 
 import (
 	"encoding/base32"
-	"log"
 
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/tfa"
 	"git.aydo.com/0-complexity/openvcloud/apps/oauthserver/users/keyderivation"
@@ -38,7 +37,6 @@ func (store *TomlStore) Validate(username, password, securityCode string, final 
 		return
 	}
 
-	log.Println("For user token:", u.TFA.Token)
 	if u.TFA.Token != "" {
 		secret, e := base32.StdEncoding.DecodeString(u.TFA.Token)
 		if e != nil {
@@ -50,7 +48,6 @@ func (store *TomlStore) Validate(username, password, securityCode string, final 
 
 		t := &tfa.Token{Secret: secret}
 		totp := t.TOTP()
-		log.Println("->", totp.Now().Get(), "=", securityCode)
 		if !totp.Now().Verify(securityCode) {
 			err = InvalidSecurityCodeError
 		}
@@ -84,7 +81,6 @@ func (store *TomlStore) SetTOTPSecret(username, secret string) error {
 		return UserNotFoundError
 	}
 
-	log.Println("Updating to", secret)
 	u.TFA.Token = secret
 	store.users[username] = u
 	store.dirty <- true

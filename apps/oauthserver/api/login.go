@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -22,7 +21,6 @@ func (api *API) authorizeOauth(c *gin.Context) {
 	}
 
 	c.Request.ParseForm()
-	log.Println("Form", c.Request.Form)
 
 	r.Login = c.Request.FormValue("login")
 	r.Password = c.Request.FormValue("password")
@@ -63,7 +61,6 @@ func (api *API) validateOauth(c *gin.Context) {
 	session.Values["user"] = c.Request.FormValue("login")
 	session.Save(c.Request, c.Writer)
 
-	log.Println("Response:", resp)
 	if resp.Type == osin.REDIRECT {
 		v := url.Values{}
 		if s := resp.Output["code"].(string); s != "" {
@@ -93,7 +90,6 @@ func (api *API) validateOauthRequest(c *gin.Context, ar *osin.AuthorizeRequest) 
 	requestedScopes := strings.Split(c.Request.FormValue("scope"), ",")
 
 	availableScopes, err := api.UserStore.Validate(login, password, securityCode, true)
-	log.Println("Validating", login, password, securityCode, ":", err)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{})
 		return false
