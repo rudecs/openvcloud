@@ -81,7 +81,7 @@ header img {
         <form>
           <md-input-container>
             <label>Login</label>
-            <input ng-model="login" name="login" type="text">
+            <input ng-model="login" name="login" type="text" autofocus>
           </md-input-container>
           <div class="form-error" ng-switch="formErrors.login" ng-cloak ng-show="formErrors.login">
             <div ng-switch-when="required">You must enter a login.</div>
