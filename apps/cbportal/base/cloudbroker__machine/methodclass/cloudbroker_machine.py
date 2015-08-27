@@ -279,11 +279,11 @@ class cloudbroker_machine(BaseActor):
                 'target_stack': target_stack.dump(),
                 'sshkey': sshkey,
                 'snapshots': snapshots}
-        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
+        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=False)
         if job['state'] != 'OK':
             raise exceptions.Error("Migrate failed: %s" % (job['result']))
 
-        vmachine.stackId = target_stack.id 
+        vmachine.stackId = target_stack.id
         self.models.vmachine.set(vmachine)
 
     @auth(['level1', 'level2', 'level3'])
