@@ -1,5 +1,5 @@
 @usedefaults
 
-h3. VMachines Status
+h3. Virtual Machines Status
 
 {{vms_status }}

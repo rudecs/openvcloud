@@ -36,7 +36,7 @@ h3. Details
 |*Timestamp*|${timestamp}|
 |*Storage Type*|${storagetype}|
 |*Type*|${type}|
-|*VMachine ID*|[${machineId}|/CBGrid/vmachine?id=${machineId}]|
+|*VMachine ID*|[${machineId}|/CBGrid/Virtual Machine?id=${machineId}]|
 |*Files*|${files}|
 |*Location*|${location}|
 
