@@ -2,7 +2,7 @@
 {{vmachine: id:$$id}}
 {{include:vmachine_actions}}
 
-h2. Virtual Machine: $$name
+h2. Virtual Machine: $$breadcrumbname
 
 |*ID*| $$id|
 |*Description*| $$descr|
