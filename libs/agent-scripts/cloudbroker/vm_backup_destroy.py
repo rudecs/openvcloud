@@ -18,7 +18,7 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     import JumpScale.grid.osis
     import JumpScale.grid.agentcontroller
     import JumpScale.portal
-    import JumpScale.lib.whmcs
+#    import JumpScale.lib.whmcs
     import time
 
     cl = j.clients.portal.getByInstance('cbportal')
@@ -33,7 +33,7 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
     cbcl = j.clients.osis.getNamespace('cloudbroker')
 
     subject = 'Backing up Machine %s for destruction' % vmachineName
-    ticketid = j.tools.whmcs.tickets.create_ticket(subject, subject, "High")
+#    ticketid = j.tools.whmcs.tickets.create_ticket(subject, subject, "High")
     machineId = int(machineId)
     backupname = 'Backup of vmachine %s at %s' % (vmachineName, j.base.time.getLocalTimeHRForFilesystem())
     jobguid = cloudbrokermachine.export(machineId, backupname, backuptype='raw', storage='cephfs', host='', aws_access_key='', aws_secret_key='', bucketname='machine_backups')
@@ -45,14 +45,14 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
         time.sleep(3)
 
     if job['state'] == 'ERROR':
-        j.tools.whmcs.tickets.add_note(ticketid, 'Job backup could not be completed and will not be destroyed')
+#        j.tools.whmcs.tickets.add_note(ticketid, 'Job backup could not be completed and will not be destroyed')
         return False
 
     backupid = job['result']
-    j.tools.whmcs.tickets.add_note(ticketid, 'Storage ID is %s' %  backupid)
+#    j.tools.whmcs.tickets.add_note(ticketid, 'Storage ID is %s' %  backupid)
 
     cloudspace = cbcl.cloudspace.get(cloudspaceId)
     cloudbrokermachine.destroy(accountName, cloudspace.name, machineId, reason)
-    j.tools.whmcs.tickets.close_ticket(ticketid)
+#    j.tools.whmcs.tickets.close_ticket(ticketid)
     return True
     
