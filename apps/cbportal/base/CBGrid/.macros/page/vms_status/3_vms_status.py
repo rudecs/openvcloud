@@ -1,4 +1,3 @@
-import JumpScale.baselib.webdis
 try:
     import ujson as json
 except Exception:
