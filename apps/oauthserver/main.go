@@ -90,6 +90,11 @@ func loginPage(c *gin.Context) {
 	resp := osinServer.NewResponse()
 	defer resp.Close()
 
+	if ar := osinServer.HandleAuthorizeRequest(resp, c.Request); ar == nil {
+		osin.OutputJSON(resp, c.Writer, c.Request)
+		return
+	}
+
 	if v := session.Values["user"]; v != nil {
 		if username, flag := v.(string); flag {
 			u, err := userStore.Get(username)
