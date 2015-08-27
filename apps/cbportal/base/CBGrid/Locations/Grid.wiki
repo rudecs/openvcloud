@@ -62,7 +62,7 @@ h5. No. of Running Virtual Machines
 @row
 
 @col 4
-h5. No. of Active CloudSpaces
+h5. No. of Active Cloud Spaces
 {{nrcloudspacegauge id:4 gid:$$gid width:100 height:100}}
 @colend 
 
