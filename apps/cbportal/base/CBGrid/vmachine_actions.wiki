@@ -1,16 +1,22 @@
 
 {{actions:
 - display: Start
-  input: 
+  input:
   - reason
   action: /restmachine/cloudbroker/machine/start
-  data: 
+  hideon:
+  - RUNNING
+  hideonInput: $$status
+  data:
    machineId: $$id
    accountName: $$accountname
    spaceName: $$spacename
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
+  hideon:
+  - HALTED
+  hideonInput: $$status
   data:
    machineId: $$id
    accountName: $$accountname
@@ -37,6 +43,9 @@
 
 - display: Pause
   action: /restmachine/cloudbroker/machine/pause
+  hideon:
+  - HALTED
+  hideonInput: $$status
   data:
    machineId: $$id
    accountName: $$accountname
@@ -92,7 +101,7 @@
   - reason
   - snapshotName
 
-- display: Clone 
+- display: Clone
   action: /restmachine/cloudbroker/machine/clone
   data:
    machineId: $$id
@@ -137,7 +146,7 @@
   - ruleId
   - reason
 
-#- display: Add Disk 
+#- display: Add Disk
 #  action: /restmachine/cloudbroker/machine/addDisk
 #  data:
 #   machineId: $$id
@@ -149,7 +158,7 @@
 #  - type
 #  - reason
 #
-#- display: Delete Disk 
+#- display: Delete Disk
 #  action: /restmachine/cloudbroker/machine/deleteDisk
 #  data:
 #   machineId: $$id
@@ -158,7 +167,7 @@
 #  - diskId
 #  - reason
 
-- display: Create Template 
+- display: Create Template
   action: /restmachine/cloudbroker/machine/createTemplate
   data:
    machineId: $$id
@@ -167,7 +176,7 @@
   - templateName
   - reason
 
-- display: Update Machine 
+- display: Update Machine
   action: /restmachine/cloudbroker/machine/updateMachine
   data:
    machineId: $$id
