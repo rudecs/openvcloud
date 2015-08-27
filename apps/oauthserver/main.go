@@ -66,7 +66,7 @@ func main() {
 	if _, err := os.Stat("html/"); err != nil {
 		log.Fatal(err)
 	}
-	router.Use(static.Serve("/", static.LocalFile("html", true)))
+	router.Use(static.Serve("/login/html/", static.LocalFile("html", true)))
 	router.GET("/login/oauth/authorize", loginPage)
 	router.GET("/logout", logout)
 
