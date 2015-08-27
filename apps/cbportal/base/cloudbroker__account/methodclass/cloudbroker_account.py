@@ -7,10 +7,10 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 def _send_signup_mail(hrd, **kwargs):
     notifysupport = hrd.get("instance.openvcloud.cloudbroker.notifysupport")
-    fromaddr = 'support@mothership1.com'
+    fromaddr = 'support@greenitglobe.com'
     toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
-        toaddrs.append('support@mothership1.com')
+        toaddrs.append('support@greenitglobe.com')
 
 
     html = """
@@ -21,24 +21,21 @@ def _send_signup_mail(hrd, **kwargs):
 
     Dear,<br>
     <br>
-    Thank you for registering with Mothership<sup>1</sup>.
+    Welcome to OpenvCloud.
     <br>
     <br>
-    You can now log in into mothership<sup>1</sup> with your username %(username)s and your chosen password.
+    Your username is %(username)s.
     <br>
-    <br>
-    In case you experience any issues in logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
-    <br>
+    At any moment you can change your password on following page: <a href="%(portalurl)s/wiki_gcb/Profile">%(portalurl)s/wiki_gcb/Profile</a>
     <br>
     Best Regards,<br>
     <br>
-    The Mothership<sup>1</sup> Team<br>
-    <a href="%(portalurl)s">www.mothership1.com</a><br>
+    You OpenvCloud Team<br>
 </body>
 </html>
 """ % kwargs
 
-    j.clients.email.send(toaddrs, fromaddr, "Mothership1 account activation", html, files=None)
+    j.clients.email.send(toaddrs, fromaddr, "OpenvCloud account activation", html, files=None)
 
 
 class cloudbroker_account(BaseActor):
