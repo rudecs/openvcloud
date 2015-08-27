@@ -1,5 +1,5 @@
 @usedefault
 
-h2. CloudSpaces
+h2. Cloud Spaces
 
 {{cbspaces}}

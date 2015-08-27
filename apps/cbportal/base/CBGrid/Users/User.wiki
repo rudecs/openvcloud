@@ -19,6 +19,6 @@ h3. OVC Details
 |*Active*|${active}|
 |*Description*|${description}|
 
-h3. CloudSpaces
+h3. Cloud Spaces
 
 {{cbspacesusers: userId:$$id}}

@@ -1,4 +1,4 @@
 @usedefault
 
-h2. Cloudspace Nodes
+h2. Cloud Space Nodes
 {{cbnodes space:$$spaceid}}
