@@ -1,8 +1,0 @@
-bind = "0.0.0.0:8080"
-
-cookieStoreSecret = "vTQ9gCk8QAoQS83zefY3XzcXqyHUEew1DvqprABkKic6ZBBmJhu"
-
-#Connectionsettings for the jumpscale mongo users database
-#If commented, the local toml file is used
-[jumpscale.mongo]
-connectionstring = "localhost:27017"
