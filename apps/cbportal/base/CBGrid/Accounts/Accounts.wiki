@@ -2,4 +2,11 @@
 
 h2. Accounts
 
+{{actions:
+- display: Add Account
+  action: '#createaccount'
+}}
+
+{{createaccount}}
+
 {{accounts}}
