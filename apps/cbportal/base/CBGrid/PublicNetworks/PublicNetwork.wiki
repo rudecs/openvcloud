@@ -1,0 +1,22 @@
+@usedefaults
+
+{{publicnetwork: networkid:$$networkid}}
+{{datatables_use}}
+
+h3. Public Network $$networkid
+
+|*Network*|${id}|
+|*Gateway*|${gateway}|
+
+h4. Free IPs
+||Public IP||
+{% for freeip in pubips -%}
+|${freeip}|
+{% endfor %}
+
+h4. Used IPs
+
+||Public IP||Cloud Space||
+{% for space in spaces -%}
+|${space.publicipaddress}|[${space.id}|cloud space?id=${space.id}]|
+{% endfor %}
