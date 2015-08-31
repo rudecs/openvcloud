@@ -1,4 +1,4 @@
-import datetime
+
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -26,11 +26,11 @@ def main(j, args, params, tags, tasklet):
 
     if gid:
         gid = int(gid)
-        stacks = ccl.stack.simpleSearch({'gid':gid})
-        stacksids = [ stack['id'] for stack in stacks ]
+        stacks = ccl.stack.simpleSearch({'gid': gid})
+        stacksids = [stack['id'] for stack in stacks]
         filters['stackId'] = stacksids
 
-    fieldnames = ['Name', 'Status', 'Host Name', 'Created at', 'Cloud Space', 'CPU Node ID']
+    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Cloud Space', 'Stack']
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])

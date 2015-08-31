@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     def _formatdata(fwdata):
         aaData = list()
         for name, nid, nr in fwdata:
-            itemdata = ['<a href=/grid/node?id=%s>%s</a>' % (nid, name)]
+            itemdata = ['<a href=/grid/grid node?id=%s>%s</a>' % (nid, name)]
             itemdata.append(str(nr))
             aaData.append(itemdata)
         return json.dumps(aaData)
