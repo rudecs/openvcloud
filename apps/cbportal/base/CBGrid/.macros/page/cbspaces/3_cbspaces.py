@@ -7,12 +7,12 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'CPU Node ID', 'Location', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Stack ID', 'Location', 'Status', 'Public IP Address']
 
     def makeRPS(row, field):
         links = list()
         for rps in row[field]:
-            links.append('[%s|/CBGrid/CPU Node?id=%s]' % (rps, rps))
+            links.append('[%s|/CBGrid/Stack?id=%s]' % (rps, rps))
         return ', '.join(links)
     def makeNetworkLink(row, field):
         if row[field]:

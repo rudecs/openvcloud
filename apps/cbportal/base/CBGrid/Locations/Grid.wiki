@@ -78,7 +78,7 @@ h5. No. of Windows Vmachines Running
 @rowend
 
 
-h3. CPU Nodes
+h3. Stacks
 {{stacks gid:$$gid}}
 
 h3. Public Networks

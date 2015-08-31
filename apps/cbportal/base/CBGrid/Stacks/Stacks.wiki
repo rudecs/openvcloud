@@ -1,5 +1,5 @@
 @usedefaults
 
-h3. CPU Nodes
+h3. Stacks
 
 {{stacks gid:$$gid}}

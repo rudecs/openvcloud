@@ -2,7 +2,7 @@
 
 {{stack_data: id:$$id}}
 
-h3. CPU Node: $$breadcrumbname
+h3. Stack: $$breadcrumbname
 {{actions:
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
