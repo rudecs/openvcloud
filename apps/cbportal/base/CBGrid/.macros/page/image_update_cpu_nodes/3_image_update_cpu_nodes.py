@@ -17,7 +17,7 @@ def main(j, args, params, tags, tasklet):
         available = image['id'] in stack.get('images', [])
         options.append((stack['name'], stack['id'], available))
 
-    popup.addCheckboxes('Select the CPU nodes you want to make this Image available on', 'enabledStacks', options)
+    popup.addCheckboxes('Select the Stacks you want to make this Image available on', 'enabledStacks', options)
     popup.addHiddenField('imageId', referenceId)
     popup.write_html(page)
 

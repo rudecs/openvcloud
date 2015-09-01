@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
         return str(len(row[id]))
 
     fieldids = ['id', 'gid', 'netmask', 'pubips']
-    fieldvalues = ['[%(id)s|publicnetwork?networkid=%(id)s]', 'gid', 'subnetmask', getFreeIPS]
+    fieldvalues = ['[%(id)s|public network?networkid=%(id)s]', 'gid', 'subnetmask', getFreeIPS]
     tableid = modifier.addTableForModel('cloudbroker', 'publicipv4pool', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')

@@ -28,7 +28,7 @@ h2. Cloud Space: ${name}
 - display: Create Machine
   action: '#createmachine'
 
-- display: Create Machine On CPU Node
+- display: Create Machine On Stack
   action: '#createmachineonstack'
 
 - display: Move VFW
@@ -126,5 +126,5 @@ h3. Port Fowardings
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
 
-h3. CPU Nodes
+h3. Stacks
 {{cbnodes space:$$id}}

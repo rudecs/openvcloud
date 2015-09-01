@@ -204,7 +204,7 @@
   data:
    machineId: $$id
 
-- display: Move to a different CPU Node
+- display: Move to a different Stack
   action: "#movemachine"
 
 - display: Tag

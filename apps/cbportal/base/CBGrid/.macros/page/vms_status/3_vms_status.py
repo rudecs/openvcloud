@@ -26,7 +26,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    fieldnames = ('Name', 'State', 'Pingable', 'HardDisk Test', 'CPU Node', 'Time')
+    fieldnames = ('Name', 'State', 'Pingable', 'HardDisk Test', 'Stack', 'Time')
     tableid = modifier.addTableFromData(vms, fieldnames)
 
     modifier.addSearchOptions('#%s' % tableid)
