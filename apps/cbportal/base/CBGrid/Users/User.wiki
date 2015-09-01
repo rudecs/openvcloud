@@ -1,4 +1,5 @@
 @usedefault
+@@title User: ${id}
 
 {{timestamp}}
 {{include:user space:system}}
