@@ -4,8 +4,8 @@ Cloud Spaces:/cbgrid/Cloud Spaces
 Locations:/cbgrid/locations
 Stacks:/cbgrid/Stacks
 Images:/cbgrid/images
-Public Networks:/cbgrid/publicnetworks
-Private Networks:/cbgrid/networks
+Public Networks:/cbgrid/public networks
+Private Networks:/cbgrid/private networks
 Users:/cbgrid/users
 Groups:/cbgrid/groups
 Virtual Machines:/cbgrid/Virtual Machines

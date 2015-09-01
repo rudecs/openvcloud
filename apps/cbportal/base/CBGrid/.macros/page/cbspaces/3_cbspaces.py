@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
         return ', '.join(links)
     def makeNetworkLink(row, field):
         if row[field]:
-            return '[%(networkId)s|/CBGrid/network?id=%(networkId)s&gid=%(gid)s]' % row
+            return '[%(networkId)s|/CBGrid/private network?id=%(networkId)s&gid=%(gid)s]' % row
         else:
             return ''
 
