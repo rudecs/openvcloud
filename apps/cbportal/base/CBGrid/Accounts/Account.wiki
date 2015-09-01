@@ -1,5 +1,7 @@
 @usedefault
 
+@@title Account: ${name}
+
 {{Account id:$$id}}
 
 h2. Account: ${name}

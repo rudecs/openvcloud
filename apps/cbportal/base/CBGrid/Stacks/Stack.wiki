@@ -1,14 +1,15 @@
 @usedefault
+@@title Stack: ${name}
 
 {{stack_data: id:$$id}}
 
-h3. Stack: $$breadcrumbname
+h3. Stack: ${name}
 {{actions:
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
   data:
    id: $$id
-   gid: $$gid
+   gid: ${gid}
   input:
    - message
 
@@ -16,7 +17,7 @@ h3. Stack: $$breadcrumbname
   action: /restmachine/cloudbroker/computenode/disable
   data:
    id: $$id
-   gid: $$gid
+   gid: ${gid}
   input:
    - message
 
@@ -24,16 +25,16 @@ h3. Stack: $$breadcrumbname
   action: /restmachine/cloudbroker/computenode/setStatus
   data:
    id: $$id
-   gid: $$gid
+   gid: ${gid}
    status: OFFLINE
   input:
    - message
 }}
 
-* *ApiURL*: $$apiurl
-* *Description*: $$descr
-* *ReferenceId*: [$$gid:$$referenceid|/grid/Node?id=$$referenceid&gid=$$gid]
-* *Status*: $$status
+* *ApiURL*: ${apiUrl}
+* *Description*: ${descr}
+* *ReferenceId*: [${gid}:${referenceId}|/grid/Node?id=${referenceId}&gid=${gid}]
+* *Status*: ${status}
 
 h3. Images:
 

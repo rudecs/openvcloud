@@ -15,14 +15,12 @@ def main(j, args, params, tags, tasklet):
         params.result = ('Stack with id %s not found' % stid, args.doc)
         return params
 
-    def objFetchManipulate(id):
-        stack = ccl.stack.get(stid).dump()
-        stack['breadcrumbname'] = stack['name']
-        return stack
 
-    push2doc=j.apps.system.contentmanager.extensions.macrohelper.push2doc
+    stack = ccl.stack.get(stid).dump()
+    args.doc.applyTemplate(stack)
+    params.result = (args.doc, args.doc)
 
-    return push2doc(args,params,objFetchManipulate)
+    return params
 
 def match(j, args, params, tags, tasklet):
     return True

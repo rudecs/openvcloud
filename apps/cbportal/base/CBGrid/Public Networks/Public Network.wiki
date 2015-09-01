@@ -1,4 +1,5 @@
 @usedefaults
+@@title Public Network: ${id}
 
 {{publicnetwork: networkid:$$networkid}}
 {{datatables_use}}

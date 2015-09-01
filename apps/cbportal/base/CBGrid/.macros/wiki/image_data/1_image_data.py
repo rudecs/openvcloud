@@ -18,7 +18,6 @@ def main(j, args, params, tags, tasklet):
     imageobj = ccl.image.get(imageid)
     
     image = imageobj.dump()
-    image['breadcrumbname'] = image['name']
 
     args.doc.applyTemplate(image)
 
