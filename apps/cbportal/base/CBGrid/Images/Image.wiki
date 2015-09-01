@@ -1,4 +1,5 @@
 @usedefault
+@@title Image: ${name}
 
 {{image_data id:$$id}}
 h3. Image: ${name}

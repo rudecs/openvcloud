@@ -2,31 +2,31 @@
 {{vmachine: id:$$id}}
 {{include:vmachine_actions}}
 
-h2. Virtual Machine: $$breadcrumbname
+h2. Virtual Machine: ${name}
 
 |*ID*| $$id|
-|*Description*| $$descr|
-|*Tags*| $$tags|
-|*Stack*| [$$stackname|stack?id=$$stackid]|
-|*Account*| [$$accountname|account?id=$$accountid]|
-|*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
-|*Created at*| $$createdat|
-|*Deleted at*| $$deletedat|
-|*Size*| $$size|
-|*Image*| $$image|
-|*Status*| $$status|
-|*Host Name*| $$hostname|
-|*Hypervisor Type*| $$hypervisortype|
+|*Description*| ${descr}|
+|*Tags*| ${tags}|
+|*Stack*| [${stackname}|stack?id=${stackId}]|
+|*Account*| [${accountName}|account?id=${accountId}]|
+|*Cloudspace*| [${spacename}|cloudspace?id=${cloudspaceId}]|
+|*Created at*| ${createdat}|
+|*Deleted at*| ${deletedat}|
+|*Size*| ${size}|
+|*Image*| ${image}|
+|*Status*| ${status}|
+|*Host Name*| ${hostname}|
+|*Hypervisor Type*| ${hypervisortype}|
 *NICs*
-$$nics
+${nics}
 *Disks*
-$$disks
+${disks}
 
 h3. Virtual Machine Status Details
-|*Status*|$$stats_state|
-|*Ping*|$$stats_ping|
-|*HardDrive Test*|$$stats_hdtest|
-|*Last Checked*|$$stats_epoch|
+|*Status*|${stats_state}|
+|*Ping*|${stats_ping}|
+|*HardDrive Test*|${stats_hdtest}|
+|*Last Checked*|${stats_epoch}|
 
 h3. Machine Exports
 {{vmexports machineid:$$id}}

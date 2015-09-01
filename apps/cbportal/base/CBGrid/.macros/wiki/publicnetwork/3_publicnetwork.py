@@ -14,7 +14,6 @@ def main(j, args, params, tags, tasklet):
         return params
 
     network = cbclient.publicipv4pool.get(id).dump()
-    network['breadcrumbname'] = network['id']
     network['spaces'] = list()
 
     networkpool = netaddr.IPNetwork(network['id'])

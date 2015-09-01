@@ -20,7 +20,6 @@ def main(j, args, params, tags, tasklet):
         return params
 
     obj = locations[0]
-    obj['breadcrumbname'] = obj['name']
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)
     return params

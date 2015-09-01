@@ -1,4 +1,5 @@
 @usedefault
+@@title Location: ${name}
 
 h3. Location: ${name}
 
