@@ -113,7 +113,7 @@ class cloudbroker_account(BaseActor):
 
         account = self.models.account.simpleSearch({'name': name})
         if account:
-            ctx.start_response('400 Bad Request', [])
+            ctx.start_response('409 Conflict', [])
             return 'Account name is already in use.'
 
         if not self._isValidUserName(username):
