@@ -7,7 +7,7 @@ h2. Virtual Machine: $$breadcrumbname
 |*ID*| $$id|
 |*Description*| $$descr|
 |*Tags*| $$tags|
-|*Stack*| [$$stackrefid|stack?id=$$stackid]|
+|*Stack*| [$$stackname|stack?id=$$stackid]|
 |*Account*| [$$accountname|account?id=$$accountid]|
 |*Cloudspace*| [$$spacename|cloudspace?id=$$cloudspaceid]|
 |*Created at*| $$createdat|
