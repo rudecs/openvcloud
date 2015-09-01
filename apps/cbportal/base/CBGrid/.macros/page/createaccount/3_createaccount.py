@@ -1,5 +1,6 @@
 from JumpScale.portal.docgenerator.popup import Popup
 
+
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     ccl = j.clients.osis.getNamespace('cloudbroker')
@@ -8,10 +9,11 @@ def main(j, args, params, tags, tasklet):
         locations.append((location['name'], location['locationCode']))
 
     popup = Popup(id='createaccount', header='Create Account', submit_url='/restmachine/cloudbroker/account/create')
-    popup.addText('Username', 'username', required=True)
-    popup.addText('Display Name', 'name', required=True)
-    popup.addText('Email Address', 'emailaddress', required=True)
-    popup.addText('Password (min 6 characters)', 'password', required=True, type='password')
+    popup.addText('Name', 'name', required=True, placeholder='Account Name')
+    popup.addText('Username', 'username', required=True,
+                  placeholder='Owner of account, will be created if does not exist')
+    popup.addText('Email Address', 'emailaddress', required=False,
+                  placeholder='User email, only required if username does not exist')
     popup.addDropdown('Choose Location', 'location', locations)
     popup.write_html(page)
     return params

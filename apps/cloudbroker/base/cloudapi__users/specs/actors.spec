@@ -57,3 +57,11 @@
         var:resettoken str,, password reset token
         var:newpassword str,, new password
         result:bool
+
+    method:validate @noauth
+        """
+        Validates user email and sets his password
+        """
+        var:validationtoken str,, Validation token
+        var:password str,, User password
+        result:bool

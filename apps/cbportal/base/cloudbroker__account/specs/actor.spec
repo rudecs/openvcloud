@@ -50,8 +50,7 @@
         """
         Create Account.
         """"
-        var:username str,, name of the account
         var:name str,, Display name
+        var:username str,, name of the account
         var:emailaddress str,,email
-        var:password str,,password
         var:location str,,locationcode

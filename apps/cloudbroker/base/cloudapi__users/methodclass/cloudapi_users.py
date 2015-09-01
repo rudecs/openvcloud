@@ -7,6 +7,10 @@ import re, string, random, time
 import json
 import md5
 
+
+VALIDATION_TIME = 7 * 24 * 60 * 60
+
+
 class cloudapi_users(BaseActor):
     """
     User management
@@ -128,7 +132,7 @@ class cloudapi_users(BaseActor):
             return 'User not found'
 
     def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
-        
+
         fromaddr = 'support@mothership1.com'
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
@@ -171,13 +175,13 @@ class cloudapi_users(BaseActor):
         result bool
         """
         ctx = kwargs['ctx']
-        
+
         existingusers = self.systemodel.user.search({'emails':emailaddress})[1:]
 
         if (len(existingusers) == 0):
             ctx.start_response('404 Not Found', [])
             return 'No user has been found for this email address'
-        
+
         user = existingusers[0]
         locationurl = j.apps.cloudapi.locations.getUrl()
         #create reset token
@@ -190,7 +194,7 @@ class cloudapi_users(BaseActor):
         self.models.resetpasswordtoken.set(reset_token)
 
         self._sendResetPasswordMail(emailaddress,user['id'],actual_token,locationurl)
-        
+
         return 'Reset password email send'
 
     def getResetPasswordInformation(self, resettoken, **kwargs):
@@ -240,31 +244,33 @@ class cloudapi_users(BaseActor):
             return 'Invalid or expired validation token'
 
         user = self.systemodel.user.get(actual_reset_token.userguid)
-        user.passwd =  md5.new(newpassword).hexdigest()
+        user.passwd = md5.new(newpassword).hexdigest()
         self.systemodel.user.set(user)
-        
+
         self.models.resetpasswordtoken.delete(resettoken)
-        
+
         return [200, "Your password has been changed."]
 
-    def validate(self, validationtoken, **kwargs):
+    def validate(self, validationtoken, password, **kwargs):
         ctx = kwargs['ctx']
-        now = int(time.time())
-        if not self.models.accountactivationtoken.exists(validationtoken):
+
+        tokens = self.models.resetpasswordtoken.search({'id': validationtoken})[1:]
+        if not tokens:
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
-        activation_token = self.models.accountactivationtoken.get(validationtoken)
+        activation_token = tokens[0]
 
-        if activation_token.deletionTime > 0:
+        if activation_token['creationTime'] + VALIDATION_TIME < time.time():  # time has passed.
             ctx.start_response('419 Authentication Expired', [])
             return 'Invalid or expired validation token'
 
-        accountId = activation_token.accountId
-        activation_token.deletionTime = now
-        account = self.models.account.get(accountId)
-        account.status = 'CONFIRMED'
-        self.models.account.set(account)
-        self.models.accountactivationtoken.set(activation_token)
+        user = self.systemodel.user.get(activation_token['username'])
+        user.passwd = md5.new(password).hexdigest()
+        self.systemodel.user.set(user)
+
+        # Invalidate the token.
+        activation_token['creationTime'] = 0
+        self.models.resetpasswordtoken.set(activation_token)
 
         return True
