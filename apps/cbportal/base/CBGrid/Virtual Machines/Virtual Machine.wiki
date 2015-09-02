@@ -16,7 +16,7 @@ h2. Virtual Machine: ${name}
 |*Size*| ${size}|
 |*Image*| ${image}|
 |*Status*| ${status}|
-|*Host Name*| ${hostname}|
+|*Host Name*| ${hostName}|
 |*Hypervisor Type*| ${hypervisortype}|
 *NICs*
 ${nics}

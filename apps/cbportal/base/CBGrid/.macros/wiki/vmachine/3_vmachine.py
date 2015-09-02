@@ -67,7 +67,7 @@ def main(j, args, params, tags, tasklet):
 
     fields = ('name', 'id', 'descr', 'imageId', 'stackId', 'status', 'hostName', 'hypervisorType', 'cloudspaceId', 'tags')
     for field in fields:
-        data[field.lower()] = getattr(obj, field, 'N/A')
+        data[field] = getattr(obj, field, 'N/A')
 
     nwinfo = dict()
     try:
