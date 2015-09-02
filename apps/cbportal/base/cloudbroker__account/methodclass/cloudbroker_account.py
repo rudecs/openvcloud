@@ -78,29 +78,23 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, location, **kwargs):
-        ctx = kwargs['ctx']
-
         account = self.models.account.simpleSearch({'name': name})
         if account:
-            ctx.start_response('409 Conflict', [])
-            return 'Account name is already in use.'
+            raise exceptions.Conflict('Account name is already in use.')
 
         if not self._isValidUserName(username):
-            ctx.start_response('400 Bad Request', [])
-            return '''An account name may not exceed 20 characters
-             and may only contain a-z and 0-9'''
+            raise exceptions.BadRequest('An account name may not exceed 20 characters and may only contain a-z and 0-9')
 
         created = False
         if j.core.portal.active.auth.userExists(username):
             if emailaddress and not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
-                ctx.start_response('409 Conflict', [])
-                return 'The specific user and email do not match.'
+                raise exceptions.Conflict('The specific user and email do not match.')
+
             user = j.core.portal.active.auth.getUserInfo(username)
             emailaddress = user.emails[0] if user.emails else None
         else:
             if not emailaddress:
-                ctx.start_response('400 Bad Request', [])
-                return 'Email address required for new users.'
+                raise exceptions.BadRequest('Email address required for new users.')
 
             password = j.base.idgenerator.generateGUID()
             j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]

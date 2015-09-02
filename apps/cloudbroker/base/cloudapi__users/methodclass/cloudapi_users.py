@@ -132,41 +132,23 @@ class cloudapi_users(BaseActor):
             return 'User not found'
 
     def _sendResetPasswordMail(self, emailaddress, username, resettoken, portalurl):
-
-        fromaddr = 'support@mothership1.com'
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
         else:
-            toaddrs  =  [emailaddress]
+            toaddrs = [emailaddress]
 
-        html = """
-<html>
-<head></head>
-<body>
+        args = {
+            'email': emailaddress,
+            'username': username,
+            'resettoken': resettoken,
+            'portalurl': portalurl
+        }
 
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/reset_password.html', **args)
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/reset_password.subject.txt', **args)
 
-    Dear,<br>
-    <br>
-    A request for a password reset on the Mothership<sup>1</sup> service has been requested using this email address.
-    <br>
-    <br>
-    You can set a new password for the user %(username)s using the following link: <a href="%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s">%(portalurl)s/wiki_gcb/ResetPassword?token=%(resettoken)s</a>
-    <br>
-    If you are unable to follow the link, copy and paste it in your favorite browser.
-    <br>
-    <br>
-    <br>
-    In case you experience any more issues logging in or using the Mothership<sup>1</sup> service, please contact us at support@mothership1.com or use the live chat function on mothership1.com
-    <br>
-    <br>
-    Best Regards,<br>
-    <br>
-    The Mothership<sup>1</sup> Team<br>
-    <a href="%(portalurl)s">www.mothership1.com</a><br>
-</body>
-</html>
-    """ % {'email':emailaddress, 'username':username, 'resettoken':resettoken, 'portalurl':portalurl}
-        j.clients.email.send(toaddrs, fromaddr, "Your Mothership1 password reset request", html, files=None)
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
     def sendResetPasswordLink(self, emailaddress, **kwargs):
         """
