@@ -13,7 +13,6 @@ def main(j, args, params, tags, tasklet):
 
     popup = Popup(id='movemachine', header='Move machine to another CPU node', submit_url='/restmachine/cloudbroker/machine/moveToDifferentComputeNode')
     popup.addDropdown('Target CPU Node', 'targetStackId', cpu_nodes, required=True)
-    popup.addDropdown('With Snapshots', 'withSnapshots', [('Yes', True), ('No', False)])
     popup.addText('Reason', 'reason', required=True)
     popup.addHiddenField('machineId', machineId)
     popup.addHiddenField('accountName', accountName)

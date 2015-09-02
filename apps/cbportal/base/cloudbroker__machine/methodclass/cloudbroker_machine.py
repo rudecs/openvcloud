@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
-import time, string
+import time
+import string
 from random import choice
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal.auth import auth
@@ -9,6 +10,7 @@ import ujson
 
 
 class cloudbroker_machine(BaseActor):
+
     def __init__(self):
         super(cloudbroker_machine, self).__init__()
         self.libvirtcl = j.clients.osis.getNamespace('libvirt')
@@ -16,10 +18,10 @@ class cloudbroker_machine(BaseActor):
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
-#         try:
-#            self.whmcs = j.clients.whmcs.get()
-#         except:
-#            self.whmcs = j.clients.whmcs.getDummy()
+        # try:
+        #     self.whmcs = j.clients.whmcs.get()
+        # except:
+        #     self.whmcs = j.clients.whmcs.getDummy()
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -116,7 +118,6 @@ class cloudbroker_machine(BaseActor):
         cloudspace.resourceProviderStacks = list(providerstacks)
         self.models.cloudspace.set(cloudspace)
 
-
     def _validateMachineRequest(self, machineId, accountName=None, spaceName=None):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
@@ -129,12 +130,14 @@ class cloudbroker_machine(BaseActor):
 
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         if spaceName and cloudspace.name != spaceName:
-            raise exceptions.BadRequest("Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName))
+            raise exceptions.BadRequest(
+                "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName))
 
         if accountName:
             account = self.models.account.get(cloudspace.accountId)
             if account.name != accountName:
-                raise exceptions.BadRequest("Machine's account %s does not match the given account name %s" % (account.name, accountName))
+                raise exceptions.BadRequest(
+                    "Machine's account %s does not match the given account name %s" % (account.name, accountName))
         return vmachine
 
     @auth(['level1', 'level2', 'level3'])
@@ -198,7 +201,8 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
+            accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Snapshotting machine: %s' % vmachine.name
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.snapshot(machineId, snapshotName)
@@ -208,7 +212,8 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
+            accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Rolling back snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.rollbackSnapshot(machineId, snapshotName)
@@ -218,7 +223,8 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, snapshotName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
+            accountName, spaceName, vmachine.name, snapshotName, reason)
         subject = 'Deleting snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.deleteSnapshot(machineId, snapshotName)
@@ -228,7 +234,8 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nClone name: %s\nReason: %s' % (accountName, spaceName, vmachine.name, cloneName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nClone name: %s\nReason: %s' % (
+            accountName, spaceName, vmachine.name, cloneName, reason)
         subject = 'Cloning machine: %s into machine: %s' % (vmachine.name, cloneName)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.clone(machineId, cloneName)
@@ -236,10 +243,9 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, withSnapshots=True, collapseSnapshots=False, **kwargs):
+    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, None)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
         source_stack = self.models.stack.get(vmachine.stackId)
         if targetStackId:
             target_stack = self.models.stack.get(int(targetStackId))
@@ -249,37 +255,17 @@ class cloudbroker_machine(BaseActor):
         else:
             target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
 
-        # validate machine template is on target node
-        image = self.models.image.get(vmachine.imageId)
-        libvirt_image = self.libvirtcl.image.get(image.referenceId)
-        image_path = j.system.fs.joinPaths('/mnt', 'vmstor', 'templates', libvirt_image.UNCPath)
-
-        srcmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=source_stack.gid, nid=int(source_stack.referenceId), wait=True)['result']
-        destmd5 = self.acl.executeJumpscript('cloudscalers', 'getmd5', args={'filepath': image_path}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)['result']
-        if srcmd5 != destmd5:
-            raise exceptions.BadRequest("Image's MD5sum on target node doesn't match machine base image MD5sum")
-
         # create network on target node
-        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
+        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={
+                                   'networkid': cloudspace.networkId}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
 
-        # get disks info on source node
-        disks_info = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id}, gid=source_stack.gid, nid=int(source_stack.referenceId), wait=True)['result']
+        args = {
+            'vm_id': vmachine.id,
+            'source_stack': source_stack.dump()
+        }
 
-        # create disks on target node
-        snapshots = []
-        if j.basetype.boolean.fromString(withSnapshots):
-            snapshots = self.machines_actor.listSnapshots(vmachine.id)
-        sshkey = None
-        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'sshkey')
-        if j.system.fs.exists(sshpath):
-            sshkey = j.system.fs.fileGetContents(sshpath)
-        args = {'vm_id': vmachine.id,
-                'disks_info': disks_info,
-                'source_stack': source_stack.dump(),
-                'target_stack': target_stack.dump(),
-                'sshkey': sshkey,
-                'snapshots': snapshots}
-        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=False)
+        job = self.acl.executeJumpscript(
+            'cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
         if job['state'] != 'OK':
             raise exceptions.Error("Migrate failed: %s" % (job['result']))
 
@@ -291,10 +277,10 @@ class cloudbroker_machine(BaseActor):
         machineId = int(machineId)
         machine = self._validateMachineRequest(machineId)
         stack = self.models.stack.get(machine.stackId)
-        storageparameters  = {}
+        storageparameters = {}
         if storage == 'S3':
             if not aws_access_key or not aws_secret_key or not host:
-                  raise exceptions.BadRequest('S3 parameters are not provided')
+                raise exceptions.BadRequest('S3 parameters are not provided')
             storageparameters['aws_access_key'] = aws_access_key
             storageparameters['aws_secret_key'] = aws_secret_key
             storageparameters['host'] = host
@@ -308,8 +294,10 @@ class cloudbroker_machine(BaseActor):
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nid = int(stack.referenceId)
         gid = stack.gid
-        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':backuptype}
-        guid = self.acl.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
+        args = {'path': storagepath, 'name': name, 'machineId': machineId,
+                'storageparameters': storageparameters, 'nid': nid, 'backup_type': backuptype}
+        guid = self.acl.executeJumpscript(
+            'cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
         return guid
 
     @auth(['level1', 'level2', 'level3'])
@@ -335,19 +323,21 @@ class cloudbroker_machine(BaseActor):
 
         metadata = ujson.loads(vmexport.files)
 
-        args = {'path':destinationpath, 'metadata':metadata, 'storageparameters': storageparameters,'nid':nid}
+        args = {'path': destinationpath, 'metadata': metadata, 'storageparameters': storageparameters, 'nid': nid}
 
-        id = self.acl.executeJumpscript('cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
+        id = self.acl.executeJumpscript(
+            'cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
         return id
 
     @auth(['level1', 'level2', 'level3'])
-    def listExports(self, status, machineId ,**kwargs):
+    def listExports(self, status, machineId, **kwargs):
         machineId = int(machineId)
         query = {'status': status, 'machineId': machineId}
         exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+            exportresult.append({'status': exp['status'], 'type': exp['type'], 'storagetype': exp['storagetype'], 'machineId': exp[
+                                'machineId'], 'id': exp['id'], 'name': exp['name'], 'timestamp': exp['timestamp']})
         return exportresult
 
     @auth(['level1', 'level2', 'level3'])
@@ -433,14 +423,14 @@ class cloudbroker_machine(BaseActor):
         param:machineId id of the machine
         result dict,,
         """
-        #put your code here to implement this method
+        # put your code here to implement this method
         vmachine = self.models.vmachine.get(int(machineId))
         stack = self.models.stack.get(vmachine.stackId)
-        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={'vmId': vmachine.id, 'chain': True}, gid=stack.gid, nid=int(stack.referenceId), wait=True)
+        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={
+                                         'vmId': vmachine.id, 'chain': True}, gid=stack.gid, nid=int(stack.referenceId), wait=True)
         if job['state'] != 'OK':
             raise exceptions.Error('Something wrong with image or node see job %s' % job['guid'])
         return job['result']
-
 
     @auth(['level1', 'level2', 'level3'])
     def stopForAbusiveResourceUsage(self, accountName, machineId, reason, **kwargs):
@@ -459,7 +449,8 @@ class cloudbroker_machine(BaseActor):
         msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
-        self.acl.executeJumpscript('cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
+        self.acl.executeJumpscript(
+            'cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
 #        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
@@ -472,8 +463,10 @@ class cloudbroker_machine(BaseActor):
         """
         vmachine = self._validateMachineRequest(machineId, accountName, None)
         stack = self.models.stack.get(vmachine.stackId)
-        args = {'accountName': accountName, 'machineId': machineId, 'reason': reason, 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
-        self.acl.executeJumpscript('cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
+        args = {'accountName': accountName, 'machineId': machineId, 'reason': reason,
+                'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
+        self.acl.executeJumpscript(
+            'cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -493,7 +486,7 @@ class cloudbroker_machine(BaseActor):
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         vfwkey = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         results = list()
-        machineips = [nic.ipAddress for nic in vmachine.nics if not nic.ipAddress=='Undefined']
+        machineips = [nic.ipAddress for nic in vmachine.nics if not nic.ipAddress == 'Undefined']
         if self.vfwcl.virtualfirewall.exists(vfwkey):
             vfw = self.vfwcl.virtualfirewall.get(vfwkey).dump()
             for forward in vfw['tcpForwardRules']:
@@ -508,10 +501,13 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
-        subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (vmachine.name, localPort, cloudspace.publicipaddress, destPort)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
+        subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (
+            vmachine.name, localPort, cloudspace.publicipaddress, destPort)
 #        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
-        self.portforwarding_actor.create(cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
+        self.portforwarding_actor.create(
+            cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
 #        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
@@ -520,7 +516,8 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (account.name, spaceName, vmachine.name, ruleId, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, ruleId, reason)
         subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
 #        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.delete(cloudspace.id, ruleId)
@@ -532,7 +529,8 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, diskName, reason)
         subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
 #        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
@@ -544,7 +542,8 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (account.name, spaceName, vmachine.name, diskId, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, diskId, reason)
         subject = 'Deleting disk: %s for machine %s' % (diskId, vmachine.name)
 #        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.delDisk(machineId, diskId)
@@ -556,7 +555,8 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (account.name, spaceName, vmachine.name, templateName, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, templateName, reason)
         subject = 'Creating template: %s for machine %s' % (templateName, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.createTemplate(machineId, templateName, None)
@@ -568,7 +568,8 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (account.name, spaceName, vmachine.name, description, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (
+            account.name, spaceName, vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.update(machineId, description=description)
