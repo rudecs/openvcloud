@@ -2,23 +2,33 @@
 @@title User: ${id}
 
 {{timestamp}}
-{{include:user space:system}}
 
-h3. OVC Actions
+h2. User: ${id}
+{{user_info: guid:$$id}}
+
 {{actions:
+- display: Edit User
+  action: '#user_edit'
+
+- display: Delete
+  action: /restmachine/system/usermanager/delete?username=$$id
+  navigateback: true
+
 - display: Send Reset Password Link
   action: /restmachine/cloudbroker/user/sendResetPasswordLink
   data:
    username: ${id}
    email: ${emails}
-
 }}
+{{user_edit: guid:$$id}}
 
-h3. OVC Details
+|*Groups*|${", ".join(groups)} |
+|*Emails*|${", ".join(emails)} |
+|*Domain*|${domain} |
+|*Authkey*|${authkey} |
 |*Login to OVC*|[click me|${loginurl}]|
 |*Last Checked*|{{div: class=jstimestamp|data-ts=${lastcheck}}}{{div}}|
 |*Active*|${active}|
-|*Description*|${description}|
 
 h3. Cloud Spaces
 
