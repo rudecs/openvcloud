@@ -14,41 +14,10 @@ def _send_signup_mail(hrd, **kwargs):
     if notifysupport == '1':
         toaddrs.append(fromaddr)
 
-    body = '''At any moment you can change your password on following page:
-    <a href="%(portalurl)s/wiki_gcb/Profile">%(portalurl)s/wiki_gcb/Profile</a>
-    ''' % kwargs
+    message = j.core.portal.active.templates.render('cbportal/email/account/created.html', **kwargs)
+    subject = j.core.portal.active.templates.render('cbportal/email/account/created.subject.txt', **kwargs)
 
-    if 'token' in kwargs:
-        body = '''
-        Please activate your account by pressing this link
-        <a href="%(portalurl)s/Activate?token=%(token)s">here</a>
-        ''' % kwargs
-
-    kwargs['body'] = body
-
-    html = """
-<html>
-<head></head>
-<body>
-
-
-    Dear,<br>
-    <br>
-    Welcome to OpenvCloud.
-    <br>
-    <br>
-    Your username is %(username)s.
-    <br>
-    %(body)s
-    <br>
-    Best Regards,<br>
-    <br>
-    You OpenvCloud Team<br>
-</body>
-</html>
-""" % kwargs
-
-    j.clients.email.send(toaddrs, fromaddr, "OpenvCloud account activation", html, files=None)
+    j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
 
 class cloudbroker_account(BaseActor):
@@ -174,6 +143,7 @@ class cloudbroker_account(BaseActor):
         self.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
 
         mail_args = {
+            'account': name,
             'username': username,
             'email': emailaddress,
             'portalurl': locationurl
