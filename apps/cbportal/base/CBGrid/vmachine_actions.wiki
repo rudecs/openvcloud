@@ -6,21 +6,21 @@
   action: /restmachine/cloudbroker/machine/start
   hideon:
   - RUNNING
-  hideonInput: $$status
+  hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
   hideon:
   - HALTED
-  hideonInput: $$status
+  hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
 
@@ -28,7 +28,7 @@
   action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
   data:
    machineId: $$id
-   accountName: $$accountname
+   accountName: ${accountName}
   input:
   - reason
 
@@ -36,8 +36,8 @@
   action: /restmachine/cloudbroker/machine/reboot
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
 
@@ -45,11 +45,11 @@
   action: /restmachine/cloudbroker/machine/pause
   hideon:
   - HALTED
-  hideonInput: $$status
+  hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
 
@@ -57,8 +57,8 @@
   action: /restmachine/cloudbroker/machine/resume
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
 
@@ -66,8 +66,8 @@
   action: /restmachine/cloudbroker/machine/destroy
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
 
@@ -75,8 +75,8 @@
   action: /restmachine/cloudbroker/machine/snapshot
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
   - snapshotName
@@ -85,8 +85,8 @@
   action: /restmachine/cloudbroker/machine/rollbackSnapshot
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
   - snapshotName
@@ -95,8 +95,8 @@
   action: /restmachine/cloudbroker/machine/deleteSnapshot
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
   - snapshotName
@@ -105,8 +105,8 @@
   action: /restmachine/cloudbroker/machine/clone
   data:
    machineId: $$id
-   accountName: $$accountname
-   spaceName: $$spacename
+   accountName: ${accountName}
+   spaceName: ${spacename}
   input:
   - reason
   - cloneName
@@ -114,7 +114,7 @@
 - display: Backup And Destroy
   action: /restmachine/cloudbroker/machine/backupAndDestroy
   data:
-   accountName: $$accountname
+   accountName: ${accountName}
    machineId: $$id
   input:
   - reason
@@ -123,7 +123,7 @@
   action: /restmachine/cloudbroker/machine/createPortForward
   data:
    machineId: $$id
-   spaceName: $$spacename
+   spaceName: ${spacename}
   input:
   - localPort
   - destPort
@@ -141,7 +141,7 @@
   action: /restmachine/cloudbroker/machine/deletePortForward
   data:
    machineId: $$id
-   spaceName: $$spacename
+   spaceName: ${spacename}
   input:
   - ruleId
   - reason
@@ -150,7 +150,7 @@
 #  action: /restmachine/cloudbroker/machine/addDisk
 #  data:
 #   machineId: $$id
-#   spaceName: $$spacename
+#   spaceName: ${spacename}
 #  input:
 #  - diskName
 #  - description
@@ -162,7 +162,7 @@
 #  action: /restmachine/cloudbroker/machine/deleteDisk
 #  data:
 #   machineId: $$id
-#   spaceName: $$spacename
+#   spaceName: ${spacename}
 #  input:
 #  - diskId
 #  - reason
@@ -171,7 +171,7 @@
   action: /restmachine/cloudbroker/machine/createTemplate
   data:
    machineId: $$id
-   spaceName: $$spacename
+   spaceName: ${spacename}
   input:
   - templateName
   - reason
@@ -180,7 +180,7 @@
   action: /restmachine/cloudbroker/machine/updateMachine
   data:
    machineId: $$id
-   spaceName: $$spacename
+   spaceName: ${spacename}
   input:
   - description
   - reason
@@ -223,5 +223,5 @@
 
 }}
 
-{{movemachine: machineId:$$id accountName:$$accountname}}
+{{movemachine: machineId:$$id accountName:${accountName}}}
 
