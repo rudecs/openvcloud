@@ -36,7 +36,6 @@ def main(j, args, params, tags, tasklet):
                 user['emails'] = 'N/A'
             users.append(user)
     account['users'] = users
-    account['breadcrumbname'] = account['name']
 
     balances = cbclient.credittransaction.search({'accountId': id})[1:]
     balance = 0

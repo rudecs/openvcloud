@@ -6,15 +6,15 @@
     method:create
         """
         Create a machine based on the available sizes, in a certain space.
-        The user needs write access rights on the space.    
+        The user needs write access rights on the space.
         """
         var:cloudspaceId int,,id of space in which we want to create a machine
         var:name str,,name of machine
-        var:description str,,optional description @tags: optional 
+        var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
-        result:bool    
+        result:bool
 
     method:createOnStack
         """
@@ -130,10 +130,8 @@
         """
         var:accountName str,,Account name
         var:machineId int,,Machine id
-        var:targetStackId int,, Name of the compute node the machine has to be moved to @optional
-        var:withSnapshots bool,, Defaults to true @optional
-        var:collapseSnapshots bool,, Sanitize snapshots, defaults to false @optional
         var:reason str,,Reason
+        var:targetStackId int,, Name of the compute node the machine has to be moved to @optional
 
     method:export
         """

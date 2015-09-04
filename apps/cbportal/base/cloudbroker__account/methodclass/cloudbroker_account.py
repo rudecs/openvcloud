@@ -5,37 +5,19 @@ from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
+
 def _send_signup_mail(hrd, **kwargs):
     notifysupport = hrd.get("instance.openvcloud.cloudbroker.notifysupport")
+    toaddrs = [kwargs['email']]
+
     fromaddr = hrd.get('instance.openvcloud.supportemail')
-    toaddrs  =  [kwargs['email']]
     if notifysupport == '1':
         toaddrs.append(fromaddr)
 
+    message = j.core.portal.active.templates.render('cbportal/email/account/created.html', **kwargs)
+    subject = j.core.portal.active.templates.render('cbportal/email/account/created.subject.txt', **kwargs)
 
-    html = """
-<html>
-<head></head>
-<body>
-
-
-    Dear,<br>
-    <br>
-    Welcome to OpenvCloud.
-    <br>
-    <br>
-    Your username is %(username)s.
-    <br>
-    At any moment you can change your password on following page: <a href="%(portalurl)s/wiki_gcb/Profile">%(portalurl)s/wiki_gcb/Profile</a>
-    <br>
-    Best Regards,<br>
-    <br>
-    You OpenvCloud Team<br>
-</body>
-</html>
-""" % kwargs
-
-    j.clients.email.send(toaddrs, fromaddr, "OpenvCloud account activation", html, files=None)
+    j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
 
 class cloudbroker_account(BaseActor):
@@ -95,23 +77,28 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, username, name, emailaddress, password, location, **kwargs):
-        ctx = kwargs['ctx']
-        if not self._isValidUserName(username):
-            ctx.start_response('400 Bad Request', [])
-            return '''An account name may not exceed 20 characters
-             and may only contain a-z and 0-9'''
-        if not self._isValidPassword(password):
-            ctx.start_response('400 Bad Request', [])
-            return '''A password must be at least 8 and maximum 80 characters long
-                      and may not contain whitespace'''
+    def create(self, name, username, emailaddress, location, **kwargs):
+        account = self.models.account.simpleSearch({'name': name})
+        if account:
+            raise exceptions.Conflict('Account name is already in use.')
 
+        if not self._isValidUserName(username):
+            raise exceptions.BadRequest('An account name may not exceed 20 characters and may only contain a-z and 0-9')
+
+        created = False
         if j.core.portal.active.auth.userExists(username):
-            if not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
-                ctx.start_response('409 Conflict', [])
-                return 'The specific user and email do not match.'
+            if emailaddress and not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
+                raise exceptions.Conflict('The specific user and email do not match.')
+
+            user = j.core.portal.active.auth.getUserInfo(username)
+            emailaddress = user.emails[0] if user.emails else None
         else:
-            j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)
+            if not emailaddress:
+                raise exceptions.BadRequest('Email address required for new users.')
+
+            password = j.base.idgenerator.generateGUID()
+            j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]
+            created = True
 
         now = int(time.time())
 
@@ -120,13 +107,12 @@ class cloudbroker_account(BaseActor):
         locationurl = j.apps.cloudapi.locations.getUrl()
 
         account = self.models.account.new()
-        account.name = username
+        account.name = name
         account.creationTime = now
         account.DCLocation = location
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'
-        account.displayname = name
 
         ace = account.new_acl()
         ace.userGroupId = username
@@ -149,7 +135,28 @@ class cloudbroker_account(BaseActor):
             self.models.credittransaction.set(credittransaction)
 
         self.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
-        _send_signup_mail(hrd=self.hrd, username=username, user=name, email=emailaddress, portalurl=locationurl)
+
+        mail_args = {
+            'account': name,
+            'username': username,
+            'email': emailaddress,
+            'portalurl': locationurl
+        }
+
+        if created:
+            # new user.
+            validation_token = self.models.resetpasswordtoken.new()
+            validation_token.id = j.base.idgenerator.generateGUID()
+            validation_token.creationTime = int(time.time())
+            validation_token.username = username
+
+            self.models.resetpasswordtoken.set(validation_token)
+            mail_args.update({
+                'token': validation_token.id
+            })
+
+        if emailaddress:
+            _send_signup_mail(hrd=self.hrd, **mail_args)
 
         return accountid
 

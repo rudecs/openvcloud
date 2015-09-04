@@ -1,3 +1,4 @@
 @usedefault
+@@title Group: ${id}
 
 {{include:group space:system}}

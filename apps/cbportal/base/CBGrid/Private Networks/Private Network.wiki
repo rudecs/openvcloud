@@ -2,7 +2,7 @@
 
 {{network id:$$id gid:$$gid}}
 
-h2. Network: $$id
+h2. Private Network: $$id
 
 h3. Details
 |*Management IP*|${host}|

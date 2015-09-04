@@ -1,5 +1,7 @@
 @usedefault
 
+@@title Cloud Space: ${name}
+
 {{cbspace id:$$id}}
 
 

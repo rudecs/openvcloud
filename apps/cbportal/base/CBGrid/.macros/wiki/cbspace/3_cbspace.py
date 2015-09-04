@@ -34,8 +34,8 @@ def main(j, args, params, tags, tasklet):
 
     vfwkey = "%(gid)s_%(networkId)s" % (obj)
     if vcl.virtualfirewall.exists(vfwkey):
-        network =  vcl.virtualfirewall.get(vfwkey).dump()
-        obj['networkid'] = '[%s|network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
+        network = vcl.virtualfirewall.get(vfwkey).dump()
+        obj['networkid'] = '[%s|private network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
         obj['network'] = network
     else:
         if obj['networkId']:
@@ -44,7 +44,6 @@ def main(j, args, params, tags, tasklet):
             obj['networkid'] = 'N/A'
         obj['network'] = {'tcpForwardRules': []}
 
-    obj['breadcrumbname'] = obj['name']
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)
     return params
