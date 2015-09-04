@@ -2,11 +2,41 @@
 
 h2. Operations Portal
 
-Welcome to our operations portal.
+_Welcome to our operations portal._
 
-{{toc: start=3 | depth=2}}
+{{html: <hr />}}
 
-h3. Actions
+h4. Dashboard
+@row clearfix
+
+@col 4
+h6. No. of Active Accounts
+{{nraccountgauge: id:1 width:100 height:100}}
+@colend
+
+@col 4
+h6. No. of Running Virtual Machines
+#*From Total Deployed:45*
+{{nrvmgauge: id:3 width:100 height:100}}
+@colend
+
+@col 4
+h6. No. of Windows Running Virtual Machines
+{{nrwinvmgauge: id:4 width:100 heigth:100}}^M
+@colend
+@rowend
+
+{{html: <hr />}}
+
+@row gray-background clearfix
+@col 6
+h4. Monitoring
+
+{{html: <p><a href="/grid/Status Overview"><i class="glyphicon glyphicon-dashboard margin-right-small"></i>Status Overview</a></p> }}
+
+@colend
+@col 6
+h4. Actions
 {{actions:
 - display: Add User
   action: "#user_create"
@@ -17,37 +47,34 @@ h3. Actions
 
 {{createaccount}}
 {{user_create: noreload}}
-
-
-h3. Monitoring
-
-[Monitoring |/grid/checkstatus]
-
-h3. Dashboard
-
-@row clearfix
-
-@col 3
-h5. No. of Active Accounts
-{{nraccountgauge: id:1 width:100 height:100}}
-@colend
-
-@col 3
-h5. No. of Running Virtual Machines
-#*From Total Deployed:45*
-{{nrvmgauge: id:3 width:100 height:100}}
-@colend
-
-@col 4
-h5. No. of Windows Running Virtual Machines
-{{nrwinvmgauge: id:4 width:100 heigth:100}}^M
 @colend
 @rowend
 
-h3. Locations
+{{html: <hr />}}
+
+
+h4. Locations
 
 {{locations}}
 
-h3. Accounts
+{{html: <hr />}}
+
+h4. Accounts
 
 {{cbgrid.accounts}}
+
+{{cssstyle
+	h6.title{
+		min-height: 42px;
+	}
+	p{
+	    margin-left: 5px;
+	}
+	select{
+		border-radius: 6px;
+    	padding: 4px 10px;
+	}
+	.gray-background{
+		background-color: #F9F9F9;
+	}
+}}
