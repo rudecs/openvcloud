@@ -44,7 +44,7 @@ class bootstrap(Resource):
 
         try:
             # push pub key of node to reflector
-            sshReflector = sshMngr.reflector.actions._getSSHClient(sshMngr.reflector)
+            sshReflector = sshMngr.reflector.actions.getSSHClient(sshMngr.reflector)
             reflectorUser = hrd.getStr('instance.reflector.user')
             if not sshReflector.user_check(name=reflectorUser, need_passwd=False):
                 sshReflector.user_ensure(reflectorUser)
