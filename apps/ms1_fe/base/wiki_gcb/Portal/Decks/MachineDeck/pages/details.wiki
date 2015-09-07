@@ -1,10 +1,10 @@
 
-h1. Manage Machine
 {{html:
 <div class="gray-loader" ng-hide="machine">
     Loading, Please wait..
 </div>
 <div ng-show="machine">
+    <h1>Machine: {[machine.name]}</h1>
     <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
     <a ng-click="refreshData()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
         <i class="fa fa-refresh"></i>
@@ -16,12 +16,6 @@ h1. Manage Machine
                 <div class="row">
                     <div class="span8">
                         <ul class="list padding-left-medium">
-                            <li>
-                                <div class="row">
-                                    <div class="span3 line-height">Name</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small word-break">{[machine.name]}</div>
-                                </div>
-                            </li>
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">Description</div>

@@ -10,7 +10,7 @@ h2. Virtual Machine: ${name}
 |*Tags*| ${tags}|
 |*Stack*| [${stackname}|stack?id=${stackId}]|
 |*Account*| [${accountName}|account?id=${accountId}]|
-|*Cloudspace*| [${spacename}|cloudspace?id=${cloudspaceId}]|
+|*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
 |*Created at*| ${createdat}|
 |*Deleted at*| ${deletedat}|
 |*Size*| ${size}|
