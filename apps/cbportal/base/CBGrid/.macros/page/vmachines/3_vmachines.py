@@ -39,7 +39,7 @@ def main(j, args, params, tags, tasklet):
         return '[%s|Virtual Machine?id=%s]' % (row[field], row['id'])
 
     def spaceLinkify(row, field):
-        return '[%s|cloudspace?id=%s]' % (row[field], row[field])
+        return '[%s|cloud space?id=%s]' % (row[field], row[field])
 
     fieldids = ['name', 'hostName', 'status', 'creationTime', 'cloudspaceId', 'stackId']
     fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
