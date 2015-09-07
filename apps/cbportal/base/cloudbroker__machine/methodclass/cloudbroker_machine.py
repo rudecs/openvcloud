@@ -60,6 +60,7 @@ class cloudbroker_machine(BaseActor):
 
         disk = self.models.disk.new()
         disk.name = '%s_1'
+        disk.gid = cloudspace.gid
         disk.descr = 'Machine boot disk'
         disk.sizeMax = disksize
         diskid = self.models.disk.set(disk)[0]
