@@ -5,7 +5,7 @@
 
 {{find}}
 {{logo:/system/.files/img/green.png}}
-
+{{PortalsHamburgerMenu}}
 {{menu:
 Cloud Broker Portal:/cbgrid
 }}
