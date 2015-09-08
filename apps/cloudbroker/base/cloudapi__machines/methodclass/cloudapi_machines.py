@@ -336,7 +336,12 @@ class cloudapi_machines(BaseActor):
         except:
             cleanup(machine)
             raise
-        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid, datadisks=diskinfo)
+        try:
+            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid, datadisks=diskinfo)
+        except:
+            machine.state = 'ERROR'
+            self.models.vmachine.set(machine)
+            raise
         self._updateMachineFromNode(machine, node, stack['id'], psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)

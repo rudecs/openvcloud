@@ -42,7 +42,7 @@ def main(j, args, params, tags, tasklet):
     try:
         stack = cbosis.stack.get(obj.stackId).dump()
     except Exception:
-        stack = {'name': 'N/A', 'referenceId': 'N/A'}
+        stack = {'name': 'N/A', 'referenceId': 'N/A', 'type': 'UNKNOWN'}
     try: 
         image = cbosis.image.get(obj.imageId).dump()
         ccl = j.clients.osis.getNamespace('libvirt')
