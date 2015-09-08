@@ -32,7 +32,7 @@ angular.module('cloudscalers.controllers')
         });
 
         $scope.machineIsManageable = function(machine){
-            return machine.status != 'DESTROYED';
+            return machine.status && machine.status != 'DESTROYED' && machine.status != 'ERROR';
         }
 
         $scope.sizes = Size.list($scope.currentSpace.id);
