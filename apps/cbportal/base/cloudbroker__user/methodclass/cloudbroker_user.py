@@ -43,11 +43,18 @@ class cloudbroker_user(BaseActor):
         result['passwd'] = md5.new(password).hexdigest()
         self.syscl.user.set(result)
         return True
-
+    
+    def _isValidUserName(self, username):
+        r = re.compile('^[a-z0-9]{1,20}$')
+        return r.match(username) is not None
+    
     @auth(['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, **kwargs):
         ctx = kwargs['ctx']
         headers = [('Content-Type', 'application/json'), ]
+        if not self._isValidUserName(username):
+            ctx.start_response('409', headers)
+            return 'Username may not exceed 20 characters and may only contain a-z and 0-9'
         check, result = self._checkUser(username)
         if check:
             ctx.start_response('409', headers)
