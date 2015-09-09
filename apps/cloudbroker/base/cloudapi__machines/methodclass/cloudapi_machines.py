@@ -3,12 +3,8 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
-import string, time
+import time
 import itertools
-from random import choice
-from libcloud.compute.base import NodeAuthPassword
-from billingenginelib import pricing
-from billingenginelib import account as accountbilling
 
 
 class RequireState(object):
@@ -40,8 +36,6 @@ class cloudapi_machines(BaseActor):
         self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
-        self._pricing = pricing.pricing()
-        self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
 
@@ -220,19 +214,6 @@ class cloudapi_machines(BaseActor):
             return self.cb.getProviderByStackId(machine.stackId)
         return None
 
-    def _assertName(self, cloudspaceId, name, **kwargs):
-        for m in self.list(cloudspaceId, **kwargs):
-            if m['name'] == name:
-                return False
-        return True
-
-
-
-    def _getSize(self, provider, machine):
-        brokersize = self.models.size.get(machine.sizeId)
-        firstdisk = self.models.disk.get(machine.disks[0])
-        return provider.getSize(brokersize, firstdisk)
-
     @authenticator.auth(acl='C')
     @audit()
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
@@ -247,130 +228,10 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
-        def cleanup(machine):
-            for diskid in machine.disks:
-                self.models.disk.delete(diskid)
-            self.models.vmachine.delete(machine.id)
-
-        if not self._assertName(cloudspaceId, name, **kwargs):
-            raise exceptions.Conflict('Selected name already exists')
-        if not disksize:
-            raise ValueError("Invalid disksize %s" % disksize)
-
-        cloudspaceId = int(cloudspaceId)
-        sizeId = int(sizeId)
-        imageId = int(imageId)
-        datadisks = datadisks or []
-        #Check if there is enough credit
-        accountId = self.models.cloudspace.get(cloudspaceId).accountId
-        available_credit = self._accountbilling.getCreditBalance(accountId)
-        burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
-        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
-        new_burnrate = burnrate + hourly_price_new_machine
-        if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
-            raise exceptions.Conflict('Not enough credit for this machine to run for %i days' % self._minimum_days_of_credit_required)
-
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        #create a public ip and virtual firewall on the cloudspace if needed
-        if cloudspace.status != 'DEPLOYED':
-            args = {'cloudspaceId': cloudspaceId}
-            self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
-
-        machine = self.models.vmachine.new()
-        image = self.models.image.get(imageId)
-        networkid = cloudspace.networkId
-        machine.cloudspaceId = cloudspaceId
-        machine.descr = description
-        machine.name = name
-        machine.sizeId = sizeId
-        machine.imageId = imageId
-        machine.creationTime = int(time.time())
-
-        def addDisk(order, size, type):
-            disk = self.models.disk.new()
-            disk.name = 'Disk nr %s' % order
-            disk.descr = 'Machine disk of type %s' % type
-            disk.sizeMax = size
-            disk.accountId = accountId
-            disk.gid = cloudspace.gid
-            disk.order = order
-            disk.type = type
-            diskid = self.models.disk.set(disk)[0]
-            machine.disks.append(diskid)
-            return diskid
-
-        addDisk(-1, disksize, 'B')
-        diskinfo = []
-        for order, datadisksize in enumerate(datadisks):
-            diskid = addDisk(order, datadisksize, 'D')
-            diskinfo.append((diskid, datadisksize))
-
-        account = machine.new_account()
-        if image.type == 'Custom Templates':
-            account.login = 'Custom login'
-            account.password = 'Custom password'
-        else:
-            if hasattr(image, 'username') and image.username:
-                account.login = image.username
-            else:
-                account.login = 'cloudscalers'
-            length = 6
-            chars = string.letters + string.digits
-            letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-            passwd = ''.join(choice(chars) for _ in xrange(length))
-            passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
-            account.password = passwd
-        auth = NodeAuthPassword(account.password)
-        machine.id = self.models.vmachine.set(machine)[0]
-
-        try:
-            stack = self.cb.getBestProvider(cloudspace.gid, imageId)
-            if stack == -1:
-                cleanup(machine)
-                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-            provider = self.cb.getProviderByStackId(stack['id'])
-            psize = self._getSize(provider, machine)
-            image, pimage = provider.getImage(machine.imageId)
-            machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = 'vm-%s' % machine.id
-        except:
-            cleanup(machine)
-            raise
-        try:
-            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid, datadisks=diskinfo)
-        except:
-            machine.state = 'ERROR'
-            self.models.vmachine.set(machine)
-            raise
-        self._updateMachineFromNode(machine, node, stack['id'], psize)
-        tags = str(machine.id)
-        j.logger.log('Created', category='machine.history.ui', tags=tags)
-        return machine.id
-
-    def _updateMachineFromNode(self, machine, node, stackId, psize):
-        machine.referenceId = node.id
-        machine.referenceSizeId = psize.id
-        machine.stackId = stackId
-        machine.status = enums.MachineStatus.RUNNING
-        machine.hostName = node.name
-        for ipaddress in node.public_ips:
-            nic = machine.new_nic()
-            nic.ipAddress = ipaddress
-        self.models.vmachine.set(machine)
-
-        for order, diskid in enumerate(machine.disks):
-            disk = self.models.disk.get(diskid)
-            disk.stackId = stackId
-            if order != 0:
-                disk.referenceId = node.extra['volumes'][order - 1].id
-            self.models.disk.set(disk)
-
-        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        providerstacks = set(cloudspace.resourceProviderStacks)
-        providerstacks.add(stackId)
-        cloudspace.resourceProviderStacks = list(providerstacks)
-        self.models.cloudspace.set(cloudspace)
-
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, self._minimum_days_of_credit_required)
+        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
+        return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
     @authenticator.auth(acl='D')
     @audit()
@@ -610,7 +471,7 @@ class cloudapi_machines(BaseActor):
         if machine.clone or machine.cloneReference:
             raise exceptions.MethodNotAllowed('This machine has already a clone or is a clone or has been cloned in the past')
 
-        if not self._assertName(machine.cloudspaceId, name, **kwargs):
+        if not self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
             raise exceptions.Conflict('Selected name already exists')
         clone = self.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
@@ -621,8 +482,6 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
-
-
 
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -639,7 +498,7 @@ class cloudapi_machines(BaseActor):
         clone.id = self.models.vmachine.set(clone)[0]
         provider, node = self._getProviderAndNode(machineId)
         name = 'vm-%s' % clone.id
-        size = self._getSize(provider, clone)
+        size = self.cb.machine.getSize(provider, clone)
         node = provider.client.ex_clone(node, size, name)
         machine.clone = clone.id
         self.models.vmachine.set(machine)

@@ -42,82 +42,10 @@ class cloudbroker_machine(BaseActor):
         param:stackid id of the stack
         result bool
         """
-        cloudspaceId = int(cloudspaceId)
-        imageId = int(imageId)
-        sizeId = int(sizeId)
-        stackid = int(stackid)
-        machine = self.models.vmachine.new()
-        image = self.models.image.get(imageId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-
-        networkid = cloudspace.networkId
-        machine.cloudspaceId = cloudspaceId
-        machine.descr = description
-        machine.name = name
-        machine.sizeId = sizeId
-        machine.imageId = imageId
-        machine.creationTime = int(time.time())
-
-        disk = self.models.disk.new()
-        disk.name = '%s_1'
-        disk.gid = cloudspace.gid
-        disk.descr = 'Machine boot disk'
-        disk.sizeMax = disksize
-        diskid = self.models.disk.set(disk)[0]
-        machine.disks.append(diskid)
-
-        account = machine.new_account()
-        if hasattr(image, 'username') and image.username:
-            account.login = image.username
-        else:
-            account.login = 'cloudscalers'
-        length = 6
-        chars = string.letters + string.digits
-        letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-        passwd = ''.join(choice(chars) for _ in xrange(length))
-        passwd = passwd + choice(string.digits) + choice(letters[0]) + choice(letters[1])
-        account.password = passwd
-        auth = NodeAuthPassword(passwd)
-        machine.id = self.models.vmachine.set(machine)[0]
-
-        try:
-            provider = self.cb.getProviderByStackId(stackid)
-            psize = self._getSize(provider, machine)
-            image, pimage = provider.getImage(machine.imageId)
-            if not image or not pimage:
-                j.events.opserror_critical("Stack %s does not contain image %s" % (stackid, machine.imageId))
-            machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = 'vm-%s' % machine.id
-        except:
-            self.models.vmachine.delete(machine.id)
-            raise
-        node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=networkid)
-        if node == -1:
-            raise
-        self._updateMachineFromNode(machine, node, stackid, psize)
-        return machine.id
-
-    def _getSize(self, provider, machine):
-        brokersize = self.models.size.get(machine.sizeId)
-        firstdisk = self.models.disk.get(machine.disks[0])
-        return provider.getSize(brokersize, firstdisk)
-
-    def _updateMachineFromNode(self, machine, node, stackId, psize):
-        machine.referenceId = node.id
-        machine.referenceSizeId = psize.id
-        machine.stackId = stackId
-        machine.status = 'RUNNING'
-        machine.hostName = node.name
-        for ipaddress in node.public_ips:
-            nic = machine.new_nic()
-            nic.ipAddress = ipaddress
-        self.models.vmachine.set(machine)
-
-        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        providerstacks = set(cloudspace.resourceProviderStacks)
-        providerstacks.add(stackId)
-        cloudspace.resourceProviderStacks = list(providerstacks)
-        self.models.cloudspace.set(cloudspace)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, 0)
+        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, [])
+        return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 
     def _validateMachineRequest(self, machineId, accountName=None, spaceName=None):
         machineId = int(machineId)
