@@ -22,8 +22,8 @@ server {
         root /opt/jumpscale7/apps/portals/jslib/;
     }
 
-    location /proxy/grafana {
-        rewrite ^/proxy/grafana/(.*) /$1 break;
+    location /grafana {
+        rewrite ^/grafana/(.*) /$1 break;
         proxy_pass http://127.0.0.1:3000/;
     }
 
