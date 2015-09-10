@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import os
 import sys
+
+#make sure we give cwd priority for loading modules
+sys.path.insert(0, '.')
+
 import optparse
 import logging
 import websocket
