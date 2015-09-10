@@ -127,6 +127,3 @@ h3. Port Fowardings
 
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
-
-h3. Stacks
-{{cbnodes space:$$id}}
