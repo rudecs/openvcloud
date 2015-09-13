@@ -162,13 +162,8 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nClone name: %s\nReason: %s' % (
-            accountName, spaceName, vmachine.name, cloneName, reason)
-        subject = 'Cloning machine: %s into machine: %s' % (vmachine.name, cloneName)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self._validateMachineRequest(machineId, accountName, spaceName)
         self.machines_actor.clone(machineId, cloneName)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
