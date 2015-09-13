@@ -18,10 +18,15 @@ h2. Virtual Machine: ${name}
 |*Status*| ${status}|
 |*Host Name*| ${hostName}|
 |*Hypervisor Type*| ${hypervisortype}|
-*NICs*
+
+h3. NICs
 ${nics}
-*Disks*
-${disks}
+
+h3. Disks
+||Name||Size||Backend Size||Type||Path||
+{%for disk in disks -%}
+|${disk.name}|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}|
+{% endfor %}
 
 h3. Virtual Machine Status Details
 |*Status*|${stats_state}|

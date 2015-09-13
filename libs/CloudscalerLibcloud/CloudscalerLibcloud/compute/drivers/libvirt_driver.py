@@ -234,19 +234,21 @@ class CSLibvirtNodeDriver():
                 userdata = {}
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        bootdiskname = self._create_disk(name, size, image)
-        if not bootdiskname or bootdiskname == -1:
+        diskpath = self._create_disk(name, size, image)
+        if not diskpath or diskpath == -1:
             # not enough free capcity to create a disk on this node
             return -1
-        volumes = list()
+        volume = StorageVolume(id=diskpath, name='Bootdisk', size=size, driver=self)
+        volume.dev = 'vda'
+        volumes = [volume]
         if datadisks:
             for idx, (diskname, disksize) in enumerate(datadisks):
                 volume = self.create_volume(disksize, diskname)
                 volume.dev = 'vd%c' % (ord('b') + idx)
                 volumes.append(volume)
-        return self._create_node(name, bootdiskname, size, metadata_iso, networkid, volumes)
+        return self._create_node(name, diskpath, size, metadata_iso, networkid, volumes)
 
-    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None, volumes=None):
+    def _create_node(self, name, diskpath, size, metadata_iso=None, networkid=None, volumes=None):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -260,12 +262,12 @@ class CSLibvirtNodeDriver():
         networkname = result['networkname']
 
         if not metadata_iso:
-            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
+            machinexml = machinetemplate.render({'machinename': name, 'diskpath': diskpath, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'poolpath': POOLPATH, volumes: volumes})
         else:
             machinetemplate = self.env.get_template("machine_iso.xml")
-            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
+            machinexml = machinetemplate.render({'machinename': name, 'diskpath': diskpath, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'poolpath': POOLPATH, 'volumes': volumes})
 
@@ -274,7 +276,7 @@ class CSLibvirtNodeDriver():
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
-                self._execute_agent_job('deletevolume', queue='hypervisor', path=os.path.join(POOLPATH, diskname))
+                self._execute_agent_job('deletevolume', queue='hypervisor', path=diskpath)
             return -1
 
         vmid = result['id']
@@ -285,7 +287,6 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
-        domain = self._get_domain_for_node(node=node)
         return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
 
     def ex_get_node_details(self, node_id):

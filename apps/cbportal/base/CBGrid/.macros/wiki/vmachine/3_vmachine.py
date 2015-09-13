@@ -80,12 +80,16 @@ def main(j, args, params, tags, tasklet):
     except Exception:
         data['nics'] = 'NIC information is not available'
 
-    data['disks'] = '||Path||Used Space||Total Space||\n'
-    diskstats = stats.get('diskinfo', {})
-    if diskstats:
-        usedsize = j.tools.units.bytes.toSize(diskstats.get('stored', 0), output='G')
-        totalsize = j.tools.units.bytes.toSize(diskstats.get('volume_size', 0), output='G')
-        data['disks'] += '|%s|%.2f GiB|%.2f GiB|\n' % (diskstats.get('devicename', 'N/A'), usedsize, totalsize)
+    data['disks'] = cbosis.disk.search({'id': {'$in': obj.disks}})[1:]
+    diskstats = stats.get('diskinfo', [])
+    disktypemap = {'D': 'Data', 'B': 'Boot', 'T': 'Temp'}
+    for disk in data['disks']:
+        disk['type'] = disktypemap.get(disk['type'], disk['type'])
+        for diskinfo in diskstats:
+            if disk['referenceId'].endswith(diskinfo['devicename']):
+                disk.update(diskinfo)
+                disk['footprint'] = '%.2f' % j.tools.units.bytes.toSize(disk['footprint'], output='G')
+                break
 
     if hasattr(obj, 'creationTime'):
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)

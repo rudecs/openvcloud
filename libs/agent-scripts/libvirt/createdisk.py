@@ -22,8 +22,8 @@ def action(templateguid, vmname, size, pmachineip):
     pmguid = PMachineList.get_by_ip(pmachineip).guid
     data = VDiskController.create_from_template(templateguid, '%s/base' % vmname, 'image', pmguid)
     filepath = j.system.fs.joinPaths('/mnt/vmstor', data['backingdevice'].lstrip('/'))
-    fd = os.open(filepath, os.O_RDWR|os.O_CREAT )
+    fd = os.open(filepath, os.O_RDWR|os.O_CREAT)
     os.ftruncate(fd, size)
     os.close(fd)
-    return j.system.fs.getBaseName(data['backingdevice'].lstrip('/'))
+    return filepath
 

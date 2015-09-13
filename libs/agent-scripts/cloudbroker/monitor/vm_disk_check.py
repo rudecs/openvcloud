@@ -23,7 +23,9 @@ def action(vm_id):
 
     vmname = 'vm-%s' % vm_id
     vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    disks = []
     for vdisk in vmachine.vdisks:
         info = vdisk.info.copy()
         info['devicename'] = vdisk.devicename
-        return info
+        disks.append(info)
+    return disks
