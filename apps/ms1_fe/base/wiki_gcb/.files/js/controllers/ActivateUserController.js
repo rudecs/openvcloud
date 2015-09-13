@@ -16,17 +16,19 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.activateUserFunc = function() {
-            console.log("You bastard!");
+            $scope.activateUser.error = "";
             if($scope.activateUser.password == $scope.activateUser.confirmPassword){
-                $scope.activateUser.error = "";
                 Users.activateUser(getUrlParameter('token'), $scope.activateUser.password).then(
                     function(result) {
-                        var uri = new URI($window.location);
-                        uri.filename('Decks');
-                        $window.location = uri.toString();
+                        if($scope.activateUser.password.length < 5){
+                            $scope.activateUser.error = "Password should be at least 6 charchters."
+                            return;
+                        }else{
+                            $location.path("/system/oauth/authenticate");
+                        }
                     },
                     function(reason) {
-                        //$ErrorResponseAlert(reason);
+                        $scope.activateUser.error = reason.data;
                     }
                 )
             }else{
