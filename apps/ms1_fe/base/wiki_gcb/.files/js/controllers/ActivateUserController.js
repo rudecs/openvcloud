@@ -17,15 +17,14 @@ angular.module('cloudscalers.controllers')
 
         $scope.activateUserFunc = function() {
             $scope.activateUser.error = "";
+            if($scope.activateUser.password.length < 8){
+                $scope.activateUser.error = "Password should be at least 8 characters."
+                return;
+            }
             if($scope.activateUser.password == $scope.activateUser.confirmPassword){
                 Users.activateUser(getUrlParameter('token'), $scope.activateUser.password).then(
                     function(result) {
-                        if($scope.activateUser.password.length < 5){
-                            $scope.activateUser.error = "Password should be at least 6 charchters."
-                            return;
-                        }else{
-                            $location.path("/system/oauth/authenticate");
-                        }
+                        window.location.pathname = "/restmachine/system/oauth/authenticate";
                     },
                     function(reason) {
                         $scope.activateUser.error = reason.data;

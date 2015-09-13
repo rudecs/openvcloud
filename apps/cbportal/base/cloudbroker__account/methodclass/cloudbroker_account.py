@@ -78,8 +78,8 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, location, **kwargs):
-        account = self.models.account.simpleSearch({'name': name})
-        if account:
+        accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
+        if accounts:
             raise exceptions.Conflict('Account name is already in use.')
 
         if not self._isValidUserName(username):
