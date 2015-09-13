@@ -502,7 +502,7 @@ class cloudapi_machines(BaseActor):
         node = provider.client.ex_clone(node, size, name)
         machine.clone = clone.id
         self.models.vmachine.set(machine)
-        self._updateMachineFromNode(clone, node, machine.stackId, size)
+        self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
         tags = str(machineId)
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id

@@ -290,9 +290,9 @@ class Machine(object):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
 
-        def addDisk(order, size, type):
+        def addDisk(order, size, type, name=None):
             disk = models.disk.new()
-            disk.name = 'Disk nr %s' % order
+            disk.name = name or 'Disk nr %s' % order
             disk.descr = 'Machine disk of type %s' % type
             disk.sizeMax = size
             disk.accountId = cloudspace.accountId
@@ -303,7 +303,7 @@ class Machine(object):
             machine.disks.append(diskid)
             return diskid
 
-        addDisk(-1, disksize, 'B')
+        addDisk(-1, disksize, 'B', 'Boot disk')
         diskinfo = []
         for order, datadisksize in enumerate(datadisks):
             diskid = addDisk(order, datadisksize, 'D')
@@ -342,8 +342,7 @@ class Machine(object):
         for order, diskid in enumerate(machine.disks):
             disk = models.disk.get(diskid)
             disk.stackId = stackId
-            if order != 0:
-                disk.referenceId = node.extra['volumes'][order - 1].id
+            disk.referenceId = node.extra['volumes'][order].id
             models.disk.set(disk)
 
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
@@ -371,8 +370,8 @@ class Machine(object):
         try:
             node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
         except:
-            machine.state = 'ERROR'
-            self.models.vmachine.set(machine)
+            machine.status = 'ERROR'
+            models.vmachine.set(machine)
             raise
         self.updateMachineFromNode(machine, node, stackId, psize)
         tags = str(machine.id)
