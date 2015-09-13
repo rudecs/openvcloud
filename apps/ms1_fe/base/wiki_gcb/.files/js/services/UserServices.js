@@ -47,6 +47,17 @@ angular.module('cloudscalers.services')
                                 return $q.reject(reason);
                         }
                  );
+            },
+            activateUser: function(token, newpassword){
+                return $http.get(cloudspaceconfig.apibaseurl + '/users/activate?token=' + encodeURIComponent(token) + '&password=' + encodeURIComponent(newpassword))
+                .then(
+                        function(result){
+                                return result.data;
+                        },
+                        function(reason){
+                                return $q.reject(reason);
+                        }
+                 );
             }
         };
     });
