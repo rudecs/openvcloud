@@ -77,10 +77,7 @@ h2. Account: ${name}
 
 h3. Details
 |*Account ID*|$$id|
-|*Real Name*|${displayname}|
 |*Location*|${DCLocation}|
-|*Company*|${company}|
-|*Company Site*|${companyurl}|
 |*Status*|${status}|
 |*Balance (current USD in account)*|${balance}|
 
@@ -90,7 +87,7 @@ h3. Users Access
     | [${user.id}|/CBGrid/user?id=${user.guid}] |${", ".join(user.emails)}|${user.acl}|
 {% endfor %}
 
-h3. Spaces
+h3. Cloud Spaces
 {{cbspaces: accountId:$$id}}
 
 h3. Credit
