@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('ActivateUserController', ['$scope', 'Users', '$location', '$window','$ErrorResponseAlert', function($scope, Users, $location, $window, $ErrorResponseAlert) {
+    .controller('ActivateUserController', ['$scope', 'Users', '$location', '$window',function($scope, Users, $location, $window) {
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = decodeURIComponent(window.location.search.substring(1)),
                 sURLVariables = sPageURL.split('&'),
@@ -16,6 +16,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.activateUserFunc = function() {
+            console.log("You bastard!");
             if($scope.activateUser.password == $scope.activateUser.confirmPassword){
                 $scope.activateUser.error = "";
                 Users.activateUser(getUrlParameter('token'), $scope.activateUser.password).then(
@@ -25,7 +26,7 @@ angular.module('cloudscalers.controllers')
                         $window.location = uri.toString();
                     },
                     function(reason) {
-                        $ErrorResponseAlert(reason);
+                        //$ErrorResponseAlert(reason);
                     }
                 )
             }else{
