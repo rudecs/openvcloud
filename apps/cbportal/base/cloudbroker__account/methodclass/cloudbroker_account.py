@@ -83,7 +83,7 @@ class cloudbroker_account(BaseActor):
             raise exceptions.Conflict('Account name is already in use.')
 
         if not self._isValidUserName(username):
-            raise exceptions.BadRequest('An account name may not exceed 20 characters and may only contain a-z and 0-9')
+            raise exceptions.BadRequest('A username may not exceed 20 characters and may only contain a-z and 0-9')
 
         created = False
         if j.core.portal.active.auth.userExists(username):
@@ -94,7 +94,7 @@ class cloudbroker_account(BaseActor):
             emailaddress = user.emails[0] if user.emails else None
         else:
             if not emailaddress:
-                raise exceptions.BadRequest('Email address required for new users.')
+                raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
             j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]
