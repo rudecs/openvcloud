@@ -9,6 +9,8 @@ h2. Cloud Space: ${name}
 
 {{toc: start=3}}
 
+{% if status != "DESTROYED" %}
+
 {{actions:
 
 - display: Rename
@@ -98,6 +100,8 @@ h2. Cloud Space: ${name}
 #  - reason
 
 }}
+
+{% endif %}
 
 {{createmachine: cloudspaceId:$$id}}
 {{movevfw: cloudspaceId:$$id}}
