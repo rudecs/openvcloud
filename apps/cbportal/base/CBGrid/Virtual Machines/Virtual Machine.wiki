@@ -1,7 +1,12 @@
 @usedefaults
 @@title Virtual Machine: ${name}
 {{vmachine: id:$$id}}
+
+{% if status != "DESTROYED" %}
+
 {{include:vmachine_actions}}
+
+{% endif %}
 
 h2. Virtual Machine: ${name}
 
