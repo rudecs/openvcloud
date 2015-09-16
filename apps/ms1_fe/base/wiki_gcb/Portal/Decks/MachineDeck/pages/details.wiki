@@ -264,14 +264,14 @@
             <tab id="Disks" heading="Disks" active="tabactive.newDisks">
                 <div id="Disks" class="tab-pane">
                   <ul class="nav nav-pills">
-                    <li class="active"><a data-toggle="pill" href="" ng-click="tabState = 'currentDisks'">Current disk</a></li>
-                    <li class=""><a data-toggle="pill" ng-click="tabState = 'createDisks'">Create disks</a></li>
+                    <li ng-class="{active: tabState === 'currentDisks'}"><a data-toggle="pill" href="" ng-click="changeTabState('currentDisks')">Current disk</a></li>
+                    <li ng-class="{active: tabState === 'createDisks'}"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
                   </ul>
                   <div class="marginTopXlarge machine-disks">
-                    <div ng-show="tabState == 'currentDisks'">
+                    <div ng-show="tabState === 'currentDisks'">
                       {{include:storage_list}}
                     </div>
-                    <div ng-show="tabState == 'createDisks'">
+                    <div ng-show="tabState === 'createDisks'">
                         {{include:create_disk}}
                     </div>
                   </div>
