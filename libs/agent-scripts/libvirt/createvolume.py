@@ -17,9 +17,9 @@ async = True
 def action(name, size):
     import sys
     import os
-    volumepath = '/mnt/vmstor/volume'
+    volumepath = '/mnt/vmstor/volumes'
     j.system.fs.createDir(volumepath)
-    filepath = j.system.fs.joinPaths(volumepath, '%s.raw' % name)
+    filepath = j.system.fs.joinPaths(volumepath, 'volume_%s.raw' % name)
     fd = os.open(filepath, os.O_RDWR | os.O_CREAT)
     os.ftruncate(fd, size)
     os.close(fd)

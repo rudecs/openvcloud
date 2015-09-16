@@ -25,6 +25,13 @@
                 <target dev='{{volume.dev}}' bus='virtio'/>
             </disk>
             {% endfor %}
+            {% if isoname %}
+            <disk type='file' device='cdrom'>
+                <driver name='qemu' type='raw'/>
+                <source file='{{poolpath}}/{{isoname}}'/>
+                <target dev='hdc' bus='ide'/>
+            </disk>
+            {% endif %}
             <controller type='usb' index='0'>
                 <alias name='usb0'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>

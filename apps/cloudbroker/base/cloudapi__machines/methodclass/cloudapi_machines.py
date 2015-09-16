@@ -468,8 +468,9 @@ class cloudapi_machines(BaseActor):
 
         """
         machine = self._getMachine(machineId)
-        if machine.clone or machine.cloneReference:
-            raise exceptions.MethodNotAllowed('This machine has already a clone or is a clone or has been cloned in the past')
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        if machine.cloneReference:
+            raise exceptions.MethodNotAllowed('Cannot clone a cloned machine.')
 
         if not self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
             raise exceptions.Conflict('Selected name already exists')
@@ -483,6 +484,7 @@ class cloudapi_machines(BaseActor):
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
 
+        diskmapping = []
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
             clonedisk = self.models.disk.new()
@@ -495,13 +497,13 @@ class cloudapi_machines(BaseActor):
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
+            diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
+                                'size': origdisk.sizeMax, 'type': clonedisk.type,
+                                'diskpath': origdisk.referenceId})
         clone.id = self.models.vmachine.set(clone)[0]
         provider, node = self._getProviderAndNode(machineId)
-        name = 'vm-%s' % clone.id
         size = self.cb.machine.getSize(provider, clone)
-        node = provider.client.ex_clone(node, size, name)
-        machine.clone = clone.id
-        self.models.vmachine.set(machine)
+        node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
         self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
         tags = str(machineId)
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
