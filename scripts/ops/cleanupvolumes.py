@@ -3,6 +3,21 @@ import os
 
 ccl = j.clients.osis.getNamespace('cloudbroker')
 
+print 'Updating disk references'
+for vm in ccl.vmachine.list():
+    vm = ccl.vmachine.get(vm)
+    for disk in vm.disks:
+        disk = ccl.disk.get(disk)
+        change = False
+        if vm.status == 'DESTROYED':
+            change = True
+            disk.status = 'DESTROYED'
+        if disk.type == 'B':
+            change = True
+            disk.referenceId = '/mnt/vmstor/vm-%s/base_image.raw' % vm.id
+        if change:
+            ccl.disk.set(disk)
+
 orphans = 0
 volumes = j.system.fs.walk('/mnt/vmstor', 1, '*.raw')
 for volume in volumes:
