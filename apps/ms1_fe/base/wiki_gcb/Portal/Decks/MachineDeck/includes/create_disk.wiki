@@ -1,5 +1,5 @@
 <div class="machineList container">
-    <form ng-submit="addDisk()">
+    <form ng-submit="createDisk()">
         <div class="row margin-bottom-large">
             <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Name:</span>
             <input type="text" ng-model="disk.name" class="form-control width-40 left margin-right-medium" required placeholder="Disk name..">
@@ -13,7 +13,6 @@
             <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Description:</span>
             <textarea rows="4" cols="50" class="form-control width-40 left margin-right-medium" ng-model="disk.description" placeholder="Description notes.."></textarea>
         </div>
-    </form>
     <div class="marginTopXlarge row">
         <div class="row">
             <div class="alert alert-warning span4 margin-bottom-large margin-left-large" ng-show="disk.size == '' || disk.size < 1 || disk.size > 2000">
@@ -21,9 +20,10 @@
                 <em class="block" ng-show="disk.size < 1 || disk.size > 2000">Size can only be between 1GB and up to 2000GB.</em>
             </div>
         </div>
-        <button class="btn btn-info mainButton" ng-click="createDisk()" ng-disabled="!isValidCreateDisk()">
+        <button class="btn btn-info mainButton" type="submit" ng-disabled="!isValidCreateDisk()">
             <i class="fa fa-hdd-o txt-20"></i>
             <span class="margin-left-small">Create disk</span>
         </button>
     </div>
+    </form>
 </div>

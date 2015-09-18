@@ -3,8 +3,14 @@ angular.module('cloudscalers.controllers')
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.tabState = "currentDisks";
+
+        $scope.changeTabState = function(state) {
+            $scope.tabState = state;
+        };
+
         function clearDisk(){
             $scope.disk = {name: "", size: "", description: ""};
+            $scope.changeTabState('currentDisks');
         }
         clearDisk();
 
@@ -22,7 +28,6 @@ angular.module('cloudscalers.controllers')
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
                 getMachine();
-                $scope.tabState = 'currentDisks';
                 clearDisk();
                 LoadingDialog.hide();
             },function(reason){

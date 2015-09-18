@@ -24,9 +24,7 @@ h2. User: ${id}
 
 |*Groups*|${", ".join(groups)} |
 |*Emails*|${", ".join(emails)} |
-|*Domain*|${domain} |
 |*Authkey*|${authkey} |
-|*Login to OVC*|[click me|${loginurl}]|
 |*Last Checked*|{{div: class=jstimestamp|data-ts=${lastcheck}}}{{div}}|
 |*Active*|${active}|
 

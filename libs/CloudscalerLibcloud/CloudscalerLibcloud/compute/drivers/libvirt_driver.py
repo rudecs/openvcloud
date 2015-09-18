@@ -246,9 +246,9 @@ class CSLibvirtNodeDriver():
                 volume = self.create_volume(disksize, diskname)
                 volume.dev = 'vd%c' % (ord('b') + idx)
                 volumes.append(volume)
-        return self._create_node(name, diskpath, size, metadata_iso, networkid, volumes)
+        return self._create_node(name, size, metadata_iso, networkid, volumes)
 
-    def _create_node(self, name, diskpath, size, metadata_iso=None, networkid=None, volumes=None):
+    def _create_node(self, name, size, metadata_iso=None, networkid=None, volumes=None):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -260,14 +260,7 @@ class CSLibvirtNodeDriver():
             return -1
 
         networkname = result['networkname']
-
-        if not metadata_iso:
-            machinexml = machinetemplate.render({'machinename': name, 'diskpath': diskpath, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
-                                             'network': networkname, 'poolpath': POOLPATH, volumes: volumes})
-        else:
-            machinetemplate = self.env.get_template("machine_iso.xml")
-            machinexml = machinetemplate.render({'machinename': name, 'diskpath': diskpath, 'isoname': metadata_iso, 'vxlan': vxlan,
+        machinexml = machinetemplate.render({'machinename': name, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'poolpath': POOLPATH, 'volumes': volumes})
 
@@ -276,7 +269,7 @@ class CSLibvirtNodeDriver():
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
-                self._execute_agent_job('deletevolume', queue='hypervisor', path=diskpath)
+                self._execute_agent_job('deletevolume', queue='hypervisor', volumes=volumes)
             return -1
 
         vmid = result['id']
@@ -409,14 +402,16 @@ class CSLibvirtNodeDriver():
         info['ipaddress'] = self._get_connection_ip()
         return info
 
-    def ex_clone(self, node, size, name):
-        snap = self.ex_create_snapshot(node, None, 'external')
-        snapname = snap['name']
-        snapxml = snap['xml']
-        diskname = self._get_snapshot_disk_file_names(snapxml)[0]
-        #diskname = os.path.basename(diskname)
-        clone_diskname = self._create_clone_disk(name, size, diskname)
-        return self._create_node(name, clone_diskname, size)
+    def ex_clone(self, node, size, vmid, networkid, diskmapping):
+        name = 'vm-%s' % vmid
+        pmachineip = self._get_connection_ip()
+        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, diskmapping=diskmapping, pmachineip=pmachineip)
+        volumes = []
+        for idx, path in enumerate(diskpaths):
+            volume = StorageVolume(id=path, name='N/A', size=-1, driver=self)
+            volume.dev = 'vd%c' % (ord('a') + idx)
+            volumes.append(volume)
+        return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_export(self, node, exportname, uncpath, emailaddress):
         machineid = node.id
