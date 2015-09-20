@@ -48,7 +48,7 @@ def action(machineid, templatename, imageid, createfrom):
         image['name'] = templatename
         image['id'] = diskguid
         image['UNCPath'] = imagename
-        image['type'] = 'custom templates'
+        image['type'] = 'Custom Templates'
         image['size'] = 0
         catimageclient.set(image)
 
