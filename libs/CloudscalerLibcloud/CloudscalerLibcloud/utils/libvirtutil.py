@@ -345,15 +345,13 @@ class LibvirtUtil(object):
         else:
             domain.undefine()
             try:
-                domain.blockRebase(clonefrom, destination_path, 0, libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY)
+                flags = libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY | libvirt.VIR_DOMAIN_BLOCK_REBASE_COPY_RAW
+                domain.blockRebase(clonefrom, destination_path, 0, flags)
                 rebasedone = False
                 while not rebasedone:
                     rebasedone = self._block_job_info(domain, clonefrom)
-                domain.blockJobAbort(clonefrom, 0)
-            except:
+            finally:
                 self.connection.defineXML(domainconfig)
-                raise
-            self.connection.defineXML(domainconfig)
         return destination_path
 
     def exportToTemplate(self, id, name, clonefrom):
