@@ -11,8 +11,6 @@ def main(j, args, params, tags, tasklet):
         params.result = (out, args.doc)
         return params
 
-    portalurl = j.apps.cloudbroker.iaas.cb.actors.cloudapi.locations.getUrl()
-
     obj = user.dump()
 
     args.doc.applyTemplate(obj)
