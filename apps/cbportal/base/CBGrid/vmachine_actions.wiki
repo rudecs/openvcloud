@@ -45,6 +45,8 @@
   action: /restmachine/cloudbroker/machine/pause
   hideon:
   - HALTED
+  - ERROR
+  - PAUSED
   hideonInput: ${status}
   data:
    machineId: $$id
@@ -55,6 +57,11 @@
 
 - display: Resume
   action: /restmachine/cloudbroker/machine/resume
+  hideon:
+  - HALTED
+  - RUNNING
+  - ERROR
+  hideonInput: ${status}
   data:
    machineId: $$id
    accountName: ${accountName}
