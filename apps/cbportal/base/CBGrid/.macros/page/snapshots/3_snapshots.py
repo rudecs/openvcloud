@@ -1,6 +1,5 @@
 
 def main(j, args, params, tags, tasklet):
-    import json
     page = args.page
     machineId = args.getTag('machineid')
     if not machineId:
@@ -17,7 +16,7 @@ def main(j, args, params, tags, tasklet):
             epoch = j.base.time.epoch2HRDateTime(snapshot['epoch']) if not snapshot['epoch']==0 else 'N/A'
             itemdata = [j.tools.text.toStr(snapshot['name']), epoch]
             aaData.append(itemdata)
-        return json.dumps(aaData)
+        return aaData
 
     snapshots = j.apps.cloudbroker.machine.listSnapshots(machineId)
     if not isinstance(snapshots, list):
