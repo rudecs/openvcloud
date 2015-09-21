@@ -1,9 +1,5 @@
 from JumpScale import j
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
-import time
-import string
-from random import choice
-from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 import ujson
@@ -18,10 +14,6 @@ class cloudbroker_machine(BaseActor):
         self.machines_actor = self.cb.actors.cloudapi.machines
         self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
         self.acl = j.clients.agentcontroller.get()
-        # try:
-        #     self.whmcs = j.clients.whmcs.get()
-        # except:
-        #     self.whmcs = j.clients.whmcs.getDummy()
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -80,84 +72,49 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
-        subject = 'Starting machine: %s' % vmachine.name
-#        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.start(machineId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
-        subject = 'Stopping machine: %s' % vmachine.name
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.stop(machineId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def pause(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
-        subject = 'Pausing machine: %s' % vmachine.name
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.pause(machineId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resume(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
-        subject = 'Resuming machine: %s' % vmachine.name
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.resume(machineId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nReason: %s' % (accountName, spaceName, vmachine.name, reason)
-        subject = 'Rebooting machine: %s' % vmachine.name
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.reboot(machineId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
-            accountName, spaceName, vmachine.name, snapshotName, reason)
-        subject = 'Snapshotting machine: %s' % vmachine.name
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.snapshot(machineId, snapshotName)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
-            accountName, spaceName, vmachine.name, snapshotName, reason)
-        subject = 'Rolling back snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.rollbackSnapshot(machineId, snapshotName)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nSnapshot name: %s\nReason: %s' % (
-            accountName, spaceName, vmachine.name, snapshotName, reason)
-        subject = 'Deleting snapshot: %s of machine: %s' % (snapshotName, vmachine.name)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.machines_actor.deleteSnapshot(machineId, snapshotName)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -424,67 +381,33 @@ class cloudbroker_machine(BaseActor):
         machineId = int(machineId)
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nPort forwarding: %s -> %s:%s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, localPort, cloudspace.publicipaddress, destPort, reason)
-        subject = 'Creating portforwarding rule for machine %s: %s -> %s:%s' % (
-            vmachine.name, localPort, cloudspace.publicipaddress, destPort)
-#        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.create(
             cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deletePortForward(self, machineId, spaceName, ruleId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting Portforward ID: %s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, ruleId, reason)
-        subject = 'Deleting portforwarding rule ID: %s for machine %s' % (ruleId, vmachine.name)
-#        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.portforwarding_actor.delete(cloudspace.id, ruleId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def addDisk(self, machineId, spaceName, diskName, description, reason, size=10, type='D', **kwargs):
-        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nAdding disk: %s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, diskName, reason)
-        subject = 'Adding disk: %s for machine %s' % (diskName, vmachine.name)
-#        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self._validateMachineRequest(machineId, spaceName=spaceName)
         self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteDisk(self, machineId, spaceName, diskId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nDeleting disk: %s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, diskId, reason)
-        subject = 'Deleting disk: %s for machine %s' % (diskId, vmachine.name)
-#        ticketId = self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self._validateMachineRequest(machineId, spaceName=spaceName)
         self.machines_actor.delDisk(machineId, diskId)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def createTemplate(self, machineId, spaceName, templateName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nCreating template: %s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, templateName, reason)
-        subject = 'Creating template: %s for machine %s' % (templateName, vmachine.name)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
+        self._validateMachineRequest(machineId, spaceName=spaceName)
         self.machines_actor.createTemplate(machineId, templateName, None)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
