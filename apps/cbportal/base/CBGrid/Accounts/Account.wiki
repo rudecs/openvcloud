@@ -94,6 +94,3 @@ h3. Credit
 
 h4. Transactions
 {{transactions: accountId:$$id}}
-
-h4. Balance
-{{balances: accountId:$$id}}
