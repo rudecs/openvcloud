@@ -1,7 +1,9 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
+import netaddr
 
 
 class cloudapi_portforwarding(BaseActor):
@@ -36,28 +38,28 @@ class cloudapi_portforwarding(BaseActor):
         vmid = int(vmid)
         cloudspaceid = int(cloudspaceid)
         cloudspace = self.models.cloudspace.get(cloudspaceid)
-        ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
         if len(fw) == 0:
-            ctx.start_response('404 Not Found', [])
-            return 'Incorrect cloudspace or there is no corresponding gateway'
+            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
         grid_id = fw[0]['gid']
+
+        try:
+            publicIp = str(netaddr.IPNetwork(publicIp).ip)
+        except netaddr.AddrFormatError:
+            raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
         machine = j.apps.cloudapi.machines.get(vmid)
         localIp = self._getLocalIp(machine)
         if localIp is None:
-            ctx.start_response('404 Not Found', [])
-            return 'No correct ipaddress found for this machine'
+            raise exceptions.NotFound('No correct ipaddress found for this machine')
 
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
-            ctx.start_response('403 Forbidden', [])
-            return "Forward to %s with port %s already exists" % (publicIp, publicPort)
+            raise exceptions.Conflict("Forward to %s with port %s already exists" % (publicIp, publicPort))
         try:
             result = self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
         except:
-            ctx.start_response('503 Service Unavailable', [])
-            return "Forward to %s with port %s failed to create." % (publicIp, publicPort)
+            raise exceptions.ServiceUnavailable("Forward to %s with port %s failed to create." % (publicIp, publicPort))
         return result
 
 
