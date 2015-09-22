@@ -145,13 +145,7 @@
   - reason
 
 - display: Delete Portforwarding
-  action: /restmachine/cloudbroker/machine/deletePortForward
-  data:
-   machineId: $$id
-   spaceName: ${spacename}
-  input:
-  - ruleId
-  - reason
+  action: "#deleteportforwarding"
 
 #- display: Add Disk
 #  action: /restmachine/cloudbroker/machine/addDisk
@@ -231,4 +225,5 @@
 }}
 
 {{movemachine: machineId:$$id accountName:${accountName}}}
+{{deleteportforwarding: machineId:$$id}}}
 
