@@ -4,11 +4,19 @@
     </div>
     <h1 ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">Defense Shield</h1>
     <p ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">The Defense Shield is your personal firewall that handles all incoming and outgoing traffic for your Cloud Space, your routing and firewall settings.</p>
- 	<div id="defense-shield" ng-controller="NetworkController">
+<style>
+.modal
+{
+	width: 100%;
+	height: 100%;
+	margin: -25% 0 0 -50%;
+}
+</style>
+ 	<div ng-controller="NetworkController">
  		<div>
  			<button class="btn" ng-click="showDefenseShield()" ng-disabled="currentSpace.status != 'DEPLOYED'">Advanced Shield configuration</button>
  		</div>
-		<script type="text/ng-template" id="routerosDialog.html" class="routeros-dialog">
+		<script type="text/ng-template" id="routerosDialog.html">
                 <div class="modal-header">
                     <button type="submit" class="btn btn-primary ok" ng-click="cancel()">Close</button>
                 </div>
