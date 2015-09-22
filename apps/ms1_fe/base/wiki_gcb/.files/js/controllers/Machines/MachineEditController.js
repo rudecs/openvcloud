@@ -211,7 +211,7 @@ angular.module('cloudscalers.controllers')
                 if (machine){
                     machine.status = 'DESTROYED';
                 }
-                $scope.machines.splice( _.where($scope.machines, {id: $scope.machine.id}) , 1);
+                $scope.machines.splice($scope.machines.indexOf(machine) , 1);
                 $location.path("/list");
             });
         };
