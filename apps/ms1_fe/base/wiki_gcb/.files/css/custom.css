@@ -497,7 +497,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 /* end of reset password page */
 
 /* Defense shield */
-#defense-shield #routeros-dialog{
+#defense-shield .routeros-dialog{
 	width: 100%;
 	height: 100%;
 	margin: -25% 0 0 -50%;
