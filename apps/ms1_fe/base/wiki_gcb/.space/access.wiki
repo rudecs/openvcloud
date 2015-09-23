@@ -33,7 +33,7 @@
 
 {{html:
 
-<div class="main topbg" >
+<div ng-app="cloudscalers" class="main topbg" >
 
 	<div class="main-inner">
 
