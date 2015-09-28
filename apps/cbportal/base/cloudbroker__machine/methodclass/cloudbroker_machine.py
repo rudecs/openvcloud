@@ -11,14 +11,13 @@ class cloudbroker_machine(BaseActor):
         super(cloudbroker_machine, self).__init__()
         self.libvirtcl = j.clients.osis.getNamespace('libvirt')
         self.vfwcl = j.clients.osis.getNamespace('vfw')
-        self.machines_actor = self.cb.actors.cloudapi.machines
-        self.portforwarding_actor = self.cb.actors.cloudapi.portforwarding
+        self.actors = self.cb.actors.cloudapi
         self.acl = j.clients.agentcontroller.get()
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
-        return self.machines_actor.create(cloudspaceId, name, description, sizeId, imageId, disksize)
+        return self.actors.machines.create(cloudspaceId, name, description, sizeId, imageId, disksize)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -65,62 +64,62 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.delete(vmachine.id)
+        self.actors.machines.delete(vmachine.id)
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def start(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.start(machineId)
+        self.actors.machines.start(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def stop(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.stop(machineId)
+        self.actors.machines.stop(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def pause(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.pause(machineId)
+        self.actors.machines.pause(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resume(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.resume(machineId)
+        self.actors.machines.resume(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.reboot(machineId)
+        self.actors.machines.reboot(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.snapshot(machineId, snapshotName)
+        self.actors.machines.snapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.rollbackSnapshot(machineId, snapshotName)
+        self.actors.machines.rollbackSnapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.deleteSnapshot(machineId, snapshotName)
+        vmachine = self._validateMachineRequest(machineId, accountName)
+        self.actors.machines.deleteSnapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
         self._validateMachineRequest(machineId, accountName, spaceName)
-        self.machines_actor.clone(machineId, cloneName)
+        self.actors.machines.clone(machineId, cloneName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -353,13 +352,13 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def listSnapshots(self, machineId, **kwargs):
         self._validateMachineRequest(machineId)
-        return self.machines_actor.listSnapshots(machineId)
+        return self.actors.machines.listSnapshots(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def getHistory(self, machineId, **kwargs):
         self._validateMachineRequest(machineId)
-        return self.machines_actor.getHistory(machineId)
+        return self.actors.machines.getHistory(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     def listPortForwards(self, machineId, **kwargs):
@@ -370,8 +369,9 @@ class cloudbroker_machine(BaseActor):
         machineips = [nic.ipAddress for nic in vmachine.nics if not nic.ipAddress == 'Undefined']
         if self.vfwcl.virtualfirewall.exists(vfwkey):
             vfw = self.vfwcl.virtualfirewall.get(vfwkey).dump()
-            for forward in vfw['tcpForwardRules']:
+            for idx, forward in enumerate(vfw['tcpForwardRules']):
                 if forward['toAddr'] in machineips:
+                    forward['id'] = idx
                     results.append(forward)
         return results
 
@@ -381,33 +381,33 @@ class cloudbroker_machine(BaseActor):
         machineId = int(machineId)
         vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.portforwarding_actor.create(
+        self.actors.portforwarding.create(
             cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deletePortForward(self, machineId, ruleId, reason, **kwargs):
+    def deletePortForward(self, machineId, ruleId, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.portforwarding_actor.delete(cloudspace.id, ruleId)
+        self.actors.portforwarding.delete(cloudspace.id, ruleId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def addDisk(self, machineId, spaceName, diskName, description, reason, size=10, type='D', **kwargs):
-        self._validateMachineRequest(machineId, spaceName=spaceName)
-        self.machines_actor.addDisk(machineId, diskName, description, size=size, type=type)
+    def addDisk(self, machineId, diskName, description, size=10, **kwargs):
+        self._validateMachineRequest(machineId)
+        self.actors.machines.addDisk(machineId, diskName, description, size=size, type='D')
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteDisk(self, machineId, spaceName, diskId, reason, **kwargs):
-        self._validateMachineRequest(machineId, spaceName=spaceName)
-        self.machines_actor.delDisk(machineId, diskId)
+    def deleteDisk(self, machineId, diskId, **kwargs):
+        self._validateMachineRequest(machineId)
+        return self.actors.disks.delete(diskId=diskId, detach=True)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def createTemplate(self, machineId, spaceName, templateName, reason, **kwargs):
         self._validateMachineRequest(machineId, spaceName=spaceName)
-        self.machines_actor.createTemplate(machineId, templateName, None)
+        self.actors.machines.createTemplate(machineId, templateName, None)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -419,5 +419,5 @@ class cloudbroker_machine(BaseActor):
             account.name, spaceName, vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
-        self.machines_actor.update(machineId, description=description)
+        self.actors.machines.update(machineId, description=description)
 #        self.whmcs.tickets.close_ticket(ticketId)

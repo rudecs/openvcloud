@@ -7,6 +7,7 @@ except Exception:
     import json
 
 def main(j, args, params, tags, tasklet):
+    import gevent
     id = args.getTag('id')
     if not id:
         out = 'Missing VMachine ID param "id"'
@@ -101,6 +102,19 @@ def main(j, args, params, tags, tasklet):
     data['spacename'] = space['name']
     data['stackrefid'] = stack['referenceId'] or 'N/A'
     data['hypervisortype'] = stack['type']
+
+    timeout = gevent.Timeout(5)
+    timeout.start()
+    try:
+        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
+    except:
+        data['snapshots'] = []
+    finally:
+        timeout.cancel()
+    try:
+        data['portforwards'] = j.apps.cloudbroker.machine.listPortForwards(id)
+    except:
+        data['portforwards'] = []
 
     for k, v in stats.iteritems():
         if k == 'epoch':

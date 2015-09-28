@@ -23,30 +23,45 @@ h2. Virtual Machine: ${name}
 |*Status*| ${status}|
 |*Host Name*| ${hostName}|
 |*Hypervisor Type*| ${hypervisortype}|
+|*Status check*|${stats_state}|
+|*Ping*|${stats_ping}|
+|*HardDrive Test*|${stats_hdtest}|
+|*Last Checked*|${stats_epoch}|
 
 h3. NICs
 ${nics}
 
 h3. Disks
-||Name||Size||Backend Size||Type||Path||
+{{action id:'action-AddDisk' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Disk'}}
+||Name||Size||Backend Size||Type||Path||Delete||
 {%for disk in disks -%}
-|${disk.name}|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}|
+|${disk.name}|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}| {% if disk.type == 'Data' %} {{action deleterow:true id:'action-DeleteDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-remove'}} {% endif %}|
+{% else -%}
+| | | | | | |
 {% endfor %}
 
-h3. Virtual Machine Status Details
-|*Status*|${stats_state}|
-|*Ping*|${stats_ping}|
-|*HardDrive Test*|${stats_hdtest}|
-|*Last Checked*|${stats_epoch}|
+h3. Snapshots
+{{action id:'action-Snapshot' class:'glyphicon glyphicon-camera margin-bottom-medium margin-left-medium' label:'Create Snapshot'}}
+
+||Name||Time||Actions||
+{% for snapshot in snapshots -%}
+|${snapshot.name}|{{ts:${snapshot.epoch}}}|{{action: id:'action-RollbackSnapshot' class:'glyphicon glyphicon-repeat' data-snapshotName:'${snapshot.name}'}}{{action: id:'action-DeleteSnapshot' deleterow:true class:'glyphicon glyphicon-remove' data-snapshotName:'${snapshot.name}'}}|
+{% else -%}
+| | | |
+{% endfor %}
+
+h3. Port Forwardings
+{{action id:'action-CreatePortforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Portforward'}}
+||From||To||Protolcol||Delete||
+{% for portforward in portforwards -%}
+|${portforward.fromAddr}:${portforward.fromPort}|${portforward.toAddr}:${portforward.toPort}|${portforward.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-ruleId:'${portforward.id}'}}|
+{% else -%}
+| | | | |
+{% endfor %}
 
 h3. Machine Exports
 {{vmexports machineid:$$id}}
 
-h3. Machine Snapshots
-{{snapshots machineid:$$id}} 
-
-h3. Machine History
+h3. History
 {{machinehistory machineid:$$id}}
 
-h3. Machine PortForwarding Rules
-{{machinePortForwarding machineid:$$id}}
