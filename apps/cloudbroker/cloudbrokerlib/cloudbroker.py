@@ -270,7 +270,7 @@ class Machine(object):
             raise exceptions.Conflict('Not enough credit for this machine to run for %i days' % minimum_days_of_credit_required)
 
     def _assertName(self, cloudspaceId, name, **kwargs):
-        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$ne': 'DESTROYED', '$ne': 'ERROR'}})[1:]
+        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
         return False if results else True
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
