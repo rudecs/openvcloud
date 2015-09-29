@@ -6,7 +6,7 @@
         </div>
         <div class="row margin-bottom-large">
             <span class="left margin-right-medium" style="padding-top: 7px; min-width: 80px;">Size:</span>
-            <input type="number" ng-model="disk.size" class="form-control width-40 left margin-right-medium" ng-pattern="/^[0-9]{1,9}$/" required placeholder="Size in Gigabytes..">
+            <input type="number" min="1" max="2000" ng-model="disk.size" class="form-control width-40 left margin-right-medium" ng-pattern="/^[0-9]{1,9}$/" required placeholder="Size in Gigabytes..">
             <span style="padding-top: 6px; display: block;">GB</span>
         </div>
         <div class="row margin-bottom-large">
