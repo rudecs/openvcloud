@@ -96,6 +96,7 @@ def main(j, args, params, tags, tasklet):
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
     if hasattr(obj, 'deletionTime'):
         data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
+    data['referenceId'] = obj.referenceId
     data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
     data['image'] = '[%s|image?id=%s]' % (image['name'], imageid) if imageid else image['name']
     data['stackname'] = stack['name']
