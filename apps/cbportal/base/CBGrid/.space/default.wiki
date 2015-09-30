@@ -17,11 +17,7 @@ Cloud Broker Portal:/cbgrid
 @block
 @row
 
-@col 2 naviation
-{{navigation}}
-@divend
-
-@col 10 content
+@col 12 content
 {{breadcrumbs}}
 {content}
 
@@ -36,5 +32,3 @@ td {
     text-overflow: ellipsis;
     white-space: nowrap;}
 }}
-
-
