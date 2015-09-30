@@ -80,33 +80,43 @@
 
 - display: Snapshot
   action: /restmachine/cloudbroker/machine/snapshot
+  hide: true
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
   input:
+  - name: snapshotName
+    label: Name
+    type: text
   - reason
-  - snapshotName
 
 - display: Rollback Snapshot
   action: /restmachine/cloudbroker/machine/rollbackSnapshot
+  hide: true
+  reload: false
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
   input:
-  - reason
-  - snapshotName
+  - name: reason
+    label: Reason
+    type: text
+
 
 - display: Delete Snapshot
   action: /restmachine/cloudbroker/machine/deleteSnapshot
+  hide: true
+  reload: false
+  input:
+  - name: reason
+    label: Reason
+    type: text
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
-  input:
-  - reason
-  - snapshotName
 
 - display: Clone
   action: /restmachine/cloudbroker/machine/clone
@@ -128,6 +138,7 @@
 
 - display: Create Portforwarding
   action: /restmachine/cloudbroker/machine/createPortForward
+  hide: true
   data:
    machineId: $$id
    spaceName: ${spacename}
@@ -144,29 +155,38 @@
        value: udp
   - reason
 
-- display: Delete Portforwarding
-  action: "#deleteportforwarding"
 
-#- display: Add Disk
-#  action: /restmachine/cloudbroker/machine/addDisk
-#  data:
-#   machineId: $$id
-#   spaceName: ${spacename}
-#  input:
-#  - diskName
-#  - description
-#  - size
-#  - type
-#  - reason
-#
-#- display: Delete Disk
-#  action: /restmachine/cloudbroker/machine/deleteDisk
-#  data:
-#   machineId: $$id
-#   spaceName: ${spacename}
-#  input:
-#  - diskId
-#  - reason
+- display: Delete Portforwarding
+  action: /restmachine/cloudbroker/machine/deletePortForward
+  hide: true
+  reload: false
+  data:
+   machineId: $$id
+
+- display: Add Disk
+  action: /restmachine/cloudbroker/machine/addDisk
+  hide: true
+  data:
+   machineId: $$id
+   spaceName: ${spacename}
+  input:
+  - name: diskName
+    label: Name
+    type: text
+  - name: description
+    type: text
+    label: Description
+  - name: size
+    label: Size
+    type: number
+
+- display: Delete Disk
+  action: /restmachine/cloudbroker/machine/deleteDisk
+  reload: false
+  hide: true
+  data:
+   machineId: $$id
+   spaceName: ${spacename}
 
 - display: Create Template
   action: /restmachine/cloudbroker/machine/createTemplate
@@ -225,5 +245,4 @@
 }}
 
 {{movemachine: machineId:$$id accountName:${accountName}}}
-{{deleteportforwarding: machineId:$$id}}}
 

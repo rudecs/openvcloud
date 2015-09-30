@@ -238,13 +238,13 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                         </div>
 
                         <div class="span2 txt-verdana">
-                            <h4 class="txt-15 txt-normal margin-bottom-none">login</h4>
+                            <h4 class="txt-15 txt-normal margin-bottom-none">Initial Login</h4>
                             <p>
                                 {[machine.accounts[0].login]}
                             </p>
                         </div>
                         <div class="span2 txt-verdana">
-                            <h4 class="txt-15 txt-normal margin-bottom-none">password</h4>
+                            <h4 class="txt-15 txt-normal margin-bottom-none">Initial Password</h4>
                             <p>
                                 {[machine.accounts[0].password]}
                             </p>
