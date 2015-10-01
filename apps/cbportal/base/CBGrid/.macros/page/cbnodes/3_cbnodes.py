@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
         stackids = list(set(cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks))
         stacks = cbclient.stack.search({'id': {'$in': stackids}})[1:]
         nodeids = [ int(stack['referenceId']) for stack in stacks]
-        filters['id'] = nodeids
+        filters['id'] = {'$in': nodeids}
 
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
