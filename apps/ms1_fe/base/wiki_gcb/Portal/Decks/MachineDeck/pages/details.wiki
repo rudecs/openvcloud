@@ -314,6 +314,9 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                             <div class="modal-body">
                                                 <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
                                                 Are you sure you want to rollback snapshot?
+                                                <div class="alert alert-warning margin-top-medium" role="alert">
+                                                Snapshots newer then current snapshot will be removed.
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn ok" ng-click="ok()">Ok</button>
