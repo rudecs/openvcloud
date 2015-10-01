@@ -17,6 +17,7 @@ h2. Virtual Machine: ${name}
 |*Account*| [${accountName}|account?id=${accountId}]|
 |*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
 |*Created at*| ${createdat}|
+|*Initial Credentials*| {{html: <span class="margin-right-xlarge"><strong>Login:</strong> ${accounts[0].login}</span> <strong>Password:</strong> ${accounts[0].password}}}|
 |*Deleted at*| ${deletedat}|
 |*Size*| ${size}|
 |*Image*| ${image}|
@@ -27,6 +28,7 @@ h2. Virtual Machine: ${name}
 |*Ping*|${stats_ping}|
 |*HardDrive Test*|${stats_hdtest}|
 |*Last Checked*|${stats_epoch}|
+
 
 h3. NICs
 ${nics}

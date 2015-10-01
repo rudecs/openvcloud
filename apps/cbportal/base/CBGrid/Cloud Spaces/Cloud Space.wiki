@@ -111,6 +111,7 @@ h3. Details
 |*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|${networkid}|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
+|*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck?cloudspaceId=${id}] |
 |*Status*|${status}|
 |*Location*|${location}|
 |*Description*|${descr}|

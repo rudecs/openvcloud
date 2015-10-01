@@ -36,6 +36,7 @@ def main(j, args, params, tags, tasklet):
 
     data = {'stats_image': 'N/A', 'stats_parent_image': 'N/A', 'stats_disk_size': '-1',
             'stats_state': 'N/A', 'stats_ping': 'N/A', 'stats_hdtest': 'N/A', 'stats_epoch': 'N/A'}
+    data.update(obj.dump())
     try:
         size = cbosis.size.get(obj.sizeId).dump()
     except Exception:
@@ -96,7 +97,6 @@ def main(j, args, params, tags, tasklet):
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
     if hasattr(obj, 'deletionTime'):
         data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
-    data['referenceId'] = obj.referenceId
     data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
     data['image'] = '[%s|image?id=%s]' % (image['name'], imageid) if imageid else image['name']
     data['stackname'] = stack['name']
