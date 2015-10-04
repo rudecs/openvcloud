@@ -1,7 +1,7 @@
 
 angular.module('cloudscalers.controllers')
-    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert',
-      function($scope, Machine, Size, Image, $ErrorResponseAlert) {
+    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location',
+      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location) {
 
         $scope.$watch('currentspace.accountId',function(){
             if ($scope.currentSpace){
@@ -10,23 +10,34 @@ angular.module('cloudscalers.controllers')
         });
 
         $scope.updateMachineList = function(){
-            if ($scope.currentSpace){
-                $scope.machines = {};
-                $scope.machinesLoader = true;
-                Machine.list($scope.currentSpace.id).then(
-                    function(machines){
-                      $scope.machines = machines;
-                      $scope.machinesLoader = false;
-                    },
-                    function(reason){
-                        $ErrorResponseAlert(reason);
-                    }
-                );
+            var cloudspaceId;
+            $scope.machines = {};
+            $scope.machinesLoader = true;
+
+            if($location.search().cloudspace){
+              cloudspaceId = parseInt($location.search().cloudspace);
+              callMachinesListApi(cloudspaceId);
+            }else{
+              if ($scope.currentSpace){
+                callMachinesListApi($scope.currentSpace.id);
+              }
+            }
+
+            function callMachinesListApi(cloudspaceId) {
+              Machine.list($scope.currentSpace.id).then(
+                  function(machines){
+                    $scope.machines = machines;
+                    $scope.machinesLoader = false;
+                  },
+                  function(reason){
+                      $ErrorResponseAlert(reason);
+                  }
+              );
             }
         }
 
         $scope.updateMachineList();
-        
+
         $scope.$watch('currentSpace.id',function(){
             $scope.updateMachineList();
         });
@@ -36,7 +47,7 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.sizes = Size.list($scope.currentSpace.id);
-        
+
         $scope.packageDisks = "";
 
 
