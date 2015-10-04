@@ -27,7 +27,7 @@ class cloudbroker_account(BaseActor):
         self.cloudapi = self.cb.actors.cloudapi
 
     def _checkAccount(self, accountname):
-        account = self.models.account.simpleSearch({'name':accountname})
+        account = self.models.account.search({'name': accountname, 'status': {'$ne': 'DESTROYED'}})[1:]
         if not account:
             raise exceptions.NotFound('Account name not found')
         if len(account) > 1:
