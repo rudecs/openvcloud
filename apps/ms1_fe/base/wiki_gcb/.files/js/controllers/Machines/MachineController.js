@@ -1,7 +1,7 @@
 
 angular.module('cloudscalers.controllers')
-    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location',
-      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location) {
+    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location', '$alert',
+      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location, $alert) {
 
         $scope.$watch('currentspace.accountId',function(){
             if ($scope.currentSpace){
@@ -14,9 +14,23 @@ angular.module('cloudscalers.controllers')
             $scope.machines = {};
             $scope.machinesLoader = true;
 
-            if($location.search().cloudspaceid){
-              cloudspaceId = parseInt($location.search().cloudspaceid);
-              callMachinesListApi(cloudspaceId);
+            if($location.search().cloudspaceId){
+              cloudspaceId = parseInt($location.search().cloudspaceId);
+              $scope.$watch('cloudspaces',function(){
+                if($scope.cloudspaces){
+                  var navigatedSpace = _.findWhere($scope.cloudspaces, {id: parseInt($location.search().cloudspaceId)});
+                  if(navigatedSpace){
+                    $scope.setCurrentCloudspace(navigatedSpace);
+                    callMachinesListApi(cloudspaceId);
+                  }else{
+                    $alert("You don't have access to this CloudSpace.");
+                    delete $location.search().cloudspaceId;
+                    $scope.setCurrentCloudspace($scope.cloudspaces[0]);
+                    callMachinesListApi($scope.currentSpace.id);
+                    $location.path('/');
+                  }
+                }
+              });
             }else{
               if($scope.currentSpace){
                 callMachinesListApi($scope.currentSpace.id);
@@ -36,10 +50,10 @@ angular.module('cloudscalers.controllers')
             }
         }
 
-        $scope.updateMachineList();
-
         $scope.$watch('currentSpace.id',function(){
+          if($scope.currentSpace.id){
             $scope.updateMachineList();
+          }
         });
 
         $scope.machineIsManageable = function(machine){
