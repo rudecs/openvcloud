@@ -14,17 +14,17 @@ angular.module('cloudscalers.controllers')
             $scope.machines = {};
             $scope.machinesLoader = true;
 
-            if($location.search().cloudspace){
-              cloudspaceId = parseInt($location.search().cloudspace);
+            if($location.search().cloudspaceid){
+              cloudspaceId = parseInt($location.search().cloudspaceid);
               callMachinesListApi(cloudspaceId);
             }else{
-              if ($scope.currentSpace){
+              if($scope.currentSpace){
                 callMachinesListApi($scope.currentSpace.id);
               }
             }
 
             function callMachinesListApi(cloudspaceId) {
-              Machine.list($scope.currentSpace.id).then(
+              Machine.list(cloudspaceId).then(
                   function(machines){
                     $scope.machines = machines;
                     $scope.machinesLoader = false;
