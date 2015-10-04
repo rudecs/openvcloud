@@ -105,9 +105,11 @@ class CSLibvirtNodeDriver():
         job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name_, nid=id, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                raise RuntimeError('Could not find agent with nid:%s' %  id)
-            if job['result']:
-                raise RuntimeError("Could not execute %s for nid:%s, error was:%s"%(name_,id,job['result']))
+                raise RuntimeError('Could not find agent with nid:%s' % id)
+            elif job['state'] == 'TIMEOUT':
+                raise RuntimeError('Job failed to execute on time')
+            else:
+                raise RuntimeError("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
         if wait:
             return job['result']
         else:
