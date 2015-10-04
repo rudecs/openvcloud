@@ -14,7 +14,7 @@ class auth(object):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.type == 'U':
-                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U', canBeDeleted=True)
+                ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True)
                 result[ace.userGroupId] = ace_dict
         return result
 
@@ -23,13 +23,14 @@ class auth(object):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         for ace in cloudspace.acl:
             if ace.type == 'U':
-                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U', canBeDeleted=True)
+                ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True)
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
             if user_id in result:
                 result[user_id]['canBeDeleted'] = False
                 result[user_id]['right'].update(ace['right'])
+                result[user_id]['account_right'] = ace['account_right']
             else:
                 ace['canBeDeleted'] = False
                 result[user_id] = ace

@@ -49,7 +49,8 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspace = self.models.cloudspace.get(cloudspaceId)
             cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
             if userId in cloudspace_acl:
-                if set(accesstype).issubset(cloudspace_acl[userId]['right']):
+                useracl = cloudspace_acl[userId]
+                if 'account_right' in useracl and len(set(accesstype)) < len(useracl['account_right']):
                     # user already has same or higher access level
                     raise exceptions.PreconditionFailed('User already has a higher access level')
                 else:
@@ -58,6 +59,11 @@ class cloudapi_cloudspaces(BaseActor):
                         if ace.userGroupId == userId and ace.type == 'U':
                             ace.right = accesstype
                             break
+                    else:
+                        ace = cloudspace.new_acl()
+                        ace.userGroupId = userId
+                        ace.type = 'U'
+                        ace.right = accesstype
             else:
                 ace = cloudspace.new_acl()
                 ace.userGroupId = userId
