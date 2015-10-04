@@ -1,12 +1,8 @@
 @usedefault
+{{createaccount}}
 
 h2. Accounts
 
-{{actions:
-- display: Add Account
-  action: '#createaccount'
-}}
-
-{{createaccount}}
+{{action id:'createaccount' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Account'}}
 
 {{accounts}}
