@@ -72,7 +72,17 @@ cloudscalers.factory('$ErrorResponseAlert',function($alert){
             $alert("An unexpected error has occurred");
         }
         else{
-            $alert(reason.data);
+            var message = "";
+            try {
+                message = JSON.parse(reason.data);
+                if (typeof message !== 'string'){
+                    message = reason.data;
+                }
+            } catch (e) {
+                message = reason.data;
+                //data is not JSON
+            }
+            $alert(message);
         }
     }
 });
