@@ -449,6 +449,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -464,6 +465,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -479,6 +481,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -493,6 +496,7 @@ angular.module('cloudscalers.controllers')
              Machine.stop($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -506,6 +510,7 @@ angular.module('cloudscalers.controllers')
             Machine.pause($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -519,6 +524,7 @@ angular.module('cloudscalers.controllers')
             Machine.resume($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
