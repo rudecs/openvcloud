@@ -15,12 +15,21 @@ angular.module('cloudscalers.controllers')
                 $scope.credit = "Unavailable";
             }
         );
+
+    }
+
+    $scope.$watch('currentAccount', function () {
+      if($scope.currentAccount){
         Account.getCreditHistory($scope.currentAccount).then(
             function(result){
                 $scope.transactions = result;
+            },
+            function(reason) {
+                $ErrorResponseAlert(reason);
             }
         );
-    }
+      }
+    });
 
     $scope.refreshCredit();
 
