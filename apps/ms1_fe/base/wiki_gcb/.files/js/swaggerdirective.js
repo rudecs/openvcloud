@@ -8,7 +8,7 @@ angular.module('cloudscalers')
 			
 	        	var loadAPI = function(api_key){
 	        		window.swaggerUi = new SwaggerUi({
-	                    discoveryUrl:"./.files/docsample/data/catalog",
+	                    url:"/restmachine/system/docgenerator/prepareCatalog?actors=&format=jsonraw&skip_private=true",
 	                    apiKey:api_key,
 	                    apiKeyName:"authkey",
 	                    dom_id:"swagger-ui-container",
