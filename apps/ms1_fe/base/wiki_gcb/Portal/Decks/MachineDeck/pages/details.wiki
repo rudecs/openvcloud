@@ -84,14 +84,14 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                 </a>
                             </li>
 
-                            <li ng-show="machine.status == 'PAUSED'">
+                            <li ng-show="machine.status == 'PAUSED' && machine.locked == false">
                                 <a ng-click="resume()">
                                     <i class="fa fa-play-circle"></i>
                                     Resume
                                 </a>
                             </li>
 
-                            <li ng-show="machine.status == 'RUNNING'">
+                            <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                                 <a ng-click="pause()">
                                     <i class=" fa fa-pause"></i>
                                     Pause
@@ -148,7 +148,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     #                            </a>
     #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess != 'Read'">
+                        <li ng-show="currentUserAccess != 'Read' && machine.locked == false">
                                 <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                     <i class="fa fa-copy"></i>
                                     Create Template
@@ -161,6 +161,10 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     <ul>
                                         Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
                                     </ul>
+                                    <div class="alert alert-warning margin-top-large">
+                                    Creating a template might take some time during this process your Virtual Machine will be locked.
+                                    Limited actions will be available.
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
@@ -176,7 +180,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 #                            </a>
 #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess == 'Admin'">
+                        <li ng-show="currentUserAccess == 'Admin' && machine.locked == false">
                                 <a ng-click="destroy()">
                                     <i class=" fa fa-times-circle-o"></i>
                                     Destroy
