@@ -48,8 +48,9 @@ class cloudapi_machines(BaseActor):
 
         """
         machine = self._getMachine(machineId)
-        node = self._getNode(machine.referenceId)
-        provider = self._getProvider(machine)
+        provider, node = self._getProviderAndNode(machineId)
+        if node.extra.get('locked', False):
+            raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
         actionname = "%s_node" % actiontype.lower()
         method = getattr(provider.client, actionname, None)
         if not method:
@@ -237,6 +238,9 @@ class cloudapi_machines(BaseActor):
         result
 
         """
+        provider, node = self._getProviderAndNode(machineId)
+        if node.extra.get('locked', False):
+            raise exceptions.Conflict("Can not delete a locked Machine")
         vmachinemodel = self._getMachine(machineId)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
@@ -291,7 +295,7 @@ class cloudapi_machines(BaseActor):
                 except:
                     pass # VFW not deployed yet
 
-        realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name)
+        realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name) or state
         if realstatus != machine.status:
             if realstatus == 'DESTROYED':
                 realstatus = 'HALTED'
