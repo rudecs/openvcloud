@@ -105,9 +105,11 @@ class CSLibvirtNodeDriver():
         job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name_, nid=id, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                raise RuntimeError('Could not find agent with nid:%s' %  id)
-            if job['result']:
-                raise RuntimeError("Could not execute %s for nid:%s, error was:%s"%(name_,id,job['result']))
+                raise RuntimeError('Could not find agent with nid:%s' % id)
+            elif job['state'] == 'TIMEOUT':
+                raise RuntimeError('Job failed to execute on time')
+            else:
+                raise RuntimeError("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
         if wait:
             return job['result']
         else:
@@ -234,19 +236,21 @@ class CSLibvirtNodeDriver():
                 userdata = {}
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        bootdiskname = self._create_disk(name, size, image)
-        if not bootdiskname or bootdiskname == -1:
+        diskpath = self._create_disk(name, size, image)
+        if not diskpath or diskpath == -1:
             # not enough free capcity to create a disk on this node
             return -1
-        volumes = list()
+        volume = StorageVolume(id=diskpath, name='Bootdisk', size=size, driver=self)
+        volume.dev = 'vda'
+        volumes = [volume]
         if datadisks:
             for idx, (diskname, disksize) in enumerate(datadisks):
                 volume = self.create_volume(disksize, diskname)
                 volume.dev = 'vd%c' % (ord('b') + idx)
                 volumes.append(volume)
-        return self._create_node(name, bootdiskname, size, metadata_iso, networkid, volumes)
+        return self._create_node(name, size, metadata_iso, networkid, volumes)
 
-    def _create_node(self, name, diskname, size, metadata_iso=None, networkid=None, volumes=None):
+    def _create_node(self, name, size, metadata_iso=None, networkid=None, volumes=None):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -258,14 +262,7 @@ class CSLibvirtNodeDriver():
             return -1
 
         networkname = result['networkname']
-
-        if not metadata_iso:
-            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'vxlan': vxlan,
-                                             'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
-                                             'network': networkname, 'poolpath': POOLPATH, volumes: volumes})
-        else:
-            machinetemplate = self.env.get_template("machine_iso.xml")
-            machinexml = machinetemplate.render({'machinename': name, 'diskname': diskname, 'isoname': metadata_iso, 'vxlan': vxlan,
+        machinexml = machinetemplate.render({'machinename': name, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'poolpath': POOLPATH, 'volumes': volumes})
 
@@ -274,7 +271,7 @@ class CSLibvirtNodeDriver():
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
-                self._execute_agent_job('deletevolume', queue='hypervisor', path=os.path.join(POOLPATH, diskname))
+                self._execute_agent_job('deletevolume', queue='hypervisor', volumes=volumes)
             return -1
 
         vmid = result['id']
@@ -285,7 +282,6 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
-        domain = self._get_domain_for_node(node=node)
         return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
 
     def ex_get_node_details(self, node_id):
@@ -408,14 +404,16 @@ class CSLibvirtNodeDriver():
         info['ipaddress'] = self._get_connection_ip()
         return info
 
-    def ex_clone(self, node, size, name):
-        snap = self.ex_create_snapshot(node, None, 'external')
-        snapname = snap['name']
-        snapxml = snap['xml']
-        diskname = self._get_snapshot_disk_file_names(snapxml)[0]
-        #diskname = os.path.basename(diskname)
-        clone_diskname = self._create_clone_disk(name, size, diskname)
-        return self._create_node(name, clone_diskname, size)
+    def ex_clone(self, node, size, vmid, networkid, diskmapping):
+        name = 'vm-%s' % vmid
+        pmachineip = self._get_connection_ip()
+        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, diskmapping=diskmapping, pmachineip=pmachineip)
+        volumes = []
+        for idx, path in enumerate(diskpaths):
+            volume = StorageVolume(id=path, name='N/A', size=-1, driver=self)
+            volume.dev = 'vd%c' % (ord('a') + idx)
+            volumes.append(volume)
+        return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_export(self, node, exportname, uncpath, emailaddress):
         machineid = node.id

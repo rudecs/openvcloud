@@ -27,7 +27,7 @@ class cloudbroker_account(BaseActor):
         self.cloudapi = self.cb.actors.cloudapi
 
     def _checkAccount(self, accountname):
-        account = self.models.account.simpleSearch({'name':accountname})
+        account = self.models.account.search({'name': accountname, 'status': {'$ne': 'DESTROYED'}})[1:]
         if not account:
             raise exceptions.NotFound('Account name not found')
         if len(account) > 1:
@@ -78,12 +78,12 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, location, **kwargs):
-        account = self.models.account.simpleSearch({'name': name})
-        if account:
+        accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
+        if accounts:
             raise exceptions.Conflict('Account name is already in use.')
 
         if not self._isValidUserName(username):
-            raise exceptions.BadRequest('An account name may not exceed 20 characters and may only contain a-z and 0-9')
+            raise exceptions.BadRequest('A username may not exceed 20 characters and may only contain a-z and 0-9')
 
         created = False
         if j.core.portal.active.auth.userExists(username):
@@ -94,7 +94,7 @@ class cloudbroker_account(BaseActor):
             emailaddress = user.emails[0] if user.emails else None
         else:
             if not emailaddress:
-                raise exceptions.BadRequest('Email address required for new users.')
+                raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
             j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]

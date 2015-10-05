@@ -1,11 +1,5 @@
 @usedefault
 
-h2. Operations Portal
-
-_Welcome to our operations portal._
-
-{{html: <hr />}}
-
 h4. Dashboard
 @row clearfix
 

@@ -17,20 +17,39 @@ async = True
 def action(machineid, templatename, imageid, createfrom):
     import sys
     import os
+    import time
     sys.path.append('/opt/OpenvStorage')
     from ovs.lib.vdisk import VDiskController
     from ovs.dal.lists.vdisklist import VDiskList
     from ovs.dal.lists.vpoollist import VPoolList
+    from ovs.dal.hybrids.vdisk import VDisk
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     from CloudscalerLibcloud import imageutil
     connection = LibvirtUtil()
-    imagepath = connection.exportToTemplate(machineid, templatename, createfrom)
-    size = int(j.system.platform.qemu_img.info(imagepath, unit='')['virtual size'])
-    fd = os.open(imagepath, os.O_RDWR | os.O_CREAT)
-    os.ftruncate(fd, size)
-    os.close(fd)
+    filename = '%s_%s.raw' % (name, time.time())
+    # create disk in ovs model so we dont get double disks
+    vdisk = VDisk()
+    vdisk.devicename = 'templates/%s' % filename
+    vdisk.vpool = VPoolList.get_vpool_by_name('vmstor')
+    vdisk.size = 0
+    vdisk.save()
+
+    # clone disk
+    try:
+        imagepath = connection.exportToTemplate(machineid, templatename, createfrom, filename)
+        size = int(j.system.platform.qemu_img.info(imagepath, unit='')['virtual size'])
+        fd = os.open(imagepath, os.O_RDWR | os.O_CREAT)
+        os.ftruncate(fd, size)
+        os.close(fd)
+    except:
+        vdisk.delete()
+        raise
+
+    # set disks as template in ovs
     imagebasename = j.system.fs.getBaseName(imagepath)
     diskguid = imageutil.setAsTemplate(imagebasename).replace('-', '')
+
+    # update our model
     osiscl = j.clients.osis.getByInstance('main')
     imagemodel = j.clients.osis.getCategory(osiscl, 'cloudbroker', 'image')
     image = imagemodel.get(imageid)
@@ -48,10 +67,11 @@ def action(machineid, templatename, imageid, createfrom):
         image['name'] = templatename
         image['id'] = diskguid
         image['UNCPath'] = imagename
-        image['type'] = 'custom templates'
+        image['type'] = 'Custom Templates'
         image['size'] = 0
         catimageclient.set(image)
 
+    # register node if needed and update images on it
     nodekey = "%(gid)s_%(nid)s" % j.application.whoAmI._asdict()
     if not catresourceclient.exists(nodekey):
         rp = dict()

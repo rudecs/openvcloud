@@ -253,6 +253,6 @@ class cloudapi_users(BaseActor):
 
         # Invalidate the token.
         activation_token['creationTime'] = 0
-        self.models.resetpasswordtoken.set(activation_token)
+        self.models.resetpasswordtoken.deleteSearch({'id': validationtoken})
 
         return True

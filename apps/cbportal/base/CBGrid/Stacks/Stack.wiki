@@ -33,7 +33,7 @@ h3. Stack: ${name}
 
 * *ApiURL*: ${apiUrl}
 * *Description*: ${descr}
-* *ReferenceId*: [${gid}:${referenceId}|/grid/Node?id=${referenceId}&gid=${gid}]
+* *ReferenceId*: [${gid}:${referenceId}|/grid/Grid Node?id=${referenceId}&gid=${gid}]
 * *Status*: ${status}
 
 h3. Images:

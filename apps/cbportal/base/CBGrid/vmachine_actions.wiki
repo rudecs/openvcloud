@@ -45,6 +45,8 @@
   action: /restmachine/cloudbroker/machine/pause
   hideon:
   - HALTED
+  - ERROR
+  - PAUSED
   hideonInput: ${status}
   data:
    machineId: $$id
@@ -55,6 +57,11 @@
 
 - display: Resume
   action: /restmachine/cloudbroker/machine/resume
+  hideon:
+  - HALTED
+  - RUNNING
+  - ERROR
+  hideonInput: ${status}
   data:
    machineId: $$id
    accountName: ${accountName}
@@ -73,33 +80,43 @@
 
 - display: Snapshot
   action: /restmachine/cloudbroker/machine/snapshot
+  hide: true
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
   input:
+  - name: snapshotName
+    label: Name
+    type: text
   - reason
-  - snapshotName
 
 - display: Rollback Snapshot
   action: /restmachine/cloudbroker/machine/rollbackSnapshot
+  hide: true
+  reload: false
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
   input:
-  - reason
-  - snapshotName
+  - name: reason
+    label: Reason
+    type: text
+
 
 - display: Delete Snapshot
   action: /restmachine/cloudbroker/machine/deleteSnapshot
+  hide: true
+  reload: false
+  input:
+  - name: reason
+    label: Reason
+    type: text
   data:
    machineId: $$id
    accountName: ${accountName}
    spaceName: ${spacename}
-  input:
-  - reason
-  - snapshotName
 
 - display: Clone
   action: /restmachine/cloudbroker/machine/clone
@@ -121,6 +138,7 @@
 
 - display: Create Portforwarding
   action: /restmachine/cloudbroker/machine/createPortForward
+  hide: true
   data:
    machineId: $$id
    spaceName: ${spacename}
@@ -137,35 +155,38 @@
        value: udp
   - reason
 
+
 - display: Delete Portforwarding
   action: /restmachine/cloudbroker/machine/deletePortForward
+  hide: true
+  reload: false
+  data:
+   machineId: $$id
+
+- display: Add Disk
+  action: /restmachine/cloudbroker/machine/addDisk
+  hide: true
   data:
    machineId: $$id
    spaceName: ${spacename}
   input:
-  - ruleId
-  - reason
+  - name: diskName
+    label: Name
+    type: text
+  - name: description
+    type: text
+    label: Description
+  - name: size
+    label: Size
+    type: number
 
-#- display: Add Disk
-#  action: /restmachine/cloudbroker/machine/addDisk
-#  data:
-#   machineId: $$id
-#   spaceName: ${spacename}
-#  input:
-#  - diskName
-#  - description
-#  - size
-#  - type
-#  - reason
-#
-#- display: Delete Disk
-#  action: /restmachine/cloudbroker/machine/deleteDisk
-#  data:
-#   machineId: $$id
-#   spaceName: ${spacename}
-#  input:
-#  - diskId
-#  - reason
+- display: Delete Disk
+  action: /restmachine/cloudbroker/machine/deleteDisk
+  reload: false
+  hide: true
+  data:
+   machineId: $$id
+   spaceName: ${spacename}
 
 - display: Create Template
   action: /restmachine/cloudbroker/machine/createTemplate

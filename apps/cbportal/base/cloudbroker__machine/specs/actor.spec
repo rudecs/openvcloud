@@ -258,30 +258,23 @@
         Deletes a port forwarding rule for a machine
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:ruleId int,,Portforwarding rule id
-        var:reason str,,Reason
 
     method:addDisk
         """
         Adds a disk to a deployed machine
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:diskName str,,Name of the disk
         var:description str,,Description
         var:size int,,size in GByte default=10 @tags: optional
-        var:type str,,(B;D;T)  B=Boot;D=Data;T=Temp default=D @tags: optional
-        var:reason str,,Reason
 
     method:deleteDisk
         """
         Deletes a disk from a deployed machine
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:diskId int,, ID of disk
-        var:reason str,,Reason
 
     method:createTemplate
         """

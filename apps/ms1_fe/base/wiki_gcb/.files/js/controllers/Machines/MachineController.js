@@ -1,7 +1,7 @@
 
 angular.module('cloudscalers.controllers')
-    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert',
-      function($scope, Machine, Size, Image, $ErrorResponseAlert) {
+    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location', '$alert',
+      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location, $alert) {
 
         $scope.$watch('currentspace.accountId',function(){
             if ($scope.currentSpace){
@@ -10,33 +10,58 @@ angular.module('cloudscalers.controllers')
         });
 
         $scope.updateMachineList = function(){
-            if ($scope.currentSpace){
-                $scope.machines = {};
-                $scope.machinesLoader = true;
-                Machine.list($scope.currentSpace.id).then(
-                    function(machines){
-                      $scope.machines = machines;
-                      $scope.machinesLoader = false;
-                    },
-                    function(reason){
-                        $ErrorResponseAlert(reason);
-                    }
-                );
+            var cloudspaceId;
+            $scope.machines = {};
+            $scope.machinesLoader = true;
+
+            if($location.search().cloudspaceId){
+              cloudspaceId = parseInt($location.search().cloudspaceId);
+              $scope.$watch('cloudspaces',function(){
+                if($scope.cloudspaces){
+                  var navigatedSpace = _.findWhere($scope.cloudspaces, {id: parseInt($location.search().cloudspaceId)});
+                  if(navigatedSpace){
+                    $scope.setCurrentCloudspace(navigatedSpace);
+                    callMachinesListApi(cloudspaceId);
+                  }else{
+                    $alert("You don't have access to this CloudSpace.");
+                    delete $location.search().cloudspaceId;
+                    $scope.setCurrentCloudspace($scope.cloudspaces[0]);
+                    callMachinesListApi($scope.currentSpace.id);
+                    $location.path('/');
+                  }
+                }
+              });
+            }else{
+              if($scope.currentSpace){
+                callMachinesListApi($scope.currentSpace.id);
+              }
+            }
+
+            function callMachinesListApi(cloudspaceId) {
+              Machine.list(cloudspaceId).then(
+                  function(machines){
+                    $scope.machines = machines;
+                    $scope.machinesLoader = false;
+                  },
+                  function(reason){
+                      $ErrorResponseAlert(reason);
+                  }
+              );
             }
         }
 
-        $scope.updateMachineList();
-        
         $scope.$watch('currentSpace.id',function(){
+          if($scope.currentSpace.id){
             $scope.updateMachineList();
+          }
         });
 
         $scope.machineIsManageable = function(machine){
-            return machine.status != 'DESTROYED';
+            return machine.status && machine.status != 'DESTROYED' && machine.status != 'ERROR';
         }
 
         $scope.sizes = Size.list($scope.currentSpace.id);
-        
+
         $scope.packageDisks = "";
 
 

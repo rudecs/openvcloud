@@ -15,11 +15,9 @@ async = True
 queue = 'hypervisor'
 
 def action(networkid, publicip, publicgwip, publiccidr, password):
-    import JumpScale.lib.routeros
     import pexpect
     import netaddr
     import libvirt
-    import JumpScale.lib.ovsnetconfig
     import time
     import os
 
@@ -28,13 +26,15 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     BACKPLANE = 'vxbackend'
     netrange = hrd.get("instance.vfw.netrange.internal")
     defaultpasswd = hrd.get("instance.vfw.admin.passwd")
+    username = hrd.get("instance.vfw.admin.login")
+    newpassword = hrd.get("instance.vfw.admin.newpasswd")
     nc = j.system.ovsnetconfig
     con = libvirt.open()
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
-            'username': 'vscalers',
-            'password': defaultpasswd
+            'username': username,
+            'password': newpassword
             }
 
     networkidHex = '%04x' % int(networkid)
@@ -122,7 +122,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             run.sendline() #first enter to clear welcome message of kvm console
             print 'Waiting for Login'
             run.expect("Login:", timeout=60)
-            run.sendline("vscalers")
+            run.sendline(username)
             run.expect("Password:", timeout=2)
             run.sendline(defaultpasswd)
             print 'waiting for prompt'
@@ -142,7 +142,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         else:
             raise RuntimeError("Could not connect to router on %s"%internalip)
 
-        ro=j.clients.routeros.get(internalip,"vscalers",defaultpasswd)
+        ro=j.clients.routeros.get(internalip,username,defaultpasswd)
         try:
             ro.ipaddr_remove(DEFAULTGWIP)
             ro.resetMac("internal")
@@ -201,6 +201,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         ro.executeScript("/ip service set port=9021 numbers=[/ip service find name=ftp]")
         print "change port for ssh"
         ro.executeScript("/ip service set port=9022 numbers=[/ip service find name=ssh]")
+        print "change admin password"
+        try:
+            ro.executeScript('/user set %s password=%s' % (username, newpassword))
+        except:
+            pass
+
+        ro=j.clients.routeros.get(internalip,username,newpassword)
 
         print "reboot of router"
         cmd="/system reboot"
@@ -214,7 +221,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         timeout = 60
         while time.time() - start < timeout:
             try:
-                ro=j.clients.routeros.get(internalip,"vscalers",defaultpasswd)
+                ro=j.clients.routeros.get(internalip,username,newpassword)
                 if ro.ping(publicgwip):
                     print "Failed to ping %s waiting..." % publicgwip
                     break

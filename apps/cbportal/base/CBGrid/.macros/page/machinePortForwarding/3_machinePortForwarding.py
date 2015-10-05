@@ -1,6 +1,5 @@
 
 def main(j, args, params, tags, tasklet):
-    import json
     page = args.page
     machineId = args.getTag('machineid')
     if not machineId:
@@ -16,7 +15,7 @@ def main(j, args, params, tags, tasklet):
         for portforward in portforwards:
             itemdata = ['%s:%s' % (portforward['fromAddr'], portforward['fromPort']), '%s:%s' % (portforward['toAddr'], portforward['toPort']), portforward['protocol'].upper()]
             aaData.append(itemdata)
-        return json.dumps(aaData)
+        return aaData
 
     portforwards = j.apps.cloudbroker.machine.listPortForwards(machineId)
     if not isinstance(portforwards, list):

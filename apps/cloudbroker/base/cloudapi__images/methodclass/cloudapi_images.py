@@ -30,7 +30,14 @@ class cloudapi_images(BaseActor):
                     q['id'] = {'$in': list(imageids)}
 
         results = self.models.image.search(query)[1:]
-        return results
+
+        def imagesort(image_a, image_b):
+            def getName(image):
+                name = "%d %s %s" % (image['accountId'] or 0, image['type'], image['name'])
+                return name
+            return cmp(getName(image_a), getName(image_b))
+
+        return sorted(results, cmp=imagesort)
 
     @audit()
     def delete(self, imageid, **kwargs):

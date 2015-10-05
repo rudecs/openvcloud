@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     try:
         defenseinfo = actors.cloudspaces.getDefenseShield(cloudspaceId)
         defenseinfo['name'] = "autologin=%(user)s|%()s"
-        page.addHTML("""<a href="javascript:window.open('%(url)s', 'autologin=%(user)s%%7c%(password)s');javascript:void(0);">Defenseshield</a>""" % defenseinfo)
+        page.addMessage("""<a href="javascript:window.open('%(url)s', 'autologin=%(user)s%%7c%(password)s');javascript:void(0);">Open Defenseshield</a>""" % defenseinfo)
     except:
         page.addMessage("N/A")
     finally:

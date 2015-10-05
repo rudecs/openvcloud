@@ -27,7 +27,7 @@ class MapEnum(BaseEnum):
             setattr(cls, name, m)
 
     def __getitem__(self, item):
-        return getattr(sel, item)
+        return getattr(self, item)
 
     @classmethod
     def getByValue(cls, num, provider_name):

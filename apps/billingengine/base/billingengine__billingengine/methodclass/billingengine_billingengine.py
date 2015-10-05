@@ -236,7 +236,12 @@ class billingengine_billingengine(j.code.classGetBase()):
             balance += float(transaction['credit'])
             #TODO: put in processed (but only save after updating the balance)
 
-        newbalance = self.cloudbrokermodels.creditbalance.new()
+        query = {'$query': {'accountId': accountId}, '$orderby': [('time', -1)]}
+        creditbalances = self.cloudbrokermodels.creditbalance.search(query, size=1)[1:]
+        if creditbalances:
+            newbalance = self.cloudbrokermodels.creditbalance.get(creditbalances[0]['id'])
+        else:
+            newbalance = self.cloudbrokermodels.creditbalance.new()
         newbalance.accountId = accountId
         newbalance.time = int(time.time())
         newbalance.credit = balance

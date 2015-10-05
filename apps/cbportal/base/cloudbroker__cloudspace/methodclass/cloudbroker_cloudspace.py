@@ -22,7 +22,7 @@ class cloudbroker_cloudspace(BaseActor):
         Destroys a cloudspacec and its machines, vfws and routeros
         """
         cloudspaceId = int(cloudspaceId)
-        accounts = self.models.account.simpleSearch({'name':accountname})
+        accounts = self.models.account.search({'name':accountname, 'status': {'$ne': 'DESTROYED'}})[1:]
         if not accounts:
             raise exceptions.NotFound('Account name not found')
 

@@ -15,7 +15,8 @@ def setAsTemplate(imagepath):
     while not disk and start + 60 > time.time():
         time.sleep(2)
         disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % imagepath, pool)
-    VDiskController.set_as_template(disk.guid)
+    if disk.info['object_type'] != 'TEMPLATE':
+        VDiskController.set_as_template(disk.guid)
     return disk.guid
 
 def copyImageToOVS(imagepath):

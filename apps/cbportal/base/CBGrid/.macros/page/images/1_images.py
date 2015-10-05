@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
         stack = ccl.stack.get(stackid)
         images = ccl.image.search({'id': {'$in': stack.images}})[1:]
         imageids = [ image['referenceId'] for image in images ]
-        filters['id'] = imageids
+        filters['id'] = {'$in': imageids}
 
     fieldnames = ['Name', 'Type', 'Size', 'UNCPath']
     fieldvalues = ["<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>", 'type', '%(size)s GiB', 'UNCPath']

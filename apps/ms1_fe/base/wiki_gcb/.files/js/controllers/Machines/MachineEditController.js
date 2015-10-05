@@ -3,8 +3,14 @@ angular.module('cloudscalers.controllers')
                 ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
                 function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.tabState = "currentDisks";
+
+        $scope.changeTabState = function(state) {
+            $scope.tabState = state;
+        };
+
         function clearDisk(){
             $scope.disk = {name: "", size: "", description: ""};
+            $scope.changeTabState('currentDisks');
         }
         clearDisk();
 
@@ -22,7 +28,6 @@ angular.module('cloudscalers.controllers')
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
                 getMachine();
-                $scope.tabState = 'currentDisks';
                 clearDisk();
                 LoadingDialog.hide();
             },function(reason){
@@ -201,13 +206,20 @@ angular.module('cloudscalers.controllers')
             });
 
             modalInstance.result.then(function (result) {
-                Machine.delete($scope.machine.id);
-                var machine = _.find($scope.machines, function(machine){ return machine.id == $scope.machine.id;});
-                if (machine){
-                    machine.status = 'DESTROYED';
-                }
-                $scope.machines.splice( _.where($scope.machines, {id: $scope.machine.id}) , 1);
-                $location.path("/list");
+                LoadingDialog.show('Deleting machine');
+                Machine.delete($scope.machine.id).then(function(){
+                    var machine = _.find($scope.machines, function(machine){ return machine.id == $scope.machine.id;});
+                    if (machine){
+                        machine.status = 'DESTROYED';
+                    }
+                    $scope.machines.splice($scope.machines.indexOf(machine) , 1);
+                    $location.path("/list");
+                    LoadingDialog.hide();
+                }, function(reason) {
+                    LoadingDialog.hide();
+                    $ErrorResponseAlert(reason);
+                });
+
             });
         };
 
@@ -444,6 +456,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -459,6 +472,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -474,6 +488,7 @@ angular.module('cloudscalers.controllers')
                 function(result){
                     LoadingDialog.hide();
                     changeSelectedTab('console');
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -488,6 +503,7 @@ angular.module('cloudscalers.controllers')
              Machine.stop($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -501,6 +517,7 @@ angular.module('cloudscalers.controllers')
             Machine.pause($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();
@@ -514,6 +531,7 @@ angular.module('cloudscalers.controllers')
             Machine.resume($scope.machine).then(
                 function(result){
                     LoadingDialog.hide();
+                    $scope.updateMachineList();
                 },
                 function(reason){
                     LoadingDialog.hide();

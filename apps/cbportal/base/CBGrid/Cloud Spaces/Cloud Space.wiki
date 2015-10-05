@@ -9,6 +9,8 @@ h2. Cloud Space: ${name}
 
 {{toc: start=3}}
 
+{% if status != "DESTROYED" %}
+
 {{actions:
 
 - display: Rename
@@ -99,6 +101,8 @@ h2. Cloud Space: ${name}
 
 }}
 
+{% endif %}
+
 {{createmachine: cloudspaceId:$$id}}
 {{movevfw: cloudspaceId:$$id}}
 
@@ -107,6 +111,7 @@ h3. Details
 |*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|${networkid}|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
+|*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
 |*Location*|${location}|
 |*Description*|${descr}|
@@ -127,6 +132,3 @@ h3. Port Fowardings
 
 h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
-
-h3. Stacks
-{{cbnodes space:$$id}}

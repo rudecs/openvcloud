@@ -50,7 +50,7 @@ class bootstrap(Resource):
                 sshReflector.user_ensure(reflectorUser)
             sshReflector.ssh_authorize(reflectorUser, nodeKey)
         except Exception as e:
-            return self.error(500, 'Error during pushing of the public key to reflector: %s' % e.messaeg)
+            return self.error(500, 'Error during pushing of the public key to reflector: %s' % e.message)
 
 
         masterKeyPath = j.system.fs.joinPaths(args.gitpath, 'keys/master_root')

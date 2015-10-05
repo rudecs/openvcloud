@@ -6,7 +6,8 @@
 <div ng-show="machine">
     <h1>Machine: {[machine.name]}</h1>
     <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
-    <a ng-click="refreshData()" class="refresh-page margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot.">
+    <a ng-click="refreshData()" class="refresh-page btn btn-info margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot." title="On first creation, use refresh to show your IP address. 
+Your Defense shield assigns a fix IP address during the initial OS boot.">
         <i class="fa fa-refresh"></i>
         Refresh
     </a>
@@ -83,14 +84,14 @@
                                 </a>
                             </li>
 
-                            <li ng-show="machine.status == 'PAUSED'">
+                            <li ng-show="machine.status == 'PAUSED' && machine.locked == false">
                                 <a ng-click="resume()">
                                     <i class="fa fa-play-circle"></i>
                                     Resume
                                 </a>
                             </li>
 
-                            <li ng-show="machine.status == 'RUNNING'">
+                            <li ng-show="machine.status == 'RUNNING' && machine.locked == false">
                                 <a ng-click="pause()">
                                     <i class=" fa fa-pause"></i>
                                     Pause
@@ -147,7 +148,7 @@
     #                            </a>
     #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess != 'Read'">
+                        <li ng-show="currentUserAccess != 'Read' && machine.locked == false">
                                 <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                     <i class="fa fa-copy"></i>
                                     Create Template
@@ -160,6 +161,10 @@
                                     <ul>
                                         Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
                                     </ul>
+                                    <div class="alert alert-warning margin-top-large">
+                                    Creating a template might take some time during this process your Virtual Machine will be locked.
+                                    Limited actions will be available.
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
@@ -175,7 +180,7 @@
 #                            </a>
 #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess == 'Admin'">
+                        <li ng-show="currentUserAccess == 'Admin' && machine.locked == false">
                                 <a ng-click="destroy()">
                                     <i class=" fa fa-times-circle-o"></i>
                                     Destroy
@@ -237,13 +242,13 @@
                         </div>
 
                         <div class="span2 txt-verdana">
-                            <h4 class="txt-15 txt-normal margin-bottom-none">login</h4>
+                            <h4 class="txt-15 txt-normal margin-bottom-none">Initial Login</h4>
                             <p>
                                 {[machine.accounts[0].login]}
                             </p>
                         </div>
                         <div class="span2 txt-verdana">
-                            <h4 class="txt-15 txt-normal margin-bottom-none">password</h4>
+                            <h4 class="txt-15 txt-normal margin-bottom-none">Initial Password</h4>
                             <p>
                                 {[machine.accounts[0].password]}
                             </p>
@@ -264,14 +269,14 @@
             <tab id="Disks" heading="Disks" active="tabactive.newDisks">
                 <div id="Disks" class="tab-pane">
                   <ul class="nav nav-pills">
-                    <li class="active"><a data-toggle="pill" href="" ng-click="tabState = 'currentDisks'">Current disk</a></li>
-                    <li class=""><a data-toggle="pill" ng-click="tabState = 'createDisks'">Create disks</a></li>
+                    <li ng-class="{active: tabState === 'currentDisks'}"><a data-toggle="pill" href="" ng-click="changeTabState('currentDisks')">Current disk</a></li>
+                    <li ng-class="{active: tabState === 'createDisks'}"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
                   </ul>
                   <div class="marginTopXlarge machine-disks">
-                    <div ng-show="tabState == 'currentDisks'">
+                    <div ng-show="tabState === 'currentDisks'">
                       {{include:storage_list}}
                     </div>
-                    <div ng-show="tabState == 'createDisks'">
+                    <div ng-show="tabState === 'createDisks'">
                         {{include:create_disk}}
                     </div>
                   </div>
@@ -313,6 +318,9 @@
                                             <div class="modal-body">
                                                 <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
                                                 Are you sure you want to rollback snapshot?
+                                                <div class="alert alert-warning margin-top-medium" role="alert">
+                                                Snapshots newer then current snapshot will be removed.
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn ok" ng-click="ok()">Ok</button>

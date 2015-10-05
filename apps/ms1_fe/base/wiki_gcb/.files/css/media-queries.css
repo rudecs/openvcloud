@@ -53,6 +53,7 @@
 	.account-container.stacked { width: 544px !important; }
 	.signUpForm .inputWrap { width: 69% !important; }
 	.marginTop { margin-top: 0px; margin-bottom: 80px; }
+	.refresh-page { margin-bottom: -25px; font-size: 13px; }
 }
 @media (max-width: 1290px) {
 	.navbar-default .navbar-nav>li>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus, .nav-tabs>li>a,

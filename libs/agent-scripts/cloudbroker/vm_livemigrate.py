@@ -24,6 +24,14 @@ def action(vm_id, source_stack):
 
     if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
         flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
-        domain.migrate2(target_con, flags=flags)
+        try:
+            domain.migrate2(target_con, flags=flags)
+        except:
+            try:
+                target_domain = target_con.lookupByName('vm-%s' % vm_id)
+                target_domain.undefine()
+            except:
+                pass  # vm wasnt created on target
+            raise
     else:
         domain.undefine()

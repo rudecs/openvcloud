@@ -7,6 +7,7 @@ except Exception:
     import json
 
 def main(j, args, params, tags, tasklet):
+    import gevent
     id = args.getTag('id')
     if not id:
         out = 'Missing VMachine ID param "id"'
@@ -35,6 +36,7 @@ def main(j, args, params, tags, tasklet):
 
     data = {'stats_image': 'N/A', 'stats_parent_image': 'N/A', 'stats_disk_size': '-1',
             'stats_state': 'N/A', 'stats_ping': 'N/A', 'stats_hdtest': 'N/A', 'stats_epoch': 'N/A'}
+    data.update(obj.dump())
     try:
         size = cbosis.size.get(obj.sizeId).dump()
     except Exception:
@@ -42,7 +44,7 @@ def main(j, args, params, tags, tasklet):
     try:
         stack = cbosis.stack.get(obj.stackId).dump()
     except Exception:
-        stack = {'name': 'N/A', 'referenceId': 'N/A'}
+        stack = {'name': 'N/A', 'referenceId': 'N/A', 'type': 'UNKNOWN'}
     try: 
         image = cbosis.image.get(obj.imageId).dump()
         ccl = j.clients.osis.getNamespace('libvirt')
@@ -80,12 +82,16 @@ def main(j, args, params, tags, tasklet):
     except Exception:
         data['nics'] = 'NIC information is not available'
 
-    data['disks'] = '||Path||Used Space||Total Space||\n'
-    diskstats = stats.get('diskinfo', {})
-    if diskstats:
-        usedsize = j.tools.units.bytes.toSize(diskstats.get('stored', 0), output='G')
-        totalsize = j.tools.units.bytes.toSize(diskstats.get('volume_size', 0), output='G')
-        data['disks'] += '|%s|%.2f GiB|%.2f GiB|\n' % (diskstats.get('devicename', 'N/A'), usedsize, totalsize)
+    data['disks'] = cbosis.disk.search({'id': {'$in': obj.disks}})[1:]
+    diskstats = stats.get('diskinfo', [])
+    disktypemap = {'D': 'Data', 'B': 'Boot', 'T': 'Temp'}
+    for disk in data['disks']:
+        disk['type'] = disktypemap.get(disk['type'], disk['type'])
+        for diskinfo in diskstats:
+            if disk['referenceId'].endswith(diskinfo['devicename']):
+                disk.update(diskinfo)
+                disk['footprint'] = '%.2f' % j.tools.units.bytes.toSize(disk['footprint'], output='G')
+                break
 
     if hasattr(obj, 'creationTime'):
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
@@ -97,6 +103,19 @@ def main(j, args, params, tags, tasklet):
     data['spacename'] = space['name']
     data['stackrefid'] = stack['referenceId'] or 'N/A'
     data['hypervisortype'] = stack['type']
+
+    timeout = gevent.Timeout(5)
+    timeout.start()
+    try:
+        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
+    except:
+        data['snapshots'] = []
+    finally:
+        timeout.cancel()
+    try:
+        data['portforwards'] = j.apps.cloudbroker.machine.listPortForwards(id)
+    except:
+        data['portforwards'] = []
 
     for k, v in stats.iteritems():
         if k == 'epoch':

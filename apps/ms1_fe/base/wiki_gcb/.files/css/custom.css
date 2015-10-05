@@ -341,7 +341,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .edit-description:hover .edit-description-link { display: inline !important; }
 .edit-description-link { color: #0088cc; cursor: pointer; margin-right: 15px; display: none; }
 .edit-description-link:hover { text-decoration: underline; }
-.refresh-page { margin-bottom: -25px; }
+.refresh-page { margin-bottom: -35px; padding: 3px 12px; }
+.refresh-page:hover{ color: #fff !important; }
 .description-textarea { min-height: 130px; width: 330px; }
 .gray-loader { font-size: 175%; text-align: center; margin-top: 5%; color: rgb(194, 190, 190); }
 .access-rights { border: 1px solid #FFF; padding: 4px 12px; color: #333; background: #fff; }
@@ -495,3 +496,9 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 /* Reset Password Page */
 .reset-password { margin-bottom: 40px; margin-left: 15px; }
 /* end of reset password page */
+
+#cloudspacesListEmptyDialog{
+	width: 560px;
+    height: auto;
+    margin: -250px 0 0 -280px;
+}
