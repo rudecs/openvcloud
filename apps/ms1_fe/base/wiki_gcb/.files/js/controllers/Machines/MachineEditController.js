@@ -206,13 +206,20 @@ angular.module('cloudscalers.controllers')
             });
 
             modalInstance.result.then(function (result) {
-                Machine.delete($scope.machine.id);
-                var machine = _.find($scope.machines, function(machine){ return machine.id == $scope.machine.id;});
-                if (machine){
-                    machine.status = 'DESTROYED';
-                }
-                $scope.machines.splice($scope.machines.indexOf(machine) , 1);
-                $location.path("/list");
+                LoadingDialog.show('Deleting machine');
+                Machine.delete($scope.machine.id).then(function(){
+                    var machine = _.find($scope.machines, function(machine){ return machine.id == $scope.machine.id;});
+                    if (machine){
+                        machine.status = 'DESTROYED';
+                    }
+                    $scope.machines.splice($scope.machines.indexOf(machine) , 1);
+                    $location.path("/list");
+                    LoadingDialog.hide();
+                }, function(reason) {
+                    LoadingDialog.hide();
+                    $ErrorResponseAlert(reason);
+                });
+
             });
         };
 
