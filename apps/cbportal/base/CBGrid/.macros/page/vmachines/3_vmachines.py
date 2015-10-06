@@ -30,7 +30,7 @@ def main(j, args, params, tags, tasklet):
         stacksids = [stack['id'] for stack in stacks]
         filters['stackId'] = {'$in':stacksids}
 
-    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Cloud Space', 'Stack']
+    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Cloud Space ID', 'Stack ID']
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
