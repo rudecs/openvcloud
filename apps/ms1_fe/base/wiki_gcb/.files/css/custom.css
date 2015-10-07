@@ -602,4 +602,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   bottom: 0;
   transform: translateX(39px) translateY(-3px) rotate(-50deg);
 }
+.navbar-form{
+  margin: 0;
+  padding: 0;
+}
 /* end of Hamburger menu */
