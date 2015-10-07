@@ -8,6 +8,7 @@
 {{title:OpenvCloud - $$page}}
 {{projectname:OpenvCloud}}
 {{favicon:.files/img/favicon.jpg}}
+{{PortalsHamburgerMenu}}
 {{css:/$$space/.files/css/font-awesome.min.css}}
 {{css:/$$space/.files/css/bootstrap.min.css}}
 {{css:/$$space/.files/lib/angular-tour/angular-tour.css}}
