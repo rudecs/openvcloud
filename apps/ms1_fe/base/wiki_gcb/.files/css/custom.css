@@ -58,7 +58,7 @@ input:-webkit-autofill:focus { -webkit-box-shadow:0 0 0 50px white inset !import
 /*.modal-body > div { display: inline-block; width: 100%; }*/
 .modal-footer .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {   color: #fff;
   background-color: #415365;
-  border-color: #34495E;
+  border-color: #34495E; 
 }
 .modal-footer .mainButton { padding: 5px 10px; }
 /* end of modals */
@@ -341,8 +341,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .edit-description:hover .edit-description-link { display: inline !important; }
 .edit-description-link { color: #0088cc; cursor: pointer; margin-right: 15px; display: none; }
 .edit-description-link:hover { text-decoration: underline; }
-.refresh-page { margin-bottom: -35px; padding: 3px 12px; }
-.refresh-page:hover{ color: #fff !important; }
+.refresh-page { margin-bottom: -25px; }
 .description-textarea { min-height: 130px; width: 330px; }
 .gray-loader { font-size: 175%; text-align: center; margin-top: 5%; color: rgb(194, 190, 190); }
 .access-rights { border: 1px solid #FFF; padding: 4px 12px; color: #333; background: #fff; }
@@ -384,7 +383,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .inputWrap { float: left; width: 74%; }
 .signUpForm .inputWrap { width: 73%; }
 .signUpForm .inputWrap .inputLogin { font-size: 16px !important; }
-.signUpForm .inputWrap input { background-color: #FFF !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px; }
+.signUpForm .inputWrap input { background-color: #FFF !important; background-attachment: none !important; background-image: none !important; position: relative; font-size: 20px; white-space: pre-wrap; line-height: 20px; } 
 .primaryMine { background: #FFF !important; color: #0087b9; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none; font-size: 18px; padding: 10px 0; border: 0 !important; text-shadow: none; margin: 5px 0; }
 .primaryMine:hover { background: #FFF !important; color: #0087b9; border: 0 !important; text-shadow: none; }
 .defaultMine { background: #444444 !important; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: none!important; -moz-box-shadow: none!important; box-shadow: none!important; font-size: 18px!important; padding: 10px 0!important; border: 0 !important; text-shadow: none; margin: 5px 0; }
@@ -497,109 +496,31 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .reset-password { margin-bottom: 40px; margin-left: 15px; }
 /* end of reset password page */
 
-#cloudspacesListEmptyDialog{
-	width: 560px;
-    height: auto;
-    margin: -250px 0 0 -280px;
-}
 
-/* Hamburger menu */
-#PortalsHamburgerMenu{
-  margin-top: 2px;
-}
-.c-hamburger {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  width: 35px;
-  height: 35px;
-  font-size: 0;
-  text-indent: -9999px;
-  appearance: none;
-  box-shadow: none;
-  border-radius: none;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin-bottom: 10px;
-}
 
-.c-hamburger:focus {
-  outline: none;
-}
-.c-hamburger span {
-    display: block;
-    position: absolute;
-    top: 16px;
-    left: 7px;
-    right: 7px;
-    height: 2px;
-    background: #000;
-}
 
-.c-hamburger span::before,
-.c-hamburger span::after {
-  position: absolute;
-  display: block;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #000;
-  content: "";
-}
-
-.c-hamburger span::before {
-  top: -9px;
-}
-
-.c-hamburger span::after {
-  bottom: -9px;
-}
-
-.c-hamburger:hover span::before{
-    top: -11px;
-}
-.c-hamburger:hover span::after{
-    bottom: -11px;
-}
-.c-hamburger--htla, .c-hamburger--htla.is-active {
-  background-color: #fff;
-}
-
-.c-hamburger--htla span {
-  transition: transform 0.3s;
-}
-.c-hamburger--htla span::before {
-  transform-origin: top right;
-  transition: transform 0.3s, width 0.3s, top 0.3s;
-}
-
-.c-hamburger--htla span::after {
-  transform-origin: bottom right;
-  transition: transform 0.3s, width 0.3s, bottom 0.3s;
-}
-
-.c-hamburger--htla.is-active span {
-  transform: rotate(180deg);
-}
-
-.c-hamburger--htla.is-active span::before,
-.c-hamburger--htla.is-active span::after {
-  width: 50%;
-  left: -25px;
-}
-.c-hamburger--htla.is-active .c-hamburger span{
-    height: 6px;
-}
-.c-hamburger--htla.is-active span::before {
-  top: 0;
-  transform: translateX(39px) translateY(1px) rotate(40deg);
-}
-
-.c-hamburger--htla.is-active span::after {
-  bottom: 0;
-  transform: translateX(39px) translateY(-3px) rotate(-50deg);
-}
-/* end of Hamburger menu */
+/* ApiDocs page */
+.list1 { padding: 0; }
+.list1 #swagger-ui-container { margin: 0; }
+.list1 .info_title { font-size: 30px; color: #345E79 !important; }
+.list1 .info_description p { font-size: 21px !important; color: #345E79 !important; }
+.list1 ul#resources li.resource div.heading h2 a { color: #000 !important; }
+.list1 ul#resources li.resource div.heading h2 { width: 570px; color: #666 !important; }
+.list1 .container { padding: 0; }
+.list1 ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading h3 { margin: 10px 0 0 10px !important; }
+.list1 ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.post div.heading h3 { margin: 10px 0 0 10px !important; }
+.list1 ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content h4 { font-size: 13px !important; font-weight: bold; }
+.list1 .response-content-type label { color: #345E79; }
+.list1 .code { font-family: inherit !important; }
+.list1 .required { font-weight: normal !important; font-size: 16px }
+.list1 table tbody tr td strong span p { font-weight: normal !important; margin-top: -15px; margin-top: -6px; }
+.list1 table { font-size: 16px; }
+.list1 table th { max-width: auto; }
+html body .list1 ul#resources li.resource div.heading h2 + ul.options { margin: 16px 10px 15px 0 !important; }
+.list1 #resources_container .footer { display: none; }
+.list1 ul#resources li.resource div.heading h2 { line-height: 1.6em; }
+.list1 .content * { font-size: 13px !important; }
+.list1 table tbody tr td { vertical-align: middle; }
+.list1 table thead tr th { line-height: 16px; }
+.list1 .sandbox_header input.submit { padding: 0 10px; color: #fff; background-color: #10a54a; border-color: #10a54a; display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+/* end of ApiDocs page */
