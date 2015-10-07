@@ -4,9 +4,10 @@ h1. Machines API Documentation
 {{css:/$$space/.files/css/oocss.css}}
 {{css:/$$space/.files/css/media-queries.css}}
 
-@col9
+@col12 list1
 
 {{html:
+
     <link href='/jslib/old/swagger/css/hightlight.default.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/jslib/old/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/jslib/old/swagger/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
