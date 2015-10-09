@@ -116,7 +116,10 @@ angular.module('cloudscalers.controllers')
             return $scope.disk.name != '' && $scope.disk.size != '' && $scope.machine.status == 'HALTED' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
         }
 
-        $scope.$watch('machine.acl', function () {
+        $scope.$watch('machine.acl', function (acl) {
+            if(acl === undefined ) {
+                return;
+            }
             if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
                 var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
                 if(currentUserAccessright == "R"){
@@ -127,7 +130,7 @@ angular.module('cloudscalers.controllers')
                     $scope.currentUserAccess = "Admin";
                 }
             }
-        });
+        }, true);
 
         $scope.tabactive = {actions: true, console: false, snapshots: false, changelog: false};
 
