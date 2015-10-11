@@ -3,7 +3,7 @@ angular.module('cloudscalers.controllers')
         function ($scope, Networks, Machine, $modal, $interval,$ErrorResponseAlert,LoadingDialog, CloudSpace,$timeout, $routeParams, $window) {
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
-            
+
             $scope.$watch('currentSpace.acl', function () {
                 if($scope.currentUser.username && $scope.currentSpace.acl && !$scope.currentUserAccessrightOnCloudSpace){
                     var currentUserAccessright =  _.find($scope.currentSpace.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
@@ -44,18 +44,18 @@ angular.module('cloudscalers.controllers')
                   }
                 );
               }
-              
+
             };
-            
+
             $scope.updateData = function(){
             	Machine.list($scope.currentSpace.id).then(function(data) {
             		$scope.currentSpace.machines = data;
             	});
             	$scope.updatePortforwardList();
             }
-            
+
             var cloudspaceupdater;
-            
+
             $scope.$watch('currentSpace.id + currentSpace.status',function(){
                 if ($scope.currentSpace){
                 	if ($scope.currentSpace.status != "DEPLOYED"){
@@ -72,7 +72,7 @@ angular.module('cloudscalers.controllers')
                 	}
                 }
             });
-            
+
             $scope.$on(
                     "$destroy",
                     function( event ) {
@@ -90,15 +90,19 @@ angular.module('cloudscalers.controllers')
             };
             var addRuleController = function ($scope, $modalInstance) {
                 $scope.updateData();
-                $scope.newRule = {
-                    ip: $scope.currentSpace.publicipaddress,
-                    publicPort: '',
-                    VM: $scope.currentSpace.machines[0],
-                    localPort: '',
-                    commonPort: '',
-                    protocol: 'tcp',
-                    statusMessage: ''
-                };
+                $scope.$watch('currentSpace.machines', function () {
+                  if($scope.currentSpace.machines){
+                    $scope.newRule = {
+                        ip: $scope.currentSpace.publicipaddress,
+                        publicPort: '',
+                        VM: $scope.currentSpace.machines[0],
+                        localPort: '',
+                        commonPort: '',
+                        protocol: 'tcp',
+                        statusMessage: ''
+                    };
+                  }
+                });
 
                 $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
@@ -149,7 +153,9 @@ angular.module('cloudscalers.controllers')
             };
 
             var editRuleController = function ($scope, $modalInstance, editRule) {
-            	$scope.editRule = editRule;
+                $scope.updateData();
+                $scope.editRule = editRule;
+                $scope.$watch('currentSpace.machines', '');
 
                 $scope.delete = function () {
                   $scope.editRule.action = 'delete';
