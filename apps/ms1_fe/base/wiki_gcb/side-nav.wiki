@@ -5,7 +5,7 @@
         <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machines</a>
         <ul class="body">
           <li>
-            <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)">Machines</a>
+            <a href="MachineDeck" menu-link-active-location="(MachineDeck$|MachineDeck.*list)" ng-click="machinDeckCall()">Machines</a>
           </li>
           <li>
             <a href="MachineDeck?singlebutton=#/new" menu-link-active-location="MachineDeck.*new">Create Machine</a>
