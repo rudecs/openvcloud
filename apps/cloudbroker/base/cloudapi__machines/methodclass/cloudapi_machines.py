@@ -356,15 +356,7 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        state = 'DESTROYED'
-        try:
-            node = provider.client.ex_get_node_details(machine.referenceId)
-            state = node.state
-        except Exception:
-            # Machine is no more valid / mark it as destroyed
-            machine.status = "DESTROYED"
-            self.models.vmachine.set(machine)
-            return provider, self.cb.Dummy(id=machine.referenceId, driver=provider, state=state, extra={})
+        node = provider.client.ex_get_node_details(machine.referenceId)
         return provider, node
 
     @authenticator.auth(acl='C')
