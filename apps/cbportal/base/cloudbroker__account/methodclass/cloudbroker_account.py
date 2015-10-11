@@ -104,7 +104,7 @@ class cloudbroker_account(BaseActor):
 
         location = location.lower()
 
-        locationurl = j.apps.cloudapi.locations.getUrl()
+        locationurl = j.apps.cloudapi.locations.getUrl().strip('/')
 
         account = self.models.account.new()
         account.name = name

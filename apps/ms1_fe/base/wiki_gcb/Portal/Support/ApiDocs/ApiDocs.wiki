@@ -4,7 +4,7 @@ h1. Machines API Documentation
 {{css:/$$space/.files/css/oocss.css}}
 {{css:/$$space/.files/css/media-queries.css}}
 
-@col12 list1
+@col12 api-list
 
 {{html:
 
