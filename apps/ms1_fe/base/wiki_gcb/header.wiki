@@ -60,7 +60,6 @@
                     <ul class="create-cloudspace-container">
                       <li>
                          <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
-                         <a class="question-symbol" href="/$$space/FAQ#/3" ><i class="fa fa-question-circle icon-large"></i></a>
                       </li>
                     </ul>
                     <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
