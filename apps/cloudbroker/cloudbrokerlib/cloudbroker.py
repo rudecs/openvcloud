@@ -165,7 +165,7 @@ class CloudBroker(object):
                         models.size.set(cb_size)  # update obsolete size [Save without the gridId of the stack]
             else:
                 # Update existing sizes (disks and gids)
-                if cb_size['disks'] == psizes[record]:
+                if set(cb_size['disks']) == set(psizes[record]):
                     if gridId not in cb_size['gids']:
                         cb_size['gids'].append(gridId)
                         models.size.set(cb_size)
