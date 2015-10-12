@@ -15,7 +15,7 @@
         </div>
     <div class="marginTopXlarge row">
         <div class="row">
-            <div class="alert alert-warning span4 margin-bottom-large margin-left-large" ng-show="disk.size == '' || disk.size < 1 || disk.size > 2000">
+            <div class="alert alert-warning span4 margin-bottom-large margin-left-large" ng-show="machine.status != 'HALTED' || disk.size == '' || disk.size < 1 || disk.size > 2000">
                 <em class="block margin-bottom-small" ng-show="machine.status != 'HALTED'">Machine must be stopped to create disk.</em>
                 <em class="block" ng-show="disk.size < 1 || disk.size > 2000">Size can only be between 1GB and up to 2000GB.</em>
             </div>

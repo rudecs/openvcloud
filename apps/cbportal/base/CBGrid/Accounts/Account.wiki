@@ -30,6 +30,7 @@ h2. Account: ${name}
 
 - display: Grant User Access
   action: /restmachine/cloudbroker/account/addUser
+  hide: true
   data:
    accountname: ${name}
   input:
@@ -49,13 +50,9 @@ h2. Account: ${name}
 
 - display: Revoke User Access
   action: /restmachine/cloudbroker/account/deleteUser
+  hide: true
   data:
    accountname: ${name}
-  input:
-  - username
-
-- display: Create Space
-  action: '#create_space'
 
 - display: Change Credit
   action: /restmachine/cloudbroker/finance/changeCredit
@@ -82,12 +79,14 @@ h3. Details
 |*Balance (current USD in account)*|${balance}|
 
 h3. Users Access
-||User Name||E-Mail||ACL||
+{{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
+||User Name||E-Mail||ACL||Revoke Access||
 {% for user in users -%}
-    | [${user.id}|/CBGrid/user?id=${user.guid}] |${", ".join(user.emails)}|${user.acl}|
+    | [${user.id}|/CBGrid/user?id=${user.guid}] |${", ".join(user.emails)}|${user.acl}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
 h3. Cloud Spaces
+{{action: id:'creaspace' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Cloud Space'}}
 {{cbspaces: accountId:$$id}}
 
 h3. Credit

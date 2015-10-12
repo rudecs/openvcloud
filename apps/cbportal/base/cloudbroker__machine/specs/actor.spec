@@ -14,6 +14,7 @@
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
+        var:datadisks list(int),, list of disk sizes @optional
         result:bool
 
     method:createOnStack
@@ -27,6 +28,7 @@
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:stackid int,, id of the stack
+        var:datadisks list(int),, list of disk sizes @optional
         result:bool
 
     method:stop

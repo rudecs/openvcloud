@@ -1,7 +1,7 @@
 
 angular.module('cloudscalers.controllers')
-    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location', '$alert',
-      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location, $alert) {
+    .controller('MachineController', ['$scope', 'Machine', 'Size', 'Image', '$ErrorResponseAlert', '$location', '$alert', '$rootScope',
+      function($scope, Machine, Size, Image, $ErrorResponseAlert, $location, $alert, $rootScope) {
 
         $scope.$watch('currentspace.accountId',function(){
             if ($scope.currentSpace){
@@ -54,6 +54,10 @@ angular.module('cloudscalers.controllers')
           if($scope.currentSpace.id){
             $scope.updateMachineList();
           }
+        });
+
+        $rootScope.$on('callUpdateMachineList', function(event, args) {
+          $scope.updateMachineList();
         });
 
         $scope.machineIsManageable = function(machine){

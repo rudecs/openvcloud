@@ -26,7 +26,9 @@ angular.module('cloudscalers.controllers')
                     userMessage($scope.newUser.nameOrEmail + " already have access rights.", 'danger');
                 }else{
                     Machine.addUser($scope.machine.id, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
-                        $scope.machine.acl.push({ type: 'U', guid: '', right: $scope.newUser.access, userGroupId: $scope.newUser.nameOrEmail });
+                        $scope.machine.acl.push({ type: 'U', guid: '', right: $scope.newUser.access,
+                                                  userGroupId: $scope.newUser.nameOrEmail,
+                                                  canBeDeleted: true});
                         userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
                     }, function(reason) {
                         if (reason.status == 404)
@@ -56,7 +58,7 @@ angular.module('cloudscalers.controllers')
             modalInstance.result.then(function (result) {
                 Machine.deleteUser(machineId, user).
                 then(function() {
-                    $scope.machine.acl.splice(_.where($scope.machine.acl, {userGroupId: user}), 1);
+                    $scope.machine.acl.splice(_.indexOf($scope.machine.acl, {userGroupId: user}), 1);
                     userMessage("Assigned access right removed successfully for " + user , 'success');
                 },
                 function(reason){
