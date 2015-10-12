@@ -244,7 +244,7 @@ class Machine(object):
         self._pricing = pricing.pricing()
         self._accountbilling = accountbilling.account()
 
-    def cleanup(machine):
+    def cleanup(self, machine):
         for diskid in machine.disks:
             models.disk.delete(diskid)
         models.vmachine.delete(machine.id)
@@ -270,7 +270,7 @@ class Machine(object):
             raise exceptions.Conflict('Not enough credit for this machine to run for %i days' % minimum_days_of_credit_required)
 
     def _assertName(self, cloudspaceId, name, **kwargs):
-        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$ne': 'DESTROYED', '$ne': 'ERROR'}})[1:]
+        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
         return False if results else True
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
@@ -356,7 +356,7 @@ class Machine(object):
             if not stackId:
                 stack = self.cb.getBestProvider(cloudspace.gid, imageId)
                 if stack == -1:
-                    self.cb.machine.cleanup(machine)
+                    self.cleanup(machine)
                     raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
                 stackId = stack['id']
             provider = self.cb.getProviderByStackId(stackId)
@@ -365,7 +365,7 @@ class Machine(object):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             name = 'vm-%s' % machine.id
         except:
-            self.cb.machine.cleanup(machine)
+            self.cleanup(machine)
             raise
         try:
             node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)

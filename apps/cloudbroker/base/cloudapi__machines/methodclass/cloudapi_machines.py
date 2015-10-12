@@ -239,7 +239,7 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node = self._getProviderAndNode(machineId)
-        if node.extra.get('locked', False):
+        if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
         vmachinemodel = self._getMachine(machineId)
         if not vmachinemodel.status == 'DESTROYED':
@@ -254,7 +254,6 @@ class cloudapi_machines(BaseActor):
         except Exception, e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
-        provider, node = self._getProviderAndNode(machineId)
         if provider:
             for pnode in provider.client.list_nodes():
                 if node.id == pnode.id:
@@ -356,7 +355,10 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
         provider = self._getProvider(machine)
-        node = provider.client.ex_get_node_details(machine.referenceId)
+        if provider:
+            node = provider.client.ex_get_node_details(machine.referenceId)
+        else:
+            node = None
         return provider, node
 
     @authenticator.auth(acl='C')
