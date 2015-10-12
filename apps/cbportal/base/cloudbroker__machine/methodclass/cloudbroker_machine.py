@@ -16,12 +16,12 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, **kwargs):
-        return self.actors.machines.create(cloudspaceId, name, description, sizeId, imageId, disksize)
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
+        return self.actors.machines.create(cloudspaceId, name, description, sizeId, imageId, disksize, datadisks)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, **kwargs):
+    def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, datadisks, **kwargs):
         """
         Create a machine on a specific stackid
         param:cloudspaceId id of space in which we want to create a machine
@@ -31,11 +31,12 @@ class cloudbroker_machine(BaseActor):
         param:imageId id of the specific image
         param:disksize size of base volume
         param:stackid id of the stack
+        param:datadisks list of disk sizes
         result bool
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, 0)
-        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, [])
+        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 
     def _validateMachineRequest(self, machineId, accountName=None, spaceName=None):
