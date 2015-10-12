@@ -1,5 +1,6 @@
 from JumpScale import j
 import sys
+import re
 import json
 
 organization = "0-complexity"
@@ -17,7 +18,7 @@ class OpenvStorage():
     def __init__(self):
         self._localIp = None
         self._clusterIps = []
-        self._internetSpeed = None
+        self._speed = None
         self._runingServer = None
         # appened opverstorage to python path
         sys.path.append('/opt/OpenvStorage')
@@ -30,6 +31,18 @@ class OpenvStorage():
         if not self._localIp:
             self._localIp = j.system.net.getIpAddress('backplane1')[0][0]
         return self._localIp
+
+    @property
+    def speed(self):
+        if not self._speed:
+            ovsconfig = j.system.ovsnetconfig.getConfigFromSystem()
+            nics = j.system.process.execute('ovs-vsctl list-ifaces backplane1')[1].split('\n')
+            for nic in nics:
+                if nic in ovsconfig:
+                    if ovsconfig[nic]['detail'][0] == 'PHYS':
+                        match = re.search('(?P<speed>\d+)', ovsconfig[nic]['detail'][3])
+                        self._speed = int(match.group('speed'))
+        return self._speed
             
     @property
     def clusterIps(self):
@@ -50,12 +63,11 @@ class OpenvStorage():
     
     def getbandwidthState(self, bandwidth):
         """
-        Assuming 10Gbits network
         """
         bandwidth = bandwidth
-        if bandwidth < 5000:
+        if bandwidth < self.speed / 2:
             return 'ERROR'
-        elif bandwidth < 9000:
+        elif bandwidth < self.speed * 0.9:
             return 'WARNING'
         return 'OK'
     
