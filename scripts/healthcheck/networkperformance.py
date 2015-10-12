@@ -1,6 +1,17 @@
 from JumpScale import j
 import sys
 import json
+
+organization = "0-complexity"
+author = "hamdy.farag@codescalers.com"
+order = 1
+enable = True
+async = True
+log = True
+queue ='io'
+roles = ['openvstorage']
+category = 'monitor.healthcheck'
+
 class OpennStorage():
     def __init__(self):
         self._localIp = None
