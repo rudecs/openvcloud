@@ -64,8 +64,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
-        self.actors.machines.delete(vmachine.id)
+        self.actors.machines.delete(int(machineId))
         return True
 
     @auth(['level1', 'level2', 'level3'])
