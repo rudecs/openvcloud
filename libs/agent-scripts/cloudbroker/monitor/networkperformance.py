@@ -4,6 +4,7 @@ import re
 import json
 
 organization = "0-complexity"
+descr = 'Perform bandwith test'
 author = "hamdy.farag@codescalers.com"
 order = 1
 enable = True

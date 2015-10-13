@@ -433,8 +433,8 @@ angular.module('cloudscalers.controllers')
         };
         $scope.refreshSpinner = false;
         $scope.refreshData = function() {
-            $scope.refreshSpinner = true;
             if($scope.tabactive.actions || $scope.tabactive.sharing){
+                $scope.refreshSpinner = true;
                 Machine.get($routeParams.machineId).then(function(data) {
                     $scope.machine = data;
                     $scope.refreshSpinner = false;
@@ -444,9 +444,11 @@ angular.module('cloudscalers.controllers')
                     $ErrorResponseAlert(reason);
                 });
             }else if($scope.tabactive.changelog){
+                $scope.refreshSpinner = true;
                 retrieveMachineHistory();
             }
             else if($scope.tabactive.portForwards){
+                $scope.refreshSpinner = true;
                 Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
                     function(data) {
                       $scope.portforwarding = data;
@@ -458,6 +460,7 @@ angular.module('cloudscalers.controllers')
                     }
                 );
             }else if($scope.tabactive.snapshots){
+                $scope.refreshSpinner = true;
                 updatesnapshots();
             }
         };
