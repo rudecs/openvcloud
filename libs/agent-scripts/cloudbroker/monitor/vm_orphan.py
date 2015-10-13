@@ -13,7 +13,7 @@ category = "monitor.vm"
 period = 3600 # 1 hrs 
 enable = True
 async = True
-roles = ['cpu',]
+roles = ['cpunode',]
 queue = 'process'
 log = False
 

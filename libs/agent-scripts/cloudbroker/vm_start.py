@@ -10,7 +10,7 @@ organization = "cloudscalers"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
-roles = ['compute']
+roles = ['cpunode']
 queue = "hypervisor"
 async = True
 

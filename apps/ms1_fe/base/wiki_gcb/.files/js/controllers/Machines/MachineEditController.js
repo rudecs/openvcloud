@@ -151,9 +151,11 @@ angular.module('cloudscalers.controllers')
             $scope.machineHistory = {};
             Machine.getHistory($routeParams.machineId)
                 .then(function(data) {
+                    $scope.refreshSpinner = false;
                     $scope.machineHistory = data;
                 },
                 function(reason) {
+                    $scope.refreshSpinner = false;
                     $ErrorResponseAlert(reason);
                 });
         };
@@ -233,7 +235,9 @@ angular.module('cloudscalers.controllers')
                 $scope.snapshots = data;
                 $scope.snapshotsLoader = false;
                 LoadingDialog.hide();
+                $scope.refreshSpinner = false;
             }, function(reason) {
+                $scope.refreshSpinner = false;
                 $ErrorResponseAlert(reason);
             });
         }
@@ -427,12 +431,16 @@ angular.module('cloudscalers.controllers')
                     );
                 });
         };
+        $scope.refreshSpinner = false;
         $scope.refreshData = function() {
+            $scope.refreshSpinner = true;
             if($scope.tabactive.actions || $scope.tabactive.sharing){
                 Machine.get($routeParams.machineId).then(function(data) {
                     $scope.machine = data;
+                    $scope.refreshSpinner = false;
                 },
                 function(reason) {
+                    $scope.refreshSpinner = false;
                     $ErrorResponseAlert(reason);
                 });
             }else if($scope.tabactive.changelog){
@@ -442,15 +450,16 @@ angular.module('cloudscalers.controllers')
                 Networks.listPortforwarding($scope.currentSpace.id, $routeParams.machineId).then(
                     function(data) {
                       $scope.portforwarding = data;
+                      $scope.refreshSpinner = false;
                     },
                     function(reason) {
                       $ErrorResponseAlert(reason);
+                      $scope.refreshSpinner = false;
                     }
                 );
             }else if($scope.tabactive.snapshots){
                 updatesnapshots();
             }
-
         };
 
         $scope.start = function() {
