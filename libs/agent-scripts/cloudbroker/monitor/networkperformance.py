@@ -42,13 +42,13 @@ class OpenvStorage():
                     if ovsconfig[nic]['detail'][0] == 'PHYS':
                         match = re.search('(?P<speed>\d+)', ovsconfig[nic]['detail'][3])
                         self._speed = int(match.group('speed'))
+                        break
         return self._speed
             
     @property
     def clusterIps(self):
         if not self._clusterIps:
             from ovs.lib.storagerouter import StorageRouterList
-            StorageRouterList.get_storagerouters()
             self._clusterIps = [router.ip for router in StorageRouterList.get_storagerouters() if\
                                 router.ip != self.localIp]
         return self._clusterIps
@@ -75,7 +75,7 @@ class OpenvStorage():
         final = []
         for ip in self.clusterIps:
             result = {'category': 'Bandwidth Test'}
-            sshclient = j.remote.cuisine.connect(ip, 22, 'rooter')
+            sshclient = j.remote.cuisine.connect(ip, 22)
             j.logger.log('Installing iperf on %s' % ip, 1)
             if not sshclient.command_check('iperf'):
                 sshclient.run('apt-get install iperf')
