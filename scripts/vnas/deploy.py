@@ -234,7 +234,7 @@ if __name__ == '__main__':
     vnas = Vnas(args.api)
     vnas.connect(args.login, args.password, args.cloudspace, args.location)
     state = State()
-    from IPython import embed;embed()
+
     if args.action == 'deploy':
 
         master_ip = None
@@ -250,10 +250,10 @@ if __name__ == '__main__':
             state.done('ad', ad_ip)
 
         backends = []
-        for i in range(4):
+        for i in range(1, 5):
             ok, store = state.is_done('backend%s' % i)
             if not ok:
-                store = vnas.create_backend(i, i+1, master_ip, i+1, nbr_disk=10)
+                store = vnas.create_backend(i, i, master_ip, i, nbr_disk=10)
                 state.done('backend%s' % i, store)
             backends.append(store)
 
