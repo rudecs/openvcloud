@@ -27,6 +27,9 @@ class State(object):
         else:
             return False, None
 
+    def reset(self):
+        j.system.fs.remove(self._file)
+
 
 class Vnas(object):
 
@@ -96,9 +99,6 @@ class Vnas(object):
         key = j.system.fs.fileGetContents('/root/.ssh/id_rsa')
         keypub = j.system.fs.fileGetContents('/root/.ssh/id_rsa.pub')
         return (key, keypub)
-        # data = {'instance.key.priv': self.key}
-        # keyService = j.atyourservice.new(name='sshkey', instance='vnas', args=data)
-        # keyService.install()
 
     def create_vm(self, name, memsize=2, ssdsize=10, stack_id=None, disks=[]):
         if not self.isConnected():
@@ -126,32 +126,6 @@ class Vnas(object):
         for obj in self.ovc.listMachinesInSpace(self.spacesecret):
             self.ovc.deleteMachine(self.spacesecret, obj['name'])
 
-    # def configure(self, serviceObj):
-
-
-    #     j.actions.start(description='create vnas master', action=self.createMaster, actionArgs={'serviceObj': serviceObj}, category='vnas', name='vnas_master', serviceObj=serviceObj)
-
-    #     j.actions.start(description='create vnas Active directory', action=self.createAD, actionArgs={'serviceObj': serviceObj}, category='vnas', name='vnas_ad', serviceObj=serviceObj)
-
-    #     nid = 0
-    #     nbrBackend = serviceObj.hrd.getInt('instance.nbr.stor')
-    #     nbrDisk = serviceObj.hrd.getInt('instance.nbr.disk')
-    #     for i in range(1, nbrBackend+1):
-    #         id = i
-    #         stack_id = 2+i
-    #         nid += 1
-    #         j.actions.start(description='create vnas stor %s' % i, action=self.createBackend, actionArgs={'id': id, 'stack_id': stack_id, 'nbrDisk': nbrDisk, 'masterSerivceObj': serviceObj, 'nid': nid}, category='vnas', name='vnas_stor %s' % i, serviceObj=serviceObj)
-
-    #     nbrFrontend = serviceObj.hrd.getInt('instance.nbr.front')
-    #     for i in range(1, nbrFrontend+1):
-    #         id = i
-    #         stack_id = 2+i
-    #         nid += 1
-    #         j.actions.start(description='create vnas frontend %s' % i, action=self.createFrontend, actionArgs={'id': id, 'stack_id': stack_id, 'masterSerivceObj': serviceObj, 'nid': nid}, category='vnas', name='vnas_node %s' % i, serviceObj=serviceObj)
-
-        # schedule jobs into agentcontroller2
-        # self.sheduleJobs(self.stores)
-
     def create_master(self):
         ip, port, passwd = self.create_vm('master')
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
@@ -172,41 +146,16 @@ class Vnas(object):
     def create_AD(self):
         print '[+] create active directory VM'
         ip, port, passwd = self.create_vm('vnas_ad')
-        # id, _, _ = self.ovc.createMachine(self.spacesecret, 'vnas_ad', memsize=2, ssdsize=10, imagename='Ubuntu 14.04 x64', delete=True, sshkey=self.keypub)
-        # obj = self.ovc.getMachineObject(self.spacesecret, 'vnas_ad')
-        # ip = obj['interfaces'][0]['ipAddress']
-        # serviceObj.hrd.set('instance.ad.ip', ip)
 
-        # data = {
-        #     'instance.ip': ip,
-        #     'instance.ssh.port': 22,
-        #     'instance.login': 'root',
-        #     'instance.password': '',
-        #     'instance.sshkey': 'vnas',
-        #     'instance.jumpscale': True,
-        #     'instance.branch': '$(instance.branch)',
-        #     'instance.ssh.shell': '/bin/bash -l -c'
-        # }
-        # j.atyourservice.remove(name='node.ssh', instance='vnas_ad')
-        # nodeAD = j.atyourservice.new(name='node.ssh', instance='vnas_ad', args=data)
-        # nodeAD.install(reinstall=True)
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
         self.config_vm(cl)
 
-        # allow SSH SAL to connect seamlessly
-        # cl = nodeAD.actions.getSSHClient(nodeAD)
-        # cl.ssh_keygen('root', keytype='rsa')
-        # cl.run('cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys')
-        # self.setGitCredentials(cl)
         cmd = self._format_ays_cmd('install', 'vnas_ad', 'main')
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
 
         obj = self.ovc.getMachineObject(self.spacesecret, 'vnas_ad')
         return obj['interfaces'][0]['ipAddress']
-        # vnasAD = j.atyourservice.new(name='vnas_ad', instance='main', args=data, parent=nodeAD)
-        # vnasAD.consume('node', nodeAD.instance)
-        # vnasAD.install(reinstall=True, deps=True)
 
     def create_backend(self, id, stack_id, master_ip, nid, nbr_disk=10):
         vmName = 'vnas_backend%s' % id
@@ -214,41 +163,6 @@ class Vnas(object):
         ip, port, passwd = self.create_vm(vmName,  memsize=4, stack_id=stack_id, disks=[2000 for _ in range(nbr_disk)])
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
         self.config_vm(cl)
-        # self.ovc.createMachine(self.spacesecret, vmName, memsize=4, ssdsize=10, imagename='Ubuntu 14.04 x64', delete=True, sshkey=self.keypub)
-        # obj = self.ovc.getMachineObject(self.spacesecret, vmName)
-        # ip = obj['interfaces'][0]['ipAddress']
-
-        # self.stopVM(vmName)
-        # for x in xrange(1, nbrDisk+1):
-        #     diskName = 'data%s' % x
-        #     self.ovc.addDisk(self.spacesecret, vmName, diskName, size=2000, description=None, type='D')
-        # self.startVM(vmName)
-
-        # if not j.system.net.waitConnectionTest(ip, 22, 120):
-        #     j.events.opserror_critical(msg="VM didn't restart after we add disks to it", category="vnas_deploy")
-
-        # data = {
-        #     'instance.ip': ip,
-        #     'instance.ssh.port': 22,
-        #     'instance.login': 'root',
-        #     'instance.password': '',
-        #     'instance.sshkey': 'vnas',
-        #     'instance.jumpscale': True,
-        #     'instance.branch': '$(instance.branch)',
-        #     'instance.ssh.shell': '/bin/bash -l -c'
-        # }
-        # j.atyourservice.remove(name='node.ssh', instance=vmName)
-        # node = j.atyourservice.new(name='node.ssh', instance=vmName, args=data)
-        # node.install(reinstall=True)
-
-        # cl = node.actions.getSSHClient(node)
-        # cl.ssh_keygen('root', keytype='rsa')
-        # cl.run('cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys')
-        # self.setGitCredentials(cl)
-
-        # allow SSH SAL to connect seamlessly
-        cl.ssh_keygen('root', keytype='rsa')
-        cl.run('cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys')
 
         data = {
             'instance.stor.id': id,
@@ -261,9 +175,6 @@ class Vnas(object):
         cmd = self._format_ays_cmd('install', 'vnas_stor', str(id), data)
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
-        # vnasStor = j.atyourservice.new(name='vnas_stor', instance=str(id), args=data, parent=node)
-        # vnasStor.consume('node', node.instance)
-        # vnasStor.install(reinstall=True, deps=True)
 
         for i in range(nbr_disk):
             data = {
@@ -274,9 +185,7 @@ class Vnas(object):
             cmd = self._format_ays_cmd('install', 'vnas_stor_disk', str(i), data)
             print "[+] execute %s" % (cmd)
             cl.run(cmd)
-            # stor_disk = j.atyourservice.new(name='vnas_stor_disk', instance="disk%s" % i, args=data, parent=vnasStor)
-            # stor_disk.consume('node', node.instance)
-            # stor_disk.install(deps=True)
+
         # make sure nfs server is running
         cl.run('/etc/init.d/nfs-kernel-server restart')
         cl.package_install('iozone3')
@@ -292,35 +201,12 @@ class Vnas(object):
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
         self.config_vm(cl)
 
-        # self.ovc.createMachine(self.spacesecret, vmName, memsize=2, ssdsize=10, imagename='Ubuntu 14.04 x64', delete=True, sshkey=self.keypub)
-        # obj = self.ovc.getMachineObject(self.spacesecret, vmName)
-        # ip = obj['interfaces'][0]['ipAddress']
-
-        # data = {
-        #     'instance.ip': ip,
-        #     'instance.ssh.port': 22,
-        #     'instance.login': 'root',
-        #     'instance.password': '',
-        #     'instance.sshkey': 'vnas',
-        #     'instance.jumpscale': True,
-        #     'instance.branch': '$(instance.branch)',
-        #     'instance.ssh.shell': '/bin/bash -l -c'
-        # }
-        # j.atyourservice.remove(name='node.ssh', instance=vmName)
-        # node = j.atyourservice.new(name='node.ssh', instance=vmName, args=data)
-        # node.install(reinstall=True)
-
-        # cl = node.actions.getSSHClient(node)
-        # cl.ssh_keygen('root', keytype='rsa')
-        # cl.run('cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys')
-        # self.setGitCredentials(cl)
-
         data = {
             'instance.member.ad.address': ad_ip,
             'instance.member.address': ip,
             'instance.master.address': master_ip,
             'instance.agent.nid': nid,
-            'instance.vnas.refresh': 5,  # TODO allow configuration of this value ??
+            'instance.vnas.refresh': 10,  # TODO allow configuration of this value ??
             'instance.vnas.blocksize': 16777216,
         }
         for store in stores.iteritems():
@@ -330,63 +216,53 @@ class Vnas(object):
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
         cl.package_install('iozone3')
-        # vnasNode = j.atyourservice.new(name='vnas_node', instance=str(id), args=data, parent=node)
-        # vnasNode.consume('node', node.instance)
-        # vnasNode.install(reinstall=True, deps=True)
-
-    # def stopVM(self, vmName):
-    #     for i in xrange(5):
-    #         self.ovc.stopMachine(self.spacesecret, vmName)
-    #         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
-    #         if obj['status'] == 'HALTED':
-    #             return
-    #         else:
-    #             time.sleep(1.5)
-    #     j.events.opserror_critical(msg="can't halt vm", category="vnas deploy")
-
-    # def startVM(self, vmName):
-    #     for i in xrange(5):
-    #         self.ovc.startMachine(self.spacesecret, vmName)
-    #         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
-    #         if obj['status'] == 'RUNNING':
-    #             return
-    #         else:
-    #             time.sleep(1.5)
-    #     j.events.opserror_critical(msg="can't start vm", category="vnas deploy")
-
-    # def sheduleJobs(self, stores):
-    #     cl = j.clients.ac.getByInstance('main')
-    #     args = j.clients.ac.getRunArgs(domain='vnas', name='mount_vdisks', recurring_period=60, max_restart=3)
-    #     data = {'stores': stores}
-    #     job = cl.execute_jumpscript(None, None, 'vnas', 'mount_vdisks', args=args, role='vnas-backend')
 
 if __name__ == '__main__':
-    vnas = Vnas('du-conv-1.demo.greenitglobe.com')
-    vnas.connect('christophe', 'jsR00t3r', 'vnas', 'dev')
+
+    from JumpScale.baselib import cmdutils
+    parser = cmdutils.ArgumentParser()
+    commands = ['deploy', 'remove']
+    parser.add_argument("action", choices=commands, help='Command to perform\n')
+    parser.add_argument('--api', required=True, help='url of the environement api. (du-conv-1.demo.greenitglobe.com)')
+    parser.add_argument('-l', '--login', required=True, help='account name')
+    parser.add_argument('-p', '--password', required=True, help='password')
+    parser.add_argument('-cs', '--cloudspace', required=True, help='cloudspace name')
+    parser.add_argument('-loc', '--location', required=True, help='location')
+
+    args = parser.parse_args()
+
+    vnas = Vnas(args.api)
+    vnas.connect(args.login, args.password, args.cloudspace, args.location)
     state = State()
+    from IPython import embed;embed()
+    if args.action == 'deploy':
 
-    master_ip = None
-    ok, master_ip = state.is_done('master')
-    if not ok:
-        master_ip = vnas.create_master()
-        state.done('master', master_ip)
-
-    ad_ip = None
-    ok, ad_ip = state.is_done('ad')
-    if not ok:
-        ad_ip = vnas.create_AD()
-        state.done('ad', ad_ip)
-
-    backends = []
-    for i in range(4):
-        ok, store = state.is_done('backend%s' % i)
+        master_ip = None
+        ok, master_ip = state.is_done('master')
         if not ok:
-            store = vnas.create_backend(i, i+1, master_ip, i+1, nbr_disk=10)
-            state.done('backend%s' % i, store)
-        backends.append(store)
+            master_ip = vnas.create_master()
+            state.done('master', master_ip)
 
-    for i in range(2):
-        ok, _ = state.is_done('frontend%s' % i)
+        ad_ip = None
+        ok, ad_ip = state.is_done('ad')
         if not ok:
-            vnas.create_frontend(i, i+1, ad_ip, master_ip, i+1, backends)
-            state.done('frontend%s' % i, '')
+            ad_ip = vnas.create_AD()
+            state.done('ad', ad_ip)
+
+        backends = []
+        for i in range(4):
+            ok, store = state.is_done('backend%s' % i)
+            if not ok:
+                store = vnas.create_backend(i, i+1, master_ip, i+1, nbr_disk=10)
+                state.done('backend%s' % i, store)
+            backends.append(store)
+
+        for i in range(2):
+            ok, _ = state.is_done('frontend%s' % i)
+            if not ok:
+                vnas.create_frontend(i, i+1, ad_ip, master_ip, i+1, backends)
+                state.done('frontend%s' % i, '')
+
+    elif args.action == 'remove':
+        vnas.delete_all_vm()
+        state.reset()
