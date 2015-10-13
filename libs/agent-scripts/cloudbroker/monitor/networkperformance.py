@@ -11,7 +11,7 @@ async = True
 log = True
 queue = 'io'
 interval = 30 * 600
-roles = ['storage']
+roles = ['storagenode']
 category = 'monitoring'
 
 class OpenvStorage():
