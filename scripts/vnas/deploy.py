@@ -1,3 +1,5 @@
+#!/usr/bin/env jspython
+
 from JumpScale import j
 import time
 import urllib
@@ -86,6 +88,12 @@ class Vnas(object):
         self.install_js(cl)
         self.set_git_credentials(cl)
         self.add_ovc_domain(cl)
+
+    def installPersTest(self, cl):
+        # required for the perf tests
+        cl.package_install('python-pip')
+        cl.package_install('python-dev')
+        cl.run('pip install paramiko_gevent')
 
     def isConnected(self):
         if self.spacesecret is None:
