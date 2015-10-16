@@ -1,5 +1,21 @@
 from JumpScale import j
+from optparse import OptionParser
 import time
+
+parser = OptionParser()
+parser.add_option("-s", "--self", action="store_true", dest="self", help="only update the update script")
+parser.add_option("-r", "--restart", action="store_true", dest="restart", help="only restart everything")
+parser.add_option("-R", "--restart-nodes", action="store_true", dest="restartNodes", help="only restart all the nodes")
+parser.add_option("-N", "--restart-cloud", action="store_true", dest="restartCloud", help="only restart all the cloudspace vm")
+parser.add_option("-u", "--update", action="store_true", dest="update", help="only update git repository, do not restart services")
+parser.add_option("-U", "--update-nodes", action="store_true", dest="updateNodes", help="only update node git repository, do not restart services")
+parser.add_option("-C", "--update-cloud", action="store_true", dest="updateCloud", help="only update cloudspace git repository, do not restart services")
+parser.add_option("-p", "--report", action="store_true", dest="report", help="build a versions log and update git version.md")
+parser.add_option("-c", "--commit", action="store_true", dest="commit", help="commit the ovcgit repository")
+(options, args) = parser.parse_args()
+
+openvcloud = '/opt/code/git/0-complexity/openvcloud'
+hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
 
 def update(nodessh):
     print ''
@@ -11,11 +27,19 @@ def restart(nodessh):
     print ''
     print '[+] restarting host\'s services: %s' % nodessh.instance
     print ''
+    nodessh.execute('ays restart')
+
+def restartNode(nodessh):
+    print ''
+    print '[+] restarting (node) host\'s services: %s' % nodessh.instance
+    print ''
     nodessh.execute('ays restart -n redis')
     nodessh.execute('ays restart -n statsd-collector')
     nodessh.execute('ays restart -n nginx')
     nodessh.execute('fuser -k 4446/tcp; ays start -n jsagent')
     nodessh.execute('ays restart -n vncproxy')
+
+
 
 
 """
@@ -98,104 +122,230 @@ def build(content):
     return data
 
 """
-Update stuff
+Updater stuff
 """
-# Local update
-sshservices = j.atyourservice.findServices(name='node.ssh')
-sshservices.sort(key = lambda x: x.instance)
-
 def findService(name):
     for ns in sshservices:
         if ns.instance == name:
             return ns
-
-print '[+] Updating local system'
-j.do.execute("jscode update -d -n '*'")
-
-"""
-Note: Warning, do not try to do a 'ays restart' on ovcgit
-"""
-
-# Remote update
-
-hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
-
-print '[+] Updating system'
-
-for host in hosts:
-    ns = findService(host)
-    if ns:
-        update(ns)
-
-for host in hosts:
-    ns = findService(host)
-    if ns:
-        restart(ns)
-
-print '[+] Updating nodes'
-for ns in sshservices:
-    if ns.instance not in hosts:
-        update(ns)
-
-print '[+] Restarting nodes services'
-for ns in sshservices:
-    if ns.instance not in hosts:
-        restart(ns)
-
-print '[+] update completed'
-
-
-# Updating version file
-print '[+] grabbing version'
-
-# get our local repository path
-settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
-repopath = settings.getStr('instance.ovc.path')
-
-versionfile = '%s/version.md' % repopath
-statuscmd = 'jscode status -n "*" | grep lrev: | sed s/lrev://g | awk \'{ printf "%s,%s,%s\\n", $1, $2, $9 }\''
-
-content = {}
-
-output = j.system.process.run(statuscmd, False, True)
-content['ovc_git'] = output[1].split("\n")
-
-# grab version
-for host in hosts:
-    ns = findService(host)
-    if ns:
-        content[host] = ns.execute(statuscmd).split("\r\n")
-
-for ns in sshservices:
-    if ns.instance not in hosts:
-        content[ns.instance] = ns.execute(statuscmd).split("\r\n")
-
-data = build(content)
-
-"""
-Append old version
-"""
-
-data += "\n\n\n"
-
-for host in content:
-    data += "## %s\n\n" % host
-    data += "| Repository | Version (commit) |\n"
-    data += "|----|----|\n"
+            
+def updateLocal():
+    print '[+] Updating local system'
+    j.do.execute("jscode update -d -n '*'")
     
+def updateNodes(sshservices, hosts):
+    for ns in sshservices:
+        if ns.instance not in hosts:
+            update(ns)
     
-    for line in content[host]:
-        items = line.split(',')
-        repo = '%s/%s' % (items[0], items[1])
-        data += "| %s | %s |\n" % (repo, items[2])
+def updateOpenvcloud(repository):
+    print '[+] Updating local openvcloud repository'
+    j.do.execute("cd %s; git pull" % repository)
     
-    data += "\n\n"
+def updateCloudspace(hosts):
+    print '[+] updating cloudspace'
+    
+    for host in hosts:
+        ns = findService(host)
+        if ns:
+            update(ns)
+    
+def restartNodes(sshservices, hosts):
+    print '[+] restarting nodes'
+    
+    for ns in sshservices:
+        if ns.instance not in hosts:
+            restartNode(ns)
+    
+def restartCloudspace(hosts):
+    print '[+] restarting cloudspace'
+    
+    for host in hosts:
+        ns = findService(host)
+        if ns:
+            restart(ns)
 
-with open(versionfile, 'w') as f:
-    f.write(data)
+def versionBuilder(sshservices, hosts):
+    # Updating version file
+    print '[+] grabbing version'
 
-output = j.system.process.run("cd %s; git add %s" % (repopath, versionfile), True, False)
-output = j.system.process.run("cd %s; git commit -m 'environement updated'" % repopath, True, False)
-output = j.system.process.run("cd %s; git push" % repopath, True, False)
+    # get our local repository path
+    settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
+    repopath = settings.getStr('instance.ovc.path')
 
-print '[+] update committed'
+    versionfile = '%s/version.md' % repopath
+    statuscmd = 'jscode status -n "*" | grep lrev: | sed s/lrev://g | awk \'{ printf "%s,%s,%s\\n", $1, $2, $9 }\''
+
+    content = {}
+
+    output = j.system.process.run(statuscmd, False, True)
+    content['ovc_git'] = output[1].split("\n")
+
+    # grab version
+    for host in hosts:
+        ns = findService(host)
+        if ns:
+            content[host] = ns.execute(statuscmd).split("\r\n")
+
+    for ns in sshservices:
+        if ns.instance not in hosts:
+            content[ns.instance] = ns.execute(statuscmd).split("\r\n")
+
+    data = build(content)
+
+    """
+    Append old version
+    """
+
+    data += "\n\n\n"
+
+    for host in content:
+        data += "## %s\n\n" % host
+        data += "| Repository | Version (commit) |\n"
+        data += "|----|----|\n"
+        
+        
+        for line in content[host]:
+            items = line.split(',')
+            repo = '%s/%s' % (items[0], items[1])
+            data += "| %s | %s |\n" % (repo, items[2])
+        
+        data += "\n\n"
+
+    with open(versionfile, 'w') as f:
+        f.write(data)
+
+    output = j.system.process.run("cd %s; git add %s" % (repopath, versionfile), True, False)
+    output = j.system.process.run("cd %s; git commit -m 'environement updated'" % repopath, True, False)
+    output = j.system.process.run("cd %s; git push" % repopath, True, False)
+
+    print '[ ]'
+    print '[+] version committed'
+    print '[ ]'
+
+def updateGit():
+    # get our local repository path
+    settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
+    repopath = settings.getStr('instance.ovc.path')
+    
+    output = j.system.process.run("cd %s; git add ." % repopath, True, False)
+    output = j.system.process.run("cd %s; git commit -m 'environement updated (update script)'" % repopath, True, False)
+    output = j.system.process.run("cd %s; git push" % repopath, True, False)
+
+
+"""
+Worker stuff
+"""
+# Loading nodes list
+sshservices = j.atyourservice.findServices(name='node.ssh')
+sshservices.sort(key = lambda x: x.instance)
+
+allStep = True
+
+if options.self:
+    allStep = False
+    
+    print '[+] starting self-update'
+    
+    updateOpenvcloud(openvcloud)
+    
+    print '[ ]'
+    print '[+] self-update successful'
+    print '[ ]'
+    
+if options.restartCloud:
+    allStep = False
+    
+    print '[+] restarting cloudspace'
+    
+    restartCloudspace(hosts)
+    
+    print '[ ]'
+    print '[+] cloudspace restarted'
+    print '[ ]'
+
+if options.restartNodes:
+    allStep = False
+    
+    print '[+] restarting nodes'
+    
+    restartNodes(sshservices, hosts)
+    
+    print '[ ]'
+    print '[+] node restarted'
+    print '[ ]'
+
+if options.update:
+    allStep = False
+    
+    print '[+] updating cloudspace and nodes'
+    
+    updateLocal()
+    updateNodes(sshservices, hosts)
+    updateCloudspace(hosts)
+    
+    print '[ ]'
+    print '[+] node and cloudspace updated'
+    print '[ ]'
+
+if options.updateNodes:
+    allStep = False
+    
+    print '[+] updating all nodes'
+    
+    updateNodes(sshservices, hosts)
+    
+    print '[ ]'
+    print '[+] all nodes updated'
+    print '[ ]'
+    
+if options.updateCloud:
+    allStep = False
+    
+    print '[+] updating cloudspace'
+    
+    updateLocal()
+    updateCloudspace(hosts)
+    
+    print '[ ]'
+    print '[+] cloudspace updated'
+    print '[ ]'
+
+if options.report:
+    allStep = False
+    
+    print '[+] reporting installed versions'
+    
+    versionBuilder(sshservices, hosts)
+    
+    print '[ ]'
+    print '[+] reporting done'
+    print '[ ]'
+
+if options.commit:
+    allStep = False
+    
+    print '[+] updating ovcgit repository'
+    
+    updateGit()
+    
+    print '[ ]'
+    print '[+] repository up-to-date'
+    print '[ ]'
+    
+if allStep:
+    print '[+] processing complete upgrade'
+    
+    updateLocal()
+    updateCloudspace(hosts)
+    updateNodes(sshservices, hosts)
+    restartCloudspace(hosts)
+    restartNodes(sshservices, hosts)
+    versionBuilder(sshservices, hosts)
+    
+    print '[ ]'
+    print '[+] everything done'
+    print '[ ]'
+
+
+j.application.stop()
