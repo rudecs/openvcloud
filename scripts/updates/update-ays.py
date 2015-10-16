@@ -11,7 +11,12 @@ def restart(nodessh):
     print ''
     print '[+] restarting host\'s services: %s' % nodessh.instance
     print ''
-    nodessh.execute('ays restart')
+    nodessh.execute('ays restart -n redis')
+    nodessh.execute('ays restart -n statsd-collector')
+    nodessh.execute('ays restart -n nginx')
+    nodessh.execute('fuser -k 4446/tcp; ays start -n jsagent')
+    nodessh.execute('ays restart -n vncproxy')
+
 
 """
 Markdown stuff
