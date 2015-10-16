@@ -219,9 +219,7 @@ def versionBuilder(sshservices, hosts):
     output = j.system.process.run("cd %s; git commit -m 'environement updated'" % repopath, True, False)
     output = j.system.process.run("cd %s; git push" % repopath, True, False)
 
-    print '[ ]'
     print '[+] version committed'
-    print '[ ]'
 
 def updateGit():
     # get our local repository path
