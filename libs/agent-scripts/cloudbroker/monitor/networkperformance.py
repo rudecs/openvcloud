@@ -11,7 +11,7 @@ enable = True
 async = True
 log = True
 queue = 'io'
-interval = 30 * 600
+interval = 30 * 60
 roles = ['storagenode']
 category = "monitor.healthcheck"
 
