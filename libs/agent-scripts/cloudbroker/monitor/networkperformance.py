@@ -13,7 +13,7 @@ log = True
 queue = 'io'
 interval = 30 * 600
 roles = ['storagenode']
-category = 'monitoring'
+category = "monitor.healthcheck"
 
 class OpenvStorage():
     def __init__(self):

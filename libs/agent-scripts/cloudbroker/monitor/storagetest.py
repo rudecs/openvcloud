@@ -7,12 +7,12 @@ organization = 'cloudscalers'
 name = 'storagestest'
 author = "deboeckj@codescalers.com"
 version = "1.0"
-category = "cloudbroker"
+category = "monitor.healthcheck"
 roles = ['cpunode']
 period = 60 * 30 # 30min
 enable = True
 async = False
-log = False
+log = True
 
 def action():
     import time
@@ -76,12 +76,15 @@ def action():
 
     match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
     speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
-    msg = 'Measured speed write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
+    msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
+    status = 'OK'
     print msg
     if speed < 50:
+        status = 'WARNING'
         eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
         eco.process()
     pcl.actors.cloudapi.machines.delete(vmachineId)
+    return [{'message': msg, 'category': 'Storage Test', 'state': status}]
 
 if __name__ == '__main__':
     print action()
