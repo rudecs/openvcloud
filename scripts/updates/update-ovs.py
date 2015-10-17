@@ -72,7 +72,7 @@ else:
 
 
 """ Alba """
-if "alba" in update or True:
+if "alba" in update:
     alreadyup = False
     """ Stuff """
     
