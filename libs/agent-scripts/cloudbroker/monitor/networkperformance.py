@@ -3,7 +3,7 @@ import sys
 import re
 import json
 
-organization = "0-complexity"
+organization = "cloudscalers"
 descr = 'Perform bandwith test'
 author = "hamdy.farag@codescalers.com"
 order = 1
