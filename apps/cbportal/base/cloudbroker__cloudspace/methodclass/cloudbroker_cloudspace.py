@@ -14,6 +14,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.netmgr = self.cb.actors.jumpscale.netmgr
         self.libvirt_actor = self.cb.actors.libcloud.libvirt
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
+        self.actors = self.cb.actors.cloudapi
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -211,3 +212,8 @@ class cloudbroker_cloudspace(BaseActor):
         userId = user['id']
         self.cloudspaces_actor.deleteUser(cloudspaceId, userId)
         return True
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def deletePortForward(self, cloudspaceId, ruleId, **kwargs):
+        return self.actors.portforwarding.delete(cloudspaceId, ruleId)

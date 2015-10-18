@@ -83,6 +83,13 @@ h2. Cloud Space: ${name}
   input:
    - username
 
+- display: Delete Portforwarding
+  action: /restmachine/cloudbroker/cloudspace/deletePortForward
+  hide: true
+  reload: false
+  data:
+   cloudspaceId: $$id
+
 #- display: Add Extra IP
 #  action: /restmachine/cloudbroker/cloudspace/addExtraIP
 #  data:
@@ -125,9 +132,9 @@ h3. Users Access
 {% endfor %}
 
 h3. Port Fowardings
-||Source IP||Source Port||Destination IP||Destination Port||
+||Source IP||Source Port||Destination IP||Destination Port||Delete||
 {% for rule in network.tcpForwardRules -%}
-|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-ruleId:'${loop.index -1}'}}|
 {% endfor %}
 
 h3. Virtual Machines

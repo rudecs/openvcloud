@@ -83,3 +83,10 @@
         """"
         var:cloudspaceId int,,Id of the cloudspace
         var:username str,,name of the user to be removed
+
+    method:deletePortForward
+        """
+        Deletes a port forwarding rule for a machine
+        """
+        var:cloudspaceId int,, ID of cloudspace
+        var:ruleId int,,Portforwarding rule id
