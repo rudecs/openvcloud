@@ -83,10 +83,10 @@ class OpenvStorage():
             output = sshclient.run('iperf -c %s --format m ' % self.localIp)
             output = output.split(' ')
             bandwidth = float(output[-2])
-            result['message'] = json.dumps({'IP': ip, 'bandwidth': '%s %s' % (bandwidth, 'Mbits/s')})
+            msg = "Bandwith between %s and %s reached %s" % (self.localIp, ip, bandwidth)
+            result['message'] = msg
             result['state'] = self.getbandwidthState(bandwidth)
             if result['state'] != 'OK':
-                msg = "Bandwith between %s and %s is not sufficient reached %s" % (self.localIp, ip)
                 print msg
                 eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
                 eco.process()
