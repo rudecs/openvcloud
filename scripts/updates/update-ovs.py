@@ -109,6 +109,10 @@ if "alba" in update:
     services = getOvsStuffName(sshservices, "alba-rebalancer")
     restartServices(services)
     
+    # Post upgrade
+    executeOnNode(sshservices, 'python -c "import sys; sys.path.append(\'/opt/OpenvStorage\'); from ovs.dal.helpers import Migration; Migration.migrate()"')
+    executeOnNodes(sshservices, 'python /opt/code/git/0-complexity/openvcloud/scripts/updates/ovs-post-upgrade.py')
+    
 else:
     print '[+] alba is up-to-date'
 
