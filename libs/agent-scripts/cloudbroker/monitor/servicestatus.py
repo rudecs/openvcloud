@@ -36,10 +36,7 @@ def action():
         if pkg.is_installed:
             state = 'OK'
             version = pkg.installed.version
-        else:
-            state = 'ERROR'
-            version = 'N/A'
-        ovsresults.append({'message': '*Name:* %s. *Version:* %s' % (pkg.name, version), 'category': 'OVS Packages', 'state': state})
+            ovsresults.append({'message': '*Name:* %s. *Version:* %s' % (pkg.name, version), 'category': 'OVS Packages', 'state': state})
 
     return ovsresults
     
