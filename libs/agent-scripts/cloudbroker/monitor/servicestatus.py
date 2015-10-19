@@ -41,7 +41,7 @@ def action():
             version = 'N/A'
         ovsresults.append({'message': '*Name:* %s. *Version:* %s' % (pkg.name, version), 'category': 'OVS Packages', 'state': state})
 
-        return ovsresults
+    return ovsresults
     
 
 if __name__ == '__main__':
