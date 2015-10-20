@@ -3,7 +3,7 @@ import sys
 import re
 import json
 
-organization = "0-complexity"
+organization = "cloudscalers"
 descr = 'Perform bandwith test'
 author = "hamdy.farag@codescalers.com"
 order = 1
@@ -11,9 +11,9 @@ enable = True
 async = True
 log = True
 queue = 'io'
-interval = 30 * 600
+period = 30 * 60
 roles = ['storagenode']
-category = 'monitoring'
+category = "monitor.healthcheck"
 
 class OpenvStorage():
     def __init__(self):
@@ -83,10 +83,10 @@ class OpenvStorage():
             output = sshclient.run('iperf -c %s --format m ' % self.localIp)
             output = output.split(' ')
             bandwidth = float(output[-2])
-            result['message'] = json.dumps({'IP': ip, 'bandwidth': '%s %s' % (bandwidth, 'Mbits/s')})
+            msg = "Bandwith between %s and %s reached %s" % (self.localIp, ip, bandwidth)
+            result['message'] = msg
             result['state'] = self.getbandwidthState(bandwidth)
             if result['state'] != 'OK':
-                msg = "Bandwith between %s and %s is not sufficient reached %s" % (self.localIp, ip)
                 print msg
                 eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
                 eco.process()
