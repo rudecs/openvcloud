@@ -6,9 +6,11 @@ angular.module('cloudscalers.controllers')
 
         var uri = new URI($window.location);
         var reference = uri.search(true).reference;
+        $scope.usagereportLoader = true;
         Account.getUsage($scope.currentAccount, reference).
           then(function(result){
                   $scope.usagereport = result;
+                  $scope.usagereportLoader = false;
                 },
                 function(reason){
                   // in case he don't have access to the page redirect to home

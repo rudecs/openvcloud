@@ -1,5 +1,9 @@
 {{html:
 <div ng-controller="CloudSpaceManagementController">
+<div class="gray-loader" ng-show="cloudSpaceSettingsLoader">
+  Loading, Please wait..
+</div>
+	<div class="hide" ng-class="{ 'show': cloudSpaceSettingsLoader == false }">
 	<h1>Settings for Cloud Space {[currentAccount.name]} / {[currentSpace.name]}</h1>
 	<br>
 	<tabset class="clear-both">
@@ -45,6 +49,7 @@
 			</div>
 		</tab>
 	</tabset>
+</div>
 </div>
 }}
 

@@ -44,6 +44,7 @@ angular.module('cloudscalers.controllers')
                     $scope.machinesLoader = false;
                   },
                   function(reason){
+                      $scope.machinesLoader = false;
                       $ErrorResponseAlert(reason);
                   }
               );

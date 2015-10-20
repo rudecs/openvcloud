@@ -6,16 +6,18 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.$watch('currentSpace.id',function(){
-
+            $scope.cloudSpaceSettingsLoader = true;
             CloudSpace.get($scope.currentSpace.id).then(
                     function(data) {
                         $scope.cloudSpaceDetails = data;
                         LocationsService.list().then(function(locations) {
                             $scope.currentLocation =  _.findWhere(locations, {locationCode: $scope.currentSpace.location});
+                            $scope.cloudSpaceSettingsLoader = false;
                         });
                     },
                     function(reason) {
                         $ErrorResponseAlert(reason);
+                        $scope.cloudSpaceSettingsLoader = false;
                     }
                     );
         });
@@ -58,6 +60,6 @@ angular.module('cloudscalers.controllers')
                     });
             });
         }
-        
+
 
     }]);
