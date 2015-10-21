@@ -4,7 +4,10 @@
 
 
 <div ng-controller="UsageController">
-
+<div class="gray-loader" ng-show="usagereportLoader">
+  Loading, Please wait..
+</div>
+<div class="hide" ng-class="{ 'show': usagereportLoader == false }">
 	<h1>Usage report {[millisToUTCDate(usagereport.fromTime  * 1000) | date:'MMMM yyyy']}</h1>
 			<hr />
 			<div ng-repeat="cloudspace in usagereport.cloudspaces">
@@ -49,6 +52,7 @@
 				</div>
 				<hr />
 			</div>
+</div>
 </div>
 <script src="/$$space/.files/js/controllers/Billing/UsageController.js" type="text/javascript"></script>
 }}

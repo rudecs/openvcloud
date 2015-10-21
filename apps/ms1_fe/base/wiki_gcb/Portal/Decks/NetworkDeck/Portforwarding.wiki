@@ -9,12 +9,15 @@
 	   Easily configure your port forwards to your Virtual Machines! Please take a small waiting period into account on a new deployed virtual machine, as it can still be starting or that your Defense Shield might still be in the process of assigning the IP address.
 	</p>
 	<div class="margin-vertical-large" ng-controller="PortforwardingController">
-		<div>
+		<div class="gray-loader" ng-show="portforwardLoader">
+		  Loading, Please wait..
+		</div>
+		<div class="hide" ng-class="{ 'show': portforwardLoader == false }">
 			<div class="margin-bottom-small">
 				<button class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED' && currentUserAccessrightOnCloudSpace != 'Admin'" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
-			<table class="table table-striped table-bordered" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
+			<table class="table table-striped table-bordered" ng-show="currentUserAccessrightOnCloudSpace == 'Admin' && portforwardLoader == false" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
 				<tr>
 					<th><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
 					<th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>

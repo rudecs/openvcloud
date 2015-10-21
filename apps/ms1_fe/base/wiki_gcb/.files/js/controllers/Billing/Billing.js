@@ -19,13 +19,17 @@ angular.module('cloudscalers.controllers')
     }
 
     $scope.$watch('currentAccount', function () {
+      $scope.transactionsLoader = true;
+      $scope.transactions = {};
       if($scope.currentAccount){
         Account.getCreditHistory($scope.currentAccount).then(
             function(result){
                 $scope.transactions = result;
+                $scope.transactionsLoader = false;
             },
             function(reason) {
                 $ErrorResponseAlert(reason);
+                $scope.transactionsLoader = false;
             }
         );
       }

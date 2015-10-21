@@ -28,7 +28,7 @@
 			</tbody>
 		</table>
 		</div>
-		  <p ng-show="message" class="alert alert-success span2 txt-center">{[statusMessage]}</p>
+		  <p ng-show="message" class="alert alert-success span2 txt-center padding-all-small txt-gray">{[statusMessage]}</p>
 	</div>
 </div>
 <script type="text/ng-template" id="portForwardDialog.html">

@@ -9,7 +9,6 @@ author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
 category = "deploy.routeros"
-period = 0  # always in sec
 enable = True
 async = True
 queue = 'hypervisor'
