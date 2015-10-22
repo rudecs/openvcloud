@@ -135,7 +135,8 @@ class Vnas(object):
             self.ovc.deleteMachine(self.spacesecret, obj['name'])
 
     def create_master(self):
-        ip, port, passwd = self.create_vm('master')
+        vmName = 'master'
+        ip, port, passwd = self.create_vm(vmName)
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
         self.config_vm(cl)
         data = {
