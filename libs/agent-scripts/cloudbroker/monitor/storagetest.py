@@ -9,9 +9,10 @@ version = "1.0"
 category = "monitor.healthcheck"
 roles = ['cpunode']
 period = 60 * 30 # 30min
+timeout = 60 * 5
 enable = True
 async = True
-queue = 'process'
+queue = 'io'
 log = True
 
 def action():
