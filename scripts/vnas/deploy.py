@@ -217,8 +217,9 @@ class Vnas(object):
             'instance.agent.nid': nid,
             'instance.vnas.refresh': 10,  # TODO allow configuration of this value ??
             'instance.vnas.blocksize': 16777216,
+            'instance.vnas.timeout': 10,
         }
-        for store in stores.iteritems():
+        for store in stores:
             data['instance.stores.%s' % store['id']] = store['addr']
 
         cmd = self._format_ays_cmd('install', 'vnas_node', str(id), data)
