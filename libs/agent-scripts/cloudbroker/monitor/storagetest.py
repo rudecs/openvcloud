@@ -24,6 +24,11 @@ def action():
     ccl = j.clients.osis.getNamespace('cloudbroker')
     accounts = ccl.account.search({'name': ACCOUNTNAME})[1:]
     loc = ccl.location.search({})[1]['locationCode']
+    images = ccl.image.search({'name': 'Ubuntu 14.04 x64'})[1:]
+    if not images:
+        return [{'message': "Image not available (yet)", 'category': 'Storage Test', 'state': "ERROR"}]
+    imageId = images[0]['id']
+
     if not accounts:
         print 'Creating Account'
         accountId = pcl.actors.cloudbroker.account.create(ACCOUNTNAME, 'admin', None, loc)
@@ -37,7 +42,6 @@ def action():
         print 'Deploying CloudSpace'
         pcl.actors.cloudbroker.cloudspace.deployVFW(cloudspace['id'])
 
-    imageId = ccl.image.search({'name': 'Ubuntu 14.04 x64'})[1]['id']
     size = ccl.size.search({'memory': 512})[1]
     sizeId = size['id']
     diskSize = min(size['disks'])
