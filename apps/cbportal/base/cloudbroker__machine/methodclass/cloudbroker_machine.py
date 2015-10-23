@@ -49,16 +49,6 @@ class cloudbroker_machine(BaseActor):
         if vmachine.status == 'DESTROYED' or not vmachine.status:
             raise exceptions.BadRequest('Machine %s is invalid' % machineId)
 
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName and cloudspace.name != spaceName:
-            raise exceptions.BadRequest(
-                "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName))
-
-        if accountName:
-            account = self.models.account.get(cloudspace.accountId)
-            if account.name != accountName:
-                raise exceptions.BadRequest(
-                    "Machine's account %s does not match the given account name %s" % (account.name, accountName))
         return vmachine
 
     @auth(['level1', 'level2', 'level3'])
