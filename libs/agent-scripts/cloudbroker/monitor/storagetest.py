@@ -50,6 +50,7 @@ def action():
                                                  imageId=imageId, sizeId=sizeId,
                                                  disksize=diskSize, stackid=stack['id'])
     now = time.time()
+    status = 'OK'
     try:
         ip = 'Undefined'
         while now + 60 > time.time() and ip == 'Undefined':
@@ -58,7 +59,7 @@ def action():
             vmachine = pcl.actors.cloudapi.machines.get(vmachineId)
             ip = vmachine['interfaces'][0]['ipAddress']
 
-        publicports = [1999]
+        publicports = [1999 + j.application.whoAmI.nid * 100]
         for forward in pcl.actors.cloudapi.portforwarding.list(cloudspace['id']):
             publicports.append(int(forward['publicPort']))
         publicport = max(publicports) + 1
@@ -66,27 +67,30 @@ def action():
         pcl.actors.cloudapi.portforwarding.create(cloudspace['id'], cloudspace['publicipaddress'], publicport, vmachineId, 22, 'tcp')
         publicip = str(netaddr.IPNetwork(cloudspace['publicipaddress']).ip)
         account = vmachine['accounts'][0]
-        connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
-        connection.user(account['login'])
-        output = connection.run("dd if=/dev/zero of=500mb.dd bs=4k count=128k")
-        try:
-            print 'Perfoming internet test'
-            connection.run('ping -c 1 8.8.8.8')
-        except:
-            msg = "Could not connect to internet from vm on nodes %s" % stack['name']
-            print msg
-            eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
-            eco.process()
+        if not j.system.net.waitConnectionTest(publicip, publicport, 60):
+            status = 'ERROR'
+            msg = 'Could not connect to VM over public interface'
+        else:
+            connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
+            connection.user(account['login'])
+            output = connection.run("dd if=/dev/zero of=500mb.dd bs=4k count=128k")
+            try:
+                print 'Perfoming internet test'
+                connection.run('ping -c 1 8.8.8.8')
+            except:
+                msg = "Could not connect to internet from vm on node %s" % stack['name']
+                print msg
+                status = 'ERROR'
 
-        match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
-        speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
-        msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
-        status = 'OK'
-        print msg
-        if speed < 50:
-            status = 'WARNING'
-            eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
-            eco.process()
+            match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
+            speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
+            msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
+            print msg
+            if speed < 50:
+                status = 'WARNING'
+            if status != 'OK':
+                eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
+                eco.process()
     finally:
         pcl.actors.cloudapi.machines.delete(vmachineId)
     return [{'message': msg, 'category': 'Storage Test', 'state': status}]
