@@ -295,3 +295,18 @@
         var:spaceName str,,Space name
         var:description str,, new description
         var:reason str,,Reason
+
+    method:connectToPulicNetwork
+        """
+        Connect to CPU node public network
+        """
+        var:machineId int,, ID of machine
+        result:bool
+        
+    method:detachFromPublicNetwork
+        """
+        Detach from CPU node public network
+        """
+        var:machineId int,, ID of machine
+        result:bool
+ 

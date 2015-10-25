@@ -241,7 +241,18 @@
    machineId: $$id
   input:
   - tagName
-
+   
+- display: Attach to public network
+  action: /restmachine/cloudbroker/machine/connectToPulicNetwork
+  reload: true
+  data:
+   machineId: $$id
+  
+- display: Detach from public network
+  action: /restmachine/cloudbroker/machine/detachFromPublicNetwork
+  reload: true
+  data:
+   machineId: $$id
 }}
 
 {{movemachine: machineId:$$id accountName:${accountName}}}
