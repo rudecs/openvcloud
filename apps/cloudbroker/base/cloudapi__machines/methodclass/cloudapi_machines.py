@@ -240,12 +240,11 @@ class cloudapi_machines(BaseActor):
         result
 
         """
-        # Detach from public network of cpu node if attached
-        self.detachFromPublicNetwork(machineId)
         provider, node = self._getProviderAndNode(machineId)
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
         vmachinemodel = self._getMachine(machineId)
+        self. _detachPublicNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
             vmachinemodel.status = 'DESTROYED'
@@ -698,7 +697,7 @@ class cloudapi_machines(BaseActor):
         if not publicipaddress:
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         nic = vmachine.new_nic()
-        nic.ipAddress = str(publicipaddress.ip)
+        nic.ipAddress = str(publicipaddress)
         nic.type = 'PUBLIC'
         self.models.vmachine.set(vmachine)
         provider.client.attach_public_network(node, networkid)
@@ -716,8 +715,14 @@ class cloudapi_machines(BaseActor):
                 continue
             
             provider.client.detach_public_network(node, networkid)
-            nic = vmachine.nics.remove(nic)
+        self._detachPublicNetworkFromModel(vmachine)
+        return True
+
+    def _detachPublicNetworkFromModel(self, vmachine):
+        for nic in vmachine.nics:
+            nicdict = nic.obj2dict()
+            if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
+                continue
+            vmachine.nics.remove(nic)
             self.models.vmachine.set(vmachine)
             self.network.releasePublicIpAddress(nic.ipAddress)
-            return True
-        return False

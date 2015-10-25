@@ -83,7 +83,8 @@ class LibvirtUtil(object):
             domain = self.connection.defineXML(xml)
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
             return True
-        return domain.create() == 0
+        domain.create() == 0
+        return domain.XMLDesc()
 
     def shutdown(self, id):
         if isLocked(id):
