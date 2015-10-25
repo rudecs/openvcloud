@@ -710,16 +710,13 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
         
-        for i, nic in  enumerate(vmachine.nics):
-            if nic.ipAddress=='Undefined':
-                continue
-            
+        for nic in vmachine.nics:
             nicdict = nic.obj2dict()
-            if not 'type' in nicdict or not nicdict['type'] == 'PUBLIC':
+            if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
             
             provider.client.detach_public_network(node, networkid)
-            nic = vmachine.nics.pop(i)
+            nic = vmachine.nics.remove(nic)
             self.models.vmachine.set(vmachine)
             self.network.releasePublicIpAddress(nic.ipAddress)
             return True
