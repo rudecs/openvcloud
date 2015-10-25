@@ -242,15 +242,16 @@
   input:
   - tagName
    
-- display: Attach to public network
-  action: /restmachine/cloudbroker/machine/connectToPulicNetwork
+- display: Attach To Public Network
+  action: /restmachine/cloudbroker/machine/attachPublicNetwork
   reload: true
   data:
    machineId: $$id
   
-- display: Detach from public network
-  action: /restmachine/cloudbroker/machine/detachFromPublicNetwork
-  reload: true
+- display: Detach From Public Network
+  action: /restmachine/cloudbroker/machine/detachPublicNetwork
+  hide: true
+  reload: false
   data:
    machineId: $$id
 }}

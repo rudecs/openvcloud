@@ -296,16 +296,16 @@
         var:description str,, new description
         var:reason str,,Reason
 
-    method:connectToPulicNetwork
+    method:attachPublicNetwork
         """
-        Connect to CPU node public network
+        Connect to VM from public network
         """
         var:machineId int,, ID of machine
         result:bool
         
-    method:detachFromPublicNetwork
+    method:detachPublicNetwork
         """
-        Detach from CPU node public network
+        Detach from VM from public network
         """
         var:machineId int,, ID of machine
         result:bool

@@ -414,12 +414,12 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def connectToPulicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.connectToPulicNetwork(machineId)
+    def attachPublicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.attachPublicNetwork(machineId)
     
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def detachFromPublicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.detachFromPublicNetwork(machineId)
+    def detachPublicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.detachPublicNetwork(machineId)
     

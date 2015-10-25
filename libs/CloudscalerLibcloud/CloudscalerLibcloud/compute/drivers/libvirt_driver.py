@@ -491,5 +491,5 @@ class CSLibvirtNodeDriver():
         if interfacexml:
             domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
             return self._update_node(node, domxml)
-        return False
+
 

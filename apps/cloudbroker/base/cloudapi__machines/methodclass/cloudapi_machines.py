@@ -289,10 +289,11 @@ class cloudapi_machines(BaseActor):
             else:
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+                machine.nics[0].macAddress = node.extra['macaddress']
                 try:
                     ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
                     if ipaddress:
-                        machine.nics[0].ipAddress= ipaddress
+                        machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
                 except:
                     pass # VFW not deployed yet
@@ -685,7 +686,7 @@ class cloudapi_machines(BaseActor):
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
     
-    def connectToPulicNetwork(self, machineId, **kwargs):
+    def attachPublicNetwork(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         vmachine = self._getMachine(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
@@ -698,12 +699,13 @@ class cloudapi_machines(BaseActor):
             raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
         nic = vmachine.new_nic()
         nic.ipAddress = str(publicipaddress)
+        nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway})
         nic.type = 'PUBLIC'
         self.models.vmachine.set(vmachine)
         provider.client.attach_public_network(node, networkid)
         return True
 
-    def detachFromPublicNetwork(self, machineId, **kwargs):
+    def detachPublicNetwork(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         vmachine = self._getMachine(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)

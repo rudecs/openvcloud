@@ -245,14 +245,14 @@
         var:accessType str,, 'R' for read only access, 'W' for Write access
         result:bool
         
-    method:connectToPulicNetwork
+    method:attachPublicNetwork
         """
         Revokes user's access to a vmachine
         """
         var:machineId int,, ID of a vmachine
         result:bool
 
-    method:detachFromPublicNetwork
+    method:detachPublicNetwork
         """
         Revokes user's access to a vmachine
         """
