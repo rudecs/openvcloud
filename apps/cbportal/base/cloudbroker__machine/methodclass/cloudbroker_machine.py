@@ -411,3 +411,15 @@ class cloudbroker_machine(BaseActor):
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.actors.machines.update(machineId, description=description)
 #        self.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def connectToPulicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.connectToPulicNetwork(machineId)
+    
+    
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def detachFromPublicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.detachFromPublicNetwork(machineId)
+    
