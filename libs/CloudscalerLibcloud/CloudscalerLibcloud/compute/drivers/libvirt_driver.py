@@ -461,3 +461,27 @@ class CSLibvirtNodeDriver():
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
+    
+    def attach_public_network(self, node, networkid):
+        """
+        Attach Virtual machine to the cpu node public network
+        """
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        iface = ElementTree.SubElement(devices, 'interface')
+        iface.attrib['type'] = 'network'
+        ElementTree.SubElement(iface, 'source').attrib = {'network':'public'}
+        ElementTree.SubElement(iface, 'model').attrib = {'type':'virtio'}
+        ElementTree.SubElement(iface, 'target').attrib = {'dev':'pub-%s' % networkid}
+        return self._update_node(node, ElementTree.tostring(dom))
+
+    def detach_public_network(self, node, networkid):
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        deviceswithinterfaces = devices.findall('interface/target')
+        for device in deviceswithinterfaces:
+            if device.attrib['dev'] == 'pub-%s' % networkid:
+                deviceswithinterfaces.remove(device)
+        return self._update_node(node, ElementTree.tostring(dom))

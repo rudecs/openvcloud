@@ -3,6 +3,7 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib import authenticator, network
 import time
 import itertools
 
@@ -38,6 +39,7 @@ class cloudapi_machines(BaseActor):
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
+        self.network = network.Network(self.models)
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
@@ -238,6 +240,8 @@ class cloudapi_machines(BaseActor):
         result
 
         """
+        # Detach from public network of cpu node if attached
+        self.detachFromPublicNetwork(machineId)
         provider, node = self._getProviderAndNode(machineId)
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
@@ -681,3 +685,42 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
+    
+    def connectToPulicNetwork(self, machineId, **kwargs):
+        provider, node = self._getProviderAndNode(machineId)
+        vmachine = self._getMachine(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        networkid = cloudspace.networkId
+        netinfo = self.network.getPublicIpAddress(cloudspace.gid)
+        if netinfo is None:
+            raise RuntimeError("No available public IPAddresses")
+        pool, publicipaddress = netinfo
+        if not publicipaddress:
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+        nic = vmachine.new_nic()
+        nic.ipAddress = str(publicipaddress.ip)
+        nic.type = 'PUBLIC'
+        self.models.vmachine.set(vmachine)
+        provider.client.attach_public_network(node, networkid)
+        return True
+
+    def detachFromPublicNetwork(self, machineId, **kwargs):
+        provider, node = self._getProviderAndNode(machineId)
+        vmachine = self._getMachine(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        networkid = cloudspace.networkId
+        
+        for i, nic in  enumerate(vmachine.nics):
+            if nic.ipAddress=='Undefined':
+                continue
+            
+            nicdict = nic.obj2dict()
+            if not 'type' in nicdict or not nicdict['type'] == 'PUBLIC':
+                continue
+            
+            provider.client.detach_public_network(node, networkid)
+            nic = vmachine.nics.pop(i)
+            self.models.vmachine.set(vmachine)
+            self.network.releasePublicIpAddress(nic.ipAddress)
+            return True
+        return False
