@@ -31,6 +31,7 @@ h2. Virtual Machine: ${name}
 
 
 h3. NICs
+{{action id:'action-AttachToPublicNetwork' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Attach To Public Network'}}
 ${nics}
 
 h3. Disks

@@ -27,7 +27,8 @@ def restart(nodessh):
     print ''
     print '[+] restarting host\'s services: %s' % nodessh.instance
     print ''
-    nodessh.execute('ays restart')
+    nodessh.execute('ays stop')
+    nodessh.execute('ays start')
 
 def restartNode(nodessh):
     print ''

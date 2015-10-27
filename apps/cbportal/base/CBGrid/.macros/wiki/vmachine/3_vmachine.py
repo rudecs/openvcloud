@@ -1,6 +1,7 @@
 import datetime
 import JumpScale.grid.osis
 import JumpScale.baselib.units
+from xml.etree import ElementTree
 try:
     import ujson as json
 except Exception:
@@ -73,14 +74,21 @@ def main(j, args, params, tags, tasklet):
 
     nwinfo = dict()
     try:
-        libvirtclient = j.clients.osis.getNamespace('libvirt', osiscl)
-        nwinfo = libvirtclient.node.get(str(obj.referenceId)).dump()
-        data['nics'] = '||Name||MAC Address||IP Address||\n'
-
-        for nic in obj.nics:
-            data['nics'] += '|%s|%s|%s|\n' % (nic.deviceName or 'N/A', nwinfo.get('macaddress', 'N/A') or 'N/A', nic.ipAddress or 'N/A')
-    except Exception:
-        data['nics'] = 'NIC information is not available'
+        libcloudclient = j.clients.osis.getNamespace('libcloud', osiscl)
+        machinexml = libcloudclient.libvirtdomain.get("domain_%s" % obj.referenceId)
+        tree = ElementTree.fromstring(machinexml)
+        data['nics'] = '||Name||MAC Address||IP Address||Gateway||Delete||\n'
+        for nic, interface in zip(obj.nics, tree.iterfind('devices/interface')):
+            macentry = interface.find('mac')
+            mac = macentry.attrib['address'] if macentry is not None else 'N/A'
+            name = interface.find('target').attrib['dev']
+            action = ""
+            if name.startswith('pub'):
+                action = "{{action id:'action-DetachFromPublicNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
+            gateway = j.core.tags.getObject(nic.params or '').tags.get('gateway', 'N/A')
+            data['nics'] += "|%s |%s |%s |%s |%s|\n" % (name or 'N/A', mac, nic.ipAddress, gateway, action)
+    except Exception, e:
+        data['nics'] = 'NIC information is not available %s' % e
 
     data['disks'] = cbosis.disk.search({'id': {'$in': obj.disks}})[1:]
     diskstats = stats.get('diskinfo', [])

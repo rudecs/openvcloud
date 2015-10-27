@@ -392,7 +392,9 @@ class CSLibvirtNodeDriver():
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
-        return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)
+        xml = self._execute_agent_job('startmachine', queue='hypervisor', machineid=machineid, xml=xml)
+        self._set_persistent_xml(node, xml)
+        return True
 
     def ex_get_console_output(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -461,3 +463,33 @@ class CSLibvirtNodeDriver():
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
+    
+    def attach_public_network(self, node, networkid):
+        """
+        Attach Virtual machine to the cpu node public network
+        """
+        iface = ElementTree.Element('interface')
+        iface.attrib['type'] = 'network'
+        ElementTree.SubElement(iface, 'source').attrib = {'network':'public'}
+        ElementTree.SubElement(iface, 'model').attrib = {'type':'virtio'}
+        ElementTree.SubElement(iface, 'target').attrib = {'dev':'pub-%s' % networkid}
+        ifacexml = ElementTree.tostring(iface)
+        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
+        return self._update_node(node, domxml)
+
+    def detach_public_network(self, node, networkid):
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        interfacexml = None
+        for interface in devices.iterfind('interface'):
+            target = interface.find('target')
+            if target.attrib['dev'] == 'pub-%s' % networkid:
+                devices.remove(interface)
+                interfacexml = ElementTree.tostring(interface)
+                break
+        if interfacexml:
+            domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
+            return self._update_node(node, domxml)
+
+

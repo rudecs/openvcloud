@@ -60,6 +60,7 @@ h2. Cloud Space: ${name}
   - reason
 
 - display: Grant User Access
+  hide: true
   action: /restmachine/cloudbroker/cloudspace/addUser
   data:
    cloudspaceId: $$id
@@ -78,10 +79,10 @@ h2. Cloud Space: ${name}
 
 - display: Revoke User Access
   action: /restmachine/cloudbroker/cloudspace/deleteUser
+  hide: true
+  refresh: false
   data:
    cloudspaceId: $$id
-  input:
-   - username
 
 - display: Delete Portforwarding
   action: /restmachine/cloudbroker/cloudspace/deletePortForward
@@ -126,9 +127,10 @@ h3. Details
 |*Resource Limits*|${resourcelimits}|
 
 h3. Users Access
-||User Name||ACL||
+{{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
+||User Name||ACL||Revoke Access||
 {% for ace in acl -%}
-    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}|
+    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}| {{action deleterow:true id:'action-RevokeUserAccess' data-username:'${ace.usergroupId}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
 h3. Port Fowardings

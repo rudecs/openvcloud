@@ -295,3 +295,18 @@
         var:spaceName str,,Space name
         var:description str,, new description
         var:reason str,,Reason
+
+    method:attachPublicNetwork
+        """
+        Connect to VM from public network
+        """
+        var:machineId int,, ID of machine
+        result:bool
+        
+    method:detachPublicNetwork
+        """
+        Detach from VM from public network
+        """
+        var:machineId int,, ID of machine
+        result:bool
+ 
