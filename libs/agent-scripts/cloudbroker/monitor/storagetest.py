@@ -50,7 +50,7 @@ def action():
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
     name = '%s on %s' % (timestamp, stack['name'])
     print 'Deleting existing vms'
-    vms = ccl.vmachine.search({'stackId': stack['id'], cloudspaceId=cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+    vms = ccl.vmachine.search({'stackId': stack['id'], 'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
     for vm in vms:
         try:
             pcl.actors.cloudbroker.machine.delete(vm['id'])
