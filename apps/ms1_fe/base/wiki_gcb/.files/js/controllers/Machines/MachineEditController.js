@@ -237,7 +237,9 @@ angular.module('cloudscalers.controllers')
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
                 $scope.snapshotsLoader = false;
-                LoadingDialog.hide();
+                $timeout(function () {
+                  LoadingDialog.hide();
+                }, 1500);
                 $scope.refreshSpinner = false;
             }, function(reason) {
                 $scope.refreshSpinner = false;
@@ -280,7 +282,9 @@ angular.module('cloudscalers.controllers')
                         updatesnapshots();
                     },
                     function(reason){
-                        LoadingDialog.hide();
+                        $timeout(function () {
+                          LoadingDialog.hide();
+                        }, 1500);
                         $ErrorResponseAlert(reason);
                     }
                 );
