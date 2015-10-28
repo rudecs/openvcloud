@@ -66,9 +66,9 @@ class OpenvStorage():
         """
         """
         bandwidth = bandwidth
-        if bandwidth < self.speed / 2:
+        if bandwidth < self.speed * 0.1:
             return 'ERROR'
-        elif bandwidth < self.speed * 0.9:
+        elif bandwidth < self.speed * 0.5:
             return 'WARNING'
         return 'OK'
     
