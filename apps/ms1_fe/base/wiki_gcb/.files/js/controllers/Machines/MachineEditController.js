@@ -17,8 +17,12 @@ angular.module('cloudscalers.controllers')
         function getMachine(){
             Machine.get($routeParams.machineId).then(function(data) {
                 $scope.machine = data;
+                $timeout(function () {
+                  LoadingDialog.hide();
+                }, 1500);
                 },
                 function(reason) {
+                  LoadingDialog.hide();
                     $ErrorResponseAlert(reason);
                 });
         }
@@ -29,10 +33,9 @@ angular.module('cloudscalers.controllers')
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
                 getMachine();
                 clearDisk();
-                LoadingDialog.hide();
             },function(reason){
-                $ErrorResponseAlert(reason);
                 LoadingDialog.hide();
+                $ErrorResponseAlert(reason);
             });
         };
 
@@ -234,7 +237,9 @@ angular.module('cloudscalers.controllers')
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
                 $scope.snapshotsLoader = false;
-                LoadingDialog.hide();
+                $timeout(function () {
+                  LoadingDialog.hide();
+                }, 1500);
                 $scope.refreshSpinner = false;
             }, function(reason) {
                 $scope.refreshSpinner = false;
@@ -277,7 +282,9 @@ angular.module('cloudscalers.controllers')
                         updatesnapshots();
                     },
                     function(reason){
-                        LoadingDialog.hide();
+                        $timeout(function () {
+                          LoadingDialog.hide();
+                        }, 1500);
                         $ErrorResponseAlert(reason);
                     }
                 );
