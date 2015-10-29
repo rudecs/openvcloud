@@ -83,7 +83,7 @@ def main(j, args, params, tags, tasklet):
             mac = macentry.attrib['address'] if macentry is not None else 'N/A'
             name = interface.find('target').attrib['dev']
             action = ""
-            if name.startswith('pub'):
+            if name.endswith('pub'):
                 action = "{{action id:'action-DetachFromPublicNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
             gateway = j.core.tags.getObject(nic.params or '').tags.get('gateway', 'N/A')
             data['nics'] += "|%s |%s |%s |%s |%s|\n" % (name or 'N/A', mac, nic.ipAddress, gateway, action)

@@ -472,7 +472,7 @@ class CSLibvirtNodeDriver():
         iface.attrib['type'] = 'network'
         ElementTree.SubElement(iface, 'source').attrib = {'network':'public'}
         ElementTree.SubElement(iface, 'model').attrib = {'type':'virtio'}
-        ElementTree.SubElement(iface, 'target').attrib = {'dev':'pub-%s' % networkid}
+        ElementTree.SubElement(iface, 'target').attrib = {'dev':'%s-pub' % node.name}
         ifacexml = ElementTree.tostring(iface)
         domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
         return self._update_node(node, domxml)
