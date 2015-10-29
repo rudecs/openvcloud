@@ -1,14 +1,16 @@
 angular.module('cloudscalers.controllers', ['ngCookies'])
     .controller('SessionController', ['$scope', 'User', '$window', '$timeout','$location', 'SessionData', '$cookies', function($scope, User, $window, $timeout,$location, SessionData, $cookies) {
         $scope.user = {username : '', password:'', company: '', vat: ''};
-        
+
         $scope.login_error = undefined;
+        SessionData.setUser({ username: '', api_key: '' });
+
         var portal_session_cookie = $cookies["beaker.session.id"];
         if(portal_session_cookie){
             User.getPortalLoggedinUser().then(function(username) {
                 if(username != "guest"){
                     User.portalLogin(username, portal_session_cookie);
-        			var target = 'Decks';
+        			      var target = 'Decks';
                     var uri = new URI($window.location);
                     uri.filename(target);
                     $window.location = uri.toString();
