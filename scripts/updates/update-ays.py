@@ -252,7 +252,7 @@ if options.self:
     print '[+] self-update successful'
     print '[ ]'
     
-if options.restartCloud:
+if options.restartCloud or options.restart:
     allStep = False
     
     print '[+] restarting cloudspace'
@@ -263,7 +263,7 @@ if options.restartCloud:
     print '[+] cloudspace restarted'
     print '[ ]'
 
-if options.restartNodes:
+if options.restartNodes or options.restart:
     allStep = False
     
     print '[+] restarting nodes'
