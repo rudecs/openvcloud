@@ -53,7 +53,7 @@ def action():
     vms = ccl.vmachine.search({'stackId': stack['id'], 'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
     for vm in vms:
         try:
-            pcl.actors.cloudbroker.machine.delete(vm['id'])
+            pcl.actors.cloudbroker.machine.destroy(vm['id'])
         except Exception, e:
             print 'Failed to delete vm %s' % e
     print 'Deploying VM'
