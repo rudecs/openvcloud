@@ -44,6 +44,7 @@ class Vnas(object):
         self.stores = []
         self.ovc = j.tools.ms1.get(apiURL=api_url)
         self.spacesecret = None
+        self.masterkey = None
 
     def _format_ays_cmd(self, action, service_name, service_instance='main', args={}, parent=''):
         """
@@ -133,6 +134,12 @@ class Vnas(object):
     def delete_all_vm(self):
         for obj in self.ovc.listMachinesInSpace(self.spacesecret):
             self.ovc.deleteMachine(self.spacesecret, obj['name'])
+    
+    def allow_masterkey(self, remote):
+        if self.masterkey is not None:
+            remote.execute("echo '%s' >> /root/.ssh/authorized_keys" % self.masterkey)
+        else:
+            print '[-] master key not set'
 
     def create_master(self):
         vmName = 'master'
@@ -147,6 +154,13 @@ class Vnas(object):
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
         cl.package_install('iozone3')
+        
+        # building own ssh key
+        cl.ssh_keygen('root', 'rsa')
+        
+        # allow himself
+        self.masterkey = cl.run("cat /root/.ssh/id_rsa.pub")
+        cl.run("cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys")
 
         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
         return obj['interfaces'][0]['ipAddress']
@@ -162,6 +176,8 @@ class Vnas(object):
         cmd = self._format_ays_cmd('install', 'vnas_ad', 'main')
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
+        
+        self.allow_masterkey(cl)
 
         obj = self.ovc.getMachineObject(self.spacesecret, 'vnas_ad')
         return obj['interfaces'][0]['ipAddress']
@@ -198,6 +214,8 @@ class Vnas(object):
         # make sure nfs server is running
         cl.run('/etc/init.d/nfs-kernel-server restart')
         cl.package_install('iozone3')
+        
+        self.allow_masterkey(cl)
 
         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
         ip = obj['interfaces'][0]['ipAddress']
@@ -221,6 +239,8 @@ class Vnas(object):
         }
         for store in stores:
             data['instance.stores.%s' % store['id']] = store['addr']
+        
+        self.allow_masterkey(cl)
 
         cmd = self._format_ays_cmd('install', 'vnas_node', str(id), data)
         print "[+] execute %s" % (cmd)
