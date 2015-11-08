@@ -59,6 +59,10 @@ angular.module('cloudscalers.controllers')
             	$scope.updatePortforwardList();
             }
 
+            $scope.machineIsManageable = function(machine){
+                return machine.status && machine.status != 'DESTROYED' && machine.status != 'ERROR';
+            }
+
             var cloudspaceupdater;
 
             $scope.$watch('currentSpace.id + currentSpace.status',function(){
@@ -97,10 +101,11 @@ angular.module('cloudscalers.controllers')
                 $scope.updateData();
                 $scope.$watch('currentSpace.machines', function () {
                   if($scope.currentSpace.machines){
+                    $scope.manageableMachines = _.filter($scope.currentSpace.machines, function(machine){ return $scope.machineIsManageable(machine) == true; });
                     $scope.newRule = {
                         ip: $scope.currentSpace.publicipaddress,
                         publicPort: '',
-                        VM: $scope.currentSpace.machines[0],
+                        VM: $scope.manageableMachines[0],
                         localPort: '',
                         commonPort: '',
                         protocol: 'tcp',
@@ -108,14 +113,19 @@ angular.module('cloudscalers.controllers')
                     };
                   }
                 });
-
                 $scope.updateCommonPorts = function () {
                     $scope.newRule.publicPort  = $scope.newRule.commonPort.port;
                     $scope.newRule.localPort = $scope.newRule.commonPort.port;
                 };
 
                 $scope.submit = function () {
-                  	Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, $scope.newRule.VM.id, $scope.newRule.localPort, $scope.newRule.protocol).then(
+                    var machineId;
+                    if($routeParams.machineId){
+                      machineId = $routeParams.machineId;
+                    }else{
+                      machineId = $scope.newRule.VM.id;
+                    }
+                  	Networks.createPortforward($scope.currentSpace.id, $scope.currentSpace.publicipaddress, $scope.newRule.publicPort, machineId, $scope.newRule.localPort, $scope.newRule.protocol).then(
                       function (result) {
                         $modalInstance.close({
                           statusMessage: "Port forward created."
