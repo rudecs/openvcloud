@@ -47,7 +47,7 @@ def action(gid=None):
     for cloudspace in cloudspaces:
         gid = cloudspace['gid']
         print 'Cloudspace %(accountId)s %(name)s' % cloudspace
-        query = {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}}
+        query = {'cloudspaceId': cloudspace['id'], 'status': {'$nin': ['ERROR', 'DESTROYED']}}
         vms = cbcl.vmachine.search(query)[1:]
         for vm in vms:
             if vm['stackId'] in stacks:
@@ -70,7 +70,7 @@ def action(gid=None):
                     job = accl.scheduleCmd(gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
                     ping_jobs[vm['id']] = job
 
-            if vm['status']:
+            if vm['status'] and cpu_node_id:
                 job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
                 disk_check_jobs[vm['id']] = job
     time.sleep(5)
