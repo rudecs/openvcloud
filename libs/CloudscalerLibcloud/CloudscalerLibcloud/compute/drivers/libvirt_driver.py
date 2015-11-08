@@ -143,13 +143,14 @@ class CSLibvirtNodeDriver():
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         dev = getNextDev(devices)
-        disk = ElementTree.SubElement(devices, 'disk')
+        disk = ElementTree.Element('disk')
         disk.attrib['type'] = 'block'
         disk.attrib['device'] = 'disk'
         ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'native'}
         ElementTree.SubElement(disk, 'source').attrib = {'dev': volume.id}
         ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
-        return self._update_node(node, ElementTree.tostring(dom))
+        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ElementTree.tostring(disk), machineid=node.id)
+        return self._update_node(node, domxml)
 
     def _update_node(self, node, xml):
         self._execute_agent_job('redefinemachine', queue='hypervisor', xml=xml, domainid=node.id)
@@ -164,14 +165,17 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
+        domxml = None
 
         for disk in devices.iterfind('disk'):
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
             if source.attrib['dev'] == volume.id:
-                devices.remove(disk)
-        return self._update_node(node, ElementTree.tostring(dom))
+                diskxml = ElementTree.tostring(disk)
+                domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+        if domxml:
+            return self._update_node(node, domxml)
 
     def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
