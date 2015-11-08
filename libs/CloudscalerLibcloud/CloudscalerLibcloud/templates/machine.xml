@@ -1,4 +1,4 @@
-<domain type='kvm'>
+ <domain type='kvm'>
         <name>{{machinename}}</name>
         <memory unit='MB'>{{memory}}</memory>
         <currentMemory unit='MB'>{{memory}}</currentMemory>
@@ -19,9 +19,9 @@
         <devices>
             <emulator>/usr/bin/qemu-system-x86_64</emulator>
             {% for volume in volumes %}
-            <disk type='file' device='disk'>
-                <driver name='qemu' type='raw' cache='writeback'/>
-                <source dev='{{volume.id}}' aio='threads'/>
+            <disk type='block' device='disk'>
+                <driver name='qemu' type='raw' cache='none' io='native'/>
+                <source dev='{{volume.id}}'/>
                 <target dev='{{volume.dev}}' bus='virtio'/>
             </disk>
             {% endfor %}
