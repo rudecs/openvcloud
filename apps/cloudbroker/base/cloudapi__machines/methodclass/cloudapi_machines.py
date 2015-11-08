@@ -386,6 +386,7 @@ class cloudapi_machines(BaseActor):
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
+        node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:

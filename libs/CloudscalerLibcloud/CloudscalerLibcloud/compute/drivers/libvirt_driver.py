@@ -290,7 +290,10 @@ class CSLibvirtNodeDriver():
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
-        node = self._from_agent_to_node(self._get_domain_for_node(node))
+        agentnode = self._get_domain_for_node(node)
+        if agentnode is None:
+            agentnode = {'id': node_id, 'name': '', 'state': 5, 'extra': {}}
+        node = self._from_agent_to_node(agentnode)
         backendnode = self.backendconnection.getNode(node.id)
         node.extra['macaddress'] = backendnode['macaddress']
         return node
@@ -299,7 +302,7 @@ class CSLibvirtNodeDriver():
         return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
 
     def ex_list_snapshots(self, node):
-        return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
+        return self._execute_agent_job('listsnapshots', queue='default', vmname=node.name)
 
     def ex_delete_snapshot(self, node, timestamp):
         return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
@@ -332,8 +335,9 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
+        xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
-        self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id)
+        self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
         return True
 
     def ex_get_console_url(self, node):

@@ -90,9 +90,12 @@ class LibvirtUtil(object):
         if isLocked(id):
             raise Exception("Can't stop a locked machine")
         domain = self._get_domain(id)
-        if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
-            return True
-        return domain.shutdown() == 0
+        if domain:
+            if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+                if not domain.shutdown() == 0:
+                    return False
+            domain.undefine()
+        return True
 
     def reboot(self, id):
         if isLocked(id):
@@ -144,14 +147,20 @@ class LibvirtUtil(object):
                     make_archive(archive_name, gztar, root_dir)
         return True
 
-    def delete_machine(self, machineid):
+    def delete_machine(self, machineid, machinexml):
         if isLocked(id):
             raise Exception("Can't delete a locked machine")
-        domain = self.connection.lookupByUUIDString(machineid)
+        try:
+            domain = self.connection.lookupByUUIDString(machineid)
+            xml = ElementTree.fromstring(domain.XMLDesc())
+        except:
+            domain = None
+            xml = ElementTree.fromstring(machinexml)
         diskfiles = self._get_domain_disk_file_names(domain)
-        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            domain.destroy()
-        domain.undefine()
+        if domain:
+            if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+                domain.destroy()
+            domain.undefine()
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
@@ -159,9 +168,10 @@ class LibvirtUtil(object):
                 except:
                     continue
                 vol.delete(0)
-        poolpath = os.path.join(self.basepath, domain.name())
+        name = xml.find('name').text
+        poolpath = os.path.join(self.basepath, name)
         try:
-            diskpool = self.connection.storagePoolLookupByName(domain.name())
+            diskpool = self.connection.storagePoolLookupByName(name)
             diskpool.destroy()
         except:
             pass
@@ -446,7 +456,10 @@ class LibvirtUtil(object):
         return {'id': domain.UUIDString(), 'name': domain.name(), 'state': state, 'extra': extra}
 
     def get_domain(self, uuid):
-        domain = self.connection.lookupByUUIDString(uuid)
+        try:
+            domain = self.connection.lookupByUUIDString(uuid)
+        except:
+            return None
         return self._to_node(domain)
 
     def list_domains(self):
