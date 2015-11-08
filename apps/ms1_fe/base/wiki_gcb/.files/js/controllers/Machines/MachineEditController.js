@@ -40,10 +40,6 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.removeDisk = function(disk) {
-            if($scope.machine.status != "HALTED"){
-                $alert("Machine must be stopped to remove disk.");
-                return;
-            }
             var modalInstance = $modal.open({
                 templateUrl: 'removeDiskDialog.html',
                 controller: function($scope, $modalInstance){
@@ -116,7 +112,7 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.isValidCreateDisk = function(){
-            return $scope.disk.name != '' && $scope.disk.size != '' && $scope.machine.status == 'HALTED' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
+            return $scope.disk.name != '' && $scope.disk.size != '' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
         }
 
         $scope.$watch('machine.acl', function (acl) {

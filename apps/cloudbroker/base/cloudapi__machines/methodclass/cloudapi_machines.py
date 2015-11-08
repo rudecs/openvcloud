@@ -98,7 +98,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only add a disk to a stopped machine')
     def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
         Add a disk to a machine
@@ -125,7 +124,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only detach a disk from a stopped machine')
     def detachDisk(self, machineId, diskId, **kwargs):
         diskId = int(diskId)
         machine = self._getMachine(machineId)
@@ -141,7 +139,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only attch a disk to a stopped machine')
     def attachDisk(self, machineId, diskId, **kwargs):
         diskId = int(diskId)
         machine = self._getMachine(machineId)
