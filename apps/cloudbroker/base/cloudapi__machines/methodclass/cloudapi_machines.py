@@ -286,7 +286,6 @@ class cloudapi_machines(BaseActor):
             else:
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-                machine.nics[0].macAddress = node.extra['macaddress']
                 try:
                     ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
                     if ipaddress:
@@ -687,6 +686,9 @@ class cloudapi_machines(BaseActor):
     def attachPublicNetwork(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
         vmachine = self._getMachine(machineId)
+        for nic in vmachine.nics:
+            if nic.type == 'PUBLIC':
+                return True
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
         netinfo = self.network.getPublicIpAddress(cloudspace.gid)
@@ -700,7 +702,10 @@ class cloudapi_machines(BaseActor):
         nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway})
         nic.type = 'PUBLIC'
         self.models.vmachine.set(vmachine)
-        provider.client.attach_public_network(node, networkid)
+        iface = provider.client.attach_public_network(node)
+        nic.deviceName = iface.target
+        nic.macAddress = iface.mac
+        self.models.vmachine.set(vmachine)
         return True
 
     def detachPublicNetwork(self, machineId, **kwargs):

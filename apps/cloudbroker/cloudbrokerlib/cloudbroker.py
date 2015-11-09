@@ -334,9 +334,21 @@ class Machine(object):
         machine.stackId = stackId
         machine.status = enums.MachineStatus.RUNNING
         machine.hostName = node.name
-        for ipaddress in node.public_ips:
-            nic = machine.new_nic()
-            nic.ipAddress = ipaddress
+        if 'ifaces' in node.extra:
+            for iface in node.extra['ifaces']:
+                for nic in machine.nics:
+                    if nic.macaddress == iface.mac:
+                        break
+                else:
+                    nic = machine.new_nic()
+                    nic.macAddress = iface.mac
+                    nic.deviceName = iface.target
+                    nic.type = iface.type
+                    nic.ipAddress = 'Undefined'
+        else:
+            for ipaddress in node.public_ips:
+                nic = machine.new_nic()
+                nic.ipAddress = ipaddress
         models.vmachine.set(machine)
 
         for order, diskid in enumerate(machine.disks):

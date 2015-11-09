@@ -75,18 +75,13 @@ def main(j, args, params, tags, tasklet):
     nwinfo = dict()
     try:
         libcloudclient = j.clients.osis.getNamespace('libcloud', osiscl)
-        machinexml = libcloudclient.libvirtdomain.get("domain_%s" % obj.referenceId)
-        tree = ElementTree.fromstring(machinexml)
         data['nics'] = '||Name||MAC Address||IP Address||Gateway||Delete||\n'
-        for nic, interface in zip(obj.nics, tree.iterfind('devices/interface')):
-            macentry = interface.find('mac')
-            mac = macentry.attrib['address'] if macentry is not None else 'N/A'
-            name = interface.find('target').attrib['dev']
+        for nic in obj.nics:
             action = ""
-            if name.endswith('pub'):
+            if nic.deviceName.endswith('pub'):
                 action = "{{action id:'action-DetachFromPublicNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
             gateway = j.core.tags.getObject(nic.params or '').tags.get('gateway', 'N/A')
-            data['nics'] += "|%s |%s |%s |%s |%s|\n" % (name or 'N/A', mac, nic.ipAddress, gateway, action)
+            data['nics'] += "|%s |%s |%s |%s |%s|\n" % (nic.deviceName or 'N/A', nic.macAddress, nic.ipAddress, gateway, action)
     except Exception, e:
         data['nics'] = 'NIC information is not available %s' % e
 

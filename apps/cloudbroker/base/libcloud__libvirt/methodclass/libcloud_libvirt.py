@@ -114,9 +114,9 @@ class libcloud_libvirt(object):
             lastMac = int(newmacaddr)
         newmacaddr = lastMac + 1
         macaddr = netaddr.EUI(newmacaddr)
-        macaddr.dialect = netaddr.mac_unix
+        macaddr.dialect = netaddr.mac_eui48
         self.blobdb.set(key=key, obj=ujson.dumps(newmacaddr))
-        return str(macaddr)
+        return str(macaddr).replace('-', ':').lower()
 
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
