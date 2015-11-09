@@ -35,9 +35,15 @@ def action():
     else:
         print 'Found Account'
         accountId = accounts[0]['id']
-    cloudspace = ccl.cloudspace.search({'accountId': accountId,
+    cloudspaces = ccl.cloudspace.search({'accountId': accountId,
                                         'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
-                                       })[1:][0]
+                                       })[1:]
+    if not cloudspaces:
+        msg = "Not cloudspace available for account %s, disabling test" % ACCOUNTNAME
+        return [{'message': msg, 'category': 'Storage Test', 'state': 'OK'}]
+    else:
+        cloudspace = cloudspaces[0]
+
     if cloudspace['status'] == 'VIRTUAL':
         print 'Deploying CloudSpace'
         pcl.actors.cloudbroker.cloudspace.deployVFW(cloudspace['id'])
