@@ -37,6 +37,14 @@
         var:macaddress str,,macaddress to retrieve ip for
         result:str #ipaddess
 
+
+    method:fw_remove_lease @noauth
+        """
+        """
+        var:fwid str,,firewall id
+        var:macaddress str,,macaddress or list of macaddresses to release
+        result:str #ipaddess
+
     method:fw_set_password @noauth
         """     
         """

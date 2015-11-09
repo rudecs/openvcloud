@@ -261,6 +261,16 @@ class cloudapi_machines(BaseActor):
                     break
         for disk in vmachinemodel.disks:
             j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+
+        # delete leases
+        cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        macs = list()
+        for nic in vmachinemodel.nics:
+            if nic.type != 'PUBLIC' and nic.macAddress:
+                macs.append(nic.macAddress)
+        if macs:
+            self.netmgr.fw_remove_lease(fwid, macs)
         return True
 
 
