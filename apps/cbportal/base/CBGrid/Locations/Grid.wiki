@@ -10,6 +10,8 @@ h3. Location: ${name}
 {{actions:
 - display: Check VMs
   action: /restmachine/cloudbroker/grid/checkVMs
+  refresh: false
+  showresponse: true
   data:
    gid: $$gid
 

@@ -14,9 +14,8 @@ class cloudbroker_grid(object):
     @auth(['level1', 'level2', 'level3'])
     def checkVMs(self, **kwargs):
         sessions = self.acl.listSessions()
-        for nodeid, roles in sessions.iteritems:
+        for nodeid, roles in sessions.iteritems():
             if 'master' in roles:
                 gid = int(nodeid.split('_')[0])
                 self.acl.executeJumpscript('jumpscale', 'vms_check', gid=gid, role='master', wait=False)
-                return True
-        return False
+        return 'Scheduled check on VMS'
