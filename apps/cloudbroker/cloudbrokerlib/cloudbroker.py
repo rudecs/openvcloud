@@ -16,9 +16,10 @@ import string
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
+def removeConfusingChars(input):
+    return input.replace('0', '').replace('O', '').replace('l', '').replace('I', '')
 
 class Dummy(object):
-
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
@@ -319,8 +320,8 @@ class Machine(object):
             else:
                 account.login = 'cloudscalers'
             length = 6
-            chars = string.letters + string.digits
-            letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+            chars = removeConfusingChars(string.letters + string.digits)
+            letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]
             passwd = ''.join(random.choice(chars) for _ in xrange(length))
             passwd = passwd + random.choice(string.digits) + random.choice(letters[0]) + random.choice(letters[1])
             account.password = passwd
