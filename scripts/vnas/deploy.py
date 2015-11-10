@@ -262,13 +262,25 @@ class Vnas(object):
         # install service on master
         # set hosts
         
-        print master
-        print ad
-        print backends
-        print frontends
+        print '[+] master: %s' % master
+        print '[+] active directory: %s' % ad
+        print '[+] backends count: %d' % len(backends)
+        print '[+] frontends count: %d' % len(frontends)
+        
+        data = {
+            'addr.frontend.master': frontends[0]['addr'],
+            'addr.frontend.fallback': frontends[1]['addr'],
+            'addr.master': master,
+            'addr.ad': ad
+        }
+        
+        for backend in backends:
+            data['addr.backends.%s' % backend['id']] = backend['addr']
+        
+        print data
         
         cl = self.ssh_to_vm(master, port=port)
-        cl.run('ls')
+        cmd = self._format_ays_cmd('install', 'vnas_setup', 'main', data)
         
         return True
 
@@ -323,9 +335,9 @@ if __name__ == '__main__':
 
         frontends = []
         for i in range(2):
-            ok, _ = state.is_done('frontend%s' % i)
+            ok, store = state.is_done('frontend%s' % i)
             if not ok:
-                store = vnas.create_frontend(i, i+1, ad_ip, master_ip, i+1, backends)
+                store = vnas.create_frontend(i, i + 1, ad_ip, master_ip, i + 1, backends)
                 state.done('frontend%s' % i, store)
             
             frontends.append(store)
