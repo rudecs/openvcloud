@@ -141,7 +141,5 @@ h3. Port Fowardings
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
-{{action id:'createmachineonstack' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine on Stack'}}
-
 {{vmachines cloudspaceid:$$id}}
 
