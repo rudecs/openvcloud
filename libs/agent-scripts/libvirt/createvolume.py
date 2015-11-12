@@ -33,7 +33,7 @@ def action(name, size):
     params = {
         'dtl_mode': 'async',
         'sco_size': 64,
-        'dedupe_mode': 'dedupe',
+        'dedupe_mode': 'non-dedupe',
         'dtl_enabled': False,
         'write_buffer': 1024,
         'cache_strategy': 'on_read',
