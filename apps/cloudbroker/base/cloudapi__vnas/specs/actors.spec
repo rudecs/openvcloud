@@ -31,7 +31,6 @@
         Access rights can be 'R' or 'W'
         """
         var:appname str,, name of the app
-        var:appsecret str,, appsecret
         var:sharename str,, name of the share to give access on
         var:cloudspace str,, name of cloudspace
         var:readonly bool,, True for read only access
