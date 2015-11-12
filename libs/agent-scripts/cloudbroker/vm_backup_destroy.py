@@ -52,7 +52,7 @@ def action(accountName, machineId, reason, vmachineName, cloudspaceId):
 #    j.tools.whmcs.tickets.add_note(ticketid, 'Storage ID is %s' %  backupid)
 
     cloudspace = cbcl.cloudspace.get(cloudspaceId)
-    cloudbrokermachine.destroy(accountName, cloudspace.name, machineId, reason)
+    cloudbrokermachine.destroy(machineId, reason)
 #    j.tools.whmcs.tickets.close_ticket(ticketid)
     return True
     

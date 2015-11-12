@@ -3,7 +3,6 @@ from JumpScale.portal.docgenerator.popup import Popup
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     machineId = int(args.getTag('machineId'))
-    accountName = args.getTag('accountName')
     scl = j.clients.osis.getNamespace('cloudbroker')
 
     vmachine = scl.vmachine.get(machineId)
@@ -15,7 +14,6 @@ def main(j, args, params, tags, tasklet):
     popup.addDropdown('Target CPU Node', 'targetStackId', cpu_nodes, required=True)
     popup.addText('Reason', 'reason', required=True)
     popup.addHiddenField('machineId', machineId)
-    popup.addHiddenField('accountName', accountName)
     popup.write_html(page)
 
     return params

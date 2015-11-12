@@ -9,8 +9,6 @@
   hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
@@ -19,8 +17,6 @@
   hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
 
@@ -28,7 +24,8 @@
   action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
   data:
    machineId: $$id
-   accountName: ${accountName}
+   accountId: ${accountId}
+
   input:
   - reason
 
@@ -36,8 +33,6 @@
   action: /restmachine/cloudbroker/machine/reboot
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
 
@@ -50,8 +45,6 @@
   hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
 
@@ -64,8 +57,6 @@
   hideonInput: ${status}
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
 
@@ -73,8 +64,6 @@
   action: /restmachine/cloudbroker/machine/destroy
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
 
@@ -83,8 +72,6 @@
   hide: true
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - name: snapshotName
     label: Name
@@ -97,8 +84,6 @@
   reload: false
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - name: reason
     label: Reason
@@ -115,15 +100,11 @@
     type: text
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
 
 - display: Clone
   action: /restmachine/cloudbroker/machine/clone
   data:
    machineId: $$id
-   accountName: ${accountName}
-   spaceName: ${spacename}
   input:
   - reason
   - cloneName
@@ -131,7 +112,7 @@
 - display: Backup And Destroy
   action: /restmachine/cloudbroker/machine/backupAndDestroy
   data:
-   accountName: ${accountName}
+   accountId: ${accountId}
    machineId: $$id
   input:
   - reason
@@ -141,7 +122,6 @@
   hide: true
   data:
    machineId: $$id
-   spaceName: ${spacename}
   input:
   - localPort
   - destPort
@@ -168,7 +148,6 @@
   hide: true
   data:
    machineId: $$id
-   spaceName: ${spacename}
   input:
   - name: diskName
     label: Name
@@ -186,13 +165,10 @@
   hide: true
   data:
    machineId: $$id
-   spaceName: ${spacename}
-
 - display: Create Template
   action: /restmachine/cloudbroker/machine/createTemplate
   data:
    machineId: $$id
-   spaceName: ${spacename}
   input:
   - templateName
   - reason
@@ -201,7 +177,6 @@
   action: /restmachine/cloudbroker/machine/updateMachine
   data:
    machineId: $$id
-   spaceName: ${spacename}
   input:
   - description
   - reason
@@ -256,5 +231,5 @@
    machineId: $$id
 }}
 
-{{movemachine: machineId:$$id accountName:${accountName}}}
+{{movemachine: machineId:$$id}}
 
