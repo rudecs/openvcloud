@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
     dropdisksizes = list()
     dropimages = list()
     dropstacks = list()
-    dropstacks.append(('Auto', None))
+    dropstacks.append(('Auto', 0))
     def sizeSorter(size):
         return size['memory']
 
