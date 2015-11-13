@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
         return ''
 
     fieldids = ['id', 'name', 'acl', 'status']
-    fieldvalues = ['[%(id)s|/CBGrid/cloudspace?id=%(id)s]', 'name',
+    fieldvalues = ['[%(id)s|/CBGrid/cloud space?id=%(id)s]', 'name',
                    makeACL, 'status' ]
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
