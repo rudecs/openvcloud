@@ -297,7 +297,7 @@ class cloudapi_machines(BaseActor):
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
                 try:
-                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, machine.nics[0].macAddress)
                     if ipaddress:
                         machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
