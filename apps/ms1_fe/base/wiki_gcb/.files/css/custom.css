@@ -110,6 +110,7 @@ table.table th a, table.table th a:hover {color: #FFF;}
 .white p { color: #000; font-size: 16px; line-height: 32px; }
 .white ul li, .tab-pane.active ul li { color: #000; font-size: 16px; line-height: 30px; }
 .white a:hover, .white a:focus { color: #16A085; }
+/*.white a.create:hover, .white a.create:focus { color: #fff; }*/
 .body a { line-height: 1.3em; }
 .dropdown-menu { box-shadow: none; }
 hr { clear: both; margin-top: 20px !important; margin-bottom: 20px !important; border-top: 1px solid #E3E3E3; }
@@ -174,6 +175,11 @@ canvas { display: block; float: left; }
 .bulletStyle { list-style-type: disc;}
 .settings-label{ height: 30px; line-height: 30px; min-width: 65px; }
 .login-url{ color: #0087b9; }
+/*.panel.border-panel{ border: 1px solid transparent; border-color: #ddd; border-radius: 4px !important; }
+.panel.border-panel .panel-heading { padding: 10px 15px; }
+.panel.border-panel .panel-body { border-bottom: 1px solid #ddd; }
+.panel.border-panel .panel-body:last-child { border-bottom: 0; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+.add-app { padding: 1px 7px; }*/
 /* End of general style */
 
 /* sideNav */
@@ -187,6 +193,8 @@ canvas { display: block; float: left; }
 .sideNav .header > a { padding: 5px 15px; display: block; color: #000 !important; font-family: arial, sans-serif; }
 .sideNav .header > a.active { font-weight: bold; text-decoration: underline; }
 .blue h4 > a, .sideNav .header.blue > a { background: #C0392B; color: #fff !important; }
+/*.sideNav .header.dark-blue { background: #F2F2F2; }*/
+/*.dark-blue h4 > a, .sideNav .header.dark-blue > a { background: #345E79; color: #fff !important; }*/
 .sideNav .header a { text-align: center; }
 .sideNav .header span { font-size: 11px; top: 3px; position: absolute; margin-left: 5px; }
 .sideNav .header { position: relative; }
@@ -200,6 +208,7 @@ canvas { display: block; float: left; }
 .red + .panel-collapse, .sideNav .red.header { background: #ffdada; }
 .darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #f9dfc0; }
 .blue h4 > a, .sideNav .header.blue > a:hover { background: #E74C3C; }
+/*.dark-blue h4 > a, .sideNav .header.dark-blue > a:hover { background: #547C96; }*/
 .green h4 > a, .sideNav .header.green > a:hover { background: #8ED300; }
 .orange h4 > a, .sideNav .header.orange > a:hover { background: #FFC75C; }
 .red h4 > a, .sideNav .header.red > a:hover { background: #ff6060; }
