@@ -156,7 +156,7 @@ class LibvirtUtil(object):
         except:
             domain = None
             xml = ElementTree.fromstring(machinexml)
-        diskfiles = self._get_domain_disk_file_names(domain)
+        diskfiles = self._get_domain_disk_file_names(xml)
         if domain:
             if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
