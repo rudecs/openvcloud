@@ -28,9 +28,9 @@ h2. User: ${id}
 |*Last Checked*|{{div: class=jstimestamp|data-ts=${lastcheck}}}{{div}}|
 |*Active*|${active}|
 
-h3. Cloud Spaces
-
-{{cbspacesusers: userId:$$id}}
-
 h3. Accounts
 {{accounts: acl.userGroupId:${id}}}
+
+h3. Cloud Spaces
+{{cbspacesusers: userId:$$id}}
+
