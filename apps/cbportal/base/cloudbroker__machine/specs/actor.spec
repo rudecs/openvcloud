@@ -35,8 +35,6 @@
         """
         Stops a machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -44,8 +42,6 @@
         """
         Starts a deployed machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -53,8 +49,6 @@
         """
         Reboots a deployed machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -62,8 +56,6 @@
         """
         Pauses a deployed machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -71,8 +63,6 @@
         """
         Resumes a deployed paused machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -80,8 +70,6 @@
         """
         Takes a snapshot of a deployed machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:snapshotName str,,Snapshot name
         var:reason str,,Reason
@@ -90,8 +78,6 @@
         """
         Rolls back a machine snapshot
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:snapshotName str,,Snapshot name
         var:reason str,,Reason
@@ -100,8 +86,6 @@
         """
         Deletes a machine snapshot
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:snapshotName str,,Snapshot name
         var:reason str,,Reason
@@ -110,8 +94,6 @@
         """
         Clones a machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:cloneName str,,Clone name
         var:reason str,,Reason
@@ -120,8 +102,6 @@
         """
         Destroys a machine
         """
-        var:accountName str,,Account name
-        var:spaceName str,,Space name
         var:machineId int,,Machine id
         var:reason str,,Reason
 
@@ -130,7 +110,6 @@
         Live-migrates a machine to a different CPU node.
         If no targetnode is given, the normal capacity scheduling is used to determine a targetnode
         """
-        var:accountName str,,Account name
         var:machineId int,,Machine id
         var:reason str,,Reason
         var:targetStackId int,, Name of the compute node the machine has to be moved to @optional
@@ -189,7 +168,6 @@
         """
         var:tag str,, a specific tag @optional
         var:computeNode str,, name of a specific computenode @optional
-        var:accountName str,, specific account @optional
         var:cloudspaceId int,, specific cloudspace @optional
 
     method:checkImageChain
@@ -207,7 +185,7 @@
         A ticket will be created for follow up and visibility, the machine stopped, the image put on slower storage and the ticket is automatically closed if all went well.
         Use with caution!
         """
-        var:accountName str,,Account name, extra validation for preventing a wrong machineId
+        var:accountId int,,Account name, extra validation for preventing a wrong machineId
         var:machineId int,,Id of the machine
         var:reason str,,Reason
 
@@ -219,7 +197,7 @@
         * Close the ticket
         Use with caution!
         """
-        var:accountName str,,Account name, extra validation for preventing a wrong machineId
+        var:accountId int,,Account name, extra validation for preventing a wrong machineId
         var:machineId int,,Id of the machine
         var:reason str,,Reason
 
@@ -249,7 +227,6 @@
         Creates a port forwarding rule for a machine
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:localPort int,,Source port
         var:destPort int,,Destination port
         var:proto str,,Protocol
@@ -283,7 +260,6 @@
         Creates a template from a deployed machine
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:templateName str,, Name of the template
         var:reason str,,Reason
 
@@ -292,7 +268,6 @@
         Updates machine description
         """
         var:machineId int,, ID of machine
-        var:spaceName str,,Space name
         var:description str,, new description
         var:reason str,,Reason
 
@@ -309,4 +284,4 @@
         """
         var:machineId int,, ID of machine
         result:bool
- 
+ :

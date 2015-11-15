@@ -44,7 +44,7 @@ class cloudbroker_cloudspace(BaseActor):
             for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
-                    j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
+                    j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
             self.models.cloudspace.set(cloudspace)
