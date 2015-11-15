@@ -15,7 +15,6 @@ def main(j, args, params, tags, tasklet):
     popup.addNumber('Local Port', 'localPort', required=True)
     popup.addNumber('Destination Port', 'destPort', required=True)
     popup.addDropdown('Protocol', 'proto', [('TCP', 'tcp'), ('UDP', 'udp')])
-    popup.addHiddenField('spaceName', '')
     popup.addHiddenField('reason', '')
 
     popup.write_html(page)
