@@ -31,3 +31,6 @@ h2. User: ${id}
 h3. Cloud Spaces
 
 {{cbspacesusers: userId:$$id}}
+
+h3. Accounts
+{{accounts: acl.userGroupId:${id}}}
