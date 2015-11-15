@@ -1,5 +1,6 @@
 from JumpScale import j
-import ldap
+import random
+import string
 
 
 class cloudapi_vnas(j.code.classGetBase()):
@@ -19,7 +20,7 @@ class cloudapi_vnas(j.code.classGetBase()):
         self.sambacl = j.ssh.samba.get(con)
         # cloudapi_vnas_osis.__init__(self)
 
-    def addApplication(self, appname, appsecret, sharename, cloudspace, readonly, **kwargs):
+    def addApplication(self, appname, sharename, cloudspace, readonly, **kwargs):
         """
         Give an application access to a share.
         Access rights can be 'R' or 'W'
@@ -28,6 +29,8 @@ class cloudapi_vnas(j.code.classGetBase()):
         param:readonly True for read only access
         result bool
         """
+        appsecret = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(12))
+        appname = '%s[%s]' % (cloudspace, appname)
         self.sambacl.addUser(appname, appsecret)
         return self.sambacl.grantaccess(appname, sharename, cloudspace, readonly)
 
@@ -63,4 +66,5 @@ class cloudapi_vnas(j.code.classGetBase()):
         param:appname name of the application to revoke
         result 
         """
+        appname = '%s[%s]' % (cloudspace, appname)
         return revokeaccess(appname, sharename, cloudspace, readonly)
