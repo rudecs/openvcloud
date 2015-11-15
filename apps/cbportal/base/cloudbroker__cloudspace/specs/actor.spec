@@ -7,8 +7,7 @@
         destroy a cloudspace
         Destroys its machines, vfws and routeros
         """
-        var:accountname str,,name of account
-        var:cloudspaceName str,,name of cloudspace
+        var:accountId int,,id of account
         var:cloudspaceId str,,ID of cloudspace
         var:reason str,, reason for destroying the cloudspace
 

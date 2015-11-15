@@ -10,21 +10,21 @@ h2. Account: ${name}
 - display: Disable
   action: /restmachine/cloudbroker/account/disable
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - reason
 
 - display: Enable
   action: /restmachine/cloudbroker/account/enable
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - reason
 
 - display: Delete
   action: /restmachine/cloudbroker/account/delete
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - reason
 
@@ -32,7 +32,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/addUser
   hide: true
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - name: username
     label: Username
@@ -52,7 +52,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/deleteUser
   hide: true
   data:
-   accountname: ${name}
+   accountId: $$id
 
 - display: Change Credit
   action: /restmachine/cloudbroker/finance/changeCredit
@@ -65,7 +65,7 @@ h2. Account: ${name}
 - display: Rename
   action: /restmachine/cloudbroker/account/rename
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - name
 }}

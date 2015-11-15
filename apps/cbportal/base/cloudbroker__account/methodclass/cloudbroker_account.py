@@ -26,12 +26,12 @@ class cloudbroker_account(BaseActor):
         self.syscl = j.clients.osis.getNamespace('system')
         self.cloudapi = self.cb.actors.cloudapi
 
-    def _checkAccount(self, accountname):
-        account = self.models.account.search({'name': accountname, 'status': {'$ne': 'DESTROYED'}})[1:]
+    def _checkAccount(self, accountId):
+        account = self.models.account.search({'id': accountId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if not account:
             raise exceptions.NotFound('Account name not found')
         if len(account) > 1:
-            raise exceptions.BadRequest('Found multiple accounts for the account name "%s"' % accountname)
+            raise exceptions.BadRequest('Found multiple accounts for the account ID "%s"' % accountId)
 
         return account[0]
 
@@ -52,16 +52,16 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def disable(self, accountname, reason, **kwargs):
+    def disable(self, accountId, reason, **kwargs):
         """
         Disable an account
         param:acountname name of the account
         param:reason reason of disabling
         result
         """
-        account = self._checkAccount(accountname)
-        msg = 'Account: %s\nReason: %s' % (accountname, reason)
-        subject = 'Disabling account: %s' % accountname
+        account = self._checkAccount(accountId)
+        msg = 'Account of ID: %s\nReason: %s' % (accountId, reason)
+        subject = 'Disabling account of ID: %s' % accountId
 #        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account['deactivationTime'] = time.time()
         account['status'] = 'DISABLED'
@@ -161,14 +161,14 @@ class cloudbroker_account(BaseActor):
         return accountid
 
     @auth(['level1', 'level2', 'level3'])
-    def enable(self, accountname, reason, **kwargs):
+    def enable(self, accountId, reason, **kwargs):
         """
         Enable an account
-        param:acountname name of the account
+        param:acountID ID of the account
         param:reason reason of enabling
         result
         """
-        account = self._checkAccount(accountname)
+        account = self._checkAccount(accountId)
         if account['status'] != 'DISABLED':
             raise exceptions.BadRequest('Account is not disabled')
 
@@ -177,31 +177,31 @@ class cloudbroker_account(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
-    def rename(self, accountname, name, **kwargs):
+    def rename(self, accountId, name, **kwargs):
         """
         Rename an account
-        param:accountname name of the account
+        param:accountID ID of the account
         param:name new name of the account
         result
         """
-        account = self._checkAccount(accountname)
+        account = self._checkAccount(accountId)
         account['name'] = name
         self.models.account.set(account)
         return True
 
     @auth(['level1', 'level2', 'level3'])
-    def delete(self, accountname, reason, **kwargs):
+    def delete(self, accountId, reason, **kwargs):
         """
         Complete delete an acount from the system
         """
-        account = self._checkAccount(accountname)
+        account = self._checkAccount(accountId)
         accountId = account['id']
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
             cloudspacename = cloudspace['name']
             cloudspaceid = cloudspace['id']
-            j.apps.cloudbroker.cloudspace.destroy(accountname, cloudspacename, cloudspaceid, reason, **kwargs)
+            j.apps.cloudbroker.cloudspace.destroy(accountId, cloudspaceid, reason, **kwargs)
         account = self.models.account.get(accountId)
         account.status = 'DESTROYED'
         self.models.account.set(account)
@@ -209,17 +209,17 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def addUser(self, accountname, username, accesstype, **kwargs):
+    def addUser(self, accountId, username, accesstype, **kwargs):
         """
         Give a user access rights.
         Access rights can be 'R' or 'W'
-        param:accountname id of the account
+        param:accountId id of the account
         param:username id of the user to give access
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
         ctx = kwargs["ctx"]
-        account = self._checkAccount(accountname)
+        account = self._checkAccount(accountId)
         accountId = account['id']
         user = self._checkUser(username)
         userId = user['id']
@@ -228,12 +228,12 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteUser(self, accountname, username, **kwargs):
+    def deleteUser(self, accountId, username, **kwargs):
         """
         Delete a user from the account
         """
         ctx = kwargs["ctx"]
-        account = self._checkAccount(accountname)
+        account = self._checkAccount(accountId)
         accountId = account['id']
         user = self._checkUser(username)
         userId = user['id']
