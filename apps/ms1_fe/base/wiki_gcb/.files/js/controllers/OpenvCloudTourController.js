@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('Mothership1TourController', ['$scope', 'ipCookie', 'Users', function($scope, ipCookie, Users) {
+    .controller('OpenvCloudTourController', ['$scope', 'ipCookie', 'Users', '$ErrorResponseAlert', function($scope, ipCookie, Users, $ErrorResponseAlert) {
         $scope.steps = {};
         $scope.tourtips = true;
         $scope.steps['tourStep'] = ipCookie('tourStep') || 0;
