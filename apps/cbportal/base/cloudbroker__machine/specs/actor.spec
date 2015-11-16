@@ -284,4 +284,3 @@
         """
         var:machineId int,, ID of machine
         result:bool
- :

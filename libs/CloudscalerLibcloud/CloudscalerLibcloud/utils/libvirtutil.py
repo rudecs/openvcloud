@@ -82,7 +82,7 @@ class LibvirtUtil(object):
         if not domain and xml:
             domain = self.connection.defineXML(xml)
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
-            return True
+            return domain.XMLDesc()
         domain.create() == 0
         return domain.XMLDesc()
 
@@ -184,8 +184,8 @@ class LibvirtUtil(object):
             xml = dom
         else:
             xml = ElementTree.fromstring(dom.XMLDesc(0))
-            disks = xml.findall('devices/disk')
-            diskfiles = list()
+        disks = xml.findall('devices/disk')
+        diskfiles = list()
         for disk in disks:
             if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
                 source = disk.find('source')
