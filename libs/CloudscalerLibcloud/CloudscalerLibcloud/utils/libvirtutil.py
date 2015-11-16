@@ -184,8 +184,8 @@ class LibvirtUtil(object):
             xml = dom
         else:
             xml = ElementTree.fromstring(dom.XMLDesc(0))
-            disks = xml.findall('devices/disk')
-            diskfiles = list()
+        disks = xml.findall('devices/disk')
+        diskfiles = list()
         for disk in disks:
             if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
                 source = disk.find('source')
