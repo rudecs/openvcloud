@@ -4,9 +4,11 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
-    for tag, val in args.tags.tags.iteritems():
-        val = args.getTag(tag)
-        filters[tag] = val
+
+    userGroupId = args.getTag('acl.userGroupId')
+    if userGroupId:
+        filters['acl.userGroupId'] = userGroupId
+
 
     fieldnames = ['ID', 'Name', 'Status', 'Location', 'Access Control List']
 
