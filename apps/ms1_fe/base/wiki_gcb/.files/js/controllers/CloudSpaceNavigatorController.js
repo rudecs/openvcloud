@@ -98,10 +98,10 @@ angular.module('cloudscalers.controllers')
                                     }
                                     $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
                                     $scope.loadSpaces();
-                                    LoadingDialog.hide();
+                                    LoadingDialog.hide();                                    
                                 }, 1000);
                             },
-                            function (reason) {
+                            function (reason) {                                
                                 LoadingDialog.hide();
                                 $ErrorResponseAlert(reason);
                             }

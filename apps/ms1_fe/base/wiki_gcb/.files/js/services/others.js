@@ -79,9 +79,9 @@ angular.module('cloudscalers.services')
     .factory('LoadingDialog', function($q, $timeout) {
         var loadingInstance = {
             show: function(msg, autohidetimeout) {
-                angular.element('.loader h2').text(msg || '');
+                angular.element('#overlay-loader .loader-title').text(msg || '');
 
-                angular.element('.loader, .loading').fadeIn('fast');
+                angular.element('#overlay-loader').fadeIn('fast');
                 var defer = $q.defer();
                 if (autohidetimeout > 0){
                     $timeout(function() {
@@ -92,7 +92,7 @@ angular.module('cloudscalers.services')
                 return defer.promise;
             },
             hide: function() {
-                angular.element('.loader, .loading').fadeOut('fast');
+                angular.element('#overlay-loader').fadeOut('fast');
             }
         };
         return loadingInstance;
