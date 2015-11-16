@@ -301,7 +301,7 @@ class cloudapi_machines(BaseActor):
                     if ipaddress:
                         machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
-                except:
+                except exceptions.ServiceUnavailable:
                     pass # VFW not deployed yet
 
         realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name) or state

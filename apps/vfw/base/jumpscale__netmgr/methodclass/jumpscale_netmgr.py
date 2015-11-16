@@ -2,6 +2,7 @@ from JumpScale import j
 import JumpScale.grid.agentcontroller
 import JumpScale.lib.lxc
 import JumpScale.baselib.serializers
+from JumpScale.portal.portal import exceptions
 
 class jumpscale_netmgr(j.code.classGetBase()):
     """
@@ -29,6 +30,12 @@ class jumpscale_netmgr(j.code.classGetBase()):
         fwobj = self.osisvfw.get(fwid)
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name)}
         return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
+
+    def _getVFWObject(self, fwid):
+        fwobj = self.osisvfw.get(fwid)
+        if not fwobj.nid:
+            raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
+        return fwobj
 
     def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, **kwargs):
         """
@@ -70,7 +77,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
             return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create', role='fw', gid=gid, args=args)['result']
 
     def fw_move(self, fwid, targetNid, **kwargs):
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
         srcnode = self.nodeclient.get("%s_%s" % (fwobj.gid, fwobj.nid))
         trgnode = self.nodeclient.get("%s_%s" % (fwobj.gid, targetNid))
         def get_backplane_ip(node):
@@ -95,7 +102,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return True
 
     def fw_get_ipaddress(self, fwid, macaddress):
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_ipaddress_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
@@ -103,7 +110,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return job['result']
 
     def fw_remove_lease(self, fwid, macaddress):
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_remove_lease_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
@@ -111,7 +118,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return job['result']
 
     def fw_set_password(self, fwid, username, password):
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'username': username, 'password': password}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_set_password_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
@@ -158,7 +165,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
         rule = fwobj.new_tcpForwardRule()
         rule.fromAddr = fwip
         rule.fromPort = str(fwport)
@@ -182,16 +189,20 @@ class jumpscale_netmgr(j.code.classGetBase()):
         """
         fwport = str(fwport)
         destport = str(destport)
-        fwobj = self.osisvfw.get(fwid)
+        fwobj = self._getVFWObject(fwid)
+        change = False
+        result = False
+        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
         for rule in fwobj.tcpForwardRules:
             if rule.fromPort == fwport and rule.toAddr == destip and rule.toPort == destport and rule.fromAddr == fwip:
                 if protocol and rule.protocol and rule.protocol != protocol:
                     continue
+                change = True
                 fwobj.tcpForwardRules.remove(rule)
-                args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
-                result = self._applyconfig(fwobj.gid, fwobj.nid, args)
-                if result:
-                    self.osisvfw.set(fwobj)
+        if change:
+            result = self._applyconfig(fwobj.gid, fwobj.nid, args)
+            if result:
+                self.osisvfw.set(fwobj)
         return result
 
 
