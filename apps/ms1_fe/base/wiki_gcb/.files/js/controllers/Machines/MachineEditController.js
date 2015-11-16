@@ -17,8 +17,12 @@ angular.module('cloudscalers.controllers')
         function getMachine(){
             Machine.get($routeParams.machineId).then(function(data) {
                 $scope.machine = data;
+                $timeout(function () {
+                  LoadingDialog.hide();
+                }, 1500);
                 },
                 function(reason) {
+                  LoadingDialog.hide();
                     $ErrorResponseAlert(reason);
                 });
         }
@@ -29,18 +33,13 @@ angular.module('cloudscalers.controllers')
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
                 getMachine();
                 clearDisk();
-                LoadingDialog.hide();
             },function(reason){
-                $ErrorResponseAlert(reason);
                 LoadingDialog.hide();
+                $ErrorResponseAlert(reason);
             });
         };
 
         $scope.removeDisk = function(disk) {
-            if($scope.machine.status != "HALTED"){
-                $alert("Machine must be stopped to remove disk.");
-                return;
-            }
             var modalInstance = $modal.open({
                 templateUrl: 'removeDiskDialog.html',
                 controller: function($scope, $modalInstance){
@@ -113,7 +112,7 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.isValidCreateDisk = function(){
-            return $scope.disk.name != '' && $scope.disk.size != '' && $scope.machine.status == 'HALTED' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
+            return $scope.disk.name != '' && $scope.disk.size != '' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
         }
 
         $scope.$watch('machine.acl', function (acl) {
@@ -234,7 +233,9 @@ angular.module('cloudscalers.controllers')
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
                 $scope.snapshotsLoader = false;
-                LoadingDialog.hide();
+                $timeout(function () {
+                  LoadingDialog.hide();
+                }, 1500);
                 $scope.refreshSpinner = false;
             }, function(reason) {
                 $scope.refreshSpinner = false;
@@ -277,7 +278,9 @@ angular.module('cloudscalers.controllers')
                         updatesnapshots();
                     },
                     function(reason){
-                        LoadingDialog.hide();
+                        $timeout(function () {
+                          LoadingDialog.hide();
+                        }, 1500);
                         $ErrorResponseAlert(reason);
                     }
                 );

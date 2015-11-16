@@ -24,16 +24,9 @@ h2. Cloud Space: ${name}
   action: /restmachine/cloudbroker/cloudspace/destroy
   data:
    cloudspaceId: $$id
-   cloudspaceName: ${name}
-   accountname: ${accountname}
+   accountId: ${accountId}
   input:
   - reason
-
-- display: Create Machine
-  action: '#createmachine'
-
-- display: Create Machine On Stack
-  action: '#createmachineonstack'
 
 - display: Move VFW
   action: '#movevfw'
@@ -60,6 +53,7 @@ h2. Cloud Space: ${name}
   - reason
 
 - display: Grant User Access
+  hide: true
   action: /restmachine/cloudbroker/cloudspace/addUser
   data:
    cloudspaceId: $$id
@@ -78,10 +72,10 @@ h2. Cloud Space: ${name}
 
 - display: Revoke User Access
   action: /restmachine/cloudbroker/cloudspace/deleteUser
+  hide: true
+  refresh: false
   data:
    cloudspaceId: $$id
-  input:
-   - username
 
 - display: Delete Portforwarding
   action: /restmachine/cloudbroker/cloudspace/deletePortForward
@@ -111,6 +105,8 @@ h2. Cloud Space: ${name}
 {% endif %}
 
 {{createmachine: cloudspaceId:$$id}}
+{{createportforwarding: cloudspaceId:$$id}}
+
 {{movevfw: cloudspaceId:$$id}}
 
 h3. Details
@@ -126,16 +122,23 @@ h3. Details
 |*Resource Limits*|${resourcelimits}|
 
 h3. Users Access
-||User Name||ACL||
+{{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
+||User Name||ACL||Revoke Access||
 {% for ace in acl -%}
-    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}|
+    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}| {{action deleterow:true id:'action-RevokeUserAccess' data-username:'${ace.usergroupId}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
 h3. Port Fowardings
+{{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
+
 ||Source IP||Source Port||Destination IP||Destination Port||Delete||
 {% for rule in network.tcpForwardRules -%}
 |${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-ruleId:'${loop.index -1}'}}|
+{% else -%}
+| | | | | |
 {% endfor %}
 
 h3. Virtual Machines
+{{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
 {{vmachines cloudspaceid:$$id}}
+

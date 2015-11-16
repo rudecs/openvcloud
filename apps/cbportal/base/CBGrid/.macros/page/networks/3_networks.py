@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
     fieldids = ['gid', 'id', 'domain', 'pubips', 'host']
     fieldvalues = ['gid',
                    '[%(id)s|/CBGrid/private network?id=%(id)s&gid=%(gid)s] (%(id)04x)',
-                   '[%(domain)s|/CBGrid/cloudspace?id=%(domain)s]',
+                   '[%(domain)s|/CBGrid/cloud space?id=%(domain)s]',
                    makeNS,
                    'host'
                    ]

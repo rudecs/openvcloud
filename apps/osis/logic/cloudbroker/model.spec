@@ -180,6 +180,7 @@
     prop:deviceName str,,name of the device as on device
     prop:macAddress str,,MAC address of the vnic
     prop:ipAddress str,,IP address of the vnic
+    prop:type str,,type of interface (if PUBLIC, then the interface is used to attach vm into public network of the cpu node)
     prop:params str,,pylabs tags to define optional params
 
 [rootmodel:CloudSpace] @dbtype:osis

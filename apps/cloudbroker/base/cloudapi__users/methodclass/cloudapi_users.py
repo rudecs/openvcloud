@@ -32,7 +32,7 @@ class cloudapi_users(BaseActor):
         result str,,session
         """
         ctx = kwargs['ctx']
-        accounts = self.models.account.search({'name':username})[1:]
+        accounts = self.models.account.search({'acl.userGroupId': username, 'status': 'CONFIRMED'})[1:]
         if accounts:
             status = accounts[0].get('status', 'CONFIRMED')
             if j.core.portal.active.auth.authenticate(username, password):

@@ -4,20 +4,32 @@
 {{publicnetwork: networkid:$$networkid}}
 {{datatables_use}}
 
-h3. Public Network $$networkid
+h3. Public Network
 
 |*Network*|${id}|
 |*Gateway*|${gateway}|
 
+@HR
+
+{% if pubips %}
 h4. Free IPs
 ||Public IP||
 {% for freeip in pubips -%}
 |${freeip}|
 {% endfor %}
+@HR
+{% endif %}
 
-h4. Used IPs
-
+h4. Public IPs Used by CloudSpace
 ||Public IP||Cloud Space||
 {% for space in spaces -%}
-|${space.publicipaddress}|[${space.id}|cloud space?id=${space.id}]|
+|${space.publicipaddress}|[(${space.id})|cloud space?id=${space.id}]|
+{% endfor %}
+
+@HR
+
+h4. Public IPs Used by Virtual Machines
+||Public IP||Virtual Machine||Cloud Space||
+{% for vm in vms -%}
+|${vm.publicipaddress}|[${vm.name}|virtual machine?id=${vm.id}]|[${vm.cloudspaceId}|cloud space?id=${vm.cloudspaceId}]|
 {% endfor %}

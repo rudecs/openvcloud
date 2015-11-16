@@ -3,7 +3,7 @@
   position: absolute;
   background: #1C252E;
   color: #FFF;
-  z-index: 999999999999999999999999;
+  z-index: 1000000000;
   top: 0;
   left: 2.5%;
   font-family: inherit;
@@ -145,5 +145,3 @@ html body .tour-tip a.tour-close-tip {
  @media (max-width: 992px) {
   .tour-tip { display: none !important;}
  }
-
-

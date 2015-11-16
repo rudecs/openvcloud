@@ -39,7 +39,7 @@ class cloudbroker_machine(BaseActor):
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 
-    def _validateMachineRequest(self, machineId, accountName=None, spaceName=None):
+    def _validateMachineRequest(self, machineId):
         machineId = int(machineId)
         if not self.models.vmachine.exists(machineId):
             raise exceptions.NotFound('Machine ID %s was not found' % machineId)
@@ -49,82 +49,72 @@ class cloudbroker_machine(BaseActor):
         if vmachine.status == 'DESTROYED' or not vmachine.status:
             raise exceptions.BadRequest('Machine %s is invalid' % machineId)
 
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        if spaceName and cloudspace.name != spaceName:
-            raise exceptions.BadRequest(
-                "Machine's cloudspace %s does not match the given space name %s" % (cloudspace.name, spaceName))
-
-        if accountName:
-            account = self.models.account.get(cloudspace.accountId)
-            if account.name != accountName:
-                raise exceptions.BadRequest(
-                    "Machine's account %s does not match the given account name %s" % (account.name, accountName))
         return vmachine
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def destroy(self, accountName, spaceName, machineId, reason, **kwargs):
+    def destroy(self, machineId, reason, **kwargs):
         self.actors.machines.delete(int(machineId))
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def start(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def start(self, machineId, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.start(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def stop(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def stop(self, machineId, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.stop(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def pause(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def pause(self, machineId, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.pause(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def resume(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def resume(self, machineId, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.resume(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def reboot(self, accountName, spaceName, machineId, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def reboot(self, machineId, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.reboot(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def snapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def snapshot(self, machineId, snapshotName, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.snapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def rollbackSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, spaceName)
+    def rollbackSnapshot(self, machineId, snapshotName, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.rollbackSnapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteSnapshot(self, accountName, spaceName, machineId, snapshotName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName)
+    def deleteSnapshot(self, machineId, snapshotName, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.deleteSnapshot(machineId, snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def clone(self, accountName, spaceName, machineId, cloneName, reason, **kwargs):
-        self._validateMachineRequest(machineId, accountName, spaceName)
+    def clone(self, machineId, cloneName, reason, **kwargs):
+        self._validateMachineRequest(machineId)
         self.actors.machines.clone(machineId, cloneName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def moveToDifferentComputeNode(self, accountName, machineId, reason, targetStackId=None, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, accountName, None)
+    def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
         if targetStackId:
@@ -313,20 +303,20 @@ class cloudbroker_machine(BaseActor):
         return job['result']
 
     @auth(['level1', 'level2', 'level3'])
-    def stopForAbusiveResourceUsage(self, accountName, machineId, reason, **kwargs):
+    def stopForAbusiveResourceUsage(self, accountId, machineId, reason, **kwargs):
         '''If a machine is abusing the system and violating the usage policies it can be stopped using this procedure.
         A ticket will be created for follow up and visibility, the machine stopped, the image put on slower storage and the ticket is automatically closed if all went well.
         Use with caution!
-        @param:accountName str,,Account name, extra validation for preventing a wrong machineId
+        @param:accountId int,,Account ID, extra validation for preventing a wrong machineId
         @param:machineId int,,Id of the machine
         @param:reason str,,Reason
         '''
         machineId = int(machineId)
-        vmachine = self._validateMachineRequest(machineId, accountName, None)
+        vmachine = self._validateMachineRequest(machineId)
 
         stack = self.models.stack.get(vmachine.stackId)
         subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
-        msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountName, vmachine.name, reason)
+        msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountId, vmachine.name, reason)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
         self.acl.executeJumpscript(
@@ -334,16 +324,16 @@ class cloudbroker_machine(BaseActor):
 #        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
-    def backupAndDestroy(self, accountName, machineId, reason, **kwargs):
+    def backupAndDestroy(self, accountId, machineId, reason, **kwargs):
         """
         * Create a ticketjob
         * Call the backup method
         * Destroy the machine
         * Close the ticket
         """
-        vmachine = self._validateMachineRequest(machineId, accountName, None)
+        vmachine = self._validateMachineRequest(machineId)
         stack = self.models.stack.get(vmachine.stackId)
-        args = {'accountName': accountName, 'machineId': machineId, 'reason': reason,
+        args = {'accountId': accountId, 'machineId': machineId, 'reason': reason,
                 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpscript(
             'cloudscalers', 'vm_backup_destroy', gid=j.application.whoAmI.gid, nid=j.application.whoAmI.nid, args=args, wait=False)
@@ -377,9 +367,9 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createPortForward(self, machineId, spaceName, localPort, destPort, proto, reason, **kwargs):
+    def createPortForward(self, machineId, localPort, destPort, proto, reason, **kwargs):
         machineId = int(machineId)
-        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
+        vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         self.actors.portforwarding.create(
             cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
@@ -405,19 +395,30 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createTemplate(self, machineId, spaceName, templateName, reason, **kwargs):
-        self._validateMachineRequest(machineId, spaceName=spaceName)
+    def createTemplate(self, machineId, templateName, reason, **kwargs):
+        self._validateMachineRequest(machineId)
         self.actors.machines.createTemplate(machineId, templateName, None)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def updateMachine(self, machineId, spaceName, description, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId, spaceName=spaceName)
+    def updateMachine(self, machineId, description, reason, **kwargs):
+        vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (
-            account.name, spaceName, vmachine.name, description, reason)
+        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (vmachine.name, description, reason)
         subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
 #        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.actors.machines.update(machineId, description=description)
 #        self.whmcs.tickets.close_ticket(ticketId)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def attachPublicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.attachPublicNetwork(machineId)
+    
+    
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def detachPublicNetwork(self, machineId, **kwargs):
+        return self.actors.machines.detachPublicNetwork(machineId)
+    

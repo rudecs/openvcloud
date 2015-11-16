@@ -18,20 +18,18 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def destroy(self, accountname, cloudspaceName, cloudspaceId, reason, **kwargs):
+    def destroy(self, accountId, cloudspaceId, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
         """
+
         cloudspaceId = int(cloudspaceId)
-        accounts = self.models.account.search({'name':accountname, 'status': {'$ne': 'DESTROYED'}})[1:]
-        if not accounts:
-            raise exceptions.NotFound('Account name not found')
 
-        accountid = accounts[0]['id']
+        accountid = accountId
 
-        cloudspaces = self.models.cloudspace.simpleSearch({'name': cloudspaceName, 'id': cloudspaceId, 'accountId': accountid})
+        cloudspaces = self.models.cloudspace.simpleSearch({ 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:
-            raise exceptions.NotFound('Cloudspace with name %s and id %s that has account %s not found' % (cloudspaceName, cloudspaceId, accountname))
+            raise exceptions.NotFound('Cloudspace with id %s that has accountId %s not found' % (cloudspaceId, accountId))
 
         cloudspace = cloudspaces[0]
 
@@ -44,7 +42,7 @@ class cloudbroker_cloudspace(BaseActor):
             for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
-                    j.apps.cloudbroker.machine.destroy(accountname, cloudspaceName, machineId, reason)
+                    j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
             self.models.cloudspace.set(cloudspace)

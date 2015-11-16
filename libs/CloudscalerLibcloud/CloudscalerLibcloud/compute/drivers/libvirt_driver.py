@@ -14,6 +14,12 @@ import random
 BASEPOOLPATH = '/mnt/vmstor/'
 IMAGEPOOL = '/mnt/vmstor/templates'
 
+class NetworkInterface(object):
+    def __init__(self, mac, target, type):
+        self.mac = mac
+        self.target = target
+        self.type = type
+
 
 class CSLibvirtNodeDriver():
 
@@ -143,18 +149,19 @@ class CSLibvirtNodeDriver():
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         dev = getNextDev(devices)
-        disk = ElementTree.SubElement(devices, 'disk')
+        disk = ElementTree.Element('disk')
         disk.attrib['type'] = 'block'
         disk.attrib['device'] = 'disk'
         ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'native'}
         ElementTree.SubElement(disk, 'source').attrib = {'dev': volume.id}
         ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
-        return self._update_node(node, ElementTree.tostring(dom))
+        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ElementTree.tostring(disk), machineid=node.id)
+        return self._update_node(node, domxml)
 
     def _update_node(self, node, xml):
         self._execute_agent_job('redefinemachine', queue='hypervisor', xml=xml, domainid=node.id)
         self._set_persistent_xml(node, xml)
-        return True
+        return self._from_xml_to_node(xml, node)
 
     def destroy_volume(self, volume):
         return self._execute_agent_job('destroyvolume', queue='hypervisor', path=volume.id)
@@ -164,14 +171,18 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
+        domxml = None
 
         for disk in devices.iterfind('disk'):
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
             if source.attrib['dev'] == volume.id:
-                devices.remove(disk)
-        return self._update_node(node, ElementTree.tostring(dom))
+                diskxml = ElementTree.tostring(disk)
+                domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+        if domxml:
+            return self._update_node(node, domxml)
+        return node
 
     def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
         disktemplate = self.env.get_template("disk.xml")
@@ -276,8 +287,7 @@ class CSLibvirtNodeDriver():
 
         vmid = result['id']
         self.backendconnection.registerMachine(vmid, macaddress, networkid)
-        ipaddress = 'Undefined'
-        node = self._from_agent_to_node(result, ipaddress, volumes=volumes)
+        node = self._from_agent_to_node(result, volumes=volumes)
         self._set_persistent_xml(node, result['XMLDesc'])
         return node
 
@@ -286,16 +296,17 @@ class CSLibvirtNodeDriver():
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
-        node = self._from_agent_to_node(self._get_domain_for_node(node))
-        backendnode = self.backendconnection.getNode(node.id)
-        node.extra['macaddress'] = backendnode['macaddress']
+        agentnode = self._get_domain_for_node(node)
+        if agentnode is None:
+            agentnode = {'id': node_id, 'name': '', 'state': 5, 'extra': {}}
+        node = self._from_agent_to_node(agentnode)
         return node
 
     def ex_create_snapshot(self, node, name, snapshottype='external'):
         return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
 
     def ex_list_snapshots(self, node):
-        return self._execute_agent_job('listsnapshots', queue='default', machineid=node.id)
+        return self._execute_agent_job('listsnapshots', queue='default', vmname=node.name)
 
     def ex_delete_snapshot(self, node, timestamp):
         return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
@@ -328,8 +339,9 @@ class CSLibvirtNodeDriver():
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
+        xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
-        self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id)
+        self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
         return True
 
     def ex_get_console_url(self, node):
@@ -392,7 +404,9 @@ class CSLibvirtNodeDriver():
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
-        return self._execute_agent_job('startmachine', queue='hypervisor', machineid = machineid, xml = xml)
+        xml = self._execute_agent_job('startmachine', queue='hypervisor', machineid=machineid, xml=xml)
+        self._set_persistent_xml(node, xml)
+        return True
 
     def ex_get_console_output(self, node):
         domain = self._get_domain_for_node(node=node)
@@ -448,12 +462,54 @@ class CSLibvirtNodeDriver():
         return self._execute_agent_job('getmachine', queue='default', machineid = node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress='', volumes=None):
-        state = self.NODE_STATE_MAP.get(domain['state'], NodeState.UNKNOWN)
+        xml = domain.get('XMLDesc')
+        if xml:
+            node = self._from_xml_to_node(xml)
+        else:
+            node = Node(id=domain['id'],
+                        name=domain['name'],
+                        public_ips=[],
+                        private_ips=[],
+                        state=domain['state'],
+                        driver=self)
+        node.state = domain['state']
         extra = domain['extra']
-        extra['volumes'] = volumes or []
-        node = Node(id=domain['id'], name=domain['name'], state=domain['state'],
-                    public_ips=[publicipaddress], private_ips=[], driver=self,
-                    extra=extra)
+        node.extra.update(extra)
+        if volumes:
+            node.extra['volumes'] = volumes
+        if publicipaddress:
+            node.public_ips.append(publicipaddress)
+        return node
+
+    def _from_xml_to_node(self, xml, node=None):
+        dom = ElementTree.fromstring(xml)
+        state = NodeState.UNKNOWN
+        volumes = list()
+        ifaces = list()
+        for disk in dom.findall('devices/disk'):
+            if disk.attrib['device'] != 'disk':
+                continue
+            diskpath = disk.find('source').attrib['dev']
+            volume = StorageVolume(id=diskpath, name='N/A', size=0, driver=self)
+            volume.dev = disk.find('target').attrib['dev']
+            volumes.append(volume)
+        for nic in dom.findall('devices/interface'):
+            mac = None
+            macelement = nic.find('mac')
+            if macelement is not None:
+                mac = macelement.attrib['address']
+            target = nic.find('target').attrib['dev']
+            type = nic.attrib['type']
+            ifaces.append(NetworkInterface(mac=mac, target=target, type=type))
+        name = dom.find('name').text
+        id = dom.find('uuid').text
+        extra = {'volumes': volumes, 'ifaces': ifaces}
+        if node is None:
+            node = Node(id=id, name=name, state=state,
+                        public_ips=[], private_ips=[], driver=self,
+                        extra=extra)
+        else:
+            node.extra.update(extra)
         return node
 
     def ex_snapshots_can_be_deleted_while_running(self):
@@ -461,3 +517,38 @@ class CSLibvirtNodeDriver():
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
+    
+    def attach_public_network(self, node):
+        """
+        Attach Virtual machine to the cpu node public network
+        """
+        macaddress = self.backendconnection.getMacAddress(self.gid)
+        iface = ElementTree.Element('interface')
+        iface.attrib['type'] = 'network'
+        target = '%s-pub' % node.name
+        ElementTree.SubElement(iface, 'source').attrib = {'network': 'public'}
+        ElementTree.SubElement(iface, 'mac').attrib = {'address': macaddress}
+        ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
+        ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
+        ifacexml = ElementTree.tostring(iface)
+        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
+        self._update_node(node, domxml)
+        return NetworkInterface(mac=macaddress, target=target, type='bridge')
+
+    def detach_public_network(self, node, networkid):
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        interfacexml = None
+        targetname = '%s-pub' % node.name
+        for interface in devices.iterfind('interface'):
+            target = interface.find('target')
+            if target.attrib['dev'] == targetname:
+                devices.remove(interface)
+                interfacexml = ElementTree.tostring(interface)
+                break
+        if interfacexml:
+            domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
+            return self._update_node(node, domxml)
+
+

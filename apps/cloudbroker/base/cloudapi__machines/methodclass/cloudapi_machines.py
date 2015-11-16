@@ -3,6 +3,7 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums
 from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib import authenticator, network
 import time
 import itertools
 
@@ -38,6 +39,7 @@ class cloudapi_machines(BaseActor):
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
+        self.network = network.Network(self.models)
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
@@ -96,7 +98,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='C')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only add a disk to a stopped machine')
     def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
         Add a disk to a machine
@@ -123,7 +124,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only detach a disk from a stopped machine')
     def detachDisk(self, machineId, diskId, **kwargs):
         diskId = int(diskId)
         machine = self._getMachine(machineId)
@@ -139,7 +139,6 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='D')
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'Can only attch a disk to a stopped machine')
     def attachDisk(self, machineId, diskId, **kwargs):
         diskId = int(diskId)
         machine = self._getMachine(machineId)
@@ -242,6 +241,7 @@ class cloudapi_machines(BaseActor):
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
         vmachinemodel = self._getMachine(machineId)
+        self. _detachPublicNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
             vmachinemodel.status = 'DESTROYED'
@@ -261,6 +261,16 @@ class cloudapi_machines(BaseActor):
                     break
         for disk in vmachinemodel.disks:
             j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+
+        # delete leases
+        cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        macs = list()
+        for nic in vmachinemodel.nics:
+            if nic.type != 'PUBLIC' and nic.macAddress:
+                macs.append(nic.macAddress)
+        if macs:
+            self.netmgr.fw_remove_lease(fwid, macs)
         return True
 
 
@@ -287,9 +297,9 @@ class cloudapi_machines(BaseActor):
                 cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                 fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
                 try:
-                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, node.extra['macaddress'])
+                    ipaddress = self.netmgr.fw_get_ipaddress(fwid, machine.nics[0].macAddress)
                     if ipaddress:
-                        machine.nics[0].ipAddress= ipaddress
+                        machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
                 except:
                     pass # VFW not deployed yet
@@ -385,6 +395,7 @@ class cloudapi_machines(BaseActor):
     @audit()
     def listSnapshots(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
+        node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:
@@ -681,3 +692,52 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
+    
+    def attachPublicNetwork(self, machineId, **kwargs):
+        provider, node = self._getProviderAndNode(machineId)
+        vmachine = self._getMachine(machineId)
+        for nic in vmachine.nics:
+            if nic.type == 'PUBLIC':
+                return True
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        networkid = cloudspace.networkId
+        netinfo = self.network.getPublicIpAddress(cloudspace.gid)
+        if netinfo is None:
+            raise RuntimeError("No available public IPAddresses")
+        pool, publicipaddress = netinfo
+        if not publicipaddress:
+            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+        nic = vmachine.new_nic()
+        nic.ipAddress = str(publicipaddress)
+        nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway})
+        nic.type = 'PUBLIC'
+        self.models.vmachine.set(vmachine)
+        iface = provider.client.attach_public_network(node)
+        nic.deviceName = iface.target
+        nic.macAddress = iface.mac
+        self.models.vmachine.set(vmachine)
+        return True
+
+    def detachPublicNetwork(self, machineId, **kwargs):
+        provider, node = self._getProviderAndNode(machineId)
+        vmachine = self._getMachine(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        networkid = cloudspace.networkId
+        
+        for nic in vmachine.nics:
+            nicdict = nic.obj2dict()
+            if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
+                continue
+            
+            provider.client.detach_public_network(node, networkid)
+        self._detachPublicNetworkFromModel(vmachine)
+        return True
+
+    def _detachPublicNetworkFromModel(self, vmachine):
+        for nic in vmachine.nics:
+            nicdict = nic.obj2dict()
+            if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
+                continue
+            vmachine.nics.remove(nic)
+            self.models.vmachine.set(vmachine)
+            self.network.releasePublicIpAddress(nic.ipAddress)

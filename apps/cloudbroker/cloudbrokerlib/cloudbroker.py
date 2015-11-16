@@ -16,9 +16,10 @@ import string
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
+def removeConfusingChars(input):
+    return input.replace('0', '').replace('O', '').replace('l', '').replace('I', '')
 
 class Dummy(object):
-
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
@@ -319,8 +320,8 @@ class Machine(object):
             else:
                 account.login = 'cloudscalers'
             length = 6
-            chars = string.letters + string.digits
-            letters = ['abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+            chars = removeConfusingChars(string.letters + string.digits)
+            letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]
             passwd = ''.join(random.choice(chars) for _ in xrange(length))
             passwd = passwd + random.choice(string.digits) + random.choice(letters[0]) + random.choice(letters[1])
             account.password = passwd
@@ -334,9 +335,21 @@ class Machine(object):
         machine.stackId = stackId
         machine.status = enums.MachineStatus.RUNNING
         machine.hostName = node.name
-        for ipaddress in node.public_ips:
-            nic = machine.new_nic()
-            nic.ipAddress = ipaddress
+        if 'ifaces' in node.extra:
+            for iface in node.extra['ifaces']:
+                for nic in machine.nics:
+                    if nic.macaddress == iface.mac:
+                        break
+                else:
+                    nic = machine.new_nic()
+                    nic.macAddress = iface.mac
+                    nic.deviceName = iface.target
+                    nic.type = iface.type
+                    nic.ipAddress = 'Undefined'
+        else:
+            for ipaddress in node.public_ips:
+                nic = machine.new_nic()
+                nic.ipAddress = ipaddress
         models.vmachine.set(machine)
 
         for order, diskid in enumerate(machine.disks):

@@ -44,6 +44,7 @@ class Vnas(object):
         self.stores = []
         self.ovc = j.tools.ms1.get(apiURL=api_url)
         self.spacesecret = None
+        self.masterkey = None
 
     def _format_ays_cmd(self, action, service_name, service_instance='main', args={}, parent=''):
         """
@@ -133,9 +134,16 @@ class Vnas(object):
     def delete_all_vm(self):
         for obj in self.ovc.listMachinesInSpace(self.spacesecret):
             self.ovc.deleteMachine(self.spacesecret, obj['name'])
+    
+    def allow_masterkey(self, remote):
+        if self.masterkey is not None:
+            remote.run("echo '%s' >> /root/.ssh/authorized_keys" % self.masterkey)
+        else:
+            print '[-] master key not set'
 
     def create_master(self):
-        ip, port, passwd = self.create_vm('master')
+        vmName = 'master'
+        ip, port, passwd = self.create_vm(vmName)
         cl = self.ssh_to_vm(ip, port=port, passwd=passwd)
         self.config_vm(cl)
         data = {
@@ -146,9 +154,20 @@ class Vnas(object):
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
         cl.package_install('iozone3')
+        
+        # building own ssh key
+        cl.ssh_keygen('root', 'rsa')
+        
+        # allow himself
+        self.masterkey = cl.run("cat /root/.ssh/id_rsa.pub")
+        print self.masterkey
+        
+        cl.run("cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys")
 
         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
-        return obj['interfaces'][0]['ipAddress']
+        print obj['interfaces'][0]
+        
+        return {'ip': obj['interfaces'][0]['ipAddress'], 'port': obj['interfaces'][0]['ipAddress']}
 
     # def createAD(self, serviceObj):
     def create_AD(self):
@@ -161,6 +180,8 @@ class Vnas(object):
         cmd = self._format_ays_cmd('install', 'vnas_ad', 'main')
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
+        
+        self.allow_masterkey(cl)
 
         obj = self.ovc.getMachineObject(self.spacesecret, 'vnas_ad')
         return obj['interfaces'][0]['ipAddress']
@@ -197,11 +218,13 @@ class Vnas(object):
         # make sure nfs server is running
         cl.run('/etc/init.d/nfs-kernel-server restart')
         cl.package_install('iozone3')
+        
+        self.allow_masterkey(cl)
 
         obj = self.ovc.getMachineObject(self.spacesecret, vmName)
         ip = obj['interfaces'][0]['ipAddress']
 
-        return {'addr': ip, 'id': id+1}
+        return {'addr': ip, 'id': id + 1}
 
     def create_frontend(self, id, stack_id, ad_ip, master_ip, nid, stores):
         vmName = 'vnas_frontend%s' % id
@@ -216,14 +239,50 @@ class Vnas(object):
             'instance.agent.nid': nid,
             'instance.vnas.refresh': 10,  # TODO allow configuration of this value ??
             'instance.vnas.blocksize': 16777216,
+            'instance.vnas.timeout': 10,  # FIXME ?
+            'instance.param.timeout': 10, # FIXME ?
         }
-        for store in stores.iteritems():
+        for store in stores:
             data['instance.stores.%s' % store['id']] = store['addr']
+        
+        self.allow_masterkey(cl)
 
         cmd = self._format_ays_cmd('install', 'vnas_node', str(id), data)
         print "[+] execute %s" % (cmd)
         cl.run(cmd)
         cl.package_install('iozone3')
+        
+        obj = self.ovc.getMachineObject(self.spacesecret, vmName)
+        ip = obj['interfaces'][0]['ipAddress']
+
+        return {'addr': ip, 'id': id + 1}
+    
+    def populate(self, master, port, ad, backends, frontends):
+        # grab ip of vm
+        # install service on master
+        # set hosts
+        
+        print '[+] master: %s' % master
+        print '[+] active directory: %s' % ad
+        print '[+] backends count: %d' % len(backends)
+        print '[+] frontends count: %d' % len(frontends)
+        
+        data = {
+            'addr.frontend.master': frontends[0]['addr'],
+            'addr.frontend.fallback': frontends[1]['addr'],
+            'addr.master': master,
+            'addr.ad': ad
+        }
+        
+        for backend in backends:
+            data['addr.backends.%s' % backend['id']] = backend['addr']
+        
+        print data
+        
+        cl = self.ssh_to_vm(master, port=port)
+        cmd = self._format_ays_cmd('install', 'vnas_setup', 'main', data)
+        
+        return True
 
 if __name__ == '__main__':
 
@@ -246,10 +305,18 @@ if __name__ == '__main__':
     if args.action == 'deploy':
 
         master_ip = None
-        ok, master_ip = state.is_done('master')
+        ok, stuff = state.is_done('master')
         if not ok:
-            master_ip = vnas.create_master()
-            state.done('master', master_ip)
+            stuff = vnas.create_master()
+            master_ip = stuff['ip']
+            master_port = stuff['port']
+            state.done('master', {'ip': master_ip, 'key': vnas.masterkey, 'port': master_port})
+            
+        else:
+            master_ip = stuff['ip']
+            master_port = stuff['port']
+            vnas.masterkey = stuff['key']
+            print '[+] master key loaded: %s' % vnas.masterkey
 
         ad_ip = None
         ok, ad_ip = state.is_done('ad')
@@ -263,13 +330,20 @@ if __name__ == '__main__':
             if not ok:
                 store = vnas.create_backend(i, i, master_ip, i, nbr_disk=10)
                 state.done('backend%s' % i, store)
+
             backends.append(store)
 
+        frontends = []
         for i in range(2):
-            ok, _ = state.is_done('frontend%s' % i)
+            ok, store = state.is_done('frontend%s' % i)
             if not ok:
-                vnas.create_frontend(i, i+1, ad_ip, master_ip, i+1, backends)
-                state.done('frontend%s' % i, '')
+                store = vnas.create_frontend(i, i + 1, ad_ip, master_ip, i + 1, backends)
+                state.done('frontend%s' % i, store)
+            
+            frontends.append(store)
+        
+        # save stuff
+        vnas.populate(master_ip, master_port, ad_ip, backends, frontends)
 
     elif args.action == 'remove':
         vnas.delete_all_vm()

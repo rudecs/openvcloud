@@ -58,6 +58,17 @@ angular.module('cloudscalers.services')
                                 return $q.reject(reason);
                         }
                  );
+            },
+						tourTipsSwitch: function(tourtipsStatus){
+                return $http.post(cloudspaceconfig.apibaseurl + '/users/setData?' , { "data": {"tourtips": encodeURIComponent(tourtipsStatus)} })
+                .then(
+                        function(result){
+                                return result.data;
+                        },
+                        function(reason){
+                                return $q.reject(reason);
+                        }
+                 );
             }
         };
     });

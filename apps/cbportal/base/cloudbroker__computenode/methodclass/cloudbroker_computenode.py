@@ -63,7 +63,7 @@ class cloudbroker_computenode(BaseActor):
                 cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
                 account = self.models.account.get(cloudspace.accountId)
 
-                machines_actor.moveToDifferentComputeNode(account.name, machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
+                machines_actor.moveToDifferentComputeNode(machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):

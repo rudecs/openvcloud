@@ -47,7 +47,7 @@
 				min-height: 240px;
 			}
 		</style>
-        <form name="form" class="form-horizontal" ng-submit="submit()" ng-controller="Mothership1TourController">
+        <form name="form" class="form-horizontal" ng-submit="submit()" ng-controller="OpenvCloudTourController">
             <tour step="steps.portForwardTourStep" post-step="postStepCallback()" post-tour="tourComplete('portForwardTourStep')">
             <div class="modal-header">
                 <h3>Port Forward</h3>
@@ -78,7 +78,7 @@
 					<div class="control-group margin-top-none">
 						<label class="control-label float-none machineTip width-90" tourtip="Choose the machine and port you want to connect to. In most cases this will be the same port" tourtip-placement="left" >Virtual Machine</label>
 						<div class="controls">
-							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines" class="form-control protocol-select">
+							<select ng-model="newRule.VM" ng-options="machine.name for machine in currentSpace.machines | filter:machineIsManageable" class="form-control protocol-select">
 		                    </select>
 		                </div>
 						<label class="control-label float-none" for="inputNewLocalPort">Port</label>

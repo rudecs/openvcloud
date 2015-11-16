@@ -11,7 +11,8 @@ enable = True
 async = True
 log = True
 queue = 'io'
-period = 30 * 60
+interval = (2 * j.application.whoAmI.nid) % 30
+period = "%s,%s * * * *" % (interval, interval + 30)
 roles = ['storagenode']
 category = "monitor.healthcheck"
 
@@ -66,9 +67,9 @@ class OpenvStorage():
         """
         """
         bandwidth = bandwidth
-        if bandwidth < self.speed / 2:
+        if bandwidth < self.speed * 0.1:
             return 'ERROR'
-        elif bandwidth < self.speed * 0.9:
+        elif bandwidth < self.speed * 0.5:
             return 'WARNING'
         return 'OK'
     
@@ -80,7 +81,7 @@ class OpenvStorage():
             j.logger.log('Installing iperf on %s' % ip, 1)
             if not sshclient.command_check('iperf'):
                 sshclient.run('apt-get install iperf')
-            output = sshclient.run('iperf -c %s --format m ' % self.localIp)
+            output = sshclient.run('iperf -c %s --format m -t 5 ' % self.localIp)
             output = output.split(' ')
             bandwidth = float(output[-2])
             msg = "Bandwith between %s and %s reached %s" % (self.localIp, ip, bandwidth)

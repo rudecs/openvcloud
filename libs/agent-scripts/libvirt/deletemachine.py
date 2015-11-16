@@ -13,9 +13,9 @@ version = "1.0"
 roles = []
 
 
-def action(machineid):
+def action(machineid, machinexml):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    return connection.delete_machine(machineid)
+    return connection.delete_machine(machineid, machinexml)
 
 

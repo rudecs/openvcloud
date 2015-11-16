@@ -672,7 +672,7 @@ defineApiStub = function ($httpBackend) {
        {id: '7', name: 'Production', accountId: '4', publicipaddress: '173.194.39.40', location: "us1", acl:{guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"}, status: "CREATED", userRightsOnAccount: { guid: "", right: "ACDRUX", type: "U", userGroupId: "Incubaid"} ,userRightsOnAccountBilling: true, accountName: "Incubaid"},
     ];
 
-    
+
     var cloudSpace = {
         name: 'Development',
         descr: 'Development machine',
@@ -904,7 +904,7 @@ defineApiStub = function ($httpBackend) {
        {id: 10, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 3030, localPort: 30, cloudspaceid: 1, protocol: 'tcp'},
        {id: 11, publicIp: '126.84.3.9', vmName: "CloudBroker" , vmid: 1, publicPort: 5050, localPort: 50, cloudspaceid: 1, protocol: 'tcp'},
     ];
-    
+
     var portforwardingList = LocalStorageItem('gcb:portforwarding');
     if(!portforwardingList.get('gcb:portforwarding')){
         portforwardingList.set(portforwarding);
@@ -1023,7 +1023,7 @@ defineApiStub = function ($httpBackend) {
         var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
         machine.acl.push({ type: 'U', guid: '', right: params.accessType , userGroupId: params.userId });
         MachinesList.save(machine);
-        
+
         return [200, '15'];
     });
 
@@ -1033,7 +1033,7 @@ defineApiStub = function ($httpBackend) {
         var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
         machine.acl.splice(machine.acl.indexOf(userAcl), 1);
         MachinesList.save(machine);
-        
+
         return [200, '15'];
     });
 
@@ -1042,7 +1042,7 @@ defineApiStub = function ($httpBackend) {
         var machine = _.find(MachinesList.get(), function(m) { return m.id == params.machineId; });
         var userAcl = _.find(machine.acl , function(acl) { return acl.userGroupId == params.userId; });
         machine.acl[machine.acl.indexOf(userAcl)].right = params.accessType;
-        MachinesList.save(machine);        
+        MachinesList.save(machine);
         return [200, '15'];
     });
 
