@@ -24,7 +24,7 @@ h1. Profile
       </form>
       <label class="left control-group margin-top-large margin-right-medium line-height txt-14 width-15">Tour instructions:</label>
       <label class="switch switch-flat margin-top-large left">
-      <input ng-model="tourSwitchFlag" class="switch-input" type="checkbox" ng-change="tourSwitch()" />
+      <input ng-model="tourSwitchFlag" ng-checked="tourSwitchFlag" class="switch-input" type="checkbox" ng-change="tourSwitch()" />
       <span class="switch-label" data-on="On" data-off="Off"></span>
       <span class="switch-handle"></span>
       </label>

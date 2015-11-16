@@ -19,14 +19,24 @@ angular.module('cloudscalers.controllers')
             ipCookie(tourName, 9999);
         };
 
+        $scope.tourReset = function(tourName) {
+            ipCookie(tourName, 0);
+        };
+
         User.updateUserDetails($scope.currentUser.username).then(
             function(currentUserData) {
-                if(currentUserData.tourTips == false){
+                if(JSON.parse(currentUserData.tourTips) == false){
                     $scope.tourComplete("tourStep");
                     $scope.tourComplete("portForwardTourStep");
                     $scope.tourComplete("machineDetailTourStep");
                     $scope.tourComplete("machineListTourStep");
                     $scope.tourtips = false;
+                }else{
+                  $scope.tourReset("tourStep");
+                  $scope.tourReset("portForwardTourStep");
+                  $scope.tourReset("machineDetailTourStep");
+                  $scope.tourReset("machineListTourStep");
+                  $scope.tourtips = true;
                 }
             },
             function(reason){
@@ -40,7 +50,7 @@ angular.module('cloudscalers.controllers')
             $scope.tourComplete("machineListTourStep");
             $scope.cancelDisableTourForEverModal();
             $scope.tourtips = false;
-            Users.disableTourTips(false).then(function() {
+            Users.tourTipsSwitch(false).then(function() {
                 var currentUserData = SessionData.getUser();
                 currentUserData["tourTips"] = false;
                 SessionData.setUser(currentUserData);

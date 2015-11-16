@@ -3,7 +3,7 @@ angular.module('cloudscalers.controllers', ['ngCookies'])
         $scope.user = {username : '', password:'', company: '', vat: ''};
 
         $scope.login_error = undefined;
-        SessionData.setUser({ username: '', api_key: '' });
+        SessionData.setUser({ username: '', api_key: '', tourTips: '' });
 
         var portal_session_cookie = $cookies["beaker.session.id"];
         if(portal_session_cookie){

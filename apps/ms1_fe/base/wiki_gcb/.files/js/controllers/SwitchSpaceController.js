@@ -6,6 +6,7 @@ angular.module('cloudscalers.controllers')
         var api_key = queryparams.token;
         var username = queryparams.username;
         var spaceId = queryparams.spaceId;
+        console.log(queryparams);
 
         SessionData.setUser({username: username, api_key: api_key});
         CloudSpace.setCurrent({id:spaceId});
