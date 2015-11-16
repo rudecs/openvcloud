@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('OpenvCloudTourController', ['$scope', 'ipCookie', 'Users', '$ErrorResponseAlert', function($scope, ipCookie, Users, $ErrorResponseAlert) {
+    .controller('OpenvCloudTourController', ['$scope', 'ipCookie', 'Users', 'SessionData', 'User','$ErrorResponseAlert', function($scope, ipCookie, Users, SessionData, User, $ErrorResponseAlert) {
         $scope.steps = {};
         $scope.tourtips = true;
         $scope.steps['tourStep'] = ipCookie('tourStep') || 0;
@@ -19,6 +19,20 @@ angular.module('cloudscalers.controllers')
             ipCookie(tourName, 9999);
         };
 
+        User.updateUserDetails($scope.currentUser.username).then(
+            function(currentUserData) {
+                if(currentUserData.tourTips == false){
+                    $scope.tourComplete("tourStep");
+                    $scope.tourComplete("portForwardTourStep");
+                    $scope.tourComplete("machineDetailTourStep");
+                    $scope.tourComplete("machineListTourStep");
+                    $scope.tourtips = false;
+                }
+            },
+            function(reason){
+                $ErrorResponseAlert(reason);
+            });
+
         $scope.DisableTourForEverModal = function() {
             $scope.tourComplete("tourStep");
             $scope.tourComplete("portForwardTourStep");
@@ -26,8 +40,10 @@ angular.module('cloudscalers.controllers')
             $scope.tourComplete("machineListTourStep");
             $scope.cancelDisableTourForEverModal();
             $scope.tourtips = false;
-            Users.disableTourTips().then(function() {
-
+            Users.disableTourTips(false).then(function() {
+                var currentUserData = SessionData.getUser();
+                currentUserData["tourTips"] = false;
+                SessionData.setUser(currentUserData);
             },function(reason){
                 $ErrorResponseAlert(reason);
             });

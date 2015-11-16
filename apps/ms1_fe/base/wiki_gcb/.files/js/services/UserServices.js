@@ -59,8 +59,8 @@ angular.module('cloudscalers.services')
                         }
                  );
             },
-						disableTourTips: function(){
-                return $http.get(cloudspaceconfig.apibaseurl + '/users/setData?' , { params: { 'data': { tourtips: false } } })
+						tourTipsSwitch: function(tourtipsStatus){
+                return $http.post(cloudspaceconfig.apibaseurl + '/users/setData?' , { "data": {"tourtips": encodeURIComponent(tourtipsStatus)} })
                 .then(
                         function(result){
                                 return result.data;

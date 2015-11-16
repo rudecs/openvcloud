@@ -92,7 +92,7 @@ angular.module('cloudscalers.services')
                         }
                         else{
                             SessionData.setUser(undefined);
-                            return $q.reject(reason); 
+                            return $q.reject(reason);
                         }
                     }
             );
@@ -103,7 +103,7 @@ angular.module('cloudscalers.services')
             return $http.get(url).then(
                 function(result) {
                     return JSON.parse(result.data);
-                }, 
+                },
                 function(reason){
                     return $q.reject(reason);
                 });
@@ -128,6 +128,7 @@ angular.module('cloudscalers.services')
             			function(result){
             				storedUser = SessionData.getUser();
             				storedUser.emailaddresses = result.data.emailaddresses;
+										storedUser.tourTips = result.data.data.tourtips;
             				SessionData.setUser(storedUser);
             				return storedUser;
             			},
