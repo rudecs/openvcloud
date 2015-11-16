@@ -24,8 +24,7 @@ h2. Cloud Space: ${name}
   action: /restmachine/cloudbroker/cloudspace/destroy
   data:
    cloudspaceId: $$id
-   cloudspaceName: ${name}
-   accountname: ${accountname}
+   accountId: ${accountId}
   input:
   - reason
 
