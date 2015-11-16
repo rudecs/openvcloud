@@ -82,7 +82,7 @@ class LibvirtUtil(object):
         if not domain and xml:
             domain = self.connection.defineXML(xml)
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
-            return True
+            return domain.XMLDesc()
         domain.create() == 0
         return domain.XMLDesc()
 
