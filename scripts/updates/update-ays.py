@@ -251,28 +251,6 @@ if options.self:
     print '[ ]'
     print '[+] self-update successful'
     print '[ ]'
-    
-if options.restartCloud or options.restart:
-    allStep = False
-    
-    print '[+] restarting cloudspace'
-    
-    restartCloudspace(hosts)
-    
-    print '[ ]'
-    print '[+] cloudspace restarted'
-    print '[ ]'
-
-if options.restartNodes or options.restart:
-    allStep = False
-    
-    print '[+] restarting nodes'
-    
-    restartNodes(sshservices, hosts)
-    
-    print '[ ]'
-    print '[+] node restarted'
-    print '[ ]'
 
 if options.update:
     allStep = False
@@ -308,6 +286,28 @@ if options.updateCloud:
     
     print '[ ]'
     print '[+] cloudspace updated'
+    print '[ ]'
+
+if options.restartCloud or options.restart:
+    allStep = False
+    
+    print '[+] restarting cloudspace'
+    
+    restartCloudspace(hosts)
+    
+    print '[ ]'
+    print '[+] cloudspace restarted'
+    print '[ ]'
+
+if options.restartNodes or options.restart:
+    allStep = False
+    
+    print '[+] restarting nodes'
+    
+    restartNodes(sshservices, hosts)
+    
+    print '[ ]'
+    print '[+] node restarted'
     print '[ ]'
 
 if options.report:
