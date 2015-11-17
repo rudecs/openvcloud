@@ -25,8 +25,9 @@ def action(name, size):
     volumepath = '/mnt/vmstor/volumes'
     
     vdisk = VDisk()
-    vdisk.name = name
-    vdisk.devicename = j.system.fs.joinPaths(volumepath, 'volume_%s.raw' % name)
+    filename = 'volume_%s.raw' % name
+    vdisk.name = filename
+    vdisk.devicename = j.system.fs.joinPaths(volumepath, filename)
     vdisk.vpool = VPoolList.get_vpool_by_name('vmstor')
     vdisk.size = size
     vdisk.save()
