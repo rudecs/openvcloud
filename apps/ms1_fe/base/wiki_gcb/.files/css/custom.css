@@ -598,8 +598,8 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .api-list table thead tr th { line-height: 16px; }
 .api-list .sandbox_header input.submit { padding: 0 10px; color: #fff; background-color: #10a54a; border-color: #10a54a; display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 /* end of ApiDocs page */
-/* ------------ loader --------------*/ 
-#overlay-loader { position: absolute; width: 100%; height: 100%; z-index: 9999999999999; background: rgba(0, 0, 0, 0.9); /*background-color: #002031;*/ display: none; }
+/* ------------ loader --------------*/
+#overlay-loader { position: fixed; width: 100%; height: 100%; z-index: 9999999999999; background: rgba(0, 0, 0, 0.9); /*background-color: #002031;*/ display: none; }
 #overlay-loader .loader-title { font-size: 33px; color: #FFF; text-align: center; padding-top: 15%; }
 #overlay-loader .small2 { position: absolute; height: 100px; width: 100px; background-color: transparent; top: 50vh; left: 50%; transform: translate(-50%, -50%); }
 #overlay-loader .small1 { position: absolute; height: 100px; width: 100px; top: 50vh; left: 50%; transform-origin: center; transform: translate(-50%, -50%) rotate(45deg); background-color: transparent; }
