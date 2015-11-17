@@ -52,8 +52,9 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.$watch('currentSpace.id',function(){
-          if($scope.currentSpace.id){
+          if($scope.currentSpace){
             $scope.updateMachineList();
+            $scope.sizes = Size.list($scope.currentSpace.id);
           }
         });
 
@@ -64,8 +65,6 @@ angular.module('cloudscalers.controllers')
         $scope.machineIsManageable = function(machine){
             return machine.status && machine.status != 'DESTROYED' && machine.status != 'ERROR';
         }
-
-        $scope.sizes = Size.list($scope.currentSpace.id);
 
         $scope.packageDisks = "";
 

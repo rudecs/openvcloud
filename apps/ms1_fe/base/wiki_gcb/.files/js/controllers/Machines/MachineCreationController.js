@@ -82,7 +82,7 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.saveNewMachine = function() {
-            LoadingDialog.show('Creating');
+            LoadingDialog.show('Creating machine');
             Machine.create($scope.currentSpace.id, $scope.machine.name, $scope.machine.description,
                            $scope.machine.sizeId, $scope.machine.imageId, $scope.machine.disksize,
                            $scope.machine.archive,

@@ -23,25 +23,29 @@ angular.module('cloudscalers.controllers')
             ipCookie(tourName, 0);
         };
 
-        User.updateUserDetails($scope.currentUser.username).then(
-            function(currentUserData) {
-                if(JSON.parse(currentUserData.tourTips) == false){
-                    $scope.tourComplete("tourStep");
-                    $scope.tourComplete("portForwardTourStep");
-                    $scope.tourComplete("machineDetailTourStep");
-                    $scope.tourComplete("machineListTourStep");
-                    $scope.tourtips = false;
-                }else{
-                  $scope.tourReset("tourStep");
-                  $scope.tourReset("portForwardTourStep");
-                  $scope.tourReset("machineDetailTourStep");
-                  $scope.tourReset("machineListTourStep");
-                  $scope.tourtips = true;
-                }
-            },
-            function(reason){
-                $ErrorResponseAlert(reason);
-            });
+        $scope.$watch("currentUser",function(){
+          if($scope.currentUser){
+            User.updateUserDetails($scope.currentUser.username).then(
+                function(currentUserData) {
+                    if(JSON.parse(currentUserData.tourTips) == false){
+                        $scope.tourComplete("tourStep");
+                        $scope.tourComplete("portForwardTourStep");
+                        $scope.tourComplete("machineDetailTourStep");
+                        $scope.tourComplete("machineListTourStep");
+                        $scope.tourtips = false;
+                    }else{
+                      $scope.tourReset("tourStep");
+                      $scope.tourReset("portForwardTourStep");
+                      $scope.tourReset("machineDetailTourStep");
+                      $scope.tourReset("machineListTourStep");
+                      $scope.tourtips = true;
+                    }
+                },
+                function(reason){
+                    $ErrorResponseAlert(reason);
+                });
+          }
+        });
 
         $scope.DisableTourForEverModal = function() {
             $scope.tourComplete("tourStep");
