@@ -282,7 +282,7 @@ class CSLibvirtNodeDriver():
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
             if result == -1:
-                self._execute_agent_job('deletevolume', queue='hypervisor', volumes=volumes)
+                self._execute_agent_job('deletemachine', queue='hypervisor', machineid=None, machinexml=machinexml)
             return -1
 
         vmid = result['id']
@@ -489,7 +489,8 @@ class CSLibvirtNodeDriver():
         for disk in dom.findall('devices/disk'):
             if disk.attrib['device'] != 'disk':
                 continue
-            diskpath = disk.find('source').attrib['dev']
+            sourceattribs = disk.find('source').attrib
+            diskpath = sourceattribs.get('dev', sourceattribs.get('file'))
             volume = StorageVolume(id=diskpath, name='N/A', size=0, driver=self)
             volume.dev = disk.find('target').attrib['dev']
             volumes.append(volume)

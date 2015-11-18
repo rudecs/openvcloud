@@ -386,6 +386,9 @@ class Machine(object):
             machine.status = 'ERROR'
             models.vmachine.set(machine)
             raise
+        if node == -1:
+            self.cleanup(machine)
+            raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
         self.updateMachineFromNode(machine, node, stackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)

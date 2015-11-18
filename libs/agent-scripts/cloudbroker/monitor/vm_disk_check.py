@@ -22,7 +22,11 @@ def action(vm_id):
     from ovs.lib.vmachine import VMachineController
 
     vmname = 'vm-%s' % vm_id
-    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
+    vmachines = VMachineList.get_vmachine_by_name(vmname)
+    if vmachines:
+        vmachine = vmachines[0]
+    else:
+        return []
     disks = []
     for vdisk in vmachine.vdisks:
         info = vdisk.info.copy()
