@@ -99,7 +99,7 @@
         var:destport int,,port where we forward to e.g. a ssh server in DMZ
 
     method:fw_forward_delete @noauth
-        """     
+        """
         """
         var:fwid str,,firewall id
         var:gid int,,grid id
@@ -107,6 +107,7 @@
         var:fwport int,,port on fw which will be visble to external world
         var:destip str,,adr where we forward to e.g. a ssh server in DMZ
         var:destport int,,port where we forward to e.g. a ssh server in DMZ
+        var:protocol str,, protocol used to forward the port
 
     method:ws_forward_list @noauth
         """

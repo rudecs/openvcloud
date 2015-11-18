@@ -40,3 +40,12 @@
         """
         var:cloudspaceid int,, if of the cloudspace
         var:id int,, id of the portforward
+
+    method:deleteByPort
+        """
+        Delete a specific portforwarding rule
+        """
+        var:cloudspaceid int,, if of the cloudspace
+        var:publicIp str,,Portforwarding public ip
+        var:publicPort int,,Portforwarding public port
+        var:proto str,,Portforwarding protocol

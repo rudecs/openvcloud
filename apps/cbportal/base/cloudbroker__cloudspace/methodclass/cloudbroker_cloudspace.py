@@ -213,5 +213,7 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deletePortForward(self, cloudspaceId, ruleId, **kwargs):
-        return self.actors.portforwarding.delete(cloudspaceId, ruleId)
+    def deletePortForward(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
+         return self.actors.portforwarding.deleteByPort(cloudspaceId, publicIp, publicPort, proto)
+
+
