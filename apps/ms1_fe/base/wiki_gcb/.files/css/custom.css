@@ -550,6 +550,11 @@ color: #000;
 }
 /* End of Profile Page */
 
+/* Defense Shield Page */
+.routeros-modal-header{ z-index: 1; background-color: #fff; min-width: 98%; }
+.routeros-modal{ width: 100% !important; }
+/* End of Defense Shield Page */
+
 #cloudspacesListEmptyDialog, #disableTourDialog { width: 560px; height: auto; margin: -250px 0 0 -280px; }
 /* Hamburger menu */
 #PortalsHamburgerMenu { margin-top: 2px; }

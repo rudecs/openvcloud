@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$interval', '$sce', 'CloudSpace', '$ErrorResponseAlert',
-        function ($scope, Networks, Machine, $modal, $interval, $sce, CloudSpace, $ErrorResponseAlert) {
+    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$interval', '$sce', 'CloudSpace', '$ErrorResponseAlert', '$timeout',
+        function ($scope, Networks, Machine, $modal, $interval, $sce, CloudSpace, $ErrorResponseAlert, $timeout) {
 
     	var cloudspaceupdater;
     	$scope.$watch('currentSpace.id + currentSpace.status',function(){
@@ -18,7 +18,7 @@ angular.module('cloudscalers.controllers')
             	}
             }
         });
-        
+
         $scope.$on(
                 "$destroy",
                 function( event ) {
@@ -29,9 +29,11 @@ angular.module('cloudscalers.controllers')
                 }
             );
 
-    	
-    	
+
             var routerosController = function ($scope, $modalInstance) {
+                $timeout(function(){
+                    angular.element('.routeros-modal-header').parents('.modal').addClass('routeros-modal');
+                }, 100);
                 $scope.cancel = function () {
             		$modalInstance.dismiss('cancel');
             	};

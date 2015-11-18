@@ -178,6 +178,9 @@
 .relative{
 	position: relative !important;
 }
+.fixed{
+	position: fixed !important;
+}
 .position-default{
 	position: inherit !important;
 }
