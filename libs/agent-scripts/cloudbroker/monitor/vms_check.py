@@ -29,6 +29,7 @@ def action(gid=None):
     accl = j.clients.agentcontroller.get()
     osiscl = j.clients.osis.getByInstance('main')
     cbcl = j.clients.osis.getNamespace('cloudbroker')
+    vcl = j.clients.osis.getNamespace('vfw')
     portalclient = j.clients.portal.getByInstance('cloudbroker').actors
     nodecl = j.clients.osis.getCategory(osiscl, 'system', 'node')
 
@@ -49,6 +50,11 @@ def action(gid=None):
         print 'Cloudspace %(accountId)s %(name)s' % cloudspace
         query = {'cloudspaceId': cloudspace['id'], 'status': {'$nin': ['ERROR', 'DESTROYED']}}
         vms = cbcl.vmachine.search(query)[1:]
+        vfwid = '%(gid)s_%(networkId)s' % cloudspace
+        if cloudspace['status'] == 'DEPLOYED' and vcl.virtualfirewall.exists(vfwid):
+            vfw = vcl.virtualfirewall.get(vfwid)
+        else:
+            vfw = None
         for vm in vms:
             if vm['stackId'] in stacks:
                 cpu_node_id = int(stacks[vm['stackId']]['referenceId'])
@@ -65,9 +71,9 @@ def action(gid=None):
                     print 'Retreiving vm from portal %(id)s' % vm
                     vmdata = portalclient.cloudapi.machines.get(vm['id'])
                     ipaddress = vmdata['interfaces'][0]['ipAddress']
-                if ipaddress != 'Undefined':
+                if ipaddress != 'Undefined' and vfw:
                     args = {'vm_ip_address': ipaddress, 'vm_cloudspace_id': cloudspace['id']}
-                    job = accl.scheduleCmd(gid, None, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, roles=['fw'], wait=True)
+                    job = accl.scheduleCmd(vfw.gid, vfw.nid, 'jumpscale', 'vm_ping', args=args, queue='default', log=False, timeout=5, wait=True)
                     ping_jobs[vm['id']] = job
 
             if vm['status'] and cpu_node_id:
