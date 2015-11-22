@@ -160,7 +160,10 @@ class LibvirtUtil(object):
         if domain:
             if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
-            domain.undefine()
+            try:
+                domain.undefine()
+            except:
+                pass  # none persistant vms dont need to be undefined
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
