@@ -88,4 +88,6 @@
         Deletes a port forwarding rule for a machine
         """
         var:cloudspaceId int,, ID of cloudspace
-        var:ruleId int,,Portforwarding rule id
+        var:publicIp str,,Portforwarding public ip
+        var:publicPort int,,Portforwarding public port
+        var:proto str,,Portforwarding protocol

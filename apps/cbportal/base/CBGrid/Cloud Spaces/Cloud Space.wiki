@@ -133,7 +133,7 @@ h3. Port Fowardings
 
 ||Source IP||Source Port||Destination IP||Destination Port||Delete||
 {% for rule in network.tcpForwardRules -%}
-|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-ruleId:'${loop.index -1}'}}|
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${rule.fromAddr}' data-publicPort:'${rule.fromPort}' data-proto:'${rule.protocol}'}}|
 {% else -%}
 | | | | | |
 {% endfor %}
