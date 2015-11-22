@@ -3,8 +3,9 @@
 
 {{timestamp}}
 
-h2. User: ${id}
 {{user_info: guid:$$id}}
+{% if id %}
+h2. User: ${id}
 
 {{actions:
 - display: Edit User
@@ -34,3 +35,6 @@ h3. Accounts
 h3. Cloud Spaces
 {{cbspacesusers: userId:$$id}}
 
+{% else %}
+No user provided
+{% endif %}

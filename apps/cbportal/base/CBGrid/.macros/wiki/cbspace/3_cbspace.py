@@ -7,8 +7,8 @@ def main(j, args, params, tags, tasklet):
 
     id = args.getTag('id')
     if not id:
-        out = 'Missing CloudSpace id param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)

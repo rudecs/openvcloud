@@ -4,10 +4,9 @@ def main(j, args, params, tags, tasklet):
 
     imageid = args.getTag('id')
     if not imageid:
-        out = 'Missing Image id param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
-
     ccl = j.clients.osis.getNamespace('libvirt')
 
     if not ccl.image.exists(imageid):

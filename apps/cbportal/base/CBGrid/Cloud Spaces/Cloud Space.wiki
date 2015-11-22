@@ -3,6 +3,7 @@
 @@title Cloud Space: ${name}
 
 {{cbspace id:$$id}}
+{% if id %}
 
 
 h2. Cloud Space: ${name}
@@ -142,3 +143,6 @@ h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
 {{vmachines cloudspaceid:$$id}}
 
+{% else %}
+No Cloud Space provided
+{% endif %}

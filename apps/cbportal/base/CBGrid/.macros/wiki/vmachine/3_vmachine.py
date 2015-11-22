@@ -11,8 +11,8 @@ def main(j, args, params, tags, tasklet):
     import gevent
     id = args.getTag('id')
     if not id:
-        out = 'Missing VMachine ID param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)

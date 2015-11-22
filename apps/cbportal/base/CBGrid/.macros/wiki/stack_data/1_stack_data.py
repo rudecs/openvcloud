@@ -4,8 +4,8 @@ def main(j, args, params, tags, tasklet):
 
     stid = args.getTag('id')
     if not stid:
-        out = 'Missing Stack id param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     stid = int(stid)
