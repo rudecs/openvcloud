@@ -1,9 +1,8 @@
 @usedefault
 
 @@title Account: ${name}
-
 {{Account id:$$id}}
-
+{% if id %}
 h2. Account: ${name}
 
 {{actions:
@@ -93,3 +92,7 @@ h3. Credit
 
 h4. Transactions
 {{transactions: accountId:$$id}}
+
+{% else %}
+No account provided
+{% endif %}

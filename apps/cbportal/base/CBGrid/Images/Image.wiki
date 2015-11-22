@@ -1,7 +1,7 @@
 @usedefault
 @@title Image: ${name}
-
 {{image_data id:$$id}}
+{% if id %}
 h3. Image: ${name}
 
 {{actions:
@@ -43,3 +43,7 @@ h4. Stacks which have this Image
 
 h4. Virtual Machines which use this image
 {{vmachines imageid:$$id}}
+
+{% else %}
+No Image provided
+{% endif %}

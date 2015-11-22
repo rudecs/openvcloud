@@ -1,7 +1,7 @@
 @usedefault
 @@title Stack: ${name}
-
 {{stack_data: id:$$id}}
+{% if id %}
 
 h3. Stack: ${name}
 {{actions:
@@ -43,3 +43,7 @@ h3. Images:
 h3. Virtual Machines:
 
 {{vmachines: stackid:$$id}}
+
+{% else %}
+No Stack provided
+{% endif %}

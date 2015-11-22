@@ -1,7 +1,8 @@
 @usedefaults
 @@title Public Network: ${id}
-
 {{publicnetwork: networkid:$$networkid}}
+{% if id %}
+
 {{datatables_use}}
 
 h3. Public Network
@@ -33,3 +34,7 @@ h4. Public IPs Used by Virtual Machines
 {% for vm in vms -%}
 |${vm.publicipaddress}|[${vm.name}|virtual machine?id=${vm.id}]|[${vm.cloudspaceId}|cloud space?id=${vm.cloudspaceId}]|
 {% endfor %}
+
+{% else %}
+No Public Network provided
+{% endif %}

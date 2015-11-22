@@ -7,8 +7,8 @@ def main(j, args, params, tags, tasklet):
 
     gid = args.getTag('gid')
     if not gid:
-        out = 'Missing GID param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     gid = int(gid)
