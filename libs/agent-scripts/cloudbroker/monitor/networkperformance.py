@@ -4,7 +4,7 @@ import re
 import json
 
 organization = "cloudscalers"
-descr = 'Perform bandwith test'
+descr = 'Perform bandwidth test'
 author = "hamdy.farag@codescalers.com"
 order = 1
 enable = True
@@ -84,7 +84,7 @@ class OpenvStorage():
             output = sshclient.run('iperf -c %s --format m -t 5 ' % self.localIp)
             output = output.split(' ')
             bandwidth = float(output[-2])
-            msg = "Bandwith between %s and %s reached %s" % (self.localIp, ip, bandwidth)
+            msg = "Bandwidth between %s and %s reached %s" % (self.localIp, ip, bandwidth)
             result['message'] = msg
             result['state'] = self.getbandwidthState(bandwidth)
             if result['state'] != 'OK':
@@ -103,3 +103,4 @@ def action():
 
 if __name__ == '__main__':
     action()
+    
