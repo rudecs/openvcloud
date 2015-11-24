@@ -81,9 +81,9 @@ class cloudapi_portforwarding(BaseActor):
         fw_id = fw[0]['guid']
         grid_id = fw[0]['gid']
         forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
-        for idx, fw in enumerate(forwards):
+        for fw in forwards:
             if fw['localIp'] == localIp:
-                self._delete(cloudspaceid, idx)
+                self._deleteByPort(cloudspaceid, fw['publicIp'], fw['publicPort'], fw['protocol'])
         return True
 
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
@@ -150,7 +150,7 @@ class cloudapi_portforwarding(BaseActor):
     def _deleteByPort(self, cloudspaceid, publicIp, publicPort, proto, **kwargs):
         fw_id, fw_gid = self._getFirewallId(cloudspaceid)
         if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort,proto):
-            raise exceptions.NotFound("Could not find port forwarding with %:%s %s" % (publicIp, publicPort, proto))
+            raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceid)
 
