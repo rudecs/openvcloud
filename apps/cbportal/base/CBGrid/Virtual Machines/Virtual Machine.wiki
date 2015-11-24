@@ -56,11 +56,11 @@ h3. Snapshots
 
 h3. Port Forwardings
 {{action id:'action-CreatePortforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Portforward'}}
-||From||To||Protolcol||Delete||
+||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
 {% for portforward in portforwards -%}
-|${portforward.fromAddr}:${portforward.fromPort}|${portforward.toAddr}:${portforward.toPort}|${portforward.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${portforward.fromAddr}' data-publicPort:'${portforward.fromPort}' data-proto:'${portforward.protocol}'}}|
+|${portforward.fromAddr}|${portforward.fromPort}|${portforward.toAddr}|${portforward.toPort}|${portforward.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${portforward.fromAddr}' data-publicPort:'${portforward.fromPort}' data-proto:'${portforward.protocol}'}}|
 {% else -%}
-| | | | |
+| | | | | | |
 {% endfor %}
 
 h3. Machine Exports

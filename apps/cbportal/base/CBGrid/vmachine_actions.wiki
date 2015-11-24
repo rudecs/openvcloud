@@ -123,8 +123,12 @@
   data:
    machineId: $$id
   input:
-  - localPort
-  - destPort
+  - name: destPort
+    type: number
+    label: Public Port
+  - name: localPort
+    type: number
+    label: VM Port
   - name: proto
     type: dropdown
     label: Protocol
