@@ -156,6 +156,9 @@ class CSLibvirtNodeDriver():
         ElementTree.SubElement(disk, 'source').attrib = {'dev': volume.id}
         ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
         domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ElementTree.tostring(disk), machineid=node.id)
+        if domxml is None:
+            devices.append(disk)
+            domxml = ElementTree.tostring(dom)
         return self._update_node(node, domxml)
 
     def _update_node(self, node, xml):
@@ -180,6 +183,9 @@ class CSLibvirtNodeDriver():
             if source.attrib['dev'] == volume.id:
                 diskxml = ElementTree.tostring(disk)
                 domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+                if domxml is None:
+                    devices.remove(disk)
+                    domxml = ElementTree.tostring(dom)
         if domxml:
             return self._update_node(node, domxml)
         return node
@@ -298,7 +304,8 @@ class CSLibvirtNodeDriver():
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
         agentnode = self._get_domain_for_node(node)
         if agentnode is None:
-            agentnode = {'id': node_id, 'name': '', 'state': 5, 'extra': {}}
+            xml = self._get_persistent_xml(node)
+            agentnode = {'id': node_id, 'name': '', 'state': 5, 'extra': {}, 'XMLDesc': xml}
         node = self._from_agent_to_node(agentnode)
         return node
 
@@ -533,6 +540,12 @@ class CSLibvirtNodeDriver():
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
         ifacexml = ElementTree.tostring(iface)
         domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
+        if domxml is None:
+            xml = self._get_persistent_xml(node)
+            dom = ElementTree.fromstring(xml)
+            devices = dom.find('devices')
+            devices.append(iface)
+            domxml = ElementTree.tostring(dom)
         self._update_node(node, domxml)
         return NetworkInterface(mac=macaddress, target=target, type='bridge')
 
@@ -550,6 +563,8 @@ class CSLibvirtNodeDriver():
                 break
         if interfacexml:
             domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
+            if domxml is None:
+                domxml = ElementTree.tostring(dom)
             return self._update_node(node, domxml)
 
 

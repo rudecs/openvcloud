@@ -17,7 +17,10 @@ def action(xml, machineid):
     import libvirt
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    domain = connection.connection.lookupByUUIDString(machineid)
+    try:
+        domain = connection.connection.lookupByUUIDString(machineid)
+    except:
+        return None  # machine not available anymore
     flags = libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
     if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
         flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_LIVE

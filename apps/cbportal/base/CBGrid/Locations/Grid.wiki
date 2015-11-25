@@ -1,11 +1,11 @@
 @usedefault
 @@title Location: ${name}
-
-h3. Location: ${name}
-
 {{toc: start=3 | depth=2}}
 
 {{location: gid:$$gid}}
+
+{% if id %}
+h3. Location: ${name}
 
 {{actions:
 - display: Check VMs
@@ -92,3 +92,7 @@ h3. Firewall Nodes
 
 h3. Virtual Machines
 {{vmachines gid:$$gid}}
+
+{% else %}
+No Grid provided
+{% endif %}

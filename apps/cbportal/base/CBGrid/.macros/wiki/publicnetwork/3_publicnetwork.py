@@ -3,8 +3,8 @@ def main(j, args, params, tags, tasklet):
 
     id = args.getTag('networkid')
     if not id:
-        out = 'Missing networkid param "id"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
     
     cbclient = j.clients.osis.getNamespace('cloudbroker')

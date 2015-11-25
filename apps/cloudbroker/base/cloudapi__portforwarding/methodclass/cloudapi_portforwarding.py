@@ -3,6 +3,7 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
+from JumpScale.portal.portal import exceptions
 import netaddr
 
 
@@ -80,9 +81,9 @@ class cloudapi_portforwarding(BaseActor):
         fw_id = fw[0]['guid']
         grid_id = fw[0]['gid']
         forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
-        for idx, fw in enumerate(forwards):
+        for fw in forwards:
             if fw['localIp'] == localIp:
-                self._delete(cloudspaceid, idx)
+                self._deleteByPort(cloudspaceid, fw['publicIp'], fw['publicPort'], fw['protocol'])
         return True
 
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
@@ -94,6 +95,14 @@ class cloudapi_portforwarding(BaseActor):
                 return True
         return False
 
+    def _getFirewallId(self, cloudspaceId):
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
+        if len(fw) == 0:
+            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
+
+        return fw[0]['guid'], fw[0]['gid']
+
     @authenticator.auth(acl='D')
     @audit()
     def delete(self, cloudspaceid, id, **kwargs):
@@ -103,34 +112,45 @@ class cloudapi_portforwarding(BaseActor):
         param:id of the portforward
 
         """
-        ctx = kwargs['ctx']
         try:
             result = self._delete(int(cloudspaceid), id)
+        except exceptions.BaseError:
+            raise
         except:
-            ctx.start_response('503 Service Unavailable', [])
-            return 'Failed to remove Portforwarding'
-
-        if result == -1:
-            ctx.start_response('404 Not Found', [])
-            return 'Incorrect cloudspace or there is no corresponding gateway'
-        elif result == -2:
-            ctx.start_response('404 Not Found', [])
-            return 'Cannot find the rule with id %s' % str(id)
+            raise exceptions.ServiceUnavailable('Failed to remove Portforwarding')
         return result
 
     def _delete(self, cloudspaceid, id, **kwargs):
-        cloudspace = self.models.cloudspace.get(cloudspaceid)
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
-        if len(fw) == 0:
-            return -1
-        fw_id = fw[0]['guid']
-        fw_gid = fw[0]['gid']
+        fw_id, fw_gid = self._getFirewallId(cloudspaceid)
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         id = int(id)
         if not id < len(forwards):
-            return -2
+            raise exceptions.NotFound('Cannot find the rule with id %s' % str(id))
         forward = forwards[id]
         self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
+        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
+        return self._process_list(forwards, cloudspaceid)
+
+    @authenticator.auth(acl='D')
+    @audit()
+    def deleteByPort(self, cloudspaceid, publicIp, publicPort, proto=None, **kwargs):
+        """
+        Delete a specific portforwarding rule
+        param:cloudspaceid if of the cloudspace
+        param:id of the portforward
+        """
+        try:
+            result = self._deleteByPort(int(cloudspaceid), publicIp, publicPort, proto)
+        except exceptions.BaseError:
+            raise
+        except:
+            raise exceptions.ServiceUnavailable('Failed to remove Portforwarding')
+        return result
+
+    def _deleteByPort(self, cloudspaceid, publicIp, publicPort, proto, **kwargs):
+        fw_id, fw_gid = self._getFirewallId(cloudspaceid)
+        if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort,proto):
+            raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceid)
 

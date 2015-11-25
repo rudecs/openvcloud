@@ -8,8 +8,8 @@ def main(j, args, params, tags, tasklet):
     id = args.getTag('id')
     gid = args.getTag('gid')
     if not id or not gid:
-        out = 'Missing network id param "id" or "gid"'
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)

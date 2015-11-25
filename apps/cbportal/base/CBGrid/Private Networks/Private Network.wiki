@@ -1,6 +1,6 @@
 @usedefault
-
 {{network id:$$id gid:$$gid}}
+{% if id %}
 
 h2. Private Network: $$id
 
@@ -16,3 +16,6 @@ h3. Port Fowardings
 {% for rule in tcpForwardRules -%}
 |${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
 {% endfor %}
+{% else %}
+No Private Network provided
+{% endif %}

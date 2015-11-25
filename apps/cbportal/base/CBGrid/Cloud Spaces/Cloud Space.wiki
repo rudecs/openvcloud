@@ -3,6 +3,7 @@
 @@title Cloud Space: ${name}
 
 {{cbspace id:$$id}}
+{% if id %}
 
 
 h2. Cloud Space: ${name}
@@ -131,14 +132,17 @@ h3. Users Access
 h3. Port Fowardings
 {{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
 
-||Source IP||Source Port||Destination IP||Destination Port||Delete||
+||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
 {% for rule in network.tcpForwardRules -%}
-|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-ruleId:'${loop.index -1}'}}|
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|${rule.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${rule.fromAddr}' data-publicPort:'${rule.fromPort}' data-proto:'${rule.protocol}'}}|
 {% else -%}
-| | | | | |
+| | | | | | |
 {% endfor %}
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
 {{vmachines cloudspaceid:$$id}}
 
+{% else %}
+No Cloud Space provided
+{% endif %}

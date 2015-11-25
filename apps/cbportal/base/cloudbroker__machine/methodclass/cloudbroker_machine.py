@@ -376,10 +376,11 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deletePortForward(self, machineId, ruleId, **kwargs):
+    def deletePortForward(self, machineId, publicIp, publicPort, proto, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.actors.portforwarding.delete(cloudspace.id, ruleId)
+        self.actors.portforwarding.deleteByPort(cloudspace.id, publicIp, publicPort, proto)
+
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
