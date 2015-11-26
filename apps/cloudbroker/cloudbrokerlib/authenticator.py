@@ -5,8 +5,9 @@ from .cloudbroker import models
 
 class auth(object):
 
-    def __init__(self, acl):
+    def __init__(self, acl, level=None):
         self.acl = set(acl)
+        self.level = level
         self.models = models
 
     def getAccountAcl(self, accountId):
@@ -55,13 +56,19 @@ class auth(object):
         return result
 
     def expandAclFromVMachine(self, users, groups, vmachine):
-        fullacl = self.expandAcl(users, groups, vmachine.acl)
+        if not self.level or self.level == 'machine':
+            fullacl = self.expandAcl(users, groups, vmachine.acl)
+        else:
+            fullacl = set()
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         fullacl.update(self.expandAclFromCloudspace(users, groups, cloudspace))
         return fullacl
 
     def expandAclFromCloudspace(self, users, groups, cloudspace):
-        fullacl = self.expandAcl(users, groups, cloudspace.acl)
+        if not self.level or self.level == 'cloudspace':
+            fullacl = self.expandAcl(users, groups, cloudspace.acl)
+        else:
+            fullacl = set()
         account = self.models.account.get(cloudspace.accountId)
         fullacl.update(self.expandAcl(users, groups, account.acl))
         return fullacl
@@ -100,15 +107,15 @@ class auth(object):
                 account = None
                 cloudspace = None
                 machine = None
-                if 'accountId' in kwargs and kwargs['accountId']:
-                    account = self.models.account.get(int(kwargs['accountId']))
-                    fullacl.update(self.expandAclFromAccount(user, groups, account))
+                if 'machineId' in kwargs and kwargs['machineId']:
+                    machine = self.models.vmachine.get(int(kwargs['machineId']))
+                    fullacl.update(self.expandAclFromVMachine(user, groups, machine))
                 elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
                     fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
-                elif 'machineId' in kwargs and kwargs['machineId']:
-                    machine = self.models.vmachine.get(int(kwargs['machineId']))
-                    fullacl.update(self.expandAclFromVMachine(user, groups, machine))
+                elif 'accountId' in kwargs and kwargs['accountId']:
+                    account = self.models.account.get(int(kwargs['accountId']))
+                    fullacl.update(self.expandAclFromAccount(user, groups, account))
                 # if admin allow all other ACL as well
                 if 'A' in fullacl:
                     fullacl.update('CXDRU')
