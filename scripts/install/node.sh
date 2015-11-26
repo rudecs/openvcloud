@@ -1,5 +1,8 @@
 #!/bin/bash
 
+DISKS=()
+FILESYSTEM="ext4"
+
 echo "[+] analyzing system configuration"
 
 source /etc/lsb-release
@@ -8,9 +11,6 @@ if [ "$DISTRIB_RELEASE" != "14.04" ]; then
 	echo "[-] ubuntu version seems not correct, still in recovery ?"
 	exit 1
 fi
-
-# Grabbing SSD
-DISKS=()
 
 for i in /sys/block/sd?; do
 	rot=$(cat $i/queue/rotational)
@@ -123,7 +123,7 @@ fi
 	
 if [ "$TOTAL" != "$END" ]; then
 	echo "[+] /mnt/cache1: partition will start at $END"
-	parted -a optimal $DISK_CACHE1 mkpart cache1 xfs $END $CACHE1_SIZE > /dev/null
+	parted -a optimal $DISK_CACHE1 mkpart cache1 $FILESYSTEM $END $CACHE1_SIZE > /dev/null
 	
 	PART=$(parted $DISK_CACHE1 print | tail -2 | head -1 | awk '{ print $1 }')
 	
@@ -148,7 +148,7 @@ END=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $3 }')
 	
 if [ "$TOTAL" != "$END" ]; then
 	echo "[+] /mnt/cache2: partition will start at $END"
-	parted -a optimal $DISK_CACHE2 mkpart cache2 xfs $END $CACHE2_SIZE > /dev/null
+	parted -a optimal $DISK_CACHE2 mkpart cache2 $FILESYSTEM $END $CACHE2_SIZE > /dev/null
 	
 	PART=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $1 }')
 	
@@ -173,7 +173,7 @@ END=$(parted $DISK_VARTMP print | tail -2 | head -1 | awk '{ print $3 }')
 	
 if [ "$TOTAL" != "$END" ]; then
 	echo "[+] /var/tmp: partition will start at $END"
-	parted -a optimal $DISK_VARTMP mkpart tmp xfs $END $VARTMP_SIZE > /dev/null
+	parted -a optimal $DISK_VARTMP mkpart tmp $FILESYSTEM $END $VARTMP_SIZE > /dev/null
 	
 	PART=$(parted $DISK_VARTMP print | tail -2 | head -1 | awk '{ print $1 }')
 	
@@ -190,18 +190,18 @@ fi
 #
 
 # Checking dependancies
-echo "[+] checking dependancies"
-TEST=$(dpkg -l | grep xfsprogs)
-if [ $? == 1 ]; then
-	apt-get install -y xfsprogs
-fi
+# echo "[+] checking dependancies"
+# TEST=$(dpkg -l | grep xfsprogs)
+# if [ $? == 1 ]; then
+#	apt-get install -y xfsprogs
+# fi
 
 for disk in $CACHE1 $CACHE2 $VARTMP; do
 	echo "[+] cleaning $disk"
 	dd if=/dev/zero of=$disk bs=16M count=1 2> /dev/null
 	
-	echo "[+] creating xfs partition on $disk"
-	mkfs.xfs -q $disk
+	echo "[+] creating $FILESYSTEM partition on $disk"
+	mkfs.$FILESYSTEM -q $disk
 done
 
 #
@@ -229,19 +229,21 @@ done
 #
 echo "[+] setting up our new partitions"
 
-sed -i '/xfs/d' /etc/fstab
+sed -i '/cache1/d' /etc/fstab
+sed -i '/cache2/d' /etc/fstab
+sed -i '/var\/tmp/d' /etc/fstab
 
 UUID=$(blkid -o value -s UUID $CACHE1)
 echo "[+] /mnt/cache1 ($CACHE1) is $UUID"
-echo "UUID=$UUID /mnt/cache1 xfs defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /mnt/cache1 $FILESYSTEM defaults 0 0" >> /etc/fstab
 
 UUID=$(blkid -o value -s UUID $CACHE2)
 echo "[+] /mnt/cache2 ($CACHE2) is $UUID"
-echo "UUID=$UUID /mnt/cache2 xfs defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /mnt/cache2 $FILESYSTEM defaults 0 0" >> /etc/fstab
 
 UUID=$(blkid -o value -s UUID $VARTMP)
 echo "[+] /var/tmp ($VARTMP) is $UUID"
-echo "UUID=$UUID /var/tmp xfs defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /var/tmp $FILESYSTEM defaults 0 0" >> /etc/fstab
 
 mkdir -p /mnt/cache1 /mnt/cache2
 touch /mnt/cache1/.dontreportusage
