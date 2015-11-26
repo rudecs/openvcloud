@@ -12,6 +12,11 @@ if [ "$DISTRIB_RELEASE" != "14.04" ]; then
 	exit 1
 fi
 
+if [ "$UID" != "0" ]; then
+	echo "[-] you must be root"
+	exit 1
+fi
+
 for i in /sys/block/sd?; do
 	rot=$(cat $i/queue/rotational)
 	
