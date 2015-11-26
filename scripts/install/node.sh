@@ -246,12 +246,12 @@ echo "[+] /var/tmp ($VARTMP) is $UUID"
 echo "UUID=$UUID /var/tmp $FILESYSTEM defaults 0 0" >> /etc/fstab
 
 mkdir -p /mnt/cache1 /mnt/cache2
-touch /mnt/cache1/.dontreportusage
-touch /mnt/cache2/.dontreportusage
 
 echo "[+] mounting all the stuff"
 mount -a
 swapon -a
+touch /mnt/cache1/.dontreportusage
+touch /mnt/cache2/.dontreportusage
 
 echo '[+] fixing permissions'
 chmod ugo+rwx,o+t /var/tmp
