@@ -124,7 +124,7 @@ class cloudbroker_machine(BaseActor):
 
         else:
             target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
-            target_stack = self.models.get(target_stack['id'])
+            target_stack = self.models.stack.get(target_stack['id'])
 
         # create network on target node
         self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={
