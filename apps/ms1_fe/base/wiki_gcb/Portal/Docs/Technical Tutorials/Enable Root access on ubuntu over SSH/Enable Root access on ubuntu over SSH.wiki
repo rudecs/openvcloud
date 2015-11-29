@@ -1,0 +1,22 @@
+@template default-docs
+
+h1. Enable Root access on ubuntu over SSH
+
+h3. Create new password for root
+
+{{code: template:shell
+passwd root
+}}
+
+h3. Enabling root login from ssh config (default is to deny root access)
+
+{{code: template:shell
+vim /etc/ssh/sshd_config:
+PermitRootLogin yes
+}}
+
+
+h3. Restarting ssh:
+{{code: template:shell
+service ssh restart
+}}

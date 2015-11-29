@@ -1,0 +1,50 @@
+@template default-docs
+
+h1. My First Machine Windows
+
+Login to the OpenvCloud User Portal:
+
+!UserPortal.png|max-width=1000px!
+
+To create a virtual machine go to the Machines, and click on ‘Create Machine’.
+!Machines.png|max-width=1000px!
+
+
+Select your properties in this example:
+* Windows 2012r2 Standard
+* 1 GB memory, 1 core(s)
+* Default disk size of 50 GB at SSD speed
+
+
+!CreateWindowsMachine.png!
+!CreateWindowsMachine2.png!
+
+Within seconds the machine is active.
+!WindowsMachineActions.png!
+!WindowsMachineConsole.png!
+
+Unlike other clouds, OpenvCloud puts every virtual machine behind a private firewall.
+
+To have access to your virtual machine you can create a VPN connection (see other tutorials) or configure a
+
+port forwarding (means forward a port from your private firewall to the port on your virtual machine).
+
+Here we will choose for the later option.
+
+In order to configure the port forwarding, click on Port Forwards tab:
+
+!WindowsPortForwards.png!
+
+Click the Add button, and specify that you want to forward port 3389:
+
+!WindowsPortForward3389.png!
+
+As a result you will see the below:
+
+!WindowsPortForwards2.png!
+
+On your Windows open
+
+!windows-8.jpg!
+
+Click connect and you should see your Windows

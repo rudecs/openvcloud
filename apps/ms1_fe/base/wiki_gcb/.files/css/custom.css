@@ -325,6 +325,13 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 #singlebutton:hover, #singlebutton:focus { color: #fff; }
 /* End of Machines list Page */
 
+/* Docs Page */
+.docs-title { color: #fff; padding: 3px 10px; display: inline-block; background-color: #345E79; z-index: 1; top: -11px; left: 11px; }
+#docs-index-list{ border: 1px solid #CCCCCC; }
+#docs-index-list a{ padding-left: 10px; font-size: 15px; display: block; }
+#docs-index-list a:hover, #docs-index-list a.active{ background: #DCDCDC; color: #2C4250; }
+/* End of Docs Page */
+
 /* New Machine Page */
 .machineList ul li, .storage-size-list li { float: left; list-style: none; margin: 17px 14px; display: inline-block; height: 137px; }
 .machineList ul li a, .storage-size-list button { color: #77777b; font-size: 13px; width:250px; height: 137px; background: url(../img/images/machine.jpg) no-repeat; text-align: center; padding: 0px 45px 30px; line-height: 20px; overflow: hidden; font-weight: bold; vertical-align: middle; }/**/

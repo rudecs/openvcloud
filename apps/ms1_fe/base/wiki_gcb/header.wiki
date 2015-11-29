@@ -107,7 +107,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a id="geeting-started" href="/$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
             <li><a href="/$$space/ApiDocs">Machine API</a></li>
-            <li><a href="../kb/">Knowledge Base</a></li>
+            <li><a href="/$$space/Docs">Knowledge Base</a></li>
             <li><a href="/$$space/support">Support</a></li>
             <li ng-show="userRightsOnAccountBilling"><a href="/$$space/AccountSettings">Consumption</a></li>
             <li><a href="/$$space/CloudSpaceSettings" tourtip-step="1" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom">Cloud Space Settings</a></li>

@@ -1,0 +1,73 @@
+@template default-docs
+
+h1. PPTP Connection To Space From Windows 8.1
+
+Look for network and sharing center
+
+!pptp-1.jpg!
+
+*Click on setup a new network connection*
+
+!pptp-2.jpg!
+
+Select connect to a workplace
+
+!pptp-3.jpg!
+
+Select create a new connection
+
+Go to your defense shield page on OpenvCloud portal
+to find the external ip address of your space
+
+!pptp-4.jpg!
+
+Click on Advanced Shield Configuration
+
+!pptp-5.jpg!
+
+You will see the login page of your advanced shield configuration portal.
+
+Note the ip address in the browser (173.240.9.11) in this case.
+
+On your windows you should see following screen:
+
+!pptp-6.jpg!
+
+Choose the top one (vpn)
+
+!pptp-7.jpg!
+
+You will now see
+!pptp-8.jpg!
+
+Ignore this
+go back to
+
+!pptp-9.jpg!
+
+Tip
+Do ‘windowskey’ ‘q’
+!pptp-10.jpg!
+
+Type network conn…
+And choose view network connections, you will now see above screen
+!pptp-11.jpg!
+
+Do right mouse button and select properties
+!pptp-12.jpg!
+!pptp-13.jpg!
+
+Ggo to security tab and choose pptp
+!pptp-14.jpg!
+
+Choose connect on same screen ( or go to other screen with network connections)
+
+Fillin your credentials
+login=admin
+passwd=your space passwd
+!pptp-15.jpg!
+
+{{html:
+<span class="justRed">OEPS THIS YOU DON’T WANT TO SEE, <br>
+THIS NORMALLY MEANS YOUR PPTP ON DEFENSE SHIELD NOT PROPERLY CONFIGURED.</span>
+}}
