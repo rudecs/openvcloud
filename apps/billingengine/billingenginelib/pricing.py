@@ -54,9 +54,10 @@ class pricing(object):
     def get_machine_price_per_hour(self, machine):
         machine_imageId = machine['imageId']
         machine_sizeId = machine['sizeId']
-        diskId = machine['disks'][0]
-        disk = self.cloudbrokermodels.disk.get(diskId)
-        diskSize = disk.sizeMax
+        diskSize = 0
+        for diskId in machine['disks']:
+            disk = self.cloudbrokermodels.disk.get(diskId)
+            diskSize += disk.sizeMax
 
         return self.get_price_per_hour(machine_imageId, machine_sizeId, diskSize)
 

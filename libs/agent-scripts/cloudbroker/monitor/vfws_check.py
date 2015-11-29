@@ -24,8 +24,6 @@ def action():
     osiscl = j.clients.osis.getByInstance('main')
     vfwcl = j.clients.osis.getCategory(osiscl, 'vfw', 'virtualfirewall')
     cbcl = j.clients.osis.getNamespace('cloudbroker')
-    hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
-    ROUTEROS_PASSWORD = hrd.get('instance.vfw.admin.passwd')
 
     pools = dict()
 
@@ -50,7 +48,7 @@ def action():
                 if vfw.nid != j.application.whoAmI.nid:
                     return
                 if j.system.net.tcpPortConnectionTest(vfw.host, 8728, 7):
-                    routeros = j.clients.routeros.get(vfw.host, 'vscalers', ROUTEROS_PASSWORD)
+                    routeros = j.clients.routeros.get(vfw.host, vfw.username, vfw.password)
                 else:
                     result[cloudspaceid] = 'Could not connect to routeros %s' % vfw.host
                     return
