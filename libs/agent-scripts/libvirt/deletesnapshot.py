@@ -7,26 +7,34 @@ Delete snapshot of machine
 name = "deletesnapshot"
 category = "libvirt"
 organization = "cloudscalers"
-author = "deboeckj@incubaid.com"
+author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
 roles = []
 async = True
 
 
-def action(machineid, timestamp):
+def action(diskpaths, timestamp):
     import sys
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     sys.path.append('/opt/OpenvStorage')
-    from ovs.dal.lists.vmachinelist import VMachineList
     from ovs.lib.vdisk import VDiskController
+    from ovs.dal.lists.vdisklist import VDiskList
+    from ovs.dal.lists.vpoollist import VPoolList
 
-    connection = LibvirtUtil()
-    vmname = connection.get_domain(machineid)['name']
-    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
-    for snap in vmachine.snapshots:
-        if snap['timestamp'] == str(timestamp):
-            for diskguid, snapid in snap['snapshots'].iteritems():
-                VDiskController.delete_snapshot(diskguid, snapid)
-    vmachine.invalidate_dynamics(['snapshots'])
+    pool = VPoolList.get_vpool_by_name('vmstor')
+    for diskpath in diskpaths:
+        diskpath = diskpath.replace('/mnt/vmstor/', '')
+        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        for snap in disk.snapshots:
+            if snap['timestamp'] == str(timestamp):
+                VDiskController.delete_snapshot(disk.guid, snap['guid'])
+
     return True
+
+if __name__ == '__main__':
+    from JumpScale.baselib import cmdutils
+    parser = cmdutils.ArgumentParser()
+    parser.add_argument('-p', '--path', help='Volume Path')
+    parser.add_argument('-t', '--timestamp', help='Snapshot timestamp')
+    options = parser.parse_args()
+    action([options.path], options.timestamp)

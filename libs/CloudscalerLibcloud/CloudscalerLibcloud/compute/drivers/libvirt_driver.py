@@ -309,17 +309,27 @@ class CSLibvirtNodeDriver():
         node = self._from_agent_to_node(agentnode)
         return node
 
-    def ex_create_snapshot(self, node, name, snapshottype='external'):
-        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
+    def _get_volume_paths(self, node):
+        diskpaths = list()
+        for volume in node.extra['volumes']:
+            diskpaths.append(volume.id)
+        return diskpaths
+
+    def ex_create_snapshot(self, node, name):
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('snapshot', queue='hypervisor', diskpaths=diskpaths, name=name)
 
     def ex_list_snapshots(self, node):
-        return self._execute_agent_job('listsnapshots', queue='default', vmname=node.name)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('listsnapshots', queue='default', diskpaths=diskpaths)
 
     def ex_delete_snapshot(self, node, timestamp):
-        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', diskpaths=diskpaths, timestamp=timestamp)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, timestamp=timestamp)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', diskpaths=diskpaths, timestamp=timestamp)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):

@@ -14,15 +14,32 @@ roles = []
 async = True
 
 
-def action(machineid, name, snapshottype):
+def action(diskpaths, name):
     import sys
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    import time
     sys.path.append('/opt/OpenvStorage')
-    from ovs.dal.lists.vmachinelist import VMachineList
-    from ovs.lib.vmachine import VMachineController
+    from ovs.lib.vdisk import VDiskController
+    from ovs.dal.lists.vdisklist import VDiskList
+    from ovs.dal.lists.vpoollist import VPoolList
 
-    connection = LibvirtUtil()
-    vmname = connection.get_domain(machineid)['name']
-    vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
-    VMachineController.snapshot(vmachine.guid, name)
+    meta = {'label': name,
+            'is_consistent': False,
+            'is_automatic': False,
+            'timestamp': str(int(time.time()))}
+
+    pool = VPoolList.get_vpool_by_name('vmstor')
+    for diskpath in diskpaths:
+        diskpath = diskpath.replace('/mnt/vmstor/', '')
+        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        VDiskController.create_snapshot(diskguid=disk.guid, metadata=meta)
+
     return {'name': name}
+
+if __name__ == '__main__':
+    from JumpScale.baselib import cmdutils
+    parser = cmdutils.ArgumentParser()
+    parser.add_argument('-n', '--name', help='Snapshot name')
+    parser.add_argument('-p', '--path', help='Volume path')
+    options = parser.parse_args()
+    action([options.path], options.name)
+
