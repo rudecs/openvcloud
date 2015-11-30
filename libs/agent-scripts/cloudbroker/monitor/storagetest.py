@@ -105,9 +105,9 @@ def action():
             print msg
             if speed < 50:
                 status = 'WARNING'
-            if status != 'OK':
-                eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
-                eco.process()
+        if status != 'OK':
+            eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
+            eco.process()
     finally:
         pcl.actors.cloudapi.machines.delete(vmachineId)
     return [{'message': msg, 'category': 'Storage Test', 'state': status}]
