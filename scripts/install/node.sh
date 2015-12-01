@@ -17,6 +17,9 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
+echo "[+] upgrading system"
+apt-get -y upgrade
+
 for i in /sys/block/sd?; do
 	rot=$(cat $i/queue/rotational)
 	
