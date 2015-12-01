@@ -8,6 +8,7 @@ parser.add_option("-c", "--check", action="store_true", dest="check", help="chec
 parser.add_option("-u", "--update", action="store_true", dest="update", help="just run apt-get update on each nodes")
 parser.add_option("-P", "--preprocess", action="store_true", dest="prepro", help="runs some pre-upgrade commands")
 parser.add_option("-S", "--postprocess", action="store_true", dest="postpro", help="runs some post-upgrade commands")
+parser.add_option("-r", "--arakoon", action="store_true", dest="arakoon", help="attempt to update only arakoon")
 parser.add_option("-o", "--framework", action="store_true", dest="framework", help="attempt to update only ovs-framework")
 parser.add_option("-v", "--volumedriver", action="store_true", dest="volumedriver", help="attempt to update only volumedriver")
 parser.add_option("-a", "--alba", action="store_true", dest="alba", help="attempt to update only alba backend")
@@ -220,6 +221,9 @@ def checker(nodes):
     if "alba" in update:
         status['alba'] = True
     
+    if "arakoon" in update:
+        status['arakoon'] = True
+    
     return status
 
 
@@ -268,13 +272,14 @@ def framework(nodes):
         services = getOvsStuffName([node], "webapp-api")
         restartServices([node], services)
     
+    for node in nodes:
+        executeOnNode([node], "ays restart -n nginx")
+    
     print '[+] framework updated !'
 
 
 
 def volumedriver(nodes):
-    alreadyup = False
-    
     for node in nodes:
         # Updating volumedriver
         executeOnNode([node], "apt-get install -y --force-yes volumedriver-base volumedriver-server")
@@ -286,11 +291,20 @@ def volumedriver(nodes):
     
     print '[+] volumedriver updated !'
 
+def arakoon(nodes):
+    """
+    for node in nodes:
+        # Updating volumedriver
+        executeOnNode([node], "apt-get update -y --force-yes arakoon")
     
+    for node in nodes:
+        # Restarting services
+        services = getOvsStuffName([node], "volumedriver_")
+        restartServices([node], services)
+    """
+    print '[+] arakoon updated !'    
     
 def alba(nodes):
-    alreadyup = False
-    
     # Updating alba
     for node in nodes:
         executeOnNode([node], "apt-get install -y --force-yes alba")
@@ -326,12 +340,12 @@ def alba(nodes):
     print '[+] alba updated !'
 
 
-def stopAll(nodes):
+def stopAll(nodes, running):
     print '[+] stopping virtual machines'
     for node in nodes:
         stopMachinesOnNode(node, running[node.instance])
     
-def startAll(nodes):
+def startAll(nodes, running):
     print '[+] starting virtual machines'
     for node in nodes:
         startMachinesOnNode(node, running[node.instance])
@@ -359,6 +373,7 @@ if options.check:
     print '[+] checking updates status (don\'t forget to --update before)'
     status = checker(nodes)
     
+    print '[+] update for arakoon: %s' % status['arakoon']
     print '[+] update for framework: %s' % status['framework']
     print '[+] update for volumedriver: %s' % status['volumedriver']
     print '[+] update for alba: %s' % status['alba']
@@ -368,44 +383,58 @@ if options.update:
     
     print '[+] updating repositories on each nodes'
     update(nodes)
-    
+
 if options.framework:
     allStep = False
     
     if not options.skip:
-        stopAll(nodes)
+        running = saveMachinesState(nodes)
+        stopAll(nodes, running)
+    
+    print '[+] updating arakoon'
+    arakoon(nodes)
+    
+    if not options.skip:
+        startAll(nodes, running)
+
+if options.arakoon:
+    allStep = False
+    
+    if not options.skip:
+        running = saveMachinesState(nodes)
+        stopAll(nodes, running)
     
     print '[+] updating framework'
     framework(nodes)
     
     if not options.skip:
-        startAll(nodes)
+        startAll(nodes, running)
 
 if options.volumedriver:
     allStep = False
     
     if not options.skip:
-        stopAll(nodes)
+        running = saveMachinesState(nodes)
+        stopAll(nodes, running)
     
     print '[+] updating volumedriver'
     volumedriver(nodes)
     
     if not options.skip:
-        startAll(nodes)
+        startAll(nodes, running)
 
 if options.alba:
     allStep = False
     
-    running = saveMachinesState(nodes)
-    
     if not options.skip:
-        stopAll(nodes)
+        running = saveMachinesState(nodes)
+        stopAll(nodes, running)
     
     print '[+] updating alba'
     alba(nodes)
     
     if not options.skip:
-        startAll(nodes)
+        startAll(nodes, running)
 
 if options.sync:
     allStep = False
