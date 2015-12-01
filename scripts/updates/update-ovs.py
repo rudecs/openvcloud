@@ -202,6 +202,7 @@ def update(nodes):
 
 def checker(nodes):
     status = {
+        'arakoon': False,
         'framework': False,
         'volumedriver': False,
         'alba': False
@@ -254,10 +255,10 @@ def framework(nodes):
     
     # Post upgrade
     for node in nodes:
-        executeOnNode([node], "python /opt/code/git/0-complexity/openvcloud/scripts/updates/ovs-post-upgrade-single.py")
+        executeOnNode([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
         break
     
-    executeOnNodes(sshservices, "python /opt/code/git/0-complexity/openvcloud/scripts/updates/ovs-post-upgrade-all.py")
+    executeOnNodes(sshservices, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
     
     for node in nodes:
         executeOnNode([node], "/etc/init.d/memcached restart")
@@ -292,16 +293,14 @@ def volumedriver(nodes):
     print '[+] volumedriver updated !'
 
 def arakoon(nodes):
-    """
     for node in nodes:
         # Updating volumedriver
-        executeOnNode([node], "apt-get update -y --force-yes arakoon")
+        executeOnNode([node], "apt-get install -y --force-yes arakoon")
     
-    for node in nodes:
-        # Restarting services
-        services = getOvsStuffName([node], "volumedriver_")
-        restartServices([node], services)
-    """
+    # Restart clusters
+    # FIXME
+    # executeOnNodes(sshservices, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/arakoon-restart.py")
+    
     print '[+] arakoon updated !'    
     
 def alba(nodes):
@@ -384,7 +383,7 @@ if options.update:
     print '[+] updating repositories on each nodes'
     update(nodes)
 
-if options.framework:
+if options.arakoon:
     allStep = False
     
     if not options.skip:
@@ -397,7 +396,7 @@ if options.framework:
     if not options.skip:
         startAll(nodes, running)
 
-if options.arakoon:
+if options.framework:
     allStep = False
     
     if not options.skip:
