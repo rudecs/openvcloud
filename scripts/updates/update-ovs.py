@@ -6,6 +6,8 @@ import json
 parser = OptionParser()
 parser.add_option("-c", "--check", action="store_true", dest="check", help="check for update")
 parser.add_option("-u", "--update", action="store_true", dest="update", help="just run apt-get update on each nodes")
+parser.add_option("-u", "--preprocess", action="store_true", dest="prepro", help="runs some pre-upgrade commands")
+parser.add_option("-u", "--postprocess", action="store_true", dest="postpro", help="runs some post-upgrade commands")
 parser.add_option("-o", "--framework", action="store_true", dest="framework", help="attempt to update only ovs-framework")
 parser.add_option("-v", "--volumedriver", action="store_true", dest="volumedriver", help="attempt to update only volumedriver")
 parser.add_option("-a", "--alba", action="store_true", dest="alba", help="attempt to update only alba backend")
@@ -290,7 +292,8 @@ def alba(nodes):
     alreadyup = False
     
     # Updating alba
-    executeOnNodes(sshservices, "apt-get install -y --force-yes alba")
+    for node in nodes:
+        executeOnNode([node], "apt-get install -y --force-yes alba")
     
     # Restarting each ASD
     for node in nodes:
@@ -333,6 +336,16 @@ def startAll(nodes):
     for node in nodes:
         startMachinesOnNode(node, running[node.instance])
 
+
+def preprocess(nodes):
+    print '[+] stopping agent to prevent any operation during update'
+    for node in nodes:
+        executeOnNode([node], "fuser -k 4446/tcp")
+    
+def postprocess(nodes):
+    print '[+] restarting agent'
+    for node in nodes:
+        executeOnNode([node], "ays start -n jsagent")
 
 allStep = True
 
@@ -416,6 +429,18 @@ if options.startVM:
     print '[+] starting virtual machines'
     for node in nodes:
         startMachinesOnNode(node, running[node.instance])
+
+if options.prepro:
+    allStep = False
+    
+    print '[+] pre-processing stuff'
+    preprocess(nodes)
+    
+if options.postpro:
+    allStep = False
+    
+    print '[+] post-processing stuff'
+    postprocess(nodes)
 
 """
 if allStep:
