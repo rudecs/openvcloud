@@ -32,7 +32,10 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
 
     def _getVFWObject(self, fwid):
-        fwobj = self.osisvfw.get(fwid)
+        try:
+            fwobj = self.osisvfw.get(fwid)
+        except:
+            raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         if not fwobj.nid:
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
