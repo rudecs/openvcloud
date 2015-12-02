@@ -263,6 +263,9 @@ def framework(nodes):
         executeOnNodes([node], 'sed -i.bak "s/^ALLOWED_HOSTS.*$/ALLOWED_HOSTS = [\'*\']/" /opt/OpenvStorage/webapps/api/settings.py')
         services = getOvsStuffName([node], "webapp-api")
         restartServices([node], services)
+        
+        # re-apply branding fix
+        executeOnNodes([node], 'ays install -r -n ovs_branding')
     
     for node in nodes:
         executeOnNodes([node], "ays restart -n nginx")
