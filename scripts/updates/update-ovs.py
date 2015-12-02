@@ -21,39 +21,28 @@ parser.add_option("-k", "--skip-vm", action="store_true", dest="skip", help="do 
 # hosts to skip
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
 
-def executeOnNode(nodes, command):
+def executeOnNodes(nodes, command):
     for ns in nodes:
         if ns.instance not in hosts:
             return ns.execute(command)
 
-def executeOnNodes(nodes, command):
+def getGenericFiles(nodes, path, extstrip):
     for ns in nodes:
         if ns.instance not in hosts:
-            ns.execute(command)
+            print '[+] executing on: %s' % ns.instance
+            command = "(basename -s %s -a $(ls %s)) 2> /dev/null; exit 0" % (extstrip, path)
+            content = ns.execute(command)
+            
+            if content == "":
+                return []
+            
+            return content.split("\r\n")
 
 def getOvsStuffName(nodes, prefix):
-    for ns in nodes:
-        if ns.instance not in hosts:
-            print '[+] executing on: %s' % ns.instance
-            command = "(basename -s .conf -a $(ls /etc/init/ovs-%s*conf)) 2> /dev/null; exit 0" % prefix
-            content = ns.execute(command)
-            
-            if content == "":
-                return []
-                
-            return content.split("\r\n")
+    return getGenericFiles(nodes, '/etc/init/ovs-%s*conf' % prefix, '.conf')
 
 def getGenericStuffName(nodes, prefix):
-    for ns in nodes:
-        if ns.instance not in hosts:
-            print '[+] executing on: %s' % ns.instance
-            command = "(basename -s .conf -a $(ls /etc/init/%s*conf)) 2> /dev/null; exit 0" % prefix
-            content = ns.execute(command)
-            
-            if content == "":
-                return []
-            
-            return content.split("\r\n")
+    return getGenericFiles(nodes, '/etc/init/%s*conf' % prefix, '.conf')
 
 """
 start - stop - restart
@@ -111,7 +100,7 @@ def nodesList(sshservices):
 virtual machine state manager
 """
 def runningMachinesOnNode(node):
-    buffer = executeOnNode([node], "virsh -q list | awk '{ print $2 }'")
+    buffer = executeOnNodes([node], "virsh -q list | awk '{ print $2 }'")
     
     if buffer == "":
         return []
@@ -122,7 +111,7 @@ def stopMachinesOnNode(node, machines):
     print '[+] stopping VMs on node: %s' % node.instance
         
     for vm in machines:
-        executeOnNode([node], "virsh shutdown %s" % vm)
+        executeOnNodes([node], "virsh shutdown %s" % vm)
     
     stillRunning = runningMachinesOnNode(node)
     print '[+] waiting VMs to stop...'
@@ -139,13 +128,13 @@ def startMachinesOnNode(node, machines):
     print '[+] starting VMs on node: %s' % node.instance
         
     for vm in machines:
-        executeOnNode([node], "virsh start %s" % vm)
+        executeOnNodes([node], "virsh start %s" % vm)
 
 def waitPathReachable(node, path):
     reachable = False
     
     while not reachable:
-        buffer = executeOnNode([node], "ls '%s'; exit 0" % path)
+        buffer = executeOnNodes([node], "ls '%s'; exit 0" % path)
         
         if "ls: cannot access" in buffer:
             print '[-] %s is not reachable on %s, waiting...' % (path, ns.instance)
@@ -198,7 +187,7 @@ def loadMachinesState(nodes):
 
 def update(nodes):    
     for node in nodes:
-        executeOnNode([node], "apt-get update")
+        executeOnNodes([node], "apt-get update")
 
 def checker(nodes):
     status = {
@@ -210,7 +199,7 @@ def checker(nodes):
     
     for node in nodes:
         # note: exit 0 override the return 1 of apt-get which is not an error
-        update = executeOnNode([node], "apt-get -u upgrade --assume-no; exit 0")
+        update = executeOnNodes([node], "apt-get -u upgrade --assume-no; exit 0")
         break
         
     if "openvstorage" in update:
@@ -228,7 +217,9 @@ def checker(nodes):
     return status
 
 
-
+"""
+updaters
+"""
 def framework(nodes):
     alreadyup = False
     
@@ -237,31 +228,31 @@ def framework(nodes):
         services = getOvsStuffName([node], "watcher-framework")
         stopServices([node], services)
         
-        executeOnNode([node], "/etc/init.d/memcached stop")
+        executeOnNodes([node], "/etc/init.d/memcached stop")
         
         services = getOvsStuffName([node], "arakoon-ovsdb")
         stopServices([node], services)
     
     for node in nodes:
         # Updating openvstorage
-        executeOnNode([node], "touch /etc/ready_for_upgrade")
-        executeOnNode([node], "apt-get install -y --force-yes openvstorag*")
+        executeOnNodes([node], "touch /etc/ready_for_upgrade")
+        executeOnNodes([node], "apt-get install -y --force-yes openvstorag*")
     
     for node in nodes:
-        executeOnNode([node], "/etc/init.d/memcached start")
+        executeOnNodes([node], "/etc/init.d/memcached start")
         
         services = getOvsStuffName([node], "arakoon-ovsdb")
         startServices([node], services)
     
     # Post upgrade
     for node in nodes:
-        executeOnNode([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
+        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
         break
     
-    executeOnNodes(sshservices, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
+    executeOnNodes(nodes, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
     
     for node in nodes:
-        executeOnNode([node], "/etc/init.d/memcached restart")
+        executeOnNodes([node], "/etc/init.d/memcached restart")
     
     for node in nodes:
         services = getOvsStuffName([node], "watcher-framework")
@@ -269,12 +260,12 @@ def framework(nodes):
     
     for node in nodes:
         # apply patch
-        executeOnNode([node], 'sed -i.bak "s/^ALLOWED_HOSTS.*$/ALLOWED_HOSTS = [\'*\']/" /opt/OpenvStorage/webapps/api/settings.py')
+        executeOnNodes([node], 'sed -i.bak "s/^ALLOWED_HOSTS.*$/ALLOWED_HOSTS = [\'*\']/" /opt/OpenvStorage/webapps/api/settings.py')
         services = getOvsStuffName([node], "webapp-api")
         restartServices([node], services)
     
     for node in nodes:
-        executeOnNode([node], "ays restart -n nginx")
+        executeOnNodes([node], "ays restart -n nginx")
     
     print '[+] framework updated !'
 
@@ -283,30 +274,46 @@ def framework(nodes):
 def volumedriver(nodes):
     for node in nodes:
         # Updating volumedriver
-        executeOnNode([node], "apt-get install -y --force-yes volumedriver-base volumedriver-server")
+        executeOnNodes([node], "apt-get install -y --force-yes volumedriver-base volumedriver-server")
     
     for node in nodes:
         # Restarting services
-        services = getOvsStuffName([node], "volumedriver_")        
+        services = getOvsStuffName([node], "volumedriver_")
         restartServices([node], services)
     
     print '[+] volumedriver updated !'
 
+
+
 def arakoon(nodes):
     for node in nodes:
         # Updating volumedriver
-        executeOnNode([node], "apt-get install -y --force-yes arakoon")
+        # executeOnNodes([node], "apt-get install -y --force-yes arakoon")
+        print node
     
-    # Restart clusters
-    # FIXME
-    # executeOnNodes(sshservices, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/arakoon-restart.py")
+    # Restart clusters    
+    clusters = getGenericFiles([node], "/opt/OpenvStorage/config/arakoon/", "XXX")
+    upscript = '/opt/code/git/0-complexity/openvcloud/scripts/ovs/arakoon-restart.py'
+    backcmd  = "ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1"
     
-    print '[+] arakoon updated !'    
+    # FIXME: better way ?
+    for node in nodes:
+        break
     
+    backplane = executeOnNodes([node], backcmd)
+    
+    for cluster in clusters:
+        # executeOnNodes([node], "python %s --cluster %s --address %s")
+        print "python %s --cluster %s --address %s" % (upscript, cluster, backplane)
+    
+    print '[+] arakoon updated !'
+
+
+
 def alba(nodes):
     # Updating alba
     for node in nodes:
-        executeOnNode([node], "apt-get install -y --force-yes alba")
+        executeOnNodes([node], "apt-get install -y --force-yes alba")
     
     # Restarting each ASD
     for node in nodes:
@@ -338,7 +345,9 @@ def alba(nodes):
     
     print '[+] alba updated !'
 
-
+"""
+virtual machines
+"""
 def stopAll(nodes, running):
     print '[+] stopping virtual machines'
     for node in nodes:
@@ -349,26 +358,35 @@ def startAll(nodes, running):
     for node in nodes:
         startMachinesOnNode(node, running[node.instance])
 
-
+"""
+online/offline tools
+"""
 def preprocess(nodes):
     print '[+] stopping agent to prevent any operation during update'
     for node in nodes:
-        executeOnNode([node], "fuser -k 4446/tcp")
+        executeOnNodes([node], "fuser -k 4446/tcp")
     
 def postprocess(nodes):
     print '[+] restarting agent'
     for node in nodes:
-        executeOnNode([node], "ays start -n jsagent")
+        executeOnNodes([node], "ays start -n jsagent")
 
-allStep = True
+def vmStatus():
+    if j.system.fs.exists('/tmp/ovs-machine-state.json'):
+        print '[-] machine state already found, did you forget --skip ?'
+        j.application.stop()
+    
+    return True
 
+
+"""
+worker
+"""
 sshservices = j.atyourservice.findServices(name='node.ssh')
 sshservices.sort(key = lambda x: x.instance)
 nodes = nodesList(sshservices)
 
-if options.check:
-    allStep = False
-    
+if options.check:    
     print '[+] checking updates status (don\'t forget to --update before)'
     status = checker(nodes)
     
@@ -378,14 +396,10 @@ if options.check:
     print '[+] update for alba: %s' % status['alba']
 
 if options.update:
-    allStep = False
-    
     print '[+] updating repositories on each nodes'
     update(nodes)
 
 if options.arakoon:
-    allStep = False
-    
     if not options.skip:
         running = saveMachinesState(nodes)
         stopAll(nodes, running)
@@ -397,22 +411,12 @@ if options.arakoon:
         startAll(nodes, running)
 
 if options.framework:
-    allStep = False
-    
-    if not options.skip:
-        running = saveMachinesState(nodes)
-        stopAll(nodes, running)
-    
     print '[+] updating framework'
     framework(nodes)
-    
-    if not options.skip:
-        startAll(nodes, running)
 
 if options.volumedriver:
-    allStep = False
-    
     if not options.skip:
+        vmStatus() # Check if state already exists       
         running = saveMachinesState(nodes)
         stopAll(nodes, running)
     
@@ -423,9 +427,8 @@ if options.volumedriver:
         startAll(nodes, running)
 
 if options.alba:
-    allStep = False
-    
     if not options.skip:
+        vmStatus() # Check if state already exists
         running = saveMachinesState(nodes)
         stopAll(nodes, running)
     
@@ -434,15 +437,8 @@ if options.alba:
     
     if not options.skip:
         startAll(nodes, running)
-
-if options.sync:
-    allStep = False
-    
-    # TODO
     
 if options.stopVM:
-    allStep = False
-    
     running = saveMachinesState(nodes)
     
     print '[+] stopping virtual machines'
@@ -450,8 +446,6 @@ if options.stopVM:
         stopMachinesOnNode(node, running[node.instance])
 
 if options.startVM:
-    allStep = False
-    
     running = loadMachinesState(nodes)
     
     print '[+] starting virtual machines'
@@ -459,22 +453,12 @@ if options.startVM:
         startMachinesOnNode(node, running[node.instance])
 
 if options.prepro:
-    allStep = False
-    
     print '[+] pre-processing stuff'
     preprocess(nodes)
     
 if options.postpro:
-    allStep = False
-    
     print '[+] post-processing stuff'
     postprocess(nodes)
 
-"""
-if allStep:
-    print '[+] processing complete upgrade'
-    
-    # TODO
-"""
 
 j.application.stop()
