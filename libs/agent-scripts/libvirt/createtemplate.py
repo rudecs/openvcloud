@@ -63,13 +63,13 @@ def action(machineid, templatename, imageid, createfrom):
     imagename = j.system.fs.getBaseName(imagepath)
     installed_images = catimageclient.list()
     if diskguid not in installed_images:
-        image = dict()
-        image['name'] = templatename
-        image['id'] = diskguid
-        image['UNCPath'] = imagename
-        image['type'] = 'Custom Templates'
-        image['size'] = 0
-        catimageclient.set(image)
+        cimage = dict()
+        cimage['name'] = templatename
+        cimage['id'] = diskguid
+        cimage['UNCPath'] = imagename
+        cimage['type'] = 'Custom Templates'
+        cimage['size'] = 0
+        catimageclient.set(cimage)
 
     # register node if needed and update images on it
     nodekey = "%(gid)s_%(nid)s" % j.application.whoAmI._asdict()
@@ -85,7 +85,7 @@ def action(machineid, templatename, imageid, createfrom):
         if not diskguid in rp.images:
             rp.images.append(diskguid)
     catresourceclient.set(rp)
-    return image
+    return image.dump()
 
 if __name__ == '__main__':
     action('7ecf9fa8-de38-4dc5-8f4c-2d96c09b236a', 'test', 10, None)
