@@ -287,9 +287,8 @@ def volumedriver(nodes):
 
 def arakoon(nodes):
     for node in nodes:
-        # Updating volumedriver
-        # executeOnNodes([node], "apt-get install -y --force-yes arakoon")
-        print node
+        # Updating arakoon
+        executeOnNodes([node], "apt-get install -y --force-yes arakoon")
     
     # Restart clusters    
     clusters = getGenericFiles([node], "/opt/OpenvStorage/config/arakoon/", "XXX")
@@ -303,8 +302,7 @@ def arakoon(nodes):
     backplane = executeOnNodes([node], backcmd)
     
     for cluster in clusters:
-        # executeOnNodes([node], "python %s --cluster %s --address %s")
-        print "python %s --cluster %s --address %s" % (upscript, cluster, backplane)
+        executeOnNodes([node], "python %s --cluster %s --address %s" % (upscript, cluster, backplane))
     
     print '[+] arakoon updated !'
 
