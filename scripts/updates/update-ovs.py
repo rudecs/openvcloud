@@ -249,7 +249,8 @@ def framework(nodes):
         executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
         break
     
-    executeOnNodes(nodes, "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
+    for node in nodes:
+        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
     
     for node in nodes:
         executeOnNodes([node], "/etc/init.d/memcached restart")
@@ -334,6 +335,7 @@ def alba(nodes):
         services = getOvsStuffName([node], "arakoon-")
         for service in services:
             restartServiceName([node], service)
+            print '[+] waiting for arakoon'
             time.sleep(40)
     
     for node in nodes:
@@ -372,9 +374,13 @@ def postprocess(nodes):
     for node in nodes:
         executeOnNodes([node], "ays start -n jsagent")
 
-def vmStatus():
+def vmStatus(skipMaybe=True):
     if j.system.fs.exists('/tmp/ovs-machine-state.json'):
-        print '[-] machine state already found, did you forget --skip ?'
+        print '[-] machine state already found'
+        
+        if skipMaybe:
+            print '[-] did you forget --skip option ?'
+            
         j.application.stop()
     
     return True
@@ -440,6 +446,8 @@ if options.alba:
         startAll(nodes, running)
     
 if options.stopVM:
+    vmStatus(skipMaybe=False)
+    
     running = saveMachinesState(nodes)
     
     print '[+] stopping virtual machines'
