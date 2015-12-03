@@ -259,6 +259,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             <div id="noVNC_buttons" class="inline-block">
                             <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
                             id="sendCtrlAltDelButton">
+                            <!--<input type=button class="btn mainButton btn-info" ng-click="sendText(rfb, machine.accounts[0].password)" value="Send Password">-->
                             </div>
                         </div>
                     </div>
