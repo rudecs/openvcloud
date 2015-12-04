@@ -60,10 +60,10 @@ def parse(content):
     versions = {}
     
     # first: building hosts/repo list
-    for host in content:
+    for host, lines in content.items():
         hosts.append(host)
         
-        for index, line in enumerate(content[host]):
+        for index, line in enumerate(lines):
             if line == '':
                 del content[host][index]
                 continue
@@ -74,9 +74,11 @@ def parse(content):
             versions[repo] = {}
     
     # building version list
-    for host in content:
-        for line in content[host]:
+    for host, lines in content.items():
+        for line in lines:
             item = line.split(',')
+            if len(item) < 2:
+                continue
             repo = '%s/%s' % (item[0], item[1])
             commit = item[2][:8]
             
@@ -134,10 +136,11 @@ def build(content):
 """
 Updater stuff
 """
-def applyOnServices(services, func):
+def applyOnServices(services, func, kwargs=None):
     procs = list()
     for service in services:
-        proc = multiprocessing.Process(target=func, args=(service,))
+        kwargs = kwargs or {}
+        proc = multiprocessing.Process(target=func, args=(service,), kwargs=kwargs)
         proc.start()
         procs.append(proc)
     error = False
@@ -201,17 +204,17 @@ def versionBuilder():
     versionfile = '%s/version.md' % repopath
     statuscmd = 'jscode status -n "*" | grep lrev: | sed s/lrev://g | awk \'{ printf "%s,%s,%s\\n", $1, $2, $9 }\''
 
-    content = {}
+    manager = multiprocessing.Manager()
+    content = manager.dict()
 
     output = j.system.process.run(statuscmd, False, True)
     content['ovc_git'] = output[1].split("\n")
 
-    # grab version
-    for ns in cloudservices:
-        content[ns.instance] = ns.execute(statuscmd).split("\r\n")
+    def executeStatus(sshservice, content):
+        content[sshservice.instance] = sshservice.execute(statuscmd).split('\r\n')
 
-    for ns in nodeservices:
-        content[ns.instance] = ns.execute(statuscmd).split("\r\n")
+    # grab version
+    applyOnServices(sshservices, executeStatus, kwargs={'content': content})
 
     data = build(content)
 
@@ -221,14 +224,16 @@ def versionBuilder():
 
     data += "\n\n\n"
 
-    for host in content:
+    for host, lines in content.items():
         data += "## %s\n\n" % host
         data += "| Repository | Version (commit) |\n"
         data += "|----|----|\n"
         
         
-        for line in content[host]:
+        for line in lines:
             items = line.split(',')
+            if len(items) < 2:
+                continue
             repo = '%s/%s' % (items[0], items[1])
             data += "| %s | %s |\n" % (repo, items[2])
         
