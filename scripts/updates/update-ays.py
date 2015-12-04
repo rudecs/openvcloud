@@ -2,6 +2,7 @@ from JumpScale import j
 from optparse import OptionParser
 import multiprocessing
 import time
+import sys
 
 parser = OptionParser()
 parser.add_option("-s", "--self", action="store_true", dest="self", help="only update the update script")
@@ -27,36 +28,26 @@ cloudservices = filter(lambda x:x.instance in hosts, sshservices)
 
 
 def update(nodessh):
-    print ''
     print '[+] updating host: %s' % nodessh.instance
-    print ''
     nodessh.execute("jscode update -n '*' -d")
 
 def restart(nodessh):
-    print ''
     print '[+] restarting host\'s services: %s' % nodessh.instance
-    print ''
     nodessh.execute('ays stop')
     nodessh.execute('ays start')
 
 def restartNode(nodessh):
-    print ''
     print '[+] restarting (node) host\'s services: %s' % nodessh.instance
-    print ''
     for service in nodeprocs:
         nodessh.execute('ays restart -n %s' % service)
 
 def stopNode(nodessh):
-    print ''
     print '[+] stopping (node) host\'s services: %s' % nodessh.instance
-    print ''
     for service in nodeprocs:
         nodessh.execute('ays stop -n %s' % service)
 
 def startNode(nodessh):
-    print ''
     print '[+] starting (node) host\'s services: %s' % nodessh.instance
-    print ''
     for service in nodeprocs:
         nodessh.execute('ays start -n %s' % service)
 
@@ -149,8 +140,14 @@ def applyOnServices(services, func):
         proc = multiprocessing.Process(target=func, args=(service,))
         proc.start()
         procs.append(proc)
+    error = False
     for proc in procs:
         proc.join()
+        if proc.exitcode:
+            error = True
+    if error:
+        print 'Failed to execute on nodes'
+        sys.exit(1)
 
 def updateLocal():
     print '[+] Updating local system'
@@ -164,23 +161,33 @@ def updateOpenvcloud(repository):
     j.do.execute("cd %s; git pull" % repository)
     
 def updateCloudspace():
+    print ''
     print '[+] updating cloudspace'
+    print ''
     applyOnServices(cloudservices, update)
 
 def restartNodes():
+    print ''
     print '[+] restarting nodes'
+    print ''
     applyOnServices(nodeservices, restartNode)
 
 def stopNodes():
+    print ''
     print '[+] stopping nodes'
+    print ''
     applyOnServices(nodeservices, stopNode)
 
 def startNodes():
+    print ''
     print '[+] starting nodes'
+    print ''
     applyOnServices(nodeservices, startNode)
 
 def restartCloudspace():
+    print ''
     print '[+] restarting cloudspace'
+    print ''
     applyOnServices(cloudservices, restart)
 
 def versionBuilder():
