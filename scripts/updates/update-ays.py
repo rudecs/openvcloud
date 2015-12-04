@@ -167,7 +167,7 @@ def updateCloudspace():
     print '[+] updating cloudspace'
     applyOnServices(cloudservices, update)
 
-def restartNodes(sshservices, hosts):
+def restartNodes():
     print '[+] restarting nodes'
     applyOnServices(nodeservices, restartNode)
 
