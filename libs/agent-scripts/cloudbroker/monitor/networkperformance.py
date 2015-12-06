@@ -92,6 +92,8 @@ class OpenvStorage():
                 eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
                 eco.process()
             final.append(result)
+        if not final:
+            return [{'message': 'Single node', 'state': 'OK', 'category': 'Bandwidth Test'}]
         return final
 
 def action():

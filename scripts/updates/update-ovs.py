@@ -72,7 +72,7 @@ def stopServiceName(nodes, service):
     for ns in nodes:
         if ns.instance not in hosts:
             print '[+] executing on: %s' % ns.instance
-            ns.execute("stop %s" % service)
+            ns.execute("stop %s; exit 0" % service)
 
 def stopServices(nodes, services):
     for service in services:
@@ -290,18 +290,20 @@ def volumedriver(nodes):
 
 
 def arakoon(nodes):
+    # FIXME: be sur that /mnt/vmstor is not used anymore
+    
     for node in nodes:
         # Updating arakoon
         executeOnNodes([node], "apt-get install -y --force-yes arakoon")
+    
+    # FIXME: better way ?
+    for node in nodes:
+        break
     
     # Restart clusters    
     clusters = getGenericFiles([node], "/opt/OpenvStorage/config/arakoon/", "XXX")
     upscript = '/opt/code/git/0-complexity/openvcloud/scripts/ovs/arakoon-restart.py'
     backcmd  = "ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1"
-    
-    # FIXME: better way ?
-    for node in nodes:
-        break
     
     backplane = executeOnNodes([node], backcmd)
     
@@ -313,6 +315,8 @@ def arakoon(nodes):
 
 
 def alba(nodes):
+    # FIXME: be sur that /mnt/vmstor is not used anymore
+    
     # Updating alba
     for node in nodes:
         executeOnNodes([node], "apt-get install -y --force-yes alba")
@@ -326,18 +330,33 @@ def alba(nodes):
     for node in nodes:
         services = getOvsStuffName([node], "albaproxy_")
         for service in services:
+            print service
             pid = pidFromStatus(node, service)
+            
+            if pid == "":
+                print '[-] pid not found, not running ? trying to start it then...'
+                startServiceName([node], service)
             
             print '[+] killing %s on %s' % (pid, node.instance)
             killPid(node, pid)
     
+    # FIXME: better way ?
     for node in nodes:
-        services = getOvsStuffName([node], "arakoon-")
-        for service in services:
-            restartServiceName([node], service)
-            print '[+] waiting for arakoon'
-            time.sleep(40)
+        break
     
+    # Restart clusters
+    clusters = getGenericFiles([node], "/opt/OpenvStorage/config/arakoon/", "XXX")
+    upscript = '/opt/code/git/0-complexity/openvcloud/scripts/ovs/arakoon-restart.py'
+    backcmd  = "ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1"
+    backplane = executeOnNodes([node], backcmd)
+    
+    print '[+] restarting needed arakoon clusters'
+    for cluster in clusters:
+        if cluster == 'ovsdb' or cluster == 'voldrv':
+            continue
+        
+        executeOnNodes([node], "python %s --cluster %s --address %s" % (upscript, cluster, backplane))
+        
     for node in nodes:
         services = getOvsStuffName([node], "alba-maintenance")
         restartServices([node], services)
