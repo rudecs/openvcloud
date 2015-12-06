@@ -14,6 +14,7 @@ def main(j, args, params, tags, tasklet):
 
     id = int(id)
     vcl = j.clients.osis.getNamespace('vfw')
+    scl = j.clients.osis.getNamespace('system')
     key = "%s_%s" % (gid, id)
 
     if not vcl.virtualfirewall.exists(key):
@@ -22,6 +23,10 @@ def main(j, args, params, tags, tasklet):
 
     network =  vcl.virtualfirewall.get(key)
     obj = network.dump()
+    if scl.node.exists(obj['nid']):
+        obj['nodename'] = scl.node.get(obj['nid']).name
+    else:
+        obj['nodename'] = str(obj['nid'])
     obj['pubips'] = ', '.join(obj['pubips'])
 
     args.doc.applyTemplate(obj)
