@@ -249,15 +249,15 @@ sed -i '/var\/tmp/d' /etc/fstab
 
 UUID=$(blkid -o value -s UUID $CACHE1)
 echo "[+] /mnt/cache1 ($CACHE1) is $UUID"
-echo "UUID=$UUID /mnt/cache1 $FILESYSTEM defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /mnt/cache1 $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
 UUID=$(blkid -o value -s UUID $CACHE2)
 echo "[+] /mnt/cache2 ($CACHE2) is $UUID"
-echo "UUID=$UUID /mnt/cache2 $FILESYSTEM defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /mnt/cache2 $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
 UUID=$(blkid -o value -s UUID $VARTMP)
 echo "[+] /var/tmp ($VARTMP) is $UUID"
-echo "UUID=$UUID /var/tmp $FILESYSTEM defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID /var/tmp $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
 mkdir -p /mnt/cache1 /mnt/cache2
 
