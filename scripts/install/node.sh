@@ -18,7 +18,13 @@ if [ "$UID" != "0" ]; then
 fi
 
 echo "[+] upgrading system"
-apt-get -y upgrade
+apt-get update
+
+# This package cause some automation problem with efi
+apt-get remove -y shim
+apt-get autoremove -y
+
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
 for i in /sys/block/sd?; do
 	rot=$(cat $i/queue/rotational)
