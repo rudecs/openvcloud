@@ -113,6 +113,7 @@ def action():
             j.console.echo('Connecting over ssh', log=True)
             connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
             connection.user(account['login'])
+            connection.fabric.api.env['abort_on_prompts'] = True
             j.console.echo('Running dd', log=True)
             output = connection.run("rm -f 500mb.dd; dd if=/dev/zero of=500mb.dd bs=4k count=128k")
             try:
