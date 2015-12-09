@@ -272,7 +272,7 @@ class CSLibvirtNodeDriver():
         if datadisks:
             datavolumes = []
             for idx, (diskname, disksize) in enumerate(datadisks):
-                volume = {'name': diskname, 'size': disksize, 'dev': 'vd%c' % (ord('b') + idx)}
+                volume = {'name': diskname, 'size': disksize * (1000 ** 3), 'dev': 'vd%c' % (ord('b') + idx)}
                 datavolumes.append(volume)
             volumes += self.create_volumes(datavolumes)
         return self._create_node(name, size, metadata_iso, networkid, volumes)

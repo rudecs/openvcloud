@@ -82,21 +82,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
     def fw_move(self, fwid, targetNid, **kwargs):
         fwobj = self._getVFWObject(fwid)
         srcnode = self.nodeclient.get("%s_%s" % (fwobj.gid, fwobj.nid))
-        trgnode = self.nodeclient.get("%s_%s" % (fwobj.gid, targetNid))
         def get_backplane_ip(node):
-            for mac, nicinfo in node.netaddr.iteritems():
-                if nicinfo[0] == 'backplane1':
-                    return nicinfo[1]
+            for nicinfo in node.netaddr:
+                if nicinfo['name'] == 'backplane1':
+                    return nicinfo['ip'][0]
         srcip = get_backplane_ip(srcnode)
-        trgip = get_backplane_ip(trgnode)
-        sshkey = None
-        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'sshkey')
-        if j.system.fs.exists(sshpath):
-            sshkey = j.system.fs.fileGetContents(sshpath)
         args = {'networkid': fwobj.id,
-                'sourceip': srcip,
-                'targetip': trgip,
-                'sshkey': sshkey}
+                'sourceip': srcip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise RuntimeError("Failed to move routeros check job %(guid)s" % job)
