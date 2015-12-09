@@ -311,7 +311,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     {[snapshot.epoch * 1000 | date:'medium']}
                                 </td>
                                 <td ng-show="currentUserAccess != 'Read'">
-                                    <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                    <a class="cursor-pointer margin-all-small txt-17" title="Rollback" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)"><i class="fa fa-undo"></i></a>
                                     <script type="text/ng-template" id="rollbackSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
                                             <div class="modal-header">
@@ -330,7 +330,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                             </div>
                                         </form>
                                     </script>
-                                    <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                                    <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer margin-all-small txt-17" title="Delete" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)"><i class="fa fa-times"></i></a>
                                     <script type="text/ng-template" id="deleteSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
                                             <div class="modal-header">

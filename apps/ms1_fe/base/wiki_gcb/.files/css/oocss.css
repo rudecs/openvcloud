@@ -357,6 +357,13 @@
 	white-space: nowrap;
 }
 
+/*  Tables  */
+th{
+	text-align: center !important;
+}
+table{
+	text-align: center !important;
+}
 
 /*  Borders  */
 .no-border-radius{
@@ -387,6 +394,7 @@
 /*cursors*/
 .cursor-pointer{
 	cursor: pointer;
+	
 }
 .cursor-default{
 	cursor: default;
