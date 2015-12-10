@@ -165,6 +165,15 @@ angular.module('cloudscalers.controllers')
             retrieveMachineHistory();
         }, true);
 
+        $scope.$watch('tabactive.console', function() {
+            if($scope.tabactive.console){
+                $scope.onConsoleTab = true;
+            }
+            else{
+                $scope.onConsoleTab = false;
+            }
+        }, true);
+
         $scope.oldMachine = {};
         $scope.imagesList = [];
         $scope.machineinfo = {};
