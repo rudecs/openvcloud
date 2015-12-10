@@ -32,7 +32,10 @@ class jumpscale_netmgr(j.code.classGetBase()):
         return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
 
     def _getVFWObject(self, fwid):
-        fwobj = self.osisvfw.get(fwid)
+        try:
+            fwobj = self.osisvfw.get(fwid)
+        except:
+            raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         if not fwobj.nid:
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
@@ -63,7 +66,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'publicgwip': publicgwip,
                     'publiccidr': publiccidr,
                     }
-            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='hypervisor')
+            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default')
             if result['state'] != 'OK':
                 self.osisvfw.delete(key)
                 raise RuntimeError("Failed to create create fw for domain %s job was %s" % (domain, result['id']))

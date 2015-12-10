@@ -130,8 +130,17 @@ class CSLibvirtNodeDriver():
 
     def create_volume(self, size, name):
         bytesize = size * (1000 ** 3)
-        volumeid = self._execute_agent_job('createvolume', queue='hypervisor', name=name, size=bytesize)
-        return StorageVolume(id=volumeid, name=name, size=size, driver=self)
+        volumes = [{'name': name, 'size': bytesize, 'dev': ''}]
+        return self.create_volumes(volumes)[0]
+
+    def create_volumes(self, volumes):
+        volumes = self._execute_agent_job('createvolumes', queue='hypervisor', volumes=volumes)
+        stvolumes = []
+        for volume in volumes:
+            stvol = StorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
+            stvol.dev = volume['dev']
+            stvolumes.append(stvol)
+        return stvolumes
 
     def attach_volume(self, node, volume):
         def getNextDev(devices):
@@ -261,10 +270,11 @@ class CSLibvirtNodeDriver():
         volume.dev = 'vda'
         volumes = [volume]
         if datadisks:
+            datavolumes = []
             for idx, (diskname, disksize) in enumerate(datadisks):
-                volume = self.create_volume(disksize, diskname)
-                volume.dev = 'vd%c' % (ord('b') + idx)
-                volumes.append(volume)
+                volume = {'name': diskname, 'size': disksize * (1000 ** 3), 'dev': 'vd%c' % (ord('b') + idx)}
+                datavolumes.append(volume)
+            volumes += self.create_volumes(datavolumes)
         return self._create_node(name, size, metadata_iso, networkid, volumes)
 
     def _create_node(self, name, size, metadata_iso=None, networkid=None, volumes=None):
@@ -309,17 +319,27 @@ class CSLibvirtNodeDriver():
         node = self._from_agent_to_node(agentnode)
         return node
 
-    def ex_create_snapshot(self, node, name, snapshottype='external'):
-        return self._execute_agent_job('snapshot', queue='hypervisor', machineid=node.id, snapshottype=snapshottype, name=name)
+    def _get_volume_paths(self, node):
+        diskpaths = list()
+        for volume in node.extra['volumes']:
+            diskpaths.append(volume.id)
+        return diskpaths
+
+    def ex_create_snapshot(self, node, name):
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('snapshot', queue='hypervisor', diskpaths=diskpaths, name=name)
 
     def ex_list_snapshots(self, node):
-        return self._execute_agent_job('listsnapshots', queue='default', vmname=node.name)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('listsnapshots', queue='default', diskpaths=diskpaths)
 
     def ex_delete_snapshot(self, node, timestamp):
-        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', machineid=node.id, timestamp=timestamp)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('deletesnapshot', wait=False, queue='io', diskpaths=diskpaths, timestamp=timestamp)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', machineid=node.id, timestamp=timestamp)
+        diskpaths = self._get_volume_paths(node)
+        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', diskpaths=diskpaths, timestamp=timestamp)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):

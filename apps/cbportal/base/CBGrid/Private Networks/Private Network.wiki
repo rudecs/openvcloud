@@ -4,10 +4,33 @@
 
 h2. Private Network: $$id
 
+{{actions:
+
+- display: Move VFW
+  action: '#movevfw'
+
+- display: Remove VFW
+  action: /restmachine/cloudbroker/cloudspace/destroyVFW
+  input:
+  - reason
+  data:
+   cloudspaceId: ${domain}
+
+- display: Reset VFW
+  action: /restmachine/cloudbroker/cloudspace/resetVFW
+  data:
+   cloudspaceId: ${domain}
+  input:
+  - reason
+
+}}
+
+{{movevfw: cloudspaceId:${domain}}}
+
 h3. Details
 |*Management IP*|${host}|
 |*Public IPs*|${pubips}|
-|*FW Node*|[${nid}|/grid/grid node?id=${nid}&gid=${gid}]|
+|*FW Node*|[${nodename}|/grid/grid node?id=${nid}&gid=${gid}]|
 |*CloudSpace ID*|[${domain}|cloud space?id=${domain}]|
 
 h3. Port Fowardings

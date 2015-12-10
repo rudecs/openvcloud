@@ -1,6 +1,8 @@
 from JumpScale import j
 from optparse import OptionParser
+import multiprocessing
 import time
+import sys
 
 parser = OptionParser()
 parser.add_option("-s", "--self", action="store_true", dest="self", help="only update the update script")
@@ -16,31 +18,38 @@ parser.add_option("-c", "--commit", action="store_true", dest="commit", help="co
 
 openvcloud = '/opt/code/git/0-complexity/openvcloud'
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
+nodeprocs = ['redis', 'statsd-collector', 'nginx', 'jsagent', 'vncproxy']
+
+# Loading nodes list
+sshservices = j.atyourservice.findServices(name='node.ssh')
+sshservices.sort(key = lambda x: x.instance)
+nodeservices = filter(lambda x:x.instance not in hosts, sshservices)
+cloudservices = filter(lambda x:x.instance in hosts, sshservices)
+
 
 def update(nodessh):
-    print ''
     print '[+] updating host: %s' % nodessh.instance
-    print ''
     nodessh.execute("jscode update -n '*' -d")
 
 def restart(nodessh):
-    print ''
     print '[+] restarting host\'s services: %s' % nodessh.instance
-    print ''
     nodessh.execute('ays stop')
     nodessh.execute('ays start')
 
 def restartNode(nodessh):
-    print ''
     print '[+] restarting (node) host\'s services: %s' % nodessh.instance
-    print ''
-    nodessh.execute('ays restart -n redis')
-    nodessh.execute('ays restart -n statsd-collector')
-    nodessh.execute('ays restart -n nginx')
-    nodessh.execute('fuser -k 4446/tcp; ays start -n jsagent')
-    nodessh.execute('ays restart -n vncproxy')
+    for service in nodeprocs:
+        nodessh.execute('ays restart -n %s' % service)
 
+def stopNode(nodessh):
+    print '[+] stopping (node) host\'s services: %s' % nodessh.instance
+    for service in nodeprocs:
+        nodessh.execute('ays stop -n %s' % service)
 
+def startNode(nodessh):
+    print '[+] starting (node) host\'s services: %s' % nodessh.instance
+    for service in nodeprocs:
+        nodessh.execute('ays start -n %s' % service)
 
 
 """
@@ -51,10 +60,10 @@ def parse(content):
     versions = {}
     
     # first: building hosts/repo list
-    for host in content:
+    for host, lines in content.items():
         hosts.append(host)
         
-        for index, line in enumerate(content[host]):
+        for index, line in enumerate(lines):
             if line == '':
                 del content[host][index]
                 continue
@@ -65,9 +74,11 @@ def parse(content):
             versions[repo] = {}
     
     # building version list
-    for host in content:
-        for line in content[host]:
+    for host, lines in content.items():
+        for line in lines:
             item = line.split(',')
+            if len(item) < 2:
+                continue
             repo = '%s/%s' % (item[0], item[1])
             commit = item[2][:8]
             
@@ -125,48 +136,64 @@ def build(content):
 """
 Updater stuff
 """
-def findService(name):
-    for ns in sshservices:
-        if ns.instance == name:
-            return ns
-            
+def applyOnServices(services, func, kwargs=None):
+    procs = list()
+    for service in services:
+        kwargs = kwargs or {}
+        proc = multiprocessing.Process(target=func, args=(service,), kwargs=kwargs)
+        proc.start()
+        procs.append(proc)
+    error = False
+    for proc in procs:
+        proc.join()
+        if proc.exitcode:
+            error = True
+    if error:
+        print 'Failed to execute on nodes'
+        sys.exit(1)
+
 def updateLocal():
     print '[+] Updating local system'
     j.do.execute("jscode update -d -n '*'")
     
-def updateNodes(sshservices, hosts):
-    for ns in sshservices:
-        if ns.instance not in hosts:
-            update(ns)
-    
+def updateNodes():
+    applyOnServices(nodeservices, update)
+
 def updateOpenvcloud(repository):
     print '[+] Updating local openvcloud repository'
     j.do.execute("cd %s; git pull" % repository)
     
-def updateCloudspace(hosts):
+def updateCloudspace():
+    print ''
     print '[+] updating cloudspace'
-    
-    for host in hosts:
-        ns = findService(host)
-        if ns:
-            update(ns)
-    
-def restartNodes(sshservices, hosts):
-    print '[+] restarting nodes'
-    
-    for ns in sshservices:
-        if ns.instance not in hosts:
-            restartNode(ns)
-    
-def restartCloudspace(hosts):
-    print '[+] restarting cloudspace'
-    
-    for host in hosts:
-        ns = findService(host)
-        if ns:
-            restart(ns)
+    print ''
+    applyOnServices(cloudservices, update)
 
-def versionBuilder(sshservices, hosts):
+def restartNodes():
+    print ''
+    print '[+] restarting nodes'
+    print ''
+    applyOnServices(nodeservices, restartNode)
+
+def stopNodes():
+    print ''
+    print '[+] stopping nodes'
+    print ''
+    applyOnServices(nodeservices, stopNode)
+
+def startNodes():
+    print ''
+    print '[+] starting nodes'
+    print ''
+    applyOnServices(nodeservices, startNode)
+
+def restartCloudspace():
+    print ''
+    print '[+] restarting cloudspace'
+    print ''
+    applyOnServices(cloudservices, restart)
+
+def versionBuilder():
     # Updating version file
     print '[+] grabbing version'
 
@@ -177,20 +204,17 @@ def versionBuilder(sshservices, hosts):
     versionfile = '%s/version.md' % repopath
     statuscmd = 'jscode status -n "*" | grep lrev: | sed s/lrev://g | awk \'{ printf "%s,%s,%s\\n", $1, $2, $9 }\''
 
-    content = {}
+    manager = multiprocessing.Manager()
+    content = manager.dict()
 
     output = j.system.process.run(statuscmd, False, True)
     content['ovc_git'] = output[1].split("\n")
 
-    # grab version
-    for host in hosts:
-        ns = findService(host)
-        if ns:
-            content[host] = ns.execute(statuscmd).split("\r\n")
+    def executeStatus(sshservice, content):
+        content[sshservice.instance] = sshservice.execute(statuscmd).split('\r\n')
 
-    for ns in sshservices:
-        if ns.instance not in hosts:
-            content[ns.instance] = ns.execute(statuscmd).split("\r\n")
+    # grab version
+    applyOnServices(sshservices, executeStatus, kwargs={'content': content})
 
     data = build(content)
 
@@ -200,14 +224,16 @@ def versionBuilder(sshservices, hosts):
 
     data += "\n\n\n"
 
-    for host in content:
+    for host, lines in content.items():
         data += "## %s\n\n" % host
         data += "| Repository | Version (commit) |\n"
         data += "|----|----|\n"
         
         
-        for line in content[host]:
+        for line in lines:
             items = line.split(',')
+            if len(items) < 2:
+                continue
             repo = '%s/%s' % (items[0], items[1])
             data += "| %s | %s |\n" % (repo, items[2])
         
@@ -235,9 +261,6 @@ def updateGit():
 """
 Worker stuff
 """
-# Loading nodes list
-sshservices = j.atyourservice.findServices(name='node.ssh')
-sshservices.sort(key = lambda x: x.instance)
 
 allStep = True
 
@@ -258,9 +281,9 @@ if options.update:
     print '[+] updating cloudspace and nodes'
     
     updateLocal()
-    updateNodes(sshservices, hosts)
-    updateCloudspace(hosts)
-    
+    updateCloudspace()
+    updateNodes()
+
     print '[ ]'
     print '[+] node and cloudspace updated'
     print '[ ]'
@@ -270,7 +293,7 @@ if options.updateNodes:
     
     print '[+] updating all nodes'
     
-    updateNodes(sshservices, hosts)
+    updateNodes()
     
     print '[ ]'
     print '[+] all nodes updated'
@@ -282,7 +305,7 @@ if options.updateCloud:
     print '[+] updating cloudspace'
     
     updateLocal()
-    updateCloudspace(hosts)
+    updateCloudspace()
     
     print '[ ]'
     print '[+] cloudspace updated'
@@ -293,7 +316,7 @@ if options.restartCloud or options.restart:
     
     print '[+] restarting cloudspace'
     
-    restartCloudspace(hosts)
+    restartCloudspace()
     
     print '[ ]'
     print '[+] cloudspace restarted'
@@ -304,7 +327,7 @@ if options.restartNodes or options.restart:
     
     print '[+] restarting nodes'
     
-    restartNodes(sshservices, hosts)
+    restartNodes()
     
     print '[ ]'
     print '[+] node restarted'
@@ -315,7 +338,7 @@ if options.report:
     
     print '[+] reporting installed versions'
     
-    versionBuilder(sshservices, hosts)
+    versionBuilder()
     
     print '[ ]'
     print '[+] reporting done'
@@ -336,11 +359,12 @@ if allStep:
     print '[+] processing complete upgrade'
     
     updateLocal()
-    updateCloudspace(hosts)
-    updateNodes(sshservices, hosts)
-    restartCloudspace(hosts)
-    restartNodes(sshservices, hosts)
-    versionBuilder(sshservices, hosts)
+    updateCloudspace()
+    updateNodes()
+    stopNodes()
+    restartCloudspace()
+    startNodes()
+    versionBuilder()
     
     print '[ ]'
     print '[+] everything done'

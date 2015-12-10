@@ -245,20 +245,23 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                         <div class="span2 txt-verdana">
                             <h4 class="txt-15 txt-normal margin-bottom-none">Initial Login</h4>
                             <p>
-                                {[machine.accounts[0].login]}
+                                {[machine.accounts[0].login]}<a class="margin-left-small" ng-click="sendText(rfb, machine.accounts[0].login)"><i class="fa fa-clipboard" title="Copy username to console"></i></a>
                             </p>
                         </div>
                         <div class="span2 txt-verdana">
                             <h4 class="txt-15 txt-normal margin-bottom-none">Initial Password</h4>
-                            <p>
-                                {[machine.accounts[0].password]}
-                            </p>
+                            <div class="margin-left-xlarge margin-top-small">
+                              <a ng-hide="passwordHidden" ng-click="passwordHidden = true" title="Show password" class="margin-right-small"><i class="fa fa-eye"></i></a>
+                              <span ng-show="passwordHidden">{[machine.accounts[0].password]}</span>
+                              <a ng-show="passwordHidden" ng-click="passwordHidden = false" title="Hide password" class="margin-right-small"><i class="fa fa-eye-slash"></i></a>
+                              <a ng-click="sendText(rfb, machine.accounts[0].password)"><i class="fa fa-clipboard" title="Copy password to console"></i></a>
+                            </div>
                         </div>
                         <div class="span6 margin-top-small right txt-right">
                             <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info float-none margin-right-medium" value="Capture keyboard"></input>
                             <div id="noVNC_buttons" class="inline-block">
-                            <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
-                            id="sendCtrlAltDelButton">
+                              <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
+                              id="sendCtrlAltDelButton">
                             </div>
                         </div>
                     </div>

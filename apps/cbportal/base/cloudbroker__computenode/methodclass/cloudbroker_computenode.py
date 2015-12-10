@@ -58,12 +58,11 @@ class cloudbroker_computenode(BaseActor):
         stack, status = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
         if stack:
             machines_actor = j.apps.cloudbroker.machine
-            stackmachines = self.models.vmachine.search({'stackId': stack['id']})[1:]
+            stackmachines = self.models.vmachine.search({'stackId': stack['id'], 'status':
+                                                                    {'$nin': ['DESTROYED', 'ERROR']}
+                                                         })[1:]
             for machine in stackmachines:  
-                cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
-                account = self.models.account.get(cloudspace.accountId)
-
-                machines_actor.moveToDifferentComputeNode(machine['id'], targetComputeNode=None, withSnapshots=True, collapseSnapshots=False)
+                machines_actor.moveToDifferentComputeNode(machine['id'], reason="Disabling source")
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):

@@ -1,0 +1,23 @@
+@template default-docs
+
+h1. How to configure Ubuntu to connect to OpenVPN
+
+*# Open Terminal @LF In Unity @LF Dash \-> Search for Terminal @LF In Gnome @LF Application menu \-> Accessories \-> Terminal @LF or @LF Keyboard Shortcut: `Ctrl + Alt + T`
+*# Run the following command `apt-get install network-manager-openvpn`
+*# Right-click on the network icon on the system tray
+*# Choose: "Edit Connections"
+*# Click Add @LF !image.png!
+*# Choose Connection Type : openvpn @LF !image1.png!
+*# The following window will open: @LF !image2.png!
+*## Enter the connection name as example "VPN connection"
+*## Enter the Gateway
+*## Under the Authentication \-> Type \-> choose Passowrd @LF !image3.png!
+*## Download our CA certificate
+*## Enter the username and the passowrd
+*## Import the CA certificate you just downloaded
+*# Click "Advanced" the following window will open: @LF !image4.png!
+*## Set "Use Custom gateway port " to 999
+*## Mark "Use a TCP connection"
+*## Click "OK" and then Save
+*# Right-click on the network icon on the system tray
+*# Choose " VPN Connection then choose the new connection

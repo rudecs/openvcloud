@@ -20,7 +20,10 @@ log = False
 def action():
     import libvirt
     cbcl = j.clients.osis.getNamespace('cloudbroker', j.core.osis.client)
+    vcl = j.clients.osis.getNamespace('vfw', j.core.osis.client)
     stacks = cbcl.stack.search({'gid': j.application.whoAmI.gid, 'referenceId': str(j.application.whoAmI.nid)})[1:]
+    vfws = vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid, 'nid': j.application.whoAmI.nid})[1:]
+    networkids = {vfw['id'] for vfw in vfws}
     if not stacks:
         return # not registered as a stack
     vms = cbcl.vmachine.search({'stackId': stacks[0]['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
@@ -30,7 +33,12 @@ def action():
     try:
         domains = con.listAllDomains()
         for domain in domains:
-            if domain.UUIDString() not in vmsbyguid:
+            name = domain.name()
+            if name.startswith('routeros'):
+                networkid = int(name.split('_')[-1], 16)
+                if networkid not in networkids:
+                    orphans.append("- %s" % domain.name())
+            elif domain.UUIDString() not in vmsbyguid:
                 orphans.append("- %s" % domain.name())
     finally:
         con.close()

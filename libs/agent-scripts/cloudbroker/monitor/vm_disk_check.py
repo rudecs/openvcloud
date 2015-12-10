@@ -14,22 +14,30 @@ enable = True
 async = True
 log = False
 
-def action(vm_id):
+def action(diskpaths):
     import sys
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     sys.path.append('/opt/OpenvStorage')
-    from ovs.dal.lists.vmachinelist import VMachineList
-    from ovs.lib.vmachine import VMachineController
+    from ovs.lib.vdisk import VDiskController
+    from ovs.dal.lists.vdisklist import VDiskList
+    from ovs.dal.lists.vpoollist import VPoolList
 
-    vmname = 'vm-%s' % vm_id
-    vmachines = VMachineList.get_vmachine_by_name(vmname)
-    if vmachines:
-        vmachine = vmachines[0]
-    else:
-        return []
+    pool = VPoolList.get_vpool_by_name('vmstor')
     disks = []
-    for vdisk in vmachine.vdisks:
-        info = vdisk.info.copy()
-        info['devicename'] = vdisk.devicename
+    for diskpath in diskpaths:
+        diskpath = diskpath.replace('/mnt/vmstor/', '')
+        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        info = disk.info.copy()
+        del info['metadata_backend_config']
+        del info['owner_tag']
+        del info['cluster_cache_handle']
+        info['devicename'] = disk.devicename
         disks.append(info)
     return disks
+
+if __name__ == '__main__':
+    import pprint
+    from JumpScale.baselib import cmdutils
+    parser = cmdutils.ArgumentParser()
+    parser.add_argument('-p', '--path', help='Volume path')
+    options = parser.parse_args()
+    pprint.pprint(action([options.path]))

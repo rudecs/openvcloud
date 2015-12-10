@@ -1,0 +1,17 @@
+{{html:
+  <div class="row relative">
+    <div class="docs-title absolute">
+      Technical Tutorials
+    </div>
+    <ul id="docs-index-list" class="padding-left-none padding-all-large col-md-5 margin-bottom-large">
+      <li><a href="/$$space/Access your Cloud Space using OpenVPN">Access your Cloud Space using OpenVPN</a></li>
+      <li><a href="/$$space/How to configure Ubuntu to connect to OpenVPN">How to configure Ubuntu to connect to OpenVPN</a></li>
+      <li><a href="/$$space/My First Machine Linux">My First Machine Linux</a></li>
+      <li><a href="/$$space/Enable Root access on ubuntu over SSH">Enable Root access on ubuntu over SSH</a></li>
+      <li><a href="/$$space/My First Machine Windows">My First Machine Windows</a></li>
+      <li><a href="/$$space/PPTP Connection To Space From Windows 8.1">PPTP Connection To Space From Windows 8.1</a></li>
+      <li><a href="/$$space/Getting Started with JumpScale">Getting Started with JumpScale</a></li>
+    </ul>
+  </div>
+  <hr>
+}}

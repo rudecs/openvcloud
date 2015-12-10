@@ -77,11 +77,12 @@ def action(gid=None):
                     ping_jobs[vm['id']] = job
 
             if vm['status'] and cpu_node_id:
-                job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'vm_id': vm['id']}, queue='default', log=False, timeout=5, wait=True)
+                diskpaths = [ disk['referenceId'] for disk in cbcl.disk.search({'id': {'$in': vm['disks']}})[1:] ]
+                job = accl.scheduleCmd(gid, cpu_node_id, 'jumpscale', 'vm_disk_check', args={'diskpaths': diskpaths}, queue='default', log=False, timeout=5, wait=True)
                 disk_check_jobs[vm['id']] = job
     time.sleep(5)
     for idx, (vm_id, job) in enumerate(ping_jobs.iteritems()):
-        print 'Waiting for %s/%s pingjobs' % (idx, len(ping_jobs))
+        print 'Waiting for %s/%s pingjobs' % (idx + 1, len(ping_jobs))
         result = accl.waitJumpscript(job=job, timeout=0)
         if result['state'] != 'OK':
             vmachines_data[vm_id]['ping'] = False
@@ -89,7 +90,7 @@ def action(gid=None):
             vmachines_data[vm_id]['ping'] = result['result']
 
     for idx, (vm_id, job) in enumerate(disk_check_jobs.iteritems()):
-        print 'Waiting for %s/%s disk_check_jobs' % (idx, len(disk_check_jobs))
+        print 'Waiting for %s/%s disk_check_jobs' % (idx + 1, len(disk_check_jobs))
         result = accl.waitJumpscript(job=job, timeout=0)
         if result['state'] == 'OK' and result['result']:
             result = result['result']

@@ -1,0 +1,67 @@
+@template default-docs
+
+h1. My First Machine Linux
+
+Login to the OpenvCloud User Portal:
+
+!UserPortal.png|max-width=1000px!
+
+To create a virtual machine go to Machines, and click on 'Create Machine'
+!Machines.png|max-width=1000px!
+
+
+Select your properties in this example:
+* Ubuntu 14.04 64 bit
+* 1 GB memory
+* Std disk size
+
+
+!CreateLinuxMachine.png|max-width=1000px!
+!CreateLinuxMachine2.png|max-width=1000px!
+
+Within seconds the machine is active.
+!LinuxMachineActions.png|max-width=1000px!
+!LinuxMachineConsole.png|max-width=1000px!
+
+Unlike other clouds, OpenvCloud puts every virtual machine behind a private firewall.
+
+To have access to your virtual machine you can create a VPN connection (see other tutorials) or configure a
+
+port forwarding (means forward a port from your private firewall to the port on your virtual machine).
+
+Here we will choose for the later option.
+
+In order to configure the port forwarding, click on Port Forwards tab:
+
+!LinuxPortForwards.png!
+
+Click the Add button, and specify that you want to forward port 3022 to you port 22 on your virtual machine:
+
+!LinuxPortForward3022.png!
+
+As a result you will see the below:
+
+!LinuxPortForwards2.png!
+
+We will now use an ssh client to connect to the virtual machine e.g. putty
+
+!linux-9.jpg!
+
+Your ip address is the one mentioned above in “Public IP” in your portforwards.
+
+!linux-10.jpg!
+!linux-11.jpg!
+!linux-12.jpg!
+
+Congrats, you are on your machine.
+
+
+
+h2. Tip 1
+To change password of root user do `sudo passwd root`
+!linux-13.jpg!
+
+h2. Tip 2
+To connect over ssh you always need to login as cloudscalers and then use `sudo -s` to get root access.
+
+You can now deploy whatever apps & through port forwarding (like done above) give access to your apps.

@@ -1,0 +1,17 @@
+@template default-docs
+h1. Access your Cloud Space using OpenVPN
+
+*# Go to: OpenVPN Downloads Page.
+*# Choose your installer according to your architect "Windows Installer (32-bit)|Windows Installer (64-bit)".
+*# Right-click on the installer and choose: "Run as administrator"
+*# Press "Yes" in the confirmation windows
+*# Click "Next" on the welcome page
+*# Click "I Agree" on the license page
+*# Click "Next" for the default components
+*# Click "Install"
+*# Click "Next" after the installation in completed
+*# Download our [OpenVPN configuration file|/$$space/.files/downloads/client.ovpn]
+*# Download our [CA certificate|/$$space/.files/downloads/ca.crt]
+*# Copy the "OpenVPN configuration file" and "CA certificate" to: "C:\Program Files\OpenVPN\config"
+*# Right-click on the "OpenVPN GUI" icon and choose: "Run as administrator".
+*# Enter your username and password
