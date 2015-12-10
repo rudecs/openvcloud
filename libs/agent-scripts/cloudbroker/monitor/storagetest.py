@@ -110,26 +110,39 @@ def action():
             status = 'ERROR'
             msg = 'Could not connect to VM over public interface'
         else:
-            j.console.echo('Connecting over ssh', log=True)
-            connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
-            connection.user(account['login'])
-            connection.fabric.api.env['abort_on_prompts'] = True
-            j.console.echo('Running dd', log=True)
-            output = connection.run("rm -f 500mb.dd; dd if=/dev/zero of=500mb.dd bs=4k count=128k")
-            try:
-                j.console.echo('Perfoming internet test', log=True)
-                connection.run('ping -c 1 8.8.8.8')
-            except:
-                msg = "Could not connect to internet from vm on node %s" % stack['name']
-                j.console.echo(msg, log=True)
-                status = 'ERROR'
+            def runtests():
+                j.console.echo('Connecting over ssh', log=True)
+                connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
+                connection.user(account['login'])
+                connection.fabric.api.env['abort_on_prompts'] = True
+                connection.fabric.api.env['abort_exception'] = RuntimeError
 
-            match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
-            speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
-            msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
-            j.console.echo(msg, log=True)
-            if speed < 50:
-                status = 'WARNING'
+                j.console.echo('Running dd', log=True)
+                try:
+                    output = connection.run("rm -f 500mb.dd; dd if=/dev/zero of=500mb.dd bs=4k count=128k")
+                except Exception, e:
+                    status = "ERROR"
+                    msg = "Failed to run dd command. Login error? %s" % e
+                    return status, msg
+
+                try:
+                    j.console.echo('Perfoming internet test', log=True)
+                    connection.run('ping -c 1 8.8.8.8')
+                except:
+                    msg = "Could not connect to internet from vm on node %s" % stack['name']
+                    j.console.echo(msg, log=True)
+                    status = 'ERROR'
+                    return status, msg
+
+                match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
+                speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
+                msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
+                j.console.echo(msg, log=True)
+                if speed < 50:
+                    status = 'WARNING'
+                return status, msg
+
+            status, msg = runtests()
         if status != 'OK':
             eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
             eco.process()
