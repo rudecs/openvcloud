@@ -36,7 +36,7 @@ class cloudapi_users(BaseActor):
         if accounts:
             status = accounts[0].get('status', 'CONFIRMED')
             if j.core.portal.active.auth.authenticate(username, password):
-                session = ctx.env['beaker.get_session']() #create new session
+                session = ctx.env['beaker.session'] # get session
                 session['user'] = username
                 session['account_status'] = status
                 session.save()

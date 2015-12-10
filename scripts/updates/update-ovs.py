@@ -187,7 +187,7 @@ def loadMachinesState(nodes):
 
 def update(nodes):    
     for node in nodes:
-        executeOnNodes([node], "apt-get update")
+        executeOnNodes([node], "apt-get update -q")
 
 def checker(nodes):
     status = {
