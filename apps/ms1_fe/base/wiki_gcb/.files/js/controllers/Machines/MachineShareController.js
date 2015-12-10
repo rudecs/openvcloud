@@ -40,7 +40,10 @@ angular.module('cloudscalers.controllers')
             }
         };
 
-        $scope.deleteUser = function(machineId, user) {
+        $scope.deleteUser = function(machineId, user, userCanBeDeleted) {
+            if(!userCanBeDeleted){
+              return false;
+            }
             var modalInstance = $modal.open({
                 templateUrl: 'deleteUserDialog.html',
                 controller: function($scope, $modalInstance){
@@ -103,5 +106,5 @@ angular.module('cloudscalers.controllers')
                 });
             });
         };
-        
+
     }]);

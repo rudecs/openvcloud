@@ -11,7 +11,7 @@
     }
     </style>
    	<div ng-controller="NetworkController">
-   		<div>
+   		<div ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
    			<button class="btn" ng-click="showDefenseShield()" ng-disabled="currentSpace.status != 'DEPLOYED'">Advanced Shield configuration</button>
    		</div>
   		<script type="text/ng-template" id="routerosDialog.html">

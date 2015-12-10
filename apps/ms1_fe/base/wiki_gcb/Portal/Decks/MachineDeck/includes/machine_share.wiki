@@ -2,12 +2,12 @@
 	<div ng-show="shareMachineMessage" class="txt-center">
 	    <div class="share-machine-message alert alert-{[shareMachineMessageStyle]} width-40">{[shareMachineMessageTxt]}</div>
 	</div>
-	<em ng-show="currentUserAccess == 'Admin'">Provide other users access to {[machine.name]} machine by adding their OpenvCloud user name and specify access right.</em>
-	<em ng-hide="currentUserAccess == 'Admin'">Users access to {[machine.name]} machine.</em>
+	<em ng-show="currentUserAccess != 'Read'">Provide other users access to {[machine.name]} machine by adding their OpenvCloud user name and specify access right.</em>
+	<em ng-hide="currentUserAccess != 'Read'">Users access to {[machine.name]} machine.</em>
 	<form ng-submit="addUser()">
 	<div class="table-responsive margin-top-medium">
 	    <table class="table users-table">
-	        <tr class="header" ng-show="currentUserAccess == 'Admin'">
+	        <tr class="header" ng-show="currentUserAccess != 'Read'">
 	            <th class="username-text-container width-60">
 	                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
 	            </th>
@@ -34,9 +34,9 @@
 			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
 			    	</span>
 			    </td>
-	            <td ng-show="currentUserAccess == 'Admin'" class="txt-center">
-		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a>
-		            <a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17" ng-show="user.canBeDeleted"></a>
+	            <td ng-show="currentUserAccess != 'Read'" class="txt-center">
+		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
+		            <a ng-click="deleteUser(machine.id, user.userGroupId, user.canBeDeleted)" class="fa fa-times txt-17" ng-class="{'opacity4': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on CloudSpace' : 'Delete user access']}"></a>
 	            </td>
 	        </tr>
 	    </table>
@@ -73,6 +73,5 @@
             </form>
         </script>
 	</div>
-	</form>	
+	</form>
 </div>
-

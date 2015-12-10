@@ -1,6 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, $ErrorResponseAlert, $timeout, $modal) {
-        
+
         $scope.shareCloudSpaceMessage = false;
         $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
 
@@ -16,7 +16,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.resetUser = function() {
             $scope.newUser = {
-                nameOrEmail: '', 
+                nameOrEmail: '',
                 access: $scope.accessTypes[0].value
             };
         };
@@ -53,6 +53,9 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.deleteUser = function(space, user) {
+            if(user.canBeDeleted != true){
+              return false;
+            }
             var modalInstance = $modal.open({
                 templateUrl: 'deleteUserDialog.html',
                 controller: function($scope, $modalInstance){

@@ -3,11 +3,11 @@
 <div ng-show="shareCloudSpaceMessage" class="txt-center">
     <div class="share-cloudspace-message alert alert-{[shareCloudSpaceStyle]} width-40">{[shareCloudSpaceTxt]}</div>
 </div>
-<em ng-show="currentUserAccessrightOnCloudSpace == 'Admin'">Provide other users access to your Cloud Space by adding their OpenvCloud user name.</em>
-<em ng-show="currentUserAccessrightOnCloudSpace != 'Admin'">Users access to {[currentSpace.name]} cloud space.</em>
+<em ng-show="currentUserAccessrightOnCloudSpace != 'Read'">Provide other users access to your Cloud Space by adding their OpenvCloud user name.</em>
+<em ng-show="currentUserAccessrightOnCloudSpace == 'Read'">Users access to {[currentSpace.name]} cloud space.</em>
 <div class="table-responsive margin-top-medium">
     <table class="table users-table">
-        <tr class="header" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'">
+        <tr class="header" ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
             <th class="username-text-container">
                 <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
             </th>
@@ -27,9 +27,9 @@
                         <span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
                     </span>
                 </td>
-            <td class="txt-center" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'">
-                <a ng-click="loadEditUser(currentSpace, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a>
-                <a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times txt-17" ng-show="user.canBeDeleted"></a>
+            <td class="txt-center" ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
+                <a ng-click="loadEditUser(currentSpace, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
+                <a href="#" ng-click="deleteUser(currentSpace, user)" class="fa fa-times txt-17" ng-class="{'opacity4': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on account' : 'Delete user access']}"></a>
             </td>
         </tr>
     </table>

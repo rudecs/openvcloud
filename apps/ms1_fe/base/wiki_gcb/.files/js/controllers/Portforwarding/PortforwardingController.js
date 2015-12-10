@@ -15,13 +15,6 @@ angular.module('cloudscalers.controllers')
                         $scope.currentUserAccessrightOnCloudSpace = "Admin";
                     }
                 }
-                var uri = new URI($window.location);
-                if(uri._parts.path.indexOf('Portforwarding') > -1){
-                  if($scope.currentUserAccessrightOnCloudSpace != 'Admin'){
-                    uri.filename('Decks');
-                    $window.location = uri.toString();
-                  }
-                }
             });
 
             $scope.updatePortforwardList = function(){
@@ -201,8 +194,12 @@ angular.module('cloudscalers.controllers')
 
             $scope.tableRowClicked = function (index) {
               var uri = new URI($window.location);
-              if(uri._parts.path.indexOf('Portforwarding') == -1){
-                if($scope.currentUserAccess != 'Admin'){
+              if(uri._parts.path.indexOf('Portforwarding') != -1){
+                if($scope.currentUserAccessrightOnCloudSpace == 'Read'){
+                  return;
+                }
+              }else{
+                if($scope.currentUserAccess == 'Read'){
                   return;
                 }
               }

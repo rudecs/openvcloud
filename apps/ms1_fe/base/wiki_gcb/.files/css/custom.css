@@ -117,6 +117,7 @@ table.table th a, table.table th a:hover { color: #FFF; }
 .white p { color: #000; font-size: 16px; line-height: 32px; }
 .white ul li, .tab-pane.active ul li { color: #000; font-size: 16px; line-height: 30px; }
 .white a:hover, .white a:focus { color: #16A085; }
+.white a.opacity4:hover, .white a.opacity4:focus { color: #345E79 !important; }
 /*.white a.create:hover, .white a.create:focus { color: #fff; }*/
 .body a { line-height: 1.3em; }
 .dropdown-menu { box-shadow: none; }
