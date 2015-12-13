@@ -54,7 +54,7 @@ def action():
         data = json.loads(response)
         for disk in data['all_disks']:
             for ip in disk['ips']:
-                if not j.system.net.isIpLocal(ip):
+                if j.system.net.isIpLocal(ip):
                     break
             else:
                 continue
