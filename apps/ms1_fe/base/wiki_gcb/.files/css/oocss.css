@@ -125,6 +125,9 @@
 .marginTopXlarge{
 	margin-top: 35px !important;
 }
+.margin-left-xlarge{
+	margin-left: 35px !important;
+}
 
 /* */
 .left{
@@ -357,7 +360,6 @@
 	white-space: nowrap;
 }
 
-
 /*  Borders  */
 .no-border-radius{
 	-moz-border-radius: 0;
@@ -387,6 +389,7 @@
 /*cursors*/
 .cursor-pointer{
 	cursor: pointer;
+	
 }
 .cursor-default{
 	cursor: default;

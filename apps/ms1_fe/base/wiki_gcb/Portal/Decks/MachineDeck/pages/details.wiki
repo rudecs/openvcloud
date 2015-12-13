@@ -7,8 +7,8 @@
 <div ng-show="machine">
     <h1>Machine: {[machine.name]}</h1>
     <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
-    <a ng-click="refreshData()" class="refresh-page btn btn-info margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot." title="On first creation, use refresh to show your IP address. 
-Your Defense shield assigns a fix IP address during the initial OS boot.">
+    <a ng-click="refreshData()" class="refresh-page btn btn-info margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot." title="On first creation, use refresh to show your IP address.
+Your Defense shield assigns a fix IP address during the initial OS boot." ng-disabled="onConsoleTab">
         <i ng-show="refreshSpinner" class="fa fa-spinner faa-spin animated"></i>
         Refresh
     </a>
@@ -245,20 +245,23 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                         <div class="span2 txt-verdana">
                             <h4 class="txt-15 txt-normal margin-bottom-none">Initial Login</h4>
                             <p>
-                                {[machine.accounts[0].login]}
+                                {[machine.accounts[0].login]}<a class="margin-left-small" ng-click="sendText(rfb, machine.accounts[0].login)"><i class="fa fa-clipboard" title="Copy username to console"></i></a>
                             </p>
                         </div>
                         <div class="span2 txt-verdana">
                             <h4 class="txt-15 txt-normal margin-bottom-none">Initial Password</h4>
-                            <p>
-                                {[machine.accounts[0].password]}
-                            </p>
+                            <div class="margin-left-xlarge margin-top-small">
+                              <a ng-hide="passwordHidden" ng-click="passwordHidden = true" title="Show password" class="margin-right-small"><i class="fa fa-eye"></i></a>
+                              <span ng-show="passwordHidden">{[machine.accounts[0].password]}</span>
+                              <a ng-show="passwordHidden" ng-click="passwordHidden = false" title="Hide password" class="margin-right-small"><i class="fa fa-eye-slash"></i></a>
+                              <a ng-click="sendText(rfb, machine.accounts[0].password)"><i class="fa fa-clipboard" title="Copy password to console"></i></a>
+                            </div>
                         </div>
                         <div class="span6 margin-top-small right txt-right">
                             <input id="capturekeyboardbutton" type=button class="btn mainButton btn-info float-none margin-right-medium" value="Capture keyboard"></input>
                             <div id="noVNC_buttons" class="inline-block">
-                            <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
-                            id="sendCtrlAltDelButton">
+                              <input type=button class="btn mainButton btn-info" ng-click="rfb.sendCtrlAltDel()" value="Send CtrlAltDel"
+                              id="sendCtrlAltDelButton">
                             </div>
                         </div>
                     </div>
@@ -310,7 +313,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     {[snapshot.epoch * 1000 | date:'medium']}
                                 </td>
                                 <td ng-show="currentUserAccess != 'Read'">
-                                    <a class="cursor-pointer" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)">Rollback</a>
+                                    <a class="cursor-pointer margin-all-small txt-17" title="Rollback" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)"><i class="fa fa-undo"></i></a>
                                     <script type="text/ng-template" id="rollbackSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
                                             <div class="modal-header">
@@ -329,7 +332,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                             </div>
                                         </form>
                                     </script>
-                                    <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)">Delete</a>
+                                    <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer margin-all-small txt-17" title="Delete" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)"><i class="fa fa-times"></i></a>
                                     <script type="text/ng-template" id="deleteSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
                                             <div class="modal-header">

@@ -11,12 +11,57 @@ version = "1.0"
 category = "deploy.routeros"
 enable = True
 async = True
-queue = 'hypervisor'
+queue = 'default'
+
+
+def cleanup(name, networkname, destinationdir):
+    import libvirt
+    con = libvirt.open()
+    print "CLEANUP: %s" % (networkname)
+    try:
+        dom = con.lookupByName(name)
+        if dom.isActive():
+            dom.destroy()
+        dom.undefine()
+    except libvirt.libvirtError:
+        pass
+    j.system.fs.removeDirTree(destinationdir)
+
+    def deleteNet(net):
+        try:
+            net.destroy()
+        except:
+            pass
+        try:
+            net.undefine()
+        except:
+            pass
+    try:
+        for net in con.listAllNetworks():
+            if net.name() == networkname:
+                deleteNet(net)
+                break
+    except:
+        pass
+
+
+def createVM(xml):
+    import libvirt
+    con = libvirt.open()
+    dom = con.defineXML(xml)
+    dom.create()
+
+
+def createNetwork(xml):
+    import libvirt
+    con = libvirt.open()
+    private = con.networkDefineXML(xml)
+    private.create()
+    private.setAutostart(True)
 
 def action(networkid, publicip, publicgwip, publiccidr, password):
     import pexpect
     import netaddr
-    import libvirt
     import time
     import os
 
@@ -28,7 +73,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
     nc = j.system.ovsnetconfig
-    con = libvirt.open()
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -42,35 +86,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     name = 'routeros_%s' % networkidHex
     destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
-    def cleanup():
-        print "CLEANUP: %s/%s" % (networkid, networkidHex)
-        try:
-            dom = con.lookupByName(name)
-            if dom.isActive():
-                dom.destroy()
-            dom.undefine()
-        except libvirt.libvirtError:
-            pass
-        j.system.fs.removeDirTree(destinationdir)
 
-        def deleteNet(net):
-            try:
-                net.destroy()
-            except:
-                pass
-            try:
-                net.undefine()
-            except:
-                pass
-        try:
-            for net in con.listAllNetworks():
-                if net.name() == networkname:
-                    deleteNet(net)
-                    break
-        except:
-            pass
-
-    cleanup()
+    j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
+    print 'Testing network'
+    if not j.system.net.tcpPortConnectionTest(internalip, 22, 1):
+        print "OK no other router found."
+    else:
+        raise RuntimeError("IP conflict there is router with %s"%internalip)
 
     try:
         # setup network vxlan
@@ -81,9 +103,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         <bridge name='%(networkname)s'/>
          <virtualport type='openvswitch'/>
      </network>''' % {'networkname': networkname}
-        private = con.networkDefineXML(xml)
-        private.create()
-        private.setAutostart(True)
+
+        print 'Creating network'
+        j.clients.redisworker.execFunction(createNetwork, _queue='hypervisor', xml=xml)
 
         j.system.fs.createDir(destinationdir)
         destinationfile = 'routeros-small-%s.raw' % networkidHex
@@ -92,26 +114,22 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
         xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
+        print 'Converting image'
         j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
         size = int(j.system.platform.qemu_img.info(destinationfile)['virtual size'] * 1024)
         fd = os.open(destinationfile, os.O_RDWR|os.O_CREAT)
         os.ftruncate(fd, size)
         os.close(fd)
 
-
+        print 'Starting VM'
         try:
-            dom = con.defineXML(xmlsource)
-            dom.create()
-        except libvirt.libvirtError, e:
-            cleanup()
+            j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource)
+        except Exception, e:
+            j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
             raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         data['internalip'] = internalip
 
-        if not j.system.net.tcpPortConnectionTest(internalip,22):
-            print "OK no other router found."
-        else:
-            raise RuntimeError("IP conflict there is router with %s"%internalip)
 
 
         try:
@@ -131,9 +149,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             run.expect("\] >", timeout=2) # wait for primpt
             run.send("\r\n")
             run.close()
-        except Exception,e:
-            cleanup()
-            raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e)) 
+        except Exception, e:
+            j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
+            raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         print "wait max 30 sec on tcp port 22 connection to '%s'"%internalip
         if j.system.net.waitConnectionTest(internalip,22,timeout=30):
@@ -237,7 +255,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             raise RuntimeError("Internal ssh is not accsessible.")
 
     except:
-        cleanup()
+        j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
         raise
 
     return data
