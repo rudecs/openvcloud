@@ -18,7 +18,7 @@ parser.add_option("-c", "--commit", action="store_true", dest="commit", help="co
 
 openvcloud = '/opt/code/git/0-complexity/openvcloud'
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
-nodeprocs = ['redis', 'statsd-collector', 'nginx', 'jsagent', 'vncproxy']
+nodeprocs = ['redis', 'statsd-collector', 'nginx', 'vncproxy']
 
 # Loading nodes list
 sshservices = j.atyourservice.findServices(name='node.ssh')
@@ -34,22 +34,27 @@ def update(nodessh):
 def restart(nodessh):
     print '[+] restarting host\'s services: %s' % nodessh.instance
     nodessh.execute('ays stop')
+    nodessh.execute('fuser -k 4446/tcp || true')
     nodessh.execute('ays start')
 
 def restartNode(nodessh):
     print '[+] restarting (node) host\'s services: %s' % nodessh.instance
     for service in nodeprocs:
         nodessh.execute('ays restart -n %s' % service)
+    nodessh.execute('fuser -k 4446/tcp || true')
+    nodessh.execute('ays start -n jsagent')
 
 def stopNode(nodessh):
     print '[+] stopping (node) host\'s services: %s' % nodessh.instance
     for service in nodeprocs:
         nodessh.execute('ays stop -n %s' % service)
+    nodessh.execute('fuser -k 4446/tcp || true')
 
 def startNode(nodessh):
     print '[+] starting (node) host\'s services: %s' % nodessh.instance
     for service in nodeprocs:
         nodessh.execute('ays start -n %s' % service)
+    nodessh.execute('ays start -n jsagent')
 
 
 """

@@ -90,7 +90,7 @@ def action():
             ip = vmachine['interfaces'][0]['ipAddress']
 
         j.console.echo('Got IP %s' % ip, log=True)
-        publicports = [1999 + j.application.whoAmI.nid * 100]
+        publicports = []
         publicport = 0
         for forward in pcl.actors.cloudapi.portforwarding.list(cloudspace['id']):
             if forward['localIp'] == ip and forward['localPort'] == '22':
@@ -98,7 +98,9 @@ def action():
                 break
             publicports.append(int(forward['publicPort']))
         if publicport == 0:
-            publicport = max(publicports) + 1
+            publicport = 2000 + j.application.whoAmI.nid * 100
+            while publicport in publicports:
+                publicport += 1
             j.console.echo('Creating portforward', log=True)
             pcl.actors.cloudapi.portforwarding.create(cloudspace['id'], cloudspace['publicipaddress'], publicport, vmachineId, 22, 'tcp')
 
@@ -106,7 +108,7 @@ def action():
         account = vmachine['accounts'][0]
         j.console.echo('Waiting for public connection', log=True)
         if not j.system.net.waitConnectionTest(publicip, publicport, 60):
-            j.console.echo('Failed to get public connection', log=True)
+            j.console.echo('Failed to get public connection %s:%s' % (publicip, publicport), log=True)
             status = 'ERROR'
             msg = 'Could not connect to VM over public interface'
         else:
