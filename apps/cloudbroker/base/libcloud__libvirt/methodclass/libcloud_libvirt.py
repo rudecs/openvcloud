@@ -105,7 +105,7 @@ class libcloud_libvirt(object):
         Get a free macaddres in this libvirt environment
         result
         """
-        mac = self._models.macaddress.set(key=gid, value=1)
+        mac = self._models.macaddress.set(key=gid, obj=1)
         firstmac = netaddr.EUI('52:54:00:00:00:00')
         newmac = int(firstmac) + mac
         macaddr = netaddr.EUI(newmac)
