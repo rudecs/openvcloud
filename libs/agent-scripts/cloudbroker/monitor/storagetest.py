@@ -111,6 +111,7 @@ def action():
             msg = 'Could not connect to VM over public interface'
         else:
             def runtests():
+                status = 'OK'
                 j.console.echo('Connecting over ssh', log=True)
                 connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
                 connection.user(account['login'])
