@@ -160,20 +160,22 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        fwobj = self._getVFWObject(fwid)
-        rule = fwobj.new_tcpForwardRule()
-        rule.fromAddr = fwip
-        rule.fromPort = str(fwport)
-        rule.toAddr = destip
-        rule.toPort = str(destport)
-        rule.protocol = protocol
+        with self.osisvfw.lock():
+            fwobj = self._getVFWObject(fwid)
+            rule = fwobj.new_tcpForwardRule()
+            rule.fromAddr = fwip
+            rule.fromPort = str(fwport)
+            rule.toAddr = destip
+            rule.toPort = str(destport)
+            rule.protocol = protocol
+            self.osisvfw.set(fwobj)
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
         result = self._applyconfig(fwobj.gid, fwobj.nid, args)
-        if result:
-            self.osisvfw.set(fwobj)
+        if not result:
+            self.fw_forward_delete(fwid, gid, fwip, fwport, destip, destport, protocol, apply=False)
         return result
 
-    def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, **kwargs):
+    def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, apply=True, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
@@ -182,20 +184,21 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        fwobj = self._getVFWObject(fwid)
-        change = False
-        result = False
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
-        for rule in fwobj.tcpForwardRules:
-            if rule.fromAddr == fwip and rule.fromPort == str(fwport):
-                if protocol and rule.protocol and rule.protocol.lower() != protocol.lower():
-                    continue
-                change = True
-                fwobj.tcpForwardRules.remove(rule)
-        if change:
-            result = self._applyconfig(fwobj.gid, fwobj.nid, args)
-            if result:
+        with self.osisvfw.lock():
+            fwobj = self._getVFWObject(fwid)
+            change = False
+            result = False
+            args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
+            for rule in fwobj.tcpForwardRules:
+                if rule.fromAddr == fwip and rule.fromPort == str(fwport):
+                    if protocol and rule.protocol and rule.protocol.lower() != protocol.lower():
+                        continue
+                    change = True
+                    fwobj.tcpForwardRules.remove(rule)
+            if change:
                 self.osisvfw.set(fwobj)
+        if change and apply:
+            result = self._applyconfig(fwobj.gid, fwobj.nid, args)
         return result
 
 
