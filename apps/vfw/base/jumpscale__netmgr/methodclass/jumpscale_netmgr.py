@@ -160,7 +160,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        with self.osisvfw.lock():
+        with self.osisvfw.lock(fwid):
             fwobj = self._getVFWObject(fwid)
             rule = fwobj.new_tcpForwardRule()
             rule.fromAddr = fwip
@@ -184,7 +184,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        with self.osisvfw.lock():
+        with self.osisvfw.lock(fwid):
             fwobj = self._getVFWObject(fwid)
             change = False
             result = False
