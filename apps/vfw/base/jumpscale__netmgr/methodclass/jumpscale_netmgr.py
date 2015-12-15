@@ -188,7 +188,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
             fwobj = self._getVFWObject(fwid)
             change = False
             result = False
-            args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
             for rule in fwobj.tcpForwardRules:
                 if rule.fromAddr == fwip and rule.fromPort == str(fwport):
                     if protocol and rule.protocol and rule.protocol.lower() != protocol.lower():
@@ -198,6 +197,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
             if change:
                 self.osisvfw.set(fwobj)
         if change and apply:
+            args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
             result = self._applyconfig(fwobj.gid, fwobj.nid, args)
         return result
 
