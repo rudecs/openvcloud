@@ -1,5 +1,28 @@
-h1. Consumption
-{{include:Billing}}
 {{html:
-<script src="/$$space/.files/js/controllers/AccountController.js" type="text/javascript"></script>
+<form ng-submit="addUser()"  ng-controller="AccountSettingsController">
+<div class="table-responsive">
+
+    <table class="table users-table">
+        <tr class="header">
+            <th class="username-text-container">
+                <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail">
+            </th>
+            <th><input type="submit" class="btn" value="Add"></input></th>
+        </tr>
+        <tr>
+            <td colspan=2 ng-cloak ng-show="userError">
+                <div class="alert alert-error">
+                    {[ userError ]}
+                </div>
+            </td>
+        </tr>
+        <tr ng-cloak ng-repeat="user in currentAccount.acl">
+            <td>{[user.userGroupId]}</td>
+            <td><a href="#" ng-click="deleteUser(currentAccount, user)" class="fa fa-times"></a></td>
+        </tr>
+    </table>
+</div>
+</form>
+
+    <script src="/$$space/.files/js/controllers/AccountAccessManagementController.js" type="text/javascript"></script>
 }}

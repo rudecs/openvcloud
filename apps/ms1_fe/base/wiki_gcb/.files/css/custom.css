@@ -198,7 +198,7 @@ canvas { display: block; float: left; }
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #000; font-size: 13px; }
 .sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active { color: #000; }
 .panel-heading { padding: 0; }
-.panel-title>a { padding: 8px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
+.panel-title>a:first-child { padding: 8px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
 .sideNav .header > a { padding: 5px 15px; display: block; color: #000 !important; font-family: arial, sans-serif; }
 .sideNav .header > a.active { font-weight: bold; text-decoration: underline; }
 .blue h4 > a, .sideNav .header.blue > a { background: #C0392B; color: #fff !important; }
@@ -252,13 +252,13 @@ canvas { display: block; float: left; }
 .gray h4 > a { background: #BEE4F2; padding: 14px 25px; }
 .gray a { color: #4f4f4f; font-family: arial, sans-serif; }
 .gray a:hover { color: #345E79; }
-.gray .panel-title>a { font-size: 14px; color: #000000 !important; font-weight: normal; background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; }
-.gray .panel-heading.open .panel-title>a { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3; }
+.gray .panel-title>a:first-child { font-size: 14px; color: #000000 !important; font-weight: normal; background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; }
+.gray .panel-heading.open .panel-title>a:first-child { background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3; }
 .gray .panel.panel-default { margin: 0 0 2px 0; }
 .gray .panel-body ul { padding: 0 0 0 15px; }
 .gray .panel-body ul li { margin: 5px 0; }
 .gray .panel-body { padding: 5px 15px; }
-.gray .panel-title>a:hover { background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; text-decoration: none; }
+.gray .panel-title>a:first-child:hover { background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3; text-decoration: none; }
 .panel { background-color: initial; border: 0; border-radius: 0 !important; -webkit-box-shadow: none; box-shadow: none; }
 .panel-group .panel { border-radius: 0; }
 .panel-group .panel+.panel { margin-top: 0; }
