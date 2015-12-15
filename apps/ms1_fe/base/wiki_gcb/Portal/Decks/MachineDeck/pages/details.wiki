@@ -8,7 +8,7 @@
     <h1>Machine: {[machine.name]}</h1>
     <tour step="steps.machineDetailTourStep" post-step="postStepCallback()" post-tour="tourComplete('machineDetailTourStep')">
     <a ng-click="refreshData()" class="refresh-page btn btn-info margin-top-large right txt-15 margin-right-medium" tourtip="On first creation, use refresh to show your IP address. Your Defense shield assigns a fix IP address during the initial OS boot." title="On first creation, use refresh to show your IP address.
-Your Defense shield assigns a fix IP address during the initial OS boot." ng-disabled="onConsoleTab">
+Your Defense shield assigns a fix IP address during the initial OS boot.">
         <i ng-show="refreshSpinner" class="fa fa-spinner faa-spin animated"></i>
         Refresh
     </a>

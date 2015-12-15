@@ -165,15 +165,6 @@ angular.module('cloudscalers.controllers')
             retrieveMachineHistory();
         }, true);
 
-        $scope.$watch('tabactive.console', function() {
-            if($scope.tabactive.console){
-                $scope.onConsoleTab = true;
-            }
-            else{
-                $scope.onConsoleTab = false;
-            }
-        }, true);
-
         $scope.oldMachine = {};
         $scope.imagesList = [];
         $scope.machineinfo = {};
@@ -445,7 +436,7 @@ angular.module('cloudscalers.controllers')
         };
         $scope.refreshSpinner = false;
         $scope.refreshData = function() {
-            if($scope.tabactive.actions || $scope.tabactive.sharing){
+            if($scope.tabactive.actions || $scope.tabactive.sharing || $scope.tabactive.console){
                 $scope.refreshSpinner = true;
                 Machine.get($routeParams.machineId).then(function(data) {
                     $scope.machine = data;
