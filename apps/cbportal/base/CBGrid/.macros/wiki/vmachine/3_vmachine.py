@@ -18,11 +18,14 @@ def main(j, args, params, tags, tasklet):
     id = int(id)
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
+
+    # refresh from reality
     try:
+        j.apps.cloudapi.machines.get(id)
         obj = cbosis.vmachine.get(id)
     except:
-        out = 'Could not find VMachine Object with id %s'  % id
-        params.result = (out, args.doc)
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
     try:
@@ -72,9 +75,7 @@ def main(j, args, params, tags, tasklet):
     for field in fields:
         data[field] = getattr(obj, field, 'N/A')
 
-    nwinfo = dict()
     try:
-        libcloudclient = j.clients.osis.getNamespace('libcloud', osiscl)
         data['nics'] = '||Name||MAC Address||IP Address||Gateway||Delete||\n'
         for nic in obj.nics:
             action = ""
