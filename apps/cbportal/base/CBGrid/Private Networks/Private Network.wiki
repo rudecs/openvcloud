@@ -6,8 +6,32 @@ h2. Private Network: $$id
 
 {{actions:
 
+{% if not running %}
+- display: Start VFW
+  action: /restmachine/cloudbroker/cloudspace/startVFW
+  input:
+  - reason
+  data:
+   cloudspaceId: ${domain}
+
+{% else %}
+- display: Stop VFW
+  action: /restmachine/cloudbroker/cloudspace/stopVFW
+  input:
+  - reason
+  data:
+   cloudspaceId: ${domain}
+{% endif %}
+
 - display: Move VFW
   action: '#movevfw'
+
+- display: Reset VFW
+  action: /restmachine/cloudbroker/cloudspace/resetVFW
+  data:
+   cloudspaceId: ${domain}
+  input:
+  - reason
 
 - display: Remove VFW
   action: /restmachine/cloudbroker/cloudspace/destroyVFW
@@ -16,12 +40,6 @@ h2. Private Network: $$id
   data:
    cloudspaceId: ${domain}
 
-- display: Reset VFW
-  action: /restmachine/cloudbroker/cloudspace/resetVFW
-  data:
-   cloudspaceId: ${domain}
-  input:
-  - reason
 
 }}
 
@@ -31,6 +49,7 @@ h3. Details
 |*Management IP*|${host}|
 |*Public IPs*|${pubips}|
 |*FW Node*|[${nodename}|/grid/grid node?id=${nid}&gid=${gid}]|
+|*Status*| ${"RUNNING" if running else "HALTED"} |
 |*CloudSpace ID*|[${domain}|cloud space?id=${domain}]|
 
 h3. Port Fowardings

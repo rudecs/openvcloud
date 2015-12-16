@@ -21,17 +21,7 @@ h2. Cloud Space: ${name}
   data:
    cloudspaceId: $$id
 
-- display: Delete CloudSpace
-  action: /restmachine/cloudbroker/cloudspace/destroy
-  data:
-   cloudspaceId: $$id
-   accountId: ${accountId}
-  input:
-  - reason
-
-- display: Move VFW
-  action: '#movevfw'
-
+{% if status == "VIRTUAL" %}
 - display: Deploy VFW
   action: /restmachine/cloudbroker/cloudspace/deployVFW
   input:
@@ -39,17 +29,13 @@ h2. Cloud Space: ${name}
   data:
    cloudspaceId: $$id
 
-- display: Remove VFW
-  action: /restmachine/cloudbroker/cloudspace/destroyVFW
-  input:
-  - reason
-  data:
-   cloudspaceId: $$id
+{% endif %}
 
-- display: Reset VFW
-  action: /restmachine/cloudbroker/cloudspace/resetVFW
+- display: Delete CloudSpace
+  action: /restmachine/cloudbroker/cloudspace/destroy
   data:
    cloudspaceId: $$id
+   accountId: ${accountId}
   input:
   - reason
 

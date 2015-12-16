@@ -21,16 +21,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
 
-    def fw_check(self, fwid, gid, **kwargs):
-        """
-        will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
-        param:fwid firewall id
-        param:gid grid id
-        """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name)}
-        return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
-
     def _getVFWObject(self, fwid):
         try:
             fwobj = self.osisvfw.get(fwid)
@@ -241,78 +231,52 @@ class jumpscale_netmgr(j.code.classGetBase()):
             result.append(vfwdict)
         return result
 
-    def fw_start(self, fwid, gid, **kwargs):
+    def fw_start(self, fwid, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
         """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'action': 'start'}
-        return self.agentcontroller.executeJumpscript('jumpscale', 'fw_action', gid=fwobj.gid, nid=fwobj.nid, args=args)['result']
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
-    def fw_stop(self, fwid, gid, **kwargs):
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to start vfw")
+        return job['result']
+
+    def fw_stop(self, fwid, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
         """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'action': 'stop'}
-        self.agentcontroller.executeJumpscript('jumpscale', 'fw_action', gid=fwobj.gid, nid=fwobj.nid, args=args, wait=False)
-        return True
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to start vfw")
+        return job['result']
 
-    def ws_forward_create(self, wsid, gid, sourceurl, desturls, **kwargs):
+    def fw_check(self, fwid, **kwargs):
         """
-        param:wsid firewall id
-        param:gid grid id
-        param:sourceurl url which will match (e.g. http://www.incubaid.com:80/test/)
-        param:desturls url which will be forwarded to (e.g. http://192.168.10.1/test/) can be more than 1 then loadbalancing; if only 1 then like a portforward but matching on url
-        """
-        wsfobj = self.osisvfw.get(wsid)
-        rule = wsfobj.new_wsForwardRule()
-        rule.url = sourceurl
-        rule.toUrls = desturls
-        self.osisvfw.set(wsfobj)
-        self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=wsfobj.gid, nid=wsfobj.nid, args={'name': wsfobj.name, 'fwobject': wsfobj.obj2dict()}, wait=False)
-        return True
-
-
-    def ws_forward_delete(self, wsid, gid, sourceurl, desturls, **kwargs):
-        """
-        param:wsid firewall id
-        param:gid grid id
-        param:sourceurl url which will match (e.g. http://www.incubaid.com:80/test/)
-        param:desturls url which will be forwarded to
-        """
-        vfws = self.osisvfw.get(wsid)
-        wsfr = vfws.wsForwardRules
-        for rule in wsfr:
-            if rule.url == sourceurl:
-                desturls = desturls.split(',')
-                urls = rule.toUrls.split(',')
-                for dest in desturls:
-                    if dest in rule.toUrls:
-                        urls.remove(dest)
-                rule.toUrls = ','.join(urls)
-                if len(urls) == 0:
-                    wsfr.remove(rule)
-        args = {'name': '%s_%s' % (vfws.domain, vfws.name), 'action': 'start'}
-        self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=vfws.gid, nid=vfws.nid, args={'name': vfws.name, 'fwobject': vfws.obj2dict()}, wait=False)
-        return True
-
-
-    def ws_forward_list(self, wsid, gid, **kwargs):
-        """
-        list all loadbalancing rules (HTTP ONLY),
-        ws stands for webserver
-        is list of list [[$sourceurl,$desturl],..]
-        can be 1 in which case its like simple forwarding, if more than 1 then is loadbalancing
-        param:wsid firewall id (is also the loadbalancing webserver)
+        will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
+        param:fwid firewall id
         param:gid grid id
         """
-        result = list()
-        vfws = self.osisvfw.get(wsid)
-        wsfr = vfws.wsForwardRules
-        for rule in wsfr:
-            result.append([rule.url, rule.toUrls])
-        return result
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', gid=fwobj.gid, nid=fwobj.nid, args=args)
+
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to get vfw status")
+        return job['result']
+

@@ -57,7 +57,6 @@
         will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
         """
         var:fwid str,,firewall id
-        var:gid int,,grid id
 
     method:fw_move @noauth
         """     
@@ -70,14 +69,12 @@
         """     
         """
         var:fwid str,,firewall id
-        var:gid int,,grid id
 
     method:fw_start @noauth
         """     
         """
         var:fwid str,,firewall id
-        var:gid int,,grid id
-        
+
     method:fw_forward_list @noauth
         """     
         list all portforwarding rules,
@@ -108,30 +105,4 @@
         var:destip str,,adr where we forward to e.g. a ssh server in DMZ
         var:destport int,,port where we forward to e.g. a ssh server in DMZ
         var:protocol str,, protocol used to forward the port
-
-    method:ws_forward_list @noauth
-        """
-        list all loadbalancing rules (HTTP ONLY),
-        ws stands for webserver
-        is list of list [[$sourceurl,$desturl],..]
-        can be 1 in which case its like simple forwarding, if more than 1 then is loadbalancing
-        """
-        var:wsid str,,firewall id (is also the loadbalancing webserver)
-        var:gid int,,grid id
-
-    method:ws_forward_create @noauth
-        """     
-        """
-        var:wsid str,,firewall id
-        var:gid int,,grid id
-        var:sourceurl str,,url which will match (e.g. http://www.incubaid.com:80/test/)
-        var:desturls str,,url which will be forwarded to (e.g. http://192.168.10.1/test/) can be more than 1 then loadbalancing; if only 1 then like a portforward but matching on url
-
-    method:ws_forward_delete @noauth
-        """     
-        """
-        var:wsid str,,firewall id
-        var:gid int,,grid id
-        var:sourceurl str,,url which will match (e.g. http://www.incubaid.com:80/test/)
-        var:desturls str,,url which will be forwarded to
 
