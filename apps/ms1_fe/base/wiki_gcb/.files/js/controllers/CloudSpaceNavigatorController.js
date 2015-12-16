@@ -4,7 +4,7 @@ angular.module('cloudscalers.controllers')
             $scope.isCollapsed = true;
 
             $scope.locations = {};
-            
+
             LocationsService.list().then(function(locations) {
                 $scope.locations = locations;
             });
@@ -98,15 +98,23 @@ angular.module('cloudscalers.controllers')
                                     }
                                     $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
                                     $scope.loadSpaces();
-                                    LoadingDialog.hide();                                    
+                                    LoadingDialog.hide();
                                 }, 1000);
                             },
-                            function (reason) {                                
+                            function (reason) {
                                 LoadingDialog.hide();
                                 $ErrorResponseAlert(reason);
                             }
                         );
                 });
+            };
+
+            $scope.goToAccountSettings = function(e){
+              e.stopPropagation();
+              var target = 'AccountSettings';
+              var uri = new URI($window.location);
+              uri.filename(target);
+              $window.location = uri.toString();
             };
         }
     ]).filter('nospace', function () {

@@ -1,9 +1,9 @@
 angular.module('cloudscalers.controllers')
-    .controller('AccountAccessManagementController', ['$scope', 'Account', function($scope, Account) {
+    .controller('AccountSettingsController', ['$scope', 'Account', function($scope, Account) {
         $scope.resetUser = function() {
             // For now, we will grant the new user all permissions. See http://<server>/specifications/Security
             $scope.newUser = {
-                nameOrEmail: '', 
+                nameOrEmail: '',
                 access: {
                     R: true,
                     X: true,
