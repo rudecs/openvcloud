@@ -42,10 +42,10 @@ def registerImage(jp, name, imagepath, type, disksize, username=None):
     #register image on cloudbroker
     node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid)
     osiscl = j.clients.osis.getByInstance('main')
-    catimageclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'image')
-    catresourceclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'resourceprovider')
+    lcl = j.clients.osis.getNamespace('libvirt')
+    ccl = j.clients.osis.getNamespace('cloudbroker')
 
-    installed_images = catimageclient.list()
+    installed_images = lcl.image.list()
     if templateguid not in installed_images:
         image = dict()
         image['name'] = name
@@ -54,19 +54,38 @@ def registerImage(jp, name, imagepath, type, disksize, username=None):
         image['type'] = type
         image['size'] = disksize
         image['username'] = username
-        catimageclient.set(image)
+        lcl.image.set(image)
 
-
-    if not node_id in catresourceclient.list():
+    if not node_id in lcl.resourceprovider.list():
         rp = dict()
         rp['cloudUnitType'] = 'CU'
         rp['id'] = str(j.application.whoAmI.nid)
         rp['gid'] = j.application.whoAmI.gid
         rp['images'] = [templateguid]
     else:
-        rp = catresourceclient.get(node_id)
+        rp = lcl.resourceprovider.get(node_id)
         if not templateguid in rp.images:
             rp.images.append(templateguid)
-    catresourceclient.set(rp)
+    lcl.resourceprovider.set(rp)
+
+    images = ccl.image.search({'referenceId': templateguid})[1:]
+    if not images:
+        image = ccl.image.new()
+        image.name = name
+        image.referenceId = templateguid
+        image.type = type
+        image.size = disksize
+        image.username = username
+        image.status = 'CREATED'
+        imageId = ccl.image.set(image)[0]
+    else:
+        imageId = images[0]['id']
+    stacks = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid)})[1:]
+    if stacks:
+        stack = stacks[0]
+        if imageId not in stack['images']:
+            stack['images'].append(imageId)
+            ccl.stack.set(stack)
+
 
     return True
