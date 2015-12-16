@@ -131,6 +131,34 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    def startVFW(self, cloudspaceId, **kwargs):
+        """
+        Start VFW
+        param:cloudspaceId id of the cloudspace
+        """
+        if not self.models.cloudspace.exists(cloudspaceId):
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+        return j.apps.jumpscale.netmgr.fw_start(fwid)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def stopVFW(self, cloudspaceId, **kwargs):
+        """
+        Stop VFW
+        param:cloudspaceId id of the cloudspace
+        """
+        if not self.models.cloudspace.exists(cloudspaceId):
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+        return j.apps.jumpscale.netmgr.fw_stop(fwid)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
