@@ -2,7 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-
+from JumpScale.portal.portal import exceptions
 
 class cloudapi_accounts(BaseActor):
     """
@@ -21,13 +21,34 @@ class cloudapi_accounts(BaseActor):
         result bool
         """
         if not self.models.account.exists(accountId):
-            return False
+            raise exceptions.NotFound('Non existing accountId')
+
+        if not j.core.portal.active.auth.userExists(userId):
+            raise exceptions.NotFound('Non existing userId')
         account = self.models.account.get(accountId)
-        acl = account.new_acl()
-        acl.userGroupId = userId
-        acl.type = 'U'
-        acl.right = accesstype
+        for ace in account.acl:
+            if ace.userGroupId == userId:
+                ace.right = accesstype
+                break
+        else:
+            ace = account.new_acl()
+            acl.userGroupId = userId
+            acl.type = 'U'
+            acl.right = accesstype
         return self.models.account.set(account)
+
+    @authenticator.auth(acl='A')
+    @audit()
+    def updateUser(self, accountId, userId, accesstype, **kwargs):
+        """
+        Update user access rights.
+        Access rights can be 'R' or 'W'
+        param:accountId id of the account
+        param:userId id of the user to give access
+        param:accesstype 'R' for read only access, 'W' for Write access
+        result bool
+        """
+        return self.addUser(accountId, userId, accesstype, **kwargs)
 
     @authenticator.auth(acl='S')
     @audit()
@@ -48,7 +69,6 @@ class cloudapi_accounts(BaseActor):
             ace.type = 'U'
             ace.right = 'CXDRAU'
         return self.models.account.set(account)[0]
-
 
     @authenticator.auth(acl='S')
     @audit()
