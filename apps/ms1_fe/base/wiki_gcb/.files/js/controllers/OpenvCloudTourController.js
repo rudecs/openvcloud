@@ -27,19 +27,35 @@ angular.module('cloudscalers.controllers')
           if($scope.currentUser){
             User.updateUserDetails($scope.currentUser.username).then(
                 function(currentUserData) {
-                    if(JSON.parse(currentUserData.tourTips) == false){
+
+                    if(currentUserData.tourTips === undefined){
+                      if(ipCookie("tourStep") == 9999){
+                        currentUserData["tourTips"] = true;
+                      }else{
+                        currentUserData["tourTips"] = false;
+                      }
+                      Users.tourTipsSwitch(currentUserData["tourTips"]).then(function() {
+                          SessionData.setUser(currentUserData);
+                      },function(reason){
+                          $ErrorResponseAlert(reason);
+                      });
+                      return;
+                    }
+                    $scope.currentUserDisableTourTips = JSON.parse(currentUserData.tourTips);
+                    if($scope.currentUserDisableTourTips === false){
                         $scope.tourComplete("tourStep");
                         $scope.tourComplete("portForwardTourStep");
                         $scope.tourComplete("machineDetailTourStep");
                         $scope.tourComplete("machineListTourStep");
                         $scope.tourtips = false;
-                    }else{
+                    }else if ($scope.currentUserDisableTourTips === true){
                       $scope.tourReset("tourStep");
                       $scope.tourReset("portForwardTourStep");
                       $scope.tourReset("machineDetailTourStep");
                       $scope.tourReset("machineListTourStep");
                       $scope.tourtips = true;
                     }
+
                 },
                 function(reason){
                     $ErrorResponseAlert(reason);

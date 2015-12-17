@@ -42,13 +42,13 @@ angular.module('cloudscalers.controllers')
        $scope.tourSwitch = function() {
        		Users.tourTipsSwitch($scope.tourSwitchFlag).then(
        			function() {
-       			 	var target = 'Decks';
-		            var uri = new URI($window.location);
-		            uri.filename(target);
-		            uri.query('');
-		            $window.location = uri.toString();
+              var target = 'Decks';
+	            var uri = new URI($window.location);
+	            uri.filename(target);
+	            uri.query('');
+	            $window.location = uri.toString();
        		},function() {
-
+            $ErrorResponseAlert(reason);
        		});
        };
     }]);

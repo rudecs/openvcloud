@@ -26,9 +26,10 @@ def action(diskpaths):
     for diskpath in diskpaths:
         diskpath = diskpath.replace('/mnt/vmstor/', '')
         disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
-        for snap in disk.snapshots:
-            if not snap['is_automatic']:
-                snapshots.add((snap['label'], int(snap['timestamp'])))
+        if disk:
+            for snap in disk.snapshots:
+                if not snap['is_automatic']:
+                    snapshots.add((snap['label'], int(snap['timestamp'])))
     snaps = list()
     for snap in snapshots:
         snaps.append({'name': snap[0], 'epoch':snap[1]})

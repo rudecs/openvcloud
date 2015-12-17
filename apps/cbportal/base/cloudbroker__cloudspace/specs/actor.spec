@@ -30,6 +30,18 @@
         """
         var:cloudspaceId int,, id of the cloudspace
 
+    method:startVFW
+        """
+        Start VFW
+        """
+        var:cloudspaceId int,, id of the cloudspace
+
+    method:stopVFW
+        """
+        Stop VFW
+        """
+        var:cloudspaceId int,, id of the cloudspace
+
     method:addExtraIP
         """
         Adds an available public IP address

@@ -436,7 +436,7 @@ angular.module('cloudscalers.controllers')
         };
         $scope.refreshSpinner = false;
         $scope.refreshData = function() {
-            if($scope.tabactive.actions || $scope.tabactive.sharing){
+            if($scope.tabactive.actions || $scope.tabactive.sharing || $scope.tabactive.console){
                 $scope.refreshSpinner = true;
                 Machine.get($routeParams.machineId).then(function(data) {
                     $scope.machine = data;

@@ -7,12 +7,13 @@ import urllib2
 import urllib
 import json
 import base64
+import netaddr
 
 organization = "openvstorage"
 descr = 'Perform Disk checks on ALBA'
 author = "hamdy.farag@codescalers.com"
 order = 1
-enable = False
+enable = True
 async = True
 log = True
 queue = 'io'
@@ -21,7 +22,11 @@ roles = ['storagenode']
 category = "monitor.healthcheck"
 
 def action():
-    ip = '127.0.0.1'
+    from ovs.lib.storagerouter import StorageRouterList
+    localIp = j.system.net.getIpAddress('backplane1')[0][0]
+
+    # because alba isnt configured properly on all nodes we connect to the first node in the cluster
+    ip = str(min([netaddr.IPAddress(router.ip) for router in StorageRouterList.get_storagerouters()]))
     ovs_alba = j.atyourservice.get(name='ovs_alba_oauthclient', instance='main')
     client_id = ovs_alba.hrd.getStr('instance.client_id')
     client_secret = ovs_alba.hrd.getStr('instance.client_secret')
@@ -47,19 +52,22 @@ def action():
         request = urllib2.Request(base_url + '/alba/backends/%s' % backend, None, headers=headers)
         response = urllib2.urlopen(request).read()
         data = json.loads(response)
-
         for disk in data['all_disks']:
-            if disk['state']['state'] == 'ok':
+            for ip in disk['ips']:
+                if j.system.net.isIpLocal(ip):
+                    break
+            else:
                 continue
             r = {}
+            state = 'OK' if disk['state']['state'] == 'ok' else 'ERROR'
             r['category'] = 'ALBA healthcheck'
-            r['state'] = disk['state']['state']
-            r['message'] = 'OVS ALBA Backend %s  DISK %s : %s' % (data['name'], disk['name'], disk['state']['detail'])
+            r['state'] = state
+            r['message'] = "Backend '%s'  DISK %s" % (data['name'], disk['name'])
             result.append(r)
-            eco = j.errorconditionhandler.getErrorConditionObject(msg=r['message'], category='monitoring', level=1, type='OPERATIONS')
-            eco.process()
-    if not result:
-        result.append({'category' : 'ALBA healthcheck', 'state':'OK', 'message':'ALL disjs are OK'})
+            if state != 'OK':
+                r['message'] += ' Error: %s' % disk['state'].get('detail', 'UNKNOWN')
+                eco = j.errorconditionhandler.getErrorConditionObject(msg=r['message'], category='monitoring', level=1, type='OPERATIONS')
+                eco.process()
     return result
 
 if __name__ == '__main__':

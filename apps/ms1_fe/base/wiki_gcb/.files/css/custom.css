@@ -89,9 +89,10 @@ margin: : 10px 0; font-size: 18px; }
 /* End of tabs */
 
 /* Table */
-table.table th, table.table th a { background: #345E79 !important; color: #fff; font-weight: normal; }
+
+table.table th, table.table th a { background: #345E79 !important; color: #fff; font-weight: normal;text-align: center; }
 table.table td { word-break: break-all; }
-.table { font-size: 12px; }
+.table { font-size: 12px;text-align: center; }
 .table-bordered { border: 1px solid #c4c4c4; color: #000000; }
 table.table td { font-size: 14px; color: #000; }
 .the-price + table.table td { font-size: 12px; word-break: break-word; height: 34px; }

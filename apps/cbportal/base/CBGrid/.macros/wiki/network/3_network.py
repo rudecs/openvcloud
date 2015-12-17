@@ -21,13 +21,14 @@ def main(j, args, params, tags, tasklet):
         params.result = ('Network with id %s not found' % key, args.doc)
         return params
 
-    network =  vcl.virtualfirewall.get(key)
+    network = vcl.virtualfirewall.get(key)
     obj = network.dump()
     if scl.node.exists(obj['nid']):
         obj['nodename'] = scl.node.get(obj['nid']).name
     else:
         obj['nodename'] = str(obj['nid'])
     obj['pubips'] = ', '.join(obj['pubips'])
+    obj['running'] = j.apps.jumpscale.netmgr.fw_check(network.guid)
 
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)

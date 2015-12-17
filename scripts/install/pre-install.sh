@@ -1,11 +1,25 @@
 #!/bin/bash
-USERNAME=danielma
-PASSWORD=gitlabpasswd
-
 if [ "$1" == "" ]; then
 	echo "Usage: pre-install.sh remote-host"
 	exit 1
 fi
+
+if [ "$SSH_AUTH_SOCK" == "" ]; then
+	echo "[-] no ssh authentification found, checking anyway"
+	
+	AGENT=$(ssh-add -L > /dev/null 2>&1)
+	
+	if [ $? != 0 ]; then
+		echo "[-] no ssh key found or agent is not running."
+		exit 1
+		
+	else
+		echo "[-] ssh agent seems okay"
+	fi
+fi
+
+# print loaded keys
+ssh-add -L | awk '{ print "[+] ssh agent key found: " $3 }'
 
 if [ "${x::4}" == "http" ]; then
 	echo "[-] remote host should be a hostname, not an url"
@@ -13,6 +27,13 @@ if [ "${x::4}" == "http" ]; then
 fi
 
 REMOTEADDR="$1"
+
+# REMOTEADDR=37.203.43.120   # du-conv-2
+# REMOTEADDR=37.203.43.127   # du-conv-1
+# REMOTEADDR=185.69.164.155  # be-conv-2
+# REMOTEADDR=37.203.43.122   # be-dev-1
+# REMOTEADDR=185.69.164.158  # be-stor-1
+
 BOOTSTRAP="http://${REMOTEADDR}:5000"
 
 echo "[+] updating"
@@ -36,8 +57,16 @@ fi
 
 echo "[+] setting up username/password"
 # FIXME
-jsconfig hrdset -n whoami.git.login -v "$USERNAME"
-jsconfig hrdset -n whoami.git.passwd -v "$PASSWORD"
+jsconfig hrdset -n whoami.git.login -v "ssh"
+jsconfig hrdset -n whoami.git.passwd -v "ssh"
+
+echo "Host git.aydo.com" >> /root/.ssh/config
+echo "    StrictHostKeyChecking no" >> /root/.ssh/config
+echo "" >> /root/.ssh/config
+
+echo "Host github.com" >> /root/.ssh/config
+echo "    StrictHostKeyChecking no" >> /root/.ssh/config
+echo "" >> /root/.ssh/config
 
 echo "[+] loading settings"
 HOST=$(hostname)

@@ -363,7 +363,6 @@
 	white-space: nowrap;
 }
 
-
 /*  Borders  */
 .no-border-radius{
 	-moz-border-radius: 0;
@@ -393,6 +392,7 @@
 /*cursors*/
 .cursor-pointer{
 	cursor: pointer;
+	
 }
 .cursor-default{
 	cursor: default;

@@ -27,7 +27,7 @@ class libcloud_libvirt(object):
         self._client = j.clients.osis.getByInstance('main')
         self.cache = j.clients.redis.getByInstance('system')
         self.blobdb = self._getKeyValueStore()
-        self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc'])
+        self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc', 'macaddress'])
 
     def _getKeyValueStore(self):
         if self.NAMESPACE not in self._client.listNamespaces():
@@ -105,17 +105,11 @@ class libcloud_libvirt(object):
         Get a free macaddres in this libvirt environment
         result
         """
-        key = 'lastmacaddress_%s'% gid
-        if self.blobdb.exists(key):
-            lastMac = ujson.loads(self.blobdb.get(key))
-        else:
-            newmacaddr = netaddr.EUI('52:54:00:00:00:00')
-            self.blobdb.set(key=key, obj=ujson.dumps(int(newmacaddr)))
-            lastMac = int(newmacaddr)
-        newmacaddr = lastMac + 1
-        macaddr = netaddr.EUI(newmacaddr)
+        mac = self._models.macaddress.set(key=gid, obj=1)
+        firstmac = netaddr.EUI('52:54:00:00:00:00')
+        newmac = int(firstmac) + mac
+        macaddr = netaddr.EUI(newmac)
         macaddr.dialect = netaddr.mac_eui48
-        self.blobdb.set(key=key, obj=ujson.dumps(newmacaddr))
         return str(macaddr).replace('-', ':').lower()
 
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):

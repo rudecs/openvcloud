@@ -21,16 +21,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
 
-    def fw_check(self, fwid, gid, **kwargs):
-        """
-        will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
-        param:fwid firewall id
-        param:gid grid id
-        """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name)}
-        return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
-
     def _getVFWObject(self, fwid):
         try:
             fwobj = self.osisvfw.get(fwid)
@@ -82,21 +72,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
     def fw_move(self, fwid, targetNid, **kwargs):
         fwobj = self._getVFWObject(fwid)
         srcnode = self.nodeclient.get("%s_%s" % (fwobj.gid, fwobj.nid))
-        trgnode = self.nodeclient.get("%s_%s" % (fwobj.gid, targetNid))
         def get_backplane_ip(node):
-            for mac, nicinfo in node.netaddr.iteritems():
-                if nicinfo[0] == 'backplane1':
-                    return nicinfo[1]
+            for nicinfo in node.netaddr:
+                if nicinfo['name'] == 'backplane1':
+                    return nicinfo['ip'][0]
         srcip = get_backplane_ip(srcnode)
-        trgip = get_backplane_ip(trgnode)
-        sshkey = None
-        sshpath = j.system.fs.joinPaths(j.dirs.cfgDir, 'sshkey')
-        if j.system.fs.exists(sshpath):
-            sshkey = j.system.fs.fileGetContents(sshpath)
         args = {'networkid': fwobj.id,
-                'sourceip': srcip,
-                'targetip': trgip,
-                'sshkey': sshkey}
+                'sourceip': srcip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise RuntimeError("Failed to move routeros check job %(guid)s" % job)
@@ -168,20 +150,22 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        fwobj = self._getVFWObject(fwid)
-        rule = fwobj.new_tcpForwardRule()
-        rule.fromAddr = fwip
-        rule.fromPort = str(fwport)
-        rule.toAddr = destip
-        rule.toPort = str(destport)
-        rule.protocol = protocol
+        with self.osisvfw.lock(fwid):
+            fwobj = self._getVFWObject(fwid)
+            rule = fwobj.new_tcpForwardRule()
+            rule.fromAddr = fwip
+            rule.fromPort = str(fwport)
+            rule.toAddr = destip
+            rule.toPort = str(destport)
+            rule.protocol = protocol
+            self.osisvfw.set(fwobj)
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
         result = self._applyconfig(fwobj.gid, fwobj.nid, args)
-        if result:
-            self.osisvfw.set(fwobj)
+        if not result:
+            self.fw_forward_delete(fwid, gid, fwip, fwport, destip, destport, protocol, apply=False)
         return result
 
-    def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, **kwargs):
+    def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, apply=True, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
@@ -190,20 +174,21 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
-        fwobj = self._getVFWObject(fwid)
-        change = False
-        result = False
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
-        for rule in fwobj.tcpForwardRules:
-            if rule.fromAddr == fwip and rule.fromPort == str(fwport):
-                if protocol and rule.protocol and rule.protocol.lower() != protocol.lower():
-                    continue
-                change = True
-                fwobj.tcpForwardRules.remove(rule)
-        if change:
-            result = self._applyconfig(fwobj.gid, fwobj.nid, args)
-            if result:
+        with self.osisvfw.lock(fwid):
+            fwobj = self._getVFWObject(fwid)
+            change = False
+            result = False
+            for rule in fwobj.tcpForwardRules:
+                if rule.fromAddr == fwip and rule.fromPort == str(fwport):
+                    if protocol and rule.protocol and rule.protocol.lower() != protocol.lower():
+                        continue
+                    change = True
+                    fwobj.tcpForwardRules.remove(rule)
+            if change:
                 self.osisvfw.set(fwobj)
+        if change and apply:
+            args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
+            result = self._applyconfig(fwobj.gid, fwobj.nid, args)
         return result
 
 
@@ -246,78 +231,52 @@ class jumpscale_netmgr(j.code.classGetBase()):
             result.append(vfwdict)
         return result
 
-    def fw_start(self, fwid, gid, **kwargs):
+    def fw_start(self, fwid, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
         """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'action': 'start'}
-        return self.agentcontroller.executeJumpscript('jumpscale', 'fw_action', gid=fwobj.gid, nid=fwobj.nid, args=args)['result']
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
-    def fw_stop(self, fwid, gid, **kwargs):
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to start vfw")
+        return job['result']
+
+    def fw_stop(self, fwid, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
         """
-        fwobj = self.osisvfw.get(fwid)
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'action': 'stop'}
-        self.agentcontroller.executeJumpscript('jumpscale', 'fw_action', gid=fwobj.gid, nid=fwobj.nid, args=args, wait=False)
-        return True
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to start vfw")
+        return job['result']
 
-    def ws_forward_create(self, wsid, gid, sourceurl, desturls, **kwargs):
+    def fw_check(self, fwid, **kwargs):
         """
-        param:wsid firewall id
-        param:gid grid id
-        param:sourceurl url which will match (e.g. http://www.incubaid.com:80/test/)
-        param:desturls url which will be forwarded to (e.g. http://192.168.10.1/test/) can be more than 1 then loadbalancing; if only 1 then like a portforward but matching on url
-        """
-        wsfobj = self.osisvfw.get(wsid)
-        rule = wsfobj.new_wsForwardRule()
-        rule.url = sourceurl
-        rule.toUrls = desturls
-        self.osisvfw.set(wsfobj)
-        self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=wsfobj.gid, nid=wsfobj.nid, args={'name': wsfobj.name, 'fwobject': wsfobj.obj2dict()}, wait=False)
-        return True
-
-
-    def ws_forward_delete(self, wsid, gid, sourceurl, desturls, **kwargs):
-        """
-        param:wsid firewall id
-        param:gid grid id
-        param:sourceurl url which will match (e.g. http://www.incubaid.com:80/test/)
-        param:desturls url which will be forwarded to
-        """
-        vfws = self.osisvfw.get(wsid)
-        wsfr = vfws.wsForwardRules
-        for rule in wsfr:
-            if rule.url == sourceurl:
-                desturls = desturls.split(',')
-                urls = rule.toUrls.split(',')
-                for dest in desturls:
-                    if dest in rule.toUrls:
-                        urls.remove(dest)
-                rule.toUrls = ','.join(urls)
-                if len(urls) == 0:
-                    wsfr.remove(rule)
-        args = {'name': '%s_%s' % (vfws.domain, vfws.name), 'action': 'start'}
-        self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=vfws.gid, nid=vfws.nid, args={'name': vfws.name, 'fwobject': vfws.obj2dict()}, wait=False)
-        return True
-
-
-    def ws_forward_list(self, wsid, gid, **kwargs):
-        """
-        list all loadbalancing rules (HTTP ONLY),
-        ws stands for webserver
-        is list of list [[$sourceurl,$desturl],..]
-        can be 1 in which case its like simple forwarding, if more than 1 then is loadbalancing
-        param:wsid firewall id (is also the loadbalancing webserver)
+        will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
+        param:fwid firewall id
         param:gid grid id
         """
-        result = list()
-        vfws = self.osisvfw.get(wsid)
-        wsfr = vfws.wsForwardRules
-        for rule in wsfr:
-            result.append([rule.url, rule.toUrls])
-        return result
+        fwobj = self._getVFWObject(fwid)
+        args = {'networkid': fwobj.id}
+        if fwobj.type == 'routeros':
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        else:
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', gid=fwobj.gid, nid=fwobj.nid, args=args)
+
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to get vfw status")
+        return job['result']
+
