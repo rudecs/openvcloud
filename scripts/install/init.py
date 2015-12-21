@@ -64,7 +64,7 @@ print '[+] master password generated: %s' % vmpassword
 Stage 3: initializer
 """
 ovc = j.clients.openvcloud.get()
-
+ovc.initLocalhost(gitlink, options.gituser, options.gitpass)
 
 """
 Stage 4: options parsing: backend validator
