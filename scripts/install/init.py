@@ -84,6 +84,7 @@ if options.backend == 'ms1':
 			j.application.stop()
 	
 	machine = ovc.initMothership(options.user, options.passwd, options.location, options.cloudspace)
+	machine['type'] = 'ms1'
 
 # docker
 if options.backend == 'docker':
@@ -99,6 +100,7 @@ if options.backend == 'docker':
 			j.application.stop()
 	
 	machine = ovc.initDocker(options.remote, options.port, options.public)
+	machine['type'] = 'docker'
 
 
 """
