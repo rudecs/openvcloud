@@ -98,8 +98,6 @@ class cloudapi_users(BaseActor):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
-
-
     def _isValidUserName(self, username):
         r = re.compile('^[a-z0-9]{1,20}$')
         return r.match(username) is not None
@@ -256,3 +254,27 @@ class cloudapi_users(BaseActor):
         self.models.resetpasswordtoken.deleteSearch({'id': validationtoken})
 
         return True
+
+    def getMatchingUsernames(self, usernameregex, limit=5, **kwargs):
+        """
+        Get a list of the matching usernames for a given string
+
+        :param usernameregex: regex of the usernames to searched for
+        :param limit: the number of usernames to return
+        :return: list of dicts with the username and url of the gravatar of the user
+        """
+        #Should we filter out invalid username characters???
+        matchingusers = self.systemodel.user.search({'id': {'$regex': usernameregex}},
+                                                    size=limit)[1:]
+
+        if matchingusers:
+            usernamegravatarlist= list()
+            for user in matchingusers:
+                primaryemail = user['emails'][0]
+                gravatarurl = 'http://www.gravatar.com/avatar/%s' % \
+                              md5.md5(primaryemail).hexdigest()
+                usernamegravatarlist.append({'username': user['id'],
+                                             'gravatarurl': gravatarurl})
+            return usernamegravatarlist
+        else:
+            return []

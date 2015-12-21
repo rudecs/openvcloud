@@ -65,3 +65,11 @@
         var:validationtoken str,, Validation token
         var:password str,, User password
         result:bool
+
+    method:getMatchingUsernames
+        """
+        Get a list of the matching usernames for a given string
+        """
+        var:usernameregex str,,regex of the usernames to searched for
+        var:limit int,5,the number of usernames to return
+        result:list,,list of dicts with the username and url of the gravatar of the user
