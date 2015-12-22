@@ -23,6 +23,7 @@ def main(j, args, params, tags, tasklet):
         # refresh from reality
         j.apps.cloudapi.machines.get(id)
     except:
+        pass
         # failed to refresh get data from model anyway
     try:
         obj = cbosis.vmachine.get(id)
