@@ -32,7 +32,7 @@ def action():
                 r['message'] += ' Error: %s' % disk['state'].get('detail', 'UNKNOWN')
                 eco = j.errorconditionhandler.getErrorConditionObject(msg=r['message'], category='monitoring', level=1, type='OPERATIONS')
                 eco.process()
-    else:
+    if not result:
         result.append({'category': 'ALBA healthcheck', 'state': 'OK', 'message': 'Not an active alba node'})
 
     return result

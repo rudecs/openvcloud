@@ -19,9 +19,12 @@ def main(j, args, params, tags, tasklet):
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
 
-    # refresh from reality
     try:
+        # refresh from reality
         j.apps.cloudapi.machines.get(id)
+    except:
+        # failed to refresh get data from model anyway
+    try:
         obj = cbosis.vmachine.get(id)
     except:
         args.doc.applyTemplate({})
