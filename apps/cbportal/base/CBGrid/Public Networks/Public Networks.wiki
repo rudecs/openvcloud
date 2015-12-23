@@ -1,3 +1,5 @@
 h3. Public Networks
 
+{{action: id:addpublicnetwork class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Public Network'}}
+{{addpublicnetwork}}
 {{publicnetworks}}
