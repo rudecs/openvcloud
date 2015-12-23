@@ -17,16 +17,24 @@ if [ "$UID" != "0" ]; then
 	exit 1
 fi
 
-echo "[+] upgrading system"
-apt-get update
+LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
+LASTUNIX=$(date --date "$LASTTIME" +%s)
+echo "[+] last apt-get update: $LASTTIME"
+
+if [ $LASTUNIX -gt $(($(date +%s) - (3600 * 6))) ]; then
+	echo "[+] skipping system update"
+else
+	echo "[+] updating system"
+	apt-get update
+fi
 
 # This package cause some automation problem with efi
-apt-get remove -y shim
-apt-get autoremove -y
+echo shim hold | dpkg --set-selections
+echo grub-pc hold | dpkg --set-selections
 
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-for i in /sys/block/sd?; do
+for i in /sys/block/{sd?,nvme*}; do
 	rot=$(cat $i/queue/rotational)
 	
 	if [ "$rot" = "0" ]; then
@@ -35,7 +43,9 @@ for i in /sys/block/sd?; do
 done
 
 # Building partitions map
-echo "[+] disks found: ${#DISKS[@]}"
+echo "[+] disks found: ${#DISKS[@]} (${DISKS[@]})"
+
+NVME_ENABLED=0
 
 if [ ${#DISKS[@]} == 3 ]; then
 	echo "[+] building partitions: 3 SSD"
@@ -43,20 +53,42 @@ if [ ${#DISKS[@]} == 3 ]; then
 	# /mnt/cache1 -> leftover ssd (full ssd)
 	# /mnt/cache2 -> first ssd disk used for root
 	# /var/tmp    -> second ssd disk used for root
+	#
+	# if nvme is present:
+	# /mnt/cache1 -> first ssd used for root
+	# /mnt/cache2 -> nvme (full)
+	# /var/tmp    -> second ssd used for root
 	
-	for disk in ${DISKS[@]}; do
-		if [ ! -e /dev/${disk}2 ]; then
-			DISK_CACHE1=/dev/$disk
-		fi
+	if [[ "${DISKS[@]}" == *"nvme"* ]]; then
+		echo "[+] setup contains nvme disks"
+		NVME_ENABLED=1
 		
-		if [ -e /dev/${disk}2 ]; then
-			if [ "$DISK_CACHE2" == "" ]; then
+		for disk in ${DISKS[@]}; do		
+			if [ "${disk}" == "nvme0n1" ]; then
 				DISK_CACHE2=/dev/$disk
+			
+			elif [ "$DISK_CACHE1" == "" ]; then
+				DISK_CACHE1=/dev/$disk
 			else
 				DISK_VARTMP=/dev/$disk
 			fi
-		fi
-	done
+		done
+	else
+		# default setup
+		for disk in ${DISKS[@]}; do		
+			if [ ! -e /dev/${disk}2 ]; then
+				DISK_CACHE1=/dev/$disk
+			fi
+			
+			if [ -e /dev/${disk}2 ]; then
+				if [ "$DISK_CACHE2" == "" ]; then
+					DISK_CACHE2=/dev/$disk
+				else
+					DISK_VARTMP=/dev/$disk
+				fi
+			fi
+		done
+	fi
 	
 	if [ "$DISK_CACHE1" == "" ]; then
 		echo "[-] /mnt/cache1: cannot find usable ssd"
@@ -73,13 +105,15 @@ if [ ${#DISKS[@]} == 3 ]; then
 		exit 1
 	fi
 	
-	echo "[+] /mnt/cache1: will be on $DISK_CACHE1"
-	echo "[+] /mnt/cache2: will be on $DISK_CACHE2"
-	echo "[+] /var/tmp   : will be on $DISK_VARTMP"
-	
-	CACHE1=${DISK_CACHE1}1
-	CACHE2=${DISK_CACHE2}5
-	VARTMP=${DISK_VARTMP}5
+	if [ $NVME_ENABLED == 1 ]; then
+		CACHE1="${DISK_CACHE1}5"
+		CACHE2="${DISK_CACHE2}p1"
+		VARTMP="${DISK_VARTMP}5"
+	else
+		CACHE1="${DISK_CACHE1}1"
+		CACHE2="${DISK_CACHE2}5"
+		VARTMP="${DISK_VARTMP}5"
+	fi
 	
 	CACHE1_SIZE=100%
 	CACHE2_SIZE=100%
@@ -103,13 +137,13 @@ elif [ ${#DISKS[@]} == 2 ]; then
 		DISK_VARTMP=/dev/${DISKS[0]}
 	fi
 	
+	COUNT_DISK1=$(grep ${DISK_CACHE1}. /proc/partitions | wc -l)
+	COUNT_DISK1=$(grep ${DISK_CACHE1}. /proc/partitions | wc -l)
+	COUNT_DISK1=$(grep ${DISK_CACHE1}. /proc/partitions | wc -l)
+	
 	CACHE1=${DISK_CACHE1}5
 	CACHE2=${DISK_CACHE2}5
 	VARTMP=${DISK_VARTMP}6
-	
-	echo "[+] /mnt/cache1: will be on $DISK_CACHE1 ($CACHE1)"
-	echo "[+] /mnt/cache2: will be on $DISK_CACHE2 ($CACHE2)"
-	echo "[+] /var/tmp   : will be on $DISK_VARTMP ($VARTMP)"
 	
 	CACHE1_SIZE=100%
 	CACHE2_SIZE=50%
@@ -118,6 +152,10 @@ else
 	echo "[-] this count of SSD are not supported"
 	exit
 fi
+
+echo "[+] /mnt/cache1: will be on $DISK_CACHE1 ($CACHE1)"
+echo "[+] /mnt/cache2: will be on $DISK_CACHE2 ($CACHE2)"
+echo "[+] /var/tmp   : will be on $DISK_VARTMP ($VARTMP)"
 
 #
 # /mnt/cache1
@@ -155,16 +193,24 @@ fi
 TOTAL=$(parted $DISK_CACHE2 print | grep Disk | head -1 | awk '{ print $3 }')
 
 if [ "$TOTAL" == "" ]; then
-	echo "[-] /mnt/cache2: error occured when trying to find disk info"
+	echo "[ ] /mnt/cache2: no partition table found, creating it"
+	parted $DISK_CACHE2 mklabel gpt > /dev/null
+	
+	TOTAL=$(parted $DISK_CACHE2 print | grep Disk | head -1 | awk '{ print $3 }')
+	END="1049kB"
+else
+	END=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $3 }')
 fi
-
-END=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $3 }')
 	
 if [ "$TOTAL" != "$END" ]; then
 	echo "[+] /mnt/cache2: partition will start at $END"
 	parted -a optimal $DISK_CACHE2 mkpart cache2 $FILESYSTEM $END $CACHE2_SIZE > /dev/null
 	
 	PART=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $1 }')
+	
+	if [ $NVME_ENABLED == 1 ]; then
+		PART="p${PART}"
+	fi
 	
 	if [ "${DISK_CACHE2}$PART" != "$CACHE2" ]; then
 		echo "[-] /mnt/cache2: seems not correct according to script"
