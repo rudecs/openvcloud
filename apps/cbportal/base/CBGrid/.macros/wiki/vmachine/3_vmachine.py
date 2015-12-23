@@ -18,13 +18,21 @@ def main(j, args, params, tags, tasklet):
     id = int(id)
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
+    data = {'stats_image': 'N/A',
+            'stats_parent_image': 'N/A',
+            'stats_disk_size': '-1',
+            'stats_state': 'N/A',
+            'stats_ping': 'N/A',
+            'stats_hdtest': 'N/A',
+            'stats_epoch': 'N/A',
+            'snapshots': [],
+            'refreshed': False}
 
-    try:
-        # refresh from reality
-        j.apps.cloudapi.machines.get(id)
-    except:
-        pass
-        # failed to refresh get data from model anyway
+    with gevent.Timeout(5, False):
+        # refresh from reality + get snapshots
+        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
+        data['refreshed'] = True
+
     try:
         obj = cbosis.vmachine.get(id)
     except:
@@ -42,8 +50,6 @@ def main(j, args, params, tags, tasklet):
         vm = cl.hget("vmachines.status", id)
         stats = json.loads(vm)
 
-    data = {'stats_image': 'N/A', 'stats_parent_image': 'N/A', 'stats_disk_size': '-1',
-            'stats_state': 'N/A', 'stats_ping': 'N/A', 'stats_hdtest': 'N/A', 'stats_epoch': 'N/A'}
     data.update(obj.dump())
     try:
         size = cbosis.size.get(obj.sizeId).dump()
@@ -112,14 +118,6 @@ def main(j, args, params, tags, tasklet):
     data['stackrefid'] = stack['referenceId'] or 'N/A'
     data['hypervisortype'] = stack['type']
 
-    timeout = gevent.Timeout(5)
-    timeout.start()
-    try:
-        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
-    except:
-        data['snapshots'] = []
-    finally:
-        timeout.cancel()
     try:
         data['portforwards'] = j.apps.cloudbroker.machine.listPortForwards(id)
     except:
