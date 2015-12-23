@@ -36,8 +36,16 @@ REMOTEADDR="$1"
 
 BOOTSTRAP="http://${REMOTEADDR}:5000"
 
-echo "[+] updating"
-apt-get update
+LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
+LASTUNIX=$(date --date "$LASTTIME" +%s)
+echo "[+] last apt-get update: $LASTTIME"
+
+if [ $LASTUNIX -gt $(($(date +%s) - (3600 * 6))) ]; then
+	echo "[+] skipping system update"
+else
+	echo "[+] updating system"
+	apt-get update
+fi
 
 if [ ! -d /opt/jumpscale7 ]; then
 	echo "[+] installing Jumpscale"
@@ -56,7 +64,6 @@ else
 fi
 
 echo "[+] setting up username/password"
-# FIXME
 jsconfig hrdset -n whoami.git.login -v "ssh"
 jsconfig hrdset -n whoami.git.passwd -v "ssh"
 
