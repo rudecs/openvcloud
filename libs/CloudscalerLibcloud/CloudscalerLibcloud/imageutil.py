@@ -76,6 +76,7 @@ def registerImage(jp, name, imagepath, type, disksize, username=None):
         image.type = type
         image.size = disksize
         image.username = username
+        image.provider_name = 'libvirt'
         image.status = 'CREATED'
         imageId = ccl.image.set(image)[0]
     else:
@@ -83,8 +84,8 @@ def registerImage(jp, name, imagepath, type, disksize, username=None):
     stacks = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid)})[1:]
     if stacks:
         stack = stacks[0]
-        if imageId not in stack['images']:
-            stack['images'].append(imageId)
+        if imageId not in stack.get('images', []):
+            stack.setdefault('images', []).append(imageId)
             ccl.stack.set(stack)
 
 
