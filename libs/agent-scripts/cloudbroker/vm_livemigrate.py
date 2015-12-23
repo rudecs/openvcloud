@@ -14,24 +14,33 @@ queue = "hypervisor"
 async = True
 
 
-def action(vm_id, source_stack):
+def action(vm_id, sourceurl, domainxml):
     import libvirt
     target_con = libvirt.open()  # local
-    source_con = libvirt.open(source_stack['apiUrl'])
+    try:
+        source_con = libvirt.open(sourceurl)
+    except:
+        # source machine is not available
+        source_con = None
 
-    domain = source_con.lookupByName('vm-%s' % vm_id)
-    target_con.defineXML(domain.XMLDesc())
+    if source_con:
+        domain = source_con.lookupByUUIDString(vm_id)
+        target_con.defineXML(domain.XMLDesc())
 
-    if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-        flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
-        try:
-            domain.migrate2(target_con, flags=flags)
-        except:
+        if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
             try:
-                target_domain = target_con.lookupByName('vm-%s' % vm_id)
-                target_domain.undefine()
+                domain.migrate2(target_con, flags=flags)
             except:
-                pass  # vm wasnt created on target
-            raise
+                try:
+                    target_domain = target_con.lookupByUUIDString(vm_id)
+                    target_domain.undefine()
+                except:
+                    pass  # vm wasnt created on target
+                raise
+        else:
+            domain.undefine()
     else:
-        domain.undefine()
+        domain = target_con.defineXML(domainxml)
+        domain.create()
+    return True
