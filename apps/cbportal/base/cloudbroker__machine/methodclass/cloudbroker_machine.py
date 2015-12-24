@@ -117,16 +117,12 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
-        if targetStackId:
-            target_provider = self.cb.getProviderByStackId(targetStackId)
-            if target_provider.client.gid != source_stack.gid:
-                raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.client.uri)
+        if not targetStackId:
+            targetStackId = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)['id']
 
-        else:
-            target_provider = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
-            stacks = self.models.stack.search({'referenceId': str(target_provider.client.id),
-                                               'gid': target_provider.client.gid})[1:]
-            targetStackId = stacks[0]['id']
+        target_provider = self.cb.getProviderByStackId(targetStackId)
+        if target_provider.client.gid != source_stack.gid:
+            raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.client.uri)
 
         if vmachine.status != 'HALTED':
             # create network on target node

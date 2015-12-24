@@ -19,6 +19,9 @@ h3. Stack: ${name}
    id: $$id
    gid: ${gid}
   input:
+   - type: message
+     messagetype: warning
+     message: Disabling Node will put storage offline and move all VMs to another node!
    - message
 
 - display: Offline
@@ -28,6 +31,9 @@ h3. Stack: ${name}
    gid: ${gid}
    status: OFFLINE
   input:
+   - type: message
+     messagetype: warning
+     message: Putting Node offline will prevent new VMs to be created on this node!
    - message
 }}
 
