@@ -1,6 +1,9 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+import random
+import urlparse
 
 class cloudbroker_computenode(BaseActor):
     """
@@ -10,6 +13,8 @@ class cloudbroker_computenode(BaseActor):
     def __init__(self):
         super(cloudbroker_computenode, self).__init__()
         self._ncl = j.clients.osis.getCategory(j.core.portal.active.osis, 'system', 'node')
+        self.acl = j.clients.agentcontroller.get()
+
 
     @auth(['level1', 'level2', 'level3'])
     def setStatus(self, id, gid, status, **kwargs):
@@ -55,7 +60,17 @@ class cloudbroker_computenode(BaseActor):
     @auth(['level2','level3'], True)
     @wrap_remote
     def disable(self, id, gid, message, **kwargs):
+        stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
+        if not stacks:
+            raise exceptions.PreconditionFailed("Disabling stack not possible when there are no other enabled stacks")
         stack, status = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
+        otherstack = random.choice(stacks)
+        args = {'storageip': urlparse.urlparse(stack['apiUrl']).hostname}
+        job = self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline',
+                                         nid=int(otherstack['referenceId']), gid=otherstack['gid'],
+                                         args=args)
+        if job['state'] != 'OK':
+            raise exceptions.Error("Failed to put storage node offline")
         if stack:
             machines_actor = j.apps.cloudbroker.machine
             stackmachines = self.models.vmachine.search({'stackId': stack['id'], 'status':
