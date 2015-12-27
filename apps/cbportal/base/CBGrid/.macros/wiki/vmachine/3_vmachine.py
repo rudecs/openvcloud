@@ -28,7 +28,7 @@ def main(j, args, params, tags, tasklet):
             'snapshots': [],
             'refreshed': False}
 
-    with gevent.Timeout(5, False):
+    with gevent.Timeout(15, False):
         # refresh from reality + get snapshots
         data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
         data['refreshed'] = True
