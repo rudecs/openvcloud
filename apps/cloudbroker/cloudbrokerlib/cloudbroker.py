@@ -123,6 +123,18 @@ class CloudBroker(object):
         provider = capacityinfo[i]
         return provider
 
+    def chooseProvider(self, machine):
+        stack = models.stack.get(machine.stackId)
+        if stack.status != 'ENABLED':
+            cloudspace = models.cloudspace.get(machine.cloudspaceId)
+            newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
+            if newstack == -1:
+                raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
+            machine.stackId = newstack['id']
+            models.vmachine.set(machine)
+            return False
+        return True
+
     def getCapacityInfo(self, gid, imageId):
         # group all units per type
         resourcesdata = list()
