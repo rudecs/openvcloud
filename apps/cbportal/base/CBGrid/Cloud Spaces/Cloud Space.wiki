@@ -17,7 +17,9 @@ h2. Cloud Space: ${name}
 - display: Rename Cloud Space
   action: /restmachine/cloudbroker/cloudspace/updateName
   input:
-  - New name
+  - name: newname
+    label: New name
+    type: text
   data:
    cloudspaceId: $$id
 
