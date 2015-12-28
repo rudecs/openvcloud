@@ -5,14 +5,18 @@
 
 h3. Stack: ${name}
 {{actions:
-- display: Enable
+
+{% if status not in ('DISABLED', 'ENABLED') %}
+- display: Online
   action: /restmachine/cloudbroker/computenode/enable
   data:
    id: $$id
    gid: ${gid}
   input:
    - message
+{% endif %}
 
+{% if status not in ('DISABLED',) %}
 - display: Disable
   action: /restmachine/cloudbroker/computenode/disable
   data:
@@ -23,7 +27,9 @@ h3. Stack: ${name}
      messagetype: warning
      message: Disabling Node will put storage offline and move all VMs to another node!
    - message
+{% endif %}
 
+{% if status == 'ENABLED' %}
 - display: Offline
   action: /restmachine/cloudbroker/computenode/setStatus
   data:
@@ -35,6 +41,7 @@ h3. Stack: ${name}
      messagetype: warning
      message: Putting Node offline will prevent new VMs to be created on this node!
    - message
+{% endif %}
 }}
 
 * *ApiURL*: ${apiUrl}

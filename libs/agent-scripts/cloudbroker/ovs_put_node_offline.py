@@ -17,6 +17,8 @@ def action(storageip):
     sys.path.append('/opt/OpenvStorage')
     from ovs.dal.lists.pmachinelist import PMachineList
     from ovs.extensions.storageserver.storagedriver import StorageDriverClient
+    if j.system.net.tcpPortConnectionTest(storageip, 22, 5):
+        raise RuntimeError("You shouldn't put a powered on node in offline mode!")
     pm = PMachineList.get_by_ip(storageip)
     sr = pm.storagerouters[0]
     sd = sr.storagedrivers[0]

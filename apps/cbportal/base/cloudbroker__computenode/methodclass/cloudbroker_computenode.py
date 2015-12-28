@@ -26,10 +26,15 @@ class cloudbroker_computenode(BaseActor):
         """
         statusses = ['ENABLED', 'DISABLED', 'OFFLINE']
         if status not in statusses:
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("400", headers)
-            return 'Invalid status %s should be in %s' % (status, ', '.join(statusses))
+            return exceptions.BadRequest('Invalid status %s should be in %s' % (status, ', '.join(statusses)))
+        if status == 'ENABLED':
+            stacks = self.models.stack.search({'id':int(id), 'gid': int(gid)})[1:]
+            if not stacks:
+                raise exceptions.NotFound('ComputeNode with id %s not found' % id)
+            stack = stacks[0]
+            if stack['status'] not in ('OFFLINE', 'ENABLED'):
+                raise exceptions.PreconditionFailed("Can not enable ComputeNode in state %s" % (stack['status']))
+
         if status == 'DISABLED':
             return self.disable(id, gid, '')
         return self._changeStackStatus(id, gid, status, kwargs)
@@ -46,12 +51,9 @@ class cloudbroker_computenode(BaseActor):
                     node = nodes[0]
                     node['active'] =  True if status == 'ENABLED' else False
                     self._ncl.set(node)
-            return stack, stack['status']
+            return stack['status']
         else:
-            ctx = kwargs["ctx"]
-            headers = [('Content-Type', 'application/json'), ]
-            ctx.start_response("404", headers)
-            return stack, 'ComputeNode with id %s not found' % id
+            raise exceptions.NotFound('ComputeNode with id %s not found' % id)
 
     @auth(['level2','level3'], True)
     def enable(self, id, gid, message, **kwargs):
@@ -63,8 +65,8 @@ class cloudbroker_computenode(BaseActor):
         stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
         if not stacks:
             raise exceptions.PreconditionFailed("Disabling stack not possible when there are no other enabled stacks")
-        stack, status = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
-        otherstack = random.choice(stacks)
+        stack = self._changeStackStatus(id, gid, 'DISABLED', kwargs)
+        otherstack = random.choice(filter(lambda x: x['id'] != id, stacks))
         args = {'storageip': urlparse.urlparse(stack['apiUrl']).hostname}
         job = self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline',
                                          nid=int(otherstack['referenceId']), gid=otherstack['gid'],
@@ -77,7 +79,7 @@ class cloudbroker_computenode(BaseActor):
                                                                     {'$nin': ['DESTROYED', 'ERROR']}
                                                          })[1:]
             for machine in stackmachines:  
-                machines_actor.moveToDifferentComputeNode(machine['id'], reason="Disabling source")
+                machines_actor.moveToDifferentComputeNode(machine['id'], reason="Disabling source", force=True)
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
