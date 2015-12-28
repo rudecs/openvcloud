@@ -1,24 +1,17 @@
 from JumpScale import j
+from JumpScale.portal.portal import exceptions
 import json
 
-class cloudbroker_health(j.code.classGetBase()):
+class cloudbroker_health(object):
     """
-    API Check status of osis and alerter
+    API Check status of grid
     """
-    def __init__(self):
-        #self.actorname="health"
-        #self.appname="cloudbroker"
-        self.acl = j.clients.agentcontroller.get()
-        self.rcl = j.clients.redis.getByInstance('system')
-        #cloudbroker_health_osis.__init__(self)
 
     def status(self, **kwargs):
         """
-        check status of osis and alerter
+        check status of grid
         result dict
         """
-        ctx = kwargs.get('ctx')
-        headers = [('Content-Type', 'application/json'), ]
         resp = {}
         try:
             dbstate = j.core.portal.active.osis.getStatus()
@@ -28,16 +21,9 @@ class cloudbroker_health(j.code.classGetBase()):
             resp['mongodb'] = False
             resp['influxdb'] = False
 
-        result = self.acl.executeJumpscript('cloudscalers','health_alertservice', role='master',gid=j.application.whoAmI.gid, wait=True, timeout=30)
-        if result['state'] != 'OK':
-            resp['alerter'] = False
-            resp['healtcheckalive'] = False
-        else:
-            resp['alerter'] = result['result']['alerter']
-            resp['healtcheckalive'] = result['result']['healthcheck']
+        resp['healtcheckalive'] = j.core.grid.healthchecker.fetchState() == 'OK'
 
         if all(resp.values()):
-            ctx.start_response('200 Ok',headers)
+            return resp
         else:
-            ctx.start_response('503 Service Unavailable',headers)
-        return json.dumps(resp)
+            raise exceptions.ServiceUnavailable(resp)
