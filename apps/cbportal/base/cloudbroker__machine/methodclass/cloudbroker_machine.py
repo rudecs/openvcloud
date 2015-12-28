@@ -113,7 +113,7 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, **kwargs):
+    def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, force=False, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
@@ -130,7 +130,7 @@ class cloudbroker_machine(BaseActor):
                                        gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
 
             node = self.cb.Dummy(id=vmachine.referenceId)
-            target_provider.client.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId).client)
+            target_provider.client.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId).client, force)
         vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 

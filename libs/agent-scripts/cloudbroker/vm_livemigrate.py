@@ -14,7 +14,7 @@ queue = "hypervisor"
 async = True
 
 
-def action(vm_id, sourceurl, domainxml):
+def action(vm_id, sourceurl, domainxml, force):
     import libvirt
     target_con = libvirt.open()  # local
     try:
@@ -25,19 +25,28 @@ def action(vm_id, sourceurl, domainxml):
 
     if source_con:
         domain = source_con.lookupByUUIDString(vm_id)
-        target_con.defineXML(domain.XMLDesc())
+        newdomain = target_con.defineXML(domain.XMLDesc())
 
         if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
             flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
             try:
                 domain.migrate2(target_con, flags=flags)
             except:
-                try:
-                    target_domain = target_con.lookupByUUIDString(vm_id)
-                    target_domain.undefine()
-                except:
-                    pass  # vm wasnt created on target
-                raise
+                if not force:
+                    try:
+                        target_domain = target_con.lookupByUUIDString(vm_id)
+                        target_domain.undefine()
+                    except:
+                        pass  # vm wasnt created on target
+                    raise
+                else:
+                    try:
+                        domain.destroy()
+                        domain.undefine()
+                    except Exception, e:
+                        j.errorconditionhandler.processPythonExceptionObject(e)
+                    newdomain.create()
+
         else:
             domain.undefine()
     else:

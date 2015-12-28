@@ -224,6 +224,7 @@
 - display: Attach To Public Network
   action: /restmachine/cloudbroker/machine/attachPublicNetwork
   reload: true
+  hide: true
   data:
    machineId: $$id
   
