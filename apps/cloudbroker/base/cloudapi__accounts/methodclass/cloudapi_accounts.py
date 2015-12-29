@@ -31,13 +31,13 @@ class cloudapi_accounts(BaseActor):
                 ace.right = accesstype
                 break
         else:
-            ace = account.new_acl()
+            acl = account.new_acl()
             acl.userGroupId = userId
             acl.type = 'U'
             acl.right = accesstype
         return self.models.account.set(account)
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl='U')
     @audit()
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
@@ -169,7 +169,7 @@ class cloudapi_accounts(BaseActor):
         #query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
         #results = self.models.creditbalance.find(ujson.dumps(query))['result']
         #balance = [res['fields'] for res in results]
-        
+
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
 
         fields = ['time', 'credit', 'status']

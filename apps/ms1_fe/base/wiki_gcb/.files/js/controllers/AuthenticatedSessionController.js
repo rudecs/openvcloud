@@ -23,24 +23,22 @@ angular.module('cloudscalers.controllers')
             User.portalLogin(username, portal_session_cookie);
             $scope.currentUser = User.current();
             $scope.currentSpace = CloudSpace.current();
-            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
+            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
         }
 
 
         $scope.setCurrentCloudspace = function(space) {
-        	if (space == null)
-        	{
+        	if (space == null){
         		return;
         	}
-
-            CloudSpace.setCurrent(space);
-            $scope.currentSpace = space;
-            $scope.setCurrentAccount();
+          CloudSpace.setCurrent(space);
+          $scope.currentSpace = space;
+          $scope.setCurrentAccount();
         };
 
         $scope.setCurrentAccount = function(){
             if ($scope.currentSpace){
-                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
+                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
             }
         };
 
@@ -80,11 +78,11 @@ angular.module('cloudscalers.controllers')
 
         }, true);
 
-	    $scope.$watch('currentAccount',  function(){
-              if($scope.currentAccount){
-                    $scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
-	          }
-            }, true);
+	      $scope.$watch('currentAccount',  function(){
+          if($scope.currentAccount){
+            $scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
+          }
+        }, true);
 
         $scope.logout = function() {
             User.logout();

@@ -109,13 +109,33 @@ angular.module('cloudscalers.controllers')
                 });
             };
 
-            $scope.goToAccountSettings = function(e){
+            $scope.goToAccountSettings = function(e, currentAccountId){
+              $scope.setCurrentCloudspace( _.findWhere($scope.AccountCloudSpaceHierarchy, {id: currentAccountId}).cloudspaces[0] );
               e.stopPropagation();
               var target = 'AccountSettings';
               var uri = new URI($window.location);
               uri.filename(target);
               $window.location = uri.toString();
             };
+
+            $scope.$watch("accounts",function(){
+              if($scope.accounts){
+                // if can't find user in current account?
+                console.log($scope.currentAccount);
+
+                var currentUserOnAccount =  _.find($scope.accounts[0].acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; });
+                if(currentUserOnAccount){
+                    var currentUserAccessrightOnAccount = currentUserOnAccount.right.toUpperCase();
+                    if(currentUserAccessrightOnAccount == "R"){
+                        $scope.currentUserAccessrightOnAccount = 'Read';
+                    }else if( currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') == -1 && currentUserAccessrightOnAccount.indexOf('U') == -1){
+                        $scope.currentUserAccessrightOnAccount = "ReadWrite";
+                    }else if(currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') != -1 && currentUserAccessrightOnAccount.indexOf('U') != -1){
+                        $scope.currentUserAccessrightOnAccount = "Admin";
+                    }
+                }
+              }
+            });
         }
     ]).filter('nospace', function () {
     return function (value) {

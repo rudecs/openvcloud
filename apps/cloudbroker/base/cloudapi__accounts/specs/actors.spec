@@ -1,7 +1,7 @@
 [actor] @dbtype:mem,osis
 	"""
 	API Actor api for managing account
-	"""    
+	"""
 	method:create
 		"""
 		Create an extra account
@@ -19,7 +19,7 @@
 
 	method:list
 		"""
-		List accounts. 
+		List accounts.
 		"""
 		result:[], A json list, every element contains information of the list as a dictionary.
 
@@ -39,7 +39,17 @@
 	    var:accountId int,, id of the account
 	    var:userId str,, id of the user to give access
 	    var:accesstype str,, 'R' for read only access, 'W' for Write access
-	    result:bool 
+	    result:bool
+
+	method:updateUser
+	    """
+			Updates a user access rights.
+			Access rights can be 'R' or 'W'
+	    """
+	    var:accountId int,, id of the account
+	    var:userId str,, id of the user to give access
+	    var:accesstype str,, 'R' for read only access, 'W' for Write access
+	    result:bool
 
 	method:deleteUser
 		"""
@@ -51,7 +61,7 @@
 
 	method:get
 		"""
-		get account. 
+		get account.
 		"""
 		var:accountId int,, id of the account
 		result:dict A json dict
@@ -70,11 +80,10 @@
 		"""
 		var:accountId int,, id of the account
 		result:dict A json dict containing the available credit
-		
+
 	method:getCreditHistory
 		"""
 		Get all the credit transactions (positive and negative) for this account.
 		"""
 		var:accountId int,, id of the account
 		result:[], A json list with the transactions details.
-

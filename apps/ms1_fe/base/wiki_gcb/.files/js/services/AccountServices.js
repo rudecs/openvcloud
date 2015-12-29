@@ -32,21 +32,22 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            addUser: function(account, user, accessType) {
-                var accessString = '';
-                for (var x in accessType) {
-                    if (accessType[x])
-                        accessString += x;
-                }
-
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/addUser?accountId=' + account.id +
-                          '&accesstype=' + accessString + '&userId=' + user)
+            addUser: function(accountId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/addUser?accountId=' + accountId +
+                          '&accesstype=' + accessType + '&userId=' + user)
                     .then(
 											function(result) {return result.data;},
-											function(reason){return $q.reject(reason);});
+											function(reason){return $q.reject(reason);
+											});
             },
-            deleteUser: function(account, userId) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/deleteUser?accountId=' + account.id +
+						updateUser: function(accountId, userId, accesstype) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/updateUser?accountId=' + accountId +
+                                 '&userId=' + userId + '&accesstype=' + accesstype)
+                    .then(function(result) { return result.data; },
+                          function(reason) { return $q.reject(reason); });
+            },
+            deleteUser: function(accountId, userId) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/accounts/deleteUser?accountId=' + accountId +
                                  '&userId=' + userId)
                     .then(function(result) { return result.data; },
                           function(reason) { return reason.data; });
@@ -65,14 +66,29 @@ angular.module('cloudscalers.services')
                       function(reason){return $q.reject(reason);}
                     );
             },
-			getUsage: function(account, reference){
-				return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
-					'&reference=' + encodeURIComponent(reference)).
-					then(
-						function(result){
-                            return result.data;},
-						function(reason){return $q.reject(reason);}
-					);
-			}
+						getUsage: function(account, reference){
+							return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
+								'&reference=' + encodeURIComponent(reference)).
+								then(
+									function(result){
+			                            return result.data;},
+									function(reason){return $q.reject(reason);}
+								);
+						},
+						accountAccessRights: function() {
+                var accessRights = [{
+                  name: 'Read',
+                  value: 'R'
+                },
+                {
+                  name: 'Read/Write',
+                  value: 'CRX'
+                },
+                {
+                  name: 'Admin',
+                  value: 'ACDRUX'
+                }];
+                return accessRights;
+            },
         };
     });
