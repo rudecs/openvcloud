@@ -29,6 +29,7 @@ class cloudapi_cloudspaces(BaseActor):
         self._accountbilling = accountbilling.account()
         self._pricing = pricing.pricing()
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
+        self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl='U')
     @audit()
@@ -36,41 +37,77 @@ class cloudapi_cloudspaces(BaseActor):
         """
         Give a user access rights.
         Access rights can be 'R' or 'W'
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
+        :param:cloudspaceId: id of the cloudspace
+        :param:userId: id of the user to give access
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
 
         """
         cloudspaceId = int(cloudspaceId)
         if not j.core.portal.active.auth.userExists(userId):
-            raise exceptions.NotFound('Unexisting user')
+            raise exceptions.NotFound('Non-existing user')
         else:
-            cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
-            if userId in cloudspace_acl:
-                useracl = cloudspace_acl[userId]
-                if 'account_right' in useracl and len(set(accesstype)) < len(useracl['account_right']):
-                    # user already has same or higher access level
-                    raise exceptions.PreconditionFailed('User already has a higher access level')
-                else:
-                    # grant higher access level
-                    for ace in cloudspace.acl:
-                        if ace.userGroupId == userId and ace.type == 'U':
-                            ace.right = accesstype
-                            break
-                    else:
-                        ace = cloudspace.new_acl()
-                        ace.userGroupId = userId
-                        ace.type = 'U'
-                        ace.right = accesstype
+            return self._addACE(cloudspaceId, userId, accesstype, status='CONFIRMED')
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def addExternalUser(self, cloudspaceId, emailaddress, accesstype, **kwargs):
+        """
+        Give an unregistered user access rights by sending an invite email.
+        Access rights can be 'R' or 'W'
+        :param:cloudspaceId: id of the cloudspace
+        :param:emailaddress: emailaddress of the external user that will be invited
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
+        """
+        if self.systemodel.user.search({'emails': emailaddress})[1:]:
+            raise exceptions.PreconditionFailed('User already exists, '
+                                                'cannot invite an existing user ')
+        else:
+            updated = self._addACE(cloudspaceId, emailaddress, accesstype, status='INVITED')
+            if updated:
+                msg = j.apps.cloudapi.users.sendInviteLink(emailaddress, 'cloudspace',
+                                                     cloudspaceId, accesstype)
+                return msg
             else:
-                ace = cloudspace.new_acl()
-                ace.userGroupId = userId
-                ace.type = 'U'
-                ace.right = accesstype
-            self.models.cloudspace.set(cloudspace)
-            return True
+                return ""
+
+    def _addACE(self, cloudspaceId, userId, accesstype, status='CONFIRMED'):
+        """
+        Add a new ACE to the ACL of the cloudspace
+        :param cloudspaceId: d of the cloudspace
+        :param userId: userid for internal users or emailaddress for external users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param status: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully added
+        """
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
+        if userId in cloudspace_acl:
+            useracl = cloudspace_acl[userId]
+            if 'account_right' in useracl and len(set(accesstype)) < len(useracl['account_right']):
+                # user already has same or higher access level
+                raise exceptions.PreconditionFailed('User already has a higher access level')
+            else:
+                # grant higher access level
+                for ace in cloudspace.acl:
+                    if ace.userGroupId == userId and ace.type == 'U':
+                        ace.right = accesstype
+                        break
+                else:
+                    ace = cloudspace.new_acl()
+                    ace.userGroupId = userId
+                    ace.type = 'U'
+                    ace.status = status
+                    ace.right = accesstype
+        else:
+            ace = cloudspace.new_acl()
+            ace.userGroupId = userId
+            ace.type = 'U'
+            ace.right = accesstype
+            ace.status = status
+        self.models.cloudspace.set(cloudspace)
+        return True
 
     @authenticator.auth(acl='U')
     @audit()

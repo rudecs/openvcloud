@@ -22,6 +22,8 @@
 
 - display: Stop For Abusive Resource Usage
   action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+  hideon:
+  - HALTED
   data:
    machineId: $$id
    accountId: ${accountId}
@@ -204,7 +206,7 @@
   data:
    machineId: $$id
 
-- display: Move to a different Stack
+- display: Move to another CPU node
   action: "#movemachine"
 
 - display: Tag

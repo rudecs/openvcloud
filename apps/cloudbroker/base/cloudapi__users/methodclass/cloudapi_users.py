@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.mailclient
 from cloudbrokerlib.baseactor import BaseActor
@@ -273,3 +274,69 @@ class cloudapi_users(BaseActor):
                        matchingusers)
         else:
             return []
+
+    def sendInviteLink(self, emailaddress, resourcetype, resourceid, accesstype, **kwargs):
+        """
+        Send an invitation for a link to share a vmachine, cloudspace, account management
+        inviting a new user to register and access them
+
+        :param emailaddress: emailaddress of the user that will be invited
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :return True if email was was successfully sent
+        """
+
+        if not re.search('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$', emailaddress):
+            raise exceptions.PreconditionFailed('Specified email address is in an invalid format')
+
+        if resourcetype.lower() == 'account':
+            accountobj = self.models.account.get(resourceid)
+            resourcename =  accountobj.name
+        elif resourcetype.lower() == 'cloudspace':
+            cloudspaceobj = self.models.cloudspace.get(resourceid)
+            resourcename = cloudspaceobj.name
+        elif resourcetype.lower() == 'vmachine':
+            machineobj = self.models.vmachine.get(resourceid)
+            resourcename = machineobj.name
+
+        existinginvitationtoken = self.models.inviteusertoken.search({'email': emailaddress})[1:]
+
+        if existinginvitationtoken:
+            # Resend the same token in a new email for the newly shared resource
+            invitationtoken = self.models.inviteusertoken.get(existinginvitationtoken[0]['id'])
+        else:
+            # genrerate a new token
+            generatedtoken = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                                     for _ in xrange(64))
+            invitationtoken = self.models.inviteusertoken.new()
+            invitationtoken.id = generatedtoken
+            invitationtoken.email = emailaddress
+
+        invitationtoken.lastInvitationTime = int(time.time())
+        self.models.inviteusertoken.set(invitationtoken)
+
+        # Build up message subject, body and send it
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        toaddrs = [emailaddress]
+        args = {
+            'email': emailaddress,
+            'invitationtoken': invitationtoken.id,
+            'resourcetype': resourcetype,
+            'resourcename': resourcename,
+            'accesstype': accesstype,
+            'portalurl': j.apps.cloudapi.locations.getUrl()
+        }
+
+        body = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/invite_external_users.html', **args)
+        subject = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/invite_external_users.subject.txt', **args)
+
+        #j.clients.email.send(toaddrs, fromaddr, subject, body)
+
+        return 'User invitation email sent (from:%s, email:%s,subject:%s,body:%s)' % (fromaddr,
+                                                                                      emailaddress,
+                                                                                      subject,
+                                                                                      body)

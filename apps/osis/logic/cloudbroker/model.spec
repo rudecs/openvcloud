@@ -58,6 +58,7 @@
     prop:userGroupId str,,unique identification of user or group
     prop:type str,,user or group (U or G)
     prop:right str,,right string now RWD  (depending type of object this action can be anything each type of action represented as 1 letter)
+    prop:status str,CONFIRMED, whether the user is still INVITED or has already CONFIRMED (registered) in the system
 
 [rootmodel:CreditTransaction] @dbtype:osis
 	"""
@@ -275,3 +276,11 @@
     prop:name str,,Name of location
     prop:locationCode str,,Internal code for location
     prop:flag str,,Flag to use for this location
+
+[rootmodel:inviteusertoken]
+    """
+    A token emailed to a user for sharing machine, cloudspace, accounts management
+    """
+    prop:id str,, the generated invite token
+    prop:email str,, Email of the user that has been invited
+    prop:lastInvitationTime int,,epoch time of last invitation sent, in seconds (can be later used if we want tokens to expire)
