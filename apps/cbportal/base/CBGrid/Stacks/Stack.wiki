@@ -39,7 +39,8 @@ h3. Stack: ${name}
   input:
    - type: message
      messagetype: warning
-     message: Putting Node offline will prevent new VMs to be created on this node!
+     message: Putting Node offline will prevent new Virtual Machines to be created on this node!</br>
+              All Virtual Machines running on this node will be turned off!
    - message
 {% endif %}
 }}
