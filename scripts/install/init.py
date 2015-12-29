@@ -10,6 +10,7 @@ parser.add_option("-b", "--backend", dest="backend", help="backend: ms1, docker"
 parser.add_option("-G", "--git-user", dest="gituser", help="gitlab username")
 parser.add_option("-P", "--git-pass", dest="gitpass", help="gitlab password")
 parser.add_option("-e", "--environment", dest="environment", help="environment name (eg: be-test-1)")
+parser.add_option("-d", "--domain", dest="domain", help="domain name (default: demo.greenitglobe.com)")
 
 group = OptionGroup(parser, "mothership1 backend")
 group.add_option("-u", "--user", dest="user", help="api username")
@@ -46,6 +47,7 @@ if options.backend not in targets:
 	print '[-] unknown or missing backend'
 	j.application.stop()
 
+domain = options.domain if options.domain else 'demo.greenitglobe.com'
 
 """
 Stage 2: settings hardcoded values
@@ -58,6 +60,7 @@ vmpassword = ''.join(random.choice(choice) for _ in range(12))
 
 print '[+] installing environement: %s' % options.environment
 print '[+] master password generated: %s' % vmpassword
+print '[+] domain name: %s' % domain
 
 
 """
@@ -106,5 +109,5 @@ if options.backend == 'docker':
 """
 Stage 5: installing stuff
 """
-ovc.initAYSGitVM(machine, gitlink, options.gituser, options.gitpass, vmpassword, delete=True)
+ovc.initAYSGitVM(machine, gitlink, options.gituser, options.gitpass, vmpassword, domain, delete=True)
 
