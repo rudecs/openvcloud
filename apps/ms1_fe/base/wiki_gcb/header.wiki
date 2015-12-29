@@ -43,7 +43,7 @@
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}
-                                      <i ng-click="goToAccountSettings($event)" class="fa fa-users right txt-dark-blue" title="Account settings"></i>
+                                      <i ng-click="goToAccountSettings($event, account.id)" class="fa fa-users right txt-dark-blue" title="Account settings"></i>
                                     </a>
                                 </h4>
                               </div>
