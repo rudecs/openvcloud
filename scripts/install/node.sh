@@ -325,4 +325,11 @@ echo "[+] setting up backplane1"
 apt-get install -y openvswitch-switch
 ifup --allow=ovs backplane1
 
+cat << EOF >> /etc/network/interfaces.d/Backplane1.conf
+ post-up ovs-vsctl add-port backplane1 gw_mgmt-2314 tag=2314 -- set Interface gw_mgmt-2314 type=patch options:peer=backplane1-2314
+ post-up ovs-vsctl add-port backplane1 vxbackend-2313 tag=2313 -- set Interface vxbackend-2313 type=patch options:peer=backplane1-2313
+ post-up ovs-vsctl add-port backplane1 mgmt-2311 tag=2311 -- set Interface mgmt-2311 type=patch options:peer=backplane1-2311
+ post-up ovs-vsctl add-port backplane1 public-2312 tag=2312 -- set Interface public-2312 type=patch options:peer=backplane1-2312
+EOF
+
 echo "[+] machine ready"
