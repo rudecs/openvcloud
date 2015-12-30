@@ -9,7 +9,7 @@
         """
         var:id int,, id of the computenode
         var:gid int,, the grid this computenode belongs to
-        var:status str,, status (ENABLED, DISABLED, HALTED).
+        var:status str,, status (ENABLED, MAINTENANCE, DECOMMISSIONED).
         result: str
 
     method:btrfs_rebalance
@@ -31,10 +31,22 @@
         var:message str,,message. Must be less than 30 characters
         result: str
 
-    method:disable
+    method:maintenance
+        """
+        Migrates or stop all vms
+        Set the status to 'MAINTENANCE'
+        """
+        var:id int,, id of the computenode
+        var:gid int,, the grid this computenode belongs to
+        var:vmaction str,, what to do with running vms move or stop
+        var:message str,,message. Must be less than 30 characters
+        result: str
+
+
+    method:decommission
         """
         Migrates all machines to different computes
-        Set the status to 'DISABLED'
+        Set the status to 'DECOMMISSIONED'
         """
         var:id int,, id of the computenode
         var:gid int,, the grid this computenode belongs to

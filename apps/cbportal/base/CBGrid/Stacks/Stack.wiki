@@ -4,46 +4,63 @@
 {% if id %}
 
 h3. Stack: ${name}
+{% if status != 'DECOMMISSIONED' %}
 {{actions:
 
-{% if status not in ('DISABLED', 'ENABLED') %}
-- display: Online
+{% if status == 'MAINTENANCE' %}
+- display: Enable
   action: /restmachine/cloudbroker/computenode/enable
   data:
    id: $$id
    gid: ${gid}
   input:
-   - message
-{% endif %}
-
-{% if status not in ('DISABLED',) %}
-- display: Disable
-  action: /restmachine/cloudbroker/computenode/disable
-  data:
-   id: $$id
-   gid: ${gid}
-  input:
-   - type: message
-     messagetype: warning
-     message: Disabling Node will put storage offline and move all VMs to another node!
-   - message
+   - type: text
+     name: message
+     label: Reason
 {% endif %}
 
 {% if status == 'ENABLED' %}
-- display: Offline
-  action: /restmachine/cloudbroker/computenode/setStatus
+- display: Put in Maintenance
+  action: /restmachine/cloudbroker/computenode/maintenance
   data:
    id: $$id
    gid: ${gid}
-   status: OFFLINE
   input:
    - type: message
      messagetype: warning
-     message: Putting Node offline will prevent new Virtual Machines to be created on this node!</br>
-              All Virtual Machines running on this node will be turned off!
-   - message
+     message: Putting Node in Maintenance!</br>
+              This will prevent new Virtual Machines to be created on this Node!</br>
+              All Virtual Machines running on this Node will be moved or turned off.
+   - type: dropdown
+     name: vmaction
+     label: Virtual Machine Action
+     values:
+      - value: move
+        label: Move All Virtual Machines
+      - value: stop
+        label: Stop All Virtual Machines
+
+   - type: text
+     name: message
+     label: Reason
 {% endif %}
+
+- display: Decommission
+  action: /restmachine/cloudbroker/computenode/decommission
+  data:
+   id: $$id
+   gid: ${gid}
+  input:
+   - type: message
+     messagetype: danger
+     message: Decommissioning a Node is irreversible.</br>
+              You will NOT be able to reenable this node!</br>
+              All Virtual Machines will be moved to another node.
+   - type: text
+     name: message
+     label: Reason
 }}
+{% endif %}
 
 * *ApiURL*: ${apiUrl}
 * *Description*: ${descr}
