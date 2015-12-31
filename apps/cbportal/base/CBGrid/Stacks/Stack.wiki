@@ -10,6 +10,7 @@ h3. Stack: ${name}
 {% if status == 'MAINTENANCE' %}
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
+  reload: false
   data:
    id: $$id
    gid: ${gid}
@@ -22,6 +23,7 @@ h3. Stack: ${name}
 {% if status == 'ENABLED' %}
 - display: Put in Maintenance
   action: /restmachine/cloudbroker/computenode/maintenance
+  reload: false
   data:
    id: $$id
    gid: ${gid}

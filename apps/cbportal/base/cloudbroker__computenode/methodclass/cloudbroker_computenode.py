@@ -63,7 +63,9 @@ class cloudbroker_computenode(BaseActor):
     def enable(self, id, gid, message, **kwargs):
         stack = self._getStack(id, gid)
         status = self._changeStackStatus(stack, 'ENABLED')
-        self.acl.executeJumpscript('cloudscalers', 'startallmachines', gid=gid, nid=int(stack['referenceId']))
+        job = self.acl.scheduleCmd(gid, int(stack['referenceId']), 'cloudscalers', 'startallmachines', args={}, log=True, timeout=600, wait=True)
+        kwargs['ctx'].events.waitForJob(job, 'Started all Virtual Machines on Node', 'Failed to start Virtual Machines')
+        kwargs['ctx'].events.sendMessage('Job Started', 'Starting all Virtual Machines on Node')
         return status
 
     @auth(['level2', 'level3'], True)
@@ -80,9 +82,16 @@ class cloudbroker_computenode(BaseActor):
         stack = self._getStack(id, gid)
         self._changeStackStatus(stack, "MAINTENANCE")
         if vmaction == 'stop':
-            self.acl.executeJumpscript('cloudscalers', 'stopallmachines', gid=gid, nid=int(stack['referenceId']))
+            job = self.acl.scheduleCmd(gid, int(stack['referenceId']), 'cloudscalers', 'stopallmachines', args={}, log=True, timeout=600, wait=True)
+            kwargs['ctx'].events.waitForJob(job, 'Stopped all Virtual Machines on Node', 'Failed to stop Virtual Machines')
+            kwargs['ctx'].events.sendMessage('Job Started', 'Stopping all Virtual Machines on Node')
         elif vmaction == 'move':
-            self._move_virtual_machines(stack)
+            kwargs['ctx'].events.runAsync(self._move_virtual_machines,
+                                          args=(stack,),
+                                          kwargs={},
+                                          title='Moving Virtual Machines',
+                                          success='Successfully moved Virtual Machines',
+                                          error='Failed to move Virtual Machines')
         return True
 
     def _move_virtual_machines(self, stack):
@@ -90,12 +99,15 @@ class cloudbroker_computenode(BaseActor):
         stackmachines = self.models.vmachine.search({'stackId': stack['id'],
                                                      'status': {'$nin': ['DESTROYED', 'ERROR']}
                                                     })[1:]
+        othernodes = self.scl.node.search({'gid': stack['gid'], 'active': True, 'roles': 'fw'})[1:]
+        if not othernodes:
+            raise exceptions.ServiceUnavailable('There is no other Firewall node available to move the Virtual Firewall to')
+
         for machine in stackmachines:
-            machines_actor.moveToDifferentComputeNode(machine['id'], reason="Disabling source", force=True)
+            machines_actor.moveToDifferentComputeNode(machine['id'], reason='Disabling source', force=True)
 
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
-        othernodes = self.scl.node.search({'gid': stack['gid'], 'active': True, 'roles': 'fw'})[1:]
         for vfw in vfws:
             randomnode = random.choice(othernodes)
             j.apps.jumpscale.netmgr.fw_move(vfw['guid'], randomnode['id'])
@@ -115,7 +127,13 @@ class cloudbroker_computenode(BaseActor):
                                          args=args)
         if job['state'] != 'OK':
             raise exceptions.Error("Failed to put storage node offline")
-        self._move_virtual_machines(stack)
+
+        kwargs['ctx'].events.runAsync(self._move_virtual_machines,
+                                      args=(stack,),
+                                      kwargs={},
+                                      title='Moving Virtual Machines',
+                                      success='Successfully moved Virtual Machines',
+                                      error='Failed to move Virtual Machines')
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
