@@ -24,6 +24,7 @@ h2. Cloud Space: ${name}
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
   action: /restmachine/cloudbroker/cloudspace/deployVFW
+  reload: false
   input:
   - reason
   data:
@@ -33,6 +34,7 @@ h2. Cloud Space: ${name}
 
 - display: Delete CloudSpace
   action: /restmachine/cloudbroker/cloudspace/destroy
+  reload: false
   data:
    cloudspaceId: $$id
    accountId: ${accountId}

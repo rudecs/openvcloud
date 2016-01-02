@@ -36,12 +36,21 @@ class cloudbroker_cloudspace(BaseActor):
         status = cloudspace['status']
         cloudspace['status'] = 'DESTROYED'
         self.models.cloudspace.set(cloudspace)
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._destroy,
+                            args=(cloudspace, status, reason, ctx),
+                            kwargs={},
+                            title='Deleting Cloud Space',
+                            success='Finished deleting Cloud Space',
+                            error='Failed to delete Cloud Space')
 
+    def _destroy(self, cloudspace, status, reason, ctx):
         try:
             #delete machines
-            for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
+            for machine in self.models.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
+                    ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Machine %s' % machine['name'])
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
@@ -50,7 +59,8 @@ class cloudbroker_cloudspace(BaseActor):
 
         #delete routeros
         gid = cloudspace['gid']
-        self._destroyVFW(gid, cloudspaceId)
+        ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Firewall')
+        self._destroyVFW(gid, cloudspace['id'])
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
         if cloudspace['publicipaddress']:
@@ -113,7 +123,14 @@ class cloudbroker_cloudspace(BaseActor):
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
-        return self.cloudspaces_actor.deploy(cloudspaceId)
+        kwargs['ctx'].events.runAsync(self.cloudspaces_actor.deploy,
+                                      args=(cloudspaceId,),
+                                      kwargs={},
+                                      title='Deploying Cloud Space',
+                                      success='Finished deploying Cloud Space',
+                                      error='Failed to deploy Cloud Space',
+                                      )
+        return
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -127,7 +144,13 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         self.destroyVFW(cloudspaceId, **kwargs)
-        return self.cloudspaces_actor.deploy(cloudspaceId)
+        kwargs['ctx'].events.runAsync(self.cloudspaces_actor.deploy,
+                                      args=(cloudspaceId,),
+                                      kwargs={},
+                                      title='Redeploying Cloud Space',
+                                      success='Finished redeploying Cloud Space',
+                                      error='Failed to redeploy Cloud Space',
+                                      )
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

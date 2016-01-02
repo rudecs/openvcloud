@@ -64,8 +64,8 @@ class cloudbroker_computenode(BaseActor):
         stack = self._getStack(id, gid)
         status = self._changeStackStatus(stack, 'ENABLED')
         job = self.acl.scheduleCmd(gid, int(stack['referenceId']), 'cloudscalers', 'startallmachines', args={}, log=True, timeout=600, wait=True)
-        kwargs['ctx'].events.waitForJob(job, 'Started all Virtual Machines on Node', 'Failed to start Virtual Machines')
-        kwargs['ctx'].events.sendMessage('Job Started', 'Starting all Virtual Machines on Node')
+        kwargs['ctx'].events.waitForJob(job, 'Started all Virtual Machines on Node', 'Failed to start Virtual Machines', 'Enabling Node')
+        kwargs['ctx'].events.sendMessage('Enabling Node', 'Starting all Virtual Machines on Node')
         return status
 
     @auth(['level2', 'level3'], True)
@@ -81,20 +81,20 @@ class cloudbroker_computenode(BaseActor):
             raise exceptions.BadRequest("VMAction should either be move or stop")
         stack = self._getStack(id, gid)
         self._changeStackStatus(stack, "MAINTENANCE")
+        title = 'Putting Node in Maintenance'
         if vmaction == 'stop':
             job = self.acl.scheduleCmd(gid, int(stack['referenceId']), 'cloudscalers', 'stopallmachines', args={}, log=True, timeout=600, wait=True)
-            kwargs['ctx'].events.waitForJob(job, 'Stopped all Virtual Machines on Node', 'Failed to stop Virtual Machines')
-            kwargs['ctx'].events.sendMessage('Job Started', 'Stopping all Virtual Machines on Node')
+            kwargs['ctx'].events.waitForJob(job, 'Stopped all Virtual Machines on Node', 'Failed to stop Virtual Machines', title)
         elif vmaction == 'move':
             kwargs['ctx'].events.runAsync(self._move_virtual_machines,
-                                          args=(stack,),
+                                          args=(stack, title, kwargs['ctx']),
                                           kwargs={},
-                                          title='Moving Virtual Machines',
-                                          success='Successfully moved Virtual Machines',
+                                          title='Putting Node in Maintenance',
+                                          success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines')
         return True
 
-    def _move_virtual_machines(self, stack):
+    def _move_virtual_machines(self, stack, title, ctx):
         machines_actor = j.apps.cloudbroker.machine
         stackmachines = self.models.vmachine.search({'stackId': stack['id'],
                                                      'status': {'$nin': ['DESTROYED', 'ERROR']}
@@ -104,12 +104,14 @@ class cloudbroker_computenode(BaseActor):
             raise exceptions.ServiceUnavailable('There is no other Firewall node available to move the Virtual Firewall to')
 
         for machine in stackmachines:
+            ctx.events.sendMessage(title, 'Moving Virtual Machine %s' % machine['name'])
             machines_actor.moveToDifferentComputeNode(machine['id'], reason='Disabling source', force=True)
 
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
         for vfw in vfws:
             randomnode = random.choice(othernodes)
+            ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
             j.apps.jumpscale.netmgr.fw_move(vfw['guid'], randomnode['id'])
 
     @auth(['level2', 'level3'], True)
@@ -128,12 +130,14 @@ class cloudbroker_computenode(BaseActor):
         if job['state'] != 'OK':
             raise exceptions.Error("Failed to put storage node offline")
 
-        kwargs['ctx'].events.runAsync(self._move_virtual_machines,
-                                      args=(stack,),
-                                      kwargs={},
-                                      title='Moving Virtual Machines',
-                                      success='Successfully moved Virtual Machines',
-                                      error='Failed to move Virtual Machines')
+        ctx = kwargs['ctx']
+        title = 'Decommissioning Node'
+        ctx.events.runAsync(self._move_virtual_machines,
+                            args=(stack, title, ctx),
+                            kwargs={},
+                            title=title,
+                            success='Successfully moved all Virtual Machines.</br>Decommissioning finished.',
+                            error='Failed to move all Virtual Machines')
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):

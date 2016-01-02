@@ -28,6 +28,7 @@ h2. Private Network: $$id
 
 - display: Reset VFW
   action: /restmachine/cloudbroker/cloudspace/resetVFW
+  reload: false
   data:
    cloudspaceId: ${domain}
   input:
