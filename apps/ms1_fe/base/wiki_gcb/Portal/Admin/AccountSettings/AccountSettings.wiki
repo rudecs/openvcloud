@@ -5,12 +5,12 @@
       <div class="share-cloudspace-message share-account-message alert alert-{[shareAccountStyle]} width-40">{[shareAccountTxt]}</div>
   </div>
   <div class="margin-top-large block padding-top-large">
-    <em ng-show="currentUserAccessrightOnCloudSpace != 'Read'">Provide other users access to your Cloud Space by adding their OpenvCloud user name.</em>
-    <em ng-show="currentUserAccessrightOnCloudSpace == 'Read'">Users access to {[currentSpace.name]} cloud space.</em>
+    <em ng-show="currentUserAccessrightOnAccount == 'Admin'">Provide other users access to your account by adding their OpenvCloud user name.</em>
+    <em ng-show="currentUserAccessrightOnAccount != 'Admin'">Users access to account {[currentAccount.name]}.</em>
   </div>
   <div class="table-responsive margin-top-medium">
       <table class="table users-table">
-          <tr class="header" ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
+          <tr class="header" ng-show="currentUserAccessrightOnAccount == 'Admin'">
               <th class="username-text-container">
                   <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
               </th>
@@ -30,8 +30,8 @@
                           <span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
                       </span>
                   </td>
-              <td class="txt-center" ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
-                  <a ng-click="loadEditUser(currentSpace, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
+              <td class="txt-center" ng-show="currentUserAccessrightOnAccount == 'Admin'">
+                  <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
                   <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" title="Delete user access"></a>
               </td>
           </tr>

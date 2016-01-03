@@ -43,7 +43,7 @@
                             <div class="panel-heading">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}
-                                      <i ng-click="goToAccountSettings($event, account.id)" class="fa fa-users right txt-dark-blue" title="Account settings"></i>
+                                      <i ng-click="goToAccountSettings($event, account.id)" ng-show="account.cuurentAccountInAccountList != 'NoAccessOnAccount'" class="fa fa-users right txt-dark-blue" title="Account settings"></i>
                                     </a>
                                 </h4>
                               </div>
@@ -61,7 +61,7 @@
                   </div>
                     <ul class="create-cloudspace-container">
                       <li>
-                         <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
+                         <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace" ng-show="currentUserAccessrightOnAccount != 'Read' && currentUserAccessrightOnAccount != 'NoAccessOnAccount'">New Cloud Space...</a>
                       </li>
                     </ul>
                     <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
