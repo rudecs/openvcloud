@@ -117,31 +117,50 @@ class CloudBroker(object):
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             return -1
-        # return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
-        l = len(capacityinfo)
-        i = random.randint(0, l - 1)
-        provider = capacityinfo[i]
+
+        provider = capacityinfo[0] # is sorted by least used
         return provider
 
     def chooseProvider(self, machine):
-        stack = models.stack.get(machine.stackId)
-        if stack.status != 'ENABLED':
-            cloudspace = models.cloudspace.get(machine.cloudspaceId)
-            newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
-            if newstack == -1:
-                raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
-            machine.stackId = newstack['id']
-            models.vmachine.set(machine)
-            return False
+        cloudspace = models.cloudspace.get(machine.cloudspaceId)
+        newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
+        if newstack == -1:
+            raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
+        machine.stackId = newstack['id']
+        models.vmachine.set(machine)
         return True
 
     def getCapacityInfo(self, gid, imageId):
-        # group all units per type
         resourcesdata = list()
+        activesessions = []
+        for gidnid, session in j.clients.agentcontroller.get().listSessions().iteritems():
+            # skip nodes that didnt respond in last 60 seconds
+            if session[0] < time.time() - 60:
+                continue
+            gid, nid = gidnid.split('_')
+            gid, nid = int(gid), int(nid)
+            activesessions.append((gid, nid))
+
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
+        sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
+                nodekey = (stack['gid'], int(stack['referenceId']))
+                if nodekey not in activesessions:
+                    continue
+
+                # search for all vms running on the stacks
+                usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                  '$query': {'stackId': stack['id'],
+                                                             'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
+                                                  }
+                                                 )[1:]
+                if usedvms:
+                    stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
+                else:
+                    stack['usedmemory'] = 0
                 resourcesdata.append(stack)
+        resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata
 
     def stackImportSizes(self, stackId):
