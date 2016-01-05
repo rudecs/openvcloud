@@ -113,7 +113,7 @@ for type, path in AYS.iteritems():
     branchname, tagname = getVersions(type)
     repo = j.clients.git.get(path)
     if tag_exists(repo, tagname):
-        print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join(repo.account, repo.name))
+        print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name)))
         j.application.stop(1)
 
 for type, repos in REPOS.iteritems():
