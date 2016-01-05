@@ -31,8 +31,8 @@ sshservices.sort(key = lambda x: x.instance)
 nodeservices = filter(lambda x:x.instance not in hosts, sshservices)
 cloudservices = filter(lambda x:x.instance in hosts, sshservices)
 
-def _get_update_cmd(account, branch, tag):
-    cmd = "jscode update -a '%s' -n '*' -d " % account
+def _get_update_cmd(account, repo, branch, tag):
+    cmd = "jscode update -a '%s' -n '%s' -d " % (account, repo)
     if tag:
         cmd += "-t %s" % tag
     elif branch:
@@ -41,8 +41,9 @@ def _get_update_cmd(account, branch, tag):
 
 def update(nodessh):
     print '[+] updating host: %s' % nodessh.instance
-    nodessh.execute(_get_update_cmd('jumpscale', options.branch_js, options.tag_js))
-    nodessh.execute(_get_update_cmd('0-complexity', options.branch_ovc, options.tag_ovc))
+    nodessh.execute(_get_update_cmd('jumpscale', '*', options.branch_js, options.tag_js))
+    nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
+    nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
 
 def restart(nodessh):
     print '[+] restarting host\'s services: %s' % nodessh.instance
@@ -172,8 +173,9 @@ def applyOnServices(services, func, kwargs=None):
 
 def updateLocal():
     print '[+] Updating local system'
-    j.do.execute(_get_update_cmd('jumpscale', options.branch_js, options.tag_js))
-    j.do.execute(_get_update_cmd('0-complexity', options.branch_ovc, options.tag_ovc))
+    j.do.execute(_get_update_cmd('jumpscale', '*', options.branch_js, options.tag_js))
+    j.do.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
+    j.do.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
 
 def updateNodes():
     applyOnServices(nodeservices, update)
