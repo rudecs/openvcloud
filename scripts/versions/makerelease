@@ -121,7 +121,7 @@ for type, repos in REPOS.iteritems():
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
         print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
-        repo.repo.git.fetch('origin', '%s' % (branchname))
+        repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
         repo.repo.git.checkout(branchname)
         make_tag(repo, tagname)
         #repo.repo.git.push('--tags')
@@ -130,7 +130,7 @@ for type, path in AYS.iteritems():
     branchname, tagname = getVersions(type)
     repo = j.clients.git.get(path)
 
-    repo.repo.git.fetch('origin', '%s' % (branchname))
+    repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
     repo.repo.git.checkout(branchname)
     changeversion(repo, getTagTargets())
     repo.commit('Tagging %s' % tagname)
