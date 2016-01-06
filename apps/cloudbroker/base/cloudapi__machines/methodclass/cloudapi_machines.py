@@ -357,9 +357,9 @@ class cloudapi_machines(BaseActor):
         if provider:
             node = provider.client.ex_get_node_details(machine.referenceId)
         else:
-            return provider, None
+            return provider, None, machine
 
-        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or state
+        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
         if realstatus != machine.status:
             if realstatus == 'DESTROYED':
                 realstatus = 'HALTED'
