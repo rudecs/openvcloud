@@ -14,6 +14,13 @@ class cloudbroker_machine(BaseActor):
         self.actors = self.cb.actors.cloudapi
         self.acl = j.clients.agentcontroller.get()
 
+    def _checkMachine(self, machineId):
+        vmachines = self.models.vmachine.search({'id': machineId})[1:]
+        if not vmachines:
+            raise exceptions.NotFound("Machine with id %s does not exists" % machineId)
+
+        return vmachines[0]
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
@@ -423,4 +430,45 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def detachPublicNetwork(self, machineId, **kwargs):
         return self.actors.machines.detachPublicNetwork(machineId)
-    
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def addUser(self, machineId, username, accesstype, **kwargs):
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        param:machineId id of the machine
+        param:username id of the user to give access or emailaddress to invite an external user
+        param:accesstype 'R' for read only access, 'W' for Write access
+        result bool
+        """
+        machineId = self._checkMachine(machineId)
+        machineId = machineId['id']
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+            added = self.actors.machines.addUser(machineId, userId, accesstype)
+        else:
+            added = self.actors.machines.addExternalUser(machineId, username, accesstype)
+
+        if not added:
+            raise exceptions.PreconditionFailed('User already has same access level to owning '
+                                                'account or cloudspace')
+        return True
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def deleteUser(self, machineId, username, **kwargs):
+        """
+        Delete a user from the account
+        """
+        machineId = self._checkMachine(machineId)
+        machineId = machineId['id']
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+        else:
+            #external user, delete ACE that was added using emailaddress
+            userId = username
+        self.actors.machines.deleteUser(machineId, userId)
+        return True

@@ -99,10 +99,6 @@ class cloudapi_users(BaseActor):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
-
     def _isValidPassword(self, password):
         if len(password) < 8 or len (password) > 80:
             return False
@@ -320,12 +316,23 @@ class cloudapi_users(BaseActor):
         # Build up message subject, body and send it
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         toaddrs = [emailaddress]
+
+        if set(accesstype) == set('ARCXDU'):
+            accessrole = 'Admin'
+        elif set(accesstype) == set('RCX'):
+            accessrole = 'Write'
+        elif set(accesstype) == set('R'):
+            accessrole = 'Read'
+        else:
+            raise exceptions.PreconditionFailed('Unidentified access rights (%s) have been set.' %
+                                                accesstype)
+
         args = {
             'email': emailaddress,
             'invitationtoken': invitationtoken.id,
             'resourcetype': resourcetype,
             'resourcename': resourcename,
-            'accesstype': accesstype,
+            'accessrole': accessrole,
             'portalurl': j.apps.cloudapi.locations.getUrl()
         }
 
@@ -334,9 +341,6 @@ class cloudapi_users(BaseActor):
         subject = j.core.portal.active.templates.render(
                 'cloudbroker/email/users/invite_external_users.subject.txt', **args)
 
-        #j.clients.email.send(toaddrs, fromaddr, subject, body)
+        j.clients.email.send(toaddrs, fromaddr, subject, body)
 
-        return 'User invitation email sent (from:%s, email:%s,subject:%s,body:%s)' % (fromaddr,
-                                                                                      emailaddress,
-                                                                                      subject,
-                                                                                      body)
+        return True

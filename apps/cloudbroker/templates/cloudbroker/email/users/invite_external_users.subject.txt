@@ -1,1 +1,1 @@
-Invitation to share the {{ resourcetype }} {{ resourcename }}}
+Invitation to share the {{ resourcetype }} {{ resourcename }}

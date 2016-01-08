@@ -235,6 +235,32 @@
   reload: false
   data:
    machineId: $$id
+
+- display: Grant User Access
+  hide: true
+  action: /restmachine/cloudbroker/machine/addUser
+  data:
+   machineId: $$id
+  input:
+  - name: username
+    label: Username or email address (an invitation will be sent to unregistered emails)
+    type: text
+  - name: accesstype
+    label: ACL
+    type: dropdown
+    values:
+     - label: Admin
+       value: ARCXDU
+     - label: Write
+       value: RCX
+     - label: Read
+       value: R
+
+- display: Revoke User Access
+  action: /restmachine/cloudbroker/machine/deleteUser
+  hide: true
+  data:
+   machineId: $$id
 }}
 
 {{movemachine: machineId:$$id}}

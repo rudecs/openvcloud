@@ -73,3 +73,14 @@
         var:usernameregex str,,regex of the usernames to searched for
         var:limit int,5,the number of usernames to return
         result:list,,list of dicts with the username and url of the gravatar of the user
+
+    method:registerUser @noauth
+        """
+        Registers an invited user
+        """
+        var:inviteusertoken str,, user invitation token
+        var:emailaddress str,, email address
+        var:username str,, username to be assigned to user
+        var:password str,, password
+        var:confirmpassword str,, password confirmation
+        result:bool

@@ -38,4 +38,5 @@
         var:username str,, id of user
         var:emailaddress str,, id of user
         var:password str,, id of user
+        var:groups str,None,comma separated list of groups this user belongs to @optional
         result:bool

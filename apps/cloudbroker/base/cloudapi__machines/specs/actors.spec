@@ -242,7 +242,7 @@
         """
         var:machineId int,, ID of a vmachine to share
         var:userId str,, ID of a user to share with
-        var:accessType str,, 'R' for read only access, 'W' for Write access
+        var:accesstype str,, 'R' for read only access, 'W' for Write access
         result:bool
         
     method:attachPublicNetwork
@@ -257,4 +257,14 @@
         Revokes user's access to a vmachine
         """
         var:machineId int,, ID of a vmachine
+        result:bool
+
+    method:addExternalUser
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        """
+        var:machineId int,, id of the cloudspace
+        var:emailaddress str,, email of the external user to give access
+        var:accesstype str,, 'R' for read only access, 'W' for Write access
         result:bool

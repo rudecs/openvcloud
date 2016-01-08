@@ -57,6 +57,7 @@
 		"""
 	    var:accountId int,, id of the account
 		var:userId str,, id of the user to remove
+		var:recursivedelete bool,False, recursively delete access rights from owned cloudspaces and vmachines @optional
 		result: bool
 
 	method:get
@@ -87,3 +88,13 @@
 		"""
 		var:accountId int,, id of the account
 		result:[], A json list with the transactions details.
+
+    method:addExternalUser
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        """
+        var:accountId int,, id of the cloudspace
+        var:emailaddress str,, email of the external user to give access
+        var:accesstype str,, 'R' for read only access, 'W' for Write access
+        result:bool

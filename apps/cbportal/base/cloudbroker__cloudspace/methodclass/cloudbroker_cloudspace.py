@@ -199,11 +199,12 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
         return True
 
-    def _checkUser(self, username):
-        user = self.syscl.user.simpleSearch({'id':username})
-        if not user:
-            raise exceptions.NotFound('Username "%s" not found' % username)
-        return user[0]
+    def _checkCloudspace(self, cloudspaceId):
+        cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
+        if not cloudspaces:
+            raise exceptions.NotFound("Cloud space with id %s does not exists" % cloudspaceId)
+
+        return cloudspaces[0]
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -212,31 +213,39 @@ class cloudbroker_cloudspace(BaseActor):
         Give a user access rights.
         Access rights can be 'R' or 'W'
         param:accountname id of the account
-        param:username id of the user to give access
+        param:username id of the user to give access or emailaddress to invite an external user
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
+        cloudspace = self._checkCloudspace(cloudspaceId)
+        cloudspaceId = cloudspace['id']
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+            added = self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
+        else:
+            added = self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
 
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
+        if not added:
+            raise exceptions.PreconditionFailed('User already has same access level to owning '
+                                                'account')
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteUser(self, cloudspaceId, username, **kwargs):
+    def deleteUser(self, cloudspaceId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
         """
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudspaces_actor.deleteUser(cloudspaceId, userId)
+        cloudspace = self._checkCloudspace(cloudspaceId)
+        cloudspaceId = cloudspace['id']
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+        else:
+            #external user, delete ACE that was added using emailaddress
+            userId = username
+        self.cloudspaces_actor.deleteUser(cloudspaceId, userId, recursivedelete)
         return True
 
     @auth(['level1', 'level2', 'level3'])

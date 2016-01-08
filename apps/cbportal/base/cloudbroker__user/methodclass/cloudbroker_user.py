@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from JumpScale.portal.portal import exceptions
 import md5
 import re
 
@@ -45,22 +46,15 @@ class cloudbroker_user(BaseActor):
         self.syscl.user.set(result)
         return True
     
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
-    
     @auth(['level1', 'level2', 'level3'])
-    def create(self, username, emailaddress, password, **kwargs):
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        if not self._isValidUserName(username):
-            ctx.start_response('409', headers)
-            return 'Username may not exceed 20 characters and may only contain a-z and 0-9'
-        check, result = self._checkUser(username)
-        if check:
-            ctx.start_response('409', headers)
-            return "Username %s already exists" % username
-        return j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)
+    def create(self, username, emailaddress, password, groups, **kwargs):
+        groups = groups or []
+        created = j.core.portal.active.auth.createUser(username, password, emailaddress, groups,
+                                                       None)
+        if created:
+            self.cb.updateResourceInvitations(username, emailaddress)
+
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

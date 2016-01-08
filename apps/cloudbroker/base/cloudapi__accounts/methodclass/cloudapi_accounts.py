@@ -9,46 +9,111 @@ class cloudapi_accounts(BaseActor):
     API Actor api for managing account
 
     """
+    def __init__(self):
+        super(cloudapi_accounts, self).__init__()
+        self.systemodel = j.clients.osis.getNamespace('system')
+
     @authenticator.auth(acl='A')
     @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
-        Give a user access rights.
+        Give a registered user access rights.
         Access rights can be 'R' or 'W'
-        param:accountId id of the account
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
-        """
-        if not self.models.account.exists(accountId):
-            raise exceptions.NotFound('Non existing accountId')
+        :param:accountId id of the account
+        :param:userId: id or emailaddress of the user to give access
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
 
-        if not j.core.portal.active.auth.userExists(userId):
-            raise exceptions.NotFound('Non existing userId')
+        """
+        user = self.cb.checkUser(userId)
+        if not user:
+            raise exceptions.NotFound("User is not registered on the system")
+        else:
+            # Replace email address with ID
+            userId = user['id']
+
+        return self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
+
+    @authenticator.auth(acl='A')
+    @audit()
+    def addExternalUser(self, accountId, emailaddress, accesstype, **kwargs):
+        """
+        Give an unregistered user access rights by sending an invite email.
+        Access rights can be 'R' or 'W'
+        :param:accountId id of the account
+        :param:emailaddress: emailaddress of the unregistered user that will be invited
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
+        """
+        if self.systemodel.user.search({'emails': emailaddress})[1:]:
+            raise exceptions.PreconditionFailed('User is already registered on the system, '
+                                                'please add as a normal user')
+
+        self._addACE(accountId, emailaddress, accesstype, userstatus='INVITED')
+        try:
+            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'account', accountId, accesstype)
+            return True
+        except:
+            self.deleteUser(accountId, emailaddress, recursivedelete=False)
+            raise
+
+    def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED'):
+        """
+        Add a new ACE to the ACL of the account
+        :param accountId: id of the account
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully added
+        """
+        accountId = int(accountId)
+        if not self.models.account.exists(accountId):
+            raise exceptions.NotFound('Account does not exist')
+
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                ace.right = accesstype
-                break
-        else:
-            acl = account.new_acl()
-            acl.userGroupId = userId
-            acl.type = 'U'
-            acl.right = accesstype
-        return self.models.account.set(account)
+                raise exceptions.PreconditionFailed('User already has access rights to account')
+
+        acl = account.new_acl()
+        acl.userGroupId = userId
+        acl.type = 'U'
+        acl.right = accesstype
+        acl.status = userstatus
+        self.models.account.set(account)
+        return True
 
     @authenticator.auth(acl='U')
     @audit()
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
         Update user access rights.
-        Access rights can be 'R' or 'W'
-        param:accountId id of the account
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
+        :param: accountId id of the account
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user access was successfully updated
         """
-        return self.addUser(accountId, userId, accesstype, **kwargs)
+        accountId = int(accountId)
+        if not self.models.account.exists(accountId):
+            raise exceptions.NotFound('Account does not exist')
+
+        # Check if user exists in the system or is an unregistered invited user
+        existinguser = self.systemodel.user.search({'id': userId})[1:]
+        if existinguser:
+            userstatus = 'CONFIRMED'
+        else:
+            userstatus = 'INVITED'
+
+        account = self.models.account.get(accountId)
+        for ace in account.acl:
+            if ace.userGroupId == userId:
+                ace.right = accesstype
+                self.models.account.set(account)
+                break
+        else:
+            raise exceptions.PreconditionFailed('User does not have any access rights to update')
+
+        return True
 
     @authenticator.auth(acl='S')
     @audit()
@@ -62,12 +127,16 @@ class cloudapi_accounts(BaseActor):
         account = self.models.account.new()
         account.name = name
         if isinstance(access, basestring):
-            access = [ access ]
+            access = [access]
         for userid in access:
+            if self.cb.checkUser(userid):
+                exceptions.NotFound('No user was found with the username: %s (external user can '
+                                    'only be created after account creation)' % userid)
             ace = account.new_acl()
             ace.userGroupId = userid
             ace.type = 'U'
             ace.right = 'CXDRAU'
+            ace.status = 'CONFIRMED'
         return self.models.account.set(account)[0]
 
     @authenticator.auth(acl='S')
@@ -108,23 +177,48 @@ class cloudapi_accounts(BaseActor):
 
     @authenticator.auth(acl='A')
     @audit()
-    def deleteUser(self, accountId, userId, **kwargs):
+    def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
         Delete a user from the account
-        param:acountId id of the account
-        param:userId id of the user to remove
+        :param acountId: id of the account
+        :param userId: id of the user to remove
+        :param recursivedelete: recursively delete access permissions from owned cloudspaces
+                                and machines
         result
-
         """
         account = self.models.account.get(accountId)
-        change = False
+        update = False
         for ace in account.acl:
             if ace.userGroupId == userId:
                 account.acl.remove(ace)
-                change = True
-        if change:
+                update = True
+        if update:
             self.models.account.set(account)
-        return change
+
+        if recursivedelete:
+            # Delete user accessrights from owned cloudspaces
+            for cloudspace in self.models.cloudspace.search({'accountId': accountId})[1:]:
+                cloudspaceupdate = False
+                cloudspaceobj = self.models.cloudspace.get(cloudspace['id'])
+                for ace in cloudspaceobj.acl:
+                    if ace.userGroupId == userId:
+                        cloudspaceobj.acl.remove(ace)
+                        cloudspaceupdate = True
+                if cloudspaceupdate:
+                    self.models.cloudspace.set(cloudspaceobj)
+
+                # Delete user accessrights from related machines (part of owned cloudspaces)
+                for vmachine in self.models.vmachine.search({'cloudspaceId': cloudspaceobj.id})[1:]:
+                    vmachineupdate = False
+                    vmachineobj = self.models.vmachine.get(vmachine['id'])
+                    for ace in vmachineobj.acl:
+                        if ace.userGroupId == userId:
+                            vmachineobj.acl.remove(ace)
+                            vmachineupdate = True
+                    if vmachineupdate:
+                        self.models.vmachine.set(vmachineobj)
+
+        return update
 
     @audit()
     def list(self, **kwargs):

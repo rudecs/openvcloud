@@ -35,21 +35,6 @@ class cloudbroker_account(BaseActor):
 
         return account[0]
 
-    def _checkUser(self, username):
-        user = self.syscl.user.simpleSearch({'id':username})
-        if not user:
-            raise exceptions.NotFound('Username "%s" not found' % username)
-        return user[0]
-
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
-
-    def _isValidPassword(self, password):
-        if len(password) < 8 or len (password) > 80:
-            return False
-        return re.search(r"\s",password) is None
-
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def disable(self, accountId, reason, **kwargs):
@@ -82,13 +67,11 @@ class cloudbroker_account(BaseActor):
         if accounts:
             raise exceptions.Conflict('Account name is already in use.')
 
-        if not self._isValidUserName(username):
-            raise exceptions.BadRequest('A username may not exceed 20 characters and may only contain a-z and 0-9')
-
         created = False
         if j.core.portal.active.auth.userExists(username):
-            if emailaddress and not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
-                raise exceptions.Conflict('The specific user and email do not match.')
+            if emailaddress and not self.syscl.user.search({'id': username,
+                                                            'emails': emailaddress})[1:]:
+                raise exceptions.Conflict('The specified username and email do not match.')
 
             user = j.core.portal.active.auth.getUserInfo(username)
             emailaddress = user.emails[0] if user.emails else None
@@ -97,7 +80,9 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]
+            self.cb.actors.cloudbroker.user.create(username, emailaddress, password, ['user'])
+            # Only use the first email address in list to send the email message to
+            emailaddress = email = map(lambda s: s.strip(), emailaddress.split(','))[0]
             created = True
 
         now = int(time.time())
@@ -214,28 +199,33 @@ class cloudbroker_account(BaseActor):
         Give a user access rights.
         Access rights can be 'R' or 'W'
         param:accountId id of the account
-        param:username id of the user to give access
+        param:username id of the user to give access or emailaddress to invite an external user
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        ctx = kwargs["ctx"]
         account = self._checkAccount(accountId)
         accountId = account['id']
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudapi.accounts.addUser(accountId, userId, accesstype)
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+            self.cloudapi.accounts.addUser(accountId, userId, accesstype)
+        else:
+            self.cloudapi.accounts.addExternalUser(accountId, username, accesstype)
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteUser(self, accountId, username, **kwargs):
+    def deleteUser(self, accountId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
         """
-        ctx = kwargs["ctx"]
         account = self._checkAccount(accountId)
         accountId = account['id']
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudapi.accounts.deleteUser(accountId, userId)
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+        else:
+            #external user, delete ACE that was added using emailaddress
+            userId = username
+        self.cloudapi.accounts.deleteUser(accountId, userId, recursivedelete)
         return True

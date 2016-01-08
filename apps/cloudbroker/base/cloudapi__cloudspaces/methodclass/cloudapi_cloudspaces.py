@@ -35,19 +35,21 @@ class cloudapi_cloudspaces(BaseActor):
     @audit()
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Give a user access rights.
+        Give a registered user access rights.
         Access rights can be 'R' or 'W'
         :param:cloudspaceId: id of the cloudspace
-        :param:userId: id of the user to give access
+        :param:userId: id or emailaddress of the user to give access
         :param:accesstype: 'R' for read only access, 'W' for Write access
         :return True if user was was successfully added
-
         """
-        cloudspaceId = int(cloudspaceId)
-        if not j.core.portal.active.auth.userExists(userId):
-            raise exceptions.NotFound('Non-existing user')
+        user = self.cb.checkUser(userId)
+        if not user:
+            raise exceptions.NotFound("User is not registered on the system")
         else:
-            return self._addACE(cloudspaceId, userId, accesstype, status='CONFIRMED')
+            # Replace email address with ID
+            userId = user['id']
+
+        return self._addACE(cloudspaceId, userId, accesstype, userstatus='CONFIRMED')
 
     @authenticator.auth(acl='U')
     @audit()
@@ -56,71 +58,109 @@ class cloudapi_cloudspaces(BaseActor):
         Give an unregistered user access rights by sending an invite email.
         Access rights can be 'R' or 'W'
         :param:cloudspaceId: id of the cloudspace
-        :param:emailaddress: emailaddress of the external user that will be invited
+        :param:emailaddress: emailaddress of the unregistered user that will be invited
         :param:accesstype: 'R' for read only access, 'W' for Write access
         :return True if user was was successfully added
         """
         if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.PreconditionFailed('User already exists, '
-                                                'cannot invite an existing user ')
-        else:
-            updated = self._addACE(cloudspaceId, emailaddress, accesstype, status='INVITED')
-            if updated:
-                msg = j.apps.cloudapi.users.sendInviteLink(emailaddress, 'cloudspace',
-                                                     cloudspaceId, accesstype)
-                return msg
-            else:
-                return ""
+            raise exceptions.PreconditionFailed('User is already registered on the system, '
+                                                'please add as a normal user')
 
-    def _addACE(self, cloudspaceId, userId, accesstype, status='CONFIRMED'):
+        self._addACE(cloudspaceId, emailaddress, accesstype, userstatus='INVITED')
+        try:
+            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'cloudspace', cloudspaceId,
+                                                 accesstype)
+            return True
+        except:
+            self.deleteUser(cloudspaceId, emailaddress, recursivedelete=False)
+            raise
+
+    def _addACE(self, cloudspaceId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the cloudspace
-        :param cloudspaceId: d of the cloudspace
-        :param userId: userid for internal users or emailaddress for external users
+        :param cloudspaceId: id of the cloudspace
+        :param userId: userid for registered users or emailaddress for unregistered users
         :param accesstype: 'R' for read only access, 'W' for Write access
-        :param status: status of the user (CONFIRMED or INVITED)
+        :param userstatus: status of the user (CONFIRMED or INVITED)
         :return True if ACE was successfully added
         """
+        cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
         if userId in cloudspace_acl:
-            useracl = cloudspace_acl[userId]
-            if 'account_right' in useracl and len(set(accesstype)) < len(useracl['account_right']):
-                # user already has same or higher access level
-                raise exceptions.PreconditionFailed('User already has a higher access level')
-            else:
-                # grant higher access level
-                for ace in cloudspace.acl:
-                    if ace.userGroupId == userId and ace.type == 'U':
-                        ace.right = accesstype
-                        break
-                else:
-                    ace = cloudspace.new_acl()
-                    ace.userGroupId = userId
-                    ace.type = 'U'
-                    ace.status = status
-                    ace.right = accesstype
-        else:
-            ace = cloudspace.new_acl()
-            ace.userGroupId = userId
-            ace.type = 'U'
-            ace.right = accesstype
-            ace.status = status
+            return self._updateACE(cloudspaceId, userId, accesstype, userstatus)
+
+        ace = cloudspace.new_acl()
+        ace.userGroupId = userId
+        ace.type = 'U'
+        ace.right = accesstype
+        ace.status = userstatus
         self.models.cloudspace.set(cloudspace)
         return True
+
+    def _updateACE(self, cloudspaceId, userId, accesstype, userstatus):
+        """
+        Update an existing ACE in the ACL of a cloudspace
+        :param cloudspaceId: id of the cloudspace
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully updated, False if no update is needed
+        """
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
+        useracl = cloudspace_acl[userId]
+        if userId not in cloudspace_acl:
+            raise exceptions.PreconditionFailed('User does not have any access rights to update')
+
+        if 'account_right' in useracl and set(accesstype) == set(useracl['account_right']):
+            # No need to add any access rights as same rights are inherited
+            # Remove cloudspace level access rights if present
+            for ace in cloudspace.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    cloudspace.acl.remove(ace)
+                    self.models.cloudspace.set(cloudspace)
+                    break
+            return False
+        # If user has higher access rights on owning account level, then do not update
+        elif 'account_right' in useracl and set(accesstype).issubset(set(useracl['account_right'])):
+            raise exceptions.PreconditionFailed('User already has a higher access level to owning '
+                                                'account')
+        else:
+            # grant higher access level
+            for ace in cloudspace.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    ace.right = accesstype
+                    break
+            else:
+                ace = cloudspace.new_acl()
+                ace.userGroupId = userId
+                ace.type = 'U'
+                ace.right = accesstype
+                ace.status = userstatus
+            self.models.cloudspace.set(cloudspace)
+        return True
+
 
     @authenticator.auth(acl='U')
     @audit()
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Updates a user access rights.
+        Updates user access rights.
         Access rights can be 'R' or 'W'
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
+        :param: cloudspaceId id of the cloudspace
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user access was successfully updated
         """
-        return self.addUser(cloudspaceId, userId, accesstype, **kwargs)
+        # Check if user exists in the system or is an unregistered invited user
+        existinguser = self.systemodel.user.search({'id': userId})[1:]
+        if existinguser:
+            userstatus = 'CONFIRMED'
+        else:
+            userstatus = 'INVITED'
+        return self._updateACE(cloudspaceId, userId, accesstype, userstatus)
 
     def _listActiveCloudSpaces(self, accountId):
         account = self.models.account.get(accountId)
@@ -169,6 +209,7 @@ class cloudapi_cloudspaces(BaseActor):
         ace.userGroupId = access
         ace.type = 'U'
         ace.right = 'CXDRAU'
+        ace.status = 'CONFIRMED'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.status = 'VIRTUAL'
@@ -290,23 +331,37 @@ class cloudapi_cloudspaces(BaseActor):
 
     @authenticator.auth(acl='U')
     @audit()
-    def deleteUser(self, cloudspaceId, userId, **kwargs):
+    def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
         Delete a user from the cloudspace
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to remove
+        :param cloudspaceId: id of the cloudspace
+        :param userId: id of the user to remove
+        :param recursivedelete: recursively delete access permissions from owned cloudspaces
+                                and machines
         result
-
         """
         cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        change = False
+        update = False
         for ace in cloudspace.acl:
             if ace.userGroupId == userId:
                 cloudspace.acl.remove(ace)
-                change = True
-        if change:
+                update = True
+        if update:
             self.models.cloudspace.set(cloudspace)
-        return change
+
+        if recursivedelete:
+            # Delete user accessrights from related machines (part of owned cloudspaces)
+            for vmachine in self.models.vmachine.search({'cloudspaceId': cloudspaceId})[1:]:
+                vmachineupdate = False
+                vmachineobj = self.models.vmachine.get(vmachine['id'])
+                for ace in vmachineobj.acl:
+                    if ace.userGroupId == userId:
+                        vmachineobj.acl.remove(ace)
+                        vmachineupdate = True
+                if vmachineupdate:
+                    self.models.vmachine.set(vmachineobj)
+
+        return update
 
     @audit()
     def list(self, **kwargs):

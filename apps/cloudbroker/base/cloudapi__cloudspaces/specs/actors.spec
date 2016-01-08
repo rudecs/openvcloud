@@ -77,6 +77,7 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         var:userId str,, id of the user to remove
+        var:recursivedelete bool,False, recursively delete access rights from related vmachines @optional
         result: bool
 
     method:getDefenseShield
@@ -94,4 +95,4 @@
         var:cloudspaceId int,, id of the cloudspace
         var:emailaddress str,, email of the external user to give access
         var:accesstype str,, 'R' for read only access, 'W' for Write access
-        result:str
+        result:bool

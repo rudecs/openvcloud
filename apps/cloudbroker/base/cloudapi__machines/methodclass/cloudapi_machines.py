@@ -40,6 +40,7 @@ class cloudapi_machines(BaseActor):
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
         self.network = network.Network(self.models)
+        self.systemodel = j.clients.osis.getNamespace('system')
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
@@ -631,37 +632,120 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='U')
     @audit()
-    def addUser(self, machineId, userId, accessType, **kwargs):
+    def addUser(self, machineId, userId, accesstype, **kwargs):
         """
-        Gives a user access to a vmachine
-        machineId -- ID of a vmachine to share
-        userId -- ID of a user to share with
-        accessType -- 'R' for read only access, 'W' for Write access
-        return bool
+        Give a registered user access rights.
+        Access rights can be 'R' or 'W'
+        :param:machineId id of the vmachine
+        :param:userId: id or emailaddress of the user to give access
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
+        """
+        user = self.cb.checkUser(userId)
+        if not user:
+            raise exceptions.NotFound("User is not registered on the system")
+        else:
+            # Replace email address with ID
+            userId = user['id']
+
+        return self._addACE(machineId, userId, accesstype, userstatus='CONFIRMED')
+
+    @authenticator.auth(acl='U')
+    @audit()
+    def addExternalUser(self, machineId, emailaddress, accesstype, **kwargs):
+        """
+        Give an unregistered user access rights by sending an invite email.
+        Access rights can be 'R' or 'W'
+        :param:machineId id of the vmachine
+        :param:emailaddress: emailaddress of the unregistered user that will be invited
+        :param:accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user was was successfully added
+        """
+        if self.systemodel.user.search({'emails': emailaddress})[1:]:
+            raise exceptions.PreconditionFailed('User is already registered on the system, '
+                                                'please add as a normal user')
+
+        self._addACE(machineId, emailaddress, accesstype, userstatus='INVITED')
+        try:
+            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'machine', machineId, accesstype)
+            return True
+        except:
+            self.deleteUser(machineId, emailaddress)
+            raise
+
+    def _addACE(self, machineId, userId, accesstype, userstatus='CONFIRMED'):
+        """
+        Add a new ACE to the ACL of the vmachine
+        :param:machineId id of the vmachine
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully added
         """
         machineId = int(machineId)
-        if not j.core.portal.active.auth.userExists(userId):
-            raise exceptions.NotFound("User doest not exists")
+        vmachine = self.models.vmachine.get(machineId)
+        vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
+        if userId in vmachine_acl:
+            return self._updateACE(machineId, userId, accesstype, userstatus)
+
+        ace = vmachine.new_acl()
+        ace.userGroupId = userId
+        ace.type = 'U'
+        ace.right = accesstype
+        ace.status = userstatus
+        self.models.vmachine.set(vmachine)
+        return True
+
+    def _updateACE(self, machineId, userId, accesstype, userstatus):
+        """
+        Update an existing ACE in the ACL of a machine
+        :param machineId: id of the cloudspace
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully updated, False if no update is needed
+        """
+        machineId = int(machineId)
+        vmachine = self.models.vmachine.get(machineId)
+        vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
+        useracl = vmachine_acl[userId]
+        if userId not in vmachine_acl:
+            raise exceptions.PreconditionFailed('User does not have any access rights to update')
+
+        if ('account_right' in useracl and set(accesstype) == set(useracl['account_right'])) or \
+                ('cloudspace_right' in useracl and
+                    set(accesstype) == set(useracl['cloudspace_right'])):
+            # Remove machine level access rights if present
+            for ace in vmachine.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    vmachine.acl.remove(ace)
+                    self.models.vmachine.set(vmachine)
+                    break
+            return False
+        # If user has higher access rights on owning account level then do not update
+        if 'account_right' in useracl and set(accesstype) != set(useracl['account_right']) and \
+                set(accesstype).issubset(set(useracl['account_right'])):
+            raise exceptions.PreconditionFailed('User already has a higher access level to owning '
+                                                'account')
+        # If user has higher access rights on cloudspace then do not update
+        elif 'cloudspace_right' in useracl and set(accesstype) != set(useracl['cloudspace_right']) \
+                and set(accesstype).issubset(set(useracl['cloudspace_right'])):
+            raise exceptions.PreconditionFailed('User already has a higher access level to '
+                                                'cloudspace')
         else:
-            vmachine = self.models.vmachine.get(machineId)
-            vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
-            if userId in vmachine_acl:
-                if set(accessType).issubset(vmachine_acl[userId]['right']):
-                    # user already has same or higher access level
-                    raise exceptions.PreconditionFailed('User already has a higher access level')
-                else:
-                    # grant higher access level
-                    for ace in vmachine.acl:
-                        if ace.userGroupId == userId and ace.type == 'U':
-                            ace.right = accessType
-                            break
+            # grant higher access level
+            for ace in vmachine.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    ace.right = accesstype
+                    break
             else:
                 ace = vmachine.new_acl()
                 ace.userGroupId = userId
                 ace.type = 'U'
-                ace.right = accessType
+                ace.right = accesstype
+                ace.status = userstatus
             self.models.vmachine.set(vmachine)
-            return True
+        return True
 
     @authenticator.auth(acl='U')
     @audit()
@@ -683,15 +767,22 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl='U')
     @audit()
-    def updateUser(self, machineId, userId, accessType, **kwargs):
+    def updateUser(self, machineId, userId, accesstype, **kwargs):
         """
-        Updates user's access rights to a vmachine
-        machineId -- ID of a vmachine to share
-        userId -- ID of a user to share with
-        accessType -- 'R' for read only access, 'W' for Write access
-        return bool
+        Updates user access rights.
+        Access rights can be 'R' or 'W'
+        :param: machineId id of the machineId
+        :param userId: userid for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'W' for Write access
+        :return True if user access was successfully updated
         """
-        return self.addUser(machineId, userId, accessType, **kwargs)
+        # Check if user exists in the system or is an unregistered invited user
+        existinguser = self.systemodel.user.search({'id': userId})[1:]
+        if existinguser:
+            userstatus = 'CONFIRMED'
+        else:
+            userstatus = 'INVITED'
+        return self._updateACE(machineId, userId, accesstype, userstatus)
     
     def attachPublicNetwork(self, machineId, **kwargs):
         provider, node = self._getProviderAndNode(machineId)
