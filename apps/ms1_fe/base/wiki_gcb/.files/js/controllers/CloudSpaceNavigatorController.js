@@ -24,13 +24,20 @@ angular.module('cloudscalers.controllers')
                     if ('accountAcl' in firstCloudSpace){
                         account.acl = firstCloudSpace['accountAcl']
                     }
+                    if($scope.accounts){
+                      var cuurentAccountInAccountList = _.find($scope.accounts , function(accountInList) { return accountInList.id == account.id; });
+                      account.cuurentAccountInAccountList = '';
+                      if(!cuurentAccountInAccountList){
+                        account.cuurentAccountInAccountList = "NoAccessOnAccount";
+                      }
+                    }
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
                 }
                 $scope.AccountCloudSpaceHierarchy = accountCloudSpaceHierarchy;
             }
 
-            $scope.$watch('cloudspaces', function () {
+            $scope.$watch('cloudspaces + accounts', function () {
                 buildAccountCloudSpaceHierarchy();
             });
 
@@ -117,25 +124,6 @@ angular.module('cloudscalers.controllers')
               uri.filename(target);
               $window.location = uri.toString();
             };
-
-            $scope.$watch("accounts",function(){
-              if($scope.accounts){
-                // if can't find user in current account?
-                console.log($scope.currentAccount);
-
-                var currentUserOnAccount =  _.find($scope.accounts[0].acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; });
-                if(currentUserOnAccount){
-                    var currentUserAccessrightOnAccount = currentUserOnAccount.right.toUpperCase();
-                    if(currentUserAccessrightOnAccount == "R"){
-                        $scope.currentUserAccessrightOnAccount = 'Read';
-                    }else if( currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') == -1 && currentUserAccessrightOnAccount.indexOf('U') == -1){
-                        $scope.currentUserAccessrightOnAccount = "ReadWrite";
-                    }else if(currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') != -1 && currentUserAccessrightOnAccount.indexOf('U') != -1){
-                        $scope.currentUserAccessrightOnAccount = "Admin";
-                    }
-                }
-              }
-            });
         }
     ]).filter('nospace', function () {
     return function (value) {

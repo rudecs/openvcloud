@@ -1,5 +1,6 @@
 angular.module('cloudscalers.controllers')
     .controller('AccountSettingsController', ['$scope', 'Account', '$ErrorResponseAlert', '$modal', '$timeout', function($scope, Account, $ErrorResponseAlert, $modal, $timeout) {
+
       $scope.$watch("currentAccount", function(){
         if($scope.currentAccount){
           $scope.loadAccountAcl();
@@ -29,12 +30,17 @@ angular.module('cloudscalers.controllers')
           return Account.get($scope.currentAccount.id).then(function(account) {
               $scope.currentAccount.userRightsOnAccount = account.acl;
           }, function(reason){
-            $ErrorResponseAlert(reason);
+            if(reason.status == 403){
+              $scope.currentAccount.userRightsOnAccount = {};
+            }else{
+              $ErrorResponseAlert(reason);
+            }
           });
       };
 
+      $scope.$watch('currentUserAccessrightOnAccount', function(){});
+
       $scope.resetUser();
-      $scope.loadAccountAcl();
       $scope.userError = false;
 
       $scope.addUser = function() {
@@ -115,7 +121,7 @@ angular.module('cloudscalers.controllers')
               }
           });
           modalInstance.result.then(function (accessRight) {
-              Account.updateUser(currentAccount.accountId, accessRight.user, accessRight.editUserAccess).
+              Account.updateUser(currentAccount.id, accessRight.user, accessRight.editUserAccess).
               then(function() {
                   var userInACL = _.findWhere($scope.currentAccount.userRightsOnAccount, {userGroupId: accessRight.user});
                   _.findWhere($scope.currentAccount.userRightsOnAccount, {userGroupId: accessRight.user}).right = accessRight.editUserAccess;

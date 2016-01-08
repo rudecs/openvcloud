@@ -371,7 +371,7 @@ angular.module('cloudscalers.controllers')
         var CreateTemplateController= function ($scope, $modalInstance) {
 
             $scope.createtemplate ={name: ''};
-
+            $scope.$watch('currentUserAccessrightOnAccount', function(){});
             $scope.ok = function () {
                     $modalInstance.close($scope.createtemplate.name);
             };

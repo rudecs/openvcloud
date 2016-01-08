@@ -149,7 +149,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     #                            </a>
     #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess != 'Read' && machine.locked == false">
+                        <li ng-show="currentUserAccessrightOnAccount != 'Read' && currentUserAccessrightOnAccount != 'NoAccessOnAccount' && machine.locked == false">
                                 <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                                     <i class="fa fa-copy"></i>
                                     Create Template
