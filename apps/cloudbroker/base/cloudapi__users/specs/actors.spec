@@ -74,7 +74,7 @@
         var:limit int,5,the number of usernames to return
         result:list,,list of dicts with the username and url of the gravatar of the user
 
-    method:registerUser @noauth
+    method:registerInvitedUser @noauth
         """
         Registers an invited user
         """

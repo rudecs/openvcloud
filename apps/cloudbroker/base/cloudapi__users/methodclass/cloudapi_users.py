@@ -344,3 +344,42 @@ class cloudapi_users(BaseActor):
         j.clients.email.send(toaddrs, fromaddr, subject, body)
 
         return True
+
+    def registerInvitedUser(self, inviteusertoken, emailaddress, username, password,
+                            confirmpassword, **kwargs):
+
+        """
+        Register a user that was previously invited to a shared resource (Account, Cloudspace,
+        Vmachine).
+        :param inviteusertoken: the token that was previously sent to the invited user email
+        :param emailaddress: comma-separated list of email address for the user
+        :param username: the username the user wants to register with
+        :param password: the password the user wants to set
+        :param confirmpassword: a confirmation of the password
+        :return: success message if user was successfully registered on the system
+        """
+        if not self.models.inviteusertoken.exists(inviteusertoken):
+            return exceptions.BadRequest('Invalid invitation token.')
+
+        inviteusertokenobj = self.models.inviteusertoken.get(inviteusertoken)
+        emails_list = map(lambda s: s.strip(), emailaddress.split(','))
+        if inviteusertokenobj.email not in emails_list:
+            # Email addresses of user doesn't contain the address the user was invited with
+            return exceptions.BadRequest('Invalid invitation token.')
+
+        if not password:
+            return exceptions.BadRequest("Password cannot be empty.")
+        elif password!=confirmpassword:
+            return exceptions.BadRequest("Passwords do not match.")
+
+        groups = ['user']
+        created = j.core.portal.active.auth.createUser(username, password, emailaddress, groups,
+                                                       None)
+        if created:
+            # Check all shared resources invites and update invited users to CONFIRMED status with
+            # newly registered username
+            self.cb.updateResourceInvitations(username, emailaddress)
+            # Delete the token so that it will not be re-used
+            self.models.inviteusertoken.delete(inviteusertoken)
+
+        return "You have successfully registered to OpenvCloud."
