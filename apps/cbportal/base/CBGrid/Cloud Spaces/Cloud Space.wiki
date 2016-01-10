@@ -28,6 +28,7 @@ h2. Cloud Space: ${name}
   input:
   - reason
   data:
+   async: True
    cloudspaceId: $$id
 
 {% endif %}

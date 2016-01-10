@@ -30,6 +30,7 @@ h2. Private Network: $$id
   action: /restmachine/cloudbroker/cloudspace/resetVFW
   reload: false
   data:
+   async: True
    cloudspaceId: ${domain}
   input:
   - reason
@@ -39,6 +40,7 @@ h2. Private Network: $$id
   input:
   - reason
   data:
+   async: True
    cloudspaceId: ${domain}
 
 
