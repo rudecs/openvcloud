@@ -1,7 +1,7 @@
 from JumpScale import j
 import sys
 import re
-import json
+from fabric.network import NetworkError
 
 organization = "cloudscalers"
 descr = 'Perform bandwidth test'
@@ -19,7 +19,7 @@ category = "monitor.healthcheck"
 class OpenvStorage():
     def __init__(self):
         self._localIp = None
-        self._clusterIps = []
+        self._storagerouters = []
         self._speed = None
         self._runingServer = None
         # appened opverstorage to python path
@@ -48,12 +48,12 @@ class OpenvStorage():
         return self._speed
             
     @property
-    def clusterIps(self):
-        if not self._clusterIps:
+    def storageRouters(self):
+        if not self._storagerouters:
             from ovs.lib.storagerouter import StorageRouterList
-            self._clusterIps = [router.ip for router in StorageRouterList.get_storagerouters() if\
+            self._storagerouters = [router for router in StorageRouterList.get_storagerouters() if\
                                 router.ip != self.localIp]
-        return self._clusterIps
+        return self._storagerouters
     
     def runIperfServer(self):
         j.logger.log('Running iperf server', 1)
@@ -75,23 +75,28 @@ class OpenvStorage():
     
     def getClusterBandwidths(self):
         final = []
-        for ip in self.clusterIps:
+        for router in self.storageRouters:
             result = {'category': 'Bandwidth Test'}
-            sshclient = j.remote.cuisine.connect(ip, 22)
-            j.logger.log('Installing iperf on %s' % ip, 1)
-            if not sshclient.command_check('iperf'):
-                sshclient.run('apt-get install iperf')
-            output = sshclient.run('iperf -c %s --format m -t 5 ' % self.localIp)
-            output = output.split(' ')
-            bandwidth = float(output[-2])
-            msg = "Bandwidth between %s and %s reached %s" % (self.localIp, ip, bandwidth)
-            result['message'] = msg
-            result['state'] = self.getbandwidthState(bandwidth)
-            if result['state'] != 'OK':
-                print msg
-                eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
-                eco.process()
-            final.append(result)
+            sshclient = j.remote.cuisine.connect(router.ip, 22)
+            try:
+                j.logger.log('Installing iperf on %s' % router.ip, 1)
+                if not sshclient.command_check('iperf'):
+                    sshclient.run('apt-get install iperf')
+                output = sshclient.run('iperf -c %s --format m -t 5 ' % self.localIp)
+                output = output.split(' ')
+                bandwidth = float(output[-2])
+                msg = "Bandwidth between %s and %s reached %s" % (self.localIp, router.ip, bandwidth)
+                result['message'] = msg
+                result['state'] = self.getbandwidthState(bandwidth)
+                if result['state'] != 'OK':
+                    print msg
+                    eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
+                    eco.process()
+                final.append(result)
+            except NetworkError:
+                result['state'] = 'ERROR'
+                result['message'] = 'Failed to connect to %s. Status of storagerouter: %s' % (router.ip, router.status)
+                final.append(result)
         if not final:
             return [{'message': 'Single node', 'state': 'OK', 'category': 'Bandwidth Test'}]
         return final
@@ -104,5 +109,5 @@ def action():
     return results
 
 if __name__ == '__main__':
-    action()
-    
+    import json
+    print json.dumps(action(), sort_keys=True, indent=5)

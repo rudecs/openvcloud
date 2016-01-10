@@ -113,34 +113,25 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, **kwargs):
+    def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, force=False, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
-        if targetStackId:
-            target_stack = self.models.stack.get(int(targetStackId))
-            if target_stack.gid != source_stack.gid:
-                raise exceptions.BadRequest('Target stack %(name)s is not on some grid as source' % target_stack)
+        if not targetStackId:
+            targetStackId = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)['id']
 
-        else:
-            target_stack = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId)
-            target_stack = self.models.stack.get(target_stack['id'])
+        target_provider = self.cb.getProviderByStackId(targetStackId)
+        if target_provider.client.gid != source_stack.gid:
+            raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.client.uri)
 
-        # create network on target node
-        self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={
-                                   'networkid': cloudspace.networkId}, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
+        if vmachine.status != 'HALTED':
+            # create network on target node
+            self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId},
+                                       gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
 
-        args = {
-            'vm_id': vmachine.id,
-            'source_stack': source_stack.dump()
-        }
-
-        job = self.acl.executeJumpscript(
-            'cloudscalers', 'vm_livemigrate', args=args, gid=target_stack.gid, nid=int(target_stack.referenceId), wait=True)
-        if job['state'] != 'OK':
-            raise exceptions.Error("Migrate failed: %s" % (job['result']))
-
-        vmachine.stackId = target_stack.id
+            node = self.cb.Dummy(id=vmachine.referenceId)
+            target_provider.client.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId).client, force)
+        vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 
     @auth(['level1', 'level2', 'level3'])

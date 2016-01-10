@@ -113,6 +113,7 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
         var:targetStackId int,, Name of the compute node the machine has to be moved to @optional
+        var:force bool,,force move of machine even if storage is busy
 
     method:export
         """

@@ -4,32 +4,65 @@
 {% if id %}
 
 h3. Stack: ${name}
+{% if status != 'DECOMMISSIONED' %}
 {{actions:
+
+{% if status == 'MAINTENANCE' %}
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
+  reload: false
   data:
    id: $$id
    gid: ${gid}
   input:
-   - message
+   - type: text
+     name: message
+     label: Reason
+{% endif %}
 
-- display: Disable
-  action: /restmachine/cloudbroker/computenode/disable
+{% if status == 'ENABLED' %}
+- display: Put in Maintenance
+  action: /restmachine/cloudbroker/computenode/maintenance
+  reload: false
   data:
    id: $$id
    gid: ${gid}
   input:
-   - message
+   - type: message
+     messagetype: warning
+     message: Putting Node in Maintenance!</br>
+              This will prevent new Virtual Machines to be created on this Node!</br>
+              All Virtual Machines running on this Node will be moved or turned off.
+   - type: dropdown
+     name: vmaction
+     label: Virtual Machine Action
+     values:
+      - value: move
+        label: Move All Virtual Machines
+      - value: stop
+        label: Stop All Virtual Machines
 
-- display: Offline
-  action: /restmachine/cloudbroker/computenode/setStatus
+   - type: text
+     name: message
+     label: Reason
+{% endif %}
+
+- display: Decommission
+  action: /restmachine/cloudbroker/computenode/decommission
   data:
    id: $$id
    gid: ${gid}
-   status: OFFLINE
   input:
-   - message
+   - type: message
+     messagetype: danger
+     message: Decommissioning a Node is irreversible.</br>
+              You will NOT be able to reenable this node!</br>
+              All Virtual Machines will be moved to another node.
+   - type: text
+     name: message
+     label: Reason
 }}
+{% endif %}
 
 * *ApiURL*: ${apiUrl}
 * *Description*: ${descr}

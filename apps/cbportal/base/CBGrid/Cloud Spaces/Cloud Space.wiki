@@ -26,6 +26,7 @@ h2. Cloud Space: ${name}
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
   action: /restmachine/cloudbroker/cloudspace/deployVFW
+  reload: false
   input:
   - reason
   data:
@@ -35,6 +36,7 @@ h2. Cloud Space: ${name}
 
 - display: Delete Cloud Space
   action: /restmachine/cloudbroker/cloudspace/destroy
+  reload: false
   data:
    cloudspaceId: $$id
    accountId: ${accountId}
@@ -117,7 +119,7 @@ h3. Users Access
     | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}| {{action deleterow:true id:'action-RevokeUserAccess' data-username:'${ace.usergroupId}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
-h3. Port Fowardings
+h3. Port Forwardings
 {{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
 
 ||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||

@@ -76,7 +76,7 @@ echo "    StrictHostKeyChecking no" >> /root/.ssh/config
 echo "" >> /root/.ssh/config
 
 echo "[+] loading settings"
-HOST=$(hostname)
+HOST=$(hostname -s)
 
 # Note: need to be prefixed by 10# otherwise
 # evaluation will fail on 8 and 9 (octal value)

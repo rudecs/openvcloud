@@ -49,8 +49,7 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
-        machine = self._getMachine(machineId)
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         if node.extra.get('locked', False):
             raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
         actionname = "%s_node" % actiontype.lower()
@@ -69,6 +68,8 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='X')
     @audit()
     def start(self, machineId, **kwargs):
+        machine = self._getMachine(machineId)
+        self.cb.chooseProvider(machine)
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
@@ -109,11 +110,10 @@ class cloudapi_machines(BaseActor):
         result int
 
         """
-        machine = self._getMachine(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
-        provider, node = self._getProviderAndNode(machineId)
         try:
             provider.client.attach_volume(node, volume)
         except:
@@ -125,11 +125,10 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='D')
     @audit()
     def detachDisk(self, machineId, diskId, **kwargs):
+        provider, node, machine = self._getProviderAndNode(machineId)
         diskId = int(diskId)
-        machine = self._getMachine(machineId)
         if diskId not in machine.disks:
             return True
-        provider, node = self._getProviderAndNode(machineId)
         disk = self.models.disk.get(int(diskId))
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.detach_volume(volume)
@@ -140,15 +139,14 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='D')
     @audit()
     def attachDisk(self, machineId, diskId, **kwargs):
+        provider, node, machine = self._getProviderAndNode(machineId)
         diskId = int(diskId)
-        machine = self._getMachine(machineId)
         if diskId in machine.disks:
             return True
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
         disk = self.models.disk.get(int(diskId))
-        provider, node = self._getProviderAndNode(machineId)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
@@ -237,10 +235,9 @@ class cloudapi_machines(BaseActor):
         result
 
         """
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, vmachinemodel = self._getProviderAndNode(machineId)
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
-        vmachinemodel = self._getMachine(machineId)
         self. _detachPublicNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
@@ -284,9 +281,7 @@ class cloudapi_machines(BaseActor):
         result
 
         """
-        provider, node = self._getProviderAndNode(machineId)
-        state = node.state
-        machine = self._getMachine(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
         osImage = self.models.image.get(machine.imageId).name
@@ -304,19 +299,13 @@ class cloudapi_machines(BaseActor):
                 except exceptions.ServiceUnavailable:
                     pass # VFW not deployed yet
 
-        realstatus = enums.MachineStatusMap.getByValue(state, provider.client.name) or state
-        if realstatus != machine.status:
-            if realstatus == 'DESTROYED':
-                realstatus = 'HALTED'
-            machine.status = realstatus
-            self.models.vmachine.set(machine)
         acl = list()
         machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
             acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right']))})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
-                'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
+                'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
     @audit()
@@ -368,8 +357,15 @@ class cloudapi_machines(BaseActor):
         if provider:
             node = provider.client.ex_get_node_details(machine.referenceId)
         else:
-            node = None
-        return provider, node
+            return provider, None, machine
+
+        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
+        if realstatus != machine.status:
+            if realstatus == 'DESTROYED':
+                realstatus = 'HALTED'
+            machine.status = realstatus
+            self.models.vmachine.set(machine)
+        return provider, node, machine
 
     @authenticator.auth(acl='C')
     @audit()
@@ -379,7 +375,7 @@ class cloudapi_machines(BaseActor):
         param:name Optional name to give snapshot
         result int
         """
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         snapshots = provider.client.ex_list_snapshots(node)
         if len(snapshots) > 5:
             raise exceptions.Conflict('Max 5 snapshots allowed')
@@ -394,7 +390,7 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='R')
     @audit()
     def listSnapshots(self, machineId, **kwargs):
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
@@ -406,7 +402,7 @@ class cloudapi_machines(BaseActor):
     @authenticator.auth(acl='D')
     @audit()
     def deleteSnapshot(self, machineId, epoch, **kwargs):
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_delete_snapshot(node, epoch)
@@ -415,7 +411,7 @@ class cloudapi_machines(BaseActor):
     @audit()
     @RequireState(enums.MachineStatus.HALTED, 'A snapshot can only be rolled back to a stopped Machine')
     def rollbackSnapshot(self, machineId, epoch, **kwargs):
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_rollback_snapshot(node, epoch)
@@ -454,10 +450,9 @@ class cloudapi_machines(BaseActor):
         result str
 
         """
-        machine = self._getMachine(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         if machine.status != enums.MachineStatus.RUNNING:
             return None
-        provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)
 
     @authenticator.auth(acl='C')
@@ -505,7 +500,7 @@ class cloudapi_machines(BaseActor):
                                 'size': origdisk.sizeMax, 'type': clonedisk.type,
                                 'diskpath': origdisk.referenceId})
         clone.id = self.models.vmachine.set(clone)[0]
-        provider, node = self._getProviderAndNode(machineId)
+        provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
         node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
         self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
@@ -694,8 +689,7 @@ class cloudapi_machines(BaseActor):
         return self.addUser(machineId, userId, accessType, **kwargs)
     
     def attachPublicNetwork(self, machineId, **kwargs):
-        provider, node = self._getProviderAndNode(machineId)
-        vmachine = self._getMachine(machineId)
+        provider, node, vmachine = self._getProviderAndNode(machineId)
         for nic in vmachine.nics:
             if nic.type == 'PUBLIC':
                 return True
@@ -719,8 +713,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     def detachPublicNetwork(self, machineId, **kwargs):
-        provider, node = self._getProviderAndNode(machineId)
-        vmachine = self._getMachine(machineId)
+        provider, node, vmachine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
         

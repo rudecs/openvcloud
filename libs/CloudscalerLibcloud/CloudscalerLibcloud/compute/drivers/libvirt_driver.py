@@ -588,3 +588,11 @@ class CSLibvirtNodeDriver():
             return self._update_node(node, domxml)
 
 
+    def ex_migrate(self, node, sourceprovider, force=False):
+        domainxml = self._get_persistent_xml(node)
+        self._execute_agent_job('vm_livemigrate',
+                vm_id=node.id,
+                sourceurl=sourceprovider.uri,
+                force=force,
+                domainxml=domainxml)
+        return True
