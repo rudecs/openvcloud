@@ -59,6 +59,8 @@ h3. Port Fowardings
 {% for rule in tcpForwardRules -%}
 |${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
 {% endfor %}
+{% elif cloudspaceId %}
+Private network has not been deploy yet for Cloud Space [${cloudspaceName}|/cbgrid/cloud space?id=${cloudspaceId}]
 {% else %}
 No Private Network provided
 {% endif %}
