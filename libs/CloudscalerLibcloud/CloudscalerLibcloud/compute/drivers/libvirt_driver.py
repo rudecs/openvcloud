@@ -308,7 +308,14 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
-        return self._execute_agent_job('createtemplate', wait=False, queue='io', machineid=node.id, templatename=name, createfrom=snapshotbase, imageid=imageid)
+        pmachineip = self._get_connection_ip()
+        xml = self._get_persistent_xml(node)
+        node = self._from_xml_to_node(xml, None)
+        bootvolume = node.extra['volumes'][0]
+        return self._execute_agent_job('createtemplate', wait=False, queue='io',
+                                       machineid=node.id, templatename=name,
+                                       sourcepath=bootvolume.id,
+                                       imageid=imageid, pmachineip=pmachineip)
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
