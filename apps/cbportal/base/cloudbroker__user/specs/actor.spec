@@ -36,7 +36,7 @@
         Create a user
         """
         var:username str,, id of user
-        var:emailaddress str,, id of user
-        var:password str,, id of user
-        var:groups str,None,comma separated list of groups this user belongs to @optional
+        var:emailaddress list,, emailaddresses of the user
+        var:password str,, password of user
+        var:groups list,None,list of groups this user belongs to @optional
         result:bool

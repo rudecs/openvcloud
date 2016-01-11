@@ -78,7 +78,6 @@
         """
         var:cloudspaceId int,,Id of the cloudspace
         var:newname str,,New name of the cloudspace
-        var:recursivedelete bool,, recursively delete access rights from owned vmachines
 
     method:addUser
         """

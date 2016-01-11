@@ -124,20 +124,7 @@ class cloudapi_accounts(BaseActor):
         param:access list of ids of users which have full access to this space
         result int
         """
-        account = self.models.account.new()
-        account.name = name
-        if isinstance(access, basestring):
-            access = [access]
-        for userid in access:
-            if self.cb.checkUser(userid):
-                exceptions.NotFound('No user was found with the username: %s (external user can '
-                                    'only be created after account creation)' % userid)
-            ace = account.new_acl()
-            ace.userGroupId = userid
-            ace.type = 'U'
-            ace.right = 'CXDRAU'
-            ace.status = 'CONFIRMED'
-        return self.models.account.set(account)[0]
+        raise NotImplementedError("not implemented method create")
 
     @authenticator.auth(acl='S')
     @audit()
@@ -147,7 +134,7 @@ class cloudapi_accounts(BaseActor):
         param:accountId id of the account
         result bool,
         """
-        return self.models.account.delete(accountId)
+        raise NotImplementedError("not implemented method delete")
 
     @authenticator.auth(acl='R')
     @audit()
@@ -159,7 +146,7 @@ class cloudapi_accounts(BaseActor):
         """
         #put your code here to implement this method
 
-        return self.models.account.get(int(accountId))
+        return self.models.account.get(int(accountId)).dump()
 
     @authenticator.auth(acl='R')
     @audit()

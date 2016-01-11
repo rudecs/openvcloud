@@ -80,9 +80,7 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            self.cb.actors.cloudbroker.user.create(username, emailaddress, password, ['user'])
-            # Only use the first email address in list to send the email message to
-            emailaddress = email = map(lambda s: s.strip(), emailaddress.split(','))[0]
+            self.cb.actors.cloudbroker.user.create(username, [emailaddress], password, ['user'])
             created = True
 
         now = int(time.time())
@@ -103,6 +101,7 @@ class cloudbroker_account(BaseActor):
         ace.userGroupId = username
         ace.type = 'U'
         ace.right = 'CXDRAU'
+        ace.status = 'CONFIRMED'
         accountid = self.models.account.set(account)[0]
 
         signupcredit = self.hrd.getFloat('instance.openvcloud.cloudbroker.signupcredit')

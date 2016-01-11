@@ -52,7 +52,8 @@ class cloudbroker_user(BaseActor):
         created = j.core.portal.active.auth.createUser(username, password, emailaddress, groups,
                                                        None)
         if created:
-            self.cb.updateResourceInvitations(username, emailaddress)
+            primaryemailaddress = emailaddress[0]
+            self.cb.updateResourceInvitations(username, primaryemailaddress)
 
         return True
 

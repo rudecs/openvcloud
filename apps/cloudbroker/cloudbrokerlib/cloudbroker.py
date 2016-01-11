@@ -253,178 +253,48 @@ class CloudBroker(object):
         else:
             return None
 
-    def updateResourceInvitationsOld(self, username, emailaddress):
-        """
-        Update the invitations in ACLs of Accounts, Cloudspaces and Machines after user registration
-
-        :param username: username the user has registered with
-        :param emailaddress: comma-separated list of emailaddresses of the registered users
-        :return: True if resources were updated
-        """
-        # Create a list email address by splitting the comma-separated list
-        emails_list = map(lambda s: s.strip(), emailaddress.split(','))
-        shared_accounts = dict()
-        shared_cloudspaces = dict()
-        shared_machines = dict()
-        for address in emails_list:
-            # Remove all user ACEs from account and save highest priority access right in accounts
-            # dict
-            for account in self.cbcl.account.search({'acl.userGroupId': address,
-                                                     'acl.status': 'INVITED'})[1:]:
-                accountobj = self.cbcl.account.get(account['guid'])
-                for ace in accountobj.acl:
-                    if ace.userGroupId == address:
-                        accountobj.acl.remove(ace)
-                        if accountobj.guid not in shared_accounts:
-                            shared_accounts[accountobj.guid] = ace.right
-                        elif set(shared_accounts[accountobj.guid]).issubset(set(ace.right)):
-                            shared_accounts[accountobj.guid] = ace.right
-                # Save the account after removing all user ACEs
-                self.cbcl.account.set(accountobj)
-
-            # Remove all user ACEs from cloudspace and save highest priority access right in
-            # cloudspace dict
-            for cloudspace in self.cbcl.cloudspace.search({'acl.userGroupId': address,
-                                                           'acl.status': 'INVITED'})[1:]:
-                cloudspaceobj = self.cbcl.cloudspace.get(cloudspace['guid'])
-                for ace in cloudspaceobj.acl:
-                    if ace.userGroupId == address:
-                        cloudspaceobj.acl.remove(ace)
-                        if cloudspaceobj.guid not in shared_cloudspaces:
-                            shared_cloudspaces[cloudspaceobj.guid] = ace.right
-                        elif set(shared_cloudspaces[cloudspaceobj.guid]).issubset(set(ace.right)):
-                            shared_cloudspaces[accountobj.guid] = ace.right
-                self.cbcl.cloudspace.set(cloudspaceobj)
-
-            # Remove all user ACEs from vmachine and save highest priority access right in
-            # machine dict
-            for vmachine in self.cbcl.vmachine.search({'acl.userGroupId': address,
-                                                       'acl.status': 'INVITED'})[1:]:
-                vmachineobj = self.cbcl.vmachine.get(vmachine['guid'])
-                for ace in vmachineobj.acl:
-                    if ace.userGroupId == address:
-                        vmachineobj.acl.remove(ace)
-                        if vmachineobj.guid not in shared_machines:
-                            shared_machines[vmachineobj.guid] = ace.right
-                        elif set(shared_machines[vmachineobj.guid]).issubset(set(ace.right)):
-                            shared_machines[vmachineobj.guid] = ace.right
-                self.cbcl.vmachine.set(vmachineobj)
-
-        # For previously shared accounts, re-add the user using the highest access right
-        for guid, right in shared_accounts.iteritems():
-            accountobj = self.cbcl.account.get(guid)
-            acl = accountobj.new_acl()
-            acl.userGroupId = username
-            acl.type = 'U'
-            acl.right = right
-            acl.status = 'CONFIRMED'
-            self.cbcl.account.set(accountobj)
-
-        # For previously shared cloudspaces, re-add the user using the highest access right
-        for guid, right in shared_cloudspaces.iteritems():
-            cloudspaceobjobj = self.cbcl.cloudspace.get(guid)
-            acl = cloudspaceobj.new_acl()
-            acl.userGroupId = username
-            acl.type = 'U'
-            acl.right = right
-            acl.status = 'CONFIRMED'
-            self.cbcl.cloudspace.set(cloudspaceobj)
-
-        # For previously shared machines, re-add the user using the highest access right
-        for guid, right in shared_machines.iteritems():
-            vmachineobj= self.cbcl.vmachine.get(guid)
-            acl = vmachineobj.new_acl()
-            acl.userGroupId = username
-            acl.type = 'U'
-            acl.right = right
-            acl.status = 'CONFIRMED'
-            self.cbcl.account.set(vmachineobj)
-
-        return True
-
     def updateResourceInvitations(self, username, emailaddress):
         """
         Update the invitations in ACLs of Accounts, Cloudspaces and Machines after user registration
 
         :param username: username the user has registered with
-        :param emailaddress: comma-separated list of emailaddresses of the registered users
+        :param emailaddress: emailaddress of the registered users
         :return: True if resources were updated
         """
-        # Create a list email address by splitting the comma-separated list
-        emails_list = map(lambda s: s.strip(), emailaddress.split(','))
-        emails_query = map(lambda e: {'acl.userGroupId': e}, emails_list)
+        # Validate that only one email address was sent for updating the resources
+        if len(emailaddress.split(',')) > 1:
+            raise exceptions.BadRequest('Cannot update resource invitations for a list of multiple '
+                                        'email addresses')
 
-        # Remove all accounts ACEs for the user's email addresses and re-add the highest access
-        # right ACE
-        for account in self.cbcl.account.search({'$or': emails_query})[1:]:
-            # ACE obj with the highest access right that was granted to an
-            # emailaddress owned by this user
-            acehighestright = None
-            acesforuser = list()
+        for account in self.cbcl.account.search({'acl.userGroupId': emailaddress})[1:]:
             accountobj = self.cbcl.account.get(account['guid'])
             for ace in accountobj.acl:
-                if ace.userGroupId in emails_list:
-                    acesforuser.append(ace)
-                    if not acehighestright or \
-                            (acehighestright and
-                                set(acehighestright.right).issubset(set(ace.right))):
-                        acehighestright = ace
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.account.set(accountobj)
+                    break
 
-            # Filter the ACL to only have the ACE with the highest access rights
-            accountobj.acl = filter(lambda a: a not in acesforuser or a == acehighestright,
-                                    accountobj.acl)
-            # Update userGroupId and status after user registration
-            acehighestright.userGroupId = username
-            acehighestright.status = 'CONFIRMED'
-            self.cbcl.account.set(accountobj)
-
-        # Remove all cloudspace ACEs for the user's email addresses and re-add the highest access
-        # right ACE
-        for cloudspace in self.cbcl.cloudspace.search({'$or': emails_query})[1:]:
-            # ACE obj with the highest access right that was granted to an
-            # emailaddress owned by this user
-            acehighestright = None
-            acesforuser = list()
+        for cloudspace in self.cbcl.cloudspace.search({'acl.userGroupId': emailaddress})[1:]:
             cloudspaceobj = self.cbcl.cloudspace.get(cloudspace['guid'])
             for ace in cloudspaceobj.acl:
-                if ace.userGroupId in emails_list:
-                    acesforuser.append(ace)
-                    if not acehighestright or \
-                            (acehighestright and
-                                set(acehighestright.right).issubset(set(ace.right))):
-                        acehighestright = ace
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.cloudspace.set(cloudspaceobj)
+                    break
 
-            # Filter the ACL to only have the ACE with the highest access rights
-            cloudspaceobj.acl = filter(lambda a: a not in acesforuser or a == acehighestright,
-                                       cloudspaceobj.acl)
-            # Update userGroupId and status after user registration
-            acehighestright.userGroupId = username
-            acehighestright.status = 'CONFIRMED'
-            self.cbcl.cloudspace.set(cloudspaceobj)
-
-        # Remove all vmachines ACEs for the user's email addresses and re-add the highest access
-        # right ACE
-        for vmachine in self.cbcl.vmachine.search({'$or': emails_query})[1:]:
-            # ACE obj with the highest access right that was granted to an
-            # emailaddress owned by this user
-            acehighestright = None
-            acesforuser = list()
+        for vmachine in self.cbcl.vmachine.search({'acl.userGroupId': emailaddress})[1:]:
             vmachineobj = self.cbcl.vmachine.get(vmachine['guid'])
-            for ace in vmachineobj.acl:
-                if ace.userGroupId in emails_list:
-                    acesforuser.append(ace)
-                    if not acehighestright or \
-                            (acehighestright and
-                                set(acehighestright.right).issubset(set(ace.right))):
-                        acehighestright = ace
-
-            # Filter the ACL to only have the ACE with the highest access rights
-            vmachineobj.acl = filter(lambda a: a not in acesforuser or a == acehighestright,
-                                     vmachineobj.acl)
-            # Update userGroupId and status after user registration
-            acehighestright.userGroupId = username
-            acehighestright.status = 'CONFIRMED'
-            self.cbcl.vmachine.set(vmachineobj)
+            for ace in cloudspaceobj.acl:
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.vmachine.set(vmachineobj)
+                    break
 
         return True
 
