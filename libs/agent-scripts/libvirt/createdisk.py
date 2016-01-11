@@ -20,7 +20,7 @@ def action(templateguid, vmname, size, pmachineip):
     sys.path.append('/opt/OpenvStorage')
     from ovs.lib.vdisk import VDiskController, PMachineList
     pmguid = PMachineList.get_by_ip(pmachineip).guid
-    data = VDiskController.create_from_template(templateguid, '%s/base' % vmname, 'image', pmguid)
+    data = VDiskController.create_from_template(templateguid, machinename='%s/base' % vmname, devicename='image', pmachineguid=pmguid)
     filepath = j.system.fs.joinPaths('/mnt/vmstor', data['backingdevice'].lstrip('/'))
     fd = os.open(filepath, os.O_RDWR|os.O_CREAT)
     os.ftruncate(fd, size)
