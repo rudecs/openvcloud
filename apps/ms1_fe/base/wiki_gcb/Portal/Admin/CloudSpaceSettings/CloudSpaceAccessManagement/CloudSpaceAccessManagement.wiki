@@ -68,6 +68,6 @@
 </div>
 </form>
 
-<script src="/$$space/.files/lib/angular-1.2.6/angucomplete.js"></script>
+
 <script src="/$$space/.files/js/controllers/CloudSpaceAccessManagementController.js" type="text/javascript"></script>
 }}

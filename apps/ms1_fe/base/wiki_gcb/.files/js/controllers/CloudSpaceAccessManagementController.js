@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert','$timeout', '$modal', 'angucomplete', function($scope, CloudSpace, $ErrorResponseAlert, $timeout, $modal, angucomplete) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, $ErrorResponseAlert, $timeout, $modal) {
 
         $scope.shareCloudSpaceMessage = false;
         $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
