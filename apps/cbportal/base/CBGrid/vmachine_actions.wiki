@@ -20,13 +20,13 @@
   input:
   - reason
 
-- display: Stop For Abusive Resource Usage
-  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
-  data:
-   machineId: $$id
-   accountId: ${accountId}
-
-  input:
+#- display: Stop For Abusive Resource Usage
+#  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+#  data:
+#   machineId: $$id
+#   accountId: ${accountId}
+#
+#  input:
   - reason
 
 - display: Reboot
@@ -109,13 +109,13 @@
   - reason
   - cloneName
 
-- display: Backup And Destroy
-  action: /restmachine/cloudbroker/machine/backupAndDestroy
-  data:
-   accountId: ${accountId}
-   machineId: $$id
-  input:
-  - reason
+#- display: Backup And Destroy
+#  action: /restmachine/cloudbroker/machine/backupAndDestroy
+#  data:
+#   accountId: ${accountId}
+#   machineId: $$id
+#  input:
+#  - reason
 
 - display: Create Portforwarding
   action: /restmachine/cloudbroker/machine/createPortForward

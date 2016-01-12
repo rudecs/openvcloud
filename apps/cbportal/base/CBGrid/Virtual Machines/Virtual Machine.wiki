@@ -71,9 +71,6 @@ h3. Port Forwardings
 | | | | | | |
 {% endfor %}
 
-h3. Machine Exports
-{{vmexports machineid:$$id}}
-
 h3. Jobs
 {{grid.jobs: filter:%7B%22args%22%3A%20%7B%22%24regex%22%3A%20%22${referenceId}%22%7D%7D}}
 
