@@ -15,6 +15,7 @@ import os
 parser = OptionParser(help)
 
 parser.add_option("-r", "--release-version", dest="version", help="Version to make release for")
+parser.add_option("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
 (options, args) = parser.parse_args()
 
 REPOS = {'openvcloud': ['/opt/code/git/0-complexity/openvcloud'],
@@ -98,7 +99,11 @@ def make_tag(repo, tagname):
     print '[+] Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
     for tag in repo.repo.tags:
         if tag.name == tagname:
-            return False
+            if options.force:
+                repo.repo.git.tag('-d', tagname)
+                break
+            else:
+                return False
     repo.repo.git.tag(tagname)
     return True
 
@@ -112,7 +117,7 @@ def tag_exists(repo, tag):
 for type, path in AYS.iteritems():
     branchname, tagname = getVersions(type)
     repo = j.clients.git.get(path)
-    if tag_exists(repo, tagname):
+    if tag_exists(repo, tagname) and not options.force:
         print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name)))
         j.application.stop(1)
 
@@ -121,7 +126,7 @@ for type, repos in REPOS.iteritems():
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
         print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
-        repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
+        repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
         repo.repo.git.checkout(branchname)
         make_tag(repo, tagname)
         #repo.repo.git.push('--tags')
@@ -130,7 +135,7 @@ for type, path in AYS.iteritems():
     branchname, tagname = getVersions(type)
     repo = j.clients.git.get(path)
 
-    repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
+    repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
     repo.repo.git.checkout(branchname)
     changeversion(repo, getTagTargets())
     repo.commit('Tagging %s' % tagname)
