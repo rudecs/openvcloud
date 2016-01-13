@@ -59,6 +59,9 @@ if [ $? == 1 ]; then
 	echo "[+] configuring atyourservice"
 	echo "metadata.openvcloud            =" >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 	echo "    url:'https://git.aydo.com/0-complexity/openvcloud_ays'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+    if [ -n "$OVCBRANCH" ]; then
+        echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+    fi
 else
 	echo "[+] atyourservice already configured"
 fi
