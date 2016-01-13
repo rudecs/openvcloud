@@ -1,5 +1,7 @@
 from JumpScale import j
 import sys
+import math
+import random
 import re
 from fabric.network import NetworkError
 
@@ -51,8 +53,9 @@ class OpenvStorage():
     def storageRouters(self):
         if not self._storagerouters:
             from ovs.lib.storagerouter import StorageRouterList
-            self._storagerouters = [router for router in StorageRouterList.get_storagerouters() if\
+            storageips = [router for router in StorageRouterList.get_storagerouters() if\
                                 router.ip != self.localIp]
+            self._storagerouters = random.sample(storageips, int(math.log(len(storageips)) + 1))
         return self._storagerouters
     
     def runIperfServer(self):
@@ -82,7 +85,7 @@ class OpenvStorage():
                 j.logger.log('Installing iperf on %s' % router.ip, 1)
                 if not sshclient.command_check('iperf'):
                     sshclient.run('apt-get install iperf')
-                output = sshclient.run('iperf -c %s --format m -t 5 ' % self.localIp)
+                output = sshclient.run('iperf -c %s --format m -t 2 ' % self.localIp)
                 output = output.split(' ')
                 bandwidth = float(output[-2])
                 msg = "Bandwidth between %s and %s reached %s" % (self.localIp, router.ip, bandwidth)

@@ -16,36 +16,33 @@ queue = 'hypervisor'
 
 def action(machineid, name, diskmapping, pmachineip):
     import sys
-    import os
+    import time
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil, lockDomain, unlockDomain
     sys.path.append('/opt/OpenvStorage')
     from ovs.dal.lists.vmachinelist import VMachineList
     from ovs.lib.vdisk import PMachineList, VDiskController
     from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.lib.vmachine import VMachineController
+    from ovs.dal.lists.vpoollist import VPoolList
 
-    connection = LibvirtUtil()
-    vmname = connection.get_domain(machineid)['name']
     lockDomain(machineid)
     try:
         pmguid = PMachineList.get_by_ip(pmachineip).guid
-        vmachine = VMachineList.get_vmachine_by_name(vmname)[0]
-        VMachineController.snapshot(vmachine.guid, 'vm-clone')
-        vmachine.invalidate_dynamics(['snapshots'])
-        snapshottimestamp = vmachine.snapshots[-1]['timestamp']
-
+        pool = VPoolList.get_vpool_by_name('vmstor')
         diskpaths = []
+        timestamp = str(int(time.time()))
 
         def getVDisk(path):
-            for vdisk in vmachine.vdisks:
-                filepath = j.system.fs.joinPaths('/mnt/vmstor', vdisk.devicename)
-                if filepath == path:
-                    return vdisk
+            diskpath = path.replace('/mnt/vmstor/', '')
+            return VDiskList.get_by_devicename_and_vpool(diskpath, pool)
 
         def getSnapshot(vdisk):
-            for snap in vdisk.snapshots[::-1]:
-                if snap['timestamp'] == snapshottimestamp:
-                    return snap
+
+            meta = {'label': 'for clone %s' % name,
+                    'is_consistent': False,
+                    'is_sticky': True,
+                    'is_automatic': False,
+                    'timestamp': timestamp}
+            return VDiskController.create_snapshot(vdisk.guid, meta)
 
         for diskmap in diskmapping:
             vdisk = getVDisk(diskmap['diskpath'])
@@ -57,7 +54,7 @@ def action(machineid, name, diskmapping, pmachineip):
                 diskname = str(diskmap['cloneId'])
 
             snapshot = getSnapshot(vdisk)
-            newdisk = VDiskController.clone(vdisk.guid, snapshot['guid'], diskname, pmguid, folder)
+            newdisk = VDiskController.clone(vdisk.guid, snapshot, diskname, pmguid, folder)
             filepath = j.system.fs.joinPaths('/mnt/vmstor', newdisk['backingdevice'].lstrip('/'))
             diskpaths.append(filepath)
 

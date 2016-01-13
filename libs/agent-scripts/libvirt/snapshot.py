@@ -24,6 +24,7 @@ def action(diskpaths, name):
 
     meta = {'label': name,
             'is_consistent': False,
+            'is_sticky': True,
             'is_automatic': False,
             'timestamp': str(int(time.time()))}
 

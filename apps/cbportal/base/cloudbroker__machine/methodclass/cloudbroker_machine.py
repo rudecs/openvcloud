@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import exceptions
 import ujson
 
@@ -113,6 +114,7 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Moving Virtual Machine', 'Finished Moving Virtual Machine', 'Failed to move Virtual Machine')
     def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, force=False, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)

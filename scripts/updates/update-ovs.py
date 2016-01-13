@@ -246,11 +246,11 @@ def framework(nodes):
     
     # Post upgrade
     for node in nodes:
-        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
-        break
+        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
     
     for node in nodes:
-        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-all.py")
+        executeOnNodes([node], "python /opt/code/git/0-complexity/openvcloud/scripts/ovs/post-upgrade-single.py")
+        break
     
     for node in nodes:
         executeOnNodes([node], "/etc/init.d/memcached restart")

@@ -1,5 +1,6 @@
 @usedefault
 {{network id:$$id gid:$$gid}}
+{{datatables_use}}
 {% if id %}
 
 h2. Private Network: $$id
@@ -30,6 +31,7 @@ h2. Private Network: $$id
   action: /restmachine/cloudbroker/cloudspace/resetVFW
   reload: false
   data:
+   async: True
    cloudspaceId: ${domain}
   input:
   - reason
@@ -39,12 +41,20 @@ h2. Private Network: $$id
   input:
   - reason
   data:
+   async: True
    cloudspaceId: ${domain}
 
+- display: Delete Portforwarding
+  action: /restmachine/cloudbroker/cloudspace/deletePortForward
+  hide: true
+  reload: false
+  data:
+   cloudspaceId: ${domain}
 
 }}
 
 {{movevfw: cloudspaceId:${domain}}}
+{{createportforwarding: cloudspaceId:${domain}}}
 
 h3. Details
 |*Management IP*|${host}|
@@ -55,10 +65,15 @@ h3. Details
 
 h3. Port Fowardings
 
-||Source IP||Source Port||Destination IP||Destination Port||
+{{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
+||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
 {% for rule in tcpForwardRules -%}
-|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|
+|${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|${rule.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${rule.fromAddr}' data-publicPort:'${rule.fromPort}' data-proto:'${rule.protocol}'}}|
+{% else -%}
+| | | | | | |
 {% endfor %}
+{% elif cloudspaceId %}
+Private network has not been deploy yet for Cloud Space [${cloudspaceName}|/cbgrid/cloud space?id=${cloudspaceId}]
 {% else %}
 No Private Network provided
 {% endif %}

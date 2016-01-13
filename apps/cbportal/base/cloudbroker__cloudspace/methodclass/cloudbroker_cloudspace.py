@@ -1,6 +1,7 @@
 from JumpScale import j
 import JumpScale.grid.osis
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
 from JumpScale.portal.portal import exceptions
@@ -80,6 +81,7 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Moving Virtual Firewall', 'Finished moving VFW', 'Failed to move VFW')
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNid, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
@@ -114,6 +116,7 @@ class cloudbroker_cloudspace(BaseActor):
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):
         """
         Deploy VFW 
@@ -123,17 +126,11 @@ class cloudbroker_cloudspace(BaseActor):
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
-        kwargs['ctx'].events.runAsync(self.cloudspaces_actor.deploy,
-                                      args=(cloudspaceId,),
-                                      kwargs={},
-                                      title='Deploying Cloud Space',
-                                      success='Finished deploying Cloud Space',
-                                      error='Failed to deploy Cloud Space',
-                                      )
-        return
+        return self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Redeploying Cloud Space', 'Finished redeploying Cloud Space', 'Failed to redeploy Cloud Space')
     def resetVFW(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
@@ -144,13 +141,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         self.destroyVFW(cloudspaceId, **kwargs)
-        kwargs['ctx'].events.runAsync(self.cloudspaces_actor.deploy,
-                                      args=(cloudspaceId,),
-                                      kwargs={},
-                                      title='Redeploying Cloud Space',
-                                      success='Finished redeploying Cloud Space',
-                                      error='Failed to redeploy Cloud Space',
-                                      )
+        self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

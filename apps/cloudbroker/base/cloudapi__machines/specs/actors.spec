@@ -162,31 +162,31 @@
         result:str
 
 
-    method:importToNewMachine
-        """
-        restore export to a new machine
-        """
-        var:name str,,name of the new machine
-        var:cloudspaceId int,, id of the cloudspace
-        var:vmexportId int,, id of the export
-        var:sizeId int,,id of the specific size
-        var:description str,,optional description @tags: optional
-        var:aws_access_key str,,s3 access key
-        var:aws_secret_key str,,s3 secret key
-        result:jobid
-
-
-    method:export
-        """
-        Create a export/backup of a machine
-        """
-        var:machineId int,, id of the machine to backup
-        var:name str,, Usefull name for this backup
-        var:host str,, host to export(if s3)
-        var:aws_access_key str,,s3 access key
-        var:aws_secret_key str,,s3 secret key
-        var:bucket str,,s3 bucket name
-        result:jobid
+#    method:importToNewMachine
+#        """
+#        restore export to a new machine
+#        """
+#        var:name str,,name of the new machine
+#        var:cloudspaceId int,, id of the cloudspace
+#        var:vmexportId int,, id of the export
+#        var:sizeId int,,id of the specific size
+#        var:description str,,optional description @tags: optional
+#        var:aws_access_key str,,s3 access key
+#        var:aws_secret_key str,,s3 secret key
+#        result:jobid
+#
+#
+#    method:export
+#        """
+#        Create a export/backup of a machine
+#        """
+#        var:machineId int,, id of the machine to backup
+#        var:name str,, Usefull name for this backup
+#        var:host str,, host to export(if s3)
+#        var:aws_access_key str,,s3 access key
+#        var:aws_secret_key str,,s3 secret key
+#        var:bucket str,,s3 bucket name
+#        result:jobid
 
     method:getConsoleUrl
         """
@@ -211,13 +211,13 @@
         var:size int,, result size
         result:list
 
-    method:listExports
-        """
-        List exported images
-        """
-        var:machineId str,, id of the machine
-        var:status str,, filter on specific status @tags: optional
-        result:dict a json list
+#    method:listExports
+#        """
+#        List exported images
+#        """
+#        var:machineId str,, id of the machine
+#        var:status str,, filter on specific status @tags: optional
+#        result:dict a json list
 
     method:addUser
         """

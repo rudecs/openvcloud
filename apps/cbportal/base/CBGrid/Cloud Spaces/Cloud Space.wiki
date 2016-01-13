@@ -3,6 +3,7 @@
 @@title Cloud Space: ${name}
 
 {{cbspace id:$$id}}
+{{datatables_use}}
 {% if id %}
 
 
@@ -30,6 +31,7 @@ h2. Cloud Space: ${name}
   input:
   - reason
   data:
+   async: True
    cloudspaceId: $$id
 
 {% endif %}

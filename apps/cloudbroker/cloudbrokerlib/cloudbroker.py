@@ -338,8 +338,8 @@ class Machine(object):
         addDisk(-1, disksize, 'B', 'Boot disk')
         diskinfo = []
         for order, datadisksize in enumerate(datadisks):
-            diskid = addDisk(order, datadisksize, 'D')
-            diskinfo.append((diskid, datadisksize))
+            diskid = addDisk(order, int(datadisksize), 'D')
+            diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
         if image.type == 'Custom Templates':
