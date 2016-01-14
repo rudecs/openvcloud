@@ -1,11 +1,9 @@
-import datetime
-import JumpScale.grid.osis
-import JumpScale.baselib.units
-from xml.etree import ElementTree
 try:
     import ujson as json
 except Exception:
     import json
+
+from JumpScale.portal.portal import exceptions
 
 def main(j, args, params, tags, tasklet):
     import gevent
@@ -28,17 +26,25 @@ def main(j, args, params, tags, tasklet):
             'snapshots': [],
             'refreshed': False}
 
-    with gevent.Timeout(15, False):
-        # refresh from reality + get snapshots
-        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
-        data['refreshed'] = True
-
     try:
         obj = cbosis.vmachine.get(id)
     except:
         args.doc.applyTemplate({})
         params.result = (args.doc, args.doc)
         return params
+
+    if obj.status not in ['DESTROYED', 'ERROR']:
+        with gevent.Timeout(15, False):
+            # refresh from reality + get snapshots
+            try:
+                data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
+                data['refreshed'] = True
+            except exceptions.BaseError:
+                data['refreshed'] = False
+    else:
+        data['refreshed'] = True
+
+    obj = cbosis.vmachine.get(id)
 
     try:
         cl = j.clients.redis.getByInstance('system')
