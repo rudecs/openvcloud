@@ -57,6 +57,7 @@ class CloudProvider(object):
                 CloudProvider._providers[stackId] = driver
 
         self.client = CloudProvider._providers[stackId]
+        self.stackId = stackId
 
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
@@ -99,6 +100,19 @@ class CloudBroker(object):
         if stacks:
             return self.getProviderByStackId(stacks[0]['id'])
         raise ValueError('No provider available on grid %s' % gid)
+
+    def markProvider(self, stackId):
+        stack = models.stack.get(stackId)
+        stack.error += 1
+        if stack.error >=2:
+            stack.status = 'ERROR'
+        models.stack.set(stack)
+
+    def clearProvider(self, stackId):
+        stack = models.stack.get(stackId)
+        stack.error = 0
+        stack.status = 'ENABLED'
+        models.stack.set(stack)
 
     def getIdByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)
@@ -396,34 +410,44 @@ class Machine(object):
         models.cloudspace.set(cloudspace)
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
-        try:
-            if not stackId:
-                stack = self.cb.getBestProvider(cloudspace.gid, imageId)
-                if stack == -1:
-                    self.cleanup(machine)
-                    raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-                stackId = stack['id']
-            provider = self.cb.getProviderByStackId(stackId)
-            psize = self.getSize(provider, machine)
+        excludelist = []
+        name = 'vm-%s' % machine.id
+        newstackId = stackId
+
+        def getStackAndProvider(newstackId):
+            try:
+                if not newstackId:
+                    stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
+                    if stack == -1:
+                        self.cleanup(machine)
+                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                    newstackId = stack['id']
+                provider = self.cb.getProviderByStackId(newstackId)
+            except:
+                self.cleanup(machine)
+                raise
+            return provider, newstackId
+
+        node = -1
+        while node == -1:
+            provider, newstackId = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
+            psize = self.getSize(provider, machine)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = 'vm-%s' % machine.id
-        except:
-            self.cleanup(machine)
-            raise
-        try:
-            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
-        except:
-            machine.status = 'ERROR'
-            models.vmachine.set(machine)
-            raise
-        if node == -1:
-            self.cleanup(machine)
-            raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-        self.updateMachineFromNode(machine, node, stackId, psize)
+            try:
+                node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+            except Exception:
+                self.cb.markProvider(stackId)
+                machine.status = 'ERROR'
+                models.vmachine.set(machine)
+            if node == -1 and stackId:
+                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+        self.cb.clearProvider(newstackId)
+        self.updateMachineFromNode(machine, node, newstackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
+
 
     def getSize(self, provider, machine):
         brokersize = models.size.get(machine.sizeId)

@@ -7,7 +7,7 @@ h3. Stack: ${name}
 {% if status != 'DECOMMISSIONED' %}
 {{actions:
 
-{% if status == 'MAINTENANCE' %}
+{% if status in ['MAINTENANCE', 'ERROR'] %}
 - display: Enable
   action: /restmachine/cloudbroker/computenode/enable
   reload: false
@@ -20,7 +20,7 @@ h3. Stack: ${name}
      label: Reason
 {% endif %}
 
-{% if status == 'ENABLED' %}
+{% if status in ['ERROR', 'ENABLED'] %}
 - display: Put in Maintenance
   action: /restmachine/cloudbroker/computenode/maintenance
   reload: false
