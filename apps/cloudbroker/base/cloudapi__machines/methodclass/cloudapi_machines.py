@@ -49,27 +49,29 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
-        if node.extra.get('locked', False):
-            raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
-        actionname = "%s_node" % actiontype.lower()
-        method = getattr(provider.client, actionname, None)
-        if not method:
-            method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
+        with self.models.vmachine.lock(machineId):
+            provider, node, machine = self._getProviderAndNode(machineId)
+            if node.extra.get('locked', False):
+                raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
+            actionname = "%s_node" % actiontype.lower()
+            method = getattr(provider.client, actionname, None)
             if not method:
-                raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
-        if newstatus and newstatus != machine.status:
-            machine.status = newstatus
-            self.models.vmachine.set(machine)
-        tags = str(machineId)
-        j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
-        return method(node)
+                method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
+                if not method:
+                    raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
+            if newstatus and newstatus != machine.status:
+                machine.status = newstatus
+                self.models.vmachine.set(machine)
+            tags = str(machineId)
+            j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
+            return method(node)
 
     @authenticator.auth(acl='X')
     @audit()
     def start(self, machineId, **kwargs):
         machine = self._getMachine(machineId)
-        self.cb.chooseProvider(machine)
+        if machine.status not in ['RUNNING', 'PAUSED']:
+            self.cb.chooseProvider(machine)
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
