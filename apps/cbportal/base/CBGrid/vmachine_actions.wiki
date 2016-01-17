@@ -27,7 +27,7 @@
 #   accountId: ${accountId}
 #
 #  input:
-  - reason
+#  - reason
 
 - display: Reboot
   action: /restmachine/cloudbroker/machine/reboot
