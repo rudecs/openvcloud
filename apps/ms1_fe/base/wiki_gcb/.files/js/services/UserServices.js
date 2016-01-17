@@ -69,6 +69,18 @@ angular.module('cloudscalers.services')
                                 return $q.reject(reason);
                         }
                  );
-            }
+            },
+						// TODO make usernameregex dynamic
+						getMatchingUsernames: function(){
+                return $http.get(cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?imit=5&usernameregex=k')
+                .then(
+                        function(result){
+                                return result.data;
+                        },
+                        function(reason){
+                                return $q.reject(reason);
+                        }
+                 );
+            },
         };
     });
