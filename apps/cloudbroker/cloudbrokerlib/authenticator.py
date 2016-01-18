@@ -5,8 +5,12 @@ from .cloudbroker import models
 
 class auth(object):
 
-    def __init__(self, acl, level=None):
-        self.acl = set(acl)
+    def __init__(self, acl=None, level=None):
+        self.acl = acl or dict()
+        for key in self.acl:
+            if key not in ['account', 'cloudspace', 'machine']:
+                raise ValueError('Unexpected resource type specified in acl dict, only account, '
+                                 'cloudspace and machine are allowed.')
         self.level = level
         self.models = models
 
@@ -96,33 +100,73 @@ class auth(object):
             user = ctx.env['beaker.session']['user']
             account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
             if account_status != 'CONFIRMED':
-                raise exceptions.Conflict('Unconfirmed Account')
-            fullacl = set()
+                raise exceptions.Forbidden('Unconfirmed Account')
+            account = None
+            cloudspace = None
+            machine = None
             if self.acl:
-                userobj = j.core.portal.active.auth.getUserInfo(user)
-                groups = userobj.groups
-                # add brokeradmin access
-                if 'admin' in groups:
-                    return func(*args, **kwargs)
-                account = None
-                cloudspace = None
-                machine = None
                 if 'machineId' in kwargs and kwargs['machineId']:
                     machine = self.models.vmachine.get(int(kwargs['machineId']))
-                    fullacl.update(self.expandAclFromVMachine(user, groups, machine))
+                    cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+                    account = self.models.account.get(cloudspace.accountId)
+                elif 'diskId' in kwargs and kwargs['diskId']:
+                    disk = self.models.disk.get(int(kwargs['diskId']))
+                    machines = self.models.vmachine.search({'disks': disk.id,
+                                                            'status': {'$ne': 'DESTROYED'}})[1:]
+                    if machines:
+                        machine = self.models.vmachine.get(machines[0]['id'])
+                        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+                    account = self.models.account.get(disk.accountId)
+                elif 'imageid' in kwargs and kwargs['imageid']:
+                    image = self.models.image.get(int(kwargs['imageid']))
+                    account = self.models.account.get(image.accountId)
                 elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
-                    fullacl.update(self.expandAclFromCloudspace(user, groups, cloudspace))
+                    account = self.models.account.get(cloudspace.accountId)
                 elif 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(int(kwargs['accountId']))
-                    fullacl.update(self.expandAclFromAccount(user, groups, account))
-                # if admin allow all other ACL as well
-                if 'A' in fullacl:
-                    fullacl.update('CXDRU')
-                if ((cloudspace or account or machine) and not self.acl.issubset(fullacl)):
-                    raise exceptions.Forbidden('User: "%s" isn\'t allowed to execute this action. No enough permissions' % user)
-                elif ((not cloudspace and 'cloudspaceId' in kwargs) or 'S' in self.acl) and 'admin' not in groups:
-                    raise exceptions.Forbidden('Method requires "admin" privileges')
 
-            return func(*args, **kwargs)
+            if self.isAuthorized(user, machine, cloudspace, account):
+                return func(*args, **kwargs)
+            else:
+                raise exceptions.Forbidden(
+                        '''User: "%s" isn't allowed to execute this action.
+                        Not enough permissions''' % user)
         return wrapper
+
+    def isAuthorized(self, username, machine=None, cloudspace=None, account=None):
+        """
+        Check if a user has the authorization to access a resource
+
+        :param username: username of the user to be checked
+        :param machine: machine object if authorization should be done on machine level
+        :param cloudspace: cloudspace object if authorization should be done on cloudspace level
+        :param account: account object if authorization should be done on account level
+        :return: True if username is authorized to access the resource, False otherwise
+        """
+        userobj = j.core.portal.active.auth.getUserInfo(username)
+        groups = userobj.groups
+        # add brokeradmin access
+        if 'admin' in groups:
+            return True
+
+        if 'account' in self.acl and account:
+            grantedaccountacl  = self.expandAclFromAccount(username, groups, account)
+            if 'A' in grantedaccountacl:
+                grantedaccountacl.update('CXDRU')
+            if self.acl['account'].issubset(grantedaccountacl):
+                return True
+        if 'cloudspace' in self.acl and cloudspace:
+            grantedcloudspaceacl = self.expandAclFromCloudspace(username, groups, cloudspace)
+            if 'A' in grantedcloudspaceacl:
+                grantedcloudspaceacl.update('CXDRU')
+            if self.acl['cloudspace'].issubset(grantedcloudspaceacl):
+                return True
+        if 'machine' in self.acl and machine:
+            grantedmachineacl = self.expandAclFromVMachine(username, groups, machine)
+            if 'A' in grantedmachineacl:
+                grantedmachineacl.update('CXDRU')
+            if self.acl['machine'].issubset(grantedmachineacl):
+                return True
+
+        return False

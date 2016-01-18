@@ -80,7 +80,7 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            self.cb.actors.cloudbroker.user.create(username, [emailaddress], password, ['user'])
+            self.cb.actors.cloudbroker.user.create(username, emailaddress, password, 'user')
             created = True
 
         now = int(time.time())
@@ -141,6 +141,7 @@ class cloudbroker_account(BaseActor):
 
         if emailaddress:
             _send_signup_mail(hrd=self.hrd, **mail_args)
+            pass
 
         return accountid
 
