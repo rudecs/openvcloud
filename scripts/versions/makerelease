@@ -95,7 +95,7 @@ def getBranchTargets():
     return targets
 
 def make_tag(repo, tagname):
-    print '[+] Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
+    print '[+]   Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
     for tag in repo.repo.tags:
         if tag.name == tagname:
             if options.force:
@@ -136,7 +136,7 @@ if not options.delete:
     for type, path in AYS.iteritems():
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
-
+        print '[+] Making release on repo %s/%s' % (repo.account, repo.name)
         repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
         repo.repo.git.checkout(branchname)
         changeversion(repo, getTagTargets())
@@ -144,8 +144,8 @@ if not options.delete:
         make_tag(repo, tagname)
         changeversion(repo, getBranchTargets())
         repo.commit('Putting on branch %s' % branchname)
-        print '[+] Pushing'
-        repo.repo.git.push('')
+        print '[+]   Pushing'
+        repo.repo.git.push()
         repo.repo.git.push('--tags')
 else:
     for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
