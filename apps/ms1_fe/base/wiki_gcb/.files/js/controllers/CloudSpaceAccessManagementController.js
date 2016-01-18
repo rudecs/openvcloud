@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', '$ErrorResponseAlert','$timeout', '$modal', 'angucomplete-alt', function($scope, CloudSpace, $ErrorResponseAlert, $timeout, $modal, angucomplete-alt) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Users', '$http','$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, Users,$http,$ErrorResponseAlert, $timeout, $modal) {
 
         $scope.shareCloudSpaceMessage = false;
         $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
@@ -120,4 +120,18 @@ angular.module('cloudscalers.controllers')
                 });
             });
         };
+
+  			$scope.search = function (query, deferred){
+          // TODO add autocomplete function
+  				// $http.get(cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=k').success((function (deferred, data) {
+  				// 	var results = [];
+  				// 	data.forEach(function (item) {
+  				// 		results.push({
+  				// 			value: item.username,
+  				// 			userGravatar: item.gravatarurl
+  				// 		});
+  				// 	});
+  				// 	deferred.resolve({results: results});
+  				// }).bind(this, deferred));
+  			};
     }]);
