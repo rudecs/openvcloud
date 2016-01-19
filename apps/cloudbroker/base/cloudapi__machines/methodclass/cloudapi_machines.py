@@ -67,47 +67,78 @@ class cloudapi_machines(BaseActor):
         j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
         return method(node)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def start(self, machineId, **kwargs):
+        """
+        Start the machine
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def stop(self, machineId, **kwargs):
+        """
+        Stop the machine
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def reboot(self, machineId, **kwargs):
+        """
+        Reboot the machine
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def reset(self, machineId, **kwargs):
+        """
+        Reset the machine, force reboot
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def pause(self, machineId, **kwargs):
+        """
+        Pause the machine
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'pause', enums.MachineStatus.PAUSED)
 
-    @authenticator.auth(acl='X')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def resume(self, machineId, **kwargs):
+        """
+        Resume the machine
+
+        :param machineId: id of the machine
+        """
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('C')})
     @audit()
     def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
-        Add a disk to a machine
-        param:machineId id of machine
-        param:diskName name of disk
-        param:description optional description
-        param:size size in GByte default=10
-        param:type (B;D;T)  B=Boot;D=Data;T=Temp default=B
-        result int
+        Create and attach a disk to the machine
+
+        :param machineId: id of the machine
+        :param diskName: name of disk
+        :param description: optional description
+        :param size: size in GByte default=10
+        :param type: (B;D;T)  B=Boot;D=Data;T=Temp default=B
+        :return int, id of the disk
 
         """
         machine = self._getMachine(machineId)
@@ -123,9 +154,16 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(machine)
         return disk.id
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def detachDisk(self, machineId, diskId, **kwargs):
+        """
+        Detach a disk from the machine
+
+        :param machineId: id of the machine
+        :param diskId: id of disk to detach
+        :return: True if disk was detached successfully
+        """
         diskId = int(diskId)
         machine = self._getMachine(machineId)
         if diskId not in machine.disks:
@@ -138,9 +176,16 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(machine)
         return True
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def attachDisk(self, machineId, diskId, **kwargs):
+        """
+        Attach a disk to the machine
+
+        :param machineId: id of the machine
+        :param diskId: id of disk to attach
+        :return: True if disk was attached successfully
+        """
         diskId = int(diskId)
         machine = self._getMachine(machineId)
         if diskId in machine.disks:
@@ -156,15 +201,16 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(machine)
         return True
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'account': set('C')})
     @audit()
     def createTemplate(self, machineId, templatename, basename, **kwargs):
         """
-        Creates a template from the active machine
-        param:machineId id of the machine
-        param:templatename name of the template
-        param:basename Snapshot id on which the template is based
-        result str
+        Create a template from the active machine
+
+        :param machineId: id of the machine
+        :param templatename: name of the template
+        :param basename: snapshot id on which the template is based
+        :return True if template was created
         """
         machine = self._getMachine(machineId)
         node = self._getNode(machine.referenceId)
@@ -189,7 +235,7 @@ class cloudapi_machines(BaseActor):
         template = provider.client.ex_create_template(node, templatename, imageid, basename)
         return True
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def backup(self, machineId, backupName, **kwargs):
         """
@@ -210,18 +256,21 @@ class cloudapi_machines(BaseActor):
             return self.cb.getProviderByStackId(machine.stackId)
         return None
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
         """
-        Create a machine based on the available flavors, in a certain space.
-        The user needs write access rights on the space.
-        param:cloudspaceId id of cloudspace in which we want to create a machine
-        param:name name of machine
-        param:description optional description
-        param:size id of the specific size default=1
-        param:image id of the specific image
-        result bool
+        Create a machine based on the available sizes, in a certain cloud space
+        The user needs write access rights on the cloud space
+
+        :param cloudspaceId: id of cloud space in which we want to create a machine
+        :param name: name of machine
+        :param description: optional description
+        :param sizeId: id of the specific size
+        :param imageId: id of the specific image
+        :param disksize: size of base volume
+        :param datadisks: list of extra data disks
+        :return bool
 
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
@@ -229,13 +278,14 @@ class cloudapi_machines(BaseActor):
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'cloudspace': set('D')})
     @audit()
     def delete(self, machineId, **kwargs):
         """
-        Delete a machine
-        param:machineId id of the machine
-        result
+        Delete the machine
+
+        :param machineId: id of the machine
+        :return True if machine was deleted successfully
 
         """
         provider, node = self._getProviderAndNode(machineId)
@@ -275,7 +325,7 @@ class cloudapi_machines(BaseActor):
         return True
 
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def get(self, machineId, **kwargs):
         """
@@ -312,7 +362,7 @@ class cloudapi_machines(BaseActor):
             machine.status = realstatus
             self.models.vmachine.set(machine)
         acl = list()
-        machine_acl = authenticator.auth([]).getVMachineAcl(machine.id)
+        machine_acl = authenticator.auth().getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
             acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right']))})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
@@ -323,13 +373,15 @@ class cloudapi_machines(BaseActor):
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
-        List the deployed machines in a space. Filtering based on status is possible.
-        param:cloudspaceId id of cloudspace in which machine exists
-        param:status when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT)
-        result list
+        List the deployed machines in a space. Filtering based on status is possible
+        :param cloudspaceId: id of cloud space in which machine exists @tags: optional
+        :param status: when not empty will filter on type (types are ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT)
+        :return list of dict with each element containing the machine details
 
         """
         ctx = kwargs['ctx']
+        if not cloudspaceId:
+            raise exceptions.BadRequest('Please specify a cloudsapce ID.')
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
 
@@ -337,7 +389,7 @@ class cloudapi_machines(BaseActor):
         userobj = j.core.portal.active.auth.getUserInfo(user)
         groups = userobj.groups
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        auth = authenticator.auth([])
+        auth = authenticator.auth()
         acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
         q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
         if 'R' not in acl and 'A' not in acl:
@@ -372,13 +424,15 @@ class cloudapi_machines(BaseActor):
             node = None
         return provider, node
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('C')})
     @audit()
     def snapshot(self, machineId, name, **kwargs):
         """
-        param:machineId id of machine to snapshot
-        param:name Optional name to give snapshot
-        result int
+        Take a snapshot of the machine
+
+        :param machineId: id of the machine to snapshot
+        :param name: name to give snapshot
+        :return the snapshot name
         """
         provider, node = self._getProviderAndNode(machineId)
         snapshots = provider.client.ex_list_snapshots(node)
@@ -392,9 +446,15 @@ class cloudapi_machines(BaseActor):
         snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot['name']
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def listSnapshots(self, machineId, **kwargs):
+        """
+        List the snapshots of the machine
+
+        :param machineId: id of the machine
+        :return: list with the available snapshots
+        """
         provider, node = self._getProviderAndNode(machineId)
         node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
@@ -404,33 +464,46 @@ class cloudapi_machines(BaseActor):
                 result.append(snapshot)
         return result
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def deleteSnapshot(self, machineId, epoch, **kwargs):
+        """
+        Delete a snapshot of the machine
+
+        :param machineId: id of the machine
+        :param epoch: epoch time of snapshot
+        """
         provider, node = self._getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         return provider.client.ex_delete_snapshot(node, epoch)
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     @RequireState(enums.MachineStatus.HALTED, 'A snapshot can only be rolled back to a stopped Machine')
     def rollbackSnapshot(self, machineId, epoch, **kwargs):
+        """
+        Rollback a snapshot of the machine
+
+        :param machineId: id of the machine
+        :param epoch: epoch time of snapshot
+        """
         provider, node = self._getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_rollback_snapshot(node, epoch)
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('C')})
     @audit()
     def update(self, machineId, name=None, description=None, size=None, **kwargs):
         """
-        Change basic properties of a machine.
+        Change basic properties of a machine
         Name, description can be changed with this action.
-        param:machineId id of the machine
-        param:name name of the machine
-        param:description description of the machine
-        param:size size of the machine in CU
+
+        :param machineId: id of the machine
+        :param name: name of the machine
+        :param description: description of the machine
+        :param size: size of the machine in CU
 
         """
         machine = self._getMachine(machineId)
@@ -446,13 +519,14 @@ class cloudapi_machines(BaseActor):
         #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def getConsoleUrl(self, machineId, **kwargs):
         """
-        get url to connect to console
-        param:machineId id of machine to connect to console
-        result str
+        Get url to connect to console
+
+        :param machineId: id of the machine to connect to console
+        :return one time url used to connect ot console
 
         """
         machine = self._getMachine(machineId)
@@ -461,16 +535,16 @@ class cloudapi_machines(BaseActor):
         provider, node = self._getProviderAndNode(machineId)
         return provider.client.ex_get_console_url(node)
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped machine bucket')
     def clone(self, machineId, name, **kwargs):
         """
-        clone a machine
-        param:machineId id of machine to clone
-        param:name name of cloned machine
-        result str
+        Clone the machine
 
+        :param machineId: id of the machine to clone
+        :param name: name of the cloned machine
+        :return id of the new cloned machine
         """
         machine = self._getMachine(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
@@ -514,19 +588,34 @@ class cloudapi_machines(BaseActor):
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def getHistory(self, machineId, size, **kwargs):
         """
-        Gets the machine actions history
+        Get machine history
+
+        :param machineId: id of the machine
+        :param size: number of entries to return
+        :return: list of the history of the machine
         """
         tags = str(machineId)
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'machine': set('C')})
     @audit()
     def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
+        """
+        Create an export/backup of the machine
+
+        :param machineId: id of the machine to backup
+        :param name: useful name for this backup
+        :param host: host to export(if s3)
+        :param aws_access_key: s3 access key
+        :param aws_secret_key: s3 secret key
+        :param bucket: s3 bucket name
+        :return: jobid
+        """
         storageparameters = {}
         if not aws_access_key or not aws_secret_key or not host:
             raise exceptions.BadRequest('S3 parameters are not provided')
@@ -544,13 +633,14 @@ class cloudapi_machines(BaseActor):
     def _export(self, machineId, name, storageparameters, **kwargs):
         """
         Create a export/backup of a machine
-        param:machineId id of the machine to backup
-        param:name Usefull name for this backup
-        param:backuptype Type e.g raw, condensed
-        param:host host to export(if s3)
-        param:aws_access_key s3 access key
-        param:aws_secret_key s3 secret key
-        result jobid
+
+        :param machineId: id of the machine to backup
+        :param name: useful name for this backup
+        :param backuptype: Type e.g raw, condensed
+        :param host: host to export(if s3)
+        :param aws_access_key: s3 access key
+        :param aws_secret_key: s3 secret key
+        :return jobid
         """
         system_cl = j.clients.osis.getNamespace('system')
         machine = self.models.vmachine.get(machineId)
@@ -565,19 +655,19 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
         """
-        restore export to a new machine
-        param:name name of the machine
-        param:cloudspaceId id of the exportd to backup
-        param:sizeId id of the specific size
-        param:description optional description
-        param:aws_access_key s3 access key
-        param:aws_secret_key s3 secret key
-        result jobid
+        Restore export to a new machine
+
+        :param name: name of the machine
+        :param cloudspaceId: id of the export to backup
+        :param sizeId: id of the specific size
+        :param description: optional description
+        :param aws_access_key: s3 access key
+        :param aws_secret_key: s3 secret key
+        :return jobid
         """
         vmexport = self.models.vmexport.get(vmexportId)
         if not vmexport:
@@ -585,7 +675,6 @@ class cloudapi_machines(BaseActor):
         host = vmexport.server
         bucket = vmexport.bucket
         import_name = vmexport.name
-
 
         storageparameters = {}
 
@@ -610,14 +699,15 @@ class cloudapi_machines(BaseActor):
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def listExports(self, machineId, status, **kwargs):
         """
         List exported images
-        param:machineId id of the machine
-        param:status filter on specific status
-        result dict
+
+        :param machineId: id of the machine
+        :param status: filter on specific status
+        :return list of exports, each as a dict
         """
         query = {}
         if status:
@@ -630,16 +720,16 @@ class cloudapi_machines(BaseActor):
             exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
         return exportresult
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()
     def addUser(self, machineId, userId, accesstype, **kwargs):
         """
-        Give a registered user access rights.
-        Access rights can be 'R' or 'W'
-        :param:machineId id of the vmachine
-        :param:userId: id or emailaddress of the user to give access
-        :param:accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user was was successfully added
+        Give a registered user access rights
+
+        :param machineId: id of the machine
+        :param userId: username or emailaddress of the user to grant access
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
         """
         user = self.cb.checkUser(userId)
         if not user:
@@ -650,20 +740,20 @@ class cloudapi_machines(BaseActor):
 
         return self._addACE(machineId, userId, accesstype, userstatus='CONFIRMED')
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()
     def addExternalUser(self, machineId, emailaddress, accesstype, **kwargs):
         """
-        Give an unregistered user access rights by sending an invite email.
-        Access rights can be 'R' or 'W'
-        :param:machineId id of the vmachine
-        :param:emailaddress: emailaddress of the unregistered user that will be invited
-        :param:accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user was was successfully added
+        Give an unregistered user access rights by sending an invite email
+
+        :param machineId: id of the machine
+        :param emailaddress: emailaddress of the unregistered user that will be invited
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
         """
         if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.PreconditionFailed('User is already registered on the system, '
-                                                'please add as a normal user')
+            raise exceptions.BadRequest('User is already registered on the system, please add as '
+                                        'a normal user')
 
         self._addACE(machineId, emailaddress, accesstype, userstatus='INVITED')
         try:
@@ -684,7 +774,7 @@ class cloudapi_machines(BaseActor):
         """
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
-        vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
+        vmachine_acl = authenticator.auth().getVMachineAcl(machineId)
         if userId in vmachine_acl:
             return self._updateACE(machineId, userId, accesstype, userstatus)
 
@@ -707,10 +797,11 @@ class cloudapi_machines(BaseActor):
         """
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
-        vmachine_acl = authenticator.auth([]).getVMachineAcl(machineId)
-        useracl = vmachine_acl[userId]
-        if userId not in vmachine_acl:
-            raise exceptions.PreconditionFailed('User does not have any access rights to update')
+        vmachine_acl = authenticator.auth().getVMachineAcl(machineId)
+        if userId in vmachine_acl:
+            useracl = vmachine_acl[userId]
+        else:
+            raise exceptions.NotFound('User does not have any access rights to update')
 
         if ('account_right' in useracl and set(accesstype) == set(useracl['account_right'])) or \
                 ('cloudspace_right' in useracl and
@@ -725,13 +816,11 @@ class cloudapi_machines(BaseActor):
         # If user has higher access rights on owning account level then do not update
         if 'account_right' in useracl and set(accesstype) != set(useracl['account_right']) and \
                 set(accesstype).issubset(set(useracl['account_right'])):
-            raise exceptions.PreconditionFailed('User already has a higher access level to owning '
-                                                'account')
+            raise exceptions.Conflict('User already has a higher access level to owning account')
         # If user has higher access rights on cloudspace then do not update
         elif 'cloudspace_right' in useracl and set(accesstype) != set(useracl['cloudspace_right']) \
                 and set(accesstype).issubset(set(useracl['cloudspace_right'])):
-            raise exceptions.PreconditionFailed('User already has a higher access level to '
-                                                'cloudspace')
+            raise exceptions.Conflict('User already has a higher access level to cloudspace')
         else:
             # grant higher access level
             for ace in vmachine.acl:
@@ -747,14 +836,15 @@ class cloudapi_machines(BaseActor):
             self.models.vmachine.set(vmachine)
         return True
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()
     def deleteUser(self, machineId, userId, **kwargs):
         """
-        Revokes user's access to a vmachine
-        machineId -- ID of a vmachine
-        userId -- ID of a user to revoke their access
-        return bool
+        Revoke user access from the vmachine
+
+        :param machineId: id of the machine
+        :param userId: id or emailaddress of the user to remove
+        :return True if user access was revoked from machine
         """
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
@@ -763,18 +853,21 @@ class cloudapi_machines(BaseActor):
                 vmachine.acl.remove(ace)
                 self.models.vmachine.set(vmachine)
                 return True
-        return False
 
-    @authenticator.auth(acl='U')
+        # User was not found in access rights
+        raise exceptions.NotFound('User with the username/emailaddress %s does not have access '
+                                  'on the machine' % userId)
+
+    @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()
     def updateUser(self, machineId, userId, accesstype, **kwargs):
         """
-        Updates user access rights.
-        Access rights can be 'R' or 'W'
-        :param: machineId id of the machineId
-        :param userId: userid for registered users or emailaddress for unregistered users
-        :param accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user access was successfully updated
+        Update user access rights
+
+        :param machineId: id of the machineId
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user access was updated successfully
         """
         # Check if user exists in the system or is an unregistered invited user
         existinguser = self.systemodel.user.search({'id': userId})[1:]
@@ -783,8 +876,15 @@ class cloudapi_machines(BaseActor):
         else:
             userstatus = 'INVITED'
         return self._updateACE(machineId, userId, accesstype, userstatus)
-    
+
+    @authenticator.auth(acl={'cloudspace': set('X')})
     def attachPublicNetwork(self, machineId, **kwargs):
+        """
+         Attach a public network to the machine
+
+        :param machineId: id of the machine
+        :return: True if a public network was attached to the machine
+        """
         provider, node = self._getProviderAndNode(machineId)
         vmachine = self._getMachine(machineId)
         for nic in vmachine.nics:
@@ -809,7 +909,14 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(vmachine)
         return True
 
+    @authenticator.auth(acl={'cloudspace': set('X')})
     def detachPublicNetwork(self, machineId, **kwargs):
+        """
+        Detach the public network from the machine
+
+        :param machineId: id of the machine
+        :return: True if public network was detached from the machine
+        """
         provider, node = self._getProviderAndNode(machineId)
         vmachine = self._getMachine(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)

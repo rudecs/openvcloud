@@ -260,6 +260,9 @@ class cloudapi_users(BaseActor):
         :param limit: the number of usernames to return
         :return: list of dicts with the username and url of the gravatar of the user
         """
+        if limit > 20:
+            raise exceptions.BadRequest('Cannot return more than 20 usernames while matching users')
+
         matchingusers = self.systemodel.user.search({'id': {'$regex': usernameregex}},
                                                     size=limit)[1:]
 
@@ -293,7 +296,7 @@ class cloudapi_users(BaseActor):
         elif resourcetype.lower() == 'cloudspace':
             cloudspaceobj = self.models.cloudspace.get(resourceid)
             resourcename = cloudspaceobj.name
-        elif resourcetype.lower() == 'vmachine':
+        elif resourcetype.lower() == 'machine':
             machineobj = self.models.vmachine.get(resourceid)
             resourcename = machineobj.name
 
@@ -373,7 +376,8 @@ class cloudapi_users(BaseActor):
             return exceptions.BadRequest("Passwords do not match.")
 
         groups = ['user']
-        created = j.core.portal.active.auth.createUser(username, password, [emailaddress], groups,
+        emails = [emailaddress]
+        created = j.core.portal.active.auth.createUser(username, password, emails, groups,
                                                        None)
         if created:
             # Check all shared resources invites and update invited users to CONFIRMED status with

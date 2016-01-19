@@ -12,15 +12,16 @@ class cloudapi_consumption(object):
         self.models = j.clients.osis.getNamespace('billing')
         self._pricing = pricing.pricing()
 
-    @authenticator.auth(acl='R')
     @audit()
     def get(self, accountId, reference, **kwargs):
         """
-        Gets detailed consumption for a specific creditTransaction.
-        param:accountId id of the account
-        param:reference id of the billingstatement
-        result bool
+        Gets detailed consumption for a specific creditTransaction
+
+        :param accountId: id of the account
+        :param reference: id of the billing statement
+        :return dict with the consumption details
         """
+        accountId = int(accountId)
         billingstatement = self.models.billingstatement.get(int(reference))
         if billingstatement.accountId != accountId:
             ctx = kwargs['ctx']
@@ -28,12 +29,13 @@ class cloudapi_consumption(object):
             return ""
         return billingstatement.dump()
 
-    @authenticator.auth(acl='R')
     @audit()
     def getBurnRate(self, accountId, **kwargs):
         """
         Get the hourly cost of the resources currently in use
-        param:accountId id of the account
-        result bool
+
+        :param accountId: id of the account
+        :return dict with the burn rate report
         """
+        accountId = int(accountId)
         return self._pricing.get_burn_rate(accountId)

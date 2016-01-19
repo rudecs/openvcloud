@@ -13,17 +13,16 @@ class cloudapi_accounts(BaseActor):
         super(cloudapi_accounts, self).__init__()
         self.systemodel = j.clients.osis.getNamespace('system')
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'account': set('U')})
     @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
-        Give a registered user access rights.
-        Access rights can be 'R' or 'W'
-        :param:accountId id of the account
-        :param:userId: id or emailaddress of the user to give access
-        :param:accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user was was successfully added
+        Give a registered user access rights
 
+        :param accountId: id of the account
+        :param userId: username or emailaddress of the user to grant access
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
         """
         user = self.cb.checkUser(userId)
         if not user:
@@ -34,20 +33,20 @@ class cloudapi_accounts(BaseActor):
 
         return self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'account': set('U')})
     @audit()
     def addExternalUser(self, accountId, emailaddress, accesstype, **kwargs):
         """
-        Give an unregistered user access rights by sending an invite email.
-        Access rights can be 'R' or 'W'
-        :param:accountId id of the account
-        :param:emailaddress: emailaddress of the unregistered user that will be invited
-        :param:accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user was was successfully added
+        Give an unregistered user access rights by sending an invite email
+
+        :param accountId: id of the account
+        :param emailaddress: emailaddress of the unregistered user that will be invited
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
         """
         if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.PreconditionFailed('User is already registered on the system, '
-                                                'please add as a normal user')
+            raise exceptions.BadRequest('User is already registered on the system, please add as '
+                                        'a normal user')
 
         self._addACE(accountId, emailaddress, accesstype, userstatus='INVITED')
         try:
@@ -60,11 +59,12 @@ class cloudapi_accounts(BaseActor):
     def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the account
+
         :param accountId: id of the account
-        :param userId: userid for registered users or emailaddress for unregistered users
-        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         :param userstatus: status of the user (CONFIRMED or INVITED)
-        :return True if ACE was successfully added
+        :return True if ACE was added successfully
         """
         accountId = int(accountId)
         if not self.models.account.exists(accountId):
@@ -73,7 +73,7 @@ class cloudapi_accounts(BaseActor):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                raise exceptions.PreconditionFailed('User already has access rights to account')
+                raise exceptions.BadRequest('User already has access rights to account')
 
         acl = account.new_acl()
         acl.userGroupId = userId
@@ -83,26 +83,20 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(account)
         return True
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'account': set('U')})
     @audit()
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
-        Update user access rights.
-        :param: accountId id of the account
-        :param userId: userid for registered users or emailaddress for unregistered users
-        :param accesstype: 'R' for read only access, 'W' for Write access
-        :return True if user access was successfully updated
+        Update user access rights
+
+        :param accountId: id of the account
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user access was updated successfully
         """
         accountId = int(accountId)
         if not self.models.account.exists(accountId):
             raise exceptions.NotFound('Account does not exist')
-
-        # Check if user exists in the system or is an unregistered invited user
-        existinguser = self.systemodel.user.search({'id': userId})[1:]
-        if existinguser:
-            userstatus = 'CONFIRMED'
-        else:
-            userstatus = 'INVITED'
 
         account = self.models.account.get(accountId)
         for ace in account.acl:
@@ -111,50 +105,51 @@ class cloudapi_accounts(BaseActor):
                 self.models.account.set(account)
                 break
         else:
-            raise exceptions.PreconditionFailed('User does not have any access rights to update')
+            raise exceptions.NotFound('User does not have any access rights to update')
 
         return True
 
-    @authenticator.auth(acl='S')
     @audit()
     def create(self, name, access, **kwargs):
         """
-        Create a extra an account
-        param:name name of space to create
-        param:access list of ids of users which have full access to this space
-        result int
-        """
-        raise NotImplementedError("not implemented method create")
+        Create a extra an account (Method not implemented)
 
-    @authenticator.auth(acl='S')
+        :param name: name of account to create
+        :param access: list of ids of users which have full access to this account
+        :return int
+        """
+        raise NotImplementedError("Not implemented method create")
+
+    @authenticator.auth(acl={'account': set('D')})
     @audit()
     def delete(self, accountId, **kwargs):
         """
-        Delete an account
-        param:accountId id of the account
-        result bool,
-        """
-        raise NotImplementedError("not implemented method delete")
+        Delete an account (Method not implemented)
 
-    @authenticator.auth(acl='R')
+        :param accountId: id of the account
+        :return bool True if deletion was successful
+        """
+        raise NotImplementedError("Not implemented method delete")
+
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def get(self, accountId, **kwargs):
         """
-        get account.
-        param:accountId id of the account
-        result dict
-        """
-        #put your code here to implement this method
+        Get account details
 
+        :param accountId: id of the account
+        :return dict with the account details
+        """
         return self.models.account.get(int(accountId)).dump()
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
-        param:accountId id of the account
-        result dict
+
+        :param accountId: id of the account
+        :return dict with the template images for the given account
         """
         fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         q = {'accountId': int(accountId)}
@@ -162,17 +157,19 @@ class cloudapi_accounts(BaseActor):
         results = self.models.image.search(query)[1:]
         return results
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'account': set('U')})
     @audit()
     def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
-        Delete a user from the account
+        Revoke user access from the account
+
         :param acountId: id of the account
-        :param userId: id of the user to remove
-        :param recursivedelete: recursively delete access permissions from owned cloudspaces
+        :param userId: id or emailaddress of the user to remove
+        :param recursivedelete: recursively revoke access permissions from owned cloudspaces
                                 and machines
-        result
+        :return True if user access was revoked from account
         """
+        accountId = int(accountId)
         account = self.models.account.get(accountId)
         update = False
         for ace in account.acl:
@@ -181,6 +178,9 @@ class cloudapi_accounts(BaseActor):
                 update = True
         if update:
             self.models.account.set(account)
+        else:
+            raise exceptions.NotFound('User with the username/emailaddress %s does not have access '
+                                      'on the account' % userId)
 
         if recursivedelete:
             # Delete user accessrights from owned cloudspaces
@@ -210,9 +210,9 @@ class cloudapi_accounts(BaseActor):
     @audit()
     def list(self, **kwargs):
         """
-        List accounts.
-        result [],
+        List all accounts the user has access to
 
+        :return list with every element containing details of a account as a dict
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
@@ -222,26 +222,26 @@ class cloudapi_accounts(BaseActor):
         accounts = self.models.account.search(query)[1:]
         return accounts
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'account': set('A')})
     @audit()
     def update(self, accountId, name, **kwargs):
         """
-        Update an account name
-        param:accountId id of the account to change
-        param:name name of the account
-        result int
+        Update an account name (Method not implemented)
 
+        :param accountId: id of the account to change
+        :param name: name of the account
+        :return int id of account updated
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method update")
+        raise NotImplementedError("Not implemented method update")
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('A')})
     @audit()
     def getCreditBalance(self, accountId, **kwargs):
         """
-        Get the current available credit
-        param:accountId id of the account
-        result:dict A json dict containing the available credit
+        Get the current available credit balance
+
+        :param accountId: id of the account
+        :return json dict containing the available credit
         """
         # For now, don't get the balance statement, just calculate it
         #query = {'fields': ['time', 'credit']}
@@ -261,15 +261,16 @@ class cloudapi_accounts(BaseActor):
         for transaction in history:
             balance += float(transaction['credit'])
         import time
-        return {'credit':balance, 'time':int(time.time())}
+        return {'credit': balance, 'time': int(time.time())}
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def getCreditHistory(self, accountId, **kwargs):
         """
-        Get all the credit transactions (positive and negative) for this account.
-        param:accountId id of the account
-        result:[] A json list with the transactions details.
+        Get all the credit transactions (positive and negative) for this account
+
+        :param accountId: id of the account
+        :return list with the transactions details each as a dict
         """
 
         fields = ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']

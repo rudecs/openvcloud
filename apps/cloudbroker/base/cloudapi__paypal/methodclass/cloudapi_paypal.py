@@ -58,7 +58,7 @@ class cloudapi_paypal(BaseActor):
         if paypalresponse.status_code is not 200:
             ctx.start_response('302 Found',[('location','/wiki_gcb/AccountSettings')])
             return "There was an error executing the payment at paypal"
-            #TODO raise erro
+            #TODO raise error
 
         paypalresponsedata = paypalresponse.json()
 
@@ -67,7 +67,7 @@ class cloudapi_paypal(BaseActor):
         ctx.start_response('302 Found', [('location','/wiki_gcb/PaypalConfirmation')])
         return ""
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def initiatepayment(self, accountId, amount, currency, **kwargs):
         """

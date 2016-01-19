@@ -208,7 +208,7 @@ angular.module('cloudscalers.controllers')
                          id: index.id,
                          ip: selectForwardRule.publicIp,
                          publicPort: selectForwardRule.publicPort,
-                         VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.vmid},
+                         VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.machineId},
                          localPort: selectForwardRule.localPort,
                          protocol: selectForwardRule.protocol
                  };

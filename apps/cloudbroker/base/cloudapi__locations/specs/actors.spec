@@ -1,17 +1,16 @@
 [actor] @dbtype:mem,osis
-	"""
-	API Actor api for managing locations
+    """
+    API Actor api for managing locations
     """    
 
-	method:list @noauth
-		"""
-		List locations. 
-		"""
-		result:[], A json list, every element contains information of the list as a dictionary.
+    method:list @noauth
+        """
+        List all locations
+        """
+        result:[], list with every element containing details of a location as a dict
 
-	method:getUrl @noauth
-		"""
-		get portal url. 
-		"""
-		result:str 
-
+    method:getUrl @noauth
+        """
+        Get the portal url
+        """
+        result:str, portal url
