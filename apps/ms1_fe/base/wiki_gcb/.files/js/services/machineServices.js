@@ -75,9 +75,9 @@ angular.module('cloudscalers.services')
                         return $q.reject(reason);
                     });
             },
-            create: function (cloudspaceid, name, description, sizeId, imageId, disksize, archive, region, replication) {
+            create: function (cloudspaceId, name, description, sizeId, imageId, disksize, archive, region, replication) {
                 var machine = [];
-                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceid + '&name=' + encodeURIComponent(name) +
+                url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceId + '&name=' + encodeURIComponent(name) +
                     '&description=' + encodeURIComponent(description) + '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
                     '&archive=' + archive + '&region=' + region + '&replication=' + replication;
                 return $http.get(url).then(
@@ -133,8 +133,8 @@ angular.module('cloudscalers.services')
                     }
                     );
             },
-            list: function (cloudspaceid) {
-                url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceid + '&type=';
+            list: function (cloudspaceId) {
+                url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceId + '&type=';
 
                 return $http.get(url).then(function(result) {
                     _.each(result.data, function (machine) {
@@ -236,7 +236,7 @@ angular.module('cloudscalers.services')
             },
             addUser: function(machineId, user, accessType) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/machines/addUser?machineId=' + machineId +
-                          '&accessType=' + accessType + '&userId=' + user)
+                          '&accesstype=' + accessType + '&userId=' + user)
                     .then(
                             function(result){ return result.data;},
                             function(reason) { return $q.reject(reason);});
@@ -264,7 +264,7 @@ angular.module('cloudscalers.services')
             },
             updateUser: function(machineId, user, accessType) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/machines/updateUser?machineId=' + machineId +
-                                 '&userId=' + user + '&accessType=' + accessType)
+                                 '&userId=' + user + '&accesstype=' + accessType)
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
@@ -305,9 +305,9 @@ angular.module('cloudscalers.services')
     })
     .factory('Image', function ($http) {
         return {
-            list: function (accountid, cloudspaceid) {
+            list: function (accountId, cloudspaceId) {
                 var images = [];
-                url = cloudspaceconfig.apibaseurl + '/images/list?accountid=' + accountid + '&cloudspaceid=' + cloudspaceid;
+                url = cloudspaceconfig.apibaseurl + '/images/list?accountId=' + accountId + '&cloudspaceId=' + cloudspaceId;
                 $http.get(url).success(
                     function (data, status, headers, config) {
                         _.each(data, function(image) {

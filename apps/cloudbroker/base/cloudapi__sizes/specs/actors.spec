@@ -6,7 +6,7 @@
 
 	method:list
 		"""
-		List the availabe flavors, filtering can be based on the user which is doing the request
+		List the available flavors, filtering can be based on the user which is doing the request
 		"""
-		var:cloudspaceId int,, id of the space
-		result:list of flavors contains id CU and disksize for every flavor.
+		var:cloudspaceId int,, id of the cloudspace
+		result:list, list of flavors contains id CU and disksize for every flavor on the cloudspace

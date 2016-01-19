@@ -6,46 +6,46 @@
 
     method:list
         """
-        list all portforwarding rules.
+        List all port forwarding rules in a cloudspace or machine
         """
-        var:cloudspaceid int,,id of the cloudspace
-        var:machineId int,,id of vmachine @tags: optional
+        var:cloudspaceId int,,id of the cloudspace
+        var:machineId int,,id of the machine, all rules of cloudspace will be listed if set to None @optional
 
     method:create
         """
-        Create a portforwarding rule
+        Create a port forwarding rule
         """
-        var:cloudspaceid int,,id of the cloudspace
+        var:cloudspaceId int,,id of the cloudspace
         var:publicIp str,, public ipaddress
         var:publicPort int,, public port
-        var:vmid int,, id of the vm
+        var:machineId int,, id of the virtual machine
         var:localPort int,, local port
         var:protocol str,, protocol udp or tcp
 
     method:update
         """
-        Update a porforwarding rule
+        Update a port forwarding rule
         """
-        var:cloudspaceid int,,id of the cloudspace
+        var:cloudspaceId int,,id of the cloudspace
         var:id int,, id of the portforward to edit
         var:publicIp str,, public ipaddress
         var:publicPort int,, public port
-        var:vmid int,, id of the vm
+        var:machineId int,, id of the virtual machine
         var:localPort int,, local port
         var:protocol str,, protocol udp or tcp
 
     method:delete
         """
-        Delete a specific portforwarding rule
+        Delete a specific port forwarding rule
         """
-        var:cloudspaceid int,, if of the cloudspace
-        var:id int,, id of the portforward
+        var:cloudspaceId int,, id of the cloudspace
+        var:id int,, id of the port forward rule
 
     method:deleteByPort
         """
-        Delete a specific portforwarding rule
+        Delete a specific port forwarding rule by public port details
         """
-        var:cloudspaceid int,, if of the cloudspace
-        var:publicIp str,,Portforwarding public ip
-        var:publicPort int,,Portforwarding public port
-        var:proto str,,Portforwarding protocol
+        var:cloudspaceId int,, id of the cloudspace
+        var:publicIp str,, port forwarding public ip
+        var:publicPort int,, port forwarding public port
+        var:proto str,, port forwarding protocol

@@ -25,7 +25,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspaceId = int(cloudspaceId)
 
-        accountid = accountId
+        accountid = int(accountId)
 
         cloudspaces = self.models.cloudspace.simpleSearch({ 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:

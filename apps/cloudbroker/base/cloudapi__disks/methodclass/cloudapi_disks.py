@@ -28,18 +28,19 @@ class cloudapi_disks(BaseActor):
             disk = disk.dump()
         return StorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'account': set('C')})
     @audit()
     def create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
         """
         Create a disk
-        param:accountId id of account
-        param:gid id of the grid
-        param:diskName name of disk
-        param:description optional description
-        param:size size in GByte default=10
-        param:type (B;D;T)  B=Boot;D=Data;T=Temp default=B
-        result int
+
+        :param accountId: id of account
+        :param gid :id of the grid
+        :param diskName: name of disk
+        :param description: optional description of disk
+        :param size: size in GBytes, default is 10
+        :param type: (B;D;T)  B=Boot;D=Data;T=Temp, default is B
+        :return the id of the created disk
 
         """
         disk, volume = self._create(accountId, gid, name, description, size, type)
@@ -67,30 +68,43 @@ class cloudapi_disks(BaseActor):
         self.models.disk.set(disk)
         return disk, volume
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def get(self, diskId, **kwargs):
+        """
+        Get disk details
+
+        :param diskId: id of the disk
+        :return: dict with the disk details
+        """
         if not self.models.disk.exists(diskId):
             raise exceptions.NotFound('Can not find disk with id %s' % diskId)
         return self.models.disk.get(diskId).dump()
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def list(self, accountId, type, **kwargs):
+        """
+        List the created disks belonging to an account
+
+        :param accountId: id of accountId the disks belongs to
+        :param type: type of type of the disks
+        :return: list with every element containing details of a disk as a dict
+        """
         query = {'accountId': accountId}
         if type:
             query['type'] = type
         return self.models.disk.search(query)[1:]
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'machine': set('X')})
     @audit()
     def delete(self, diskId, detach, **kwargs):
         """
-        Delete a disk from machine
-        param:machineId id of machine
-        param:diskId id of disk to delete
-        result bool
+        Delete a disk
 
+        :param diskId: id of disk to delete
+        :param detach: detach disk from machine first
+        :return True if disk was deleted successfully
         """
         if not self.models.disk.exists(diskId):
             return True
