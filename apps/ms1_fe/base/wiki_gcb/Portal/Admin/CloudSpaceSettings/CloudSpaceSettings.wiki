@@ -25,7 +25,7 @@
 				<div class="margin-bottom-medium" ng-show="currentLocation">
           			<label class="left margin-right-medium settings-label">Location:</label>
           			<div class="txt-center margin-bottom-large left">
-          				<img src="/$$space/.files/img/flags/{[ currentLocation.flag  ]}.png" title="{[ currentLocation.name  ]}" />
+          				<!-- <img src="/$$space/.files/img/flags/{[ currentLocation.flag  ]}.png" title="{[ currentLocation.name  ]}" /> -->
           				<span class="block margin-top-small txt-13">{[currentLocation.name]}</span>
           			</div>
         		</div>

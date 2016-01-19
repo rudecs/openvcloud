@@ -1,5 +1,5 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Users', '$http','$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, Users,$http,$ErrorResponseAlert, $timeout, $modal) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Users', '$http','$ErrorResponseAlert','$timeout', '$modal', '$q', function($scope, CloudSpace, Users,$http,$ErrorResponseAlert, $timeout, $modal, $q) {
 
         $scope.shareCloudSpaceMessage = false;
         $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
@@ -32,7 +32,9 @@ angular.module('cloudscalers.controllers')
         $scope.userError = false;
 
         $scope.addUser = function() {
-            if($scope.currentSpace.acl){
+            $scope.seachQuery = '';
+
+            if ($scope.currentSpace.acl) {
                 var userInAcl = _.find($scope.currentSpace.acl, function(acl) { return acl.userGroupId == $scope.newUser.nameOrEmail; });
                 if( userInAcl ){
                     userMessage($scope.newUser.nameOrEmail + " already have access rights.", 'danger');
@@ -121,17 +123,48 @@ angular.module('cloudscalers.controllers')
             });
         };
 
-  			$scope.search = function (query, deferred){
-          // TODO add autocomplete function
-  				// $http.get(cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=k').success((function (deferred, data) {
-  				// 	var results = [];
-  				// 	data.forEach(function (item) {
-  				// 		results.push({
-  				// 			value: item.username,
-  				// 			userGravatar: item.gravatarurl
-  				// 		});
-  				// 	});
-  				// 	deferred.resolve({results: results});
-  				// }).bind(this, deferred));
-  			};
+        // directive configuration object
+        $scope.options = {
+            shadowInput: true,
+            highlightFirst: true,
+            boldMatches: true,
+            delay: 0,
+            searchMethod: "search",
+            templateUrl: "demoTemplate.html",
+            onSelect: function(item, event) {
+                event.preventDefault();
+                $scope.newUser.nameOrEmail = item.value;
+            }
+        };
+
+        /**
+         * Method to get data for autocomplete popup
+         * @param {string} query Input value
+         * @param {object} deferred "$q.defer()" object
+         */
+        $scope.search = function (query, deferred) {
+            var url = cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=' + query;
+
+            $http.get(url).success((function (deferred, data) { // send request
+
+                // format data
+                var results = [];
+
+                _.each(data, function(item) {
+                    results.push({
+                        gravatarurl: item.gravatarurl,
+                        value: item.username
+                    });
+                });
+
+                results = _.filter(results, function(item) {
+                    return _.isUndefined(_.find($scope.currentSpace.acl, function(user) {
+                        return user.userGroupId == item.value;
+                    }));
+                });
+
+                // resolve the deferred object
+                deferred.resolve({results: results});
+            }).bind(this, deferred));
+        };
     }]);

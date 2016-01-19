@@ -1,0 +1,45 @@
+#szn-autocomplete-wrap {
+    max-width: 500px;
+    position: relative;
+}
+
+input[szn-autocomplete],
+.szn-autocomplete-shadow-input {
+    width: 100%;
+    border: 1px solid #707070;
+    color: #222;
+    padding: 5px 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.szn-autocomplete-shadow-input {
+    color: #666;
+}
+
+.szn-autocomplete-results {
+    padding: 0;
+    width: 100%;
+}
+
+.szn-autocomplete-results li {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.szn-autocomplete-results h5 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.szn-autocomplete-results p {
+    margin: 0;
+    white-space: normal;
+    font-size: 13px;
+}
+
+.szn-autocomplete-results .wordcount {
+    font-size: 13px;
+    color: #707070;
+}

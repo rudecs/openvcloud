@@ -16,6 +16,8 @@
 {{css:/$$space/.files/css/mothership1.css}}
 {{css:/$$space/.files/css/oocss.css}}
 {{css:/$$space/.files/css/media-queries.css}}
+{{css:/$$space/.files/lib/angular-szn-autocomplete/angular-szn-autocomplete.css}}
+{{css:/$$space/.files/css/autocomplete.css}}
 {{include:loader}}
 {{html:
   <div id="wrap" class="sticky" ng-app="cloudscalers" ng-controller="AuthenticatedSessionController">

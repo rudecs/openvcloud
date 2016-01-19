@@ -4,7 +4,9 @@
 // Declare app level module which depends on filters, and services
 var cloudscalers = angular.module('cloudscalers', ['cloudscalers.services',
                                                    'cloudscalers.controllers',
-                                                   'ngRoute'])
+                                                   'ngRoute',
+                                                   'angular-szn-autocomplete',
+                                                   'ui.bootstrap'])
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
@@ -34,7 +36,7 @@ var cloudscalersServices = angular.module('cloudscalers.services',['ng'])
     }]);
 
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
 
 if(cloudspaceconfig.apibaseurl == ''){
     cloudscalersControllers.config(function($provide) {
