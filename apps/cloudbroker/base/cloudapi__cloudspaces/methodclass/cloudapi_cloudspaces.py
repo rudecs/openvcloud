@@ -362,11 +362,10 @@ class cloudapi_cloudspaces(BaseActor):
             if ace.userGroupId == userId:
                 cloudspace.acl.remove(ace)
                 update = True
-        if update:
-            self.models.cloudspace.set(cloudspace)
-        else:
-            raise exceptions.NotFound('User with the username/emailaddress %s does not have access '
-                                      'on the cloudspace' % userId)
+        if not update:
+            raise exceptions.NotFound('User "%s" does not have access on the cloudspace' % userId)
+
+        self.models.cloudspace.set(cloudspace)
 
         if recursivedelete:
             # Delete user accessrights from related machines (part of owned cloudspaces)
