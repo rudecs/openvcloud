@@ -12,7 +12,7 @@ h2. User: ${id}
   action: '#user_edit'
 
 - display: Delete
-  action: /restmachine/system/usermanager/delete?username=$$id
+  action: /restmachine/cloudbroker/user/deleteByGuid?userguid=$$id
   navigateback: true
 
 - display: Send Reset Password Link

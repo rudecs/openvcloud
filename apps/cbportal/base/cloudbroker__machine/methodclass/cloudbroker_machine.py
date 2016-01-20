@@ -448,8 +448,10 @@ class cloudbroker_machine(BaseActor):
         if user:
             userId = user['id']
             added = self.actors.machines.addUser(machineId, userId, accesstype)
-        else:
+        elif self.cb.isValidEmailAddress(username):
             added = self.actors.machines.addExternalUser(machineId, username, accesstype)
+        else:
+            raise exceptions.NotFound('User with username %s is not found' % username)
 
         if not added:
             raise exceptions.PreconditionFailed('User already has same access level to owning '

@@ -247,7 +247,8 @@ class CloudBroker(object):
         :param username: username or emailaddress of the user
         :return: User if found
         """
-        users = self.syscl.user.search({'$or': [{'id': username}, {'emails': username}]})[1:]
+        users = self.syscl.user.search({'$or': [{'id': username}, {'emails': username}],
+                                        'active': True})[1:]
         if users:
             return users[0]
         else:
@@ -297,6 +298,20 @@ class CloudBroker(object):
                     break
 
         return True
+
+    def isaccountuserdeletable(self, userace, acl):
+        if set(userace.right) != set('ARCXDU'):
+            return True
+        else:
+            otheradmins = filter(lambda a: set(a.right) == set('ARCXDU') and a != userace, acl)
+            if not otheradmins:
+                return False
+            else:
+                return True
+
+    def isValidEmailAddress(self, emailaddress):
+        r = re.compile('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$')
+        return r.match(emailaddress) is not None
 
 
 class Machine(object):

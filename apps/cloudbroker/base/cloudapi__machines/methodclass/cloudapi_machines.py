@@ -853,10 +853,9 @@ class cloudapi_machines(BaseActor):
                 vmachine.acl.remove(ace)
                 self.models.vmachine.set(vmachine)
                 return True
-
-        # User was not found in access rights
-        raise exceptions.NotFound('User with the username/emailaddress %s does not have access '
-                                  'on the machine' % userId)
+        else:
+            # User was not found in access rights
+            raise exceptions.NotFound('User "%s" does not have access on the machine' % userId)
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()

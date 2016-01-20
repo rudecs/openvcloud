@@ -223,8 +223,10 @@ class cloudbroker_cloudspace(BaseActor):
         if user:
             userId = user['id']
             added = self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
-        else:
+        elif self.cb.isValidEmailAddress(username):
             added = self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
+        else:
+            raise exceptions.NotFound('User with username %s is not found' % username)
 
         if not added:
             raise exceptions.PreconditionFailed('User already has same access level to owning '
