@@ -300,7 +300,7 @@ class CloudBroker(object):
         return True
 
     def isaccountuserdeletable(self, userace, acl):
-        if userace.right != 'ARCXDU':
+        if set(userace.right) != set('ARCXDU'):
             return True
         else:
             otheradmins = filter(lambda a: set(a.right) == set('ARCXDU') and a != userace, acl)
