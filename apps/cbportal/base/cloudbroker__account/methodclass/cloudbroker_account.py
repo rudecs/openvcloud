@@ -209,8 +209,11 @@ class cloudbroker_account(BaseActor):
         if user:
             userId = user['id']
             self.cloudapi.accounts.addUser(accountId, userId, accesstype)
+        elif self.cb.isValidEmailAddress(username):
+            self.cloudapi.accounisValidEmailAddressts.addExternalUser(accountId, username,
+                                                                      accesstype)
         else:
-            self.cloudapi.accounts.addExternalUser(accountId, username, accesstype)
+            raise exceptions.NotFound('User with username %s is not found' % username)
         return True
 
     @auth(['level1', 'level2', 'level3'])

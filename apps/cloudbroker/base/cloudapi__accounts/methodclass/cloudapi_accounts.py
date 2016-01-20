@@ -99,22 +99,16 @@ class cloudapi_accounts(BaseActor):
             raise exceptions.NotFound('Account does not exist')
 
         account = self.models.account.get(accountId)
-        isadminuser = False
         for ace in account.acl:
             if ace.userGroupId == userId:
-                if ace.right == 'ARCXDU':
-                    isadminuser = True
-                ace.right = accesstype
+                if self.cb.isaccountuserdeletable(ace, account.acl):
+                    ace.right = accesstype
+                else:
+                    raise exceptions.BadRequest('User is last admin on the account, cannot change '
+                                            'user\'s access rights')
                 break
         else:
             raise exceptions.NotFound('User does not have any access rights to update')
-
-        if isadminuser:
-            # Filter the acl (after removing the selected user) to only have admins
-            otheradmins = filter(lambda a: set(a.right) == set('ARCXDU'), account.acl)
-            if not otheradmins:
-                raise exceptions.BadRequest('User is last admin on the account, cannot change '
-                                            'user\'s access rights')
 
         self.models.account.set(account)
         return True
@@ -192,24 +186,17 @@ class cloudapi_accounts(BaseActor):
         """
         accountId = int(accountId)
         account = self.models.account.get(accountId)
-        # User with selected username has admin rights on account
-        isadminuser = False
-        update = False
         for ace in account.acl:
             if ace.userGroupId == userId:
-                account.acl.remove(ace)
-                update = True
-                if ace.right == 'ARCXDU':
-                    isadminuser = True
-
-        if not update:
+                if self.cb.isaccountuserdeletable(ace, account.acl):
+                    account.acl.remove(ace)
+                    self.models.account.set(account)
+                else:
+                    raise exceptions.BadRequest("User '%s' is the last admin on the account '%s'" %
+                                                (userId, account.name))
+                break
+        else:
             raise exceptions.NotFound('User "%s" does not have access on the account' % userId)
-        elif isadminuser:
-            # Filter the acl (after removing the selected user) to only have admins
-            otheradmins = filter(lambda a: set(a.right) == set('ARCXDU'), account.acl)
-            if not otheradmins:
-                raise exceptions.BadRequest('User "%s" is last admin on the account' % userId)
-        self.models.account.set(account)
 
         if recursivedelete:
             # Delete user accessrights from owned cloudspaces
@@ -234,7 +221,7 @@ class cloudapi_accounts(BaseActor):
                     if vmachineupdate:
                         self.models.vmachine.set(vmachineobj)
 
-        return update
+        return True
 
     @audit()
     def list(self, **kwargs):
