@@ -493,7 +493,7 @@ class CSLibvirtNodeDriver():
             pass
 
     def _get_domain_for_node(self, node):
-        return self._execute_agent_job('getmachine', queue='default', machineid = node.id)
+        return self._execute_agent_job('getmachine', queue='hypervisor', machineid = node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress='', volumes=None):
         xml = domain.get('XMLDesc')
@@ -552,7 +552,7 @@ class CSLibvirtNodeDriver():
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
-    
+
     def attach_public_network(self, node):
         """
         Attach Virtual machine to the cpu node public network
