@@ -313,6 +313,25 @@ class CloudBroker(object):
         r = re.compile('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$')
         return r.match(emailaddress) is not None
 
+    def isValidRole(self, accessrights):
+        """
+        Validate that the accessrights map to a valid access role on a resource
+        'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+
+        :param accessrights: string with the accessrights to verify
+        :return: role name if a valid set of permissions, otherwise fail with an exception
+        """
+        if accessrights == 'R':
+            return 'Read'
+        elif set(accessrights) == set('RCX'):
+            return 'Read/Write'
+        elif set(accessrights) == set('ARCXDU'):
+            return 'Admin'
+        else:
+            raise exceptions.BadRequest('Invalid set of access rights "%s". Please only use "R" '
+                                        'for Read, "RCX" for Read/Write and "ARCXDU" for Admin '
+                                        'access.' % accessrights)
+
 
 class Machine(object):
     def __init__(self, cb):

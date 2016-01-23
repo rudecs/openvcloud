@@ -70,6 +70,7 @@ class cloudapi_accounts(BaseActor):
         if not self.models.account.exists(accountId):
             raise exceptions.NotFound('Account does not exist')
 
+        self.cb.isValidRole(accesstype)
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
@@ -98,6 +99,7 @@ class cloudapi_accounts(BaseActor):
         if not self.models.account.exists(accountId):
             raise exceptions.NotFound('Account does not exist')
 
+        self.cb.isValidRole(accesstype)
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
@@ -105,7 +107,7 @@ class cloudapi_accounts(BaseActor):
                     ace.right = accesstype
                 else:
                     raise exceptions.BadRequest('User is last admin on the account, cannot change '
-                                            'user\'s access rights')
+                                                    'user\'s access rights')
                 break
         else:
             raise exceptions.NotFound('User does not have any access rights to update')
@@ -250,7 +252,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method update")
 
-    @authenticator.auth(acl={'account': set('A')})
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def getCreditBalance(self, accountId, **kwargs):
         """

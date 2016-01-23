@@ -127,7 +127,7 @@ class cloudapi_machines(BaseActor):
         """
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
-    @authenticator.auth(acl={'machine': set('C')})
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
     def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
@@ -154,7 +154,7 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(machine)
         return disk.id
 
-    @authenticator.auth(acl={'machine': set('X')})
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def detachDisk(self, machineId, diskId, **kwargs):
         """
@@ -324,7 +324,6 @@ class cloudapi_machines(BaseActor):
             self.netmgr.fw_remove_lease(fwid, macs)
         return True
 
-
     @authenticator.auth(acl={'machine': set('R')})
     @audit()
     def get(self, machineId, **kwargs):
@@ -370,6 +369,7 @@ class cloudapi_machines(BaseActor):
                 'status': realstatus, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
                 'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
 
+    # Authentication (permissions) are checked while retrieving the machines
     @audit()
     def list(self, cloudspaceId, status=None, **kwargs):
         """
@@ -772,6 +772,7 @@ class cloudapi_machines(BaseActor):
         :param userstatus: status of the user (CONFIRMED or INVITED)
         :return True if ACE was successfully added
         """
+        self.cb.isValidRole(accesstype)
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
         vmachine_acl = authenticator.auth().getVMachineAcl(machineId)
@@ -795,6 +796,7 @@ class cloudapi_machines(BaseActor):
         :param userstatus: status of the user (CONFIRMED or INVITED)
         :return True if ACE was successfully updated, False if no update is needed
         """
+        self.cb.isValidRole(accesstype)
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
         vmachine_acl = authenticator.auth().getVMachineAcl(machineId)

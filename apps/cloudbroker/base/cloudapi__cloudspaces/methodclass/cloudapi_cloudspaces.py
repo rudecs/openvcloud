@@ -85,6 +85,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param userstatus: status of the user (CONFIRMED or INVITED)
         :return True if ACE was added successfully
         """
+        self.cb.isValidRole(accesstype)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         cloudspace_acl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
@@ -109,6 +110,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param userstatus: status of the user (CONFIRMED or INVITED)
         :return True if ACE was successfully updated, False if no update is needed
         """
+        self.cb.isValidRole(accesstype)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         cloudspace_acl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
@@ -143,7 +145,6 @@ class cloudapi_cloudspaces(BaseActor):
                 ace.status = userstatus
             self.models.cloudspace.set(cloudspace)
         return True
-
 
     @authenticator.auth(acl={'cloudspace': set('U')})
     @audit()

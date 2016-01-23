@@ -354,7 +354,8 @@ class cloudapi_users(BaseActor):
 
         """
         Register a user that was previously invited to a shared resource (Account, Cloudspace,
-        Vmachine).
+        Vmachine)
+
         :param inviteusertoken: the token that was previously sent to the invited user email
         :param emailaddress:email address for the user
         :param username: the username the user wants to register with
