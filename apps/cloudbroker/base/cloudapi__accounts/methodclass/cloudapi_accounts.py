@@ -70,6 +70,7 @@ class cloudapi_accounts(BaseActor):
         if not self.models.account.exists(accountId):
             raise exceptions.NotFound('Account does not exist')
 
+        self.cb.isValidRole(accesstype)
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
@@ -98,15 +99,20 @@ class cloudapi_accounts(BaseActor):
         if not self.models.account.exists(accountId):
             raise exceptions.NotFound('Account does not exist')
 
+        self.cb.isValidRole(accesstype)
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                ace.right = accesstype
-                self.models.account.set(account)
+                if self.cb.isaccountuserdeletable(ace, account.acl):
+                    ace.right = accesstype
+                else:
+                    raise exceptions.BadRequest('User is last admin on the account, cannot change '
+                                                    'user\'s access rights')
                 break
         else:
             raise exceptions.NotFound('User does not have any access rights to update')
 
+        self.models.account.set(account)
         return True
 
     @audit()
@@ -140,7 +146,18 @@ class cloudapi_accounts(BaseActor):
         :param accountId: id of the account
         :return dict with the account details
         """
-        return self.models.account.get(int(accountId)).dump()
+        account = self.models.account.get(int(accountId)).dump()
+
+        # Filter the acl (after removing the selected user) to only have admins
+        admins = filter(lambda a: set(a['right']) == set('ARCXDU'), account['acl'])
+        # Set canBeDeleted to True except for the last admin on the account (if more than 1 admin
+        # on account then all can be deleted)
+        for ace in account['acl']:
+            if len(admins) <= 1 and ace in admins:
+                ace['canBeDeleted'] = False
+            else:
+                ace['canBeDeleted'] = True
+        return account
 
     @authenticator.auth(acl={'account': set('R')})
     @audit()
@@ -171,16 +188,17 @@ class cloudapi_accounts(BaseActor):
         """
         accountId = int(accountId)
         account = self.models.account.get(accountId)
-        update = False
         for ace in account.acl:
             if ace.userGroupId == userId:
-                account.acl.remove(ace)
-                update = True
-        if update:
-            self.models.account.set(account)
+                if self.cb.isaccountuserdeletable(ace, account.acl):
+                    account.acl.remove(ace)
+                    self.models.account.set(account)
+                else:
+                    raise exceptions.BadRequest("User '%s' is the last admin on the account '%s'" %
+                                                (userId, account.name))
+                break
         else:
-            raise exceptions.NotFound('User with the username/emailaddress %s does not have access '
-                                      'on the account' % userId)
+            raise exceptions.NotFound('User "%s" does not have access on the account' % userId)
 
         if recursivedelete:
             # Delete user accessrights from owned cloudspaces
@@ -205,7 +223,7 @@ class cloudapi_accounts(BaseActor):
                     if vmachineupdate:
                         self.models.vmachine.set(vmachineobj)
 
-        return update
+        return True
 
     @audit()
     def list(self, **kwargs):
@@ -234,7 +252,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method update")
 
-    @authenticator.auth(acl={'account': set('A')})
+    @authenticator.auth(acl={'account': set('R')})
     @audit()
     def getCreditBalance(self, accountId, **kwargs):
         """

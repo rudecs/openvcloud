@@ -831,8 +831,9 @@ defineApiStub = function ($httpBackend) {
     ]);
 
     $httpBackend.whenGET(/^\/users\/get\?.*/).respond({
-        username: 'tayseer_test',
-        emailaddresses: [ 'tayseer_test123@site.com' ]
+        username: 'admin',
+        emailaddresses: [ 'admin@codescalers.com' ],
+        data: {'tourtips': 'false'}
     });
 
     $httpBackend.whenGET(/^\/accounts\/getCreditBalance.*/).respond("20");
@@ -1068,4 +1069,18 @@ defineApiStub = function ($httpBackend) {
         var params = new URI(url).search(true);
         return [200, params.ip];
     });
+
+    $httpBackend.whenGET("/restmachine//system/usermanager/whoami").respond(function(method, url, data) {
+        return [200, '"admin"'];
+    });
+
+    var matchingUsernames = [
+        {'gravatarurl': 'http://www.gravatar.com/avatar/9e27b8f31707a720d054a5e4ce097279', 'username': 'admin'},
+        {'gravatarurl': 'http://www.gravatar.com/avatar/fc948c1e0934f72fdaef932028371da0', 'username': 'karim'},
+        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'fernando'},
+        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'friedrich'},
+        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'anees'}
+      ];
+    $httpBackend.whenGET(/^\/users\/getMatchingUsernames.*/).respond(matchingUsernames);
+
 };

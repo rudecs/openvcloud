@@ -31,6 +31,15 @@
         var:username str,, id of user
         result:bool
 
+    method:deleteByGuid
+        """
+        Delete a user using the user guid
+        Note: This actor can also be called using username instead of guid to workaround CBGrid
+        allowing userguid or username
+        """
+        var:userguid str,, guid of user
+        result:bool
+
     method:create
         """
         Create a user
