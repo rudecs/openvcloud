@@ -410,10 +410,14 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def attachPublicNetwork(self, machineId, **kwargs):
         return self.actors.machines.attachPublicNetwork(machineId)
-    
-    
+
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def detachPublicNetwork(self, machineId, **kwargs):
         return self.actors.machines.detachPublicNetwork(machineId)
-    
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def resize(self, machineId, sizeId, **kwargs):
+        return self.actors.machines.resize(machineId, sizeId)

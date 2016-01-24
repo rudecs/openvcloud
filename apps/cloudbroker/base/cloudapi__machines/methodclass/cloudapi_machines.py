@@ -689,7 +689,7 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
-    
+
     def attachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         for nic in vmachine.nics:
@@ -714,16 +714,32 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(vmachine)
         return True
 
+    @authenticator.auth(acl='U')
+    @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
+    @audit()
+    def resize(self, machineId, sizeId, **kwargs):
+        provider, node, vmachine = self._getProviderAndNode(machineId)
+        bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
+        if len(bootdisks) != 1:
+            raise exceptions.Error('Failed to retreive first disk')
+        bootdisk = self.models.disk.get(bootdisks[0]['id'])
+        size = self.models.size.get(sizeId)
+        providersize = provider.getSize(size, bootdisk)
+        provider.client.ex_resize(node=node, size=providersize)
+        vmachine.sizeId = sizeId
+        self.models.vmachine.set(vmachine)
+        return True
+
     def detachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
-        
+
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
-            
+
             provider.client.detach_public_network(node, networkid)
         self._detachPublicNetworkFromModel(vmachine)
         return True
