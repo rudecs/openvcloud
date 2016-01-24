@@ -437,7 +437,8 @@ class Machine(object):
             try:
                 node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
             except Exception:
-                self.cb.markProvider(stackId)
+                self.cb.markProvider(newstackId)
+                newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
             if node == -1 and stackId:
@@ -453,4 +454,3 @@ class Machine(object):
         brokersize = models.size.get(machine.sizeId)
         firstdisk = models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
-
