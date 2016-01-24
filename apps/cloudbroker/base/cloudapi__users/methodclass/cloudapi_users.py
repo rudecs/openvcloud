@@ -349,6 +349,24 @@ class cloudapi_users(BaseActor):
 
         return True
 
+    def isValidInviteUserToken(self, inviteusertoken, emailaddress, **kwargs):
+        """
+        Check if the inviteusertoken and emailaddress pair are valid and matching
+
+        :param inviteusertoken: the token that was previously sent to the invited user email
+        :param emailaddress: email address for the user
+        :return: True if token and emailaddress are valid, otherwise False
+        """
+        if not self.models.inviteusertoken.exists(inviteusertoken):
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        inviteusertokenobj = self.models.inviteusertoken.get(inviteusertoken)
+        if inviteusertokenobj.email != emailaddress:
+            # Email address of user isn't the same as the address the user was invited with
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        return True
+
     def registerInvitedUser(self, inviteusertoken, emailaddress, username, password,
                             confirmpassword, **kwargs):
 
@@ -356,24 +374,24 @@ class cloudapi_users(BaseActor):
         Register a user that was previously invited to a shared resource (Account, Cloudspace,
         Vmachine).
         :param inviteusertoken: the token that was previously sent to the invited user email
-        :param emailaddress:email address for the user
+        :param emailaddress: email address for the user
         :param username: the username the user wants to register with
         :param password: the password the user wants to set
         :param confirmpassword: a confirmation of the password
         :return: success message if user was successfully registered on the system
         """
         if not self.models.inviteusertoken.exists(inviteusertoken):
-            return exceptions.BadRequest('Invalid invitation token.')
+            raise exceptions.BadRequest('Invalid invitation token.')
 
         inviteusertokenobj = self.models.inviteusertoken.get(inviteusertoken)
         if inviteusertokenobj.email != emailaddress:
             # Email address of user isn't the same as the address the user was invited with
-            return exceptions.BadRequest('Invalid invitation token.')
+            raise exceptions.BadRequest('Invalid invitation token.')
 
         if not password:
-            return exceptions.BadRequest("Password cannot be empty.")
+            raise exceptions.BadRequest("Password cannot be empty.")
         elif password != confirmpassword:
-            return exceptions.BadRequest("Passwords do not match.")
+            raise exceptions.BadRequest("Passwords do not match.")
 
         groups = ['user']
         emails = [emailaddress]

@@ -74,6 +74,14 @@
         var:limit int,5,the number of usernames to return
         result:list,,list of dicts with the username and url of the gravatar of the user
 
+    method:isValidInviteUserToken @noauth
+        """
+        Check if the inviteusertoken and emailaddress pair are valid and matching
+        """
+        var:inviteusertoken str,,the token that was previously sent to the invited user email
+        var:emailaddress str,,email address for the user
+        result:bool
+
     method:registerInvitedUser @noauth
         """
         Registers an invited user
