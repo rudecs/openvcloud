@@ -82,5 +82,28 @@ angular.module('cloudscalers.services')
                         }
                  );
             },
+						isValidInviteUserToken: function(inviteUserToken, emailAddress){
+                return $http.get(cloudspaceconfig.apibaseurl + "/users/isValidInviteUserToken?inviteusertoken=" + encodeURIComponent(inviteUserToken) + "&emailaddress="+ encodeURIComponent(emailAddress))
+                .then(
+                        function(result){
+                                return result.data;
+                        },
+                        function(reason){
+                                return $q.reject(reason);
+                        }
+                 );
+            },
+						registerInvitedUser: function(inviteUserToken, emailAddress, userName, passWord, confirmPassword){
+                return $http.post(cloudspaceconfig.apibaseurl + "/users/registerInvitedUser?inviteusertoken=" + encodeURIComponent(inviteUserToken) + "&emailaddress="+ encodeURIComponent(emailAddress)
+							+ "&username="+ encodeURIComponent(userName) + "&password="+ encodeURIComponent(passWord)+ "&confirmpassword="+ encodeURIComponent(confirmPassword))
+                .then(
+                        function(result){
+                                return result.data;
+                        },
+                        function(reason){
+                                return $q.reject(reason);
+                        }
+                 );
+            },
         };
     });
