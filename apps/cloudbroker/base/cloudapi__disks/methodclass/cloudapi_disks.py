@@ -96,7 +96,7 @@ class cloudapi_disks(BaseActor):
             query['type'] = type
         return self.models.disk.search(query)[1:]
 
-    @authenticator.auth(acl={'machine': set('X')})
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def delete(self, diskId, detach, **kwargs):
         """

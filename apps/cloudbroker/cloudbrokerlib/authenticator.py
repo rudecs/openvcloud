@@ -145,6 +145,9 @@ class auth(object):
         :return: True if username is authorized to access the resource, False otherwise
         """
         userobj = j.core.portal.active.auth.getUserInfo(username)
+        if not userobj.active:
+            raise exceptions.Forbidden('User is not allowed to execute action while status is '
+                                       'inactive.')
         groups = userobj.groups
         # add brokeradmin access
         if 'admin' in groups:
@@ -152,20 +155,14 @@ class auth(object):
 
         if 'account' in self.acl and account:
             grantedaccountacl  = self.expandAclFromAccount(username, groups, account)
-            if 'A' in grantedaccountacl:
-                grantedaccountacl.update('CXDRU')
             if self.acl['account'].issubset(grantedaccountacl):
                 return True
         if 'cloudspace' in self.acl and cloudspace:
             grantedcloudspaceacl = self.expandAclFromCloudspace(username, groups, cloudspace)
-            if 'A' in grantedcloudspaceacl:
-                grantedcloudspaceacl.update('CXDRU')
             if self.acl['cloudspace'].issubset(grantedcloudspaceacl):
                 return True
         if 'machine' in self.acl and machine:
             grantedmachineacl = self.expandAclFromVMachine(username, groups, machine)
-            if 'A' in grantedmachineacl:
-                grantedmachineacl.update('CXDRU')
             if self.acl['machine'].issubset(grantedmachineacl):
                 return True
 

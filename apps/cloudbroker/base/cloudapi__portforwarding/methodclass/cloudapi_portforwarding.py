@@ -25,7 +25,7 @@ class cloudapi_portforwarding(BaseActor):
                 return nic.ipAddress
         return None
 
-    @authenticator.auth(acl={'cloudspace': set('C'), 'machine': set('C')})
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
     def create(self, cloudspaceId, publicIp, publicPort, machineId, localPort, protocol=None, **kwargs):
         """
@@ -104,37 +104,7 @@ class cloudapi_portforwarding(BaseActor):
 
         return fw[0]['guid'], fw[0]['gid']
 
-    def _verifyDeletePermissions(self, cloudspaceId, localIp, ctx):
-        """
-        Verify if a user has access permissions on machine or cloudspace to perform the delete
-
-        :param cloudspaceId: id of the cloudspace
-        :param localIp: loacl IP address used for portforwarding on the vmachine
-        :param ctx: ctx containing session info
-        """
-        ipowner = self.models.vmachine.search({'nics.ipAddress': localIp,
-                                               'cloudspaceId': cloudspaceId})[1:]
-        if len(ipowner) != 1:
-            raise exceptions.BadRequest('Found %d machines matching the specified ip address %s in '
-                                        'the cloudspace %s (only 1 is expected).' %
-                                        (len(ipowner), localIp, cloudspaceId))
-        else:
-            machineobj = self.models.vmachine.get(int(ipowner[0]['id']))
-            cloudspaceobj = self.models.cloudspace.get(int(cloudspaceId))
-
-        username = ctx.env['beaker.session']['user']
-        account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
-        if account_status != 'CONFIRMED':
-            raise exceptions.Forbidden('Unconfirmed Account')
-
-        if not authenticator.auth(acl={'machine': set('X')}).isAuthorized(
-                username, machine=machineobj, cloudspace=cloudspaceobj):
-            raise exceptions.Forbidden(
-                    '''User: "%s" isn't allowed to execute this action.Not enough permissions''' %
-                    username)
-
-    # Authentication logic implemented inside the method to find machine with the local IP,
-    # requires 'X' permission on machine
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def delete(self, cloudspaceId, id, **kwargs):
         """
@@ -159,7 +129,6 @@ class cloudapi_portforwarding(BaseActor):
         if not id < len(forwards):
             raise exceptions.NotFound('Cannot find the rule with id %s' % str(id))
         forward = forwards[id]
-        self._verifyDeletePermissions(cloudspaceId, forward['localIp'], kwargs['ctx'])
         self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'],
                                       forward['localIp'], forward['localPort'])
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
@@ -176,15 +145,6 @@ class cloudapi_portforwarding(BaseActor):
         :param publicPort: port forwarding public port
         :param proto: port forwarding protocol
         """
-        fw_id, fw_gid = self._getFirewallId(cloudspaceId)
-        forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
-        filteredforwards = filter(lambda f: f['publicIp'] == publicIp and
-                                  f['publicPort'] == publicPort, forwards)
-        if not filteredforwards:
-            # No need to delete any ports
-            return True
-        forward = filteredforwards[0]
-        self._verifyDeletePermissions(cloudspaceId, forward['localIp'], kwargs['ctx'])
         try:
             result = self._deleteByPort(int(cloudspaceId), publicIp, publicPort, proto)
         except exceptions.BaseError:
@@ -200,7 +160,7 @@ class cloudapi_portforwarding(BaseActor):
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceId)
 
-    @authenticator.auth(acl={'cloudspace': set('C'), 'machine': set('C')})
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
     def update(self, cloudspaceId, id, publicIp, publicPort, machineId, localPort, protocol, **kwargs):
         """
