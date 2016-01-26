@@ -338,7 +338,7 @@ class cloudapi_machines(BaseActor):
         machines = []
         alldisks = list(itertools.chain(*[m['disks'] for m in results]))
         query = {'$query': {'id': {'$in': alldisks}}, '$fields': ['id', 'sizeMax']}
-        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query)[1:]}
+        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query, size=0)[1:]}
         for res in results:
             size = sum(disks.get(diskid, 0) for diskid in res['disks'])
             res['storage'] = size
