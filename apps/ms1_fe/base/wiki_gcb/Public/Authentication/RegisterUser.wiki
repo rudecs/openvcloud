@@ -31,10 +31,13 @@
 .hcenter input.form-control { padding: 8px 11px; padding-right: 0; font-size: 14px !important;}
 .hr-line { border: none; border-top: 1px solid #ccccc8; text-align: center; margin: 4px 0; padding: 0px 30px !important; margin-top: 0 \9;}
 .hr-line legend { font-size: 1em; padding: 0 15px; margin: 0 auto; color: #555; display: inline-block; width: 50px; border: 0;}
-.signup-btn { background-color: #345e79 !important}
+.signup-btn { background-color: #345e79 !important; cursor: pointer;}
 .signup-btn:hover { background-color: #407495 !important}
 .login-btn { background: #689a9a}
 .login-btn:hover { background: #71a6a6}
+.signup-btn[disabled]:hover { background-color: #345e79 !important}
+input::-moz-placeholder {color: #525252;}
+input:-moz-placeholder {color: #525252;}
 </style>
 <div ng-controller="RegisterUserController" ng-cloak>
     <div>
