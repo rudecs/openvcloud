@@ -1,0 +1,68 @@
+#!/bin/bash
+sudo modprobe fuse
+sudo modprobe openvswitch
+sudo modprobe kvm
+sudo modprobe tun
+node=$1
+
+echoerr() { echo "$@" 1>&2; }
+
+function createdev() {
+    devname=$1
+    devsize=$2
+    if [ ! -e $devname ]; then
+        echoerr Create devices
+        truncate -s $devsize $devname
+    fi
+    if ! losetup | grep $devname > /dev/null; then
+        echoerr Loop devices
+        sudo losetup -P -f $devname
+    fi
+    dev=$(losetup -a | grep $devname | cut -d ':' -f 1)
+    if [ ! -e "${dev}p1" ]; then
+        echoerr Create partitions
+        sudo parted -s -a optimal $dev mklabel msdos -- mkpart primary ext4 1 -1 >&2
+        echoerr Create fs
+        sudo mkfs.ext4 "${dev}p1" >&2
+    fi
+    echo $dev
+
+}
+
+function rexec () {
+    ssh "${node}.lxc" $@
+}
+
+#make nodes on lxc
+function dupdev() {
+    dev=$1
+    major=$(ls -l $dev | awk '{print $5}' | cut -d ',' -f 1)
+    minor=$(ls -l $dev | awk '{print $6}')
+    prefix=$(ls -l $dev)
+    devtype=${prefix::1}
+    rexec rm $dev
+    rexec mknod $dev $devtype $major $minor
+}
+
+function setupdev() {
+    name=$1
+    size=$2
+    devname=$(createdev "${node}_${name}" $size)
+    dupdev "${devname}"
+    dupdev "${devname}p1"
+
+    rexec mkdir /mnt/$name
+    rexec mount "${devname}p1" /mnt/$name
+}
+
+
+echo mknod
+ssh "${node}.lxc" mkdir /dev/net
+dupdev /dev/net/tun
+dupdev /dev/fuse
+dupdev /dev/kvm
+rexec chmod 777 /dev/kvm
+
+setupdev cache 4GB
+setupdev db 4GB
+
