@@ -15,7 +15,7 @@
 .hcenter { margin-left: auto; margin-right: auto; }
 .form-panel header { font-weight: 300; font-size: 20px; line-height: 20px; padding: 25px 30px; background: #f4f5f5; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #545f69; }
 .form-panel fieldset { padding: 30px; /*border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); margin: 0 0 -1px 0; */}
-.hcenter .form-group { margin-bottom: 15px; display: inline-block;}
+.hcenter .form-group { margin-bottom: 15px; }
 .input-group { position: relative; display: table; border-collapse: separate; }
 .input-group .input-group-addon { background: #f4f5f5; }
 .input-group .input-group-addon i { color: rgba(0, 0, 0, 0.2); width: 1em; }
@@ -29,9 +29,12 @@
 .btn-primary { background-color: #218C8D; color: #fff; border: 0; border-radius: 0; }
 .btn-primary:hover { background-color: #176364; color: #fff; }
 .hcenter input.form-control { padding: 8px 11px; padding-right: 0; font-size: 14px !important;}
-.hr-line { border: none; border-top: 1px solid #ccccc8; text-align: center; margin: 4px 0; padding: 0px 30px !important;}
+.hr-line { border: none; border-top: 1px solid #ccccc8; text-align: center; margin: 4px 0; padding: 0px 30px !important; margin-top: 0 \9;}
 .hr-line legend { font-size: 1em; padding: 0 15px; margin: 0 auto; color: #555; display: inline-block; width: 50px; border: 0;}
-
+.signup-btn { background-color: #345e79 !important}
+.signup-btn:hover { background-color: #407495 !important}
+.login-btn { background: #689a9a}
+.login-btn:hover { background: #71a6a6}
 </style>
 <div ng-controller="RegisterUserController" ng-cloak>
     <div>
@@ -73,11 +76,11 @@
                 <input type="password" class="form-control" placeholder="Re-enter password" required ng-model="registerRetypePassword" id="registerRetypePassword">
               </div>
             </div>
-            <button class="btn btn-primary btn-lg btn-block" ng-disabled="!isValidToken">Sign up</button>
+            <button class="btn btn-primary btn-lg btn-block signup-btn" ng-disabled="!isValidToken">Sign up</button>
             <fieldset class="hr-line">
               <legend align="center">OR</legend>
             </fieldset>
-            <a href="/restmachine/system/oauth/authenticate"><input class="btn btn-primary btn-lg btn-block" type="button" value="Sign in"></a>
+            <a href="/restmachine/system/oauth/authenticate"><input class="btn btn-primary btn-lg btn-block login-btn" type="button" value="Sign in"></a>
             </div>
           </fieldset>
         </div>
