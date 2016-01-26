@@ -52,7 +52,7 @@ input:-moz-placeholder {color: #525252;}
               <p>{[verificationMessage]}</p>
             </div>
             <div ng-show="verificationStatus=='SUCCEEDED'" class="margin-bottom-medium alert alert-success">
-              Your password has been successfully updated. Please proceed to <a href="/restmachine/system/oauth/authenticate">login</a>.
+              User created successfully. Please proceed to <a href="/restmachine/system/oauth/authenticate">login</a>.
             </div>
             <div>
             <div class="form-group">
