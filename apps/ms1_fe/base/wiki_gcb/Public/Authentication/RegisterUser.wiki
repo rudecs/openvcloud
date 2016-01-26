@@ -7,11 +7,11 @@
 
 
 {{html:
+<!-- TODO move style -->
 <style type="text/css">
-.white-box { background-color: #fff; min-height: 30em; margin: 100px auto; border-radius: 12px; max-width: 60em; border: 7px solid rgba(255, 255, 255, 0.2); }
+.white-box { min-height: 30em; margin: 100px auto; max-width: 60em; }
 .white-box a:hover, .white-box a:focus { text-decoration: underline; color: #6591AD; }
 .form-panel { border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; margin-bottom: 30px; }
-.width-33pc { width: 46%; }
 .hcenter { margin-left: auto; margin-right: auto; }
 .form-panel header { font-weight: 300; font-size: 20px; line-height: 20px; padding: 25px 30px; background: #f4f5f5; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #545f69; }
 .form-panel fieldset { padding: 30px; border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); margin: 0 0 -1px 0; }
@@ -32,83 +32,50 @@
 
 </style>
 <div ng-controller="RegisterUserController" ng-cloak>
-
-<h2>Sign Up</h2>
-    <div ng-show="verificationStatus=='PENDING'">
-}}
-Verifying...
-{{html:
-    </div>
-    <div class="alert alert-error padding-bottom-none" ng-show="verificationStatus=='ERROR'">
-      <p>{[verificationMessage]}</p>
-    </div>
-    <div ng-show="verificationStatus=='VALIDTOKEN'">
-
-    <form name="form" ng-submit="registerInvitedUser()">
-      <br/>
-      <div class="reset-password tab-pane row margin-bottom-small">
-        <div class="form-group width-full margin-bottom-medium clearfix">
-           <label id="registerEmail" class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">Email:</label>
-          <input required ng-model="registerEmail" type="text" name="registerEmail" id="registerEmail" class="input-xxlarge width-20 left margin-right-medium form-control" disabled="disabled">
-        </div>
-        <div class="form-group width-full margin-bottom-medium clearfix">
-           <label for="registerUsername" class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">Username:</label>
-          <input required ng-model="registerUsername" type="text" id="registerUsername" class="input-xxlarge width-20 left margin-right-medium form-control">
-        </div>
-        <div class="form-group width-full margin-bottom-medium clearfix">
-           <label for="registerNewPassword" class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">New password:</label>
-          <input required ng-model="registerNewPassword" type="password" id="registerNewPassword" class="input-xxlarge width-20 left margin-right-medium form-control">
-        </div>
-        <div class="form-group width-full margin-bottom-medium clearfix">
-           <label for="registerRetypePassword" class="left control-group margin-all-none margin-right-medium line-height txt-14 width-15">Retype password:</label>
-          <input required ng-model="registerRetypePassword" id="registerRetypePassword" type="password" class="input-xxlarge width-20 left form-control">
-        </div>
-      </div>
-        <button type="submit" class="btn btn-info btn-large">Sign Up</button>
-        <div class="txt-center">
-          <div class="alert margin-top-large width-40 txt-center" ng-class="{'alert-success': alertStatus=='success', 'alert-danger': alertStatus=='error'}" ng-show="updateResultMessage">{[ updateResultMessage ]}</div>
-        </div>
-      </form>
-        <div class="form-panel width-33pc width-100pc-xs hcenter">
+    <div>
+      <form name="form" ng-submit="registerInvitedUser()">
+        <div class="form-panel width-70 width-100pc-xs hcenter margin-top-large margin-bottom-small">
           <header>Sign up</header>
           <fieldset>
-          <form>
+            <div ng-show="verificationStatus=='PENDING'" class="alert alert-warn margin-bottom-medium">
+              Verifying...
+            </div>
+            <div class="alert alert-error padding-bottom-none margin-bottom-medium" ng-show="verificationStatus=='ERROR'">
+              <p>{[verificationMessage]}</p>
+            </div>
+            <div ng-show="verificationStatus=='SUCCEEDED'" class="margin-bottom-medium alert alert-success">
+              Your password has been successfully updated. Please proceed to <a href="/restmachine/system/oauth/authenticate">login</a>.
+            </div>
+            <div>
             <div class="form-group">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
-                <input type="email" class="form-control" placeholder="Enter email" disabled="disabled">
+                <input type="email" required ng-model="registerEmail" name="registerEmail" id="registerEmail" class="form-control" placeholder="Enter email" disabled="disabled">
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
-                <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                <input type="email" class="form-control" placeholder="Enter username">
+                <label for="registerUsername" class="input-group-addon"><i class="fa fa-user"></i></label>
+                <input type="text" class="form-control" placeholder="Enter username" required ng-model="registerUsername" id="registerUsername">
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
-                <div class="input-group-addon"><i class="fa fa-lock"></i></div>
-                <input type="password" class="form-control" placeholder="Enter password">
+                <label for="registerNewPassword" class="input-group-addon"><i class="fa fa-lock"></i></label>
+                <input type="password" class="form-control" placeholder="Enter password" required ng-model="registerNewPassword" id="registerNewPassword">
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
-                <div class="input-group-addon"><i class="fa fa-lock"></i></div>
-                <input type="password" class="form-control" placeholder="Re-enter password">
+                <label for="registerRetypePassword" class="input-group-addon"><i class="fa fa-lock"></i></label>
+                <input type="password" class="form-control" placeholder="Re-enter password" required ng-model="registerRetypePassword" id="registerRetypePassword">
               </div>
             </div>
-            <div class="form-group">
-
-              <a class="pull-right">Forgot password?</a>
+            <button class="btn btn-primary btn-lg btn-block" ng-disabled="!isValidToken">Sign up</button>
             </div>
-            <button class="btn btn-primary btn-lg btn-block">Sign up</button>
-          </form>
           </fieldset>
         </div>
-
-    </div>
-    <div ng-show="verificationStatus=='SUCCEEDED'">
-    Your password has been successfully updated. Please proceed to <a href="/restmachine/system/oauth/authenticate">login</a>.
+      </form>
     </div>
 
 </div>
