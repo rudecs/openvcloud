@@ -334,7 +334,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspaceObject.id)
         cloudspace = {"accountId": cloudspaceObject.accountId,
-                      "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'],
+                      "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], 'status': ace['status'],
                                "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()],
                       "description": cloudspaceObject.descr,
                       "id": cloudspaceObject.id,
@@ -422,7 +422,7 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name
             cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspace['id'])
-            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'],
+            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], 'status': ace['status'],
                                   "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
