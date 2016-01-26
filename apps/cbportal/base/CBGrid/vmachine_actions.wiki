@@ -27,7 +27,7 @@
 #   accountId: ${accountId}
 #
 #  input:
-  - reason
+#  - reason
 
 - display: Reboot
   action: /restmachine/cloudbroker/machine/reboot
@@ -185,6 +185,12 @@
   - description
   - reason
 
+{% if status == 'HALTED' %}
+- display: Resize Machine
+  action: '#resizemachine'
+
+{% endif %}
+
 # - display: Export
 #   action: ./
 #   data:
@@ -220,14 +226,14 @@
    machineId: $$id
   input:
   - tagName
-   
+
 - display: Attach To Public Network
   action: /restmachine/cloudbroker/machine/attachPublicNetwork
   reload: true
   hide: true
   data:
    machineId: $$id
-  
+
 - display: Detach From Public Network
   action: /restmachine/cloudbroker/machine/detachPublicNetwork
   hide: true
@@ -237,4 +243,4 @@
 }}
 
 {{movemachine: machineId:$$id}}
-
+{{resizemachine: machineId:$$id}}

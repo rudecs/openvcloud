@@ -9,12 +9,15 @@ We always release a x.y.z version which is a tag based on branch x.y
 """
 from JumpScale import j
 from optparse import OptionParser
+import itertools
 import fnmatch
 import os
 
 parser = OptionParser(help)
 
 parser.add_option("-r", "--release-version", dest="version", help="Version to make release for")
+parser.add_option("-d", "--delete-release", dest="delete", action='store_true', help="Delete release")
+parser.add_option("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
 (options, args) = parser.parse_args()
 
 REPOS = {'openvcloud': ['/opt/code/git/0-complexity/openvcloud'],
@@ -39,11 +42,9 @@ def getServicesFiles(path):
 def freeze(export, target):
     for key, value in target.iteritems():
         if export.get(key):
-            print '[+]   discarding %s: %s' % (key, export[key])
             export.pop(key)
 
         if value:
-            print '[+]   setting %s: %s' % (key, value)
             export[key] = value
 
     return export
@@ -54,7 +55,6 @@ def changeversion(aysrepo, targets):
     services = getServicesFiles(repo.baseDir)
 
     for service in services:
-        print '[+] updating: %s' % service
         hrd = j.core.hrd.get(service)
         exports = hrd.getDictFromPrefix('git.export')
 
@@ -95,10 +95,14 @@ def getBranchTargets():
     return targets
 
 def make_tag(repo, tagname):
-    print '[+] Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
+    print '[+]   Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
     for tag in repo.repo.tags:
         if tag.name == tagname:
-            return False
+            if options.force:
+                repo.repo.git.tag('-d', tagname)
+                break
+            else:
+                return False
     repo.repo.git.tag(tagname)
     return True
 
@@ -108,35 +112,52 @@ def tag_exists(repo, tag):
             return True
     return False
 
-# validate version
-for type, path in AYS.iteritems():
-    branchname, tagname = getVersions(type)
-    repo = j.clients.git.get(path)
-    if tag_exists(repo, tagname):
-        print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name)))
-        j.application.stop(1)
 
-for type, repos in REPOS.iteritems():
-    for path in repos:
+if not options.delete:
+# validate version
+    for type, path in AYS.iteritems():
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
-        print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
-        repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
+        if tag_exists(repo, tagname) and not options.force:
+            print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name)))
+            j.application.stop(1)
+
+    for type, repos in REPOS.iteritems():
+        for path in repos:
+            branchname, tagname = getVersions(type)
+            repo = j.clients.git.get(path)
+            print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
+            repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
+            repo.repo.git.checkout(branchname)
+            make_tag(repo, tagname)
+            print '[+] Pushing tag %s' % tagname
+            repo.repo.git.push('--tags')
+
+    for type, path in AYS.iteritems():
+        branchname, tagname = getVersions(type)
+        repo = j.clients.git.get(path)
+        print '[+] Making release on repo %s/%s' % (repo.account, repo.name)
+        repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
         repo.repo.git.checkout(branchname)
+        changeversion(repo, getTagTargets())
+        repo.commit('Tagging %s' % tagname)
         make_tag(repo, tagname)
-        #repo.repo.git.push('--tags')
-
-for type, path in AYS.iteritems():
-    branchname, tagname = getVersions(type)
-    repo = j.clients.git.get(path)
-
-    repo.repo.git.fetch('-f', 'origin', '%s:%s' % (branchname))
-    repo.repo.git.checkout(branchname)
-    changeversion(repo, getTagTargets())
-    repo.commit('Tagging %s' % tagname)
-    make_tag(repo, tagname)
-    changeversion(repo, getBranchTargets())
-    repo.commit('Putting on branch %s' % branchname)
-
-
+        changeversion(repo, getBranchTargets())
+        repo.commit('Putting on branch %s' % branchname)
+        print '[+]   Pushing'
+        repo.repo.git.push()
+        repo.repo.git.push('--tags')
+else:
+    for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
+        if isinstance(repos, basestring):
+            repos = [ repos ]
+        for path in repos:
+            branchname, tagname = getVersions(type)
+            repo = j.clients.git.get(path)
+            print '[+] Change repo %s/%s' % (repo.account, repo.name)
+            print '[+]   Deleting local tag %s' % tagname
+            if tag_exists(repo, tagname):
+                repo.repo.git.tag('-d', tagname)
+            print '[+]   Deleting remote tag %s' % tagname
+            repo.repo.git.push('origin', ':refs/tags/%s' % tagname)
 

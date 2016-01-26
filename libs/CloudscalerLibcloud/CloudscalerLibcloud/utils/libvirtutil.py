@@ -14,6 +14,9 @@ LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
 
+class TimeoutError(Exception):
+    pass
+
 
 def _getLockFile(domainid):
     LOCKPATH = '%s/domain_locks' % j.dirs.varDir
@@ -94,8 +97,40 @@ class LibvirtUtil(object):
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 if not domain.shutdown() == 0:
                     return False
+                try:
+                    self.waitForAction(id, timeout=30000, events=[libvirt.VIR_DOMAIN_EVENT_STOPPED])
+                except TimeoutError, e:
+                    j.errorconditionhandler.processPythonExceptionObject(e)
+                    domain.destroy()
             domain.undefine()
         return True
+
+    def waitForAction(self, domid, timeout=None, events=None):
+        libvirt.virEventRegisterDefaultImpl()
+        rocon = libvirt.openReadOnly()
+        run = {'state': True, 'timeout': False}
+
+        def timecb(timerid, opaque):
+            run['state'] = False
+            run['timeout'] = True
+
+        def callback(con, domain, event, detail, opaque):
+            if domain.UUIDString() == domid:
+                if events is not None and event in events:
+                    run['state'] = False
+                    return True
+
+        if timeout:
+            libvirt.virEventAddTimeout(timeout, timecb, None)
+        rocon.domainEventRegisterAny(None,
+                                    libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
+                                    callback,
+                                    rocon)
+        while run['state']:
+            libvirt.virEventRunDefaultImpl()
+
+        if run['timeout']:
+            raise TimeoutError("Failed to wait for state")
 
     def reboot(self, id):
         if isLocked(id):

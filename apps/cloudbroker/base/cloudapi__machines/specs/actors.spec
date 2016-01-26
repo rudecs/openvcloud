@@ -192,8 +192,17 @@
         """
         get url to connect to console
         """
-        var:machineId str,, id of machine to connect to console
+        var:machineId int,, id of machine to connect to console
         result:str #returns one time url used to connect ot console
+
+
+    method:resize
+        """
+        Change the size of a machine
+        """
+        var:machineId int,, id of machine to resize
+        var:sizeId int,,new sizeId
+        result:bool
 
     method:clone
         """
@@ -244,7 +253,7 @@
         var:userId str,, ID of a user to share with
         var:accessType str,, 'R' for read only access, 'W' for Write access
         result:bool
-        
+
     method:attachPublicNetwork
         """
         Revokes user's access to a vmachine

@@ -49,27 +49,29 @@ class cloudapi_machines(BaseActor):
         result bool
 
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
-        if node.extra.get('locked', False):
-            raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
-        actionname = "%s_node" % actiontype.lower()
-        method = getattr(provider.client, actionname, None)
-        if not method:
-            method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
+        with self.models.vmachine.lock(machineId):
+            provider, node, machine = self._getProviderAndNode(machineId)
+            if node.extra.get('locked', False):
+                raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
+            actionname = "%s_node" % actiontype.lower()
+            method = getattr(provider.client, actionname, None)
             if not method:
-                raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
-        if newstatus and newstatus != machine.status:
-            machine.status = newstatus
-            self.models.vmachine.set(machine)
-        tags = str(machineId)
-        j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
-        return method(node)
+                method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
+                if not method:
+                    raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
+            if newstatus and newstatus != machine.status:
+                machine.status = newstatus
+                self.models.vmachine.set(machine)
+            tags = str(machineId)
+            j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
+            return method(node)
 
     @authenticator.auth(acl='X')
     @audit()
     def start(self, machineId, **kwargs):
         machine = self._getMachine(machineId)
-        self.cb.chooseProvider(machine)
+        if machine.status not in ['RUNNING', 'PAUSED']:
+            self.cb.chooseProvider(machine)
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl='X')
@@ -336,7 +338,7 @@ class cloudapi_machines(BaseActor):
         machines = []
         alldisks = list(itertools.chain(*[m['disks'] for m in results]))
         query = {'$query': {'id': {'$in': alldisks}}, '$fields': ['id', 'sizeMax']}
-        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query)[1:]}
+        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query, size=0)[1:]}
         for res in results:
             size = sum(disks.get(diskid, 0) for diskid in res['disks'])
             res['storage'] = size
@@ -687,7 +689,7 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
-    
+
     def attachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         for nic in vmachine.nics:
@@ -712,16 +714,32 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(vmachine)
         return True
 
+    @authenticator.auth(acl='U')
+    @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
+    @audit()
+    def resize(self, machineId, sizeId, **kwargs):
+        provider, node, vmachine = self._getProviderAndNode(machineId)
+        bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
+        if len(bootdisks) != 1:
+            raise exceptions.Error('Failed to retreive first disk')
+        bootdisk = self.models.disk.get(bootdisks[0]['id'])
+        size = self.models.size.get(sizeId)
+        providersize = provider.getSize(size, bootdisk)
+        provider.client.ex_resize(node=node, size=providersize)
+        vmachine.sizeId = sizeId
+        self.models.vmachine.set(vmachine)
+        return True
+
     def detachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
-        
+
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
-            
+
             provider.client.detach_public_network(node, networkid)
         self._detachPublicNetworkFromModel(vmachine)
         return True

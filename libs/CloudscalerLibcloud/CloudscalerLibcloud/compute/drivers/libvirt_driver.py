@@ -493,7 +493,7 @@ class CSLibvirtNodeDriver():
             pass
 
     def _get_domain_for_node(self, node):
-        return self._execute_agent_job('getmachine', queue='default', machineid = node.id)
+        return self._execute_agent_job('getmachine', queue='hypervisor', machineid = node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress='', volumes=None):
         xml = domain.get('XMLDesc')
@@ -552,7 +552,7 @@ class CSLibvirtNodeDriver():
         FOR LIBVIRT A SNAPSHOT CAN'T BE DELETED WHILE MACHINE RUNNGIN
         """
         return False
-    
+
     def attach_public_network(self, node):
         """
         Attach Virtual machine to the cpu node public network
@@ -594,6 +594,17 @@ class CSLibvirtNodeDriver():
                 domxml = ElementTree.tostring(dom)
             return self._update_node(node, domxml)
 
+    def ex_resize(self, node, size):
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        memory = dom.find('memory')
+        dom.remove(dom.find('currentMemory'))
+        memory.text = str(size.ram * 1024)
+        vcpu = dom.find('vcpu')
+        vcpu.text = str(size.extra['vcpus'])
+        xml = ElementTree.tostring(dom)
+        self._set_persistent_xml(node, xml)
+        return True
 
     def ex_migrate(self, node, sourceprovider, force=False):
         domainxml = self._get_persistent_xml(node)

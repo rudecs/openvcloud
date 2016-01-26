@@ -32,7 +32,7 @@ def action(machineid, templatename, imageid, sourcepath, pmachineip):
     try:
         diskpath = sourcepath.replace('/mnt/vmstor/', '')
         sourcedisk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
-        devicename = '%s_%s' % (templatename, int(time.time()))
+        devicename = '%s' % int(time.time())
         newdiskdata = VDiskController.clone(sourcedisk.guid, None, devicename, pmachineguid=pmguid, machinename='templates/custom')
         VDiskController.set_as_template(newdiskdata['diskguid'])
         templateguid = newdiskdata['diskguid'].replace('-', '')

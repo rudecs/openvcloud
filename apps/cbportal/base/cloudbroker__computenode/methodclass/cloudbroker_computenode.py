@@ -36,7 +36,7 @@ class cloudbroker_computenode(BaseActor):
         if status not in statusses:
             return exceptions.BadRequest('Invalid status %s should be in %s' % (status, ', '.join(statusses)))
         if status == 'ENABLED':
-            if stack['status'] not in ('MAINTENANCE', 'ENABLED'):
+            if stack['status'] not in ('MAINTENANCE', 'ENABLED', 'ERROR'):
                 raise exceptions.PreconditionFailed("Can not enable ComputeNode in state %s" % (stack['status']))
 
         if status == 'DECOMMISSIONED':
@@ -51,7 +51,7 @@ class cloudbroker_computenode(BaseActor):
     def _changeStackStatus(self, stack, status):
         stack['status'] = status
         self.models.stack.set(stack)
-        if status in ['ENABLED', 'MAINTENANCE', 'DECOMMISSIONED']:
+        if status in ['ENABLED', 'MAINTENANCE', 'DECOMMISSIONED', 'ERROR']:
             nodes = self.scl.node.search({'id':int(stack['referenceId']), 'gid':stack['gid']})[1:]
             if len(nodes) > 0:
                 node = nodes[0]
