@@ -444,7 +444,7 @@ class cloudbroker_machine(BaseActor):
         """
         machineId = self._checkMachine(machineId)
         machineId = machineId['id']
-        user = self.cb.checkUser(username)
+        user = self.cb.checkUser(username, activeonly=False)
         if user:
             userId = user['id']
             added = self.actors.machines.addUser(machineId, userId, accesstype)

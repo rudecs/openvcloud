@@ -24,14 +24,22 @@ class cloudapi_accounts(BaseActor):
         :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         :return True if user was added successfully
         """
-        user = self.cb.checkUser(userId)
+        user = self.cb.checkUser(userId, activeonly=False)
         if not user:
             raise exceptions.NotFound("User is not registered on the system")
         else:
             # Replace email address with ID
             userId = user['id']
 
-        return self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
+        self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
+        emailaddress = user['emails'][0]
+        try:
+            j.apps.cloudapi.users.sendShareResourceEmail(emailaddress, 'account', accountId,
+                                                         accesstype,  userId, user['active'])
+            return True
+        except:
+            self.deleteUser(accountId, userId, recursivedelete=False)
+            raise
 
     @authenticator.auth(acl={'account': set('U')})
     @audit()

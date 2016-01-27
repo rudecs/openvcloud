@@ -219,7 +219,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspace = self._checkCloudspace(cloudspaceId)
         cloudspaceId = cloudspace['id']
-        user = self.cb.checkUser(username)
+        user = self.cb.checkUser(username, activeonly=False)
         if user:
             userId = user['id']
             added = self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
