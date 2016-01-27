@@ -34,24 +34,27 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = cloudspaces[0]
 
-        status = cloudspace['status']
-        cloudspace['status'] = 'DESTROYED'
-        self.models.cloudspace.set(cloudspace)
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,
-                            args=(cloudspace, status, reason, ctx),
+                            args=(cloudspace, reason, ctx),
                             kwargs={},
                             title='Deleting Cloud Space',
                             success='Finished deleting Cloud Space',
                             error='Failed to delete Cloud Space')
 
-    def _destroy(self, cloudspace, status, reason, ctx):
+    def _destroy(self, cloudspace, reason, ctx):
+        status = cloudspace['status']
+        cloudspace['status'] = 'DESTROYING'
+        self.models.cloudspace.set(cloudspace)
+        cloudspace['status'] = 'DESTROYED'
+        title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             #delete machines
-            for machine in self.models.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
+            machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+            for idx, machine in enumerate(machines):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
-                    ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Machine %s' % machine['name'])
+                    ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
@@ -60,7 +63,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         #delete routeros
         gid = cloudspace['gid']
-        ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Firewall')
+        ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
         self._destroyVFW(gid, cloudspace['id'])
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
