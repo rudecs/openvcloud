@@ -10,6 +10,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/disable
   data:
    accountId: $$id
+   async: true
   input:
   - reason
 

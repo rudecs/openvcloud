@@ -4,6 +4,7 @@ import re
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from JumpScale.portal.portal.async import async
 
 
 def _send_signup_mail(hrd, **kwargs):
@@ -51,6 +52,7 @@ class cloudbroker_account(BaseActor):
         return re.search(r"\s",password) is None
 
     @auth(['level1', 'level2', 'level3'])
+    @async('Disabling Account', 'Finished disabling account', 'Failed to disable account')
     @wrap_remote
     def disable(self, accountId, reason, **kwargs):
         """
@@ -60,19 +62,17 @@ class cloudbroker_account(BaseActor):
         result
         """
         account = self._checkAccount(accountId)
-        msg = 'Account of ID: %s\nReason: %s' % (accountId, reason)
-        subject = 'Disabling account of ID: %s' % accountId
-#        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account['deactivationTime'] = time.time()
         account['status'] = 'DISABLED'
         self.models.account.set(account)
         # stop all account's machines
         cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
         for cs in cloudspaces:
-            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'],
+                                                     'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                     })[1:]
             for vmachine in vmachines:
                 self.cloudapi.machines.stop(vmachine['id'])
-#        j.tools.whmcs.tickets.close_ticket(ticketId)
         return True
 
     @auth(['level1', 'level2', 'level3'])
