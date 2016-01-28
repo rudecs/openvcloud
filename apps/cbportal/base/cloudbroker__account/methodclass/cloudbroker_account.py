@@ -203,12 +203,10 @@ class cloudbroker_account(BaseActor):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        account = self._checkAccount(accountId)
-        accountId = account['id']
+        self._checkAccount(accountId)
         user = self.cb.checkUser(username, activeonly=False)
         if user:
-            userId = user['id']
-            self.cloudapi.accounts.addUser(accountId, userId, accesstype)
+            self.cloudapi.accounts.addUser(accountId, username, accesstype)
         elif self.cb.isValidEmailAddress(username):
             self.cloudapi.accounts.addExternalUser(accountId, username,
                                                                       accesstype)

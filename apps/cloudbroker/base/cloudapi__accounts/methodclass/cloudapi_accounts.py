@@ -82,7 +82,7 @@ class cloudapi_accounts(BaseActor):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                raise exceptions.BadRequest('User already has access rights to account')
+                raise exceptions.BadRequest('User already has access rights to this account')
 
         acl = account.new_acl()
         acl.userGroupId = userId
@@ -115,7 +115,7 @@ class cloudapi_accounts(BaseActor):
                     ace.right = accesstype
                 else:
                     raise exceptions.BadRequest('User is last admin on the account, cannot change '
-                                                    'user\'s access rights')
+                                                'user\'s access rights')
                 break
         else:
             raise exceptions.NotFound('User does not have any access rights to update')

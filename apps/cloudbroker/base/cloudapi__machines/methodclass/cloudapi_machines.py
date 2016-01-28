@@ -774,6 +774,7 @@ class cloudapi_machines(BaseActor):
     def _addACE(self, machineId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the vmachine
+
         :param:machineId id of the vmachine
         :param userId: userid for registered users or emailaddress for unregistered users
         :param accesstype: 'R' for read only access, 'W' for Write access
@@ -783,9 +784,9 @@ class cloudapi_machines(BaseActor):
         self.cb.isValidRole(accesstype)
         machineId = int(machineId)
         vmachine = self.models.vmachine.get(machineId)
-        vmachine_acl = authenticator.auth().getVMachineAcl(machineId)
-        if userId in vmachine_acl:
-            return self._updateACE(machineId, userId, accesstype, userstatus)
+        vmachineacl = authenticator.auth().getVMachineAcl(machineId)
+        if userId in vmachineacl:
+            raise exceptions.BadRequest('User already has access rights to this machine')
 
         ace = vmachine.new_acl()
         ace.userGroupId = userId
@@ -798,6 +799,7 @@ class cloudapi_machines(BaseActor):
     def _updateACE(self, machineId, userId, accesstype, userstatus):
         """
         Update an existing ACE in the ACL of a machine
+
         :param machineId: id of the cloudspace
         :param userId: userid for registered users or emailaddress for unregistered users
         :param accesstype: 'R' for read only access, 'W' for Write access
@@ -813,24 +815,26 @@ class cloudapi_machines(BaseActor):
         else:
             raise exceptions.NotFound('User does not have any access rights to update')
 
+        # If user has higher access rights on cloudspace then do not update, raise error
+        if 'account_right' in useracl and set(accesstype) != set(useracl['account_right']) and \
+                set(accesstype).issubset(set(useracl['account_right'])):
+            raise exceptions.Conflict('User already has a higher access level to owning account')
+        # If user has higher access rights on cloudspace then do not update, raise error
+        elif 'cloudspace_right' in useracl and set(accesstype) != set(useracl['cloudspace_right']) \
+                and set(accesstype).issubset(set(useracl['cloudspace_right'])):
+            raise exceptions.Conflict('User already has a higher access level to cloudspace')
+        # If user has the same access level on account or cloudspace then do not update,
+        # fail silently
         if ('account_right' in useracl and set(accesstype) == set(useracl['account_right'])) or \
                 ('cloudspace_right' in useracl and
                     set(accesstype) == set(useracl['cloudspace_right'])):
-            # Remove machine level access rights if present
+            # Remove machine level access rights if present, cleanup for backwards comparability
             for ace in vmachine.acl:
                 if ace.userGroupId == userId and ace.type == 'U':
                     vmachine.acl.remove(ace)
                     self.models.vmachine.set(vmachine)
                     break
             return False
-        # If user has higher access rights on owning account level then do not update
-        if 'account_right' in useracl and set(accesstype) != set(useracl['account_right']) and \
-                set(accesstype).issubset(set(useracl['account_right'])):
-            raise exceptions.Conflict('User already has a higher access level to owning account')
-        # If user has higher access rights on cloudspace then do not update
-        elif 'cloudspace_right' in useracl and set(accesstype) != set(useracl['cloudspace_right']) \
-                and set(accesstype).issubset(set(useracl['cloudspace_right'])):
-            raise exceptions.Conflict('User already has a higher access level to cloudspace')
         else:
             # grant higher access level
             for ace in vmachine.acl:
@@ -871,7 +875,7 @@ class cloudapi_machines(BaseActor):
     @audit()
     def updateUser(self, machineId, userId, accesstype, **kwargs):
         """
-        Update user access rights
+        Update user access rights. Returns True only if an actual update has happened.
 
         :param machineId: id of the machineId
         :param userId: userid/email for registered users or emailaddress for unregistered users

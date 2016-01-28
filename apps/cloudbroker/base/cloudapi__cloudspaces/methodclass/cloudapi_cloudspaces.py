@@ -96,9 +96,9 @@ class cloudapi_cloudspaces(BaseActor):
         self.cb.isValidRole(accesstype)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        cloudspace_acl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
-        if userId in cloudspace_acl:
-            return self._updateACE(cloudspaceId, userId, accesstype, userstatus)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if userId in cloudspaceacl:
+            raise exceptions.BadRequest('User already has access rights to this cloudspace')
 
         ace = cloudspace.new_acl()
         ace.userGroupId = userId
@@ -129,7 +129,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         if 'account_right' in useracl and set(accesstype) == set(useracl['account_right']):
             # No need to add any access rights as same rights are inherited
-            # Remove cloudspace level access rights if present
+            # Remove cloudspace level access rights if present, cleanup for backwards comparability
             for ace in cloudspace.acl:
                 if ace.userGroupId == userId and ace.type == 'U':
                     cloudspace.acl.remove(ace)
@@ -158,7 +158,7 @@ class cloudapi_cloudspaces(BaseActor):
     @audit()
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Update user access rights
+        Update user access rights. Returns True only if an actual update has happened.
 
         :param cloudspaceId: id of the cloudspace
         :param userId: userid/email for registered users or emailaddress for unregistered users

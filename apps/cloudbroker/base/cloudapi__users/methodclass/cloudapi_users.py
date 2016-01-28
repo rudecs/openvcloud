@@ -311,7 +311,7 @@ class cloudapi_users(BaseActor):
                                     templatename, extratemplateargs)
 
     def sendShareResourceEmail(self, emailaddress, resourcetype, resourceid, accesstype,
-                               username, isactive=True):
+                               username, activated=True):
         """
         Send an email to a registered users to inform a vmachine, cloudspace, account management
         has been shared with them
@@ -322,15 +322,11 @@ class cloudapi_users(BaseActor):
         :param resourceid: the id of the resource that will be shared
         :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
         :param username: username of the registered user
-        :param isactive: True if user is activated on the system
+        :param activated: True if user is activated on the system
         :return True if email was was successfully sent
         """
-        if isactive:
-            templatename = 'invite_internal_activated_users'
-        else:
-            templatename = 'invite_internal_deactivated_users'
-
-        extratemplateargs = {'username': username}
+        templatename = 'invite_internal_users'
+        extratemplateargs = {'username': username, 'activated': activated}
         return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
                                     templatename, extratemplateargs)
 
@@ -376,6 +372,7 @@ class cloudapi_users(BaseActor):
             'email': emailaddress,
             'resourcetype': resourcetype,
             'resourcename': resourcename,
+            'resourceid': resourceid,
             'accessrole': accessrole,
             'portalurl': j.apps.cloudapi.locations.getUrl(),
             'emailaddress': emailaddress
@@ -384,10 +381,10 @@ class cloudapi_users(BaseActor):
         if extratemplateargs:
             args.update(extratemplateargs)
 
-        body = j.core.portal.active.templates.render(
-                'cloudbroker/email/users/%s.html' % templatename, **args)
         subject = j.core.portal.active.templates.render(
                 'cloudbroker/email/users/%s.subject.txt' % templatename, **args)
+        body = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/%s.html' % templatename, **args)
 
         j.clients.email.send(toaddrs, fromaddr, subject, body)
 
