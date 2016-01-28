@@ -1,20 +1,20 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
-                function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'Size','confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
+                function($scope, $routeParams, $timeout, $location, Machine, Networks , Size, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.tabState = "currentDisks";
 
         $scope.changeTabState = function(state) {
             $scope.tabState = state;
         };
 
-        function clearDisk(){
+        $scope.clearDisk = function(){
             $scope.disk = {name: "", size: "", description: ""};
             $scope.changeTabState('currentDisks');
         }
-        clearDisk();
+        $scope.clearDisk();
 
-        function getMachine(){
+        $scope.getMachine = function(){
             Machine.get($routeParams.machineId).then(function(data) {
                 $scope.machine = data;
                 $timeout(function () {
@@ -26,13 +26,13 @@ angular.module('cloudscalers.controllers')
                     $ErrorResponseAlert(reason);
                 });
         }
-        getMachine();
+        $scope.getMachine();
 
         $scope.createDisk = function() {
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
-                getMachine();
-                clearDisk();
+                $scope.getMachine();
+                $scope.clearDisk();
             },function(reason){
                 LoadingDialog.hide();
                 $ErrorResponseAlert(reason);
@@ -193,6 +193,35 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('machine', updateMachineSize, true);
         $scope.$watch('sizes', updateMachineSize, true);
         $scope.$watch('images', updateMachineSize, true);
+
+        $scope.resize = function(currentSpace) {
+            var sizes = $scope.sizes;
+            var modalInstance = $modal.open({
+                templateUrl: 'resizeMachineDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.sizes = sizes;
+                    $scope.sizepredicate = 'memory'
+                    $scope.numeral = numeral;
+                    $scope.ok = function () {
+                        $modalInstance.close('ok');
+                    };
+                    $scope.cancelDestroy = function () {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (result) {
+                LoadingDialog.show('Resizing compute capacity..');
+                // TODO
+                // call Machine.resize
+                // then just $scope.getMachine();
+                // LoadingDialog.hide();
+
+            });
+        };
 
         $scope.destroy = function() {
             var modalInstance = $modal.open({

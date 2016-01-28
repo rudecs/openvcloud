@@ -1,4 +1,3 @@
-
 {{html:
 <link href="/$$space/.files/css/font-awesome-animation.min.css" rel="stylesheet" type="text/css">
 <div class="gray-loader" ng-hide="machine">
@@ -181,30 +180,62 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 #                            </a>
 #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess == 'Admin' && machine.locked == false">
-                                <a ng-click="destroy()">
-                                    <i class=" fa fa-times-circle-o"></i>
-                                    Destroy
-                                </a>
-                                <script type="text/ng-template" id="destroyMachineDialog.html">
-                                    <form name="destroyform" ng-submit="cancelDestroy()">
-                                        <div class="modal-header">
-                                            <h3>Destroy machine?</h3>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
-                                            After destroying a machine all data is lost.
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn ok" ng-click="ok()">Ok</button>
-                                            <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
-                                        </div>
-                                    </form>
-                                </script>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+      <!-- TODO machine must be HALTED -->
+        <li ng-show="currentUserAccess != 'Read'">
+                <a ng-click="resize(currentSpace)">
+                    <i class=" fa fa-times-circle-o"></i>
+                    Resize compute capacity
+                </a>
+                <script type="text/ng-template" id="resizeMachineDialog.html">
+                  <form name="destroyform" ng-submit="cancelDestroy()">
+                      <div class="modal-header">
+                          <h3>Resize compute capacity</h3>
+                      </div>
+                      <div class="modal-body">
+                        <div class="inline-block">
+                            <ul class="controls margin-all-none padding-all-none packages">
+                                <li ng-repeat="size in sizes | orderBy:sizepredicate" class="left margin-right-medium">
+                                    <input type="radio" name="packages" value="">
+                                      {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+                                      {[ size.vcpus ]} core(s)
+                                    <br/>
+                                </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-primary ok" ng-click="ok()">Ok</button>
+                          <button type="submit" class="btn" autofocus>Cancel</button>
+                      </div>
+                  </form>
+                </script>
+            </li>
+
+
+            <li ng-show="currentUserAccess == 'Admin' && machine.locked == false">
+                    <a ng-click="destroy()">
+                        <i class=" fa fa-times-circle-o"></i>
+                        Destroy
+                    </a>
+                    <script type="text/ng-template" id="destroyMachineDialog.html">
+                        <form name="destroyform" ng-submit="cancelDestroy()">
+                            <div class="modal-header">
+                                <h3>Destroy machine?</h3>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" value="hiddenmarker" name="hiddencsmarker"/>
+                                After destroying a machine all data is lost.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn ok" ng-click="ok()">Ok</button>
+                                <button type="submit" id="submitdestroyform" class="btn btn-primary" autofocus>Cancel</button>
+                            </div>
+                        </form>
+                    </script>
+                </li>
+            </ul>
+        </div>
+    </div>
             <script type="text/ng-template" id="updateDescription.html">
                                 <form name="form" class="form-horizontal" ng-submit="submit()">
                                     <div class="modal-header">

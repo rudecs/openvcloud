@@ -1,0 +1,11 @@
+<div class="machineList inline-block">
+    <ul class="controls margin-all-none padding-all-none packages">
+        <li ng-repeat="size in sizes | orderBy:sizepredicate">
+            <a href="" ng-model="machine.sizeId" btn-radio="size.id"
+            ng-disabled="!!(size.id*1 < oldMachine.sizeId*1)" class="table-cell package-{[size.id]}" ng-class="{active : $first}" ng-click='activePackage(size.id)'>
+            {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
+            {[ size.vcpus ]} core(s), </br>
+            {[ size.description ]}</a>
+        </li>
+    </ul>
+</div>
