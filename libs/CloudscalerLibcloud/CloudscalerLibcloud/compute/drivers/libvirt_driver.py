@@ -159,10 +159,10 @@ class CSLibvirtNodeDriver():
         devices = dom.find('devices')
         dev = getNextDev(devices)
         disk = ElementTree.Element('disk')
-        disk.attrib['type'] = 'block'
+        disk.attrib['type'] = 'file'
         disk.attrib['device'] = 'disk'
-        ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'native'}
-        ElementTree.SubElement(disk, 'source').attrib = {'dev': volume.id}
+        ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'threads'}
+        ElementTree.SubElement(disk, 'source').attrib = {'file': volume.id}
         ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
         domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ElementTree.tostring(disk), machineid=node.id)
         if domxml is None:
@@ -189,7 +189,7 @@ class CSLibvirtNodeDriver():
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
-            if source.attrib['dev'] == volume.id:
+            if source.attrib.get('dev', source.attrib.get('file')) == volume.id:
                 diskxml = ElementTree.tostring(disk)
                 domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
                 if domxml is None:
