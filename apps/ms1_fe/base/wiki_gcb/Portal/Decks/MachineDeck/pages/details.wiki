@@ -56,19 +56,34 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">CPU</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">
+                                        {[machineinfo.size.vcpus]} 
+                                        <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
+                                        <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'" class="margin-left-medium">
+                                            <i class=" fa fa-times-circle-o"></i>
+                                            Resize
+                                        </a>
+                                    </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">Memory</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">
+                                        {[ numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}
+                                        <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'" class="margin-left-medium">
+                                            <i class=" fa fa-times-circle-o"></i>
+                                            Resize
+                                        </a>
+                                    </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">Storage</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">
+                                        {[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -182,32 +197,31 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     {{html:
       <!-- TODO machine must be HALTED -->
         <li ng-show="currentUserAccess != 'Read'">
-                <a ng-click="resize(currentSpace)">
-                    <i class=" fa fa-times-circle-o"></i>
-                    Resize compute capacity
-                </a>
                 <script type="text/ng-template" id="resizeMachineDialog.html">
-                  <form name="destroyform" ng-submit="cancelDestroy()">
+                  <div>
                       <div class="modal-header">
                           <h3>Resize compute capacity</h3>
                       </div>
                       <div class="modal-body">
-                        <div class="inline-block">
-                            <ul class="controls margin-all-none padding-all-none packages">
-                                <li ng-repeat="size in sizes | orderBy:sizepredicate" class="left margin-right-medium">
-                                    <input type="radio" name="packages" value="">
-                                      {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}  Memory, </br>
-                                      {[ size.vcpus ]} core(s)
-                                    <br/>
-                                </li>
-                            </ul>
-                        </div>
+                            <div class="packages">
+                                <div ng-repeat="size in sizes | orderBy:sizepredicate" class="package"
+                                    ng-click="setPackage(size)">
+                                    <input type="radio" name="packages" value="" id="package-{[$index]}" />
+                                    <label for="package-{[$index]}">
+                                        <span></span>
+                                        <strong>
+                                            {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}
+                                        </strong>  Memory, 
+                                        <strong>{[ size.vcpus ]}</strong> core(s)
+                                    </label>
+                                </div>
+                            </div>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" class="btn btn-primary ok" ng-click="ok()">Ok</button>
-                          <button type="submit" class="btn" autofocus>Cancel</button>
+                          <button type="button" class="btn btn-primary ok" ng-click="ok()" ng-disabled="!selectedPackage">Ok</button>
+                          <button type="submit" class="btn" ng-click="cancel()" autofocus>Cancel</button>
                       </div>
-                  </form>
+                  </div>
                 </script>
             </li>
 

@@ -15,14 +15,15 @@ angular.module('cloudscalers.controllers')
         $scope.clearDisk();
 
         $scope.getMachine = function(){
-            Machine.get($routeParams.machineId).then(function(data) {
-                $scope.machine = data;
-                $timeout(function () {
-                  LoadingDialog.hide();
-                }, 1500);
-                },
-                function(reason) {
-                  LoadingDialog.hide();
+            return Machine
+                .get($routeParams.machineId)
+                .then(function(data) {
+                    $scope.machine = data;
+                    $timeout(function () {
+                        LoadingDialog.hide();
+                    }, 1500);
+                },function(reason) {
+                    LoadingDialog.hide();
                     $ErrorResponseAlert(reason);
                 });
         }
@@ -195,17 +196,31 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('images', updateMachineSize, true);
 
         $scope.resize = function(currentSpace) {
-            var sizes = $scope.sizes;
+            var sizes = $scope.sizes,
+                initialSizeId = $scope.machine.sizeId;
+
             var modalInstance = $modal.open({
                 templateUrl: 'resizeMachineDialog.html',
                 controller: function($scope, $modalInstance){
                     $scope.sizes = sizes;
                     $scope.sizepredicate = 'memory'
                     $scope.numeral = numeral;
-                    $scope.ok = function () {
-                        $modalInstance.close('ok');
+                    $scope.initialSizeId = initialSizeId;
+
+                    $scope.selectedPackage = _.find($scope.sizes, function(size) {
+                        return size.id === $scope.initialSizeId;
+                    });
+
+
+                    $scope.setPackage = function(package) {
+                        $scope.selectedPackage = package;
                     };
-                    $scope.cancelDestroy = function () {
+
+                    $scope.ok = function() {
+                        $modalInstance.close($scope.selectedPackage);
+                    };
+                    
+                    $scope.cancel = function() {
                         $modalInstance.dismiss('cancel');
                     };
                 },
@@ -213,13 +228,21 @@ angular.module('cloudscalers.controllers')
                 }
             });
 
-            modalInstance.result.then(function (result) {
+            modalInstance.result.then(function (size) {
                 LoadingDialog.show('Resizing compute capacity..');
-                // TODO
-                // call Machine.resize
-                // then just $scope.getMachine();
-                // LoadingDialog.hide();
-
+                
+                Machine
+                    .resize($scope.machine.id, size.id)
+                    .then(function() {
+                        return $scope
+                            .getMachine();
+                    })
+                    .then(null, function() {
+                        $ErrorResponseAlert(error);
+                    })
+                    ['finally'](function() {
+                        LoadingDialog.hide();
+                    })
             });
         };
 
