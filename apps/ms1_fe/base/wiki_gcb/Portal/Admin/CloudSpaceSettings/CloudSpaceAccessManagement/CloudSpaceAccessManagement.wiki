@@ -1,18 +1,5 @@
 {{html:
-<script type="text/ng-template" id="demoTemplate.html">
-    <ul ng-show="show" class="szn-autocomplete-results">
-        <li 
-            szn-autocomplete-result
-            ng-repeat="result in results"
-            ng-class="{selected: highlightIndex == $index}">
-            <div>
-                <!-- <span class="wordcount">({[result.wordcount]} words)</span> -->
-                <span view-as-html="result.value | sznAutocompleteBoldMatch:query"></span>
-            </div>
-        </li>
-    </ul>
-</script>
-<form ng-submit="addUser()"  ng-controller="CloudSpaceAccessManagementController" class="relative">
+<form ng-controller="CloudSpaceAccessManagementController" class="relative">
 <div ng-show="shareCloudSpaceMessage" class="txt-center">
     <div class="share-cloudspace-message alert alert-{[shareCloudSpaceStyle]} width-40">{[shareCloudSpaceTxt]}</div>
 </div>
@@ -23,7 +10,10 @@
         <tr class="header" ng-show="currentUserAccessrightOnCloudSpace != 'Read'">
             <th class="username-text-container">
                 <div id="szn-autocomplete-wrap">
-                    <input ng-model="seachQuery" szn-autocomplete="options" placeholder="Search using username or enter email..."  />
+                    <div class="bg form-control"></div>
+                    <input id="searchQuery" ng-model="searchQuery" szn-autocomplete="autocompleteOptions" placeholder="Search usernames or invite by email..." />
+                    <i class="fa fa-times btn-reset-email" ng-show="searchQuery.length" ng-click="resetSearchQuery()">
+                    </i>
                 </div>
             </th>
             <th class="txt-center">
@@ -31,10 +21,20 @@
                     <option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
                 </select>
             </th>
-            <th class="txt-center"><input type="submit" class="btn" value="Add"></input></th>
+            <th class="txt-center actions-col">
+                <button ng-if="!emailMode" type="submit" class="btn" ng-click="addUser()" ng-disabled="!searchQuery.length">
+                    Add
+                </button>
+                <button ng-if="emailMode" type="submit" class="btn" ng-click="inviteUser()">
+                    Invite
+                </button>
+            </th>
         </tr>
         <tr ng-cloak ng-repeat="user in currentSpace.acl">
-            <td>{[user.userGroupId]}</td>
+            <td>
+                {[user.userGroupId]}
+                <strong ng-if="user.status === 'INVITED'" class="text-primary">(Invited)</strong>
+            </td>
             <td class="txt-center">
                 <span ng-switch on="user.right">
                     <span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>

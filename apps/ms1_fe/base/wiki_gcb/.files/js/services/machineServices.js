@@ -241,6 +241,13 @@ angular.module('cloudscalers.services')
                             function(result){ return result.data;},
                             function(reason) { return $q.reject(reason);});
             },
+            inviteUser: function(machineId, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/machines/addExternalUser?machineId=' + machineId +
+                          '&accesstype=' + accessType + '&emailaddress=' + user)
+                    .then(
+                            function(result){ return result.data;},
+                            function(reason) { return $q.reject(reason);});
+            },
             deleteUser: function(machineId, user) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/machines/deleteUser?machineId=' + machineId +
                                  '&userId=' + user)

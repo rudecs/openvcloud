@@ -40,7 +40,17 @@ angular.module('cloudscalers.services')
 											function(reason){return $q.reject(reason);
 											});
             },
-						updateUser: function(accountId, userId, accesstype) {
+            inviteUser: function(accountId, user, accessType) {
+                return $http
+                    .get(cloudspaceconfig.apibaseurl + '/accounts/addExternalUser?accountId=' + accountId +
+                          '&accesstype=' + accessType + '&emailaddress=' + user)
+                    .then(function(result) {
+                        return result.data;
+                    }, function(reason) {
+                        return $q.reject(reason);
+                    });
+            },
+			updateUser: function(accountId, userId, accesstype) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/accounts/updateUser?accountId=' + accountId +
                                  '&userId=' + userId + '&accesstype=' + accesstype)
                     .then(function(result) { return result.data; },

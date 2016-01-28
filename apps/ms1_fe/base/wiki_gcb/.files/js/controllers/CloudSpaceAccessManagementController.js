@@ -1,14 +1,22 @@
 angular.module('cloudscalers.controllers')
-    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Users', '$http','$ErrorResponseAlert','$timeout', '$modal', '$q', function($scope, CloudSpace, Users,$http,$ErrorResponseAlert, $timeout, $modal, $q) {
+    .controller('CloudSpaceAccessManagementController', ['$scope', 'CloudSpace', 'Users', '$http','$ErrorResponseAlert','$timeout', '$modal', function($scope, CloudSpace, Users,$http,$ErrorResponseAlert, $timeout, $modal) {
 
         $scope.shareCloudSpaceMessage = false;
         $scope.accessTypes = CloudSpace.cloudspaceAccessRights();
 
-        function userMessage(message, style) {
+        function userMessage(message, style, resetUser) {
+            if (_.isUndefined(resetUser)) {
+                resetUser = true;
+            }
+
             $scope.shareCloudSpaceMessage = true;
             $scope.shareCloudSpaceStyle = style;
             $scope.shareCloudSpaceTxt = message;
-            $scope.resetUser();
+
+            if (resetUser) {
+                $scope.resetUser();
+            }
+
             $timeout(function () {
                 $scope.shareCloudSpaceMessage = false;
             }, 3000);
@@ -32,26 +40,59 @@ angular.module('cloudscalers.controllers')
         $scope.userError = false;
 
         $scope.addUser = function() {
-            $scope.seachQuery = '';
-
             if ($scope.currentSpace.acl) {
-                var userInAcl = _.find($scope.currentSpace.acl, function(acl) { return acl.userGroupId == $scope.newUser.nameOrEmail; });
-                if( userInAcl ){
+                var userInAcl = _.find($scope.currentSpace.acl, function(acl) {
+                    return acl.userGroupId == $scope.newUser.nameOrEmail; 
+                });
+
+                if (userInAcl) {
                     userMessage($scope.newUser.nameOrEmail + " already have access rights.", 'danger');
-                }else{
-                    CloudSpace.addUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
-                        $scope.loadSpaceAcl().then(function() {
-                            $scope.resetUser();
+                } else {
+                    CloudSpace
+                        .addUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access)
+                        .then(function() {
+                            userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
+
+                            $scope
+                                .loadSpaceAcl()
+                                .then(function() {
+                                    $scope.resetUser();
+                                    $scope.resetSearchQuery();
+                                });
+                        }, function(reason) {
+                            if (reason.status == 404)
+                                userMessage($scope.newUser.nameOrEmail + ' not found', 'danger');
+                            else
+                                $ErrorResponseAlert(reason);
                         });
-                        userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
-                    }, function(reason) {
-                        if (reason.status == 404)
-                            userMessage($scope.newUser.nameOrEmail + ' not found', 'danger');
-                        else
-                            $ErrorResponseAlert(reason);
-                    });
                 }
             }
+        };
+
+        $scope.inviteUser = function() {
+            var alreadyInvited = _.find($scope.currentSpace.acl, function(acl) {
+                return acl.userGroupId == $scope.newUser.nameOrEmail;
+            });
+
+            if (alreadyInvited) {
+                userMessage($scope.newUser.nameOrEmail + ' already invited', 'danger', false);
+                return;
+            }
+            
+            CloudSpace
+                .inviteUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access)
+                .then(function() {
+                    userMessage('Invitation sent successfully to ' + $scope.newUser.nameOrEmail , 'success');
+
+                    $scope
+                        .loadSpaceAcl()
+                        .then(function() {
+                            $scope.resetUser();
+                            $scope.resetSearchQuery();
+                        });
+                }, function(response) {
+                    userMessage(response.data, 'danger', false);                    
+                });
         };
 
         $scope.deleteUser = function(space, user) {
@@ -123,17 +164,31 @@ angular.module('cloudscalers.controllers')
             });
         };
 
-        // directive configuration object
-        $scope.options = {
+        function validateEmail(str) {
+            // reference: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+            var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(str);
+        }
+
+        // autocomplete configuration object
+        $scope.autocompleteOptions = {
             shadowInput: true,
             highlightFirst: true,
             boldMatches: true,
             delay: 0,
-            searchMethod: "search",
-            templateUrl: "demoTemplate.html",
+            searchMethod: 'search',
+            templateUrl: 'autocomplete-result-template.html',
             onSelect: function(item, event) {
-                event.preventDefault();
-                $scope.newUser.nameOrEmail = item.value;
+                event && event.preventDefault();
+     
+                $scope.$apply(function() {
+                    $scope.newUser.nameOrEmail = item.value;
+                });
+            },
+            onEnter: function(event, state) {
+                if (state.popupOpen === true) {
+                    event && event.preventDefault();
+                }
             }
         };
 
@@ -142,29 +197,74 @@ angular.module('cloudscalers.controllers')
          * @param {string} query Input value
          * @param {object} deferred "$q.defer()" object
          */
+        $scope.emailMode = false;
         $scope.search = function (query, deferred) {
-            var url = cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=' + query;
+            CloudSpace
+                .searchAcl(query)
+                .then(function(data) {
+                    // format data
+                    var results = [];
 
-            $http.get(url).success((function (deferred, data) { // send request
-
-                // format data
-                var results = [];
-
-                _.each(data, function(item) {
-                    results.push({
-                        gravatarurl: item.gravatarurl,
-                        value: item.username
+                    _.each(data, function(item) {
+                        results.push({
+                            gravatarurl: item.gravatarurl,
+                            value: item.username
+                        });
                     });
-                });
 
-                results = _.filter(results, function(item) {
-                    return _.isUndefined(_.find($scope.currentSpace.acl, function(user) {
-                        return user.userGroupId == item.value;
-                    }));
-                });
+                    // filter: remove existing users from suggestions
+                    results = _.filter(results, function(item) {
+                        return _.isUndefined(_.find($scope.currentSpace.acl, function(user) {
+                            return user.userGroupId == item.value;
+                        }));
+                    });
 
-                // resolve the deferred object
-                deferred.resolve({results: results});
-            }).bind(this, deferred));
+                    var emailInvited = _.find($scope.currentSpace.acl, function(user) {
+                        return user.userGroupId === query;
+                    });
+
+                    if (results.length === 0 && validateEmail(query) && !emailInvited) {
+                        results.push({
+                            value: query,
+                            validEmail: true
+                        });
+                    } else if (results.length === 0) {
+                        if (emailInvited) {
+                            results.push({
+                                value: '(' + query + ') already invited.',
+                                validEmail: false,
+                                selectable: false
+                            });
+                        } else {
+                            results.push({
+                                value: 'Enter an email to invite...',
+                                validEmail: false,
+                                selectable: false
+                            });
+                        }
+                    }
+
+                    // resolve the deferred object
+                    deferred.resolve({results: results});
+                });
         };
+
+        $scope.resetSearchQuery = function() {
+            $scope.emailMode = false;
+            $scope.searchQuery = '';
+        };
+
+        $scope.$watch('searchQuery', function(searchQuery) {
+            $scope.newUser.nameOrEmail = searchQuery;
+
+            if (_.isUndefined(searchQuery)) {
+                return;
+            }
+
+            if(validateEmail(searchQuery)) {
+                $scope.emailMode = true;
+            } else {
+                $scope.emailMode = false;
+            }
+        });
     }]);

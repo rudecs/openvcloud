@@ -88,3 +88,23 @@ cloudscalers.factory('$ErrorResponseAlert',function($alert){
         }
     }
 });
+
+
+cloudscalers.run(function($templateCache) {
+    $templateCache.put('autocomplete-result-template.html', 
+        '<ul ng-show="show" class="szn-autocomplete-results"> ' +
+            '<li ' +
+                'szn-autocomplete-result ' +
+                'ng-repeat="result in results" ' +
+                'ng-class="{selected: highlightIndex == $index}" ' +
+                'ng-show="results.length"> ' +
+                '<div class="text-left"> ' +
+                    '<img class="gravatar" ng-show="result.gravatarurl" ng-src="{[result.gravatarurl]}" /> ' +
+                    '<span ng-show="!result.validEmail" view-as-html="result.value | sznAutocompleteBoldMatch:query"></span> ' +
+
+                    '<span ng-show="result.validEmail">Invite: <strong>{[result.value]}</strong></span> ' +
+                '</div> ' +
+            '</li> ' +
+        '</ul>'
+    );
+});

@@ -1,6 +1,6 @@
 {{html:
   <h1>Settings for account {[currentAccount.name]}</h1>
-  <form ng-submit="addUser()"  ng-controller="AccountSettingsController" class="relative">
+  <form ng-controller="AccountSettingsController" class="relative">
   <div ng-show="shareAccountMessage" class="txt-center">
       <div class="share-cloudspace-message share-account-message alert alert-{[shareAccountStyle]} width-40">{[shareAccountTxt]}</div>
   </div>
@@ -11,32 +11,47 @@
   <div class="table-responsive margin-top-medium">
       <table class="table users-table">
           <tr class="header" ng-show="currentUserAccessrightOnAccount == 'Admin'">
-              <th class="username-text-container">
-                  <input type="text" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
-              </th>
-              <th class="txt-center">
-                  <select class="access-rights" ng-model="newUser.access" required>
-                      <option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
-                  </select>
-              </th>
-              <th class="txt-center"><input type="submit" class="btn" value="Add"></input></th>
-          </tr>
-          <tr ng-cloak ng-repeat="user in currentAccount.userRightsOnAccount">
-              <td>{[user.userGroupId]}</td>
-              <td class="txt-center">
-                      <span ng-switch on="user.right">
-                          <span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>
-                          <span class="access-right alert alert-warning" ng-switch-when="CRX" style="padding: 3px 7px;"> Read/Write </span>
-                          <span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
-                      </span>
-                  </td>
-              <td class="txt-center" ng-show="currentUserAccessrightOnAccount == 'Admin'">
-                  <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
-                  <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" title="Delete user access"></a>
-              </td>
-          </tr>
-      </table>
-      <script type="text/ng-template" id="deleteUserDialog.html">
+                <th class="username-text-container">
+                    <div id="szn-autocomplete-wrap">
+                        <div class="bg form-control"></div>
+                        <input id="searchQuery" ng-model="searchQuery" szn-autocomplete="autocompleteOptions" placeholder="Search usernames or invite by email..." />
+                        <i class="fa fa-times btn-reset-email" ng-show="searchQuery.length" ng-click="resetSearchQuery()">
+                        </i>
+                    </div>
+                </th>
+                <th class="txt-center">
+                    <select class="access-rights" ng-model="newUser.access" required>
+                        <option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
+                    </select>
+                </th>
+                <th class="txt-center actions-col">
+                    <button ng-if="!emailMode" type="submit" class="btn" ng-click="addUser()" ng-disabled="!searchQuery.length">
+                        Add
+                    </button>
+                    <button ng-if="emailMode" type="submit" class="btn" ng-click="inviteUser()">
+                        Invite
+                    </button>
+                </th>
+            </tr>
+            <tr ng-cloak ng-repeat="user in currentAccount.userRightsOnAccount">
+                <td>
+                    {[user.userGroupId]}
+                    <strong ng-if="user.status === 'INVITED'" class="text-primary">(Invited)</strong>
+                </td>
+                <td class="txt-center">
+                    <span ng-switch on="user.right">
+                        <span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>
+                        <span class="access-right alert alert-warning" ng-switch-when="CRX" style="padding: 3px 7px;"> Read/Write </span>
+                        <span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
+                    </span>
+                </td>
+                <td class="txt-center" ng-show="currentUserAccessrightOnAccount == 'Admin'">
+                    <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
+                    <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" title="Delete user access"></a>
+                </td>
+            </tr>
+        </table>
+        <script type="text/ng-template" id="deleteUserDialog.html">
               <form name="deleteUserform" ng-submit="cancelRemoveUser()">
                   <div class="modal-header">
                       <h3>Remove user access right</h3>

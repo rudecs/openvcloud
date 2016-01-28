@@ -55,6 +55,7 @@
 		highlightFirst: false, 									// automatically highlight the first result in the popup?
 		shadowInput: false, 									// show the shadowInput?
 		onSelect: null, 										// a function, or name of scope function, to call after selection
+		onEnter: null,
 		searchMethod: "getAutocompleteResults", 				// name of scope method to call to get results
 		popupParent: "",										// CSS selector of element in which the results should be appended into (default is parent element of the main input)
 		shadowInputParent: "",									// CSS selector of element in which the shadowInput should be appended into (default is parent element of the main input)
@@ -158,6 +159,10 @@
 	 * @param {object} event
 	 */
 	SznAutocompleteLink.prototype._keydown = function (e) {
+		if (this._options.onEnter && e.keyCode === 13) {
+			this._options.onEnter(e, {popupOpen: this._popupScope.show});
+		}
+
 		if (this.constructor.IGNORED_KEYS.indexOf(e.keyCode) == -1) {
 			if (this.constructor.NAVIGATION_KEYS.indexOf(e.keyCode) != -1) {
 				this._navigate(e);
@@ -282,6 +287,8 @@
 					var item = this._popupScope.results[this._popupScope.highlightIndex];
 					if (item) {
 						this._select(item, e);
+					} else if (this._options.onEnter) {
+						this._options.onEnter(e, {popupOpen: this._popupScope.show});
 					}
 				break;
 				case 38: // UP
@@ -313,6 +320,10 @@
 	 * @param {object} item Scope data of selected item
 	 */
 	SznAutocompleteLink.prototype._select = function (item, event) {
+		if (item.selectable === false) {
+			return;
+		}
+
 		if (item) { this._setValue(item.value); }
 
 		this._$scope.$emit("sznAutocomplete-select", {
@@ -363,6 +374,11 @@
 		}
 
 		var i = this._getMoveIndex(direction);
+
+		if (this._popupScope.results[i].selectable === false) {
+			return;
+		}
+
 		this._highlight(i, true);
 		this._setValue(this._popupScope.results[i].value);
 	};

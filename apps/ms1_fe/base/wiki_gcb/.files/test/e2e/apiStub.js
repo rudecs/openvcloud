@@ -673,6 +673,7 @@ defineApiStub = function ($httpBackend) {
     ];
 
 
+
     var cloudSpace = {
         name: 'Development',
         descr: 'Development machine',
@@ -1074,13 +1075,22 @@ defineApiStub = function ($httpBackend) {
         return [200, '"admin"'];
     });
 
-    var matchingUsernames = [
-        {'gravatarurl': 'http://www.gravatar.com/avatar/9e27b8f31707a720d054a5e4ce097279', 'username': 'admin'},
-        {'gravatarurl': 'http://www.gravatar.com/avatar/fc948c1e0934f72fdaef932028371da0', 'username': 'karim'},
-        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'fernando'},
-        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'friedrich'},
-        {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'anees'}
-      ];
-    $httpBackend.whenGET(/^\/users\/getMatchingUsernames.*/).respond(matchingUsernames);
+    var users = [
+      {'gravatarurl': 'http://www.gravatar.com/avatar/9e27b8f31707a720d054a5e4ce097279', 'username': 'admin'},
+      {'gravatarurl': 'http://www.gravatar.com/avatar/fc948c1e0934f72fdaef932028371da0', 'username': 'karim'},
+      {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'fernando'},
+      {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'friedrich'},
+      {'gravatarurl': 'http://www.gravatar.com/avatar/76a24c11c492aee13ac83c55501334da', 'username': 'anees'}
+    ];
 
+    $httpBackend.whenGET(/^\/users\/getMatchingUsernames.*/).respond(function(method, url, data) {
+      var params = new URI(url).search(true),
+          query = params.usernameregex;
+
+      var results = _.filter(users, function(user) {
+        return user.username.indexOf(query) != -1;
+      });
+
+      return [200, results];
+    });
 };

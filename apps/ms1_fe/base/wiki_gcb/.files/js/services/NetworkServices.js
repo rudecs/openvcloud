@@ -14,7 +14,7 @@ angular.module('cloudscalers.services')
                 }
                 else{
                     if(machineId){
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
                             function(result){
                                 return result.data;
                             },
@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
                             }
                         );
                     }else{
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceI[[[d=' + encodeURIComponent(id)).then(
                             function(result){
                                 return result.data;
                             },
@@ -68,7 +68,7 @@ angular.module('cloudscalers.services')
                     );
             },
             commonports: function() {
-               return [
+               return [[[[
                     {port: '80', name: 'HTTP'},
                     {port: '443', name: 'HTTPS'},
                     {port: '21', name: 'FTP'},
