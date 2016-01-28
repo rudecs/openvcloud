@@ -131,8 +131,10 @@ class cloudapi_accounts(BaseActor):
         result int
 
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method update")
+        account = self.models.account.get(accountId)
+        account.name = name
+        self.models.account.set(account)
+        return True
 
     @authenticator.auth(acl='R')
     @audit()
@@ -149,7 +151,7 @@ class cloudapi_accounts(BaseActor):
         #query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
         #results = self.models.creditbalance.find(ujson.dumps(query))['result']
         #balance = [res['fields'] for res in results]
-        
+
         #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
 
         fields = ['time', 'credit', 'status']

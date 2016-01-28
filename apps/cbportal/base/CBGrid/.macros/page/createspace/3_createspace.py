@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     for location in ccl.location.search({})[1:]:
         locations.append((location['name'], location['locationCode']))
 
-    popup = Popup(id='create_space', header='Create Space', submit_url='/restmachine/cloudbroker/cloudspace/create')
+    popup = Popup(id='create_space', header='Create Cloud Space', submit_url='/restmachine/cloudbroker/cloudspace/create')
     popup.addText('Name', 'name', required=True)
     popup.addText('Username to grant access', 'access', required=True)
     popup.addDropdown('Choose Location', 'location', locations)

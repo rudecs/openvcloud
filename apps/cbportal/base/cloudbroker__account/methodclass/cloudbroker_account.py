@@ -195,13 +195,22 @@ class cloudbroker_account(BaseActor):
         Complete delete an acount from the system
         """
         account = self._checkAccount(accountId)
-        accountId = account['id']
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._delete,
+                            (accountId, reason, kwargs),
+                            {},
+                            'Deleting Account %(name)s' % account,
+                            'Finished deleting Account',
+                            'Failed to delete Account')
+
+    def _delete(self, accountId, reason, kwargs):
+        account = self.models.account.get(accountId)
+        account.status = 'DESTROYING'
+        self.models.account.set(account)
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
-            cloudspacename = cloudspace['name']
-            cloudspaceid = cloudspace['id']
-            j.apps.cloudbroker.cloudspace.destroy(accountId, cloudspaceid, reason, **kwargs)
+            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, **kwargs)
         account = self.models.account.get(accountId)
         account.status = 'DESTROYED'
         self.models.account.set(account)
@@ -218,7 +227,7 @@ class cloudbroker_account(BaseActor):
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        ctx = kwargs["ctx"]
+
         account = self._checkAccount(accountId)
         accountId = account['id']
         user = self._checkUser(username)

@@ -329,7 +329,7 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         auth = authenticator.auth([])
         acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
-        q = {"cloudspaceId": cloudspaceId, "status": {"$ne": "DESTROYED"}}
+        q = {"cloudspaceId": cloudspaceId, "status": {"$nin": ["DESTROYED", "ERROR"]}}
         if 'R' not in acl and 'A' not in acl:
             q['acl.userGroupId'] = user
 
@@ -338,7 +338,7 @@ class cloudapi_machines(BaseActor):
         machines = []
         alldisks = list(itertools.chain(*[m['disks'] for m in results]))
         query = {'$query': {'id': {'$in': alldisks}}, '$fields': ['id', 'sizeMax']}
-        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query)[1:]}
+        disks = {disk['id']: disk.get('sizeMax', 0) for disk in self.models.disk.search(query, size=0)[1:]}
         for res in results:
             size = sum(disks.get(diskid, 0) for diskid in res['disks'])
             res['storage'] = size
@@ -689,7 +689,7 @@ class cloudapi_machines(BaseActor):
         return bool
         """
         return self.addUser(machineId, userId, accessType, **kwargs)
-    
+
     def attachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         for nic in vmachine.nics:
@@ -714,16 +714,32 @@ class cloudapi_machines(BaseActor):
         self.models.vmachine.set(vmachine)
         return True
 
+    @authenticator.auth(acl='U')
+    @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
+    @audit()
+    def resize(self, machineId, sizeId, **kwargs):
+        provider, node, vmachine = self._getProviderAndNode(machineId)
+        bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
+        if len(bootdisks) != 1:
+            raise exceptions.Error('Failed to retreive first disk')
+        bootdisk = self.models.disk.get(bootdisks[0]['id'])
+        size = self.models.size.get(sizeId)
+        providersize = provider.getSize(size, bootdisk)
+        provider.client.ex_resize(node=node, size=providersize)
+        vmachine.sizeId = sizeId
+        self.models.vmachine.set(vmachine)
+        return True
+
     def detachPublicNetwork(self, machineId, **kwargs):
         provider, node, vmachine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         networkid = cloudspace.networkId
-        
+
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
-            
+
             provider.client.detach_public_network(node, networkid)
         self._detachPublicNetworkFromModel(vmachine)
         return True

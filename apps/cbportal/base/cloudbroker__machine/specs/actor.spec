@@ -281,10 +281,16 @@
         """
         var:machineId int,, ID of machine
         result:bool
-        
+
     method:detachPublicNetwork
         """
         Detach from VM from public network
         """
         var:machineId int,, ID of machine
         result:bool
+
+    method:resize
+        """
+        Change memory and vcpu from machine
+        """
+        var:machineId int,, ID of machine
