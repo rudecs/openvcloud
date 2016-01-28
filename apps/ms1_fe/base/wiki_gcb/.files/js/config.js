@@ -1,3 +1,3 @@
 cloudspaceconfig = {
-    apibaseurl: ''
+    apibaseurl: '../../restmachine/cloudapi'
     };
