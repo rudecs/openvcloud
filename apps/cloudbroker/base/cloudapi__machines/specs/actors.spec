@@ -222,7 +222,7 @@
 
     method:updateUser
         """
-        Update user access rights
+        Update user access rights. Returns True only if an actual update has happened.
         """
         var:machineId int,, id of the machineId
         var:userId str,, userid/email for registered users or emailaddress for unregistered users

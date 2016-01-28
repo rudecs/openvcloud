@@ -9,10 +9,12 @@ angular.module('cloudscalers.controllers')
       $scope.registerEmail = queryparams.email;
 
     	Users.isValidInviteUserToken($scope.registerToken, $scope.registerEmail).then(function(result){
-    		$scope.verificationStatus = 'VALIDTOKEN';
+    		$scope.isValidToken = true;
+        $scope.verificationStatus = "";
     	}, function(reason){
+          $scope.isValidToken = false;
     			$scope.verificationStatus = "ERROR";
-          $scope.verificationMessage = reason.data;
+          $scope.verificationMessage = JSON.parse(reason.data);
     	});
 
     	  $scope.registerInvitedUser = function() {
@@ -34,7 +36,7 @@ angular.module('cloudscalers.controllers')
       				},
       				function(reason){
                 $scope.verificationStatus = "ERROR";
-                $scope.verificationMessage = reason.data;
+                $scope.verificationMessage = JSON.parse(reason.data);
       				}
   		      	);
          }

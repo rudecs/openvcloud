@@ -42,14 +42,22 @@ class cloudapi_cloudspaces(BaseActor):
         :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         :return True if user was added successfully
         """
-        user = self.cb.checkUser(userId)
+        user = self.cb.checkUser(userId, activeonly=False)
         if not user:
             raise exceptions.NotFound("User is not registered on the system")
         else:
             # Replace email address with ID
             userId = user['id']
 
-        return self._addACE(cloudspaceId, userId, accesstype, userstatus='CONFIRMED')
+        self._addACE(cloudspaceId, userId, accesstype, userstatus='CONFIRMED')
+        emailaddress = user['emails'][0]
+        try:
+            j.apps.cloudapi.users.sendShareResourceEmail(emailaddress, 'cloudspace', cloudspaceId,
+                                                         accesstype,  userId, user['active'])
+            return True
+        except:
+            self.deleteUser(cloudspaceId, userId, recursivedelete=False)
+            raise
 
     @authenticator.auth(acl={'cloudspace': set('U')})
     @audit()
@@ -88,9 +96,9 @@ class cloudapi_cloudspaces(BaseActor):
         self.cb.isValidRole(accesstype)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        cloudspace_acl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
-        if userId in cloudspace_acl:
-            return self._updateACE(cloudspaceId, userId, accesstype, userstatus)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if userId in cloudspaceacl:
+            raise exceptions.BadRequest('User already has access rights to this cloudspace')
 
         ace = cloudspace.new_acl()
         ace.userGroupId = userId
@@ -121,7 +129,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         if 'account_right' in useracl and set(accesstype) == set(useracl['account_right']):
             # No need to add any access rights as same rights are inherited
-            # Remove cloudspace level access rights if present
+            # Remove cloudspace level access rights if present, cleanup for backwards comparability
             for ace in cloudspace.acl:
                 if ace.userGroupId == userId and ace.type == 'U':
                     cloudspace.acl.remove(ace)
@@ -150,7 +158,7 @@ class cloudapi_cloudspaces(BaseActor):
     @audit()
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Update user access rights
+        Update user access rights. Returns True only if an actual update has happened.
 
         :param cloudspaceId: id of the cloudspace
         :param userId: userid/email for registered users or emailaddress for unregistered users
@@ -334,7 +342,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspaceObject.id)
         cloudspace = {"accountId": cloudspaceObject.accountId,
-                      "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'],
+                      "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "status": ace['status'],
                                "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()],
                       "description": cloudspaceObject.descr,
                       "id": cloudspaceObject.id,
@@ -422,7 +430,7 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name
             cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspace['id'])
-            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'],
+            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "status": ace['status'],
                                   "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':

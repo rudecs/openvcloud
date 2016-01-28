@@ -62,7 +62,7 @@
 
     method:updateUser
         """
-        Update user access rights
+        Update user access rights. Returns True only if an actual update has happened.
         """
         var:cloudspaceId int,, id of the cloudspace
         var:userId str,, userid/email for registered users or emailaddress for unregistered users

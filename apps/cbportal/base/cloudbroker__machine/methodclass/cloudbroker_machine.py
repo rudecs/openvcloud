@@ -1,4 +1,5 @@
 from JumpScale import j
+from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
@@ -444,18 +445,21 @@ class cloudbroker_machine(BaseActor):
         """
         machineId = self._checkMachine(machineId)
         machineId = machineId['id']
-        user = self.cb.checkUser(username)
+        user = self.cb.checkUser(username, activeonly=False)
+
+        vmachineacl = authenticator.auth().getVMachineAcl(machineId)
+        if username in vmachineacl:
+            updated = self.actors.machines.updateUser(machineId, username, accesstype)
+            if not updated:
+                raise exceptions.PreconditionFailed('User already has same access level to owning '
+                                                    'account or cloudspace')
         if user:
-            userId = user['id']
-            added = self.actors.machines.addUser(machineId, userId, accesstype)
+            self.actors.machines.addUser(machineId, username, accesstype)
         elif self.cb.isValidEmailAddress(username):
-            added = self.actors.machines.addExternalUser(machineId, username, accesstype)
+            self.actors.machines.addExternalUser(machineId, username, accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
-        if not added:
-            raise exceptions.PreconditionFailed('User already has same access level to owning '
-                                                'account or cloudspace')
         return True
 
     @auth(['level1', 'level2', 'level3'])

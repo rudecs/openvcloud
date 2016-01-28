@@ -283,22 +283,12 @@ class cloudapi_users(BaseActor):
         :param resourcetype: the type of the resource that will be shared (account,
                              cloudspace, vmachine)
         :param resourceid: the id of the resource that will be shared
-        :param accesstype: 'R' for read only access, 'W' for Write access
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
         :return True if email was was successfully sent
         """
 
         if not re.search('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$', emailaddress):
             raise exceptions.PreconditionFailed('Specified email address is in an invalid format')
-
-        if resourcetype.lower() == 'account':
-            accountobj = self.models.account.get(resourceid)
-            resourcename =  accountobj.name
-        elif resourcetype.lower() == 'cloudspace':
-            cloudspaceobj = self.models.cloudspace.get(resourceid)
-            resourcename = cloudspaceobj.name
-        elif resourcetype.lower() == 'machine':
-            machineobj = self.models.vmachine.get(resourceid)
-            resourcename = machineobj.name
 
         existinginvitationtoken = self.models.inviteusertoken.search({'email': emailaddress})[1:]
 
@@ -315,10 +305,58 @@ class cloudapi_users(BaseActor):
 
         invitationtoken.lastInvitationTime = int(time.time())
         self.models.inviteusertoken.set(invitationtoken)
+        templatename = 'invite_external_users'
+        extratemplateargs = {'invitationtoken': invitationtoken.id}
+        return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
+                                    templatename, extratemplateargs)
 
+    def sendShareResourceEmail(self, emailaddress, resourcetype, resourceid, accesstype,
+                               username, activated=True):
+        """
+        Send an email to a registered users to inform a vmachine, cloudspace, account management
+        has been shared with them
+
+        :param emailaddress: emailaddress of the registered user
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
+        :param username: username of the registered user
+        :param activated: True if user is activated on the system
+        :return True if email was was successfully sent
+        """
+        templatename = 'invite_internal_users'
+        extratemplateargs = {'username': username, 'activated': activated}
+        return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
+                                    templatename, extratemplateargs)
+
+    def _sendShareEmail(self, emailaddress, resourcetype, resourceid, accesstype, templatename,
+                        extratemplateargs=None):
+        """
+
+        :param emailaddress: emailaddress of the registered user
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
+        :param templatename: name of the template to be used for sending the email (templates are
+            located under cloudbroker/email/users/)
+        :param extratemplateargs: optional extra arguments to be passed to the template
+        :return: True if email was was successfully sent
+        """
         # Build up message subject, body and send it
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         toaddrs = [emailaddress]
+
+        if resourcetype.lower() == 'account':
+            accountobj = self.models.account.get(resourceid)
+            resourcename =  accountobj.name
+        elif resourcetype.lower() == 'cloudspace':
+            cloudspaceobj = self.models.cloudspace.get(resourceid)
+            resourcename = cloudspaceobj.name
+        elif resourcetype.lower() == 'machine':
+            machineobj = self.models.vmachine.get(resourceid)
+            resourcename = machineobj.name
 
         if set(accesstype) == set('ARCXDU'):
             accessrole = 'Admin'
@@ -332,18 +370,21 @@ class cloudapi_users(BaseActor):
 
         args = {
             'email': emailaddress,
-            'invitationtoken': invitationtoken.id,
             'resourcetype': resourcetype,
             'resourcename': resourcename,
+            'resourceid': resourceid,
             'accessrole': accessrole,
             'portalurl': j.apps.cloudapi.locations.getUrl(),
             'emailaddress': emailaddress
         }
 
-        body = j.core.portal.active.templates.render(
-                'cloudbroker/email/users/invite_external_users.html', **args)
+        if extratemplateargs:
+            args.update(extratemplateargs)
+
         subject = j.core.portal.active.templates.render(
-                'cloudbroker/email/users/invite_external_users.subject.txt', **args)
+                'cloudbroker/email/users/%s.subject.txt' % templatename, **args)
+        body = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/%s.html' % templatename, **args)
 
         j.clients.email.send(toaddrs, fromaddr, subject, body)
 

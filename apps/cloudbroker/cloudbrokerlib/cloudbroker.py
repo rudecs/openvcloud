@@ -241,14 +241,18 @@ class CloudBroker(object):
         models.stack.set(stack)
         return len(new_images_ids)
 
-    def checkUser(self, username):
+    def checkUser(self, username, activeonly=True):
         """
         Check if a user exists with the given username or email address
+
         :param username: username or emailaddress of the user
+        :param activeonly: only return activated users if set to True
         :return: User if found
         """
-        users = self.syscl.user.search({'$or': [{'id': username}, {'emails': username}],
-                                        'active': True})[1:]
+        query = {'$or': [{'id': username}, {'emails': username}]}
+        if activeonly:
+            query['active'] = True
+        users = self.syscl.user.search(query)[1:]
         if users:
             return users[0]
         else:

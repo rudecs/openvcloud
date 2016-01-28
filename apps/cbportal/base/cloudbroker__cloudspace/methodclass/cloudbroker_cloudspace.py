@@ -1,5 +1,5 @@
 from JumpScale import j
-import JumpScale.grid.osis
+from cloudbrokerlib import authenticator
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
@@ -219,18 +219,21 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspace = self._checkCloudspace(cloudspaceId)
         cloudspaceId = cloudspace['id']
-        user = self.cb.checkUser(username)
-        if user:
-            userId = user['id']
-            added = self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
+        user = self.cb.checkUser(username, activeonly=False)
+
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if username in cloudspaceacl:
+            updated = self.cloudspaces_actor.updateUser(cloudspaceId, username, accesstype)
+            if not updated:
+                raise exceptions.PreconditionFailed('User already has same access level to owning '
+                                                    'account')
+        elif user:
+            self.cloudspaces_actor.addUser(cloudspaceId, username, accesstype)
         elif self.cb.isValidEmailAddress(username):
-            added = self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
+            self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
-        if not added:
-            raise exceptions.PreconditionFailed('User already has same access level to owning '
-                                                'account')
         return True
 
     @auth(['level1', 'level2', 'level3'])
