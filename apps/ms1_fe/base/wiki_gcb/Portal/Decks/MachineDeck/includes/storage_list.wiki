@@ -2,7 +2,7 @@
 	<ul class="storage-size-list inline-block margin-all-none padding-all-none">
 		<em ng-show="(machine.disks | filter:isDataDisk).length == 0">Machine hasn't data disks.</em>
 		<li ng-repeat="disk in machine.disks | filter:isDataDisk" class="disk-container relative">
-		 	<div class="disk-control-bar clearfix">
+		 	<div class="disk-control-bar clearfix" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.accpunt > 1">
 		 		<span class="disk-control detach right margin-left-medium" title="Remove disk" ng-click="removeDisk(disk)"><i class="fa fa-minus-circle"></i></span>
 		 		<span class="disk-control right margin-left-medium" title="Move disk" ng-click="moveDisk(disk, currentSpace, machine)"><i class="fa fa-share"></i></span>
 		 	</div>

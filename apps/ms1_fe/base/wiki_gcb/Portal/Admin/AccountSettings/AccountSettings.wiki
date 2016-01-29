@@ -5,12 +5,12 @@
       <div class="share-cloudspace-message share-account-message alert alert-{[shareAccountStyle]} width-40">{[shareAccountTxt]}</div>
   </div>
   <div class="margin-top-large block padding-top-large">
-    <em ng-show="currentUserAccessrightOnAccount == 'Admin'">Provide other users access to your account by adding their OpenvCloud user name.</em>
-    <em ng-show="currentUserAccessrightOnAccount != 'Admin'">Users access to account {[currentAccount.name]}.</em>
+    <em ng-show="currentUser.acl.account == 3">Provide other users access to your account by adding their OpenvCloud user name.</em>
+    <em ng-show="currentUser.acl.account < 3">Users access to account {[currentAccount.name]}.</em>
   </div>
   <div class="table-responsive margin-top-medium">
       <table class="table users-table">
-          <tr class="header" ng-show="currentUserAccessrightOnAccount == 'Admin'">
+          <tr class="header" ng-show="currentUser.acl.account == 3">
                 <th class="username-text-container">
                     <div id="szn-autocomplete-wrap">
                         <div class="bg form-control"></div>
@@ -45,7 +45,7 @@
                         <span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
                     </span>
                 </td>
-                <td class="txt-center" ng-show="currentUserAccessrightOnAccount == 'Admin'">
+                <td class="txt-center" ng-show="currentUser.acl.account == 3">
                     <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
                     <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" title="Delete user access"></a>
                 </td>

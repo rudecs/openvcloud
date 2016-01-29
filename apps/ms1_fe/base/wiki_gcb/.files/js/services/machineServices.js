@@ -225,7 +225,10 @@ angular.module('cloudscalers.services')
             },
             getHistory: function(machineId) {
                 var url = cloudspaceconfig.apibaseurl + '/machines/getHistory?size=100&machineId=' + machineId;
-                return $http.get(url);
+                return $http.get(url).then(function(result) {
+                    return result.data; },
+                      function(reason) {
+                        return $q.reject(reason); });
             },
             deleteTemplate: function(templateIndex) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)

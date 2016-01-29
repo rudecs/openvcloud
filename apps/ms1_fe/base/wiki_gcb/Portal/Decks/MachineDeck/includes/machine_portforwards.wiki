@@ -3,7 +3,7 @@
 </div>
 <div ng-controller="PortforwardingController">
 	<div>
-		<button ng-show="currentUserAccess != 'Read'" class="btn btn-info margin-bottom-medium" ng-click="portForwardPopup()" ng-disabled="currentSpace.status != 'DEPLOYED'">
+		<button ng-show="currentUser.acl.machine > 1" class="btn btn-info margin-bottom-medium" ng-click="portForwardPopup()" ng-disabled="currentSpace.status != 'DEPLOYED'">
 	        <i class="fa fa-plus"></i>
 		    Add
 	    </button>
@@ -19,11 +19,11 @@
 			<tbody>
 				<tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
 					<td class="hidden">{[portforward.id]}</td>
-					<td ng-class="{'cursor-pointer': currentUserAccess != 'Read'}">{[portforward.publicIp]}</td>
-					<td ng-class="{'cursor-pointer': currentUserAccess != 'Read'}">{[portforward.publicPort]}</td>
-					<td ng-class="{'cursor-pointer': currentUserAccess != 'Read'}">{[portforward.vmName]}</td>
-					<td ng-class="{'cursor-pointer': currentUserAccess != 'Read'}">{[portforward.localPort]}</td>
-					<td ng-class="{'cursor-pointer': currentUserAccess != 'Read'}">{[portforward.protocol]}</td>
+					<td ng-class="{'cursor-pointer': currentUser.acl.machine > 1}">{[portforward.publicIp]}</td>
+					<td ng-class="{'cursor-pointer': currentUser.acl.machine > 1}">{[portforward.publicPort]}</td>
+					<td ng-class="{'cursor-pointer': currentUser.acl.machine > 1}">{[portforward.vmName]}</td>
+					<td ng-class="{'cursor-pointer': currentUser.acl.machine > 1}">{[portforward.localPort]}</td>
+					<td ng-class="{'cursor-pointer': currentUser.acl.machine > 1}">{[portforward.protocol]}</td>
 				</tr>
 			</tbody>
 		</table>

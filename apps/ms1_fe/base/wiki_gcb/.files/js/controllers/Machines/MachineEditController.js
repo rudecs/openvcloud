@@ -119,14 +119,14 @@ angular.module('cloudscalers.controllers')
             if(acl === undefined ) {
                 return;
             }
-            if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
+            if($scope.currentUser.username && $scope.machine.acl){
                 var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
                 if(currentUserAccessright == "R"){
-                    $scope.currentUserAccess = 'Read';
-                }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
-                    $scope.currentUserAccess = "ReadWrite";
-                }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
-                    $scope.currentUserAccess = "Admin";
+                    $scope.currentUser.acl.machine = 1;
+                }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
+                    $scope.currentUser.acl.machine = 2;
+                }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
+                    $scope.currentUser.acl.machine = 3;
                 }
             }
         }, true);
@@ -371,7 +371,7 @@ angular.module('cloudscalers.controllers')
         var CreateTemplateController= function ($scope, $modalInstance) {
 
             $scope.createtemplate ={name: ''};
-            $scope.$watch('currentUserAccessrightOnAccount', function(){});
+
             $scope.ok = function () {
                     $modalInstance.close($scope.createtemplate.name);
             };

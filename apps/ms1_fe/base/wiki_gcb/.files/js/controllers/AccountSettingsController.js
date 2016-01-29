@@ -18,7 +18,7 @@ angular.module('cloudscalers.controllers')
             $scope.shareAccountMessage = true;
             $scope.shareAccountStyle = style;
             $scope.shareAccountTxt = message;
-            
+
             if (resetUser) {
               $scope.resetUser();
             }
@@ -51,9 +51,6 @@ angular.module('cloudscalers.controllers')
               }
             });
         };
-
-        // TODO: this watcher should be removed.
-        $scope.$watch('currentUserAccessrightOnAccount', function(){});
 
         $scope.resetUser();
         $scope.userError = false;
@@ -106,7 +103,7 @@ angular.module('cloudscalers.controllers')
                     $scope.resetSearchQuery();
                     userMessage('Invitation sent successfully to ' + $scope.newUser.nameOrEmail , 'success');
                 }, function(response) {
-                    userMessage(response.data, 'danger', false);                    
+                    userMessage(response.data, 'danger', false);
                 });
         };
 
@@ -187,7 +184,7 @@ angular.module('cloudscalers.controllers')
                 return user.userGroupId;
             });
         };
-        
+
         function validateEmail(str) {
             // reference: http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
             var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -204,7 +201,7 @@ angular.module('cloudscalers.controllers')
             templateUrl: 'autocomplete-result-template.html',
             onSelect: function(item, event) {
                 event && event.preventDefault();
-     
+
                 $scope.$apply(function() {
                     $scope.newUser.nameOrEmail = item.value;
                 });

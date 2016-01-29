@@ -68,7 +68,7 @@ angular.module('cloudscalers.services')
                     );
             },
             commonports: function() {
-               return [[[[
+               return [
                     {port: '80', name: 'HTTP'},
                     {port: '443', name: 'HTTPS'},
                     {port: '21', name: 'FTP'},

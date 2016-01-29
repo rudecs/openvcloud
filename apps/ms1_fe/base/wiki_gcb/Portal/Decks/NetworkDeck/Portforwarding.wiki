@@ -14,7 +14,7 @@
 		</div>
 		<div class="hide" ng-class="{ 'show': portforwardLoader == false }">
 			<div class="margin-bottom-small">
-				<button ng-show="currentUserAccessrightOnCloudSpace != 'Read'" class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED' && currentUserAccessrightOnCloudSpace != 'Admin'" ng-click="portForwardPopup()">Add</button>
+				<button ng-show="currentUser.acl.cloudspace > 1" class="btn btn-info btn-large absolute position-top-small position-right-medium" ng-class="{marginTopXlarge: currentSpace.status != 'DEPLOYED'}" ng-disabled="currentSpace.status != 'DEPLOYED' && currentUser.acl.cloudspace > 1" ng-click="portForwardPopup()">Add</button>
 			</div>
 			<div class="table-responsive">
 			<table class="table table-striped table-bordered" ng-show="portforwardLoader == false" ng-class="{opacity4: currentSpace.status != 'DEPLOYED'}">
@@ -28,11 +28,11 @@
 				<tbody>
 					<tr ng-click="tableRowClicked(portforward)" ng-repeat="portforward in portforwarding | orderBy:predicate:reverse | groupBy:'ip' | groupBy:'vmName'">
 						<td class="hidden">{[portforward.id]}</td>
-						<td ng-class="{'cursor-pointer': currentUserAccessrightOnCloudSpace != 'Read'}">{[portforward.publicIp]}</td>
-						<td ng-class="{'cursor-pointer': currentUserAccessrightOnCloudSpace != 'Read'}">{[portforward.publicPort]}</td>
-						<td ng-class="{'cursor-pointer': currentUserAccessrightOnCloudSpace != 'Read'}">{[portforward.vmName]}</td>
-						<td ng-class="{'cursor-pointer': currentUserAccessrightOnCloudSpace != 'Read'}">{[portforward.localPort]}</td>
-						<td ng-class="{'cursor-pointer': currentUserAccessrightOnCloudSpace != 'Read'}">{[portforward.protocol]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.publicIp]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.publicPort]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.vmName]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.localPort]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.protocol]}</td>
 					</tr>
 				</tbody>
 			</table>

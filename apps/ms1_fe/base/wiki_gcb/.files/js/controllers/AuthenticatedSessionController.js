@@ -22,6 +22,7 @@ angular.module('cloudscalers.controllers')
         function autoLogin(username) {
             User.portalLogin(username, portal_session_cookie);
             $scope.currentUser = User.current();
+            $scope.currentUser.acl = {account: 0, cloudspace: 0, machine: 0};
             $scope.currentSpace = CloudSpace.current();
             $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
         }
@@ -39,13 +40,12 @@ angular.module('cloudscalers.controllers')
         $scope.setCurrentAccount = function(){
             if($scope.currentSpace){
                 Account.get($scope.currentAccount.id).then(function(account) {
-                    $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: account.acl,userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
+                    $scope.currentAccount.userRightsOnAccount = account.acl;
                 }, function(reason){
                   if(reason.status != 403){
                     $ErrorResponseAlert(reason);
                   }
-                  $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: {},userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
-                  $scope.currentUserAccessrightOnAccount = "NoAccessOnAccount";
+                  $scope.currentAccount.userRightsOnAccount = {};
                 });
             }
         };
@@ -92,14 +92,12 @@ angular.module('cloudscalers.controllers')
               if(userInCurrentAccount){
                   var currentUserAccessrightOnAccount = userInCurrentAccount.right.toUpperCase();
                   if(currentUserAccessrightOnAccount == "R"){
-                      $scope.currentUserAccessrightOnAccount = 'Read';
-                  }else if( currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') == -1 && currentUserAccessrightOnAccount.indexOf('U') == -1){
-                      $scope.currentUserAccessrightOnAccount = "ReadWrite";
-                  }else if(currentUserAccessrightOnAccount.indexOf('R') != -1 && currentUserAccessrightOnAccount.indexOf('C') != -1 && currentUserAccessrightOnAccount.indexOf('X') != -1 && currentUserAccessrightOnAccount.indexOf('D') != -1 && currentUserAccessrightOnAccount.indexOf('U') != -1){
-                      $scope.currentUserAccessrightOnAccount = "Admin";
+                      $scope.currentUser.acl.account = 1;
+                  }else if(currentUserAccessrightOnAccount.search(/R|C|X/) != -1 && currentUserAccessrightOnAccount.search(/D|U/) == -1){
+                    $scope.currentUser.acl.account = 2;
+                  }else if(currentUserAccessrightOnAccount.search(/R|C|X|D|U/) != -1 ){
+                      $scope.currentUser.acl.account = 3;
                   }
-              }else{
-                $scope.currentUserAccessrightOnAccount = "NoAccessOnAccount";
               }
           }
         };
@@ -130,11 +128,11 @@ angular.module('cloudscalers.controllers')
                     if(currentUserAccessright){
                         currentUserAccessright = currentUserAccessright.right.toUpperCase();
                         if(currentUserAccessright == "R"){
-                            $scope.currentUserAccessrightOnCloudSpace = 'Read';
-                        }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
-                            $scope.currentUserAccessrightOnCloudSpace = "ReadWrite";
-                        }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
-                            $scope.currentUserAccessrightOnCloudSpace = "Admin";
+                            $scope.currentUser.acl.cloudspace = 1;
+                        }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
+                            $scope.currentUser.acl.cloudspace = 2;
+                        }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
+                            $scope.currentUser.acl.cloudspace = 3;
                         }
                     }
                 }

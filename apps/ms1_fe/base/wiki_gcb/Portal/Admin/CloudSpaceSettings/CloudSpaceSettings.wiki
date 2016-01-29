@@ -29,7 +29,7 @@
           				<span class="block margin-top-small txt-13">{[currentLocation.name]}</span>
           			</div>
         		</div>
-				<br><button class="btn margin-top-large clear-both block" ng-click="deleteCloudspace()" ng-show="currentUserAccessrightOnCloudSpace == 'Admin'"><i class="fa fa-trash"></i> Delete Cloud Space</button>
+				<br><button class="btn margin-top-large clear-both block" ng-click="deleteCloudspace()" ng-show="currentUser.acl.cloudspace == 3"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
 						<div class="modal-header">
