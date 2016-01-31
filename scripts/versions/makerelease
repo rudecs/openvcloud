@@ -1,0 +1,163 @@
+#!/usr/bin/env jspython
+help = """jspython makerelease --release-version <version>
+
+This script makes some assumptions
+
+We always release a x.y.z version which is a tag based on branch x.y
+
+7.0 on JumpScale -> 2.0 on OpenvCloud they move together.
+"""
+from JumpScale import j
+from optparse import OptionParser
+import itertools
+import fnmatch
+import os
+
+parser = OptionParser(help)
+
+parser.add_option("-r", "--release-version", dest="version", help="Version to make release for")
+parser.add_option("-d", "--delete-release", dest="delete", action='store_true', help="Delete release")
+parser.add_option("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
+(options, args) = parser.parse_args()
+
+REPOS = {'openvcloud': ['/opt/code/git/0-complexity/openvcloud'],
+         'jumpscale': ['/opt/code/github/jumpscale/jumpscale_core7',
+                       '/opt/code/github/jumpscale/jumpscale_portal']
+         }
+AYS = {'openvcloud': '/opt/code/git/0-complexity/openvcloud_ays',
+       'jumpscale': '/opt/code/github/jumpscale/ays_jumpscale7'}
+
+def getRepoInfo(url):
+    domain, type_, account, repo, localpath, url = j.do.getGitRepoArgs(url)
+    return type_, account.lower(), repo.rstrip('.git').lower()
+
+def getServicesFiles(path):
+    matches = []
+    for root, dirnames, filenames in os.walk(path):
+        for filename in fnmatch.filter(filenames, 'service.hrd'):
+            matches.append(os.path.join(root, filename))
+
+    return matches
+
+def freeze(export, target):
+    for key, value in target.iteritems():
+        if export.get(key):
+            export.pop(key)
+
+        if value:
+            export[key] = value
+
+    return export
+
+
+def changeversion(aysrepo, targets):
+    repoinfo = (repo.type, repo.account, repo.name)
+    services = getServicesFiles(repo.baseDir)
+
+    for service in services:
+        hrd = j.core.hrd.get(service)
+        exports = hrd.getDictFromPrefix('git.export')
+
+        for index in exports:
+            export = exports[index]
+            repoinfo = getRepoInfo(export['url'])
+            target = targets.get(repoinfo)
+            if target:
+                export = freeze(export, target)
+                hrd.set('git.export.%s' % index, export)
+                hrd.save()
+
+
+def getVersions(type):
+    major, minor, release = options.version.split('.')
+    if type == 'jumpscale':
+        branch, tag = (str(int(major) + 5), minor), (str(int(major) + 5), minor, release)
+    else:
+        branch, tag = (major, minor), (major, minor, release)
+    return '.'.join(branch), '.'.join(tag)
+
+def getTagTargets():
+    targets = {}
+    for type, repos in REPOS.iteritems():
+        for path in repos:
+            _, tagname = getVersions(type)
+            repo = j.clients.git.get(path)
+            targets[repo.type, repo.account, repo.name] = {'tag': tagname, 'revision': '', 'branch': ''}
+    return targets
+
+def getBranchTargets():
+    targets = {}
+    for type, repos in REPOS.iteritems():
+        for path in repos:
+            branchname, _ = getVersions(type)
+            repo = j.clients.git.get(path)
+            targets[repo.type, repo.account, repo.name] = {'tag': '', 'revision': '', 'branch': branchname}
+    return targets
+
+def make_tag(repo, tagname):
+    print '[+]   Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name)))
+    for tag in repo.repo.tags:
+        if tag.name == tagname:
+            if options.force:
+                repo.repo.git.tag('-d', tagname)
+                break
+            else:
+                return False
+    repo.repo.git.tag(tagname)
+    return True
+
+def tag_exists(repo, tag):
+    for tag in repo.repo.tags:
+        if tag.name == tagname:
+            return True
+    return False
+
+
+if not options.delete:
+# validate version
+    for type, path in AYS.iteritems():
+        branchname, tagname = getVersions(type)
+        repo = j.clients.git.get(path)
+        if tag_exists(repo, tagname) and not options.force:
+            print '[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name)))
+            j.application.stop(1)
+
+    for type, repos in REPOS.iteritems():
+        for path in repos:
+            branchname, tagname = getVersions(type)
+            repo = j.clients.git.get(path)
+            print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
+            repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
+            repo.repo.git.checkout(branchname)
+            make_tag(repo, tagname)
+            print '[+] Pushing tag %s' % tagname
+            repo.repo.git.push('--tags')
+
+    for type, path in AYS.iteritems():
+        branchname, tagname = getVersions(type)
+        repo = j.clients.git.get(path)
+        print '[+] Making release on repo %s/%s' % (repo.account, repo.name)
+        repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
+        repo.repo.git.checkout(branchname)
+        changeversion(repo, getTagTargets())
+        repo.commit('Tagging %s' % tagname)
+        make_tag(repo, tagname)
+        changeversion(repo, getBranchTargets())
+        repo.commit('Putting on branch %s' % branchname)
+        print '[+]   Pushing'
+        repo.repo.git.push()
+        repo.repo.git.push('--tags')
+else:
+    for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
+        if isinstance(repos, basestring):
+            repos = [ repos ]
+        for path in repos:
+            branchname, tagname = getVersions(type)
+            repo = j.clients.git.get(path)
+            print '[+] Change repo %s/%s' % (repo.account, repo.name)
+            print '[+]   Deleting local tag %s' % tagname
+            if tag_exists(repo, tagname):
+                repo.repo.git.tag('-d', tagname)
+            print '[+]   Deleting remote tag %s' % tagname
+            repo.repo.git.push('origin', ':refs/tags/%s' % tagname)
+

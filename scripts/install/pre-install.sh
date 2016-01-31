@@ -36,8 +36,16 @@ REMOTEADDR="$1"
 
 BOOTSTRAP="http://${REMOTEADDR}:5000"
 
-echo "[+] updating"
-apt-get update
+LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
+LASTUNIX=$(date --date "$LASTTIME" +%s)
+echo "[+] last apt-get update: $LASTTIME"
+
+if [ $LASTUNIX -gt $(($(date +%s) - (3600 * 6))) ]; then
+	echo "[+] skipping system update"
+else
+	echo "[+] updating system"
+	apt-get update
+fi
 
 if [ ! -d /opt/jumpscale7 ]; then
 	echo "[+] installing Jumpscale"
@@ -51,12 +59,14 @@ if [ $? == 1 ]; then
 	echo "[+] configuring atyourservice"
 	echo "metadata.openvcloud            =" >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 	echo "    url:'https://git.aydo.com/0-complexity/openvcloud_ays'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+    if [ -n "$OVCBRANCH" ]; then
+        echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+    fi
 else
 	echo "[+] atyourservice already configured"
 fi
 
 echo "[+] setting up username/password"
-# FIXME
 jsconfig hrdset -n whoami.git.login -v "ssh"
 jsconfig hrdset -n whoami.git.passwd -v "ssh"
 
@@ -69,7 +79,7 @@ echo "    StrictHostKeyChecking no" >> /root/.ssh/config
 echo "" >> /root/.ssh/config
 
 echo "[+] loading settings"
-HOST=$(hostname)
+HOST=$(hostname -s)
 
 # Note: need to be prefixed by 10# otherwise
 # evaluation will fail on 8 and 9 (octal value)

@@ -61,7 +61,11 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('currentSpace.id',function(){
           if($scope.currentSpace){
             $scope.updateMachineList();
-            $scope.sizes = Size.list($scope.currentSpace.id);
+            Size.list($scope.currentSpace.id).then(function(sizes){
+              $scope.sizes = sizes;
+            },function(reason){
+              $ErrorResponseAlert(reason);
+            });
           }
         });
 

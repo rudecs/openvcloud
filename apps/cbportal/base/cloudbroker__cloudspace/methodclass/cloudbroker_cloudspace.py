@@ -1,6 +1,7 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
 from JumpScale.portal.portal import exceptions
@@ -33,15 +34,27 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = cloudspaces[0]
 
-        status = cloudspace['status']
-        cloudspace['status'] = 'DESTROYED'
-        self.models.cloudspace.set(cloudspace)
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._destroy,
+                            args=(cloudspace, reason, ctx),
+                            kwargs={},
+                            title='Deleting Cloud Space',
+                            success='Finished deleting Cloud Space',
+                            error='Failed to delete Cloud Space')
 
+    def _destroy(self, cloudspace, reason, ctx):
+        status = cloudspace['status']
+        cloudspace['status'] = 'DESTROYING'
+        self.models.cloudspace.set(cloudspace)
+        cloudspace['status'] = 'DESTROYED'
+        title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             #delete machines
-            for machine in self.models.vmachine.simpleSearch({'cloudspaceId':cloudspaceId}):
+            machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+            for idx, machine in enumerate(machines):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
+                    ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
@@ -50,7 +63,8 @@ class cloudbroker_cloudspace(BaseActor):
 
         #delete routeros
         gid = cloudspace['gid']
-        self._destroyVFW(gid, cloudspaceId)
+        ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
+        self._destroyVFW(gid, cloudspace['id'])
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
         if cloudspace['publicipaddress']:
@@ -70,6 +84,7 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Moving Virtual Firewall', 'Finished moving VFW', 'Failed to move VFW')
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNid, **kwargs):
         """
         move the virtual firewall of a cloudspace to a different firewall node
@@ -104,6 +119,7 @@ class cloudbroker_cloudspace(BaseActor):
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):
         """
         Deploy VFW 
@@ -117,6 +133,7 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    @async('Redeploying Cloud Space', 'Finished redeploying Cloud Space', 'Failed to redeploy Cloud Space')
     def resetVFW(self, cloudspaceId, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
@@ -127,7 +144,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         self.destroyVFW(cloudspaceId, **kwargs)
-        return self.cloudspaces_actor.deploy(cloudspaceId)
+        self.cloudspaces_actor.deploy(cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

@@ -1,91 +1,81 @@
 from JumpScale import j
 
 descr = """
-Libvirt script to create a machine
+Libvirt script to create template
 """
 
 name = "createtemplate"
 category = "libvirt"
 organization = "cloudscalers"
-author = "hendrik@awingu.com"
+author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
 roles = []
 async = True
 
 
-def action(machineid, templatename, imageid, createfrom):
+def action(machineid, templatename, imageid, sourcepath, pmachineip):
     import sys
-    import os
+    import math
     import time
     sys.path.append('/opt/OpenvStorage')
     from ovs.lib.vdisk import VDiskController
     from ovs.dal.lists.vdisklist import VDiskList
     from ovs.dal.lists.vpoollist import VPoolList
-    from ovs.dal.hybrids.vdisk import VDisk
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
-    from CloudscalerLibcloud import imageutil
-    connection = LibvirtUtil()
-    filename = '%s_%s.raw' % (name, time.time())
-    # create disk in ovs model so we dont get double disks
-    vdisk = VDisk()
-    vdisk.devicename = 'templates/%s' % filename
-    vdisk.vpool = VPoolList.get_vpool_by_name('vmstor')
-    vdisk.size = 0
-    vdisk.save()
+    from ovs.lib.vdisk import VDiskController, PMachineList
+    pmguid = PMachineList.get_by_ip(pmachineip).guid
+    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil, lockDomain, unlockDomain
+    pool = VPoolList.get_vpool_by_name('vmstor')
 
     # clone disk
+    lockDomain(machineid)
     try:
-        imagepath = connection.exportToTemplate(machineid, templatename, createfrom, filename)
-        size = int(j.system.platform.qemu_img.info(imagepath, unit='')['virtual size'])
-        fd = os.open(imagepath, os.O_RDWR | os.O_CREAT)
-        os.ftruncate(fd, size)
-        os.close(fd)
-    except:
-        vdisk.delete()
-        raise
+        diskpath = sourcepath.replace('/mnt/vmstor/', '')
+        sourcedisk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        devicename = '%s' % int(time.time())
+        newdiskdata = VDiskController.clone(sourcedisk.guid, None, devicename, pmachineguid=pmguid, machinename='templates/custom')
+        VDiskController.set_as_template(newdiskdata['diskguid'])
+        templateguid = newdiskdata['diskguid'].replace('-', '')
+        location = newdiskdata['backingdevice']
 
-    # set disks as template in ovs
-    imagebasename = j.system.fs.getBaseName(imagepath)
-    diskguid = imageutil.setAsTemplate(imagebasename).replace('-', '')
+        # update our model
+        osiscl = j.clients.osis.getByInstance('main')
+        imagemodel = j.clients.osis.getCategory(osiscl, 'cloudbroker', 'image')
+        image = imagemodel.get(imageid)
+        image.referenceId = templateguid
+        image.status = 'CREATED'
+        imagemodel.set(image)
 
-    # update our model
-    osiscl = j.clients.osis.getByInstance('main')
-    imagemodel = j.clients.osis.getCategory(osiscl, 'cloudbroker', 'image')
-    image = imagemodel.get(imageid)
-    image.referenceId = diskguid
-    image.status = 'CREATED'
-    imagemodel.set(image)
+        catimageclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'image')
+        catresourceclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'resourceprovider')
 
-    catimageclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'image')
-    catresourceclient = j.clients.osis.getCategory(osiscl, 'libvirt', 'resourceprovider')
+        installed_images = catimageclient.list()
+        if templateguid not in installed_images:
+            cimage = dict()
+            cimage['name'] = templatename
+            cimage['id'] = templateguid
+            cimage['UNCPath'] = location
+            cimage['type'] = 'Custom Templates'
+            cimage['size'] = int(math.ceil(sourcedisk.size / (1024 ** 3)))
+            catimageclient.set(cimage)
 
-    imagename = j.system.fs.getBaseName(imagepath)
-    installed_images = catimageclient.list()
-    if diskguid not in installed_images:
-        cimage = dict()
-        cimage['name'] = templatename
-        cimage['id'] = diskguid
-        cimage['UNCPath'] = imagename
-        cimage['type'] = 'Custom Templates'
-        cimage['size'] = 0
-        catimageclient.set(cimage)
-
-    # register node if needed and update images on it
-    nodekey = "%(gid)s_%(nid)s" % j.application.whoAmI._asdict()
-    if not catresourceclient.exists(nodekey):
-        rp = dict()
-        rp['cloudUnitType'] = 'CU'
-        rp['id'] = j.application.whoAmI.nid
-        rp['gid'] = j.application.whoAmI.gid
-        rp['guid'] = nodekey
-        rp['images'] = [diskguid]
-    else:
-        rp = catresourceclient.get(nodekey)
-        if not diskguid in rp.images:
-            rp.images.append(diskguid)
-    catresourceclient.set(rp)
-    return image.dump()
+        # register node if needed and update images on it
+        nodekey = "%(gid)s_%(nid)s" % j.application.whoAmI._asdict()
+        if not catresourceclient.exists(nodekey):
+            rp = dict()
+            rp['cloudUnitType'] = 'CU'
+            rp['id'] = j.application.whoAmI.nid
+            rp['gid'] = j.application.whoAmI.gid
+            rp['guid'] = nodekey
+            rp['images'] = [templateguid]
+        else:
+            rp = catresourceclient.get(nodekey)
+            if not templateguid in rp.images:
+                rp.images.append(templateguid)
+        catresourceclient.set(rp)
+        return image.dump()
+    finally:
+        unlockDomain(machineid)
 
 if __name__ == '__main__':
     action('7ecf9fa8-de38-4dc5-8f4c-2d96c09b236a', 'test', 10, None)

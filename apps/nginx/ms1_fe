@@ -27,6 +27,19 @@ server {
         proxy_pass http://127.0.0.1:3000/;
     }
 
+    location /login {
+        proxy_pass http://127.0.0.1:8010/login;
+    }
+
+
+    location /logout {
+        proxy_pass http://127.0.0.1:8010/logout;
+    }
+
+    location /user {
+        proxy_pass http://127.0.0.1:8010/user;
+    }
+
 
     location /wiki_gcb/.files {
         expires 5m;

@@ -91,7 +91,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_ipaddress_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
-            raise RuntimeError("Failed to retreive IPAddress for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
+            raise exceptions.ServiceUnavailable("Failed to retreive IPAddress for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
         return job['result']
 
     def fw_remove_lease(self, fwid, macaddress):

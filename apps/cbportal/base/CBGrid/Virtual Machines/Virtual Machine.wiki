@@ -11,6 +11,12 @@
 
 h2. Virtual Machine: ${name}
 
+{% if not refreshed %}
+{{html:
+<div class="alert alert-warning" role="alert">Failed to retreive current status and snapshots, could not reach node ${stackname} to refresh data.</div>
+}}
+{% endif %}
+
 |*ID*| $$id|
 |*Description*| ${descr}|
 |*Tags*| ${tags}|
@@ -18,7 +24,9 @@ h2. Virtual Machine: ${name}
 |*Account*| [${accountName}|account?id=${accountId}]|
 |*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
 |*Created at*| ${createdat}|
+{% if accounts -%}
 |*Initial Credentials*| {{html: <span class="margin-right-xlarge"><strong>Login:</strong> ${accounts[0].login}</span> <strong>Password:</strong> ${accounts[0].password}}}|
+{% endif -%}
 |*Deleted at*| ${deletedat}|
 |*Size*| ${size}|
 |*Image*| ${image}|
@@ -68,9 +76,6 @@ h3. Port Forwardings
 {% else -%}
 | | | | | | |
 {% endfor %}
-
-h3. Machine Exports
-{{vmexports machineid:$$id}}
 
 h3. Jobs
 {{grid.jobs: filter:%7B%22args%22%3A%20%7B%22%24regex%22%3A%20%22${referenceId}%22%7D%7D}}

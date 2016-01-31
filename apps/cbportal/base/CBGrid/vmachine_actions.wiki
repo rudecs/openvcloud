@@ -20,16 +20,16 @@
   input:
   - reason
 
-- display: Stop For Abusive Resource Usage
-  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
-  hideon:
-  - HALTED
-  data:
-   machineId: $$id
-   accountId: ${accountId}
-
-  input:
-  - reason
+#- display: Stop For Abusive Resource Usage
+#  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+#  hideon:
+#  - HALTED
+#  data:
+#   machineId: $$id
+#   accountId: ${accountId}#
+#
+#  input:
+#  - reason
 
 - display: Reboot
   action: /restmachine/cloudbroker/machine/reboot
@@ -111,13 +111,13 @@
   - reason
   - cloneName
 
-- display: Backup And Destroy
-  action: /restmachine/cloudbroker/machine/backupAndDestroy
-  data:
-   accountId: ${accountId}
-   machineId: $$id
-  input:
-  - reason
+#- display: Backup And Destroy
+#  action: /restmachine/cloudbroker/machine/backupAndDestroy
+#  data:
+#   accountId: ${accountId}
+#   machineId: $$id
+#  input:
+#  - reason
 
 - display: Create Portforwarding
   action: /restmachine/cloudbroker/machine/createPortForward
@@ -187,6 +187,12 @@
   - description
   - reason
 
+{% if status == 'HALTED' %}
+- display: Resize Machine
+  action: '#resizemachine'
+
+{% endif %}
+
 # - display: Export
 #   action: ./
 #   data:
@@ -222,13 +228,14 @@
    machineId: $$id
   input:
   - tagName
-   
+
 - display: Attach To Public Network
   action: /restmachine/cloudbroker/machine/attachPublicNetwork
   reload: true
+  hide: true
   data:
    machineId: $$id
-  
+
 - display: Detach From Public Network
   action: /restmachine/cloudbroker/machine/detachPublicNetwork
   hide: true
@@ -264,4 +271,4 @@
 }}
 
 {{movemachine: machineId:$$id}}
-
+{{resizemachine: machineId:$$id}}

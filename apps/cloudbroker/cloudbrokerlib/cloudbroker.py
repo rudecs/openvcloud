@@ -58,6 +58,7 @@ class CloudProvider(object):
                 CloudProvider._providers[stackId] = driver
 
         self.client = CloudProvider._providers[stackId]
+        self.stackId = stackId
 
     def getSize(self, brokersize, firstdisk):
         providersizes = self.client.list_sizes()
@@ -103,6 +104,19 @@ class CloudBroker(object):
             return self.getProviderByStackId(stacks[0]['id'])
         raise ValueError('No provider available on grid %s' % gid)
 
+    def markProvider(self, stackId):
+        stack = models.stack.get(stackId)
+        stack.error += 1
+        if stack.error >=2:
+            stack.status = 'ERROR'
+        models.stack.set(stack)
+
+    def clearProvider(self, stackId):
+        stack = models.stack.get(stackId)
+        stack.error = 0
+        stack.status = 'ENABLED'
+        models.stack.set(stack)
+
     def getIdByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)
         queryapi = getattr(model, 'search')
@@ -120,19 +134,50 @@ class CloudBroker(object):
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             return -1
-        # return sorted(stackdata.items(), key=lambda x: sortByType(x, 'CU'), reverse=True)
-        l = len(capacityinfo)
-        i = random.randint(0, l - 1)
-        provider = capacityinfo[i]
+
+        provider = capacityinfo[0] # is sorted by least used
         return provider
 
+    def chooseProvider(self, machine):
+        cloudspace = models.cloudspace.get(machine.cloudspaceId)
+        newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
+        if newstack == -1:
+            raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
+        machine.stackId = newstack['id']
+        models.vmachine.set(machine)
+        return True
+
     def getCapacityInfo(self, gid, imageId):
-        # group all units per type
         resourcesdata = list()
+        activesessions = []
+        for gidnid, session in j.clients.agentcontroller.get().listSessions().iteritems():
+            # skip nodes that didnt respond in last 60 seconds
+            if session[0] < time.time() - 60:
+                continue
+            gid, nid = gidnid.split('_')
+            gid, nid = int(gid), int(nid)
+            activesessions.append((gid, nid))
+
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
+        sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
+                nodekey = (stack['gid'], int(stack['referenceId']))
+                if nodekey not in activesessions:
+                    continue
+
+                # search for all vms running on the stacks
+                usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                  '$query': {'stackId': stack['id'],
+                                                             'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
+                                                  }
+                                                 )[1:]
+                if usedvms:
+                    stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
+                else:
+                    stack['usedmemory'] = 0
                 resourcesdata.append(stack)
+        resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata
 
     def stackImportSizes(self, stackId):
@@ -406,8 +451,8 @@ class Machine(object):
         addDisk(-1, disksize, 'B', 'Boot disk')
         diskinfo = []
         for order, datadisksize in enumerate(datadisks):
-            diskid = addDisk(order, datadisksize, 'D')
-            diskinfo.append((diskid, datadisksize))
+            diskid = addDisk(order, int(datadisksize), 'D')
+            diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
         if image.type == 'Custom Templates':
@@ -464,37 +509,47 @@ class Machine(object):
         models.cloudspace.set(cloudspace)
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
-        try:
-            if not stackId:
-                stack = self.cb.getBestProvider(cloudspace.gid, imageId)
-                if stack == -1:
-                    self.cleanup(machine)
-                    raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-                stackId = stack['id']
-            provider = self.cb.getProviderByStackId(stackId)
-            psize = self.getSize(provider, machine)
+        excludelist = []
+        name = 'vm-%s' % machine.id
+        newstackId = stackId
+
+        def getStackAndProvider(newstackId):
+            try:
+                if not newstackId:
+                    stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
+                    if stack == -1:
+                        self.cleanup(machine)
+                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                    newstackId = stack['id']
+                provider = self.cb.getProviderByStackId(newstackId)
+            except:
+                self.cleanup(machine)
+                raise
+            return provider, newstackId
+
+        node = -1
+        while node == -1:
+            provider, newstackId = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
+            psize = self.getSize(provider, machine)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
-            name = 'vm-%s' % machine.id
-        except:
-            self.cleanup(machine)
-            raise
-        try:
-            node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
-        except:
-            machine.status = 'ERROR'
-            models.vmachine.set(machine)
-            raise
-        if node == -1:
-            self.cleanup(machine)
-            raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-        self.updateMachineFromNode(machine, node, stackId, psize)
+            try:
+                node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+            except Exception:
+                self.cb.markProvider(newstackId)
+                newstackId = 0
+                machine.status = 'ERROR'
+                models.vmachine.set(machine)
+            if node == -1 and stackId:
+                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+        self.cb.clearProvider(newstackId)
+        self.updateMachineFromNode(machine, node, newstackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
+
 
     def getSize(self, provider, machine):
         brokersize = models.size.get(machine.sizeId)
         firstdisk = models.disk.get(machine.disks[0])
         return provider.getSize(brokersize, firstdisk)
-

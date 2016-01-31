@@ -311,6 +311,17 @@ angular.module('cloudscalers.services')
                         }
                 );
             },
+            resize: function (machineId, sizeId) {
+                url = cloudspaceconfig.apibaseurl + '/machines/resize?machineId=' + machineId + '&sizeId=' + sizeId;
+                return $http.get(url).then(
+                        function (result) {
+                            return result.data;
+                        },
+                        function (reason){
+                            return $q.reject(reason);
+                        }
+                );
+            },
         }
     })
     .factory('Image', function ($http) {
@@ -334,18 +345,11 @@ angular.module('cloudscalers.services')
     .factory('Size', function ($http) {
         return {
             list: function (cloudspaceId) {
-                var sizes = [];
-                url = cloudspaceconfig.apibaseurl + '/sizes/list?cloudspaceId=' + cloudspaceId;
-                $http.get(url).success(
-                    function (data, status, headers, config) {
-                        _.each(data, function (size) {
-                            sizes.push(size);
-                        });
-                    }).error(
-                    function (data, status, headers, config) {
-                        sizes.error = status;
-                    });
-                return sizes;
+                return $http.get(cloudspaceconfig.apibaseurl + '/sizes/list?cloudspaceId=' + cloudspaceId).then(function(result){
+                  return result.data;
+                },function(reason){
+                  return $q.reject(reason);
+                });
             }
         }
     });

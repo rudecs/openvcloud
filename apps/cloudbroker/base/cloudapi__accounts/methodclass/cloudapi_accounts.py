@@ -258,7 +258,10 @@ class cloudapi_accounts(BaseActor):
         :param name: name of the account
         :return int id of account updated
         """
-        raise NotImplementedError("Not implemented method update")
+        account = self.models.account.get(accountId)
+        account.name = name
+        self.models.account.set(account)
+        return True
 
     @authenticator.auth(acl={'account': set('R')})
     @audit()

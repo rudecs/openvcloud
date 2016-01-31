@@ -10,6 +10,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/disable
   data:
    accountId: $$id
+   async: true
   input:
   - reason
 
@@ -64,11 +65,16 @@ h2. Account: ${name}
 
 - display: Change Credit
   action: /restmachine/cloudbroker/finance/changeCredit
+  hide: true
   data:
    accountname: ${name}
   input:
-  - amount
-  - message
+  - name: amount
+    label: Credit Amount (can be negative)
+    type: number
+  - name: message
+    label: Reason for transaction
+    type: text
 
 - display: Rename
   action: /restmachine/cloudbroker/account/rename
@@ -97,9 +103,9 @@ h3. Cloud Spaces
 {{action: id:'create_space' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Cloud Space'}}
 {{cbspaces: accountId:$$id}}
 
-h3. Credit
+h3. Credit Transactions
 
-h4. Transactions
+{{action: id:'action-ChangeCredit' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Credit'}}
 {{transactions: accountId:$$id}}
 
 {% else %}

@@ -4,6 +4,7 @@ import re
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from JumpScale.portal.portal.async import async
 
 
 def _send_signup_mail(hrd, **kwargs):
@@ -36,6 +37,7 @@ class cloudbroker_account(BaseActor):
         return account[0]
 
     @auth(['level1', 'level2', 'level3'])
+    @async('Disabling Account', 'Finished disabling account', 'Failed to disable account')
     @wrap_remote
     def disable(self, accountId, reason, **kwargs):
         """
@@ -45,19 +47,17 @@ class cloudbroker_account(BaseActor):
         result
         """
         account = self._checkAccount(accountId)
-        msg = 'Account of ID: %s\nReason: %s' % (accountId, reason)
-        subject = 'Disabling account of ID: %s' % accountId
-#        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account['deactivationTime'] = time.time()
         account['status'] = 'DISABLED'
         self.models.account.set(account)
         # stop all account's machines
         cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
         for cs in cloudspaces:
-            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'],
+                                                     'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                     })[1:]
             for vmachine in vmachines:
                 self.cloudapi.machines.stop(vmachine['id'])
-#        j.tools.whmcs.tickets.close_ticket(ticketId)
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -141,7 +141,6 @@ class cloudbroker_account(BaseActor):
 
         if emailaddress:
             _send_signup_mail(hrd=self.hrd, **mail_args)
-            pass
 
         return accountid
 
@@ -180,13 +179,22 @@ class cloudbroker_account(BaseActor):
         Complete delete an acount from the system
         """
         account = self._checkAccount(accountId)
-        accountId = account['id']
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._delete,
+                            (accountId, reason, kwargs),
+                            {},
+                            'Deleting Account %(name)s' % account,
+                            'Finished deleting Account',
+                            'Failed to delete Account')
+
+    def _delete(self, accountId, reason, kwargs):
+        account = self.models.account.get(accountId)
+        account.status = 'DESTROYING'
+        self.models.account.set(account)
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
-            cloudspacename = cloudspace['name']
-            cloudspaceid = cloudspace['id']
-            j.apps.cloudbroker.cloudspace.destroy(accountId, cloudspaceid, reason, **kwargs)
+            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, **kwargs)
         account = self.models.account.get(accountId)
         account.status = 'DESTROYED'
         self.models.account.set(account)

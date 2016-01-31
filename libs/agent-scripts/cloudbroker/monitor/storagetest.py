@@ -55,6 +55,9 @@ def action():
     timestamp = time.ctime()
 
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
+    if stack['status'] != 'ENABLED':
+        return [{'message': 'Disabling test stack is not enabled', 'category': 'Storage Test', 'state': 'OK'}]
+
     name = '%s on %s' % (timestamp, stack['name'])
     j.console.echo('Deleting vms older then 24h', log=True)
     vms = ccl.vmachine.search({'stackId': stack['id'],

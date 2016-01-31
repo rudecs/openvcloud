@@ -1,12 +1,8 @@
-import datetime
-import JumpScale.grid.osis
-import JumpScale.baselib.units
-from xml.etree import ElementTree
 try:
     import ujson as json
 except Exception:
     import json
-
+from JumpScale.portal.portal import exceptions
 
 def generateUsersList(sclient, vmachinedict):
     """
@@ -37,7 +33,6 @@ def generateUsersList(sclient, vmachinedict):
             users.append(user)
     return users
 
-
 def main(j, args, params, tags, tasklet):
     import gevent
     id = args.getTag('id')
@@ -50,15 +45,35 @@ def main(j, args, params, tags, tasklet):
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
     sosis = j.clients.osis.getNamespace('system')
+    data = {'stats_image': 'N/A',
+            'stats_parent_image': 'N/A',
+            'stats_disk_size': '-1',
+            'stats_state': 'N/A',
+            'stats_ping': 'N/A',
+            'stats_hdtest': 'N/A',
+            'stats_epoch': 'N/A',
+            'snapshots': [],
+            'refreshed': False}
 
-    # refresh from reality
     try:
-        j.apps.cloudapi.machines.get(id)
         obj = cbosis.vmachine.get(id)
     except:
         args.doc.applyTemplate({})
         params.result = (args.doc, args.doc)
         return params
+
+    if obj.status not in ['DESTROYED', 'ERROR']:
+        with gevent.Timeout(15, False):
+            # refresh from reality + get snapshots
+            try:
+                data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
+                data['refreshed'] = True
+            except exceptions.BaseError:
+                data['refreshed'] = False
+    else:
+        data['refreshed'] = True
+
+    obj = cbosis.vmachine.get(id)
 
     try:
         cl = j.clients.redis.getByInstance('system')
@@ -70,8 +85,6 @@ def main(j, args, params, tags, tasklet):
         vm = cl.hget("vmachines.status", id)
         stats = json.loads(vm)
 
-    data = {'stats_image': 'N/A', 'stats_parent_image': 'N/A', 'stats_disk_size': '-1',
-            'stats_state': 'N/A', 'stats_ping': 'N/A', 'stats_hdtest': 'N/A', 'stats_epoch': 'N/A'}
     data.update(obj.dump())
     try:
         size = cbosis.size.get(obj.sizeId).dump()
@@ -140,14 +153,6 @@ def main(j, args, params, tags, tasklet):
     data['stackrefid'] = stack['referenceId'] or 'N/A'
     data['hypervisortype'] = stack['type']
 
-    timeout = gevent.Timeout(5)
-    timeout.start()
-    try:
-        data['snapshots'] = j.apps.cloudbroker.machine.listSnapshots(id)
-    except:
-        data['snapshots'] = []
-    finally:
-        timeout.cancel()
     try:
         data['portforwards'] = j.apps.cloudbroker.machine.listPortForwards(id)
     except:

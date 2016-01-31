@@ -9,24 +9,32 @@ source /etc/lsb-release
 
 if [ "$DISTRIB_RELEASE" != "14.04" ]; then
 	echo "[-] ubuntu version seems not correct, still in recovery ?"
-	exit 1
+	return 1
 fi
 
 if [ "$UID" != "0" ]; then
 	echo "[-] you must be root"
-	exit 1
+	return 1
 fi
 
-echo "[+] upgrading system"
-apt-get update
+LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
+LASTUNIX=$(date --date "$LASTTIME" +%s)
+echo "[+] last apt-get update: $LASTTIME"
+
+if [ $LASTUNIX -gt $(($(date +%s) - (3600 * 6))) ]; then
+	echo "[+] skipping system update"
+else
+	echo "[+] updating system"
+	apt-get update
+fi
 
 # This package cause some automation problem with efi
-apt-get remove -y shim
-apt-get autoremove -y
+echo shim hold | dpkg --set-selections
+echo grub-pc hold | dpkg --set-selections
 
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-for i in /sys/block/sd?; do
+for i in /sys/block/{sd?,nvme*}; do
 	rot=$(cat $i/queue/rotational)
 	
 	if [ "$rot" = "0" ]; then
@@ -35,143 +43,196 @@ for i in /sys/block/sd?; do
 done
 
 # Building partitions map
-echo "[+] disks found: ${#DISKS[@]}"
+echo "[+] disks found: ${#DISKS[@]} (${DISKS[@]})"
+
+NVME_ENABLED=0
 
 if [ ${#DISKS[@]} == 3 ]; then
 	echo "[+] building partitions: 3 SSD"
 	
-	# /mnt/cache1 -> leftover ssd (full ssd)
-	# /mnt/cache2 -> first ssd disk used for root
-	# /var/tmp    -> second ssd disk used for root
+	# /mnt/ovs-db-write -> leftover ssd (full ssd)
+	# /mnt/ovs-read     -> first ssd disk used for root
+	# /var/tmp          -> second ssd disk used for root
+	#
+	# if nvme is present:
+	# /mnt/ovs-db-write -> first ssd used for root
+	# /mnt/ovs-read     -> nvme (full)
+	# /var/tmp          -> second ssd used for root
 	
-	for disk in ${DISKS[@]}; do
-		if [ ! -e /dev/${disk}2 ]; then
-			DISK_CACHE1=/dev/$disk
-		fi
+	if [[ "${DISKS[@]}" == *"nvme"* ]]; then
+		echo "[+] setup contains nvme disks"
+		NVME_ENABLED=1
 		
-		if [ -e /dev/${disk}2 ]; then
-			if [ "$DISK_CACHE2" == "" ]; then
-				DISK_CACHE2=/dev/$disk
+		for disk in ${DISKS[@]}; do		
+			if [ "${disk}" == "nvme0n1" ]; then
+				DISK_DBWRITE=/dev/$disk
+			
+			elif [ "$DISK_READ" == "" ]; then
+				DISK_READ=/dev/$disk
 			else
 				DISK_VARTMP=/dev/$disk
 			fi
-		fi
-	done
-	
-	if [ "$DISK_CACHE1" == "" ]; then
-		echo "[-] /mnt/cache1: cannot find usable ssd"
-		exit 1
+		done
+	else
+		# default setup
+		for disk in ${DISKS[@]}; do		
+			if [ ! -e /dev/${disk}2 ]; then
+				DISK_DBWRITE=/dev/$disk
+			fi
+			
+			if [ -e /dev/${disk}2 ]; then
+				if [ "$DISK_READ" == "" ]; then
+					DISK_READ=/dev/$disk
+				else
+					DISK_VARTMP=/dev/$disk
+				fi
+			fi
+		done
 	fi
 	
-	if [ "$DISK_CACHE2" == "" ]; then
-		echo "[-] /mnt/cache2: cannot find usable ssd"
-		exit 1
+	if [ "$DISK_DBWRITE" == "" ]; then
+		echo "[-] /mnt/ovs-db-write: cannot find usable ssd"
+		return 1
+	fi
+	
+	if [ "$DISK_READ" == "" ]; then
+		echo "[-] /mnt/ovs-read: cannot find usable ssd"
+		return 1
 	fi
 	
 	if [ "$DISK_VARTMP" == "" ]; then
 		echo "[-] /var/tmp: cannot find usable ssd"
-		exit 1
+		return 1
 	fi
 	
-	echo "[+] /mnt/cache1: will be on $DISK_CACHE1"
-	echo "[+] /mnt/cache2: will be on $DISK_CACHE2"
-	echo "[+] /var/tmp   : will be on $DISK_VARTMP"
+	if [ $NVME_ENABLED == 1 ]; then
+		DBWRITE="${DISK_DBWRITE}p1"
+		READ="${DISK_READ}5"
+		VARTMP="${DISK_VARTMP}5"
+	else
+		DBWRITE="${DISK_DBWRITE}1"
+		READ="${DISK_READ}5"
+		VARTMP="${DISK_VARTMP}5"
+	fi
 	
-	CACHE1=${DISK_CACHE1}1
-	CACHE2=${DISK_CACHE2}5
-	VARTMP=${DISK_VARTMP}5
-	
-	CACHE1_SIZE=100%
-	CACHE2_SIZE=100%
+	DBWRITE_SIZE=100%
+	READ_SIZE=100%
 	VARTMP_SIZE=100%
 	
 elif [ ${#DISKS[@]} == 2 ]; then
 	echo "[+] building partitions: 2 SSD"
 	
-	# /mnt/cache1 -> full space left on first ssd
-	# /mnt/cache2 -> half space left on second ssd
-	# /var/tmp    -> remain space left on second ssd
+	# /mnt/ovs-db-write -> full space left on first ssd
+	# /mnt/ovs-read     -> half space left on second ssd
+	# /var/tmp          -> remain space left on second ssd
 	
 	# We take the larger ssd as the one which will be cut in two
 	if [ $(cat /sys/block/${DISKS[0]}/size) -lt $(cat /sys/block/${DISKS[1]}/size) ]; then
-		DISK_CACHE1=/dev/${DISKS[0]}
-		DISK_CACHE2=/dev/${DISKS[1]}
+		DISK_DBWRITE=/dev/${DISKS[0]}
+		DISK_READ=/dev/${DISKS[1]}
 		DISK_VARTMP=/dev/${DISKS[1]}
 	else
-		DISK_CACHE1=/dev/${DISKS[1]}
-		DISK_CACHE2=/dev/${DISKS[0]}
+		DISK_DBWRITE=/dev/${DISKS[1]}
+		DISK_READ=/dev/${DISKS[0]}
 		DISK_VARTMP=/dev/${DISKS[0]}
 	fi
 	
-	CACHE1=${DISK_CACHE1}5
-	CACHE2=${DISK_CACHE2}5
+	COUNT_DISK1=$(grep ${DISK_DBWRITE}. /proc/partitions | wc -l)
+	COUNT_DISK1=$(grep ${DISK_DBWRITE}. /proc/partitions | wc -l)
+	COUNT_DISK1=$(grep ${DISK_DBWRITE}. /proc/partitions | wc -l)
+	
+	DBWRITE=${DISK_DBWRITE}5
+	READ=${DISK_READ}5
 	VARTMP=${DISK_VARTMP}6
 	
-	echo "[+] /mnt/cache1: will be on $DISK_CACHE1 ($CACHE1)"
-	echo "[+] /mnt/cache2: will be on $DISK_CACHE2 ($CACHE2)"
-	echo "[+] /var/tmp   : will be on $DISK_VARTMP ($VARTMP)"
-	
-	CACHE1_SIZE=100%
-	CACHE2_SIZE=50%
+	DBWRITE_SIZE=100%
+	READ_SIZE=50%
 	VARTMP_SIZE=100%
 else
 	echo "[-] this count of SSD are not supported"
 	exit
 fi
 
+echo "[+] /mnt/ovs-db-write: will be on $DISK_DBWRITE ($DBWRITE)"
+echo "[+] /mnt/ovs-read    : will be on $DISK_READ ($READ)"
+echo "[+] /var/tmp         : will be on $DISK_VARTMP ($VARTMP)"
+
 #
-# /mnt/cache1
+# /mnt/ovs-db-write
 #
-TOTAL=$(parted $DISK_CACHE1 print | grep Disk | head -1 | awk '{ print $3 }')
+TOTAL=$(parted $DISK_DBWRITE print | grep Disk | head -1 | awk '{ print $3 }')
 
 # disk empty
 if [ "$TOTAL" == "" ]; then
-	echo "[ ] /mnt/cache1: no partition table found, creating it"
-	parted $DISK_CACHE1 mklabel gpt > /dev/null
+	echo "[ ] /mnt/ovs-db-write: no partition table found, creating it"
+	parted $DISK_DBWRITE mklabel gpt > /dev/null
 	
-	TOTAL=$(parted $DISK_CACHE1 print | grep Disk | head -1 | awk '{ print $3 }')
+	TOTAL=$(parted $DISK_DBWRITE print | grep Disk | head -1 | awk '{ print $3 }')
 	END="1049kB"
+	
+	if [ "$END" == "End" ]; then
+		# Empty disk
+		END="1049kB"
+	fi
 else
-	END=$(parted $DISK_CACHE1 print | tail -2 | head -1 | awk '{ print $3 }')
+	END=$(parted $DISK_DBWRITE print | tail -2 | head -1 | awk '{ print $3 }')
 fi
 	
 if [ "$TOTAL" != "$END" ]; then
-	echo "[+] /mnt/cache1: partition will start at $END"
-	parted -a optimal $DISK_CACHE1 mkpart cache1 $FILESYSTEM $END $CACHE1_SIZE > /dev/null
+	echo "[+] /mnt/ovs-db-write: partition will start at $END"
+	parted -a optimal $DISK_DBWRITE mkpart ovs-db-write $FILESYSTEM $END $DBWRITE_SIZE > /dev/null
 	
-	PART=$(parted $DISK_CACHE1 print | tail -2 | head -1 | awk '{ print $1 }')
+	PART=$(parted $DISK_DBWRITE print | tail -2 | head -1 | awk '{ print $1 }')
 	
-	if [ "${DISK_CACHE1}$PART" != "$CACHE1" ]; then
-		echo "[-] /mnt/cache1: seems not correct according to script"
-		exit 1
+	if [ $NVME_ENABLED == 1 ]; then
+		PART="p${PART}"
+	fi
+	
+	if [ "${DISK_DBWRITE}$PART" != "$DBWRITE" ]; then
+		echo "[-] /mnt/ovs-db-write: seems not correct according to script"
+		return 1
 	fi
 else
-	echo "[+] /mnt/cache1: disk seems already ready"
+	echo "[+] /mnt/ovs-db-write: disk seems already ready"
 fi
 
 #
-# /mnt/cache2
+# /mnt/ovs-read
 #
-TOTAL=$(parted $DISK_CACHE2 print | grep Disk | head -1 | awk '{ print $3 }')
+if [ $NVME_ENABLED == 1 ]; then
+	echo "[+] cleaning /dev/nvme0n1"
+	dd if=/dev/zero of=/dev/nvme0n1 bs=16M count=1 2> /dev/null
+fi
+
+TOTAL=$(parted $DISK_READ print | grep Disk | head -1 | awk '{ print $3 }')
 
 if [ "$TOTAL" == "" ]; then
-	echo "[-] /mnt/cache2: error occured when trying to find disk info"
+	echo "[ ] /mnt/ovs-read: no partition table found, creating it"
+	parted $DISK_READ mklabel gpt > /dev/null
+	
+	TOTAL=$(parted $DISK_READ print | grep Disk | head -1 | awk '{ print $3 }')
+	END="1049kB"
+else
+	END=$(parted $DISK_READ print | tail -2 | head -1 | awk '{ print $3 }')
+	
+	if [ "$END" == "End" ]; then
+		# Empty disk
+		END="1049kB"
+	fi
 fi
-
-END=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $3 }')
 	
 if [ "$TOTAL" != "$END" ]; then
-	echo "[+] /mnt/cache2: partition will start at $END"
-	parted -a optimal $DISK_CACHE2 mkpart cache2 $FILESYSTEM $END $CACHE2_SIZE > /dev/null
+	echo "[+] /mnt/ovs-read: partition will start at $END"
+	parted -a optimal $DISK_READ mkpart ovs-read $FILESYSTEM $END $READ_SIZE > /dev/null
 	
-	PART=$(parted $DISK_CACHE2 print | tail -2 | head -1 | awk '{ print $1 }')
+	PART=$(parted $DISK_READ print | tail -2 | head -1 | awk '{ print $1 }')
 	
-	if [ "${DISK_CACHE2}$PART" != "$CACHE2" ]; then
-		echo "[-] /mnt/cache2: seems not correct according to script"
-		exit 1
+	if [ "${DISK_READ}$PART" != "$READ" ]; then
+		echo "[-] /mnt/ovs-read: seems not correct according to script"
+		return 1
 	fi
 else
-	echo "[+] /mnt/cache2: disk seems already ready"
+	echo "[+] /mnt/ovs-read: disk seems already ready"
 fi
 
 #
@@ -193,7 +254,7 @@ if [ "$TOTAL" != "$END" ]; then
 	
 	if [ "${DISK_VARTMP}$PART" != "$VARTMP" ]; then
 		echo "[-] /var/tmp: seems not correct according to script"
-		exit 1
+		return 1
 	fi
 else
 	echo "[+] /var/tmp   : disk seems already ready"
@@ -210,14 +271,14 @@ fi
 #	apt-get install -y xfsprogs
 # fi
 
-for disk in $CACHE1 $CACHE2 $VARTMP; do
+for disk in $DBWRITE $READ $VARTMP; do
 	echo "[+] cleaning $disk"
 	dd if=/dev/zero of=$disk bs=16M count=1 2> /dev/null
 	
 	echo "[+] creating $FILESYSTEM partition on $disk"
 	mkfs.$FILESYSTEM -q $disk
 done
-
+	
 #
 # Mounting point
 #
@@ -243,40 +304,57 @@ done
 #
 echo "[+] setting up our new partitions"
 
-sed -i '/cache1/d' /etc/fstab
-sed -i '/cache2/d' /etc/fstab
+sed -i '/ovs-db-write/d' /etc/fstab
+sed -i '/ovs-read/d' /etc/fstab
 sed -i '/var\/tmp/d' /etc/fstab
 
-UUID=$(blkid -o value -s UUID $CACHE1)
-echo "[+] /mnt/cache1 ($CACHE1) is $UUID"
-echo "UUID=$UUID /mnt/cache1 $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
+UUID=$(blkid -o value -s UUID $DBWRITE)
+echo "[+] /mnt/ovs-db-write ($DBWRITE) is $UUID"
+echo "UUID=$UUID /mnt/ovs-db-write $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
-UUID=$(blkid -o value -s UUID $CACHE2)
-echo "[+] /mnt/cache2 ($CACHE2) is $UUID"
-echo "UUID=$UUID /mnt/cache2 $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
+UUID=$(blkid -o value -s UUID $READ)
+echo "[+] /mnt/ovs-read ($READ) is $UUID"
+echo "UUID=$UUID /mnt/ovs-read $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
 UUID=$(blkid -o value -s UUID $VARTMP)
 echo "[+] /var/tmp ($VARTMP) is $UUID"
 echo "UUID=$UUID /var/tmp $FILESYSTEM discard,nobarrier,noatime,data=writeback 0 0" >> /etc/fstab
 
-mkdir -p /mnt/cache1 /mnt/cache2
+mkdir -p /mnt/ovs-db-write /mnt/ovs-read
 
 echo "[+] mounting all the stuff"
 mount -a
 swapon -a
-touch /mnt/cache1/.dontreportusage
-touch /mnt/cache2/.dontreportusage
+touch /mnt/ovs-db-write/.dontreportusage
+touch /mnt/ovs-read/.dontreportusage
 
 echo '[+] fixing permissions'
 chmod ugo+rwx,o+t /var/tmp
 
-echo "[+] fixing ssh config and root login"
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-service ssh restart
-echo "root:rooter" | chpasswd
+TEST=$(grep '^PermitRootLogin yes' /etc/ssh/sshd_config)
+if [ "$TEST" == "" ]; then
+	echo "[+] fixing ssh config and root login"
+	sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+	service ssh restart
+	echo "root:rooter" | chpasswd
+	
+else
+	echo "[+] ssh already configured"
+fi
 
 echo "[+] setting up backplane1"
 apt-get install -y openvswitch-switch
 ifup --allow=ovs backplane1
+
+echo "[+] pre-installing openvstorage dependancies"
+apt-get install -y ntp kvm libvirt0 python-libvirt virtinst rabbitmq-server python-memcache \
+    memcached lsscsi libvirt0 python-dev python-pyinotify sudo libev4 \
+    python-boto nfs-kernel-server ipython devscripts openssh-server \
+    python-paramiko python-pysnmp4 python-pika python-six python-protobuf python-pyudev sshpass \
+    python-django nginx python-djangorestframework gunicorn python-gevent python-markdown \
+    python-amqp python-anyjson libbz2-1.0 libc6 libcurl3 liblttng-ust0 libprotobuf8 libpython2.7 \
+    librdmacm1 libsnappy1 libssl1.0.0 libstdc++6 libtokyocabinet9 libxml2 zlib1g \
+    libcomerr2 libcurl3 libgssapi-krb5-2 libkrb5-3 liblttng-ust0 libomniorb4-1 libomnithread3c2
+
 
 echo "[+] machine ready"

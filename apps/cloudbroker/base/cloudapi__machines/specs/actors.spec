@@ -160,17 +160,17 @@
         var:basename str,, snapshot id on which the template is based @tags: optional
         result:bool, True if template was created
 
-    method:export
-        """
-        Create an export/backup of the machine
-        """
-        var:machineId int,, id of the machine to backup
-        var:name str,, useful name for this backup
-        var:host str,, host to export(if s3)
-        var:aws_access_key str,,s3 access key
-        var:aws_secret_key str,,s3 secret key
-        var:bucket str,,s3 bucket name
-        result:jobid
+#    method:export
+#        """
+#        Create an export/backup of the machine
+#        """
+#        var:machineId int,, id of the machine to backup
+#        var:name str,, useful name for this backup
+#        var:host str,, host to export(if s3)
+#        var:aws_access_key str,,s3 access key
+#        var:aws_secret_key str,,s3 secret key
+#        var:bucket str,,s3 bucket name
+#        result:jobid
 
     method:getConsoleUrl
         """
@@ -178,6 +178,15 @@
         """
         var:machineId str,, id of the machine to connect to console
         result:str, one time url used to connect ot console
+
+
+    method:resize
+        """
+        Change the size of a machine
+        """
+        var:machineId int,, id of machine to resize
+        var:sizeId int,,new sizeId
+        result:bool
 
     method:clone
         """
@@ -195,13 +204,13 @@
         var:size int,, number of entries to return
         result:list, list of the history of the machine
 
-    method:listExports
-        """
-        List exported images
-        """
-        var:machineId str,, id of the machine
-        var:status str,, filter on specific status @tags: optional
-        result:list, list of exports, each as a dict
+#    method:listExports
+#        """
+#        List exported images
+#        """
+#        var:machineId str,, id of the machine
+#        var:status str,, filter on specific status @tags: optional
+#        result:list, list of exports, each as a dict
 
     method:addUser
         """

@@ -19,7 +19,9 @@ def main(j, args, params, tags, tasklet):
         popup.write_html(page)
         return params
 
-    popup = Popup(id='movevfw', header='Move Virtual Firewall', submit_url='/restmachine/cloudbroker/cloudspace/moveVirtualFirewallToFirewallNode')
+    popup = Popup(id='movevfw', header='Move Virtual Firewall',
+                  submit_url='/restmachine/cloudbroker/cloudspace/moveVirtualFirewallToFirewallNode',
+                  reload_on_success=False)
 
     key = "%(gid)s_%(networkId)s" % cloudspace.dump()
     vfw = vcl.virtualfirewall.get(key)
@@ -30,6 +32,7 @@ def main(j, args, params, tags, tasklet):
 
     popup.addDropdown("FW Node to move to", 'targetNid', dropnodes)
     popup.addHiddenField('cloudspaceId', cloudspaceId)
+    popup.addHiddenField('async', 'true')
 
     popup.write_html(page)
 

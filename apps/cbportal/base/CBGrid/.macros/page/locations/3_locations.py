@@ -1,4 +1,4 @@
-import datetime
+
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -11,14 +11,12 @@ def main(j, args, params, tags, tasklet):
             val = ', '.join(val)
         filters[tag] = val
 
-    fieldnames = ['GID', 'Name', 'Flag', 'LocationCode']
-
-    def makeImg(row, field):
-        return "<img src='https://www.mothership1.com/wiki_gcb/.files/img/flags/%(flag)s.png'/>" % row
+    fieldnames = ['GID', 'Name', 'LocationCode']
 
     fieldids = ['gid', 'name', 'flag', 'locationCode']
-    fieldvalues = ['[%(gid)s|/CBGrid/grid?gid=%(gid)s]', 'name', makeImg, 'locationCode']
-    tableid = modifier.addTableForModel('cloudbroker', 'location', fieldids, fieldnames, fieldvalues, filters)
+    fieldvalues = ['[%(gid)s|/CBGrid/grid?gid=%(gid)s]', 'name', 'locationCode']
+    tableid = modifier.addTableForModel('cloudbroker', 'location', fieldids, fieldnames,
+                                        fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page

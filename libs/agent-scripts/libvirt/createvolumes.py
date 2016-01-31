@@ -50,7 +50,7 @@ def action(volumes):
                 time.sleep(0.1)
                 vdisk = VDiskList.get_by_devicename_and_vpool('volumes/volume_%(name)s.raw' % volume, pool)
             VDiskController.set_config_params(vdisk.guid, params)
-    j.clients.redisworker.execFunction(setConfigs, _queue='default', _sync=False, volumes=volumes)
+    j.clients.redisworker.execFunction(setConfigs, _queue='io', _sync=False, volumes=volumes)
     return volumes
 
 if __name__ == '__main__':
