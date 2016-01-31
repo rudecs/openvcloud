@@ -211,7 +211,6 @@ angular.module('cloudscalers.controllers')
                         return size.id === $scope.initialSizeId;
                     });
 
-
                     $scope.setPackage = function(package) {
                         $scope.selectedPackage = package;
                     };
@@ -236,8 +235,7 @@ angular.module('cloudscalers.controllers')
                     .then(function() {
                         return $scope
                             .getMachine();
-                    })
-                    .then(null, function() {
+                    }, function(error) {
                         $ErrorResponseAlert(error);
                     })
                     ['finally'](function() {

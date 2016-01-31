@@ -59,10 +59,6 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     <div class="span9 clear-none inline-block margin-vertical-small">
                                         {[machineinfo.size.vcpus]} 
                                         <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
-                                        <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'" class="margin-left-medium">
-                                            <i class=" fa fa-times-circle-o"></i>
-                                            Resize
-                                        </a>
                                     </div>
                                 </div>
                             </li>
@@ -71,10 +67,6 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     <div class="span3 line-height">Memory</div>
                                     <div class="span9 clear-none inline-block margin-vertical-small">
                                         {[ numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}
-                                        <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'" class="margin-left-medium">
-                                            <i class=" fa fa-times-circle-o"></i>
-                                            Resize
-                                        </a>
                                     </div>
                                 </div>
                             </li>
@@ -195,8 +187,11 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 #                            </a>
 #                        </li>
     {{html:
-      <!-- TODO machine must be HALTED -->
         <li ng-show="currentUserAccess != 'Read'">
+                <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'">
+                    <i class="fa fa-expand"></i>
+                    Resize compute capacity
+                </a>
                 <script type="text/ng-template" id="resizeMachineDialog.html">
                   <div>
                       <div class="modal-header">
@@ -206,7 +201,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             <div class="packages">
                                 <div ng-repeat="size in sizes | orderBy:sizepredicate" class="package"
                                     ng-click="setPackage(size)">
-                                    <input type="radio" name="packages" value="" id="package-{[$index]}" />
+                                    <input type="radio" name="packages" value="" id="package-{[$index]}" ng-checked="selectedPackage.id === size.id" />
                                     <label for="package-{[$index]}">
                                         <span></span>
                                         <strong>
