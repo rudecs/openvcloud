@@ -197,7 +197,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.resize = function(currentSpace) {
             var sizes = $scope.sizes,
-                initialSizeId = $scope.machine.sizeId;
+                initialSizeId = $scope.machine.sizeid;
 
             var modalInstance = $modal.open({
                 templateUrl: 'resizeMachineDialog.html',
@@ -210,7 +210,6 @@ angular.module('cloudscalers.controllers')
                     $scope.selectedPackage = _.find($scope.sizes, function(size) {
                         return size.id === $scope.initialSizeId;
                     });
-
 
                     $scope.setPackage = function(package) {
                         $scope.selectedPackage = package;
@@ -236,8 +235,7 @@ angular.module('cloudscalers.controllers')
                     .then(function() {
                         return $scope
                             .getMachine();
-                    })
-                    .then(null, function() {
+                    }, function(error) {
                         $ErrorResponseAlert(error);
                     })
                     ['finally'](function() {
