@@ -278,7 +278,7 @@ class cloudapi_machines(BaseActor):
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
-    @authenticator.auth(acl={'cloudspace': set('D')})
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
     def delete(self, machineId, **kwargs):
         """
