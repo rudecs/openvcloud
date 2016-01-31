@@ -197,7 +197,7 @@ angular.module('cloudscalers.controllers')
 
         $scope.resize = function(currentSpace) {
             var sizes = $scope.sizes,
-                initialSizeId = $scope.machine.sizeId;
+                initialSizeId = $scope.machine.sizeid;
 
             var modalInstance = $modal.open({
                 templateUrl: 'resizeMachineDialog.html',
