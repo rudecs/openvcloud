@@ -186,12 +186,13 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 #                                Export
 #                            </a>
 #                        </li>
-    {{html:
+        {{html:
         <li ng-show="currentUserAccess != 'Read'">
-                <a ng-click="resize(currentSpace)" ng-show="machine.status == 'HALTED'">
+                <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
                     <i class="fa fa-expand"></i>
                     Resize compute capacity
                 </a>
+                <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
                 <script type="text/ng-template" id="resizeMachineDialog.html">
                   <div>
                       <div class="modal-header">

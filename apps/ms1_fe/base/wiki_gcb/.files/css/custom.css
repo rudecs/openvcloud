@@ -16,6 +16,10 @@
 .btn-group.btn-group-sm .btn.btn-primary.active { background-color: #0784B2; }
 .btn-group.btn-group-sm .btn.btn-primary.active:hover { background-color: #0784B2; }
 .btn:focus, .btn:active:focus { outline: 0; }
+a[disabled], a[disabled]:hover {
+    pointer-events: none;
+    cursor: not-allowed;
+}
 /* end of buttons */
 
 /* Forms */
