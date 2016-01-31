@@ -20,7 +20,7 @@ New users can find useful info about the Machines in our [Quick Tutorial Guide|G
     <!-- Button -->
     <div class="control-group padding-all-none block">
       <div class="">
-        <a href="MachineDeck?singlebutton=#/new" id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</a>
+        <a ng-show="currentUser.acl.cloudspace > 1" href="MachineDeck?singlebutton=#/new" id="singlebutton" name="singlebutton" class="btn btn-info btn-large absolute position-top-small position-right-medium" tourtip="Create your Virtual Machine. It takes 5 seconds!" tourtip-placement="left">Create Machine</a>
       </div>
     </div>
 
@@ -45,7 +45,7 @@ New users can find useful info about the Machines in our [Quick Tutorial Guide|G
         <td>{[machine.status]}</td>
         <td>
           <a ng-href="#/edit/{[machine.id]}" title="{[machine.description]}">{[machine.name]}</a>
-          <a href="#" ng-click=(updateMachineName(machine.id))></a>  
+          <a href="#" ng-click=(updateMachineName(machine.id))></a>
         </td>
         <td class="hidden">{[machine.ip]}</td>
         <td>{[numeral(machineinfo[machine.id].size.memory * 1024 * 1024).format('0 b')]}</td>

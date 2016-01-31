@@ -4,7 +4,7 @@
     <div class="share-cloudspace-message alert alert-{[shareCloudSpaceStyle]} width-40">{[shareCloudSpaceTxt]}</div>
 </div>
 <em ng-show="currentUser.acl.cloudspace == 3">Provide other users access to your Cloud Space by adding their OpenvCloud user name.</em>
-<em ng-show="currentUser.acl.cloudspace == 1">Users access to {[currentSpace.name]} cloud space.</em>
+<em ng-show="currentUser.acl.cloudspace < 3">Users access to {[currentSpace.name]} cloud space.</em>
 <div class="table-responsive margin-top-medium">
     <table class="table users-table">
         <tr class="header" ng-show="currentUser.acl.cloudspace == 3">

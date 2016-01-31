@@ -3,7 +3,7 @@
 	    <div class="share-machine-message alert alert-{[shareMachineMessageStyle]} width-40">{[shareMachineMessageTxt]}</div>
 	</div>
 	<em ng-show="currentUser.acl.machine > 2 || currentUser.acl.cloudspace > 1">Provide other users access to {[machine.name]} machine by adding their OpenvCloud user name and specify access right.</em>
-	<em ng-show="currentUser.acl.machine == 1">Users access to {[machine.name]} machine.</em>
+	<em ng-show="currentUser.acl.machine < 3">Users access to {[machine.name]} machine.</em>
 	<form>
 	<div class="table-responsive margin-top-medium">
 	    <table class="table users-table">

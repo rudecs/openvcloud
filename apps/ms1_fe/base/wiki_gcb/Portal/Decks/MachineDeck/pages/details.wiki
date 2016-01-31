@@ -117,7 +117,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     Reset
                                 </a>
                             </li>
-                            <li ng-show="currentUser.acl.machine > 1">
+                            <li ng-show="currentUser.acl.machine > 1 && machine.locked == false">
                                 <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                     <i class="fa fa-camera"></i>
                                     Take Snapshot
@@ -290,7 +290,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 
 
             <div id="snapshots" class="tab-pane">
-                <a ng-show="currentUser.acl.machine > 1" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
+                <a ng-show="currentUser.acl.machine > 1 && machine.locked == false" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
                     <i class="fa fa-camera"></i>
                     Take Snapshot
                 </a>
