@@ -4,6 +4,7 @@ import re
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from JumpScale.portal.portal.async import async
 
 
 def _send_signup_mail(hrd, **kwargs):
@@ -35,22 +36,8 @@ class cloudbroker_account(BaseActor):
 
         return account[0]
 
-    def _checkUser(self, username):
-        user = self.syscl.user.simpleSearch({'id':username})
-        if not user:
-            raise exceptions.NotFound('Username "%s" not found' % username)
-        return user[0]
-
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
-
-    def _isValidPassword(self, password):
-        if len(password) < 8 or len (password) > 80:
-            return False
-        return re.search(r"\s",password) is None
-
     @auth(['level1', 'level2', 'level3'])
+    @async('Disabling Account', 'Finished disabling account', 'Failed to disable account')
     @wrap_remote
     def disable(self, accountId, reason, **kwargs):
         """
@@ -60,19 +47,17 @@ class cloudbroker_account(BaseActor):
         result
         """
         account = self._checkAccount(accountId)
-        msg = 'Account of ID: %s\nReason: %s' % (accountId, reason)
-        subject = 'Disabling account of ID: %s' % accountId
-#        ticketId = j.tools.whmcs.tickets.create_ticket(subject, msg, 'High')
         account['deactivationTime'] = time.time()
         account['status'] = 'DISABLED'
         self.models.account.set(account)
         # stop all account's machines
         cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
         for cs in cloudspaces:
-            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'], 'status': 'RUNNING'})[1:]
+            vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'],
+                                                     'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                     })[1:]
             for vmachine in vmachines:
                 self.cloudapi.machines.stop(vmachine['id'])
-#        j.tools.whmcs.tickets.close_ticket(ticketId)
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -82,13 +67,11 @@ class cloudbroker_account(BaseActor):
         if accounts:
             raise exceptions.Conflict('Account name is already in use.')
 
-        if not self._isValidUserName(username):
-            raise exceptions.BadRequest('A username may not exceed 20 characters and may only contain a-z and 0-9')
-
         created = False
         if j.core.portal.active.auth.userExists(username):
-            if emailaddress and not self.syscl.user.search({'id': username, 'emails': emailaddress})[1:]:
-                raise exceptions.Conflict('The specific user and email do not match.')
+            if emailaddress and not self.syscl.user.search({'id': username,
+                                                            'emails': emailaddress})[1:]:
+                raise exceptions.Conflict('The specified username and email do not match.')
 
             user = j.core.portal.active.auth.getUserInfo(username)
             emailaddress = user.emails[0] if user.emails else None
@@ -97,7 +80,7 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            j.core.portal.active.auth.createUser(username, password, emailaddress, ['user'], None)[0]
+            self.cb.actors.cloudbroker.user.create(username, emailaddress, password, 'user')
             created = True
 
         now = int(time.time())
@@ -118,6 +101,7 @@ class cloudbroker_account(BaseActor):
         ace.userGroupId = username
         ace.type = 'U'
         ace.right = 'CXDRAU'
+        ace.status = 'CONFIRMED'
         accountid = self.models.account.set(account)[0]
 
         signupcredit = self.hrd.getFloat('instance.openvcloud.cloudbroker.signupcredit')
@@ -195,13 +179,22 @@ class cloudbroker_account(BaseActor):
         Complete delete an acount from the system
         """
         account = self._checkAccount(accountId)
-        accountId = account['id']
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._delete,
+                            (accountId, reason, kwargs),
+                            {},
+                            'Deleting Account %(name)s' % account,
+                            'Finished deleting Account',
+                            'Failed to delete Account')
+
+    def _delete(self, accountId, reason, kwargs):
+        account = self.models.account.get(accountId)
+        account.status = 'DESTROYING'
+        self.models.account.set(account)
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
-            cloudspacename = cloudspace['name']
-            cloudspaceid = cloudspace['id']
-            j.apps.cloudbroker.cloudspace.destroy(accountId, cloudspaceid, reason, **kwargs)
+            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, **kwargs)
         account = self.models.account.get(accountId)
         account.status = 'DESTROYED'
         self.models.account.set(account)
@@ -214,28 +207,34 @@ class cloudbroker_account(BaseActor):
         Give a user access rights.
         Access rights can be 'R' or 'W'
         param:accountId id of the account
-        param:username id of the user to give access
+        param:username id of the user to give access or emailaddress to invite an external user
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        ctx = kwargs["ctx"]
-        account = self._checkAccount(accountId)
-        accountId = account['id']
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudapi.accounts.addUser(accountId, userId, accesstype)
+        self._checkAccount(accountId)
+        user = self.cb.checkUser(username, activeonly=False)
+        if user:
+            self.cloudapi.accounts.addUser(accountId, username, accesstype)
+        elif self.cb.isValidEmailAddress(username):
+            self.cloudapi.accounts.addExternalUser(accountId, username,
+                                                                      accesstype)
+        else:
+            raise exceptions.NotFound('User with username %s is not found' % username)
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteUser(self, accountId, username, **kwargs):
+    def deleteUser(self, accountId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
         """
-        ctx = kwargs["ctx"]
         account = self._checkAccount(accountId)
         accountId = account['id']
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudapi.accounts.deleteUser(accountId, userId)
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+        else:
+            #external user, delete ACE that was added using emailaddress
+            userId = username
+        self.cloudapi.accounts.deleteUser(accountId, userId, recursivedelete)
         return True

@@ -1,0 +1,5 @@
+h1. Consumption
+{{include:Billing}}
+{{html:
+<script src="/$$space/.files/js/controllers/AccountController.js" type="text/javascript"></script>
+}}

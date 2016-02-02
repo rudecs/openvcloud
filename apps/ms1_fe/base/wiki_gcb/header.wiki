@@ -42,7 +42,9 @@
                         <div ng-repeat="account in AccountCloudSpaceHierarchy" class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}</a>
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#{[account.name | nospace]}">{[account.name]}
+                                      <i ng-click="goToAccountSettings($event, account.id)" ng-show="account.cuurentAccountInAccountList != 'NoAccessOnAccount'" class="fa fa-users right txt-dark-blue" title="Account settings"></i>
+                                    </a>
                                 </h4>
                               </div>
                               <div id="{[account.name | nospace]}" class="panel-collapse collapse">
@@ -59,7 +61,7 @@
                   </div>
                     <ul class="create-cloudspace-container">
                       <li>
-                         <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace">New Cloud Space...</a>
+                         <a href="" ng-click="createNewCloudSpace()" class="create-cloudspace" ng-show="currentUser.acl.account > 1">New Cloud Space...</a>
                       </li>
                     </ul>
                     <script type="text/ng-template" id="createNewCloudSpaceDialog.html">
@@ -103,14 +105,14 @@
                     </script>
                 </div>
               </li>
+              <li ng-show="currentUser.acl.cloudspace > 0"><a href="/$$space/CloudSpaceSettings" class="padding-left-none"><i class="fa fa-cog margin-right-small" title="Cloud Space settings"></i></a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a id="geeting-started" href="/$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
             <li><a href="/$$space/ApiDocs">Machine API</a></li>
             <li><a href="/$$space/Docs">Knowledge Base</a></li>
             <li><a href="/$$space/support">Support</a></li>
-            <li ng-show="userRightsOnAccountBilling"><a href="/$$space/AccountSettings">Consumption</a></li>
-            <li><a href="/$$space/CloudSpaceSettings" tourtip-step="1" tourtip="Share your Cloud Space with other users" tourtip-placement="bottom">Cloud Space Settings</a></li>
+            <li ng-show="currentUser.acl.account > 0"><a href="/$$space/Consumption">Consumption</a></li>
           </ul>
         </div>
       </div>

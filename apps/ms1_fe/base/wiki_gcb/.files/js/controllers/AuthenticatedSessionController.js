@@ -22,25 +22,31 @@ angular.module('cloudscalers.controllers')
         function autoLogin(username) {
             User.portalLogin(username, portal_session_cookie);
             $scope.currentUser = User.current();
+            $scope.currentUser.acl = {account: 0, cloudspace: 0, machine: 0};
             $scope.currentSpace = CloudSpace.current();
-            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
+            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
         }
 
 
         $scope.setCurrentCloudspace = function(space) {
-        	if (space == null)
-        	{
+        	if (space == null){
         		return;
         	}
-
-            CloudSpace.setCurrent(space);
-            $scope.currentSpace = space;
-            $scope.setCurrentAccount();
+          CloudSpace.setCurrent(space);
+          $scope.currentSpace = space;
+          $scope.setCurrentAccount();
         };
 
         $scope.setCurrentAccount = function(){
-            if ($scope.currentSpace){
-                $scope.currentAccount = {id: $scope.currentSpace.accountId, name: $scope.currentSpace.accountName, userRightsOnAccount: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling};
+            if($scope.currentSpace){
+                Account.get($scope.currentAccount.id).then(function(account) {
+                    $scope.currentAccount.userRightsOnAccount = account.acl;
+                }, function(reason){
+                  if(reason.status != 403){
+                    $ErrorResponseAlert(reason);
+                  }
+                  $scope.currentAccount.userRightsOnAccount = {};
+                });
             }
         };
 
@@ -80,19 +86,34 @@ angular.module('cloudscalers.controllers')
 
         }, true);
 
-	    $scope.$watch('currentAccount',  function(){
-              if($scope.currentAccount){
-                    $scope.userRightsOnAccountBilling = $scope.currentAccount.userRightsOnAccountBilling;
-	          }
-            }, true);
+        $scope.getUserAccessOnAccount = function(){
+          if($scope.currentAccount.userRightsOnAccount){
+            var userInCurrentAccount = _.find($scope.currentAccount.userRightsOnAccount , function(acl) { return acl.userGroupId == $scope.currentUser.username; });
+              if(userInCurrentAccount){
+                  var currentUserAccessrightOnAccount = userInCurrentAccount.right.toUpperCase();
+                  if(currentUserAccessrightOnAccount == "R"){
+                      $scope.currentUser.acl.account = 1;
+                  }else if(currentUserAccessrightOnAccount.search(/R|C|X/) != -1 && currentUserAccessrightOnAccount.search(/D|U/) == -1){
+                    $scope.currentUser.acl.account = 2;
+                  }else if(currentUserAccessrightOnAccount.search(/R|C|X|D|U/) != -1 ){
+                      $scope.currentUser.acl.account = 3;
+                  }
+              }
+          }
+        };
+
+	      $scope.$watch('currentAccount.id + currentAccount.userRightsOnAccount',  function(){
+          if($scope.currentAccount){
+            $scope.getUserAccessOnAccount();
+          }
+        });
 
         $scope.logout = function() {
             User.logout();
-
-			var uri = new URI($window.location);
-			uri.filename('');
-			uri.fragment('');
-			$window.location = uri.toString();
+      			var uri = new URI($window.location);
+      			uri.filename('');
+      			uri.fragment('');
+      			$window.location = uri.toString();
         };
 
         $scope.$watch('currentSpace', function () {
@@ -107,14 +128,15 @@ angular.module('cloudscalers.controllers')
                     if(currentUserAccessright){
                         currentUserAccessright = currentUserAccessright.right.toUpperCase();
                         if(currentUserAccessright == "R"){
-                            $scope.currentUserAccessrightOnCloudSpace = 'Read';
-                        }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
-                            $scope.currentUserAccessrightOnCloudSpace = "ReadWrite";
-                        }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
-                            $scope.currentUserAccessrightOnCloudSpace = "Admin";
+                            $scope.currentUser.acl.cloudspace = 1;
+                        }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
+                            $scope.currentUser.acl.cloudspace = 2;
+                        }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
+                            $scope.currentUser.acl.cloudspace = 3;
                         }
                     }
                 }
+              $scope.getUserAccessOnAccount();
             }
 
         });

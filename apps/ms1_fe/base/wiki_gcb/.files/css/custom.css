@@ -16,6 +16,10 @@
 .btn-group.btn-group-sm .btn.btn-primary.active { background-color: #0784B2; }
 .btn-group.btn-group-sm .btn.btn-primary.active:hover { background-color: #0784B2; }
 .btn:focus, .btn:active:focus { outline: 0; }
+a[disabled], a[disabled]:hover {
+    pointer-events: none;
+    cursor: not-allowed;
+}
 /* end of buttons */
 
 /* Forms */
@@ -376,7 +380,66 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .access-rights.update .access-right-block { margin-right: 15px; padding: 10px; display: inline; }
 .access-rights.update .access-right-block:hover, .access-rights.update .access-right-block.selected { background-color: rgb(234, 234, 234); border-radius: 5px; cursor: pointer; }
 .share-cloudspace-message { margin: 0 auto !important; top: -25px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
+.share-cloudspace-message.share-account-message{ margin: 14px auto auto !important; }
 .machine-disks .disk:hover, .machine-disks .disk:active, .machine-disks .disk:focus { background: url(../img/images/machine.jpg) no-repeat; color: #77777b; cursor: default; }
+
+.packages {
+    margin:0 0 0.75em 0;   
+}
+
+.packages .package {
+    background-color: #EEEEEE;
+    margin-bottom: 2px;
+}
+
+.packages .package input[type="radio"] {
+    display: none;
+}
+
+.packages .package input[type="radio"] + label {
+    color: #292321;
+    font-family: Arial, sans-serif;
+    font-size:14px;
+}
+
+.packages .package input[type="radio"] + label span {
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    margin: -1px 4px 0 0;
+    vertical-align: middle;
+    cursor: pointer;
+    -moz-border-radius: 50%;
+    border-radius:  50%;
+}
+
+.packages .package input[type="radio"] + label span {
+    background-color: #fff;
+    border: 2px solid #939393;
+}
+
+.packages .package input[type="radio"]:checked + label span {
+    background-color: #fff;
+    border: 6px solid #317FB0;
+}
+
+.packages .package input[type="radio"] + label {
+    font-weight: 100;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 5px 0;
+    padding-left: 5px;
+}
+
+.packages .package input[type="radio"] + label:hover {
+    cursor: pointer;
+    background-color: #C5D0D6;
+}
+
+.packages .package input[type="radio"]:checked + label {
+    background-color: #C0D3DD;
+    font-size: 17px;
+}
 /* end of machine details page*/
 
 /* Decks Public Pages */
@@ -664,3 +727,5 @@ background-color: #46b9ff;
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus { background-color: transparent !important; }
 .navbar-inverse .navbar-toggle { border: 0 !important; }
 /* ------------ End loader --------------*/
+
+

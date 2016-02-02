@@ -25,21 +25,23 @@ class cloudapi_portforwarding(BaseActor):
                 return nic.ipAddress
         return None
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
-    def create(self, cloudspaceid, publicIp, publicPort, vmid, localPort, protocol=None, **kwargs):
+    def create(self, cloudspaceId, publicIp, publicPort, machineId, localPort, protocol=None, **kwargs):
         """
-        Create a portforwarding rule
-        param:cloudspaceid id of the cloudspace
-        param:publicIp public ipaddress
-        param:publicPort public port
-        param:vmid id of the vm
-        param:localPort private port
+        Create a port forwarding rule
+
+        :param cloudspaceId: id of the cloudspace
+        :param publicIp: public ipaddress
+        :param publicPort: public port
+        :param machineId: id of the virtual machine
+        :param localPort: local port on vm
+        :param protocol: protocol udp or tcp
         """
-        vmid = int(vmid)
-        cloudspaceid = int(cloudspaceid)
-        cloudspace = self.models.cloudspace.get(cloudspaceid)
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
+        machineId = int(machineId)
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if len(fw) == 0:
             raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
@@ -50,7 +52,7 @@ class cloudapi_portforwarding(BaseActor):
         except netaddr.AddrFormatError:
             raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
-        machine = j.apps.cloudapi.machines.get(vmid)
+        machine = j.apps.cloudapi.machines.get(machineId)
         localIp = self._getLocalIp(machine)
         if localIp is None:
             raise exceptions.NotFound('No correct ipaddress found for this machine')
@@ -63,7 +65,6 @@ class cloudapi_portforwarding(BaseActor):
             raise exceptions.ServiceUnavailable("Forward to %s with port %s failed to create." % (publicIp, publicPort))
         return result
 
-
     def deleteByVM(self, machine, **kwargs):
         def getIP():
             for nic in machine.nics:
@@ -73,9 +74,9 @@ class cloudapi_portforwarding(BaseActor):
         localIp = getIP()
         if localIp is None:
             return True
-        cloudspaceid = machine.cloudspaceId
-        cloudspace = self.models.cloudspace.get(cloudspaceid)
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
+        cloudspaceId = machine.cloudspaceId
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if not fw:
             return True
         fw_id = fw[0]['guid']
@@ -83,7 +84,7 @@ class cloudapi_portforwarding(BaseActor):
         forwards = self.netmgr.fw_forward_list(fw_id, grid_id)
         for fw in forwards:
             if fw['localIp'] == localIp:
-                self._deleteByPort(cloudspaceid, fw['publicIp'], fw['publicPort'], fw['protocol'])
+                self._deleteByPort(cloudspaceId, fw['publicIp'], fw['publicPort'], fw['protocol'])
         return True
 
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
@@ -103,95 +104,107 @@ class cloudapi_portforwarding(BaseActor):
 
         return fw[0]['guid'], fw[0]['gid']
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
-    def delete(self, cloudspaceid, id, **kwargs):
+    def delete(self, cloudspaceId, id, **kwargs):
         """
-        Delete a specific portforwarding rule
-        param:cloudspaceid if of the cloudspace
-        param:id of the portforward
+        Delete a specific port forwarding rule
+
+        :param cloudspaceId: id of the cloudspace
+        :param id: id of the port forward rule
 
         """
         try:
-            result = self._delete(int(cloudspaceid), id)
+            result = self._delete(int(cloudspaceId), id)
         except exceptions.BaseError:
             raise
         except:
             raise exceptions.ServiceUnavailable('Failed to remove Portforwarding')
         return result
 
-    def _delete(self, cloudspaceid, id, **kwargs):
-        fw_id, fw_gid = self._getFirewallId(cloudspaceid)
+    def _delete(self, cloudspaceId, id, **kwargs):
+        fw_id, fw_gid = self._getFirewallId(cloudspaceId)
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         id = int(id)
         if not id < len(forwards):
             raise exceptions.NotFound('Cannot find the rule with id %s' % str(id))
         forward = forwards[id]
-        self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'])
+        self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'],
+                                      forward['localIp'], forward['localPort'])
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
-        return self._process_list(forwards, cloudspaceid)
+        return self._process_list(forwards, cloudspaceId)
 
-    @authenticator.auth(acl='D')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
-    def deleteByPort(self, cloudspaceid, publicIp, publicPort, proto=None, **kwargs):
+    def deleteByPort(self, cloudspaceId, publicIp, publicPort, proto=None, **kwargs):
         """
-        Delete a specific portforwarding rule
-        param:cloudspaceid if of the cloudspace
-        param:id of the portforward
+        Delete a specific port forwarding rule by public port details
+
+        :param cloudspaceId: id of the cloudspace
+        :param publicIp: port forwarding public ip
+        :param publicPort: port forwarding public port
+        :param proto: port forwarding protocol
         """
         try:
-            result = self._deleteByPort(int(cloudspaceid), publicIp, publicPort, proto)
+            result = self._deleteByPort(int(cloudspaceId), publicIp, publicPort, proto)
         except exceptions.BaseError:
             raise
         except:
             raise exceptions.ServiceUnavailable('Failed to remove Portforwarding')
-        return result
+        return True
 
-    def _deleteByPort(self, cloudspaceid, publicIp, publicPort, proto, **kwargs):
-        fw_id, fw_gid = self._getFirewallId(cloudspaceid)
+    def _deleteByPort(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
+        fw_id, fw_gid = self._getFirewallId(cloudspaceId)
         if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort,proto):
             raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
-        return self._process_list(forwards, cloudspaceid)
+        return self._process_list(forwards, cloudspaceId)
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
-    def update(self, cloudspaceid, id, publicIp, publicPort, vmid, localPort, protocol, **kwargs):
-        vmid = int(vmid)
-        cloudspaceid = int(cloudspaceid)
-        cloudspace = self.models.cloudspace.get(cloudspaceid)
+    def update(self, cloudspaceId, id, publicIp, publicPort, machineId, localPort, protocol, **kwargs):
+        """
+        Update a port forwarding rule
+
+        :param cloudspaceId: id of the cloudspace
+        :param id: id of the portforward to edit
+        :param publicIp: public ipaddress
+        :param publicPort: public port
+        :param machineId: id of the virtual machine
+        :param localPort: local port
+        :param protocol: protocol udp or tcp
+        """
+        machineId = int(machineId)
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
         ctx = kwargs['ctx']
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if len(fw) == 0:
-            ctx.start_response('404 Not Found', [])
-            return 'Incorrect cloudspace or there is no corresponding gateway'
+            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
 
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         id = int(id)
         if not id < len(forwards):
-            ctx.start_response('404 Not Found', [])
-            return 'Cannot find the rule with id %s' % str(id)
+            raise exceptions.NotFound('Cannot find the rule with id %s' % str(id))
         forward = forwards[id]
-        machine = self.models.vmachine.get(vmid)
+        machine = self.models.vmachine.get(machineId)
         if machine.nics:
             if machine.nics[0].ipAddress != 'Undefined':
                 localIp = machine.nics[0].ipAddress
             else:
-                ctx.start_response('404 Not Found', [])
-                return 'No correct ipaddress found for machine with id %s' % vmid
+                raise exceptions.NotFound('No correct ipaddress found for machine with id %s' % machineId)
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
-            ctx.start_response('403 Forbidden', [])
-            return "Forward for %s with port %s already exists" % (publicIp, publicPort)
+            raise exceptions.Forbidden("Forward for %s with port %s already exists" % (publicIp, publicPort))
         self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
         self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
-        return self._process_list(forwards, cloudspaceid)
+        return self._process_list(forwards, cloudspaceId)
 
-    def _process_list(self, forwards, cloudspaceid):
+    def _process_list(self, forwards, cloudspaceId):
         result = list()
-        query = {'cloudspaceId': cloudspaceid, 'status': {'$ne': 'DESTROYED'}}
+        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
         machines = self.models.vmachine.search(query)[1:]
         def getMachineByIP(ip):
             for machine in machines:
@@ -212,12 +225,14 @@ class cloudapi_portforwarding(BaseActor):
             result.append(f)
         return result
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'cloudspace': set('R'), 'machine': set('R')})
     @audit()
-    def list(self, cloudspaceid, machineId=None, **kwargs):
+    def list(self, cloudspaceId, machineId=None, **kwargs):
         """
-        list all portforwarding rules.
-        param:cloudspaceid id of the cloudspace
+        List all port forwarding rules in a cloudspace or machine
+
+        :param cloudspaceId: id of the cloudspace
+        :param machineId: id of the machine, all rules of cloudspace will be listed if set to None
         """
         machine = None
         if machineId:
@@ -230,19 +245,16 @@ class cloudapi_portforwarding(BaseActor):
                         return nic.ipAddress
             return None
         localip = getIP()
-        ctx = kwargs['ctx']
-        cloudspaceid = int(cloudspaceid)
-        cloudspace = self.models.cloudspace.get(cloudspaceid)
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceid)
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if len(fw) == 0:
-            ctx.start_response('404 Not Found', [])
-            return 'Incorrect cloudspace or there is no corresponding gateway'
+            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
         fw_gid = fw[0]['gid']
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid, localip)
-        return self._process_list(forwards, cloudspaceid)
+        return self._process_list(forwards, cloudspaceId)
 
-    @authenticator.auth(acl='R')
     @audit()
     def listcommonports(self, **kwargs):
         """

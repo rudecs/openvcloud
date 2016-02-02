@@ -5,10 +5,10 @@
 
     method:create
         """
-        Create a machine based on the available sizes, in a certain space.
-        The user needs write access rights on the space.
+        Create a machine based on the available sizes, in a certain cloud space
+        The user needs write access rights on the cloud space
         """
-        var:cloudspaceId int,,id of space in which we want to create a machine
+        var:cloudspaceId int,,id of cloud space in which we want to create a machine
         var:name str,,name of machine
         var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
@@ -20,10 +20,10 @@
 
     method:list
         """
-        List the deployed machines in a space. Filtering based on status is possible.
+        List the deployed machines in a space. Filtering based on status is possible
         """
-        var:cloudspaceId int,,id of space in which machine exists @tags: optional
-        var:type str,,when not empty will filter on type types are (ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT) @tags: optional
+        var:cloudspaceId int,,id of cloud space in which machine exists @tags: optional
+        var:type str,,when not empty will filter on type (types are ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT) @tags: optional
         result:list
 
     method:get
@@ -43,7 +43,7 @@
 
     method:update
         """
-        Change basic properties of a machine.
+        Change basic properties of a machine
         Name, description can be changed with this action.
         """
         var:machineId int,, id of the machine
@@ -53,100 +53,99 @@
 
     method:start
         """
-        start a machine.
+        Start the machine
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:stop
         """
-        stop a machine.
+        Stop the machine
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:reboot
         """
-        reboot a machine.
+        Reboot the machine
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:reset
         """
-        Reset a machine, force reboot.
+        Reset the machine, force reboot
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:pause
         """
-        pause a machine.
+        Pause the machine
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:resume
         """
-        resume a machine.
+        Resume the machine
         """
         var:machineId int,, id of the machine
         result:bool
 
     method:addDisk
         """
-        Add a disk to a machine
+        Create and attach a disk to the machine
         """
-        var:machineId int,,id of machine
+        var:machineId int,,id of the machine
         var:diskName str,,name of disk
         var:description str,,optional description
         var:size int,10,size in GByte
-        var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
-        result:int
+        var:type str,B, (B;D;T) B=Boot;D=Data;T=Temp
+        result:int, id of the disk
 
     method:attachDisk
         """
-        Attach a disk to a machine
+        Attach a disk to the machine
         """
-        var:machineId int,, id of machine
+        var:machineId int,, id of the machine
         var:diskId int,,id of disk to attach
-        result:bool
+        result:bool, True if disk was attached successfully
 
     method:detachDisk
         """
-        Detach a disk to a machine
+        Detach a disk from the machine
         """
-        var:machineId int,, id of machine
+        var:machineId int,, id of the machine
         var:diskId int,,id of disk to detach
-        result:bool
+        result:bool, True if disk was detached successfully
 
     method:snapshot
         """
+        Take a snapshot of the machine
         """
         var:machineId int,,id of machine to snapshot
-        var:name str,, Optional name to give snapshot
-        result:int #returns id of new machine which gets created when snapshot was successfull
+        var:name str,, name to give snapshot
+        result:str the snapshot name
 
     method:listSnapshots
         """
-        List the snapshot of a machine
+        List the snapshots of the machine
         """
         var:machineId int,, id of the machine
-        result:list
-
+        result:list, list with the available snapshots
 
     method:deleteSnapshot
         """
-        Delete a snapshot of a machine
+        Delete a snapshot of the machine
         """
         var:machineId int,, id of the machine
         var:epoch str,, epoch time of snapshot
         result:str
 
-
     method:rollbackSnapshot
         """
-        Rollback a snapshot of a machine
+        Rollback a snapshot of the machine
         """
         var:machineId int,, id of the machine
         var:epoch str,, epoch time of snapshot
@@ -154,34 +153,19 @@
 
     method:createTemplate
         """
-        Creates a template from the active machine
+        Create a template from the active machine
         """
         var:machineId int,, id of the machine
         var:templatename str,, name of the template
-        var:basename str,, Snapshot id on which the template is based @tags: optional
-        result:str
+        var:basename str,, snapshot id on which the template is based @tags: optional
+        result:bool, True if template was created
 
-
-#    method:importToNewMachine
-#        """
-#        restore export to a new machine
-#        """
-#        var:name str,,name of the new machine
-#        var:cloudspaceId int,, id of the cloudspace
-#        var:vmexportId int,, id of the export
-#        var:sizeId int,,id of the specific size
-#        var:description str,,optional description @tags: optional
-#        var:aws_access_key str,,s3 access key
-#        var:aws_secret_key str,,s3 secret key
-#        result:jobid
-#
-#
 #    method:export
 #        """
-#        Create a export/backup of a machine
+#        Create an export/backup of the machine
 #        """
 #        var:machineId int,, id of the machine to backup
-#        var:name str,, Usefull name for this backup
+#        var:name str,, useful name for this backup
 #        var:host str,, host to export(if s3)
 #        var:aws_access_key str,,s3 access key
 #        var:aws_secret_key str,,s3 secret key
@@ -190,10 +174,10 @@
 
     method:getConsoleUrl
         """
-        get url to connect to console
+        Get url to connect to console
         """
-        var:machineId int,, id of machine to connect to console
-        result:str #returns one time url used to connect ot console
+        var:machineId str,, id of the machine to connect to console
+        result:str, one time url used to connect ot console
 
 
     method:resize
@@ -206,19 +190,19 @@
 
     method:clone
         """
-        clone machine
+        Clone the machine
         """
-        var:machineId str,,id of machine to clone
-        var:name str,, name of cloned machine
-        result:int #returns id of new machine cloned
+        var:machineId str,,id of the machine to clone
+        var:name str,, name of the cloned machine
+        result:int, id of the new cloned machine
 
     method:getHistory
         """
-        Gets machine history
+        Get machine history
         """
-        var:machineId str,,id of machine to clone
-        var:size int,, result size
-        result:list
+        var:machineId str,,id of the machine
+        var:size int,, number of entries to return
+        result:list, list of the history of the machine
 
 #    method:listExports
 #        """
@@ -226,44 +210,53 @@
 #        """
 #        var:machineId str,, id of the machine
 #        var:status str,, filter on specific status @tags: optional
-#        result:dict a json list
+#        result:list, list of exports, each as a dict
 
     method:addUser
         """
-        Gives a user access to a vmachine
+        Give a registered user access rights
         """
-        var:machineId int,, ID of a vmachine to share
-        var:userId str,, ID of a user to share with
-        var:accessType str,, 'R' for read only access, 'W' for Write access
-        result:bool
+        var:machineId int,,  id of the machine
+        var:userId str,, username or emailaddress of the user to grant access
+        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        result:bool, True if user was added successfully
 
     method:deleteUser
         """
-        Revokes user's access to a vmachine
+        Revoke user access from the vmachine
         """
-        var:machineId int,, ID of a vmachine
-        var:userId str,, ID of a user to revoke their access
-        result:bool
+        var:machineId int,, id of the machine
+        var:userId str,, id or emailaddress of the user to remove
+        result:bool, True if user access was revoked from machine
 
     method:updateUser
         """
-        Updates user's access rights to a vmachine
+        Update user access rights. Returns True only if an actual update has happened.
         """
-        var:machineId int,, ID of a vmachine to share
-        var:userId str,, ID of a user to share with
-        var:accessType str,, 'R' for read only access, 'W' for Write access
-        result:bool
-
+        var:machineId int,, id of the machineId
+        var:userId str,, userid/email for registered users or emailaddress for unregistered users
+        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        result:bool, True if user access was updated successfully
+        
     method:attachPublicNetwork
         """
-        Revokes user's access to a vmachine
+        Attach a public network to the machine
         """
-        var:machineId int,, ID of a vmachine
-        result:bool
+        var:machineId int,, id of the machine
+        result:bool, True if a public network was attached to the machine
 
     method:detachPublicNetwork
         """
-        Revokes user's access to a vmachine
+        Detach the public network from the machine
         """
-        var:machineId int,, ID of a vmachine
-        result:bool
+        var:machineId int,, id of the machine
+        result:bool, True if public network was detached from the machine
+
+    method:addExternalUser
+        """
+        Give an unregistered user access rights by sending an invite email
+        """
+        var:machineId int,, id of the machine
+        var:emailaddress str,, emailaddress of the unregistered user that will be invited
+        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        result:bool, True if user was added successfully

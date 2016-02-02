@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
+from JumpScale.portal.portal import exceptions
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.mailclient
 from cloudbrokerlib.baseactor import BaseActor
@@ -97,12 +98,6 @@ class cloudapi_users(BaseActor):
         else:
             ctx.start_response('404 Not Found', [])
             return 'User not found'
-
-
-
-    def _isValidUserName(self, username):
-        r = re.compile('^[a-z0-9]{1,20}$')
-        return r.match(username) is not None
 
     def _isValidPassword(self, password):
         if len(password) < 8 or len (password) > 80:
@@ -256,3 +251,199 @@ class cloudapi_users(BaseActor):
         self.models.resetpasswordtoken.deleteSearch({'id': validationtoken})
 
         return True
+
+    def getMatchingUsernames(self, usernameregex, limit=5, **kwargs):
+        """
+        Get a list of the matching usernames for a given string
+
+        :param usernameregex: regex of the usernames to searched for
+        :param limit: the number of usernames to return
+        :return: list of dicts with the username and url of the gravatar of the user
+        """
+        if limit > 20:
+            raise exceptions.BadRequest('Cannot return more than 20 usernames while matching users')
+
+        matchingusers = self.systemodel.user.search({'id': {'$regex': usernameregex}},
+                                                    size=limit)[1:]
+
+        if matchingusers:
+            return map(lambda u: {'username': u['id'],
+                                  'gravatarurl': 'http://www.gravatar.com/avatar/%s' %
+                                                 md5.md5(u['emails'][0]).hexdigest()},
+                       matchingusers)
+        else:
+            return []
+
+    def sendInviteLink(self, emailaddress, resourcetype, resourceid, accesstype, **kwargs):
+        """
+        Send an invitation for a link to share a vmachine, cloudspace, account management
+        inviting a new user to register and access them
+
+        :param emailaddress: emailaddress of the user that will be invited
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
+        :return True if email was was successfully sent
+        """
+
+        if not re.search('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$', emailaddress):
+            raise exceptions.PreconditionFailed('Specified email address is in an invalid format')
+
+        existinginvitationtoken = self.models.inviteusertoken.search({'email': emailaddress})[1:]
+
+        if existinginvitationtoken:
+            # Resend the same token in a new email for the newly shared resource
+            invitationtoken = self.models.inviteusertoken.get(existinginvitationtoken[0]['id'])
+        else:
+            # genrerate a new token
+            generatedtoken = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                                     for _ in xrange(64))
+            invitationtoken = self.models.inviteusertoken.new()
+            invitationtoken.id = generatedtoken
+            invitationtoken.email = emailaddress
+
+        invitationtoken.lastInvitationTime = int(time.time())
+        self.models.inviteusertoken.set(invitationtoken)
+        templatename = 'invite_external_users'
+        extratemplateargs = {'invitationtoken': invitationtoken.id}
+        return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
+                                    templatename, extratemplateargs)
+
+    def sendShareResourceEmail(self, emailaddress, resourcetype, resourceid, accesstype,
+                               username, activated=True):
+        """
+        Send an email to a registered users to inform a vmachine, cloudspace, account management
+        has been shared with them
+
+        :param emailaddress: emailaddress of the registered user
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
+        :param username: username of the registered user
+        :param activated: True if user is activated on the system
+        :return True if email was was successfully sent
+        """
+        templatename = 'invite_internal_users'
+        extratemplateargs = {'username': username, 'activated': activated}
+        return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
+                                    templatename, extratemplateargs)
+
+    def _sendShareEmail(self, emailaddress, resourcetype, resourceid, accesstype, templatename,
+                        extratemplateargs=None):
+        """
+
+        :param emailaddress: emailaddress of the registered user
+        :param resourcetype: the type of the resource that will be shared (account,
+                             cloudspace, vmachine)
+        :param resourceid: the id of the resource that will be shared
+        :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
+        :param templatename: name of the template to be used for sending the email (templates are
+            located under cloudbroker/email/users/)
+        :param extratemplateargs: optional extra arguments to be passed to the template
+        :return: True if email was was successfully sent
+        """
+        # Build up message subject, body and send it
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        toaddrs = [emailaddress]
+
+        if resourcetype.lower() == 'account':
+            accountobj = self.models.account.get(resourceid)
+            resourcename =  accountobj.name
+        elif resourcetype.lower() == 'cloudspace':
+            cloudspaceobj = self.models.cloudspace.get(resourceid)
+            resourcename = cloudspaceobj.name
+        elif resourcetype.lower() == 'machine':
+            machineobj = self.models.vmachine.get(resourceid)
+            resourcename = machineobj.name
+
+        if set(accesstype) == set('ARCXDU'):
+            accessrole = 'Admin'
+        elif set(accesstype) == set('RCX'):
+            accessrole = 'Write'
+        elif set(accesstype) == set('R'):
+            accessrole = 'Read'
+        else:
+            raise exceptions.PreconditionFailed('Unidentified access rights (%s) have been set.' %
+                                                accesstype)
+
+        args = {
+            'email': emailaddress,
+            'resourcetype': resourcetype,
+            'resourcename': resourcename,
+            'resourceid': resourceid,
+            'accessrole': accessrole,
+            'portalurl': j.apps.cloudapi.locations.getUrl(),
+            'emailaddress': emailaddress
+        }
+
+        if extratemplateargs:
+            args.update(extratemplateargs)
+
+        subject = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/%s.subject.txt' % templatename, **args)
+        body = j.core.portal.active.templates.render(
+                'cloudbroker/email/users/%s.html' % templatename, **args)
+
+        j.clients.email.send(toaddrs, fromaddr, subject, body)
+
+        return True
+
+    def isValidInviteUserToken(self, inviteusertoken, emailaddress, **kwargs):
+        """
+        Check if the inviteusertoken and emailaddress pair are valid and matching
+
+        :param inviteusertoken: the token that was previously sent to the invited user email
+        :param emailaddress: email address for the user
+        :return: True if token and emailaddress are valid, otherwise False
+        """
+        if not self.models.inviteusertoken.exists(inviteusertoken):
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        inviteusertokenobj = self.models.inviteusertoken.get(inviteusertoken)
+        if inviteusertokenobj.email != emailaddress:
+            # Email address of user isn't the same as the address the user was invited with
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        return True
+
+    def registerInvitedUser(self, inviteusertoken, emailaddress, username, password,
+                            confirmpassword, **kwargs):
+
+        """
+        Register a user that was previously invited to a shared resource (Account, Cloudspace,
+        Vmachine)
+
+        :param inviteusertoken: the token that was previously sent to the invited user email
+        :param emailaddress: email address for the user
+        :param username: the username the user wants to register with
+        :param password: the password the user wants to set
+        :param confirmpassword: a confirmation of the password
+        :return: success message if user was successfully registered on the system
+        """
+        if not self.models.inviteusertoken.exists(inviteusertoken):
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        inviteusertokenobj = self.models.inviteusertoken.get(inviteusertoken)
+        if inviteusertokenobj.email != emailaddress:
+            # Email address of user isn't the same as the address the user was invited with
+            raise exceptions.BadRequest('Invalid invitation token.')
+
+        if not password:
+            raise exceptions.BadRequest("Password cannot be empty.")
+        elif password != confirmpassword:
+            raise exceptions.BadRequest("Passwords do not match.")
+
+        groups = ['user']
+        emails = [emailaddress]
+        created = j.core.portal.active.auth.createUser(username, password, emails, groups,
+                                                       None)
+        if created:
+            # Check all shared resources invites and update invited users to CONFIRMED status with
+            # newly registered username
+            self.cb.updateResourceInvitations(username, emailaddress)
+            # Delete the token so that it will not be re-used
+            self.models.inviteusertoken.delete(inviteusertoken)
+
+        return "You have successfully registered to OpenvCloud."

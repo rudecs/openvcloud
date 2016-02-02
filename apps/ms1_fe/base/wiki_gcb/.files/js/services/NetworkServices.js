@@ -14,7 +14,7 @@ angular.module('cloudscalers.services')
                 }
                 else{
                     if(machineId){
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id) + '&machineId=' + encodeURIComponent(machineId)).then(
                             function(result){
                                 return result.data;
                             },
@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
                             }
                         );
                     }else{
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceid=' + encodeURIComponent(id)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceI[[[d=' + encodeURIComponent(id)).then(
                             function(result){
                                 return result.data;
                             },
@@ -35,8 +35,8 @@ angular.module('cloudscalers.services')
                 }
 
             },
-            createPortforward: function(id, ip, publicPort, vmid, localPort, protocol) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceid=' + encodeURIComponent(id) + '&publicIp=' + encodeURIComponent(ip) + "&publicPort="+ encodeURIComponent(publicPort) + "&vmid=" + encodeURIComponent(vmid) + "&localPort=" +
+            createPortforward: function(id, ip, publicPort, machineId, localPort, protocol) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/create?cloudspaceId=' + encodeURIComponent(id) + '&publicIp=' + encodeURIComponent(ip) + "&publicPort="+ encodeURIComponent(publicPort) + "&machineId=" + encodeURIComponent(machineId) + "&localPort=" +
                     encodeURIComponent(localPort) + '&protocol=' + encodeURIComponent(protocol)).then(
                         function(result){
                             return result;
@@ -46,9 +46,9 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            updatePortforward: function(cloudspaceid, id, ip, publicPort, vmid, localPort, protocol) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id) + "&publicIp=" + encodeURIComponent(ip) + "&publicPort=" + encodeURIComponent(publicPort) + "&vmid=" +
-                    encodeURIComponent(vmid) + "&localPort=" +encodeURIComponent(localPort) + '&protocol=' + encodeURIComponent(protocol)).then(
+            updatePortforward: function(cloudspaceId, id, ip, publicPort, machineId, localPort, protocol) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/update?cloudspaceId=' + encodeURIComponent(cloudspaceId) + '&id=' + encodeURIComponent(id) + "&publicIp=" + encodeURIComponent(ip) + "&publicPort=" + encodeURIComponent(publicPort) + "&machineId=" +
+                    encodeURIComponent(machineId) + "&localPort=" +encodeURIComponent(localPort) + '&protocol=' + encodeURIComponent(protocol)).then(
                         function(result){
                             return result;
                         },
@@ -57,8 +57,8 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            deletePortforward: function(cloudspaceid, id) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/delete?cloudspaceid=' + encodeURIComponent(cloudspaceid) + '&id=' + encodeURIComponent(id)).then(
+            deletePortforward: function(cloudspaceId, id) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/delete?cloudspaceId=' + encodeURIComponent(cloudspaceId) + '&id=' + encodeURIComponent(id)).then(
                         function(result){
                             return result;
                         },

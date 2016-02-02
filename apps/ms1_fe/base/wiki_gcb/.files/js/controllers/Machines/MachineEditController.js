@@ -1,38 +1,39 @@
 angular.module('cloudscalers.controllers')
     .controller('MachineEditController',
-                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
-                function($scope, $routeParams, $timeout, $location, Machine, Networks , confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
+                ['$scope', '$routeParams', '$timeout', '$location', 'Machine', 'Networks' , 'Size','confirm', '$alert', '$modal', 'LoadingDialog', '$ErrorResponseAlert',
+                function($scope, $routeParams, $timeout, $location, Machine, Networks , Size, confirm, $alert, $modal, LoadingDialog, $ErrorResponseAlert) {
         $scope.tabState = "currentDisks";
 
         $scope.changeTabState = function(state) {
             $scope.tabState = state;
         };
 
-        function clearDisk(){
+        $scope.clearDisk = function(){
             $scope.disk = {name: "", size: "", description: ""};
             $scope.changeTabState('currentDisks');
         }
-        clearDisk();
+        $scope.clearDisk();
 
-        function getMachine(){
-            Machine.get($routeParams.machineId).then(function(data) {
-                $scope.machine = data;
-                $timeout(function () {
-                  LoadingDialog.hide();
-                }, 1500);
-                },
-                function(reason) {
-                  LoadingDialog.hide();
+        $scope.getMachine = function(){
+            return Machine
+                .get($routeParams.machineId)
+                .then(function(data) {
+                    $scope.machine = data;
+                    $timeout(function () {
+                        LoadingDialog.hide();
+                    }, 1500);
+                },function(reason) {
+                    LoadingDialog.hide();
                     $ErrorResponseAlert(reason);
                 });
         }
-        getMachine();
+        $scope.getMachine();
 
         $scope.createDisk = function() {
             LoadingDialog.show('Creating disk');
             Machine.addDisk($routeParams.machineId, $scope.disk.name, $scope.disk.description, $scope.disk.size, "D").then(function(result){
-                getMachine();
-                clearDisk();
+                $scope.getMachine();
+                $scope.clearDisk();
             },function(reason){
                 LoadingDialog.hide();
                 $ErrorResponseAlert(reason);
@@ -119,14 +120,14 @@ angular.module('cloudscalers.controllers')
             if(acl === undefined ) {
                 return;
             }
-            if($scope.currentUser.username && $scope.machine.acl && !$scope.currentUserAccess){
+            if($scope.currentUser.username && $scope.machine.acl){
                 var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
                 if(currentUserAccessright == "R"){
-                    $scope.currentUserAccess = 'Read';
-                }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
-                    $scope.currentUserAccess = "ReadWrite";
-                }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
-                    $scope.currentUserAccess = "Admin";
+                    $scope.currentUser.acl.machine = 1;
+                }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
+                    $scope.currentUser.acl.machine = 2;
+                }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
+                    $scope.currentUser.acl.machine = 3;
                 }
             }
         }, true);
@@ -193,6 +194,55 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('machine', updateMachineSize, true);
         $scope.$watch('sizes', updateMachineSize, true);
         $scope.$watch('images', updateMachineSize, true);
+
+        $scope.resize = function(currentSpace) {
+            var sizes = $scope.sizes,
+                initialSizeId = $scope.machine.sizeid;
+
+            var modalInstance = $modal.open({
+                templateUrl: 'resizeMachineDialog.html',
+                controller: function($scope, $modalInstance){
+                    $scope.sizes = sizes;
+                    $scope.sizepredicate = 'memory'
+                    $scope.numeral = numeral;
+                    $scope.initialSizeId = initialSizeId;
+
+                    $scope.selectedPackage = _.find($scope.sizes, function(size) {
+                        return size.id === $scope.initialSizeId;
+                    });
+
+                    $scope.setPackage = function(package) {
+                        $scope.selectedPackage = package;
+                    };
+
+                    $scope.ok = function() {
+                        $modalInstance.close($scope.selectedPackage);
+                    };
+                    
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                resolve: {
+                }
+            });
+
+            modalInstance.result.then(function (size) {
+                LoadingDialog.show('Resizing compute capacity..');
+                
+                Machine
+                    .resize($scope.machine.id, size.id)
+                    .then(function() {
+                        return $scope
+                            .getMachine();
+                    }, function(error) {
+                        $ErrorResponseAlert(error);
+                    })
+                    ['finally'](function() {
+                        LoadingDialog.hide();
+                    })
+            });
+        };
 
         $scope.destroy = function() {
             var modalInstance = $modal.open({

@@ -30,10 +30,10 @@ function createdev() {
 }
 
 function rexec () {
-    ssh "${node}.lxc" $@
+    ssh "${node}" $@
 }
 
-#make nodes on lxc
+#make nodes on
 function dupdev() {
     dev=$1
     major=$(ls -l $dev | awk '{print $5}' | cut -d ',' -f 1)
@@ -57,12 +57,13 @@ function setupdev() {
 
 
 echo mknod
-ssh "${node}.lxc" mkdir /dev/net
+ssh "${node}" mkdir /dev/net
 dupdev /dev/net/tun
 dupdev /dev/fuse
 dupdev /dev/kvm
-rexec chmod 777 /dev/kvm
 
 setupdev cache 4GB
 setupdev db 4GB
 
+rexec udevadm trigger
+rexec chmod 777 /dev/kvm

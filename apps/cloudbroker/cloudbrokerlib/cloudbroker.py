@@ -12,6 +12,7 @@ from billingenginelib import account as accountbilling
 import random
 import time
 import string
+import re
 
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
@@ -81,6 +82,8 @@ class CloudBroker(object):
         self.Dummy = Dummy
         self._actors = None
         self.machine = Machine(self)
+        self.syscl = j.clients.osis.getNamespace('system')
+        self.cbcl = j.clients.osis.getNamespace('cloudbroker')
 
     @property
     def actors(self):
@@ -282,6 +285,102 @@ class CloudBroker(object):
 
         models.stack.set(stack)
         return len(new_images_ids)
+
+    def checkUser(self, username, activeonly=True):
+        """
+        Check if a user exists with the given username or email address
+
+        :param username: username or emailaddress of the user
+        :param activeonly: only return activated users if set to True
+        :return: User if found
+        """
+        query = {'$or': [{'id': username}, {'emails': username}]}
+        if activeonly:
+            query['active'] = True
+        users = self.syscl.user.search(query)[1:]
+        if users:
+            return users[0]
+        else:
+            return None
+
+    def updateResourceInvitations(self, username, emailaddress):
+        """
+        Update the invitations in ACLs of Accounts, Cloudspaces and Machines after user registration
+
+        :param username: username the user has registered with
+        :param emailaddress: emailaddress of the registered users
+        :return: True if resources were updated
+        """
+        # Validate that only one email address was sent for updating the resources
+        if len(emailaddress.split(',')) > 1:
+            raise exceptions.BadRequest('Cannot update resource invitations for a list of multiple '
+                                        'email addresses')
+
+        for account in self.cbcl.account.search({'acl.userGroupId': emailaddress})[1:]:
+            accountobj = self.cbcl.account.get(account['guid'])
+            for ace in accountobj.acl:
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.account.set(accountobj)
+                    break
+
+        for cloudspace in self.cbcl.cloudspace.search({'acl.userGroupId': emailaddress})[1:]:
+            cloudspaceobj = self.cbcl.cloudspace.get(cloudspace['guid'])
+            for ace in cloudspaceobj.acl:
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.cloudspace.set(cloudspaceobj)
+                    break
+
+        for vmachine in self.cbcl.vmachine.search({'acl.userGroupId': emailaddress})[1:]:
+            vmachineobj = self.cbcl.vmachine.get(vmachine['guid'])
+            for ace in cloudspaceobj.acl:
+                if ace.userGroupId == emailaddress:
+                    # Update userGroupId and status after user registration
+                    ace.userGroupId = username
+                    ace.status = 'CONFIRMED'
+                    self.cbcl.vmachine.set(vmachineobj)
+                    break
+
+        return True
+
+    def isaccountuserdeletable(self, userace, acl):
+        if set(userace.right) != set('ARCXDU'):
+            return True
+        else:
+            otheradmins = filter(lambda a: set(a.right) == set('ARCXDU') and a != userace, acl)
+            if not otheradmins:
+                return False
+            else:
+                return True
+
+    def isValidEmailAddress(self, emailaddress):
+        r = re.compile('^[\w.+-]+@[\w.-]+\.[a-zA-Z]{2,}$')
+        return r.match(emailaddress) is not None
+
+    def isValidRole(self, accessrights):
+        """
+        Validate that the accessrights map to a valid access role on a resource
+        'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+
+        :param accessrights: string with the accessrights to verify
+        :return: role name if a valid set of permissions, otherwise fail with an exception
+        """
+        if accessrights == 'R':
+            return 'Read'
+        elif set(accessrights) == set('RCX'):
+            return 'Read/Write'
+        elif set(accessrights) == set('ARCXDU'):
+            return 'Admin'
+        else:
+            raise exceptions.BadRequest('Invalid set of access rights "%s". Please only use "R" '
+                                        'for Read, "RCX" for Read/Write and "ARCXDU" for Admin '
+                                        'access.' % accessrights)
+
 
 class Machine(object):
     def __init__(self, cb):

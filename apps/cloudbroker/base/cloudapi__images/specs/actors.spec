@@ -6,15 +6,15 @@
         """
         List the availabe images, filtering can be based on the user which is doing the request
         """
-        var:accountid int,, optional account id to filer @tags: optional
-        var:cloudspaceid int,, optional cloudpsace id to filer @tags: optional
+        var:accountId int,, optional account id to filer @tags: optional
+        var:cloudspaceId int,, optional cloudpsace id to filer @tags: optional
         result: list
 
 
     method:delete
         """
-        Delete a image, you need to have Write access on the image
+        Delete an image
         """
-        var:imageid int,, id of the image to delete
-        result: bool
+        var:imageId int,, id of the image to delete
+        result:bool, True if image was deleted successfully
 

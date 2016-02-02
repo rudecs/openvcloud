@@ -1,5 +1,5 @@
 from JumpScale import j
-import JumpScale.grid.osis
+from cloudbrokerlib import authenticator
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
@@ -26,7 +26,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspaceId = int(cloudspaceId)
 
-        accountid = accountId
+        accountid = int(accountId)
 
         cloudspaces = self.models.cloudspace.simpleSearch({ 'id': cloudspaceId, 'accountId': accountid})
         if not cloudspaces:
@@ -34,24 +34,27 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = cloudspaces[0]
 
-        status = cloudspace['status']
-        cloudspace['status'] = 'DESTROYED'
-        self.models.cloudspace.set(cloudspace)
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,
-                            args=(cloudspace, status, reason, ctx),
+                            args=(cloudspace, reason, ctx),
                             kwargs={},
                             title='Deleting Cloud Space',
                             success='Finished deleting Cloud Space',
                             error='Failed to delete Cloud Space')
 
-    def _destroy(self, cloudspace, status, reason, ctx):
+    def _destroy(self, cloudspace, reason, ctx):
+        status = cloudspace['status']
+        cloudspace['status'] = 'DESTROYING'
+        self.models.cloudspace.set(cloudspace)
+        cloudspace['status'] = 'DESTROYED'
+        title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             #delete machines
-            for machine in self.models.vmachine.simpleSearch({'cloudspaceId': cloudspace['id']}):
+            machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+            for idx, machine in enumerate(machines):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
-                    ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Machine %s' % machine['name'])
+                    ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
             cloudspace['status'] = status
@@ -60,7 +63,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         #delete routeros
         gid = cloudspace['gid']
-        ctx.events.sendMessage('Deleting Cloud Space', 'Deleting Virtual Firewall')
+        ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
         self._destroyVFW(gid, cloudspace['id'])
         if cloudspace['networkId']:
             self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
@@ -213,11 +216,12 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
         return True
 
-    def _checkUser(self, username):
-        user = self.syscl.user.simpleSearch({'id':username})
-        if not user:
-            raise exceptions.NotFound('Username "%s" not found' % username)
-        return user[0]
+    def _checkCloudspace(self, cloudspaceId):
+        cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
+        if not cloudspaces:
+            raise exceptions.NotFound("Cloud space with id %s does not exists" % cloudspaceId)
+
+        return cloudspaces[0]
     
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -226,31 +230,44 @@ class cloudbroker_cloudspace(BaseActor):
         Give a user access rights.
         Access rights can be 'R' or 'W'
         param:accountname id of the account
-        param:username id of the user to give access
+        param:username id of the user to give access or emailaddress to invite an external user
         param:accesstype 'R' for read only access, 'W' for Write access
         result bool
         """
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
+        cloudspace = self._checkCloudspace(cloudspaceId)
+        cloudspaceId = cloudspace['id']
+        user = self.cb.checkUser(username, activeonly=False)
 
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudspaces_actor.addUser(cloudspaceId, userId, accesstype)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if username in cloudspaceacl:
+            updated = self.cloudspaces_actor.updateUser(cloudspaceId, username, accesstype)
+            if not updated:
+                raise exceptions.PreconditionFailed('User already has same access level to owning '
+                                                    'account')
+        elif user:
+            self.cloudspaces_actor.addUser(cloudspaceId, username, accesstype)
+        elif self.cb.isValidEmailAddress(username):
+            self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
+        else:
+            raise exceptions.NotFound('User with username %s is not found' % username)
+
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteUser(self, cloudspaceId, username, **kwargs):
+    def deleteUser(self, cloudspaceId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
         """
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound("Cloud space with id %s doest not exists" % cloudspaceId)
-        user = self._checkUser(username)
-        userId = user['id']
-        self.cloudspaces_actor.deleteUser(cloudspaceId, userId)
+        cloudspace = self._checkCloudspace(cloudspaceId)
+        cloudspaceId = cloudspace['id']
+        user = self.cb.checkUser(username)
+        if user:
+            userId = user['id']
+        else:
+            #external user, delete ACE that was added using emailaddress
+            userId = username
+        self.cloudspaces_actor.deleteUser(cloudspaceId, userId, recursivedelete)
         return True
 
     @auth(['level1', 'level2', 'level3'])

@@ -51,10 +51,21 @@ angular.module('cloudscalers.controllers')
             }
         }
 
+        $scope.updateMachineName = function(machineId){
+          console.log($scope.machines);
+          for (var i = 0; i < $scope.machines.length; i++) {
+            console.log($scope.machines[i])
+          }
+        }
+
         $scope.$watch('currentSpace.id',function(){
           if($scope.currentSpace){
             $scope.updateMachineList();
-            $scope.sizes = Size.list($scope.currentSpace.id);
+            Size.list($scope.currentSpace.id).then(function(sizes){
+              $scope.sizes = sizes;
+            },function(reason){
+              $ErrorResponseAlert(reason);
+            });
           }
         });
 

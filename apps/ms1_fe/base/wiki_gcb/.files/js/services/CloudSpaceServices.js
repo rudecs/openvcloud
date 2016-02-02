@@ -58,6 +58,13 @@ angular.module('cloudscalers.services')
                             function(result){ return result.data;},
                             function(reason) { return $q.reject(reason);});
             },
+            inviteUser: function(space, user, accessType) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addExternalUser?cloudspaceId=' + space.id +
+                          '&accesstype=' + accessType + '&emailaddress=' + user)
+                    .then(
+                            function(result){ return result.data;},
+                            function(reason) { return $q.reject(reason);});  
+            },
             deleteUser: function(space, userId) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id +
                                  '&userId=' + userId)
@@ -90,5 +97,16 @@ angular.module('cloudscalers.services')
                     .then(function(result) { return result.data; },
                           function(reason) { return $q.reject(reason); });
             },
+            searchAcl: function(query) {
+                var url = cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=' + query;
+
+                return $http
+                    .get(url)
+                    .then(function(response) {
+                        return response.data
+                    }, function(reason) {
+                        return $q.reject(reason);
+                    });
+            }
         };
     });

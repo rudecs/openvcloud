@@ -2,21 +2,33 @@
 	<div ng-show="shareMachineMessage" class="txt-center">
 	    <div class="share-machine-message alert alert-{[shareMachineMessageStyle]} width-40">{[shareMachineMessageTxt]}</div>
 	</div>
-	<em ng-show="currentUserAccess == 'Admin'">Provide other users access to {[machine.name]} machine by adding their OpenvCloud user name and specify access right.</em>
-	<em ng-hide="currentUserAccess == 'Admin'">Users access to {[machine.name]} machine.</em>
-	<form ng-submit="addUser()">
+	<em ng-show="currentUser.acl.machine > 2 || currentUser.acl.cloudspace > 1">Provide other users access to {[machine.name]} machine by adding their OpenvCloud user name and specify access right.</em>
+	<em ng-show="currentUser.acl.machine < 3">Users access to {[machine.name]} machine.</em>
+	<form>
 	<div class="table-responsive margin-top-medium">
 	    <table class="table users-table">
-	        <tr class="header" ng-show="currentUserAccess == 'Admin'">
+	        <tr class="header" ng-show="currentUser.acl.machine > 2 || currentUser.acl.cloudspace > 1">
 	            <th class="username-text-container width-60">
-	                <input type="text" ng-change="userError=Null" placeholder="Username or email address" class="username-text" ng-model="newUser.nameOrEmail" required="required">
+                    <div id="szn-autocomplete-wrap">
+                        <div class="bg form-control"></div>
+                        <input id="searchQuery" ng-model="searchQuery" szn-autocomplete="autocompleteOptions" placeholder="Search usernames or invite by email..." />
+                        <i class="fa fa-times btn-reset-email" ng-show="searchQuery.length" ng-click="resetSearchQuery()">
+                        </i>
+                    </div>
 	            </th>
 	            <th class="txt-center">
 	                <select class="access-rights" ng-model="newUser.access" required>
 	                	<option ng-repeat="type in accessTypes" value="{[type.value]}">{[type.name]}</option>
 	                </select>
 	            </th>
-	            <th class="txt-center"><input type="submit" class="btn" style="padding: 2px 10px;" value="Add"></input></th>
+	            <th class="txt-center actions-col">
+                    <button ng-if="!emailMode" type="submit" class="btn" ng-click="addUser()" ng-disabled="!searchQuery.length">
+                        Add
+                    </button>
+                    <button ng-if="emailMode" type="submit" class="btn" ng-click="inviteUser()">
+                        Invite
+                    </button>
+                </th>
 	        </tr>
 	        <tr>
 	            <td colspan=2 ng-cloak ng-show="userError">
@@ -26,7 +38,10 @@
 	            </td>
 	        </tr>
 	        <tr ng-cloak ng-repeat="user in machine.acl">
-	            <td>{[user.userGroupId]}</td>
+	            <td>
+                    {[user.userGroupId]}
+                    <strong ng-if="user.status === 'INVITED'" class="text-primary">(Invited)</strong>
+                </td>
 			    <td class="txt-center">
 			    	<span ng-switch on="user.right">
 			    		<span class="access-right alert alert-success" ng-switch-when="R" style="padding: 3px 23px; border: solid 1px rgb(206, 239, 156);"> Read </span>
@@ -34,9 +49,9 @@
 			    		<span class="access-right alert alert-danger" ng-switch-default style="padding: 3px 20px;"> Admin </span>
 			    	</span>
 			    </td>
-	            <td ng-show="currentUserAccess == 'Admin'" class="txt-center">
-		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17"></a>
-		            <a ng-click="deleteUser(machine.id, user.userGroupId)" class="fa fa-times txt-17" ng-show="user.canBeDeleted"></a>
+	            <td ng-show="currentUser.acl.machine > 2 || currentUser.acl.cloudspace > 1" class="txt-center">
+		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
+		            <a ng-click="deleteUser(machine.id, user.userGroupId, user.canBeDeleted)" class="fa fa-times txt-17" ng-class="{'opacity4': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on CloudSpace' : 'Delete user access']}"></a>
 	            </td>
 	        </tr>
 	    </table>
@@ -73,6 +88,5 @@
             </form>
         </script>
 	</div>
-	</form>	
+	</form>
 </div>
-

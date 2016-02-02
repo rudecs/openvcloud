@@ -22,10 +22,10 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                 <div class="row">
                                     <div class="span3 line-height">Description</div>
                                     <div class="span9 clear-none inline-block txt-justify edit-description cursor-pointer width-70 margin-vertical-small position-default">
-                                        <div ng-show="currentUserAccess != 'Read'" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
+                                        <div ng-show="currentUser.acl.machine > 1" ng-click="updateDescriptionPopup()" class="word-break">{[machine.description]}
                                             <em class="right edit-description-link">Edit</em>
                                         </div>
-                                    <div class="cursor-default" ng-hide="currentUserAccess != 'Read'">
+                                    <div class="cursor-default" ng-hide="currentUser.acl.machine > 1">
                                         {[machine.description]}
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             </li>
                         </ul>
                     </div>
-                    <div class="span3 machine-actions margin-left-large" ng-show="currentUserAccess != 'Read'">
+                    <div class="span3 machine-actions margin-left-large" ng-show="currentUser.acl.machine > 1">
                         <h4>Actions</h4>    <i ng-show="machine.locked == true" class="fa fa-large fa fa-lock"></i>
                         <ul class="actions margin-all-none padding-all-none padding-left-small">
 
@@ -117,7 +117,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     Reset
                                 </a>
                             </li>
-                            <li ng-show="currentUserAccess != 'Read'">
+                            <li ng-show="currentUser.acl.machine > 1 && machine.locked == false">
                                 <a class="forTipSnap" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Taking a snapshot ensures you have a point in time to return to. Taking a snapshot takes seconds.">
                                     <i class="fa fa-camera"></i>
                                     Take Snapshot
@@ -149,39 +149,64 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     #                            </a>
     #                        </li>
     {{html:
-                        <li ng-show="currentUserAccess != 'Read' && machine.locked == false">
-                                <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
-                                    <i class="fa fa-copy"></i>
-                                    Create Template
-                                </a>
-                                <script type="text/ng-template" id="createTemplateDialog.html">
-                                    <div class="modal-header">
-                                        <h3>Create Template</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <ul>
-                                        Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
-                                    </ul>
-                                    <div class="alert alert-warning margin-top-large">
-                                    Creating a template might take some time during this process your Virtual Machine will be locked.
-                                    Limited actions will be available.
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
-                                    <button class="btn cancel" ng-click="cancel()">Cancel</button>
-                                </div>
+          <li ng-show="currentUser.acl.account > 1 && machine.locked == false">
+                  <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
+                      <i class="fa fa-copy"></i>
+                      Create Template
+                  </a>
+                  <script type="text/ng-template" id="createTemplateDialog.html">
+                      <div class="modal-header">
+                          <h3>Create Template</h3>
+                  </div>
+                  <div class="modal-body">
+                      <ul>
+                          Name: <input ng-model="createtemplate.name" type="text" class="input-large" />
+                      </ul>
+                      <div class="alert alert-warning margin-top-large">
+                      Creating a template might take some time during this process your Virtual Machine will be locked.
+                      Limited actions will be available.
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button class="btn btn-primary ok" ng-click="ok()">Create Template</button>
+                      <button class="btn cancel" ng-click="cancel()">Cancel</button>
+                  </div>
+              </script>
+          </li>
+                    <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
+                            <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
+                                <i class="fa fa-expand"></i>
+                                Resize compute capacity
+                            </a>
+                            <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
+                            <script type="text/ng-template" id="resizeMachineDialog.html">
+                              <div>
+                                  <div class="modal-header">
+                                      <h3>Resize compute capacity</h3>
+                                  </div>
+                                  <div class="modal-body">
+                                        <div class="packages">
+                                            <div ng-repeat="size in sizes | orderBy:sizepredicate" class="package"
+                                                ng-click="setPackage(size)">
+                                                <input type="radio" name="packages" value="" id="package-{[$index]}" ng-checked="selectedPackage.id === size.id" />
+                                                <label for="package-{[$index]}">
+                                                    <span></span>
+                                                    <strong>
+                                                        {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}
+                                                    </strong>  Memory,
+                                                    <strong>{[ size.vcpus ]}</strong> core(s)
+                                                </label>
+                                            </div>
+                                        </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary ok" ng-click="ok()" ng-disabled="!selectedPackage">Ok</button>
+                                      <button type="submit" class="btn" ng-click="cancel()" autofocus>Cancel</button>
+                                  </div>
+                              </div>
                             </script>
                         </li>
-}}
-#                        <li>
-#                            <a>
-#                                <i class="fa fa-download"></i>
-#                                Export
-#                            </a>
-#                        </li>
-    {{html:
-                        <li ng-show="currentUserAccess == 'Admin' && machine.locked == false">
+                        <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
                                 <a ng-click="destroy()">
                                     <i class=" fa fa-times-circle-o"></i>
                                     Destroy
@@ -274,7 +299,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                 <div id="Disks" class="tab-pane">
                   <ul class="nav nav-pills">
                     <li ng-class="{active: tabState === 'currentDisks'}"><a data-toggle="pill" href="" ng-click="changeTabState('currentDisks')">Current disk</a></li>
-                    <li ng-class="{active: tabState === 'createDisks'}"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
+                    <li ng-class="{active: tabState === 'createDisks'}" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.accpunt > 1"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
                   </ul>
                   <div class="marginTopXlarge machine-disks">
                     <div ng-show="tabState === 'currentDisks'">
@@ -290,7 +315,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
 
 
             <div id="snapshots" class="tab-pane">
-                <a ng-show="currentUserAccess != 'Read'" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
+                <a ng-show="currentUser.acl.machine > 1 && machine.locked == false" class="snap2" ng-click="createSnapshot()" ng-class="{'action-disabled': machine.locked != false}" class="margin-bottom-small inline-block">
                     <i class="fa fa-camera"></i>
                     Take Snapshot
                 </a>
@@ -303,7 +328,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             <tr>
                                 <th>Name</th>
                                 <th>Date</th>
-                                <th ng-show="currentUserAccess != 'Read'">Action</th>
+                                <th ng-show="currentUser.acl.machine > 1">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -312,7 +337,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                 <td class="nowrap">
                                     {[snapshot.epoch * 1000 | date:'medium']}
                                 </td>
-                                <td ng-show="currentUserAccess != 'Read'">
+                                <td ng-show="currentUser.acl.machine > 1">
                                     <a class="cursor-pointer margin-all-small txt-17" title="Rollback" ng-show="machine.locked == false" ng-click="rollbackSnapshot(snapshot)"><i class="fa fa-undo"></i></a>
                                     <script type="text/ng-template" id="rollbackSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
@@ -332,7 +357,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                             </div>
                                         </form>
                                     </script>
-                                    <a ng-show="currentUserAccess == 'Admin'" class="cursor-pointer margin-all-small txt-17" title="Delete" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)"><i class="fa fa-times"></i></a>
+                                    <a ng-show="currentUser.acl.machine > 1" class="cursor-pointer margin-all-small txt-17" title="Delete" ng-show="machine.locked == false" ng-click="deleteSnapshot(snapshot)"><i class="fa fa-times"></i></a>
                                     <script type="text/ng-template" id="deleteSnapshotDialog.html">
                                         <form name="destroyform" ng-submit="cancelDestroy()">
                                             <div class="modal-header">
@@ -374,3 +399,4 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     </tour>
 </div>
 }}
+
