@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from .cloudbroker import models
+import json
 
 
 class auth(object):
@@ -126,7 +127,7 @@ class auth(object):
                 elif 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(int(kwargs['accountId']))
 
-            if self.isAuthorized(user, machine, cloudspace, account):
+            if self.isAuthorized(user, account, cloudspace, machine):
                 return func(*args, **kwargs)
             else:
                 raise exceptions.Forbidden(
@@ -134,7 +135,42 @@ class auth(object):
                         Not enough permissions''' % user)
         return wrapper
 
-    def isAuthorized(self, username, machine=None, cloudspace=None, account=None):
+    def checkAccountStatus(self, requiredaccessrights, account):
+        """
+        Check if the required action can be executed on an account. If account is 'DISABLED',
+        'DESTROYED', 'ERROR' and action requires a permission other than READ, the call should
+        fail with 403 Forbidden
+
+        :param requiredaccessrights: the required access rights to access an account or one of
+            its cloudspaces or machines
+        :param account: the account object its status should be checked
+        :raise Exception with 403 Forbidden if action cannot be performed on account or one of
+            its cloduspaces or machines
+        """
+        if requiredaccessrights != set('R') and account.status in ['DISABLED', 'DESTROYED',
+                                                                   'ERROR']:
+            raise exceptions.Forbidden('Only READ actions can be executed on account '
+                                       '(or one of its cloudspace and machines) with status %s.' %
+                                       account.status)
+
+    def checkCloudspaceStatus(self, requiredaccessrights, cloudspace):
+        """
+        Check if the required action can be executed on a cloudspace. If cloudspace is
+        'DESTROYED', 'ERROR' and action requires a permission other than READ, the call should
+        fail with 403 Forbidden
+
+        :param requiredaccessrights: the required access rights to access an cloudspace or one of
+            its machines
+        :param cloudspace: the cloudspace object its status should be checked
+        :raise Exception with 403 Forbidden if action cannot be performed on cloudspace or one of
+            its machines
+        """
+        if requiredaccessrights != set('R') and cloudspace.status in ['DESTROYED', 'ERROR']:
+            raise exceptions.Forbidden('Only READ actions can be executed on cloudspace '
+                                       '(or one of its machines) with status %s.' %
+                                       cloudspace.status)
+
+    def isAuthorized(self, username, account, cloudspace=None, machine=None):
         """
         Check if a user has the authorization to access a resource
 
@@ -154,16 +190,23 @@ class auth(object):
             return True
 
         if 'account' in self.acl and account:
-            grantedaccountacl  = self.expandAclFromAccount(username, groups, account)
+            grantedaccountacl = self.expandAclFromAccount(username, groups, account)
             if self.acl['account'].issubset(grantedaccountacl):
+                self.checkAccountStatus(self.acl['account'], account)
                 return True
+
         if 'cloudspace' in self.acl and cloudspace:
             grantedcloudspaceacl = self.expandAclFromCloudspace(username, groups, cloudspace)
             if self.acl['cloudspace'].issubset(grantedcloudspaceacl):
+                self.checkAccountStatus(self.acl['cloudspace'], account)
+                self.checkCloudspaceStatus(self.acl['cloudspace'], cloudspace)
                 return True
+
         if 'machine' in self.acl and machine:
             grantedmachineacl = self.expandAclFromVMachine(username, groups, machine)
             if self.acl['machine'].issubset(grantedmachineacl):
+                self.checkAccountStatus(self.acl['machine'], account)
+                self.checkCloudspaceStatus(self.acl['machine'], cloudspace)
                 return True
 
         return False
