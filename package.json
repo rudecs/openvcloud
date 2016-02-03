@@ -1,0 +1,24 @@
+{
+  "name": "openvcloud",
+  "version": "1.0.0",
+  "description": "Just test",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.aydo.com/0-complexity/openvcloud.git"
+  },
+  "author": "CodeScalers",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-less": "^1.2.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "load-grunt-tasks": "^3.4.0"
+  }
+}
