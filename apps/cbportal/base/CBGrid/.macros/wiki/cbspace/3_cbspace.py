@@ -3,6 +3,37 @@ try:
 except:
     import json
 
+
+def generateUsersList(sclient, cloudspacedict):
+    """
+    Generate the list of users that have ACEs on the account
+
+    :param sclient: osis client for system model
+    :param cloudspacedict: dict with the cloudspace data
+    :return: list of users have access to cloudspace
+    """
+    users = list()
+    for acl in cloudspacedict['acl']:
+        if acl['type'] == 'U':
+            eusers = sclient.user.simpleSearch({'id': acl['userGroupId']})
+            if eusers:
+                user = eusers[0]
+                user['userstatus'] = acl['status']
+            elif acl['status'] == 'INVITED':
+                user = dict()
+                user['id'] = acl['userGroupId']
+                user['emails'] = [acl['userGroupId']]
+                user['userstatus'] = acl['status']
+            else:
+                user = dict()
+                user['id'] = acl['userGroupId']
+                user['emails'] = ['N/A']
+                user['userstatus'] = 'N/A'
+            user['acl'] = acl['right']
+            users.append(user)
+    return users
+
+
 def main(j, args, params, tags, tasklet):
 
     id = args.getTag('id')
@@ -13,38 +44,41 @@ def main(j, args, params, tags, tasklet):
 
     id = int(id)
     cbclient = j.clients.osis.getNamespace('cloudbroker')
+    sclient = j.clients.osis.getNamespace('system')
     vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
         params.result = ('CloudSpace with id %s not found' % id, args.doc)
         return params
 
-    space = cbclient.cloudspace.get(id)
+    cloudspaceobj = cbclient.cloudspace.get(id)
 
-    obj = space.dump()
+    cloudspacedict = cloudspaceobj.dump()
 
-    accountid = obj['accountId']
+    accountid = cloudspacedict['accountId']
     account = cbclient.account.get(accountid).dump() if cbclient.account.exists(accountid) else {'name':'N/A'}
-    obj['accountname'] = account['name']
+    cloudspacedict['accountname'] = account['name']
 
     resourceLimits = list()
-    for k, v in obj['resourceLimits'].iteritems():
+    for k, v in cloudspacedict['resourceLimits'].iteritems():
         resourceLimits.append(' *%s*: %s'% (k, str(v)))
-    obj['resourceLimits'] = str(', '.join(resourceLimits))
+    cloudspacedict['resourceLimits'] = str(', '.join(resourceLimits))
 
-    vfwkey = "%(gid)s_%(networkId)s" % (obj)
+    vfwkey = "%(gid)s_%(networkId)s" % (cloudspacedict)
     if vcl.virtualfirewall.exists(vfwkey):
         network = vcl.virtualfirewall.get(vfwkey).dump()
-        obj['networkid'] = '[%s|private network?id=%s&gid=%s]' % (obj['networkId'], obj['networkId'], obj['gid'])
-        obj['network'] = network
+        cloudspacedict['networkid'] = '[%s|private network?id=%s&gid=%s]' % (cloudspacedict['networkId'], cloudspacedict['networkId'], cloudspacedict['gid'])
+        cloudspacedict['network'] = network
     else:
-        if obj['networkId']:
-            obj['networkid'] = obj['networkId']
+        if cloudspacedict['networkId']:
+            cloudspacedict['networkid'] = cloudspacedict['networkId']
         else:
-            obj['networkid'] = 'N/A'
-        obj['network'] = {'tcpForwardRules': []}
+            cloudspacedict['networkid'] = 'N/A'
+        cloudspacedict['network'] = {'tcpForwardRules': []}
 
-    args.doc.applyTemplate(obj)
+    cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
+
+    args.doc.applyTemplate(cloudspacedict)
     params.result = (args.doc, args.doc)
     return params
 

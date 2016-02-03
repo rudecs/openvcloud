@@ -2,8 +2,36 @@ try:
     import ujson as json
 except Exception:
     import json
-
 from JumpScale.portal.portal import exceptions
+
+def generateUsersList(sclient, vmachinedict):
+    """
+    Generate the list of users that have ACEs on the account
+
+    :param sclient: osis client for system model
+    :param vmachinedict: dict with the vmachine data
+    :return: list of users have access to vmachine
+    """
+    users = list()
+    for acl in vmachinedict['acl']:
+        if acl['type'] == 'U':
+            eusers = sclient.user.simpleSearch({'id': acl['userGroupId']})
+            if eusers:
+                user = eusers[0]
+                user['userstatus'] = acl['status']
+            elif acl['status'] == 'INVITED':
+                user = dict()
+                user['id'] = acl['userGroupId']
+                user['emails'] = [acl['userGroupId']]
+                user['userstatus'] = acl['status']
+            else:
+                user = dict()
+                user['id'] = acl['userGroupId']
+                user['emails'] = ['N/A']
+                user['userstatus'] = 'N/A'
+            user['acl'] = acl['right']
+            users.append(user)
+    return users
 
 def main(j, args, params, tags, tasklet):
     import gevent
@@ -16,6 +44,7 @@ def main(j, args, params, tags, tasklet):
     id = int(id)
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
+    sosis = j.clients.osis.getNamespace('system')
     data = {'stats_image': 'N/A',
             'stats_parent_image': 'N/A',
             'stats_disk_size': '-1',
@@ -139,6 +168,8 @@ def main(j, args, params, tags, tasklet):
                 size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
                 v = '%.2f %siB' % (size, unit)
         data['stats_%s' % k] = v
+
+    data['users'] = generateUsersList(sosis, data)
 
     args.doc.applyTemplate(data)
     params.result = (args.doc, args.doc)

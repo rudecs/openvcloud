@@ -22,9 +22,11 @@
 
 #- display: Stop For Abusive Resource Usage
 #  action: /restmachine/cloudbroker/machine/stopForAbusiveResourceUsage
+#  hideon:
+#  - HALTED
 #  data:
 #   machineId: $$id
-#   accountId: ${accountId}
+#   accountId: ${accountId}#
 #
 #  input:
 #  - reason
@@ -210,7 +212,7 @@
   data:
    machineId: $$id
 
-- display: Move to a different Stack
+- display: Move to another CPU node
   action: "#movemachine"
 
 - display: Tag
@@ -238,6 +240,32 @@
   action: /restmachine/cloudbroker/machine/detachPublicNetwork
   hide: true
   reload: false
+  data:
+   machineId: $$id
+
+- display: Grant User Access
+  hide: true
+  action: /restmachine/cloudbroker/machine/addUser
+  data:
+   machineId: $$id
+  input:
+  - name: username
+    label: Username or email address (an invitation will be sent to unregistered emails)
+    type: text
+  - name: accesstype
+    label: ACL
+    type: dropdown
+    values:
+     - label: Admin
+       value: ARCXDU
+     - label: Write
+       value: RCX
+     - label: Read
+       value: R
+
+- display: Revoke User Access
+  action: /restmachine/cloudbroker/machine/deleteUser
+  hide: true
   data:
    machineId: $$id
 }}

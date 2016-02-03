@@ -5,27 +5,26 @@
 
     method:list
         """
-        List the create disks machines in a space. Filtering based on status is possible.
+        List the created disks belonging to an account
         """
         var:accountId int,,id of accountId the disks belongs to
         var:type str,,type of the disks @tags: optional
-        result:list
+        result:list, list with every element containing details of a disk as a dict
 
     method:get
         """
-        Get information from a certain object.
-        This contains all information about the machine.
+        Get disk details
         """
-        var:diskId int,, id of disk
-        result: disk
+        var:diskId int,, id of the disk
+        result:dict, dict with the disk details
 
     method:delete
         """
         Delete a disk
         """
-        var:diskId int,, id of the machine
+        var:diskId int,, id of disk to delete
         var:detach bool,,detach disk from machine first @optional
-        result: bool
+        result: bool, True if disk was deleted successfully
 
     method:create
         """
@@ -34,7 +33,7 @@
         var:accountId int,,id of the account
         var:gid int,,id of the grid
         var:name str,,name of disk
-        var:description str,,optional description
-        var:size int,10,size in GByte
+        var:description str,,optional description of disk
+        var:size int,10,size in GBytes, default is 0
         var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
-        result:int
+        result:int, the id of the created disk

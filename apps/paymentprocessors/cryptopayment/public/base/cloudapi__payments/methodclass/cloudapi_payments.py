@@ -71,7 +71,7 @@ class cloudapi_payments(object):
         else:
             return None
     
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'account': set('R')})
     def getPaymentInfo(self, accountId, coin, **kwargs):
         """
         Get the info required for making a payment

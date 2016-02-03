@@ -29,61 +29,149 @@ class cloudapi_cloudspaces(BaseActor):
         self._accountbilling = accountbilling.account()
         self._pricing = pricing.pricing()
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
+        self.systemodel = j.clients.osis.getNamespace('system')
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('U')})
     @audit()
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Give a user access rights.
-        Access rights can be 'R' or 'W'
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
+        Give a registered user access rights
 
+        :param cloudspaceId: id of the cloudspace
+        :param userId: username or emailaddress of the user to grant access
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
         """
-        cloudspaceId = int(cloudspaceId)
-        if not j.core.portal.active.auth.userExists(userId):
-            raise exceptions.NotFound('Unexisting user')
+        user = self.cb.checkUser(userId, activeonly=False)
+        if not user:
+            raise exceptions.NotFound("User is not registered on the system")
         else:
-            cloudspace = self.models.cloudspace.get(cloudspaceId)
-            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceId)
-            if userId in cloudspace_acl:
-                useracl = cloudspace_acl[userId]
-                if 'account_right' in useracl and len(set(accesstype)) < len(useracl['account_right']):
-                    # user already has same or higher access level
-                    raise exceptions.PreconditionFailed('User already has a higher access level')
-                else:
-                    # grant higher access level
-                    for ace in cloudspace.acl:
-                        if ace.userGroupId == userId and ace.type == 'U':
-                            ace.right = accesstype
-                            break
-                    else:
-                        ace = cloudspace.new_acl()
-                        ace.userGroupId = userId
-                        ace.type = 'U'
-                        ace.right = accesstype
+            # Replace email address with ID
+            userId = user['id']
+
+        self._addACE(cloudspaceId, userId, accesstype, userstatus='CONFIRMED')
+        emailaddress = user['emails'][0]
+        try:
+            j.apps.cloudapi.users.sendShareResourceEmail(emailaddress, 'cloudspace', cloudspaceId,
+                                                         accesstype,  userId, user['active'])
+            return True
+        except:
+            self.deleteUser(cloudspaceId, userId, recursivedelete=False)
+            raise
+
+    @authenticator.auth(acl={'cloudspace': set('U')})
+    @audit()
+    def addExternalUser(self, cloudspaceId, emailaddress, accesstype, **kwargs):
+        """
+        Give an unregistered user access rights by sending an invite email
+
+        :param cloudspaceId: id of the cloudspace
+        :param emailaddress: emailaddress of the unregistered user that will be invited
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user was added successfully
+        """
+        if self.systemodel.user.search({'emails': emailaddress})[1:]:
+            raise exceptions.BadRequest('User is already registered on the system, please add as '
+                                        'a normal user')
+
+        self._addACE(cloudspaceId, emailaddress, accesstype, userstatus='INVITED')
+        try:
+            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'cloudspace', cloudspaceId,
+                                                 accesstype)
+            return True
+        except:
+            self.deleteUser(cloudspaceId, emailaddress, recursivedelete=False)
+            raise
+
+    def _addACE(self, cloudspaceId, userId, accesstype, userstatus='CONFIRMED'):
+        """
+        Add a new ACE to the ACL of the cloudspace
+
+        :param cloudspaceId: id of the cloudspace
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was added successfully
+        """
+        self.cb.isValidRole(accesstype)
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if userId in cloudspaceacl:
+            raise exceptions.BadRequest('User already has access rights to this cloudspace')
+
+        ace = cloudspace.new_acl()
+        ace.userGroupId = userId
+        ace.type = 'U'
+        ace.right = accesstype
+        ace.status = userstatus
+        self.models.cloudspace.set(cloudspace)
+        return True
+
+    def _updateACE(self, cloudspaceId, userId, accesstype, userstatus):
+        """
+        Update an existing ACE in the ACL of a cloudspace
+
+        :param cloudspaceId: id of the cloudspace
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :param userstatus: status of the user (CONFIRMED or INVITED)
+        :return True if ACE was successfully updated, False if no update is needed
+        """
+        self.cb.isValidRole(accesstype)
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        cloudspace_acl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
+        if userId in cloudspace_acl:
+            useracl = cloudspace_acl[userId]
+        else:
+            raise exceptions.NotFound('User does not have any access rights to update')
+
+        if 'account_right' in useracl and set(accesstype) == set(useracl['account_right']):
+            # No need to add any access rights as same rights are inherited
+            # Remove cloudspace level access rights if present, cleanup for backwards comparability
+            for ace in cloudspace.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    cloudspace.acl.remove(ace)
+                    self.models.cloudspace.set(cloudspace)
+                    break
+            return False
+        # If user has higher access rights on owning account level, then do not update
+        elif 'account_right' in useracl and set(accesstype).issubset(set(useracl['account_right'])):
+            raise exceptions.Conflict('User already has a higher access level to owning account')
+        else:
+            # grant higher access level
+            for ace in cloudspace.acl:
+                if ace.userGroupId == userId and ace.type == 'U':
+                    ace.right = accesstype
+                    break
             else:
                 ace = cloudspace.new_acl()
                 ace.userGroupId = userId
                 ace.type = 'U'
                 ace.right = accesstype
+                ace.status = userstatus
             self.models.cloudspace.set(cloudspace)
-            return True
+        return True
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('U')})
     @audit()
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
-        Updates a user access rights.
-        Access rights can be 'R' or 'W'
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to give access
-        param:accesstype 'R' for read only access, 'W' for Write access
-        result bool
+        Update user access rights. Returns True only if an actual update has happened.
+
+        :param cloudspaceId: id of the cloudspace
+        :param userId: userid/email for registered users or emailaddress for unregistered users
+        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
+        :return True if user access was updated successfully
         """
-        return self.addUser(cloudspaceId, userId, accesstype, **kwargs)
+        # Check if user exists in the system or is an unregistered invited user
+        existinguser = self.systemodel.user.search({'id': userId})[1:]
+        if existinguser:
+            userstatus = 'CONFIRMED'
+        else:
+            userstatus = 'INVITED'
+        return self._updateACE(cloudspaceId, userId, accesstype, userstatus)
 
     def _listActiveCloudSpaces(self, accountId):
         account = self.models.account.get(accountId)
@@ -93,17 +181,20 @@ class cloudapi_cloudspaces(BaseActor):
         results = self.models.cloudspace.search(query)[1:]
         return results
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'account': set('C')})
     @audit()
-    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity,
+               **kwargs):
         """
         Create an extra cloudspace
-        param:name name of space to create
-        param:access id of user which has full access to this space
-        param:maxMemoryCapacity max size of memory in space (in GB)
-        param:maxDiskCapacity max size of aggregated disks (in GB)
-        result int
 
+        :param accountId: id of acount this cloudspace belongs to
+        :param location: name of location
+        :param name: name of cloudspace to create
+        :param access: username of a user which has full access to this space
+        :param maxMemoryCapacity: max size of memory in space (in GB)
+        :param maxDiskCapacity: max size of aggregated disks (in GB)
+        :return int with id of created cloudspace
         """
         accountId = int(accountId)
         locations = self.models.location.search({'locationCode': location})[1:]
@@ -132,6 +223,7 @@ class cloudapi_cloudspaces(BaseActor):
         ace.userGroupId = access
         ace.type = 'U'
         ace.right = 'CXDRAU'
+        ace.status = 'CONFIRMED'
         cs.resourceLimits['CU'] = maxMemoryCapacity
         cs.resourceLimits['SU'] = maxDiskCapacity
         cs.status = 'VIRTUAL'
@@ -158,8 +250,14 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace.publicipaddress = None
         return cloudspace
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     def deploy(self, cloudspaceId, **kwargs):
+        """
+        Create VFW for cloudspace
+
+        :param cloudspaceId: id of the cloudspace
+        :return: status of deployment
+        """
         cs = self.models.cloudspace.get(cloudspaceId)
         if cs.status != 'VIRTUAL':
             return cs.status
@@ -183,7 +281,8 @@ class cloudapi_cloudspaces(BaseActor):
         self.models.cloudspace.set(cs)
         password = str(uuid.uuid4())
         try:
-            self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password, str(publicipaddress.ip), 'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
+            self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password, str(publicipaddress.ip),
+                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
             cs.status = 'VIRTUAL'
@@ -193,13 +292,14 @@ class cloudapi_cloudspaces(BaseActor):
         self.models.cloudspace.set(cs)
         return cs.status
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'cloudspace': set('D')})
     @audit()
     def delete(self, cloudspaceId, **kwargs):
         """
-        Delete a cloudspace.
-        param:cloudspaceId id of the cloudspace
-        result bool,
+        Delete the cloudspace
+
+        :param cloudspaceId: id of the cloudspace
+        :return True if deletion was successful
         """
         cloudspaceId = int(cloudspaceId)
         # A cloudspace may not contain any resources any more
@@ -207,9 +307,9 @@ class cloudapi_cloudspaces(BaseActor):
         results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
             raise exceptions.Conflict('In order to delete a CloudSpace it can not contain Machines.')
-        #The last cloudspace in a space may not be deleted
+        # The last cloudspace in a space may not be deleted
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        query  = {'accountId': cloudspace.accountId,
+        query = {'accountId': cloudspace.accountId,
                   'status': {'$ne': 'DESTROYED'},
                   'id': {'$ne': cloudspaceId}}
         results = self.models.cloudspace.search(query)[1:]
@@ -222,60 +322,80 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace.status = 'DESTROYED'
         cloudspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
+        return True
 
-
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'cloudspace': set('R')})
     @audit()
     def get(self, cloudspaceId, **kwargs):
         """
-        get cloudspaces.
-        param:cloudspaceId id of the cloudspace
-        result dict
+        Get cloudspace details
+
+        :param cloudspaceId: id of the cloudspace
+        :return dict with cloudspace details
         """
         cloudspaceObject = self.models.cloudspace.get(int(cloudspaceId))
 
-        #For backwards compatibility, set the secret if it is not filled in
+        # For backwards compatibility, set the secret if it is not filled in
         if len(cloudspaceObject.secret) == 0:
             cloudspaceObject.secret = str(uuid.uuid4())
             self.models.cloudspace.set(cloudspaceObject)
 
-        cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspaceObject.id)
-        cloudspace = { "accountId": cloudspaceObject.accountId,
-                        "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()],
-                        "description": cloudspaceObject.descr,
-                        "id": cloudspaceObject.id,
-                        "name": cloudspaceObject.name,
-                        "publicipaddress": getIP(cloudspaceObject.publicipaddress),
-                        "status": cloudspaceObject.status,
-                        "location": cloudspaceObject.location,
-                        "secret": cloudspaceObject.secret}
+        cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspaceObject.id)
+        cloudspace = {"accountId": cloudspaceObject.accountId,
+                      "acl": [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "status": ace['status'],
+                               "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()],
+                      "description": cloudspaceObject.descr,
+                      "id": cloudspaceObject.id,
+                      "name": cloudspaceObject.name,
+                      "publicipaddress": getIP(cloudspaceObject.publicipaddress),
+                      "status": cloudspaceObject.status,
+                      "location": cloudspaceObject.location,
+                      "secret": cloudspaceObject.secret}
         return cloudspace
 
-    @authenticator.auth(acl='U')
+    @authenticator.auth(acl={'cloudspace': set('U')})
     @audit()
-    def deleteUser(self, cloudspaceId, userId, **kwargs):
+    def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
-        Delete a user from the cloudspace
-        params:cloudspaceId id of the cloudspace
-        param:userId id of the user to remove
-        result
+        Revoke user access from the cloudspace
 
+        :param cloudspaceId: id of the cloudspace
+        :param userId: id or emailaddress of the user to remove
+        :param recursivedelete: recursively revoke access permissions from owned cloudspaces
+                                and machines
+        :return True if user access was revoked from cloudspace
         """
         cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        change = False
+        update = False
         for ace in cloudspace.acl:
             if ace.userGroupId == userId:
                 cloudspace.acl.remove(ace)
-                change = True
-        if change:
-            self.models.cloudspace.set(cloudspace)
-        return change
+                update = True
+        if not update:
+            raise exceptions.NotFound('User "%s" does not have access on the cloudspace' % userId)
+
+        self.models.cloudspace.set(cloudspace)
+
+        if recursivedelete:
+            # Delete user accessrights from related machines (part of owned cloudspaces)
+            for vmachine in self.models.vmachine.search({'cloudspaceId': cloudspaceId})[1:]:
+                vmachineupdate = False
+                vmachineobj = self.models.vmachine.get(vmachine['id'])
+                for ace in vmachineobj.acl:
+                    if ace.userGroupId == userId:
+                        vmachineobj.acl.remove(ace)
+                        vmachineupdate = True
+                if vmachineupdate:
+                    self.models.vmachine.set(vmachineobj)
+
+        return update
 
     @audit()
     def list(self, **kwargs):
         """
-        List cloudspaces.
-        result []
+        List all cloudspaces the user has access to
+
+        :return list with every element containing details of a cloudspace as a dict
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
@@ -309,8 +429,9 @@ class cloudapi_cloudspaces(BaseActor):
             account = self.models.account.get(cloudspace['accountId'])
             cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
             cloudspace['accountName'] = account.name
-            cloudspace_acl = authenticator.auth([]).getCloudspaceAcl(cloudspace['id'])
-            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
+            cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspace['id'])
+            cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'], "status": ace['status'],
+                                  "userGroupId": ace['userGroupId'], "canBeDeleted": ace['canBeDeleted']} for _, ace in cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
@@ -319,26 +440,29 @@ class cloudapi_cloudspaces(BaseActor):
 
         return cloudspaces
 
-    @authenticator.auth(acl='A')
+    @authenticator.auth(acl={'cloudspace': set('A')})
     @audit()
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxDiskCapacity, **kwargs):
         """
-        Update a cloudspace name and capacity parameters can be updated
-        param:cloudspaceId id of the cloudspace to change
-        param:name name of the cloudspace
-        param:maxMemoryCapacity max size of memory in space(in GB)
-        param:maxDiskCapacity max size of aggregated disks(in GB)
-        result int
+        Update the cloudspace name and capacity parameters
+
+        :param cloudspaceId: id of the cloudspace
+        :param name: name of the cloudspace
+        :param maxMemoryCapacity: max size of memory in space(in GB)
+        :param maxDiskCapacity: max size of aggregated disks(in GB)
+        :return id of updated cloudspace
 
         """
         # put your code here to implement this method
         raise NotImplementedError("not implemented method update")
 
-    @authenticator.auth(acl='C')
+    @authenticator.auth(acl={'cloudspace': set('X')})
     def getDefenseShield(self, cloudspaceId, **kwargs):
         """
         Get information about the defense shield
+
         param:cloudspaceId id of the cloudspace
+        :return dict with defense shield details
         """
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)

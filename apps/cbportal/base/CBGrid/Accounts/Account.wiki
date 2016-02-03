@@ -35,7 +35,7 @@ h2. Account: ${name}
    accountId: $$id
   input:
   - name: username
-    label: Username
+    label: Username or email address (an invitation will be sent to unregistered emails)
     type: text
   - name: accesstype
     type: dropdown
@@ -53,6 +53,15 @@ h2. Account: ${name}
   hide: true
   data:
    accountId: $$id
+  input:
+  - name: recursivedelete
+    type: dropdown
+    label: Do you want to recursively remove user permissions from all owned cloudspaces and vmachines?
+    values:
+     - label: Yes
+       value: true
+     - label: No
+       value: false
 
 - display: Change Credit
   action: /restmachine/cloudbroker/finance/changeCredit
@@ -85,9 +94,9 @@ h3. Details
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
-||User Name||E-Mail||ACL||Revoke Access||
+||User Name||E-Mail||ACL||Status||Revoke Access||
 {% for user in users -%}
-    | [${user.id}|/CBGrid/user?id=${user.guid}] |${", ".join(user.emails)}|${user.acl}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
+    | {%if user.userstatus!='INVITED' %} [${user.id}|/CBGrid/user?id=${user.id}] {%else%} ${user.id} {% endif %} |${", ".join(user.emails)}|${user.acl}|${user.userstatus if user.userstatus else 'N/A'}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
 h3. Cloud Spaces

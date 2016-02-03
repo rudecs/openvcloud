@@ -19,7 +19,7 @@ Configure, launch and manage your Virtual Machines. Automate using the simple AP
         </div>
         </div>
         <div class="col-md-2 boxes margin-vertical-large txt-center font color5"></div>
-        <div class="col-md-4 boxes margin-vertical-large txt-left font color5">
+        <div class="col-md-4 boxes margin-vertical-large txt-left font color5" ng-show="currentUser.acl.cloudspace > 1">
            }}
 [Defense Shield|NetworkDeck]
 

@@ -289,6 +289,21 @@
         var:machineId int,, ID of machine
         result:bool
 
+    method:addUser
+        """
+        Give a user access rights.
+        Access rights can be 'R' or 'W'
+        """"
+        var:machineId int,,Id of the machine
+        var:username str,,name of the user to be given rights
+        var:accesstype str,, R or W
+
+    method:deleteUser
+        """
+        Delete user from account.
+        """"
+        var:machineId int,,Id of the machine
+        var:username str,,name of the user to be removed
     method:resize
         """
         Change memory and vcpu from machine

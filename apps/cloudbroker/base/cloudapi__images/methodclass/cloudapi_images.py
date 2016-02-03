@@ -8,19 +8,19 @@ class cloudapi_images(BaseActor):
 
     """
     @audit()
-    def list(self, accountid, cloudspaceid, **kwargs):
+    def list(self, accountId, cloudspaceId, **kwargs):
         """
-        List the availabe images, filtering can be based on the cloudspace and the user which is doing the request
+        List the available images, filtering can be based on the cloudspace and the user which is doing the request
         """
         fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
-        if accountid:
-            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountid)]}}
+        if accountId:
+            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
         else:
             q = {'status': 'CREATED', 'accountId': 0}
         query = {'$query': q, '$fields': fields}
 
-        if cloudspaceid:
-            cloudspace = self.models.cloudspace.get(int(cloudspaceid))
+        if cloudspaceId:
+            cloudspace = self.models.cloudspace.get(int(cloudspaceId))
             if cloudspace:
                 stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
                 imageids = set()
@@ -40,11 +40,12 @@ class cloudapi_images(BaseActor):
         return sorted(results, cmp=imagesort)
 
     @audit()
-    def delete(self, imageid, **kwargs):
+    def delete(self, imageId, **kwargs):
         """
-        Delete a image, you need to have Write access on the image
-        param:imageid id of the image to delete
-        result
+        Delete an image
+
+        :param imageId: id of the image to delete
+        :return True if image was deleted successfully
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method delete")

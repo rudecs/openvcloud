@@ -1,0 +1,103 @@
+@template access
+{{css:/$$space/.files/css/font-awesome.min.css}}
+{{div: class=container why-page white-box}}
+
+@row
+@col12
+
+
+{{html:
+<!-- TODO move style -->
+<style type="text/css">
+.white-box { min-height: 30em; margin: 100px auto; max-width: 60em; }
+.white-box a:hover, .white-box a:focus { text-decoration: underline; color: #6591AD; }
+.form-panel { border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; margin-bottom: 30px; }
+.hcenter { margin-left: auto; margin-right: auto; }
+.form-panel header { font-weight: 300; font-size: 20px; line-height: 20px; padding: 25px 30px; background: #f4f5f5; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #545f69; }
+.form-panel fieldset { padding: 30px; /*border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); margin: 0 0 -1px 0; */}
+.hcenter .form-group { margin-bottom: 15px; }
+.input-group { position: relative; display: table; border-collapse: separate; }
+.input-group .input-group-addon { background: #f4f5f5; }
+.input-group .input-group-addon i { color: rgba(0, 0, 0, 0.2); width: 1em; }
+.input-group-addon, .input-group-btn, .input-group .form-control { display: table-cell; }
+.input-group .form-control { position: relative; z-index: 2; float: left; width: 97%; margin-bottom: 0; }
+.img-thumbnail, .btn, .btn-group .btn, .btn-group .dropdown-menu, .btn-group .btn, .btn-group .btn:first-child:not(:last-child), .btn-group .btn:last-child:not(:first-child), .table-bordered, .table-bordered tr:first-child th:first-child, .table-bordered tr:first-child th:last-child, .table-bordered tr:last-child td:first-child, .table-bordered tr:last-child td:last-child, .input-group .btn, .input-group .dropdown-menu, .input-group .form-control, .input-group .input-group-addon, .dropdown-menu, .dropdown-menu .dropdown-submenu .dropdown-menu, .form .form-control, .form .btn, .form-control, .label, .badge, .alert, .alert .btn, .progress, .breadcrumb, .tooltip .tooltip-inner, .popover, .nav-list-panel, .nav-tabs li > a, .tabs-below .nav-tabs li > a, .tabs-right .nav-tabs li > a, .tabs-left .nav-tabs li > a, .nav-tabs .dropdown-menu, .tabs-below .nav-tabs .dropdown-menu, .nav-pills li a, .nav-pills .dropdown-menu, .navbar, .navbar .dropdown-menu, .progress-bar, .progress  .pagination li:first-child a, .pagination li:first-child span, .pagination li:last-child a, .pagination li:last-child span, .pager li a:hover, .pager li a:focus, .panel, .panel-heading, .panel-body, .breadcrumb-arrow li:first-child a, pre, code, .container .jumbotron, .input-lg, .form-group-lg .form-control, .modal-header .modal-title, .modal-content { -webkit-border-radius: 0; -moz-border-radius: 0; -o-border-radius: 0; -ms-border-radius: 0; border-radius: 0; -webkit-box-shadow: none; -moz-box-shadow: none; -o-box-shadow: none; -ms-box-shadow: none; box-shadow: none; -webkit-text-shadow: none; -moz-text-shadow: none; -o-text-shadow: none; -ms-text-shadow: none; text-shadow: none; }
+.input-group-addon:first-child { border-right: 0; }
+.input-group-addon { padding: 6px 12px; font-size: 14px; font-weight: 400; line-height: 1; color: #555; text-align: center; background-color: #eee; border: 1px solid #ccc; border-radius: 4px; }
+.input-group-addon, .input-group-btn { width: 1%; white-space: nowrap; vertical-align: middle; }
+.btn-lg, .btn-group-lg>.btn { padding: 10px 16px; font-size: 18px; line-height: 1.33; border-radius: 6px; }
+.btn-primary { background-color: #218C8D; color: #fff; border: 0; border-radius: 0; }
+.btn-primary:hover { background-color: #176364; color: #fff; }
+.hcenter input.form-control { padding: 8px 11px; padding-right: 0; font-size: 14px !important;}
+.hr-line { border: none; border-top: 1px solid #ccccc8; text-align: center; margin: 4px 0; padding: 0px 30px !important; margin-top: 0 \9;}
+.hr-line legend { font-size: 1em; padding: 0 15px; margin: 0 auto; color: #555; display: inline-block; width: 50px; border: 0;}
+.signup-btn { background-color: #345e79 !important; cursor: pointer;}
+.signup-btn:hover { background-color: #407495 !important}
+.login-btn { background: #689a9a}
+.login-btn:hover { background: #71a6a6}
+.signup-btn[disabled]:hover { background-color: #345e79 !important}
+input::-moz-placeholder {color: #525252;}
+input:-moz-placeholder {color: #525252;}
+</style>
+<div ng-controller="RegisterUserController" ng-cloak>
+    <div>
+      <form name="form" ng-submit="registerInvitedUser()">
+        <div class="form-panel width-70 width-100pc-xs hcenter margin-top-large margin-bottom-small">
+          <header>Sign up</header>
+          <fieldset>
+            <div ng-show="verificationStatus=='PENDING'" class="alert alert-warn margin-bottom-medium">
+              Verifying...
+            </div>
+            <div class="alert alert-error padding-bottom-none margin-bottom-medium" ng-show="verificationStatus=='ERROR'">
+              <p>{[verificationMessage]}</p>
+            </div>
+            <div ng-show="verificationStatus=='SUCCEEDED'" class="margin-bottom-medium alert alert-success">
+              User created successfully. Please proceed to <a href="/restmachine/system/oauth/authenticate">login</a>.
+            </div>
+            <div>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                <input type="email" required ng-model="registerEmail" name="registerEmail" id="registerEmail" class="form-control" placeholder="Enter email" disabled="disabled">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group">
+                <label for="registerUsername" class="input-group-addon"><i class="fa fa-user"></i></label>
+                <input type="text" class="form-control" placeholder="Enter username" required ng-model="registerUsername" id="registerUsername">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group">
+                <label for="registerNewPassword" class="input-group-addon"><i class="fa fa-lock"></i></label>
+                <input type="password" class="form-control" placeholder="Enter password" required ng-model="registerNewPassword" id="registerNewPassword">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group">
+                <label for="registerRetypePassword" class="input-group-addon"><i class="fa fa-lock"></i></label>
+                <input type="password" class="form-control" placeholder="Re-enter password" required ng-model="registerRetypePassword" id="registerRetypePassword">
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block signup-btn" ng-disabled="!isValidToken">Sign up</button>
+            <fieldset class="hr-line">
+              <legend align="center">OR</legend>
+            </fieldset>
+            <a href="/restmachine/system/oauth/authenticate"><input class="btn btn-primary btn-lg btn-block login-btn" type="button" value="Sign in"></a>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+    </div>
+
+</div>
+</div>
+<script src="/$$space/.files/js/services/UserServices.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/controllers/RegisterUserController.js" type="text/javascript"></script>
+
+}}
+
+
+
+@divend
+@divend

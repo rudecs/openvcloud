@@ -4,26 +4,6 @@ angular.module('cloudscalers.controllers')
             $scope.portforwarding = [];
             $scope.commonPortVar = "";
 
-            $scope.$watch('currentSpace.acl', function () {
-                if($scope.currentUser.username && $scope.currentSpace.acl && !$scope.currentUserAccessrightOnCloudSpace){
-                    var currentUserAccessright =  _.find($scope.currentSpace.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
-                    if(currentUserAccessright == "R"){
-                        $scope.currentUserAccessrightOnCloudSpace = 'Read';
-                    }else if( currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') == -1 && currentUserAccessright.indexOf('U') == -1){
-                        $scope.currentUserAccessrightOnCloudSpace = "ReadWrite";
-                    }else if(currentUserAccessright.indexOf('R') != -1 && currentUserAccessright.indexOf('C') != -1 && currentUserAccessright.indexOf('X') != -1 && currentUserAccessright.indexOf('D') != -1 && currentUserAccessright.indexOf('U') != -1){
-                        $scope.currentUserAccessrightOnCloudSpace = "Admin";
-                    }
-                }
-                var uri = new URI($window.location);
-                if(uri._parts.path.indexOf('Portforwarding') > -1){
-                  if($scope.currentUserAccessrightOnCloudSpace != 'Admin'){
-                    uri.filename('Decks');
-                    $window.location = uri.toString();
-                  }
-                }
-            });
-
             $scope.updatePortforwardList = function(){
               $scope.portforwardLoader = true;
               if($routeParams.machineId){
@@ -201,8 +181,12 @@ angular.module('cloudscalers.controllers')
 
             $scope.tableRowClicked = function (index) {
               var uri = new URI($window.location);
-              if(uri._parts.path.indexOf('Portforwarding') == -1){
-                if($scope.currentUserAccess != 'Admin'){
+              if(uri._parts.path.indexOf('Portforwarding') != -1){
+                if($scope.currentUser.acl.cloudspace < 2){
+                  return;
+                }
+              }else{
+                if($scope.currentUser.acl.machine < 2){
                   return;
                 }
               }
@@ -211,7 +195,7 @@ angular.module('cloudscalers.controllers')
                          id: index.id,
                          ip: selectForwardRule.publicIp,
                          publicPort: selectForwardRule.publicPort,
-                         VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.vmid},
+                         VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.machineId},
                          localPort: selectForwardRule.localPort,
                          protocol: selectForwardRule.protocol
                  };

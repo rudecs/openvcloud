@@ -49,7 +49,9 @@ h2. Cloud Space: ${name}
   data:
    cloudspaceId: $$id
   input:
-  - username
+  - name: username
+    label: Username or email address (an invitation will be sent to unregistered emails)
+    type: text
   - name: accesstype
     label: ACL
     type: dropdown
@@ -64,9 +66,17 @@ h2. Cloud Space: ${name}
 - display: Revoke User Access
   action: /restmachine/cloudbroker/cloudspace/deleteUser
   hide: true
-  refresh: false
   data:
    cloudspaceId: $$id
+  input:
+  - name: recursivedelete
+    type: dropdown
+    label: Do you want to recursively remove user permissions from all owned vmachines?
+    values:
+     - label: Yes
+       value: true
+     - label: No
+       value: false
 
 - display: Delete Portforwarding
   action: /restmachine/cloudbroker/cloudspace/deletePortForward
@@ -114,9 +124,9 @@ h3. Details
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
-||User Name||ACL||Revoke Access||
-{% for ace in acl -%}
-    | [${ace.userGroupId}|/CBGrid/user?id=${ace.userGroupId}] |${ace.right}| {{action deleterow:true id:'action-RevokeUserAccess' data-username:'${ace.usergroupId}' class:'glyphicon glyphicon-remove'}}|
+||User Name||E-Mail||ACL||Status||Revoke Access||
+{% for user in users -%}
+    | {%if user.userstatus!='INVITED' %} [${user.id}|/CBGrid/user?id=${user.id}] {%else%} ${user.id} {% endif %} |${", ".join(user.emails)}|${user.acl}|${user.userstatus if user.userstatus else 'N/A'}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
 h3. Port Forwardings

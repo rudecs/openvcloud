@@ -4,7 +4,7 @@ angular.module('cloudscalers.controllers')
             $scope.isCollapsed = true;
 
             $scope.locations = {};
-            
+
             LocationsService.list().then(function(locations) {
                 $scope.locations = locations;
             });
@@ -24,13 +24,20 @@ angular.module('cloudscalers.controllers')
                     if ('accountAcl' in firstCloudSpace){
                         account.acl = firstCloudSpace['accountAcl']
                     }
+                    if($scope.accounts){
+                      var cuurentAccountInAccountList = _.find($scope.accounts , function(accountInList) { return accountInList.id == account.id; });
+                      account.cuurentAccountInAccountList = '';
+                      if(!cuurentAccountInAccountList){
+                        account.cuurentAccountInAccountList = "NoAccessOnAccount";
+                      }
+                    }
                     account.cloudspaces = cloudspacesGroups[accountId];
                     accountCloudSpaceHierarchy.push(account);
                 }
                 $scope.AccountCloudSpaceHierarchy = accountCloudSpaceHierarchy;
             }
 
-            $scope.$watch('cloudspaces', function () {
+            $scope.$watch('cloudspaces + accounts', function () {
                 buildAccountCloudSpaceHierarchy();
             });
 
@@ -98,15 +105,24 @@ angular.module('cloudscalers.controllers')
                                     }
                                     $scope.setCurrentCloudspace({name:space.name, id:cloudspaceId, accountId: space.accountId});
                                     $scope.loadSpaces();
-                                    LoadingDialog.hide();                                    
+                                    LoadingDialog.hide();
                                 }, 1000);
                             },
-                            function (reason) {                                
+                            function (reason) {
                                 LoadingDialog.hide();
                                 $ErrorResponseAlert(reason);
                             }
                         );
                 });
+            };
+
+            $scope.goToAccountSettings = function(e, currentAccountId){
+              $scope.setCurrentCloudspace( _.findWhere($scope.AccountCloudSpaceHierarchy, {id: currentAccountId}).cloudspaces[0] );
+              e.stopPropagation();
+              var target = 'AccountSettings';
+              var uri = new URI($window.location);
+              uri.filename(target);
+              $window.location = uri.toString();
             };
         }
     ]).filter('nospace', function () {

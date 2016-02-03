@@ -1,7 +1,7 @@
 @usedefault
 
 h2. Users
-{{action id:'user_create' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add User'}}
+{{action id:'createuser' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add User'}}
 
-{{user_create}}
+{{createuser}}
 {{users: userdetails:/CBgrid/user?id}}

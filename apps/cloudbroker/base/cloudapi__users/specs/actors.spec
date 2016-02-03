@@ -65,3 +65,30 @@
         var:validationtoken str,, Validation token
         var:password str,, User password
         result:bool
+
+    method:getMatchingUsernames
+        """
+        Get a list of the matching usernames for a given string
+        """
+        var:usernameregex str,,regex of the usernames to searched for
+        var:limit int,5,the number of usernames to return
+        result:list,,list of dicts with the username and url of the gravatar of the user
+
+    method:isValidInviteUserToken @noauth
+        """
+        Check if the inviteusertoken and emailaddress pair are valid and matching
+        """
+        var:inviteusertoken str,,the token that was previously sent to the invited user email
+        var:emailaddress str,,email address for the user
+        result:bool
+
+    method:registerInvitedUser @noauth
+        """
+        Registers an invited user
+        """
+        var:inviteusertoken str,, user invitation token
+        var:emailaddress str,, email address
+        var:username str,, username to be assigned to user
+        var:password str,, password
+        var:confirmpassword str,, password confirmation
+        result:bool

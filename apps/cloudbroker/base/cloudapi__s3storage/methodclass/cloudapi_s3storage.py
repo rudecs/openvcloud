@@ -18,7 +18,7 @@ class cloudapi_s3storage(BaseActor):
             return None
         return s3storagebuckets[0]
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'cloudspace': set('R')})
     @audit()
     def get(self, cloudspaceId, **kwargs):
         """
@@ -33,7 +33,7 @@ class cloudapi_s3storage(BaseActor):
             return 'No S3 Credentials found for this CloudSpace.'
         return connectiondetails
 
-    @authenticator.auth(acl='R')
+    @authenticator.auth(acl={'cloudspace': set('R')})
     @audit()
     def listbuckets(self, cloudspaceId, **kwargs):
         """
@@ -48,7 +48,7 @@ class cloudapi_s3storage(BaseActor):
         if connectiondetails is None:
             return []
 
-	access_key = connectiondetails['accesskey']
+        access_key = connectiondetails['accesskey']
         secret_key = connectiondetails['secretkey']
         s3server = connectiondetails['s3url']
         conn = boto.connect_s3(access_key,secret_key,is_secure=True,host=s3server,calling_format = boto.s3.connection.OrdinaryCallingFormat())

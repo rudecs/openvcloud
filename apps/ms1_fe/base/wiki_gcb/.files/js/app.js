@@ -4,7 +4,9 @@
 // Declare app level module which depends on filters, and services
 var cloudscalers = angular.module('cloudscalers', ['cloudscalers.services',
                                                    'cloudscalers.controllers',
-                                                   'ngRoute'])
+                                                   'ngRoute',
+                                                   'angular-szn-autocomplete',
+                                                   'ui.bootstrap'])
 
 cloudscalers
     .config(['$routeProvider', function($routeProvider) {
@@ -34,7 +36,7 @@ var cloudscalersServices = angular.module('cloudscalers.services',['ng'])
     }]);
 
 
-var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.bootstrap', 'ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
+var cloudscalersControllers = angular.module('cloudscalers.controllers', ['ui.slider', 'cloudscalers.services', 'cloudscalers.directives', 'angular-tour', 'ipCookie']);
 
 if(cloudspaceconfig.apibaseurl == ''){
     cloudscalersControllers.config(function($provide) {
@@ -85,4 +87,24 @@ cloudscalers.factory('$ErrorResponseAlert',function($alert){
             $alert(message);
         }
     }
+});
+
+
+cloudscalers.run(function($templateCache) {
+    $templateCache.put('autocomplete-result-template.html', 
+        '<ul ng-show="show" class="szn-autocomplete-results"> ' +
+            '<li ' +
+                'szn-autocomplete-result ' +
+                'ng-repeat="result in results" ' +
+                'ng-class="{selected: highlightIndex == $index}" ' +
+                'ng-show="results.length"> ' +
+                '<div class="text-left"> ' +
+                    '<img class="gravatar" ng-show="result.gravatarurl" ng-src="{[result.gravatarurl]}" /> ' +
+                    '<span ng-show="!result.validEmail" view-as-html="result.value | sznAutocompleteBoldMatch:query"></span> ' +
+
+                    '<span ng-show="result.validEmail">Invite: <strong>{[result.value]}</strong></span> ' +
+                '</div> ' +
+            '</li> ' +
+        '</ul>'
+    );
 });
