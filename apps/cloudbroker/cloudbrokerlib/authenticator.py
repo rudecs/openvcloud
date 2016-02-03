@@ -144,8 +144,7 @@ class auth(object):
         :raise Exception with 403 Forbidden if action cannot be performed on account or one of
             its cloduspaces or machines
         """
-        if requiredaccessrights != set('R') and account.status in ['DISABLED', 'DESTROYED',
-                                                                   'ERROR']:
+        if requiredaccessrights != set('R') and account.status != 'CONFIRMED':
             raise exceptions.Forbidden('Only READ actions can be executed on account '
                                        '(or one of its cloudspace and machines) with status %s.' %
                                        account.status)
@@ -162,7 +161,7 @@ class auth(object):
         :raise Exception with 403 Forbidden if action cannot be performed on cloudspace or one of
             its machines
         """
-        if requiredaccessrights != set('R') and cloudspace.status in ['DESTROYED', 'ERROR']:
+        if requiredaccessrights != set('R') and cloudspace.status not in ['VIRTUAL', 'DEPLOYED']:
             raise exceptions.Forbidden('Only READ actions can be executed on cloudspace '
                                        '(or one of its machines) with status %s.' %
                                        cloudspace.status)

@@ -83,7 +83,7 @@ class cloudbroker_user(BaseActor):
         # further validation
         accountswiththisuser = self.models.account.search(query)[1:]
         for account in accountswiththisuser:
-            if account['status'] == 'DESTROYED':
+            if account['status'] in ['DESTROYED', 'DESTROYING']:
                 # Delete immediately without further checks
                 accountobj = self.models.account.get(account['guid'])
                 accountobj.acl = filter(lambda a: a.userGroupId != username, accountobj.acl)

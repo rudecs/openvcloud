@@ -450,8 +450,12 @@ class cloudapi_cloudspaces(BaseActor):
         consumedmemcapacity = 0
         machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
                                                 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
+
+        memsizes = dict(map(lambda s: (s['id'], s['memory']),
+                            self.models.size.search({'$fields': ['id', 'memory']})[1:]))
+
         for machine in machines:
-            consumedmemcapacity += self.models.size.get(machine['sizeId']).memory
+            consumedmemcapacity += memsizes[machine['sizeId']]
 
         return consumedmemcapacity
 
@@ -465,9 +469,13 @@ class cloudapi_cloudspaces(BaseActor):
         consumeddiskcapacity = 0
         machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
                                                 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
+
+        diskids = reduce(lambda l1, l2: l1 + l2, map(lambda m: m['disks'], machines))
+        disksizes = dict(map(lambda s: (s['id'], s['sizeMax']), self.models.disk.search(
+            {'$query': {'id': {'$in': diskids}}, '$fields': ['id', 'sizeMax']})[1:]))
         for machine in machines:
             for diskid in machine['disks']:
-                consumeddiskcapacity += self.models.disk.get(diskid).sizeMax
+                consumeddiskcapacity += disksizes[diskid]
 
         return consumeddiskcapacity
 
