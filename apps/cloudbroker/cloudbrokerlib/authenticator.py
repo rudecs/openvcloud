@@ -99,9 +99,6 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             user = ctx.env['beaker.session']['user']
-            account_status = ctx.env['beaker.session'].get('account_status', 'CONFIRMED')
-            if account_status != 'CONFIRMED':
-                raise exceptions.Forbidden('Unconfirmed Account')
             account = None
             cloudspace = None
             machine = None

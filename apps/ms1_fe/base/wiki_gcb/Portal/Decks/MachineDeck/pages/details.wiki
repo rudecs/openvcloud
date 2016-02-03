@@ -1,3 +1,4 @@
+
 {{html:
 <link href="/$$space/.files/css/font-awesome-animation.min.css" rel="stylesheet" type="text/css">
 <div class="gray-loader" ng-hide="machine">
@@ -56,26 +57,19 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">CPU</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">
-                                        {[machineinfo.size.vcpus]}
-                                        <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize>
-                                    </div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">{[machineinfo.size.vcpus]} <ng-pluralize count="machineinfo.size.vcpus" when="{'one': 'core', 'other': 'cores'}"></ng-pluralize></div>
                                 </div>
                             </li>
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">Memory</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">
-                                        {[ numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}
-                                    </div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">{[numeral(machineinfo.size.memory * 1024 *1024).format('0 b')]}</div>
                                 </div>
                             </li>
                             <li>
                                 <div class="row">
                                     <div class="span3 line-height">Storage</div>
-                                    <div class="span9 clear-none inline-block margin-vertical-small">
-                                        {[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}
-                                    </div>
+                                    <div class="span9 clear-none inline-block margin-vertical-small">{[ numeral(machineinfo.storage * 1024 * 1024 * 1024).format('0 b') ]}</div>
                                 </div>
                             </li>
                         </ul>
@@ -147,6 +141,14 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     </form>
                 </script>
                             </li>
+    }}
+    #                        <li>
+    #                            <a onclick="location.reload()">
+    #                                <i class="fa fa-undo"></i>
+    #                                Rebuild
+    #                            </a>
+    #                        </li>
+    {{html:
           <li ng-show="currentUser.acl.account > 1 && machine.locked == false">
                   <a class="forTip" ng-click="createTemplate()" ng-class="{'action-disabled': machine.locked != false}" tourtip="Create a template of your Machine. Template creation takes several minutes, you don`t need to keep this page open.">
                       <i class="fa fa-copy"></i>
@@ -171,43 +173,39 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                   </div>
               </script>
           </li>
-                        </ul>
-                    </div>
-                </div>
-        <li ng-show="currentUser.acl.cloudspace > 1">
-                <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
-                    <i class="fa fa-expand"></i>
-                    Resize compute capacity
-                </a>
-                <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
-                <script type="text/ng-template" id="resizeMachineDialog.html">
-                  <div>
-                      <div class="modal-header">
-                          <h3>Resize compute capacity</h3>
-                      </div>
-                      <div class="modal-body">
-                            <div class="packages">
-                                <div ng-repeat="size in sizes | orderBy:sizepredicate" class="package"
-                                    ng-click="setPackage(size)">
-                                    <input type="radio" name="packages" value="" id="package-{[$index]}" ng-checked="selectedPackage.id === size.id" />
-                                    <label for="package-{[$index]}">
-                                        <span></span>
-                                        <strong>
-                                            {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}
-                                        </strong>  Memory,
-                                        <strong>{[ size.vcpus ]}</strong> core(s)
-                                    </label>
-                                </div>
-                            </div>
-                      </div>
-                      <div class="modal-footer">
-                          <button type="button" class="btn btn-primary ok" ng-click="ok()" ng-disabled="!selectedPackage">Ok</button>
-                          <button type="submit" class="btn" ng-click="cancel()" autofocus>Cancel</button>
-                      </div>
-                  </div>
-                </script>
-            </li>
-
+                    <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
+                            <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
+                                <i class="fa fa-expand"></i>
+                                Resize compute capacity
+                            </a>
+                            <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
+                            <script type="text/ng-template" id="resizeMachineDialog.html">
+                              <div>
+                                  <div class="modal-header">
+                                      <h3>Resize compute capacity</h3>
+                                  </div>
+                                  <div class="modal-body">
+                                        <div class="packages">
+                                            <div ng-repeat="size in sizes | orderBy:sizepredicate" class="package"
+                                                ng-click="setPackage(size)">
+                                                <input type="radio" name="packages" value="" id="package-{[$index]}" ng-checked="selectedPackage.id === size.id" />
+                                                <label for="package-{[$index]}">
+                                                    <span></span>
+                                                    <strong>
+                                                        {[ numeral(size.memory * 1024 * 1024).format('0 b') ]}
+                                                    </strong>  Memory,
+                                                    <strong>{[ size.vcpus ]}</strong> core(s)
+                                                </label>
+                                            </div>
+                                        </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary ok" ng-click="ok()" ng-disabled="!selectedPackage">Ok</button>
+                                      <button type="submit" class="btn" ng-click="cancel()" autofocus>Cancel</button>
+                                  </div>
+                              </div>
+                            </script>
+                        </li>
                         <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
                                 <a ng-click="destroy()">
                                     <i class=" fa fa-times-circle-o"></i>
@@ -229,10 +227,9 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                                     </form>
                                 </script>
                             </li>
-
-            </ul>
-        </div>
-    </div>
+                        </ul>
+                    </div>
+                </div>
             <script type="text/ng-template" id="updateDescription.html">
                                 <form name="form" class="form-horizontal" ng-submit="submit()">
                                     <div class="modal-header">
@@ -402,3 +399,4 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     </tour>
 </div>
 }}
+
