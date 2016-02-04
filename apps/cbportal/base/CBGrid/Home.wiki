@@ -1,6 +1,6 @@
 @usedefault
 
-h4. Dashboard [Version|/cbgrid/version]
+h4. Dashboard
 @row clearfix
 
 @col 4
@@ -56,8 +56,6 @@ h4. Locations
 h4. Accounts
 
 {{cbgrid.accounts}}
-
-[Version|/cbgrid/version]
 
 {{cssstyle
 	h6.title{
