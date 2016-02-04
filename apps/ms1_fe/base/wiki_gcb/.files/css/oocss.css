@@ -392,9 +392,9 @@
 /*cursors*/
 .cursor-pointer{
 	cursor: pointer;
-	
+
 }
-.cursor-default{
+.cursor-default, .cursor-default:hover{
 	cursor: default;
 }
 

@@ -175,7 +175,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
           </li>
                     <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
                             <a ng-click="resize(currentSpace, machine.status)"
-                               ng-class="{'click-disabled': machine.status !== 'HALTED' }" 
+                               ng-class="{'opacity4 cursor-default': machine.status !== 'HALTED' }"
                                title="{[ machine.status !== 'HALTED' ? 'Machine has to be halted.' : '']}">
                                 <i class="fa fa-expand"></i>
                                 Resize compute capacity
@@ -400,4 +400,3 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     </tour>
 </div>
 }}
-

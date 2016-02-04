@@ -47,8 +47,7 @@
                 </td>
                 <td class="txt-center" ng-show="currentUser.acl.account == 3">
                     <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
-
-                    <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" ng-class="{'click-disabled': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on account' : 'Delete user access']}"></a>
+                    <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" ng-class="{'opacity4': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on account' : 'Delete user access']}"></a>
                 </td>
             </tr>
         </table>

@@ -51,8 +51,7 @@
 			    </td>
 	            <td ng-show="currentUser.acl.machine > 2 || currentUser.acl.cloudspace > 1" class="txt-center">
 		            <a ng-click="loadEditUser(machine.id, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
-		            
-                    <a ng-click="deleteUser(machine.id, user.userGroupId, user.canBeDeleted)" class="fa fa-times txt-17" ng-class="{'click-disabled': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on CloudSpace' : 'Delete user access']}"></a>
+              	<a ng-click="deleteUser(machine.id, user.userGroupId, user.canBeDeleted)" class="fa fa-times txt-17" ng-class="{'opacity4': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on CloudSpace' : 'Delete user access']}"></a>
 	            </td>
 	        </tr>
 	    </table>
