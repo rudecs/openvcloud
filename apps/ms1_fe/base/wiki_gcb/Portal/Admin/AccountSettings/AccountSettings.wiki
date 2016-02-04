@@ -14,7 +14,7 @@
                 <th class="username-text-container">
                     <div id="szn-autocomplete-wrap">
                         <div class="bg form-control"></div>
-                        <input id="searchQuery" ng-model="searchQuery" szn-autocomplete="autocompleteOptions" placeholder="Search usernames or invite by email..." />
+                        <input id="searchQuery" ng-model="searchQuery" szn-autocomplete="autocompleteOptions" placeholder="Search usernames or invite by email.." />
                         <i class="fa fa-times btn-reset-email" ng-show="searchQuery.length" ng-click="resetSearchQuery()">
                         </i>
                     </div>
@@ -47,7 +47,8 @@
                 </td>
                 <td class="txt-center" ng-show="currentUser.acl.account == 3">
                     <a ng-click="loadEditUser(currentAccount, user.userGroupId, user.right)" class="fa fa-edit margin-right-small txt-17" title="Edit user access right"></a>
-                    <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" title="Delete user access"></a>
+
+                    <a href="#" ng-click="deleteUser(user)" class="fa fa-times txt-17" ng-class="{'click-disabled': !user.canBeDeleted }" title="{[ !user.canBeDeleted ? 'Can not remove access right while user has access right on account' : 'Delete user access']}"></a>
                 </td>
             </tr>
         </table>

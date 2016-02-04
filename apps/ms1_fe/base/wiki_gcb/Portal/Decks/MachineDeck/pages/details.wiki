@@ -174,11 +174,12 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
               </script>
           </li>
                     <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
-                            <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
+                            <a ng-click="resize(currentSpace, machine.status)"
+                               ng-class="{'click-disabled': machine.status !== 'HALTED' }" 
+                               title="{[ machine.status !== 'HALTED' ? 'Machine has to be halted.' : '']}">
                                 <i class="fa fa-expand"></i>
                                 Resize compute capacity
                             </a>
-                            <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
                             <script type="text/ng-template" id="resizeMachineDialog.html">
                               <div>
                                   <div class="modal-header">

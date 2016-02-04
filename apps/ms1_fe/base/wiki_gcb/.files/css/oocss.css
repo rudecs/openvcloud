@@ -398,6 +398,11 @@
 	cursor: default;
 }
 
+.click-disabled {
+	pointer-events: none;
+	opacity: 0.4;
+}
+
 /* background colors */
 .background-black{
 	background: #000;
