@@ -300,7 +300,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                 <div id="Disks" class="tab-pane">
                   <ul class="nav nav-pills">
                     <li ng-class="{active: tabState === 'currentDisks'}"><a data-toggle="pill" href="" ng-click="changeTabState('currentDisks')">Current disk</a></li>
-                    <li ng-class="{active: tabState === 'createDisks'}" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.accpunt > 1"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
+                    <li ng-class="{active: tabState === 'createDisks'}" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.account > 1"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
                   </ul>
                   <div class="marginTopXlarge machine-disks">
                     <div ng-show="tabState === 'currentDisks'">
