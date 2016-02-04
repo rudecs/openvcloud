@@ -195,7 +195,11 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('sizes', updateMachineSize, true);
         $scope.$watch('images', updateMachineSize, true);
 
-        $scope.resize = function(currentSpace) {
+        $scope.resize = function(currentSpace, status) {
+            if (status !== 'HALTED') {
+                return;
+            }
+
             var sizes = $scope.sizes,
                 initialSizeId = $scope.machine.sizeid;
 
