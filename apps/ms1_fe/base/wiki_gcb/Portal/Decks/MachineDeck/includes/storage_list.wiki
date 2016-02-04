@@ -4,7 +4,7 @@
 		<li ng-repeat="disk in machine.disks" class="disk-container relative">
 		 	<div class="disk-control-bar clearfix" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.account > 1">
 		 		<span ng-show="disk.type != 'B'" class="disk-control detach right margin-left-medium" title="Remove disk" ng-click="removeDisk(disk)"><i class="fa fa-minus-circle"></i></span>
-		 		<span ng-show="disk.type != 'B'" class="disk-control right margin-left-medium" title="Move disk" ng-click="moveDisk(disk, currentSpace, machine)"><i class="fa fa-share"></i></span>
+		 		<span ng-show="disk.type != 'B'" class="disk-control right margin-left-medium" title="Move disk" ng-click="moveDisk(disk, currentSpace, machines)"><i class="fa fa-share"></i></span>
 		 	</div>
 		    <button type="button" class="btn btn-selector table-cell disk relative" title="{[disk.descr]}">
 		      <span ng-class="{'label-name': disk.type == 'B' }">
@@ -42,7 +42,7 @@
 	    <div class="modal-body">
 	    	<div class="margin-bottom-large">
 		    	<h4>Move disk to:</h4>
-		    	<select ng-model="diskDestination" ng-options="machine.name for machine in currentSpace.machines" class="form-control"></select>
+		    	<select ng-model="diskDestination" ng-options="machine.name for machine in machines" class="form-control"></select>
 		    	<em class="block" ng-show="diskDestination.status != 'HALTED'">The Machine you want to move disk to must be stopped.</em>
 	    	</div>
 	    	<div>
