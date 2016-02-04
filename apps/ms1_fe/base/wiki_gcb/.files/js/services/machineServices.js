@@ -342,7 +342,7 @@ angular.module('cloudscalers.services')
             }
         }
     })
-    .factory('Size', function ($http) {
+    .factory('Size', function ($http, $q) {
         return {
             list: function (cloudspaceId) {
                 return $http.get(cloudspaceconfig.apibaseurl + '/sizes/list?cloudspaceId=' + cloudspaceId).then(function(result){

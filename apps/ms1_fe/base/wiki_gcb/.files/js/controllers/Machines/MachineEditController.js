@@ -107,11 +107,7 @@ angular.module('cloudscalers.controllers')
             });
 
         };
-
-        $scope.isDataDisk = function(disk){
-           return disk.type != 'B';
-        }
-
+        
         $scope.isValidCreateDisk = function(){
             return $scope.disk.name != '' && $scope.disk.size != '' && $scope.disk.size >= 1 && $scope.disk.size <= 2000;
         }
@@ -195,7 +191,11 @@ angular.module('cloudscalers.controllers')
         $scope.$watch('sizes', updateMachineSize, true);
         $scope.$watch('images', updateMachineSize, true);
 
-        $scope.resize = function(currentSpace) {
+        $scope.resize = function(currentSpace, status) {
+            if (status !== 'HALTED') {
+                return;
+            }
+
             var sizes = $scope.sizes,
                 initialSizeId = $scope.machine.sizeid;
 
@@ -218,7 +218,7 @@ angular.module('cloudscalers.controllers')
                     $scope.ok = function() {
                         $modalInstance.close($scope.selectedPackage);
                     };
-                    
+
                     $scope.cancel = function() {
                         $modalInstance.dismiss('cancel');
                     };
@@ -229,7 +229,7 @@ angular.module('cloudscalers.controllers')
 
             modalInstance.result.then(function (size) {
                 LoadingDialog.show('Resizing compute capacity..');
-                
+
                 Machine
                     .resize($scope.machine.id, size.id)
                     .then(function() {
