@@ -26,6 +26,26 @@ if [ "${x::4}" == "http" ]; then
 	exit 1
 fi
 
+if [ "$2" != "master" ]; then
+	if [ ! -f /tmp/branch.sh ]; then
+		echo "[-] /tmp/branch.sh not found"
+		exit 1
+	fi
+	
+	source /tmp/branch.sh
+
+	if [ "$JSBRANCH" == "" ]; then
+		echo "[-] no branch set"
+		exit 1
+	fi
+
+	echo "[+] jumpscale branch: $JSBRANCH"
+	echo "[+] ays repo branch: $AYSBRANCH"
+	echo "[+] openvcloud branch: $OVCBRANCH"
+else
+	echo "[+] installing from master"
+fi
+
 REMOTEADDR="$1"
 
 # REMOTEADDR=37.203.43.120   # du-conv-2
@@ -49,7 +69,8 @@ fi
 
 if [ ! -d /opt/jumpscale7 ]; then
 	echo "[+] installing Jumpscale"
-	curl https://raw.githubusercontent.com/Jumpscale/jumpscale_core7/master/install/install.sh > /tmp/js7.sh && bash /tmp/js7.sh
+	curl https://raw.githubusercontent.com/Jumpscale/jumpscale_core7/master/install/install.sh > /tmp/js7.sh
+	JSBRANCH=$JSBRANCH AYSBRANCH=$AYSBRANCH bash /tmp/js7.sh
 else
 	echo "[+] jumpscale already installed"
 fi
@@ -58,10 +79,8 @@ TEST=$(grep openvcloud_ays /opt/jumpscale7/hrd/system/atyourservice.hrd)
 if [ $? == 1 ]; then
 	echo "[+] configuring atyourservice"
 	echo "metadata.openvcloud            =" >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+	echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 	echo "    url:'https://git.aydo.com/0-complexity/openvcloud_ays'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
-    if [ -n "$OVCBRANCH" ]; then
-        echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
-    fi
 else
 	echo "[+] atyourservice already configured"
 fi
@@ -90,7 +109,9 @@ if [ "$NODE" == "" ]; then
 	exit
 fi
 
-echo "[+] bootstrapping node id: $NODE"
-ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.node.id=${NODE}#"
+if [ "$2" != "--no-connect" ]; then
+	echo "[+] bootstrapping node id: $NODE"
+	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.node.id=${NODE}#"
+fi
 
 echo "[+] ready, have a nice day."

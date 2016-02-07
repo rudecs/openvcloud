@@ -17,6 +17,22 @@ if [ "$UID" != "0" ]; then
 	return 1
 fi
 
+echo "[+] discovering proxy"
+BACKPLANE=$(ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1)
+PROXHOST=$(echo $BACKPLANE | sed -r 's/([0-9]+.[0-9]+).([0-9]+.[0-9]+)/\1.2.2/')
+if nc -w1 -z $PROXHOST 8123; then
+	echo "[+] proxy found: $PROXHOST"
+	echo "Acquire::http::Proxy \"http://$PROXHOST:8123\";" > /etc/apt/apt.conf.d/proxy
+	
+	if ! grep -q SHUTTLE /root/.bashrc; then
+		echo "" >> /root/.bashrc
+		echo "SHUTTLE=$PROXHOST" >> /root/.bashrc
+	fi
+	
+else
+	echo "[-] no proxy found at $PROXHOST"
+fi
+
 LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
 LASTUNIX=$(date --date "$LASTTIME" +%s)
 echo "[+] last apt-get update: $LASTTIME"
@@ -160,6 +176,11 @@ echo "[+] /var/tmp         : will be on $DISK_VARTMP ($VARTMP)"
 #
 # /mnt/ovs-db-write
 #
+if [ $NVME_ENABLED == 1 ]; then
+	echo "[+] cleaning /dev/nvme0n1"
+	dd if=/dev/zero of=/dev/nvme0n1 bs=16M count=1 2> /dev/null
+fi
+
 TOTAL=$(parted $DISK_DBWRITE print | grep Disk | head -1 | awk '{ print $3 }')
 
 # disk empty
@@ -199,11 +220,6 @@ fi
 #
 # /mnt/ovs-read
 #
-if [ $NVME_ENABLED == 1 ]; then
-	echo "[+] cleaning /dev/nvme0n1"
-	dd if=/dev/zero of=/dev/nvme0n1 bs=16M count=1 2> /dev/null
-fi
-
 TOTAL=$(parted $DISK_READ print | grep Disk | head -1 | awk '{ print $3 }')
 
 if [ "$TOTAL" == "" ]; then
@@ -354,7 +370,18 @@ apt-get install -y ntp kvm libvirt0 python-libvirt virtinst rabbitmq-server pyth
     python-django nginx python-djangorestframework gunicorn python-gevent python-markdown \
     python-amqp python-anyjson libbz2-1.0 libc6 libcurl3 liblttng-ust0 libprotobuf8 libpython2.7 \
     librdmacm1 libsnappy1 libssl1.0.0 libstdc++6 libtokyocabinet9 libxml2 zlib1g \
-    libcomerr2 libcurl3 libgssapi-krb5-2 libkrb5-3 liblttng-ust0 libomniorb4-1 libomnithread3c2
+    libcomerr2 libcurl3 libgssapi-krb5-2 libkrb5-3 liblttng-ust0 libomniorb4-1 libomnithread3c2 \
+    git ssh python-pip
 
+echo "[+] fixing some permissions"
+chown syslog:adm /var/log/syslog /var/log/auth.log /var/log/kern.log
+
+if ! grep -q ^PS1 /root/.bashrc; then
+	echo "[+] setting up console"
+	
+	echo "" >> /root/.bashrc
+	echo "PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]# '" >> /root/.bashrc
+	source /root/.bashrc
+fi
 
 echo "[+] machine ready"
