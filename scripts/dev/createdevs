@@ -30,7 +30,7 @@ function createdev() {
 }
 
 function rexec () {
-    ssh "${node}" $@
+    ssh "root@${node}" $@
 }
 
 #make nodes on
@@ -57,7 +57,7 @@ function setupdev() {
 
 
 echo mknod
-ssh "${node}" mkdir /dev/net
+rexec "${node}" mkdir /dev/net
 dupdev /dev/net/tun
 dupdev /dev/fuse
 dupdev /dev/kvm
