@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
                             }
                         );
                     }else{
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceI[[[d=' + encodeURIComponent(id)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id)).then(
                             function(result){
                                 return result.data;
                             },
