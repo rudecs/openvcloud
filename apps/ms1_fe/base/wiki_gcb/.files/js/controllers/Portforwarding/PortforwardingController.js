@@ -145,7 +145,7 @@ angular.module('cloudscalers.controllers')
 
                 $scope.delete = function () {
                     $scope.editRule.action = 'delete';
-                    Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.id).then(
+                    Networks.deletePortforward($scope.currentSpace.id, $scope.editRule.ip, $scope.editRule.publicPort).then(
                         function (result) {
                             $modalInstance.close($scope.editRule);
                             $scope.portforwarding = result.data;

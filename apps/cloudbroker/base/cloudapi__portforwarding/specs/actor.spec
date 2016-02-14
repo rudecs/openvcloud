@@ -48,4 +48,4 @@
         var:cloudspaceId int,, id of the cloudspace
         var:publicIp str,, port forwarding public ip
         var:publicPort int,, port forwarding public port
-        var:proto str,, port forwarding protocol
+        var:proto str,, port forwarding protocol @optional
