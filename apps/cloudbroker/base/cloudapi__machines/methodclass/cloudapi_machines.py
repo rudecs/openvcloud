@@ -411,7 +411,7 @@ class cloudapi_machines(BaseActor):
     def _getProviderAndNode(self, machineId):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
-        if machine.status in ['ERROR', 'DESTYROYED', 'DESTROYING']:
+        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
             return None, None, machine
         provider = self._getProvider(machine)
         if provider:
