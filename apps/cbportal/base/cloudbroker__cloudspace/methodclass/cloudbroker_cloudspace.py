@@ -206,7 +206,7 @@ class cloudbroker_cloudspace(BaseActor):
         param:accountname name of account to create space for
         param:name name of space to create
         param:access username which has full access to this space
-        param:maxMemoryCapacity max size of memory in space (in GB)
+        param:maxMemoryCapacity max size of memory in space (in MB)
         param:maxDiskCapacity max size of aggregated disks (in GB)
         """
         account = self.models.account.get(accountId)

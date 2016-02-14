@@ -194,7 +194,7 @@ class cloudbroker_account(BaseActor):
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
-            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, **kwargs)
+            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
         account = self.models.account.get(accountId)
         account.status = 'DESTROYED'
         self.models.account.set(account)

@@ -2,43 +2,43 @@ from JumpScale import j
 import netaddr
 json = j.db.serializers.ujson
 from JumpScale.portal.portal.auth import auth
+from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
-
-def checkIPS(network, ips):
-    for ip in ips:
-        if netaddr.IPAddress(ip) not in network:
-            return False
-    return True
 
 class cloudbroker_iaas(BaseActor):
     """
     gateway to grid
     """
-    def addPublicIPv4Subnet(self, subnet, gateway, freeips, gid, **kwargs):
+    def addPublicNetwork(self, gid, network, gateway, startip, endip, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
         """
-        ctx = kwargs["ctx"]
-        net = netaddr.IPNetwork(subnet)
-        if isinstance(freeips, basestring):
-            freeips = [ip.strip() for ip in freeips.split(',')]
-        if not checkIPS(net, freeips):
-            ctx.start_response("400 Bad Request")
-            return "One or more IP Addresses %s is not in subnet %s" % (subnet)
-        if not checkIPS(net, [gateway]):
-            ctx.start_response("400 Bad Request")
-            return "Gateway Address %s is not in subnet %s" % (gateway, subnet)
+        try:
+            net = netaddr.IPNetwork(network)
+        except:
+            raise exceptions.BadRequest("Invalid network given %s" % network)
+
+        def checkIP(ip, name):
+            try:
+                if ip not in net:
+                    raise exceptions.BadRequest("%s not in network" % name)
+            except netaddr.AddrFormatError:
+                raise exceptions.BadRequest("Invalid %s given" % name)
+
+        checkIP(startip, 'Start IP Address')
+        checkIP(endip, 'End IP Address')
+        checkIP(gateway, 'Gateway')
 
         pool = self.models.publicipv4pool.new()
-        pool.id = subnet
-        pool.gid = int(gid)
+        pool.id = str(net.cidr)
+        pool.gid = gid
         pool.gateway = gateway
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
-        pool.pubips = list(set(freeips))
+        pool.pubips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
         self.models.publicipv4pool.set(pool)
-        return subnet
+        return True
 
     def addPublicIPv4IPS(self, subnet, freeips, **kwargs):
         """

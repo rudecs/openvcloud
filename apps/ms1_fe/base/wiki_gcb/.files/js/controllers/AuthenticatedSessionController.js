@@ -38,14 +38,14 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.setCurrentAccount = function(){
-            if($scope.currentSpace){
+            $scope.currentAccount.userRightsOnAccount = {};
+            if($scope.currentAccount.id){
                 Account.get($scope.currentAccount.id).then(function(account) {
                     $scope.currentAccount.userRightsOnAccount = account.acl;
                 }, function(reason){
                   if(reason.status != 403){
                     $ErrorResponseAlert(reason);
                   }
-                  $scope.currentAccount.userRightsOnAccount = {};
                 });
             }
         };

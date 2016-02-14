@@ -192,7 +192,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param location: name of location
         :param name: name of cloudspace to create
         :param access: username of a user which has full access to this space
-        :param maxMemoryCapacity: max size of memory in space (in GB)
+        :param maxMemoryCapacity: max size of memory in space (in MB)
         :param maxDiskCapacity: max size of aggregated disks (in GB)
         :return int with id of created cloudspace
         """
@@ -440,21 +440,87 @@ class cloudapi_cloudspaces(BaseActor):
 
         return cloudspaces
 
+    def _getConsumedMemoryCapacity(self, cloudspaceId):
+        """
+        Calculate the total consumed memory by the machines in the cloudspace
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total consumed memory
+        """
+        consumedmemcapacity = 0
+        machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
+                                                'status': {'$nin': ['DESTROYED', 'ERROR']}},
+                                               size=0)[1:]
+
+        memsizes = {s['id']: s['memory'] for s in
+                    self.models.size.search({'$fields': ['id', 'memory']})[1:]}
+
+        for machine in machines:
+            consumedmemcapacity += memsizes[machine['sizeId']]
+
+        return consumedmemcapacity
+
+    def _getConsumedDiskyCapacity(self, cloudspaceId):
+        """
+        Calculate the total consumed disk storage by the machines in the cloudspace
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total consumed disk storage
+        """
+        consumeddiskcapacity = 0
+        machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
+                                                'status': {'$nin': ['DESTROYED', 'ERROR']}},
+                                               size=0)[1:]
+
+        diskids = list()
+        for m in machines:
+            diskids.extend(m['disks'])
+
+        disksizes = {d['id']: d['sizeMax'] for d in self.models.disk.search(
+            {'$query': {'id': {'$in': diskids}}, '$fields': ['id', 'sizeMax']}, size=0)[1:]}
+        for machine in machines:
+            for diskid in machine['disks']:
+                consumeddiskcapacity += disksizes[diskid]
+
+        return consumeddiskcapacity
+
     @authenticator.auth(acl={'cloudspace': set('A')})
     @audit()
-    def update(self, cloudspaceId, name, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxDiskCapacity=None,
+               **kwargs):
         """
         Update the cloudspace name and capacity parameters
 
         :param cloudspaceId: id of the cloudspace
         :param name: name of the cloudspace
-        :param maxMemoryCapacity: max size of memory in space(in GB)
+        :param maxMemoryCapacity: max size of memory in space(in MB)
         :param maxDiskCapacity: max size of aggregated disks(in GB)
         :return id of updated cloudspace
-
         """
-        # put your code here to implement this method
-        raise NotImplementedError("not implemented method update")
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if name:
+            cloudspace.name = name
+
+        consumedmemcapacity = self._getConsumedMemoryCapacity(cloudspaceId)
+        if maxMemoryCapacity is not None:
+            if maxMemoryCapacity < consumedmemcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
+                                            "that is less than the current consumed memory "
+                                            "capacity %d MB." % consumedmemcapacity)
+            else:
+                cloudspace.resourceLimits['CU'] = maxMemoryCapacity
+
+        consumeddiskcapacity = self._getConsumedDiskyCapacity(cloudspaceId)
+        if maxDiskCapacity is not None:
+            if maxDiskCapacity < consumeddiskcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum disk capacity to a value that "
+                                            "is less than the current consumed memory capacity %d "
+                                            "GB." % consumeddiskcapacity)
+            else:
+                cloudspace.resourceLimits['SU'] = maxDiskCapacity
+
+        self.models.cloudspace.set(cloudspace)
+        return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def getDefenseShield(self, cloudspaceId, **kwargs):
