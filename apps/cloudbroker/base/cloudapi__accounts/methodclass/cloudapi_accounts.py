@@ -307,3 +307,62 @@ class cloudapi_accounts(BaseActor):
         query = {'$query': q, '$fields': fields}
         history = self.models.credittransaction.search(query)[1:]
         return history
+
+    def getConsumedCloudUnits(self, accountId, **kwargs):
+        """
+        Calculate the currently consumed cloud units for all cloudspaces in the account.
+
+        Calculated cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_I: number of public IPs
+
+        :param accountId: id of the account consumption should be calculated for
+        :return: dict with the consumed cloud units
+        """
+        consumedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0}
+
+        # Aggregate the total consumed cloud units for all cloudspaces in the account
+        for cloudspace in self.models.cloudspace.search({'accountId': accountId,
+                                                         'status': 'DEPLOYED'})[1:]:
+            cloudspaceconsumption = j.apps.cloudapi.cloudspaces.getConsumedCloudUnits(
+                 cloudspace['id'])
+            for cu in consumedcudict:
+                consumedcudict[cu] += cloudspaceconsumption[cu]
+
+        return consumedcudict
+
+    def getConsumedCloudUnitsByType(self, accountId, cutype, **kwargs):
+        """
+        Calculate the currently consumed cloud units of the specified type for all cloudspaces
+        in the account.
+
+        Possible types of cloud units are include:
+        - CU_M: returns consumed memory in GB
+        - CU_C: returns number of virtual cpu cores
+        - CU_D: returns consumed virtual disk storage in GB
+        - CU_I: returns number of public IPs
+
+        :param accountId: id of the account consumption should be calculated for
+        :param cutype: cloud unit resource type
+        :return: float/int for the consumed cloud unit of the specified type
+        """
+        consumedcutype = 0
+
+        if cutype == 'CU_M':
+            cumethod = j.apps.cloudapi.cloudspaces.getConsumedMemoryCapacity
+        elif cutype == 'CU_C':
+            cumethod = j.apps.cloudapi.cloudspaces.getConsumedCPUCores
+        elif cutype == 'CU_D':
+            cumethod = j.apps.cloudapi.cloudspaces.getConsumedVDiskCapacity
+        elif cutype == 'CU_I':
+            cumethod = j.apps.cloudapi.cloudspaces.getConsumedPublicIPs
+        else:
+            raise exceptions.BadRequest('Invalid cloud unit type: %s' % cutype)
+
+        for cloudspace in self.models.cloudspace.search({'accountId': accountId,
+                                                         'status': 'DEPLOYED'})[1:]:
+            consumedcutype += cumethod(cloudspace['id'])
+
+        return consumedcutype
