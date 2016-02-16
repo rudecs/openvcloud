@@ -10,7 +10,7 @@
         var:location str,, name of cloudspace to create
         var:name str,,name of space to create
         var:access str,,username of a user which has full access to this space
-        var:maxMemoryCapacity int,,max size of memory in space (in MB) @tags: optional
+        var:maxMemoryCapacity int,,max size of memory in space (in GB) @tags: optional
         var:maxDiskCapacity int,,max size of aggregated disks (in GB) @tags: optional 
         result:int, id of created cloudspace
 
@@ -47,7 +47,7 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         var:name str,, name of the cloudspace @optional
-        var:maxMemoryCapacity int,, max size of memory in space(in MB) @optional
+        var:maxMemoryCapacity int,, max size of memory in space(in GB) @optional
         var:maxDiskCapacity int,, max size of aggregated disks(in GB) @optional
         result:bool, True if cloudspace was updated
 

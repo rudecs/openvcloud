@@ -192,7 +192,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param location: name of location
         :param name: name of cloudspace to create
         :param access: username of a user which has full access to this space
-        :param maxMemoryCapacity: max size of memory in space (in MB)
+        :param maxMemoryCapacity: max size of memory in space (in GB)
         :param maxDiskCapacity: max size of aggregated disks (in GB)
         :return int with id of created cloudspace
         """
@@ -440,7 +440,8 @@ class cloudapi_cloudspaces(BaseActor):
 
         return cloudspaces
 
-    def _getConsumedMemoryCapacity(self, cloudspaceId):
+    # Unexposed actor
+    def getConsumedMemoryCapacity(self, cloudspaceId):
         """
         Calculate the total consumed memory by the machines in the cloudspace
 
@@ -448,8 +449,9 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total consumed memory
         """
         consumedmemcapacity = 0
-        machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
-                                                'status': {'$nin': ['DESTROYED', 'ERROR']}},
+        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                '$query': {'cloudspaceId': cloudspaceId,
+                                                          'status': {'$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
 
         memsizes = {s['id']: s['memory'] for s in
@@ -458,9 +460,32 @@ class cloudapi_cloudspaces(BaseActor):
         for machine in machines:
             consumedmemcapacity += memsizes[machine['sizeId']]
 
-        return consumedmemcapacity
+        return consumedmemcapacity / 1024.0
 
-    def _getConsumedDiskyCapacity(self, cloudspaceId):
+    # Unexposed actor
+    def getConsumedCPUCores(self, cloudspaceId):
+        """
+        Calculate the total number of consumed cpu cores by the machines in the cloudspace
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total number of consumed cpu cores
+        """
+        numcpus = 0
+        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                '$query': {'cloudspaceId': cloudspaceId,
+                                                          'status': {'$nin': ['DESTROYED', 'ERROR']}}},
+                                               size=0)[1:]
+
+        cpusizes = {s['id']: s['vcpus'] for s in
+                    self.models.size.search({'$fields': ['id', 'vcpus']})[1:]}
+
+        for machine in machines:
+            numcpus += cpusizes[machine['sizeId']]
+
+        return numcpus
+
+    # Unexposed actor
+    def getConsumedVDiskCapacity(self, cloudspaceId):
         """
         Calculate the total consumed disk storage by the machines in the cloudspace
 
@@ -468,8 +493,9 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total consumed disk storage
         """
         consumeddiskcapacity = 0
-        machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
-                                                'status': {'$nin': ['DESTROYED', 'ERROR']}},
+        machines = self.models.vmachine.search({'$fields': ['id', 'disks'],
+                                                '$query': {'cloudspaceId': cloudspaceId,
+                                                          'status': {'$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
 
         diskids = list()
@@ -484,6 +510,36 @@ class cloudapi_cloudspaces(BaseActor):
 
         return consumeddiskcapacity
 
+    # Unexposed actor
+    def getConsumedPublicIPs(self, cloudspaceId):
+        """
+        Calculate the total number of consumed public IPs by the machines in the cloudspace and the
+        cloudspace itself
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total number of consumed public IPs
+        """
+        numpublicips = 0
+        cloudspaceobj = self.models.cloudspace.get(cloudspaceId)
+
+        # Add the public IP directly attached to the cloudspace
+        if cloudspaceobj.publicipaddress:
+            numpublicips += 1
+
+        # Calculate the public IPs attached to the machines in cloudspace
+        machines = self.models.vmachine.search({'$fields': ['id', 'nics'],
+                                                '$query': {'cloudspaceId': cloudspaceId,
+                                                           'nics.type': 'PUBLIC',
+                                                           'status': {'$nin': ['DESTROYED', 'ERROR']}}},
+                                               size=0)[1:]
+
+        for machine in machines:
+            for nic in machine['nics']:
+                if nic['type'] == 'PUBLIC':
+                    numpublicips += 1
+
+        return numpublicips
+
     @authenticator.auth(acl={'cloudspace': set('A')})
     @audit()
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxDiskCapacity=None,
@@ -493,7 +549,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         :param cloudspaceId: id of the cloudspace
         :param name: name of the cloudspace
-        :param maxMemoryCapacity: max size of memory in space(in MB)
+        :param maxMemoryCapacity: max size of memory in space(in GB)
         :param maxDiskCapacity: max size of aggregated disks(in GB)
         :return id of updated cloudspace
         """
@@ -501,16 +557,16 @@ class cloudapi_cloudspaces(BaseActor):
         if name:
             cloudspace.name = name
 
-        consumedmemcapacity = self._getConsumedMemoryCapacity(cloudspaceId)
+        consumedmemcapacity = self.getConsumedMemoryCapacity(cloudspaceId)
         if maxMemoryCapacity is not None:
             if maxMemoryCapacity < consumedmemcapacity:
                 raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
                                             "that is less than the current consumed memory "
-                                            "capacity %d MB." % consumedmemcapacity)
+                                            "capacity %d GB." % consumedmemcapacity)
             else:
                 cloudspace.resourceLimits['CU'] = maxMemoryCapacity
 
-        consumeddiskcapacity = self._getConsumedDiskyCapacity(cloudspaceId)
+        consumeddiskcapacity = self.getConsumedVDiskyCapacity(cloudspaceId)
         if maxDiskCapacity is not None:
             if maxDiskCapacity < consumeddiskcapacity:
                 raise exceptions.BadRequest("Cannot set the maximum disk capacity to a value that "
@@ -521,6 +577,26 @@ class cloudapi_cloudspaces(BaseActor):
 
         self.models.cloudspace.set(cloudspace)
         return True
+
+    # Unexposed actor
+    def getConsumedCloudUnits(self, cloudspaceId, **kwargs):
+        """
+        Calculate the currently consumed cloud units for resources in a cloudspace.
+        Calculated cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_I: number of public IPs
+
+        :param cloudspaceId: id of the cloudspace consumption should be calculated for
+        :return: dict with the consumed cloud units
+        """
+        consumedcudict = dict()
+        consumedcudict['CU_M'] = self.getConsumedMemoryCapacity(cloudspaceId)
+        consumedcudict['CU_C'] = self.getConsumedCPUCores(cloudspaceId)
+        consumedcudict['CU_D'] = self.getConsumedVDiskCapacity(cloudspaceId)
+        consumedcudict['CU_I'] = self.getConsumedPublicIPs(cloudspaceId)
+        return consumedcudict
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def getDefenseShield(self, cloudspaceId, **kwargs):

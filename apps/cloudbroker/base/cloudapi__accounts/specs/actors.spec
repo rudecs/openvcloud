@@ -95,3 +95,31 @@
         var:emailaddress str,, emailaddress of the unregistered user that will be invited
         var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         result:bool, True if user was added successfully
+
+    method:getConsumedCloudUnits
+        """
+        Calculate the currently consumed cloud units for all cloudspaces in the account.
+
+        Calculated cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of cpu cores
+        - CU_D: consumed vdisk storage in GB
+        - CU_I: number of public IPs
+        """
+        var:accountId int,, id of the account consumption should be calculated for
+        result:dict, dict with the consumed cloud units
+
+    method:getConsumedCloudUnitsByType
+        """
+        Calculate the currently consumed cloud units of the specified type for all cloudspaces
+        in the account.
+
+        Possible types of cloud units are include:
+        - CU_M: returns consumed memory in GB
+        - CU_C: returns number of virtual cpu cores
+        - CU_D: returns consumed virtual disk storage in GB
+        - CU_I: returns number of public IPs
+        """
+        var:accountId int,, id of the account consumption should be calculated for
+        var:cutype str,, cloud unit resource type
+        result:float, float/int for the consumed cloud unit of the specified type
