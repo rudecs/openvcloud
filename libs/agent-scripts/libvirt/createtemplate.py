@@ -20,7 +20,7 @@ def action(machineid, templatename, imageid, sourcepath, pmachineip):
     import time
     sys.path.append('/opt/OpenvStorage')
     from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
+    from ovs.dal.lists.vdisklist import VDiskList, VDisk
     from ovs.dal.lists.vpoollist import VPoolList
     from ovs.lib.vdisk import VDiskController, PMachineList
     pmguid = PMachineList.get_by_ip(pmachineip).guid
@@ -35,6 +35,12 @@ def action(machineid, templatename, imageid, sourcepath, pmachineip):
         devicename = '%s' % int(time.time())
         newdiskdata = VDiskController.clone(sourcedisk.guid, None, devicename, pmachineguid=pmguid, machinename='templates/custom')
         VDiskController.set_as_template(newdiskdata['diskguid'])
+
+        # derefence disk from original vmachine
+        vdisk = VDisk(newdiskdata['diskguid'])
+        vdisk.vmachine = None
+        vdisk.save()
+
         templateguid = newdiskdata['diskguid'].replace('-', '')
         location = newdiskdata['backingdevice']
 

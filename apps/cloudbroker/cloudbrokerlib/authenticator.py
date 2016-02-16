@@ -115,9 +115,6 @@ class auth(object):
                         machine = self.models.vmachine.get(machines[0]['id'])
                         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
                     account = self.models.account.get(disk.accountId)
-                elif 'imageid' in kwargs and kwargs['imageid']:
-                    image = self.models.image.get(int(kwargs['imageid']))
-                    account = self.models.account.get(image.accountId)
                 elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                     cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
                     account = self.models.account.get(cloudspace.accountId)
