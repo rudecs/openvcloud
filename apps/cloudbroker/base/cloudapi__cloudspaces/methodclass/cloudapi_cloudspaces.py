@@ -526,17 +526,10 @@ class cloudapi_cloudspaces(BaseActor):
         if cloudspaceobj.publicipaddress:
             numpublicips += 1
 
-        # Calculate the public IPs attached to the machines in cloudspace
-        machines = self.models.vmachine.search({'$fields': ['id', 'nics'],
-                                                '$query': {'cloudspaceId': cloudspaceId,
-                                                           'nics.type': 'PUBLIC',
-                                                           'status': {'$nin': ['DESTROYED', 'ERROR']}}},
-                                               size=0)[1:]
-
-        for machine in machines:
-            for nic in machine['nics']:
-                if nic['type'] == 'PUBLIC':
-                    numpublicips += 1
+        # Add the number of machines in cloudspace that have public IPs attached to them
+        numpublicips += self.models.vmachine.count({'cloudspaceId': cloudspaceId,
+                                                    'nics.type': 'PUBLIC',
+                                                    'status': {'$nin': ['DESTROYED', 'ERROR']}})
 
         return numpublicips
 
