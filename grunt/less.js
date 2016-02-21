@@ -6,7 +6,8 @@ module.exports = function(grunt, config) {
     },
     all: {
       files: {
-        'apps/ms1_fe/base/wiki_gcb/.files/css/custom.css': 'apps/ms1_fe/base/wiki_gcb/.files/less/custom.less'
+        'apps/ms1_fe/base/wiki_gcb/.files/css/custom.css': 'apps/ms1_fe/base/wiki_gcb/.files/less/custom.less',
+        '../../../github/jumpscale/jumpscale_portal/apps/portalbase/wiki/System/.files/css/flatTheme.css': 'apps/ms1_fe/base/wiki_gcb/.files/less/flatTheme.less'
       }
     }
   };
