@@ -174,11 +174,12 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
               </script>
           </li>
                     <li ng-show="currentUser.acl.cloudspace > 1 && machine.locked == false">
-                            <a ng-click="resize(currentSpace)" ng-disabled="machine.status !== 'HALTED'">
+                            <a ng-click="resize(currentSpace, machine.status)"
+                               ng-class="{'opacity4 cursor-default': machine.status !== 'HALTED' }"
+                               title="{[ machine.status !== 'HALTED' ? 'Machine has to be halted.' : '']}">
                                 <i class="fa fa-expand"></i>
                                 Resize compute capacity
                             </a>
-                            <i class="fa fa-info-circle" title="Machine has to be halted." ng-show="machine.status !== 'HALTED'"></i>
                             <script type="text/ng-template" id="resizeMachineDialog.html">
                               <div>
                                   <div class="modal-header">
@@ -299,7 +300,7 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
                 <div id="Disks" class="tab-pane">
                   <ul class="nav nav-pills">
                     <li ng-class="{active: tabState === 'currentDisks'}"><a data-toggle="pill" href="" ng-click="changeTabState('currentDisks')">Current disk</a></li>
-                    <li ng-class="{active: tabState === 'createDisks'}" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.accpunt > 1"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
+                    <li ng-class="{active: tabState === 'createDisks'}" ng-show="currentUser.acl.cloudspace > 1 || currentUser.acl.account > 1"><a data-toggle="pill" ng-click="changeTabState('createDisks')">Create disks</a></li>
                   </ul>
                   <div class="marginTopXlarge machine-disks">
                     <div ng-show="tabState === 'currentDisks'">
@@ -399,4 +400,3 @@ Your Defense shield assigns a fix IP address during the initial OS boot.">
     </tour>
 </div>
 }}
-

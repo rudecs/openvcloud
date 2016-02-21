@@ -334,10 +334,11 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        locked = False
         disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
         osImage = self.models.image.get(machine.imageId).name
-        if machine.nics and machine.nics[0].ipAddress == 'Undefined':
+        if machine.nics and machine.nics[0].ipAddress == 'Undefined' and node:
             if node.private_ips:
                 machine.nics[0].ipAddress = node.private_ips[0]
             else:
@@ -350,6 +351,8 @@ class cloudapi_machines(BaseActor):
                         self.models.vmachine.set(machine)
                 except exceptions.ServiceUnavailable:
                     pass # VFW not deployed yet
+        if node:
+            locked = node.extra.get('locked', False)
 
         acl = list()
         machine_acl = authenticator.auth().getVMachineAcl(machine.id)
@@ -358,7 +361,7 @@ class cloudapi_machines(BaseActor):
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': node.extra.get('locked', False)}
+                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': locked}
 
     # Authentication (permissions) are checked while retrieving the machines
     @audit()
@@ -408,6 +411,8 @@ class cloudapi_machines(BaseActor):
     def _getProviderAndNode(self, machineId):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
+        if machine.status in ['ERROR', 'DESTYROYED', 'DESTROYING']:
+            return None, None, machine
         provider = self._getProvider(machine)
         if provider:
             node = provider.client.ex_get_node_details(machine.referenceId)

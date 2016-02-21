@@ -108,6 +108,10 @@ angular.module('cloudscalers.controllers')
         };
 
         $scope.deleteUser = function(user) {
+            if(user.canBeDeleted != true){
+              return false;
+            }
+            
             var modalInstance = $modal.open({
                 templateUrl: 'deleteUserDialog.html',
                 controller: function($scope, $modalInstance){

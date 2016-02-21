@@ -154,9 +154,9 @@ class CloudBroker(object):
             # skip nodes that didnt respond in last 60 seconds
             if session[0] < time.time() - 60:
                 continue
-            gid, nid = gidnid.split('_')
-            gid, nid = int(gid), int(nid)
-            activesessions.append((gid, nid))
+            gridid, nid = gidnid.split('_')
+            gridid, nid = int(gridid), int(nid)
+            activesessions.append((gridid, nid))
 
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
