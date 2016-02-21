@@ -50,6 +50,7 @@
     prop:company str,, Company holding the account
     prop:companyurl str,, Website of the company holding the account
     prop:displayname str,, The name as the account should be displayed
+    prop:resourceLimits dict(int),,int amount of max nr of units which can be used there
 
 [model:ACE]
     """

@@ -1,4 +1,5 @@
 @usedefault
+{{editaccount accountId:$$id}}
 
 @@title Account: ${name}
 {{Account id:$$id}}
@@ -6,6 +7,9 @@
 h2. Account: ${name}
 
 {{actions:
+- display: Edit
+  action: '#editaccount'
+
 - display: Disable
   action: /restmachine/cloudbroker/account/disable
   data:
@@ -75,13 +79,6 @@ h2. Account: ${name}
   - name: message
     label: Reason for transaction
     type: text
-
-- display: Rename
-  action: /restmachine/cloudbroker/account/rename
-  data:
-   accountId: $$id
-  input:
-  - name
 }}
 
 {{createspace: accountId:$$id}}
@@ -91,6 +88,14 @@ h3. Details
 |*Location*|${DCLocation}|
 |*Status*|${status}|
 |*Balance (current USD in account)*|${balance}|
+|*Max Memory Capacity*|${maxMemoryCapacity}|
+|*Max VDisk Capacity*|${maxVDiskCapacity}|
+|*Max Number of CPU Cores*|${maxCPUCapacity}|
+|*Max Primary Storage(NAS) Capacity*|${maxNASCapacity}|
+|*Max Secondary Storage(Archive) Capacity*|${maxArchiveCapacity}|
+|*Max Network Transfer In Operator*|${maxNetworkOptTransfer}|
+|*Max Network Transfer Peering*|${maxNetworkPeerTransfer}|
+|*Max Number of Public IP Addresses*|${maxNumPublicIP}|
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
