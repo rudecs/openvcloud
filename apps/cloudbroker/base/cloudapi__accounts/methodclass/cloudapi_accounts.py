@@ -124,12 +124,23 @@ class cloudapi_accounts(BaseActor):
         return True
 
     @audit()
-    def create(self, name, access, **kwargs):
+    def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
+               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
+               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
+               **kwargs):
         """
         Create a extra an account (Method not implemented)
 
         :param name: name of account to create
         :param access: list of ids of users which have full access to this account
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
         :return int
         """
         raise NotImplementedError("Not implemented method create")
@@ -250,17 +261,104 @@ class cloudapi_accounts(BaseActor):
 
     @authenticator.auth(acl={'account': set('A')})
     @audit()
-    def update(self, accountId, name, **kwargs):
+    def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
+               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
+               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
-        Update an account name (Method not implemented)
+        Update an account name or the maximum cloud units set on it
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
 
         :param accountId: id of the account to change
         :param name: name of the account
-        :return int id of account updated
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         """
-        account = self.models.account.get(accountId)
-        account.name = name
-        self.models.account.set(account)
+
+        accountobj = self.models.account.get(accountId)
+
+        if name:
+            accountobj.name = name
+
+        if maxMemoryCapacity is not None:
+            consumedmemcapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_M')
+            if maxMemoryCapacity != -1 and maxMemoryCapacity < consumedmemcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
+                                            "that is less than the current consumed memory "
+                                            "capacity %s GB." % consumedmemcapacity)
+            else:
+                accountobj.resourceLimits['CU_M'] = maxMemoryCapacity
+
+        if maxVDiskCapacity is not None:
+            consumedvdiskcapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_D')
+            if maxVDiskCapacity != -1 and maxVDiskCapacity < consumedvdiskcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value that "
+                                            "is less than the current consumed vdisk capacity %s "
+                                            "GB." % consumedvdiskcapacity)
+            else:
+                accountobj.resourceLimits['CU_D'] = maxVDiskCapacity
+
+        if maxCPUCapacity is not None:
+            consumedcpucapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_C')
+            if maxCPUCapacity != -1 and maxCPUCapacity < consumedcpucapacity:
+                raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value that "
+                                            "is less than the current consumed cores %s "
+                                            "GB." % consumedcpucapacity)
+            else:
+                accountobj.resourceLimits['CU_C'] = maxCPUCapacity
+
+        if maxNASCapacity is not None:
+            consumednascapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_S')
+            if maxNASCapacity != -1 and maxNASCapacity < consumednascapacity:
+                raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
+                                            "value that is less than the current consumed capacity "
+                                            "%s TB." % consumednascapacity)
+            else:
+                accountobj.resourceLimits['CU_S'] = maxNASCapacity
+
+        if maxArchiveCapacity is not None:
+            consumedarchivecapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_A')
+            if maxArchiveCapacity != -1 and maxArchiveCapacity < consumedarchivecapacity:
+                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
+                                            "a value that is less than the current consumed "
+                                            "capacity %s TB." % consumedarchivecapacity)
+            else:
+                accountobj.resourceLimits['CU_A'] = maxArchiveCapacity
+
+        if maxNetworkOptTransfer is not None:
+            transferednewtopt = self.getConsumedCloudUnitsByType(accountId, 'CU_NO')
+            if maxNetworkOptTransfer != -1 and maxNetworkOptTransfer < transferednewtopt:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer in operator "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtopt)
+            else:
+                accountobj.resourceLimits['CU_NO'] = maxNetworkOptTransfer
+
+        if maxNetworkPeerTransfer is not None:
+            transferednewtpeer = self.getConsumedCloudUnitsByType(accountId, 'CU_NP')
+            if maxNetworkPeerTransfer != -1 and maxNetworkPeerTransfer < transferednewtpeer:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer peering "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtpeer)
+            else:
+                accountobj.resourceLimits['CU_NP'] = maxNetworkPeerTransfer
+
+        if maxNumPublicIP is not None:
+            assingedpublicip = self.getConsumedCloudUnitsByType(accountId, 'CU_I')
+            if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
+                raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
+                                            "to a value that is less than the current  "
+                                            "assigned %s." % assingedpublicip)
+            else:
+                accountobj.resourceLimits['CU_I'] = maxNumPublicIP
+
+        self.models.account.set(accountobj)
         return True
 
     @authenticator.auth(acl={'account': set('R')})
@@ -308,6 +406,7 @@ class cloudapi_accounts(BaseActor):
         history = self.models.credittransaction.search(query)[1:]
         return history
 
+    @authenticator.auth(acl={'account': set('R')})
     def getConsumedCloudUnits(self, accountId, **kwargs):
         """
         Calculate the currently consumed cloud units for all cloudspaces in the account.
@@ -316,12 +415,19 @@ class cloudapi_accounts(BaseActor):
         - CU_M: consumed memory in GB
         - CU_C: number of virtual cpu cores
         - CU_D: consumed virtual disk storage in GB
+        - CU_S: consumed primary storage (NAS) in TB
+        - CU_A: consumed secondary storage (Archive) in TB
+        - CU_NO: sent/received network transfer in operator in GB
+        - CU_NP: sent/received network transfer peering in GB
         - CU_I: number of public IPs
 
         :param accountId: id of the account consumption should be calculated for
         :return: dict with the consumed cloud units
         """
         consumedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0}
+        # The following keys are unimplemented cloud unit consumptions, will set to 0 until
+        # consumption is properly calculated
+        unimplementedcu = {'CU_S': 0, 'CU_A': 0, 'CU_NO': 0, 'CU_NP': 0}
 
         # Aggregate the total consumed cloud units for all cloudspaces in the account
         for cloudspace in self.models.cloudspace.search({'accountId': accountId,
@@ -331,8 +437,10 @@ class cloudapi_accounts(BaseActor):
             for cu in consumedcudict:
                 consumedcudict[cu] += cloudspaceconsumption[cu]
 
+        consumedcudict.update(unimplementedcu)
         return consumedcudict
 
+    @authenticator.auth(acl={'account': set('R')})
     def getConsumedCloudUnitsByType(self, accountId, cutype, **kwargs):
         """
         Calculate the currently consumed cloud units of the specified type for all cloudspaces
@@ -342,6 +450,10 @@ class cloudapi_accounts(BaseActor):
         - CU_M: returns consumed memory in GB
         - CU_C: returns number of virtual cpu cores
         - CU_D: returns consumed virtual disk storage in GB
+        - CU_S: returns consumed primary storage (NAS) in TB
+        - CU_A: returns consumed secondary storage (Archive) in TB
+        - CU_NO: returns sent/received network transfer in operator in GB
+        - CU_NP: returns sent/received network transfer peering in GB
         - CU_I: returns number of public IPs
 
         :param accountId: id of the account consumption should be calculated for
@@ -350,12 +462,22 @@ class cloudapi_accounts(BaseActor):
         """
         consumedcutype = 0
 
+        # For the following cloud unit types 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 0 will be returned
+        # until proper consumption calculation is implemented
         if cutype == 'CU_M':
             cumethod = j.apps.cloudapi.cloudspaces.getConsumedMemoryCapacity
         elif cutype == 'CU_C':
             cumethod = j.apps.cloudapi.cloudspaces.getConsumedCPUCores
         elif cutype == 'CU_D':
             cumethod = j.apps.cloudapi.cloudspaces.getConsumedVDiskCapacity
+        elif cutype == 'CU_S':
+            return 0
+        elif cutype == 'CU_A':
+            return 0
+        elif cutype == 'CU_NO':
+            return 0
+        elif cutype == 'CU_NP':
+            return 0
         elif cutype == 'CU_I':
             cumethod = j.apps.cloudapi.cloudspaces.getConsumedPublicIPs
         else:

@@ -8,6 +8,14 @@
         """
         var:name str,,name of account to create
         var:access list,,list of ids of users which have full access to this account
+        var:maxMemoryCapacity float,-1, max size of memory in GB
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
+        var:maxCPUCapacity int,-1, max number of cpu cores
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering
+        var:maxNumPublicIP int,-1, max number of assigned public IPs
         result:int, returns id of account created
 
     method:delete
@@ -25,11 +33,19 @@
 
     method:update
         """
-        Update an account name (Method not implemented)
+        Update an account name and resource limits
         """
         var:accountId int,, id of the account to change
-        var:name str,, name of the account
-        result:int, id of account updated
+        var:name str,, name of the account @optional
+        var:maxMemoryCapacity float,, max size of memory in GB @optional
+        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,, max number of cpu cores @optional
+        var:maxNASCapacity int,, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,, max number of assigned public IPs @optional
+        result:bool, True if account was updated
 
     method:addUser
         """

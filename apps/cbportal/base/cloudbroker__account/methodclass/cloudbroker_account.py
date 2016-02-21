@@ -62,7 +62,9 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, name, username, emailaddress, location, **kwargs):
+    def create(self, name, username, emailaddress, location, maxMemoryCapacity=-1,
+               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
+               maxNetworkOptTransfer=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
         accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
         if accounts:
             raise exceptions.Conflict('Account name is already in use.')
@@ -96,6 +98,11 @@ class cloudbroker_account(BaseActor):
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'
+
+        account.resourceLimits = {'CU_M': maxMemoryCapacity, 'CU_D': maxVDiskCapacity,
+                                  'CU_C': maxCPUCapacity, 'CU_S': maxNASCapacity,
+                                  'CU_A': maxArchiveCapacity, 'CU_NO': maxNetworkOptTransfer,
+                                  'CU_NP': maxNetworkPeerTransfer, 'CU_I':  maxNumPublicIP}
 
         ace = account.new_acl()
         ace.userGroupId = username
@@ -161,17 +168,29 @@ class cloudbroker_account(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
-    def rename(self, accountId, name, **kwargs):
+    def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
+               maxNASCapacity, maxArchiveCapacity, maxNetworkOptTransfer,
+               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
         """
-        Rename an account
-        param:accountID ID of the account
-        param:name new name of the account
-        result
+        Update an account name or the maximum cloud units set on it
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+
+        :param accountId: id of the account to change
+        :param name: name of the account
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         """
-        account = self._checkAccount(accountId)
-        account['name'] = name
-        self.models.account.set(account)
-        return True
+        return self.cloudapi.accounts.update(accountId, name, maxMemoryCapacity,
+                                             maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
+                                             maxArchiveCapacity, maxNetworkOptTransfer,
+                                             maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):
@@ -227,8 +246,7 @@ class cloudbroker_account(BaseActor):
         if user:
             self.cloudapi.accounts.addUser(accountId, username, accesstype)
         elif self.cb.isValidEmailAddress(username):
-            self.cloudapi.accounts.addExternalUser(accountId, username,
-                                                                      accesstype)
+            self.cloudapi.accounts.addExternalUser(accountId, username, accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
         return True
