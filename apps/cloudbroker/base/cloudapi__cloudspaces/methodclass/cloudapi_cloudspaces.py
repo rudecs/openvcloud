@@ -183,8 +183,9 @@ class cloudapi_cloudspaces(BaseActor):
 
     @authenticator.auth(acl={'account': set('C')})
     @audit()
-    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity,
-               **kwargs):
+    def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
+               maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1, maxNetworkOptTransfer=-1,
+               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
         """
         Create an extra cloudspace
 
@@ -192,8 +193,15 @@ class cloudapi_cloudspaces(BaseActor):
         :param location: name of location
         :param name: name of cloudspace to create
         :param access: username of a user which has full access to this space
-        :param maxMemoryCapacity: max size of memory in space (in GB)
-        :param maxDiskCapacity: max size of aggregated disks (in GB)
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         :return int with id of created cloudspace
         """
         accountId = int(accountId)
@@ -224,8 +232,10 @@ class cloudapi_cloudspaces(BaseActor):
         ace.type = 'U'
         ace.right = 'CXDRAU'
         ace.status = 'CONFIRMED'
-        cs.resourceLimits['CU'] = maxMemoryCapacity
-        cs.resourceLimits['SU'] = maxDiskCapacity
+        cs.resourceLimits = {'CU_M': maxMemoryCapacity, 'CU_D': maxVDiskCapacity,
+                             'CU_C': maxCPUCapacity, 'CU_S': maxNASCapacity,
+                             'CU_A': maxArchiveCapacity, 'CU_NO': maxNetworkOptTransfer,
+                             'CU_NP': maxNetworkPeerTransfer, 'CU_I':  maxNumPublicIP}
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
@@ -443,7 +453,7 @@ class cloudapi_cloudspaces(BaseActor):
     # Unexposed actor
     def getConsumedMemoryCapacity(self, cloudspaceId):
         """
-        Calculate the total consumed memory by the machines in the cloudspace
+        Calculate the total consumed memory by the machines in the cloudspace in GB
 
         :param cloudspaceId: id of the cloudspace that should be checked
         :return: the total consumed memory
@@ -451,7 +461,7 @@ class cloudapi_cloudspaces(BaseActor):
         consumedmemcapacity = 0
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
-                                                          'status': {'$nin': ['DESTROYED', 'ERROR']}}},
+                                                           'status': {'$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
 
         memsizes = {s['id']: s['memory'] for s in
@@ -487,7 +497,7 @@ class cloudapi_cloudspaces(BaseActor):
     # Unexposed actor
     def getConsumedVDiskCapacity(self, cloudspaceId):
         """
-        Calculate the total consumed disk storage by the machines in the cloudspace
+        Calculate the total consumed disk storage by the machines in the cloudspace in GB
 
         :param cloudspaceId: id of the cloudspace that should be checked
         :return: the total consumed disk storage
@@ -533,40 +543,146 @@ class cloudapi_cloudspaces(BaseActor):
 
         return numpublicips
 
+        # Unexposed actor
+    def getConsumedNASCapacity(self, cloudspaceId):
+        """
+        Calculate the total consumed primary disk storage (NAS) by the machines in the cloudspace
+        in TB
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total consumed primary disk storage (NAS)
+        """
+        return 0
+
+        # Unexposed actor
+    def getConsumedArchiveCapacity(self, cloudspaceId):
+        """
+        Calculate the total consumed secondary disk storage (Archive) by the machines in the
+        cloudspace in TB
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total consumed secondary disk storage (Archive)
+        """
+        return 0
+
+    # Unexposed actor
+    def getConsumedNetworkOptTransfer(self, cloudspaceId):
+        """
+        Calculate the total sent/received network transfer in operator by the machines in the
+        cloudspace in GB
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total sent/received network transfer in operator
+        """
+        return 0
+
+    # Unexposed actor
+    def getConsumedNetworkPeerTransfer(self, cloudspaceId):
+        """
+        Calculate the total sent/received network transfer peering by the machines in the
+        cloudspace in GB
+
+        :param cloudspaceId: id of the cloudspace that should be checked
+        :return: the total sent/received network transfer peering
+        """
+        return 0
+
     @authenticator.auth(acl={'cloudspace': set('A')})
     @audit()
-    def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxDiskCapacity=None,
-               **kwargs):
+    def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
+               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
+               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
         Update the cloudspace name and capacity parameters
 
         :param cloudspaceId: id of the cloudspace
         :param name: name of the cloudspace
-        :param maxMemoryCapacity: max size of memory in space(in GB)
-        :param maxDiskCapacity: max size of aggregated disks(in GB)
-        :return id of updated cloudspace
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         if name:
             cloudspace.name = name
 
-        consumedmemcapacity = self.getConsumedMemoryCapacity(cloudspaceId)
+
         if maxMemoryCapacity is not None:
-            if maxMemoryCapacity < consumedmemcapacity:
+            consumedmemcapacity = self.getConsumedMemoryCapacity(cloudspaceId)
+            if maxMemoryCapacity != -1 and maxMemoryCapacity < consumedmemcapacity:
                 raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
                                             "that is less than the current consumed memory "
-                                            "capacity %d GB." % consumedmemcapacity)
+                                            "capacity %s GB." % consumedmemcapacity)
             else:
-                cloudspace.resourceLimits['CU'] = maxMemoryCapacity
+                cloudspace.resourceLimits['CU_M'] = maxMemoryCapacity
 
-        consumeddiskcapacity = self.getConsumedVDiskyCapacity(cloudspaceId)
-        if maxDiskCapacity is not None:
-            if maxDiskCapacity < consumeddiskcapacity:
-                raise exceptions.BadRequest("Cannot set the maximum disk capacity to a value that "
-                                            "is less than the current consumed memory capacity %d "
-                                            "GB." % consumeddiskcapacity)
+        if maxVDiskCapacity is not None:
+            consumedvdiskcapacity = self.getConsumedVDiskCapacity(cloudspaceId)
+            if maxVDiskCapacity != -1 and maxVDiskCapacity < consumedvdiskcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value that "
+                                            "is less than the current consumed vdisk capacity %s "
+                                            "GB." % consumedvdiskcapacity)
             else:
-                cloudspace.resourceLimits['SU'] = maxDiskCapacity
+                cloudspace.resourceLimits['CU_D'] = maxVDiskCapacity
+
+        if maxCPUCapacity is not None:
+            consumedcpucapacity = self.getConsumedCPUCores(cloudspaceId)
+            if maxCPUCapacity != -1 and maxCPUCapacity < consumedcpucapacity:
+                raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value that "
+                                            "is less than the current consumed cores %s "
+                                            "GB." % consumedcpucapacity)
+            else:
+                cloudspace.resourceLimits['CU_C'] = maxCPUCapacity
+
+        if maxNASCapacity is not None:
+            consumednascapacity = self.getConsumedNASCapacity(cloudspaceId)
+            if maxNASCapacity != -1 and maxNASCapacity < consumednascapacity:
+                raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
+                                            "value that is less than the current consumed capacity "
+                                            "%s TB." % consumednascapacity)
+            else:
+                cloudspace.resourceLimits['CU_S'] = maxNASCapacity
+
+        if maxArchiveCapacity is not None:
+            consumedarchivecapacity = self.getConsumedArchiveCapacity(cloudspaceId)
+            if maxArchiveCapacity != -1 and maxArchiveCapacity < consumedarchivecapacity:
+                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
+                                            "a value that is less than the current consumed "
+                                            "capacity %s TB." % consumedarchivecapacity)
+            else:
+                cloudspace.resourceLimits['CU_A'] = maxArchiveCapacity
+
+        if maxNetworkOptTransfer is not None:
+            transferednewtopt = self.getConsumedNetworkOptTransfer(cloudspaceId)
+            if maxNetworkOptTransfer != -1 and maxNetworkOptTransfer < transferednewtopt:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer in operator "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtopt)
+            else:
+                cloudspace.resourceLimits['CU_NO'] = maxNetworkOptTransfer
+
+        if maxNetworkPeerTransfer is not None:
+            transferednewtpeer = self.getConsumedNetworkPeerTransfer(cloudspaceId)
+            if maxNetworkPeerTransfer != -1 and maxNetworkPeerTransfer < transferednewtpeer:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer peering "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtpeer)
+            else:
+                cloudspace.resourceLimits['CU_NP'] = maxNetworkPeerTransfer
+
+        if maxNumPublicIP is not None:
+            assingedpublicip = self.getConsumedPublicIPs(cloudspaceId)
+            if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
+                raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
+                                            "to a value that is less than the current  "
+                                            "assigned %s." % assingedpublicip)
+            else:
+                cloudspace.resourceLimits['CU_I'] = maxNumPublicIP
 
         self.models.cloudspace.set(cloudspace)
         return True
@@ -589,6 +705,7 @@ class cloudapi_cloudspaces(BaseActor):
         consumedcudict['CU_C'] = self.getConsumedCPUCores(cloudspaceId)
         consumedcudict['CU_D'] = self.getConsumedVDiskCapacity(cloudspaceId)
         consumedcudict['CU_I'] = self.getConsumedPublicIPs(cloudspaceId)
+
         return consumedcudict
 
     @authenticator.auth(acl={'cloudspace': set('X')})

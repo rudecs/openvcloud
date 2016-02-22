@@ -61,14 +61,22 @@ def main(j, args, params, tags, tasklet):
     if balances:
         balance = sum([bal['amount'] for bal in balances])
     accountdict['balance'] = balance
-    accountdict['maxMemoryCapacity'] = "%s GB" % accountobj.resourceLimits['CU_M'] if accountobj.resourceLimits['CU_M'] != -1 else "Unlimited"
-    accountdict['maxVDiskCapacity'] = "%s GB" % accountobj.resourceLimits['CU_D'] if accountobj.resourceLimits['CU_D'] != -1 else "Unlimited"
-    accountdict['maxCPUCapacity'] = accountobj.resourceLimits['CU_C'] if accountobj.resourceLimits['CU_C'] != -1 else "Unlimited"
-    accountdict['maxNASCapacity'] = "%s TB" % accountobj.resourceLimits['CU_S'] if accountobj.resourceLimits['CU_S'] != -1 else "Unlimited"
-    accountdict['maxArchiveCapacity'] = "%s TB" % accountobj.resourceLimits['CU_A'] if accountobj.resourceLimits['CU_A'] != -1 else "Unlimited"
-    accountdict['maxNetworkOptTransfer'] = "%s GB" % accountobj.resourceLimits['CU_NO'] if accountobj.resourceLimits['CU_NO'] != -1 else "Unlimited"
-    accountdict['maxNetworkPeerTransfer'] = "%s GB" % accountobj.resourceLimits['CU_NP'] if accountobj.resourceLimits['CU_NP'] != -1 else "Unlimited"
-    accountdict['maxNumPublicIP'] = accountobj.resourceLimits['CU_I'] if accountobj.resourceLimits['CU_I'] != -1 else "Unlimited"
+    accountdict['maxMemoryCapacity'] = "%s GB" % accountobj.resourceLimits['CU_M'] \
+        if 'CU_M' in accountobj.resourceLimits and accountobj.resourceLimits['CU_M'] != -1 else "Unlimited"
+    accountdict['maxVDiskCapacity'] = "%s GB" % accountobj.resourceLimits['CU_D'] \
+        if 'CU_D' in accountobj.resourceLimits and accountobj.resourceLimits['CU_D'] != -1 else "Unlimited"
+    accountdict['maxCPUCapacity'] = accountobj.resourceLimits['CU_C'] \
+        if 'CU_C' in accountobj.resourceLimits and accountobj.resourceLimits['CU_C'] != -1 else "Unlimited"
+    accountdict['maxNASCapacity'] = "%s TB" % accountobj.resourceLimits['CU_S'] \
+        if 'CU_S' in accountobj.resourceLimits and accountobj.resourceLimits['CU_S'] != -1 else "Unlimited"
+    accountdict['maxArchiveCapacity'] = "%s TB" % accountobj.resourceLimits['CU_A'] \
+        if 'CU_A' in accountobj.resourceLimits and accountobj.resourceLimits['CU_A'] != -1 else "Unlimited"
+    accountdict['maxNetworkOptTransfer'] = "%s GB" % accountobj.resourceLimits['CU_NO'] \
+        if 'CU_NO' in accountobj.resourceLimits and accountobj.resourceLimits['CU_NO'] != -1 else "Unlimited"
+    accountdict['maxNetworkPeerTransfer'] = "%s GB" % accountobj.resourceLimits['CU_NP'] \
+        if 'CU_NP' in accountobj.resourceLimits and accountobj.resourceLimits['CU_NP'] != -1 else "Unlimited"
+    accountdict['maxNumPublicIP'] = accountobj.resourceLimits['CU_I'] \
+        if 'CU_I' in accountobj.resourceLimits and accountobj.resourceLimits['CU_I'] != -1 else "Unlimited"
 
     args.doc.applyTemplate(accountdict)
     params.result = (args.doc, args.doc)
