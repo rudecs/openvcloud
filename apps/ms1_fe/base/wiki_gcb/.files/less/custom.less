@@ -202,27 +202,27 @@ canvas { display: block; float: left; }
 .sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active { color: #000; }
 .panel-heading { padding: 0; }
 .panel-title>a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
-.sideNav .header > a { padding: 5px 15px; display: block; color: #000 !important; font-family: arial, sans-serif; }
+.sideNav .header > a { padding: 5px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
 .sideNav .header > a.active { font-weight: bold; text-decoration: underline; }
-.blue h4 > a, .sideNav .header.blue > a { background: @defence-tab-background; color: #fff !important; }
+.blue h4 > a, .sideNav .header.blue > a { background: @tab-background; color: #fff !important; }
 /*.sideNav .header.dark-blue { background: #F2F2F2; }*/
 /*.dark-blue h4 > a, .sideNav .header.dark-blue > a { background: @main-color; color: #fff !important; }*/
 .sideNav .header a { text-align: center; }
 .sideNav .header span { font-size: 11px; top: 3px; position: absolute; margin-left: 5px; }
 .sideNav .header { position: relative; }
 .green h4 > a, .sideNav .header.green > a { background: #80bd01; }
-.orange h4 > a, .sideNav .header.orange > a { background: @machines-tab-background; }
+.orange h4 > a, .sideNav .header.orange > a { background: @tab-background;     border-bottom: 1px solid #FFF; }
 .red h4 > a, .sideNav .header.red > a { background: #ff3d3d; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a { background: #d97804; }
-.blue + .panel-collapse, .sideNav .blue.header { background: @defence-list-bg; }
+.blue + .panel-collapse, .sideNav .blue.header { background: @tab-list-background; }
 .green + .panel-collapse, .sideNav .green.header { background: #edffc9; }
-.orange + .panel-collapse, .sideNav .orange.header { background: @machine-tab-list-background; }
+.orange + .panel-collapse, .sideNav .orange.header { background: @tab-list-background; }
 .red + .panel-collapse, .sideNav .red.header { background: #ffdada; }
 .darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #f9dfc0; }
-.blue h4 > a, .sideNav .header.blue > a:hover { background: @defence-tab-background-hover; }
+.blue h4 > a, .sideNav .header.blue > a:hover { background: @tab-background-hover; }
 /*.dark-blue h4 > a, .sideNav .header.dark-blue > a:hover { background: #547C96; }*/
 .green h4 > a, .sideNav .header.green > a:hover { background: #8ED300; }
-.orange h4 > a, .sideNav .header.orange > a:hover { background: @machines-tab-background-hover; }
+.orange h4 > a, .sideNav .header.orange > a:hover { background: @tab-background-hover; }
 .red h4 > a, .sideNav .header.red > a:hover { background: #ff6060; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a:hover { background: #ffa131; }
 .sideNav .body ul li { line-height: 26px; }
@@ -234,8 +234,8 @@ canvas { display: block; float: left; }
 .navbar-inverse { background-color: rgba(3,0,0,0.4); border: 0; margin: 0 0 0 0; }
 .navbar-search .search-query { font-family: arial, sans-serif; }
 .navbar-right.clearR { margin: 46px 0 0 0; }
-.navbar-default .navbar-nav>li>a { color: @off-white; font-size: 16px; }
-.login { color: #ECF0F1 !important; }
+.navbar-default .navbar-nav>li>a { color: @menu-text-color; font-size: 16px; }
+.login { color: @menu-text-color !important; }
 .login:hover, .login:focus { color: #fff !important; }
 .navbar-default { border: 0; }
 .navbar { margin-bottom: 0; border-radius: 0; }
@@ -708,7 +708,7 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus { background-color: transparent !important; }
 .navbar-inverse .navbar-toggle { border: 0 !important; }
 .table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th { color: #333}
-.table.table-striped.table-bordered a, button + .table-responsive table a:hover { color: #333 !important; background-color: transparent !important;}
+.table.table-striped.table-bordered a, button + .table-responsive table a:hover { color: @link-color !important; background-color: transparent !important;}
 /** oocss **/
 .background-transparent { background-color: rgba(0, 0, 0, 0) !important; }
 .txt-gray { color: rgb(102, 102, 102) !important; }
@@ -717,3 +717,4 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .txt-white { color: #fff !important; }
 .txt-dark-blue { color: @main-color !important; }
 .background-white { background-color: #fff !important; }
+html body #wrap .table-striped tbody:first-child  th, html body #wrap .table-striped tbody:first-child  th a { background-color: @main-color !important; color: #FFF !important; }
