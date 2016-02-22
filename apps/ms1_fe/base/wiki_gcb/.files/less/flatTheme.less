@@ -41,7 +41,7 @@ body{
 
 body input[type=text]{
     border: 2px solid #bdc3c7;
-    color: @endUser-main-color !important;
+    color: @adminPortal-main-color !important;
     font-family: "Lato", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.467;
@@ -55,8 +55,8 @@ body input[type=text]{
     transition: border .25s linear, color .25s linear, background-color .25s linear;
 }
 body input[type=text]:focus{
-    border-color: @endUser-a-color !important;
-    color: @endUser-a-color !important
+    border-color: @adminPortal-link-color !important;
+    color: @adminPortal-link-color !important;
     outline: 0;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -113,8 +113,8 @@ body input[type=text]:focus{
 }
 .sidebar-nav li:hover, .nav-page-active, .sidebar-nav p:hover{
     color: #fff;
-    background: @endUser-main-color;
-    border-left: 4px solid @endUser-a-color;
+    background: @adminPortal-main-color;
+    border-left: 4px solid @adminPortal-link-color;
 }
 .sidebar-nav li, .sidebar-nav p{
     list-style: none;
@@ -126,7 +126,7 @@ body input[type=text]:focus{
     padding: 2px;
 }
 .open > .dropdown-menu{
-    background-color: @endUser-main-color;
+    background-color: @adminPortal-main-color;
     padding: 3px 4px;
     margin-top: 27px !important;
 }
@@ -215,14 +215,14 @@ div.dataTables_length select{
     height: 35px;
 }
 .pagination ul li > a, .pagination ul li > span, .pagination ul li.active > a:hover{
-    color: @endUser-main-color;
+    color: @adminPortal-main-color;
 }
 .pagination ul li > a:hover, .pagination ul li > span:hover{
     color: #fff;
 }
 .previous.disabled a:hover, .next.disabled a:hover, .previous.disabled a:focus, .next.disabled a:focus, .previous.disabled a:active, .next.disabled a:active{
     background: #d6dbdf;
-    color: @endUser-main-color;
+    color: @adminPortal-main-color;
     cursor: default;
 }
 .flatTheme .dataTables_wrapper.form-inline{
@@ -247,7 +247,7 @@ div.dataTables_length select{
 
 /* Edit Page */
 .cm-s-monokai.CodeMirror{
-    background: @endUser-main-color !important;
+    background: @adminPortal-main-color !important;
 }
 /* Mega menu */
 .dropdown-menu:before{
@@ -256,7 +256,7 @@ div.dataTables_length select{
     height: 0;
     border-left: 10px solid rgba(0,0,0,0);
     border-right: 10px solid rgba(0,0,0,0);
-    border-bottom: 15px solid @endUser-main-color;
+    border-bottom: 15px solid @adminPortal-main-color;
     position: absolute;
     top: -12px;
     z-index: 100;
@@ -269,7 +269,7 @@ div.dataTables_length select{
     height: initial;
 }
 .mega-menu ul{
-    background-color: @endUser-main-color;
+    background-color: @adminPortal-main-color;
 }
 .dropdown-menu.mega-menu li:hover, .dropdown-menu.mega-menu .dropdown-header:hover{
     background-color: initial;
@@ -310,7 +310,7 @@ select{
     color: #4A749C;
 }
 .pagination>li>a, .pagination>li>span, .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus{
-    color: @endUser-main-color;
+    color: @adminPortal-main-color;
 }
 .btn-default{
     color: #000 !important;
@@ -322,27 +322,27 @@ table.table{
     display: inline;
 }
 a{
-    color: @endUser-a-color;
+    color: @adminPortal-link-color;
 }
 a:hover, a:active, a:focus{
     color: #5dade2;
 }
 .pagination ul li > a:hover, .pagination ul li > span:hover, .pagination ul li > a:focus, .pagination ul li > span:focus, .pagination ul li.active > a, .pagination ul li.active > span{
-    background-color: @endUser-a-color;
-    border-color: @endUser-a-color;
+    background-color: @adminPortal-link-color;
+    border-color: @adminPortal-link-color;
 }
 .btn-primary{
-    background-color: @endUser-a-color;
+    background-color: @adminPortal-link-color;
 }
 .btn-primary:hover{
     background-color: #5dade2;
 }
 .title span{
-    color: @endUser-a-color !important;
+    color: @adminPortal-link-color !important;
 }
 .navbar-inverse .navbar-form .form-control:focus{
-    border-color: @endUser-a-color !important;
-    color: @endUser-a-color !important;
+    border-color: @adminPortal-link-color !important;
+    color: @adminPortal-link-color !important;
 }
 
 /* Hamburger menu */
@@ -630,48 +630,48 @@ div.jgauge{
 
 
 /*Imported from flat ui css*/
-.dropdown-arrow-inverse { border-bottom-color: @endUser-main-color !important; border-top-color: @endUser-main-color !important; }
-body { font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; line-height: 1.72222; color: @endUser-main-color; background-color: #ffffff; }
-.bg-primary { color: #ffffff; background-color: @endUser-main-color; }
-kbd { padding: 2px 6px; font-size: 85%; color: #ffffff; background-color: @endUser-main-color; border-radius: 4px; box-shadow: none; }
-.thumbnail .caption { padding: 9px; color: @endUser-main-color; }
-.btn-inverse { color: #ffffff; background-color: @endUser-main-color; }
-.btn-inverse.disabled, .btn-inverse[disabled], fieldset[disabled] .btn-inverse, .btn-inverse.disabled:hover, .btn-inverse[disabled]:hover, fieldset[disabled] .btn-inverse:hover, .btn-inverse.disabled:focus, .btn-inverse[disabled]:focus, fieldset[disabled] .btn-inverse:focus, .btn-inverse.disabled:active, .btn-inverse[disabled]:active, fieldset[disabled] .btn-inverse:active, .btn-inverse.disabled.active, .btn-inverse[disabled].active, fieldset[disabled] .btn-inverse.active { background-color: @endUser-main-color; border-color: @endUser-main-color; }
-.caret { border-width: 8px 6px; border-bottom-color: @endUser-main-color; border-top-color: @endUser-main-color; border-style: solid; border-bottom-style: none; -webkit-transition: 0.25s; transition: 0.25s; -webkit-transform: scale(1.001); -ms-transform: scale(1.001); transform: scale(1.001); }
-.form-control { border: 2px solid #bdc3c7; color: @endUser-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.467; padding: 6px 10px; height: 35px; -webkit-appearance: none; border-radius: 6px; -webkit-box-shadow: none; box-shadow: none; -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear; transition: border .25s linear, color .25s linear, background-color .25s linear; }
-.checkbox.primary .icons, .radio.primary .icons { color: @endUser-main-color; }
-.navbar-toggle { border: none; color: @endUser-main-color; margin: 0 0 0 21px; padding: 0 21px; height: 53px; line-height: 53px; }
-.navbar-text { font-size: 16px; line-height: 1.438; color: @endUser-main-color; margin-top: 0; margin-bottom: 0; padding-top: 15px; padding-bottom: 15px; }
-.navbar-default .navbar-brand { color: @endUser-main-color; }
-.navbar-default .navbar-toggle:before { color: @endUser-main-color; }
-.navbar-default .navbar-nav > li > a { color: @endUser-main-color; }
-.navbar-default .navbar-nav > .dropdown > a .caret { border-top-color: @endUser-main-color; border-bottom-color: @endUser-main-color; }
-.navbar-default .navbar-nav .open .dropdown-menu > li > a { color: @endUser-main-color; }
-.navbar-default .navbar-text { color: @endUser-main-color; }
-.navbar-default .navbar-text a { color: @endUser-main-color; }
-.navbar-inverse { background-color: @endUser-main-color; }
-.navbar-inverse .navbar-nav > .open > .dropdown-arrow { border-top-color: @endUser-main-color; border-bottom-color: @endUser-main-color; }
-.navbar-inverse .navbar-nav > .open > .dropdown-menu { background-color: @endUser-main-color; padding: 3px 4px; }
-.tagsinput input { background: transparent; border: none; color: @endUser-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; margin: 0px; padding: 0 0 0 5px; outline: none !important; margin: 6px 5px 0 0; vertical-align: top; width: 12px; }
-.twitter-typeahead .tt-query, .twitter-typeahead .tt-hint { border: 2px solid #bdc3c7; color: @endUser-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.467; padding: 8px 12px; height: 42px; -webkit-appearance: none; border-radius: 6px; -webkit-box-shadow: none; box-shadow: none; -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear; transition: border .25s linear, color .25s linear, background-color .25s linear; }
-.pager { background-color: @endUser-main-color; border-radius: 6px; color: #ffffff; font-size: 16px; font-weight: 700; display: inline-block; }
-.tooltip.top .tooltip-arrow { border-top-color: @endUser-main-color; border-width: 9px 9px 0; bottom: 0; margin-left: -9px; }
-.tooltip.right .tooltip-arrow { border-right-color: @endUser-main-color; border-width: 9px 9px 9px 0; margin-top: -9px; left: -3px; }
-.tooltip.bottom .tooltip-arrow { border-bottom-color: @endUser-main-color; border-width: 0 9px 9px; margin-left: -9px; top: -1px; }
-.tooltip.left .tooltip-arrow { border-left-color: @endUser-main-color; border-width: 9px 0 9px 9px; margin-top: -9px; right: -3px; }
-.tooltip-inner { background-color: @endUser-main-color; line-height: 1.286; padding: 12px 12px; text-align: center; width: 183px; border-radius: 6px; }
-.navbar-fixed-bottom .nav > li > ul:before { border-bottom: none; border-top: 9px outset @endUser-main-color; bottom: 4px; top: auto; }
-.open.dropup > .dropdown-arrow.dropdown-arrow-inverse { border-top-color: @endUser-main-color; }
-.dropdown-inverse { background-color: @endUser-main-color; color: #cccccc; padding: 4px 0 6px; }
-.has-switch span.switch-left { border-radius: 30px 0 0 30px; background-color: @endUser-main-color; color: #1abc9c; border-left: 1px solid transparent; }
-.has-switch label { border: 4px solid @endUser-main-color; border-radius: 50%; float: left; height: 29px; margin: 0 -15px; padding: 0; position: relative; vertical-align: middle; width: 29px; z-index: 100; -webkit-transition: 0.25s ease-out; transition: 0.25s ease-out; }
-.palette-wet-asphalt { background-color: @endUser-main-color; }
-.todo li { background: @endUser-main-color url(../images/todo/todo.png) 92% center no-repeat; background-size: 20px 20px; cursor: pointer; font-size: 14px; line-height: 1.214; margin-top: 2px; padding: 18px 42px 21px 25px; position: relative; -webkit-transition: 0.25s; transition: 0.25s; }
-.todo-search { position: relative; background: #1abc9c; background-size: 16px 16px; border-radius: 6px 6px 0 0; color: @endUser-main-color; padding: 19px 25px 20px; }
-input.todo-search-field { background: none; border: none; color: @endUser-main-color; font-size: 19px; font-weight: 700; margin: 0; line-height: 23px; padding: 5px 0; text-indent: 0; -webkit-box-shadow: none; box-shadow: none; }
-input.todo-search-field:-moz-placeholder {color: @endUser-main-color;}
-input.todo-search-field::-moz-placeholder {color: @endUser-main-color;opacity: 1;}
-input.todo-search-field:-ms-input-placeholder {color: @endUser-main-color;}
-input.todo-search-field::-webkit-input-placeholder {color: @endUser-main-color;}
+.dropdown-arrow-inverse { border-bottom-color: @adminPortal-main-color !important; border-top-color: @adminPortal-main-color !important; }
+body { font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; line-height: 1.72222; color: @adminPortal-main-color; background-color: #ffffff; }
+.bg-primary { color: #ffffff; background-color: @adminPortal-main-color; }
+kbd { padding: 2px 6px; font-size: 85%; color: #ffffff; background-color: @adminPortal-main-color; border-radius: 4px; box-shadow: none; }
+.thumbnail .caption { padding: 9px; color: @adminPortal-main-color; }
+.btn-inverse { color: #ffffff; background-color: @adminPortal-main-color; }
+.btn-inverse.disabled, .btn-inverse[disabled], fieldset[disabled] .btn-inverse, .btn-inverse.disabled:hover, .btn-inverse[disabled]:hover, fieldset[disabled] .btn-inverse:hover, .btn-inverse.disabled:focus, .btn-inverse[disabled]:focus, fieldset[disabled] .btn-inverse:focus, .btn-inverse.disabled:active, .btn-inverse[disabled]:active, fieldset[disabled] .btn-inverse:active, .btn-inverse.disabled.active, .btn-inverse[disabled].active, fieldset[disabled] .btn-inverse.active { background-color: @adminPortal-main-color; border-color: @adminPortal-main-color; }
+.caret { border-width: 8px 6px; border-bottom-color: @adminPortal-main-color; border-top-color: @adminPortal-main-color; border-style: solid; border-bottom-style: none; -webkit-transition: 0.25s; transition: 0.25s; -webkit-transform: scale(1.001); -ms-transform: scale(1.001); transform: scale(1.001); }
+.form-control { border: 2px solid #bdc3c7; color: @adminPortal-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.467; padding: 6px 10px; height: 35px; -webkit-appearance: none; border-radius: 6px; -webkit-box-shadow: none; box-shadow: none; -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear; transition: border .25s linear, color .25s linear, background-color .25s linear; }
+.checkbox.primary .icons, .radio.primary .icons { color: @adminPortal-main-color; }
+.navbar-toggle { border: none; color: @adminPortal-main-color; margin: 0 0 0 21px; padding: 0 21px; height: 53px; line-height: 53px; }
+.navbar-text { font-size: 16px; line-height: 1.438; color: @adminPortal-main-color; margin-top: 0; margin-bottom: 0; padding-top: 15px; padding-bottom: 15px; }
+.navbar-default .navbar-brand { color: @adminPortal-main-color; }
+.navbar-default .navbar-toggle:before { color: @adminPortal-main-color; }
+.navbar-default .navbar-nav > li > a { color: @adminPortal-main-color; }
+.navbar-default .navbar-nav > .dropdown > a .caret { border-top-color: @adminPortal-main-color; border-bottom-color: @adminPortal-main-color; }
+.navbar-default .navbar-nav .open .dropdown-menu > li > a { color: @adminPortal-main-color; }
+.navbar-default .navbar-text { color: @adminPortal-main-color; }
+.navbar-default .navbar-text a { color: @adminPortal-main-color; }
+.navbar-inverse { background-color: @adminPortal-main-color; }
+.navbar-inverse .navbar-nav > .open > .dropdown-arrow { border-top-color: @adminPortal-main-color; border-bottom-color: @adminPortal-main-color; }
+.navbar-inverse .navbar-nav > .open > .dropdown-menu { background-color: @adminPortal-main-color; padding: 3px 4px; }
+.tagsinput input { background: transparent; border: none; color: @adminPortal-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; margin: 0px; padding: 0 0 0 5px; outline: none !important; margin: 6px 5px 0 0; vertical-align: top; width: 12px; }
+.twitter-typeahead .tt-query, .twitter-typeahead .tt-hint { border: 2px solid #bdc3c7; color: @adminPortal-main-color; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.467; padding: 8px 12px; height: 42px; -webkit-appearance: none; border-radius: 6px; -webkit-box-shadow: none; box-shadow: none; -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear; transition: border .25s linear, color .25s linear, background-color .25s linear; }
+.pager { background-color: @adminPortal-main-color; border-radius: 6px; color: #ffffff; font-size: 16px; font-weight: 700; display: inline-block; }
+.tooltip.top .tooltip-arrow { border-top-color: @adminPortal-main-color; border-width: 9px 9px 0; bottom: 0; margin-left: -9px; }
+.tooltip.right .tooltip-arrow { border-right-color: @adminPortal-main-color; border-width: 9px 9px 9px 0; margin-top: -9px; left: -3px; }
+.tooltip.bottom .tooltip-arrow { border-bottom-color: @adminPortal-main-color; border-width: 0 9px 9px; margin-left: -9px; top: -1px; }
+.tooltip.left .tooltip-arrow { border-left-color: @adminPortal-main-color; border-width: 9px 0 9px 9px; margin-top: -9px; right: -3px; }
+.tooltip-inner { background-color: @adminPortal-main-color; line-height: 1.286; padding: 12px 12px; text-align: center; width: 183px; border-radius: 6px; }
+.navbar-fixed-bottom .nav > li > ul:before { border-bottom: none; border-top: 9px outset @adminPortal-main-color; bottom: 4px; top: auto; }
+.open.dropup > .dropdown-arrow.dropdown-arrow-inverse { border-top-color: @adminPortal-main-color; }
+.dropdown-inverse { background-color: @adminPortal-main-color; color: #cccccc; padding: 4px 0 6px; }
+.has-switch span.switch-left { border-radius: 30px 0 0 30px; background-color: @adminPortal-main-color; color: #1abc9c; border-left: 1px solid transparent; }
+.has-switch label { border: 4px solid @adminPortal-main-color; border-radius: 50%; float: left; height: 29px; margin: 0 -15px; padding: 0; position: relative; vertical-align: middle; width: 29px; z-index: 100; -webkit-transition: 0.25s ease-out; transition: 0.25s ease-out; }
+.palette-wet-asphalt { background-color: @adminPortal-main-color; }
+.todo li { background: @adminPortal-main-color url(../images/todo/todo.png) 92% center no-repeat; background-size: 20px 20px; cursor: pointer; font-size: 14px; line-height: 1.214; margin-top: 2px; padding: 18px 42px 21px 25px; position: relative; -webkit-transition: 0.25s; transition: 0.25s; }
+.todo-search { position: relative; background: #1abc9c; background-size: 16px 16px; border-radius: 6px 6px 0 0; color: @adminPortal-main-color; padding: 19px 25px 20px; }
+input.todo-search-field { background: none; border: none; color: @adminPortal-main-color; font-size: 19px; font-weight: 700; margin: 0; line-height: 23px; padding: 5px 0; text-indent: 0; -webkit-box-shadow: none; box-shadow: none; }
+input.todo-search-field:-moz-placeholder {color: @adminPortal-main-color;}
+input.todo-search-field::-moz-placeholder {color: @adminPortal-main-color;opacity: 1;}
+input.todo-search-field:-ms-input-placeholder {color: @adminPortal-main-color;}
+input.todo-search-field::-webkit-input-placeholder {color: @adminPortal-main-color;}
 /* END of Imported from flat ui css*/
-input.todo-search-field.placeholder { color: @endUser-main-color; }
+input.todo-search-field.placeholder { color: @adminPortal-main-color; }
