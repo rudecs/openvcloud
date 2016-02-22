@@ -1,0 +1,43 @@
+@template access
+{{css:/$$space/.files/css/font-awesome.min.css}}
+{{div: class=container why-page white-box}}
+
+@row
+@col12
+
+
+{{html:
+<!-- TODO move to style file -->
+<style type="text/css">
+.white-box { min-height: 30em; margin: 100px auto; max-width: 60em; }
+.hcenter { margin-left: auto; margin-right: auto; }
+.form-panel header { font-weight: 300; font-size: 20px; line-height: 20px; padding: 25px 30px; background: #f4f5f5; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #545f69; }
+.no-access { background: url(/$$space/.files/img/no-access.jpg) no-repeat !important; height: 527px;    width: 591px !important; border: 12px solid rgba(0,0,0,0.2) !important; 
+  -webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;}
+.no-access-header { border-bottom: 0 !important; background: transparent !important; color: #FFF !important; }
+.no-access-text  { margin: 46px 0 0 286px;width: 260px;height: 120px;overflow: hidden;font-size: 18px;line-height: 25px; }
+</style>
+<div>
+    <div>
+     <div class="form-panel width-100pc-xs hcenter margin-top-large margin-bottom-small no-access">
+        <header class="no-access-header">You have no access!</header>
+         <div class="no-access-text">
+           <p>
+            <!-- 502. That’s an error.  -->
+            <!-- <br /><br /> -->
+            <!-- Sorry you have no access temporary error and could not complete your request. -->
+            </p>
+         </div>
+      </div>     
+    </div>
+</div>
+</div>
+<script src="/$$space/.files/js/services/UserServices.js" type="text/javascript"></script>
+<script src="/$$space/.files/js/controllers/RegisterUserController.js" type="text/javascript"></script>
+
+}}
+
+
+
+@divend
+@divend
