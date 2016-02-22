@@ -3,6 +3,7 @@
 @@title Cloud Space: ${name}
 
 {{cbspace id:$$id}}
+{{editspace cloudspaceId:$$id}}
 {{datatables_use}}
 {% if id %}
 
@@ -15,12 +16,8 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
-- display: Rename
-  action: /restmachine/cloudbroker/cloudspace/updateName
-  input:
-  - newname
-  data:
-   cloudspaceId: $$id
+- display: Edit
+  action: '#editspace'
 
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
@@ -120,7 +117,14 @@ h3. Details
 |*Location*|${location}|
 |*Description*|${descr}|
 |*Public IP Adress*|${publicipaddress}|
-|*Resource Limits*|${resourcelimits}|
+|*Max Memory Capacity*|${maxMemoryCapacity}|
+|*Max VDisk Capacity*|${maxVDiskCapacity}|
+|*Max Number of CPU Cores*|${maxCPUCapacity}|
+|*Max Primary Storage(NAS) Capacity*|${maxNASCapacity}|
+|*Max Secondary Storage(Archive) Capacity*|${maxArchiveCapacity}|
+|*Max Network Transfer In Operator*|${maxNetworkOptTransfer}|
+|*Max Network Transfer Peering*|${maxNetworkPeerTransfer}|
+|*Max Number of Public IP Addresses*|${maxNumPublicIP}|
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
