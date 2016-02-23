@@ -222,6 +222,7 @@ class cloudapi_cloudspaces(BaseActor):
             if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
                 raise exceptions.Conflict('Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
 
+
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
@@ -244,6 +245,11 @@ class cloudapi_cloudspaces(BaseActor):
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
         cs.creationTime = int(time.time())
+        # Validate that the specified CU limits can be reserved on account
+        self._validateAvaliableAccountResources(cs, maxMemoryCapacity, maxVDiskCapacity,
+                                                maxCPUCapacity, maxNASCapacity, maxArchiveCapacity,
+                                                maxNetworkOptTransfer, maxNetworkPeerTransfer,
+                                                maxNumPublicIP)
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
 
@@ -587,6 +593,92 @@ class cloudapi_cloudspaces(BaseActor):
         """
         return 0
 
+    def _validateAvaliableAccountResources(self, cloudspace, maxMemoryCapacity=None,
+                                           maxVDiskCapacity=None, maxCPUCapacity=None,
+                                           maxNASCapacity=None, maxArchiveCapacity=None,
+                                           maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None,
+                                           maxNumPublicIP=None, excludecloudspace=True):
+        """
+        Validate that the required CU limits to be reserved for the cloudspace are available in
+        the account
+
+        :param cloudspace: cloudspace object
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :param excludecloudspace: exclude the cloudspace being validated while performing the
+            calculations
+        :return: True if all required CUs are available in account
+        """
+        accountcus = self.models.account.get(cloudspace.accountId).resourceLimits
+        if excludecloudspace:
+            excludecloudspaceid = cloudspace.id
+        else:
+            excludecloudspaceid = None
+
+        reservedcus = j.apps.cloudapi.accounts.getReservedCloudUnits(cloudspace.accountId,
+                                                                     excludecloudspaceid)
+
+        if maxMemoryCapacity:
+            avaliablememorycapacity = accountcus['CU_M'] - reservedcus['CU_M']
+            if maxMemoryCapacity != -1 and accountcus['CU_M'] != -1 and maxMemoryCapacity > avaliablememorycapacity:
+                raise exceptions.BadRequest("Owning account has only %s GB of unreserved memory, "
+                                            "cannot reserve %s GB for this cloudspace" %
+                                            (avaliablememorycapacity, maxMemoryCapacity))
+
+        if maxVDiskCapacity:
+            avaliablevdiskcapacity = accountcus['CU_D'] - reservedcus['CU_D']
+            if maxVDiskCapacity != -1 and accountcus['CU_D'] != -1 and maxVDiskCapacity > avaliablevdiskcapacity:
+                raise exceptions.BadRequest("Owning account has only %s GB of unreserved vdisk "
+                                            "storage, cannot reserve %s GB for this cloudspace" %
+                                            (avaliablevdiskcapacity, maxVDiskCapacity))
+
+        if maxCPUCapacity:
+            avaliablecpucapacity = accountcus['CU_C'] - reservedcus['CU_C']
+            if maxCPUCapacity != -1 and accountcus['CU_C'] != -1 and maxCPUCapacity > avaliablecpucapacity:
+                raise exceptions.BadRequest("Owning account has only %s unreserved CPU cores,  "
+                                            "cannot reserve %s cores for this cloudspace" %
+                                            (avaliablecpucapacity, maxCPUCapacity))
+
+        if maxNASCapacity:
+            avaliablenascapacity = accountcus['CU_S'] - reservedcus['CU_S']
+            if maxNASCapacity != -1 and accountcus['CU_S'] != -1 and maxNASCapacity > avaliablenascapacity:
+                raise exceptions.BadRequest("Owning account has only %s TB of unreserved primary "
+                                            "storage capacity, cannot reserve %s TB for this cloudspace" %
+                                            (avaliablenascapacity, maxNASCapacity))
+
+        if maxArchiveCapacity:
+            avaliablearchivecapacity = accountcus['CU_A'] - reservedcus['CU_A']
+            if maxArchiveCapacity != -1 and accountcus['CU_A'] != -1 and maxArchiveCapacity > avaliablearchivecapacity:
+                raise exceptions.BadRequest("Owning account has only %s TB of unreserved secondary "
+                                            "storage capacity, cannot reserve %s TB for this cloudspace" %
+                                            (avaliablearchivecapacity, maxArchiveCapacity))
+
+        if maxNetworkOptTransfer:
+            avaliablenetworkopttransfer = accountcus['CU_NO'] - reservedcus['CU_NO']
+            if maxNetworkOptTransfer != -1 and accountcus['CU_NO'] != -1 and maxNetworkOptTransfer > avaliablenetworkopttransfer:
+                raise exceptions.BadRequest("Owning account has only %s GB of unreserved network "
+                                            "transfer in operator, cannot reserve %s GB for this cloudspace" %
+                                            (avaliablenetworkopttransfer, maxNetworkOptTransfer))
+        if maxNetworkPeerTransfer:
+            avaliablenetworkpeertransfer = accountcus['CU_NP'] - reservedcus['CU_NP']
+            if maxNetworkPeerTransfer != -1 and accountcus['CU_NP'] != -1 and maxNetworkPeerTransfer > avaliablenetworkpeertransfer:
+                raise exceptions.BadRequest("Owning account has only %s GB of unreserved network "
+                                            "transfer, cannot reserve %s GB for this cloudspace" %
+                                            (avaliablenetworkpeertransfer, maxNetworkPeerTransfer))
+        if maxNumPublicIP:
+            avaliablepublicips = accountcus['CU_I'] - reservedcus['CU_I']
+            if maxNumPublicIP != -1 and accountcus['CU_I'] != -1 and maxNumPublicIP > avaliablepublicips:
+                raise exceptions.BadRequest("Owning account has only %s unreserved public IPs, "
+                                            "cannot reserve %s for this cloudspace" %
+                                            (avaliablepublicips, maxNumPublicIP))
+        return True
+
     @authenticator.auth(acl={'cloudspace': set('A')})
     @audit()
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
@@ -611,6 +703,12 @@ class cloudapi_cloudspaces(BaseActor):
         if name:
             cloudspace.name = name
 
+        if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNASCapacity or \
+                maxArchiveCapacity or maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
+            self._validateAvaliableAccountResources(cloudspace, maxMemoryCapacity,
+                                                    maxVDiskCapacity, maxCPUCapacity,maxNASCapacity,
+                                                    maxArchiveCapacity, maxNetworkOptTransfer,
+                                                    maxNetworkPeerTransfer, maxNumPublicIP)
 
         if maxMemoryCapacity is not None:
             consumedmemcapacity = self.getConsumedMemoryCapacity(cloudspaceId)
@@ -634,8 +732,8 @@ class cloudapi_cloudspaces(BaseActor):
             consumedcpucapacity = self.getConsumedCPUCores(cloudspaceId)
             if maxCPUCapacity != -1 and maxCPUCapacity < consumedcpucapacity:
                 raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value that "
-                                            "is less than the current consumed cores %s "
-                                            "GB." % consumedcpucapacity)
+                                            "is less than the current consumed cores %s ." %
+                                            consumedcpucapacity)
             else:
                 cloudspace.resourceLimits['CU_C'] = maxCPUCapacity
 
@@ -679,7 +777,7 @@ class cloudapi_cloudspaces(BaseActor):
             assingedpublicip = self.getConsumedPublicIPs(cloudspaceId)
             if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
                 raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
-                                            "to a value that is less than the current  "
+                                            "to a value that is less than the current "
                                             "assigned %s." % assingedpublicip)
             else:
                 cloudspace.resourceLimits['CU_I'] = maxNumPublicIP
