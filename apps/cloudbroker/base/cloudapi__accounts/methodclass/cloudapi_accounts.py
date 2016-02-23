@@ -286,12 +286,21 @@ class cloudapi_accounts(BaseActor):
         if name:
             accountobj.name = name
 
+        if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNASCapacity or \
+                maxArchiveCapacity or maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
+            reservedcloudunits = self.getReservedCloudUnits(accountId)
+
         if maxMemoryCapacity is not None:
             consumedmemcapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_M')
             if maxMemoryCapacity != -1 and maxMemoryCapacity < consumedmemcapacity:
                 raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
                                             "that is less than the current consumed memory "
                                             "capacity %s GB." % consumedmemcapacity)
+            elif maxMemoryCapacity != -1 and maxMemoryCapacity < reservedcloudunits['CU_M']:
+                raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
+                                            "that is less than the current reserved memory "
+                                            "capacity %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_M'])
             else:
                 accountobj.resourceLimits['CU_M'] = maxMemoryCapacity
 
@@ -301,6 +310,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value that "
                                             "is less than the current consumed vdisk capacity %s "
                                             "GB." % consumedvdiskcapacity)
+            elif maxVDiskCapacity != -1 and maxVDiskCapacity < reservedcloudunits['CU_D']:
+                raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value "
+                                            "that is less than the current reserved vdisk "
+                                            "capacity %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_D'])
             else:
                 accountobj.resourceLimits['CU_D'] = maxVDiskCapacity
 
@@ -310,6 +324,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value that "
                                             "is less than the current consumed cores %s "
                                             "GB." % consumedcpucapacity)
+            elif maxCPUCapacity != -1 and maxCPUCapacity < reservedcloudunits['CU_C']:
+                raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value "
+                                            "that is less than the current reserved cpu cores "
+                                            "%s by account's cloudspaces." %
+                                            reservedcloudunits['CU_C'])
             else:
                 accountobj.resourceLimits['CU_C'] = maxCPUCapacity
 
@@ -319,6 +338,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
                                             "value that is less than the current consumed capacity "
                                             "%s TB." % consumednascapacity)
+            elif maxNASCapacity != -1 and maxNASCapacity < reservedcloudunits['CU_S']:
+                raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
+                                            "that is less than the current reserved capacity "
+                                            "value %s TB by account's cloudspaces." %
+                                            reservedcloudunits['CU_S'])
             else:
                 accountobj.resourceLimits['CU_S'] = maxNASCapacity
 
@@ -328,6 +352,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
                                             "a value that is less than the current consumed "
                                             "capacity %s TB." % consumedarchivecapacity)
+            elif maxArchiveCapacity != -1 and maxArchiveCapacity < reservedcloudunits['CU_A']:
+                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
+                                            "a value that is less than the current reserved "
+                                            "capacity %s TB by account's cloudspaces." %
+                                            reservedcloudunits['CU_A'])
             else:
                 accountobj.resourceLimits['CU_A'] = maxArchiveCapacity
 
@@ -337,6 +366,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum network transfer in operator "
                                             "to a value that is less than the current  "
                                             "sent/received %s GB." % transferednewtopt)
+            elif maxNetworkOptTransfer != -1 and maxNetworkOptTransfer < reservedcloudunits['CU_NO']:
+                raise exceptions.BadRequest("Cannot set the maximum  network transfer in operator "
+                                            "to a value that is less than the current reserved "
+                                            "transfer %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_NO'])
             else:
                 accountobj.resourceLimits['CU_NO'] = maxNetworkOptTransfer
 
@@ -346,6 +380,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum network transfer peering "
                                             "to a value that is less than the current  "
                                             "sent/received %s GB." % transferednewtpeer)
+            elif maxNetworkPeerTransfer != -1 and maxNetworkPeerTransfer < reservedcloudunits['CU_NP']:
+                raise exceptions.BadRequest("Cannot set the maximum  network transfer peering "
+                                            "to a value that is less than the current reserved "
+                                            "transfer %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_NP'])
             else:
                 accountobj.resourceLimits['CU_NP'] = maxNetworkPeerTransfer
 
@@ -355,6 +394,11 @@ class cloudapi_accounts(BaseActor):
                 raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
                                             "to a value that is less than the current  "
                                             "assigned %s." % assingedpublicip)
+            elif maxNumPublicIP != -1 and maxNumPublicIP < reservedcloudunits['CU_I']:
+                raise exceptions.BadRequest("Cannot set the maximum number of public IPs to a "
+                                            "value that is less than the current reserved "
+                                            "%s by account's cloudspaces."
+                                            % reservedcloudunits['CU_I'])
             else:
                 accountobj.resourceLimits['CU_I'] = maxNumPublicIP
 
@@ -488,3 +532,44 @@ class cloudapi_accounts(BaseActor):
             consumedcutype += cumethod(cloudspace['id'])
 
         return consumedcutype
+
+    # Unexposed actor
+    def getReservedCloudUnits(self, accountId, excludecloudspaceid=None, **kwargs):
+        """
+        Calculate the currently reserved cloud units by all cloudspaces under an account
+
+        Reserved cloud units will be calculated by summing up all cloud unit limits set on the
+        cloudspaces in the account (cloudspaces with unlimited CUs, set to -1, will not be counted
+        as they do not reserve any resources)
+
+        Reserved cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_S: consumed primary storage (NAS) in TB
+        - CU_A: consumed secondary storage (Archive) in TB
+        - CU_NO: sent/received network transfer in operator in GB
+        - CU_NP: sent/received network transfer peering in GB
+        - CU_I: number of public IPs
+
+        :param accountId: id of the account reserved CUs should be calculated for
+        :param excludecloudspaceid: exclude the cloudspace with the specified id when performing the
+        calculations
+        :return: dict with the reserved cloud units
+        """
+        reservedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0, 'CU_S': 0, 'CU_A': 0,
+                          'CU_NO': 0, 'CU_NP': 0}
+
+        # Aggregate the total consumed cloud units for all cloudspaces in the account
+        for cloudspace in self.models.cloudspace.search({'$fields': ['id', 'resourceLimits'],
+                                                         '$query': {'accountId': accountId,
+                                                                    'status': {'$ne': 'DESTROYED'}}})[1:]:
+            if excludecloudspaceid is not None and cloudspace['id'] == excludecloudspaceid:
+                continue
+
+            for cukey, cuvalue in cloudspace['resourceLimits'].iteritems():
+                # Ignore cu limit if -1 as it indicates that no limit is set
+                if cukey in reservedcudict and cuvalue != -1:
+                    reservedcudict[cukey] += cuvalue
+
+        return reservedcudict

@@ -146,8 +146,8 @@ class cloudbroker_account(BaseActor):
                 'token': validation_token.id
             })
 
-        if emailaddress:
-            _send_signup_mail(hrd=self.hrd, **mail_args)
+        # if emailaddress:
+        #     _send_signup_mail(hrd=self.hrd, **mail_args)
 
         return accountid
 
@@ -168,6 +168,7 @@ class cloudbroker_account(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
                maxNASCapacity, maxArchiveCapacity, maxNetworkOptTransfer,
                maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
