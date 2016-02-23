@@ -44,11 +44,15 @@ def action(volumes):
             'cache_strategy': 'on_read',
             'readcache_limit': 10}
         pool = VPoolList.get_vpool_by_name('vmstor')
+        timeout = 120
+        start = time.time()
         for volume in volumes:
             vdisk = None
-            while not vdisk:
+            while not vdisk and start + timeout > time.time():
                 time.sleep(0.1)
                 vdisk = VDiskList.get_by_devicename_and_vpool('volumes/volume_%(name)s.raw' % volume, pool)
+            if not vdisk:
+                raise RuntimeError("Could not find volume %s on OVS backend" % volume)
             VDiskController.set_config_params(vdisk.guid, params)
     j.clients.redisworker.execFunction(setConfigs, _queue='io', _sync=False, volumes=volumes)
     return volumes
