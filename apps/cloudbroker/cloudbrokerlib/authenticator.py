@@ -135,30 +135,43 @@ class auth(object):
         'DESTROYED', 'ERROR' and action requires a permission other than READ, the call should
         fail with 403 Forbidden
 
+        Check if the required action can be executed on an account. If account is
+        'DESTROYED' then a 404 NotFound will be returned, else if an action requires a permission
+        other than READ, the call will fail with 403 Forbidden if account is not 'CONFIRMED'
+
         :param requiredaccessrights: the required access rights to access an account or one of
             its cloudspaces or machines
         :param account: the account object its status should be checked
         :raise Exception with 403 Forbidden if action cannot be performed on account or one of
             its cloduspaces or machines
+
+        :raise Exception with 404 if destroyed or 403 Forbidden if non-read action cannot be
+            performed on account or one of its cloudspace  or machines
         """
-        if requiredaccessrights != set('R') and account.status != 'CONFIRMED':
+        if account.status == 'DESTROYED':
+            raise exceptions.NotFound('Could not find an accessible resource.')
+        elif requiredaccessrights != set('R') and account.status != 'CONFIRMED':
             raise exceptions.Forbidden('Only READ actions can be executed on account '
-                                       '(or one of its cloudspace and machines) with status %s.' %
+                                       '(or one of its cloudspace or machines) with status %s.' %
                                        account.status)
 
     def checkCloudspaceStatus(self, requiredaccessrights, cloudspace):
         """
         Check if the required action can be executed on a cloudspace. If cloudspace is
-        'DESTROYED', 'ERROR' and action requires a permission other than READ, the call should
-        fail with 403 Forbidden
+        'DESTROYED' then a 404 NotFound will be returned, else if an action requires a permission
+        other than READ, the call will fail with 403 Forbidden if cloudspace is not in any of the
+        statuses 'VIRTUAL', 'DEPLOYING' or'DEPLOYED'
 
         :param requiredaccessrights: the required access rights to access an cloudspace or one of
             its machines
         :param cloudspace: the cloudspace object its status should be checked
-        :raise Exception with 403 Forbidden if action cannot be performed on cloudspace or one of
-            its machines
+        :raise Exception with 404 if destroyed or 403 Forbidden if non-read action cannot be
+            performed on cloudspace or one of its machines
         """
-        if requiredaccessrights != set('R') and cloudspace.status not in ['VIRTUAL', 'DEPLOYED']:
+        if cloudspace.status == 'DESTROYED':
+            raise exceptions.NotFound('Could not find an accessible resource.')
+        elif requiredaccessrights != set('R') and cloudspace.status not in ['VIRTUAL', 'DEPLOYING',
+                                                                            'DEPLOYED']:
             raise exceptions.Forbidden('Only READ actions can be executed on cloudspace '
                                        '(or one of its machines) with status %s.' %
                                        cloudspace.status)
