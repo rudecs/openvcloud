@@ -188,10 +188,21 @@ class cloudbroker_account(BaseActor):
                             'Failed to delete Account')
 
     def _delete(self, accountId, reason, kwargs):
+        ctx = kwargs['ctx']
         account = self.models.account.get(accountId)
+        title = 'Deleting Account %s' % account.name
         account.status = 'DESTROYING'
         self.models.account.set(account)
         query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+
+        # first delete all images and dependant vms
+        images = self.models.image.search({'accountId': accountId})[1:]
+        for image in images:
+            ctx.events.sendMessage(title, 'Deleting Image %(name)s' % image)
+            for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': 'DESTROYED'}})[1:]:
+                ctx.events.sendMessage(title, 'Deleting dependant Virtual Machine %(name)s' % image)
+                j.apps.cloudbroker.machine.destroy(vm['id'], reason)
+            self.cloudapi.images.delete(image['id'])
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
             j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
