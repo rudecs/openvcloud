@@ -3,8 +3,8 @@
 @charset "utf-8";
 /* Buttons */
 .btn-large, .btn-group-lg>.btn { padding: 7px 20px; border: 0; font-size: 16px; line-height: 1.33; border-radius: 6px; }
-.btn-info { color: #FFF; background-color: @main-color; border-color: @main-color; }
-.btn-info:hover, .btn-info:focus, .btn-info:active { background-color: @main-color-hover; border-color: @main-color-hover; }
+.btn-info { color: #FFF; background-color: @main-color; border-color: @main-color; color: @menu-text-color; }
+.btn-info:hover, .btn-info:focus, .btn-info:active { background-color: fade(@main-color, 80%); border-color: fade(@main-color, 80%); color: @menu-text-color; }
 .btn { display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 .table.users-table .header .btn { background: #FFF; color: #333; }
 .primaryMine.btn-primary[disabled] { color: #0087b9; }
@@ -76,7 +76,7 @@ margin: : 10px 0; font-size: 18px; }
 .modal.fade { top: -25%; -webkit-transition: opacity 0.3s linear, top 0.3s ease-out; -moz-transition: opacity 0.3s linear, top 0.3s ease-out; -o-transition: opacity 0.3s linear, top 0.3s ease-out; transition: opacity 0.3s linear, top 0.3s ease-out; }
 .modal-body { display: block; }
 /*.modal-body > div { display: inline-block; width: 100%; }*/
-.modal-footer .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] { color: #fff; background-color: @main-color-hover; border-color: @main-color-hover; }
+.modal-footer .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] { color: #fff; background-color: fade(@main-color, 80%); border-color: fade(@main-color, 80%); }
 .modal-footer .mainButton { padding: 5px 10px; }
 .modal a:hover, .modal a:active, .modal a:focus { color: #39b3d7; }
 /* end of modals */
@@ -119,7 +119,7 @@ table.table th a, table.table th a:hover { color: #FFF; }
 .white h2 { color: @main-color; font-size: 17px; }
 .white p { color: #000; font-size: 16px; line-height: 32px; }
 .white ul li, .tab-pane.active ul li { color: #000; font-size: 16px; line-height: 30px; }
-.white a:hover, .white a:focus { color: @main-color-hover; }
+.white a:hover, .white a:focus { color: fade(@main-color, 80%); }
 .white a.opacity4:hover, .white a.opacity4:focus { color: @main-color; }
 /*.white a.create:hover, .white a.create:focus { color: #fff; }*/
 .body a { line-height: 1.3em; }
@@ -214,15 +214,15 @@ canvas { display: block; float: left; }
 .orange h4 > a, .sideNav .header.orange > a { background: @tab-background;     border-bottom: 1px solid #FFF; }
 .red h4 > a, .sideNav .header.red > a { background: #ff3d3d; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a { background: #d97804; }
-.blue + .panel-collapse, .sideNav .blue.header { background: @tab-list-background; }
+.blue + .panel-collapse, .sideNav .blue.header { background: fade(@tab-background, 5%); }
 .green + .panel-collapse, .sideNav .green.header { background: #edffc9; }
-.orange + .panel-collapse, .sideNav .orange.header { background: @tab-list-background; }
+.orange + .panel-collapse, .sideNav .orange.header { background: fade(@tab-background, 5%); }
 .red + .panel-collapse, .sideNav .red.header { background: #ffdada; }
 .darkOrange + .panel-collapse, .sideNav .darkOrange.header { background: #f9dfc0; }
-.blue h4 > a, .sideNav .header.blue > a:hover { background: @tab-background-hover; }
+.blue h4 > a, .sideNav .header.blue > a:hover { background: @main-color; }
 /*.dark-blue h4 > a, .sideNav .header.dark-blue > a:hover { background: #547C96; }*/
 .green h4 > a, .sideNav .header.green > a:hover { background: #8ED300; }
-.orange h4 > a, .sideNav .header.orange > a:hover { background: @tab-background-hover; }
+.orange h4 > a, .sideNav .header.orange > a:hover { background: @main-color; }
 .red h4 > a, .sideNav .header.red > a:hover { background: #ff6060; }
 .darkOrange h4 > a, .sideNav .header.darkOrange > a:hover { background: #ffa131; }
 .sideNav .body ul li { line-height: 26px; }
@@ -239,7 +239,7 @@ canvas { display: block; float: left; }
 .login:hover, .login:focus { color: #fff !important; }
 .navbar-default { border: 0; }
 .navbar { margin-bottom: 0; border-radius: 0; }
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: @menu-text-color-hover; }
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: fade(@menu-text-color, 80%); }
 .navbar-default { background-color: @main-color; }
 .navbar-collapse.bs-example-js-navbar-collapse.collapse.in { background: @main-color; }
 .navbar-default { background-color: @main-color; }
@@ -646,6 +646,18 @@ color: #000;
 .c-hamburger--htla.is-active span::before { top: 0; transform: translateX(39px) translateY(1px) rotate(40deg); }
 .c-hamburger--htla.is-active span::after { bottom: 0; transform: translateX(39px) translateY(-3px) rotate(-50deg); }
 .navbar-form { margin: 0; padding: 0; }
+.explore-portals{
+  background: @main-color !important;
+  color: @menu-text-color !important;
+}
+#PortalsHamburgerMenu.light span,
+#PortalsHamburgerMenu.light span::before,
+#PortalsHamburgerMenu.light span::after,
+.slider-container.visible #PortalsHamburgerMenu span,
+.slider-container.visible #PortalsHamburgerMenu span::before,
+.slider-container.visible #PortalsHamburgerMenu span::after{
+  background: @menu-text-color !important;
+}
 /* end of Hamburger menu */
 
 /* ApiDocs page */
@@ -709,6 +721,7 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .navbar-inverse .navbar-toggle { border: 0 !important; }
 .table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th { color: #333}
 .table.table-striped.table-bordered a, button + .table-responsive table a:hover { color: @link-color !important; background-color: transparent !important;}
+.table.table-striped.table-bordered a:hover{ color: fade(@link-color, 80%) !important;}
 /** oocss **/
 .background-transparent { background-color: rgba(0, 0, 0, 0) !important; }
 .txt-gray { color: rgb(102, 102, 102) !important; }
@@ -717,4 +730,4 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .txt-white { color: #fff !important; }
 .txt-dark-blue { color: @main-color !important; }
 .background-white { background-color: #fff !important; }
-html body #wrap .table-striped tbody:first-child  th, html body #wrap .table-striped tbody:first-child  th a { background-color: @main-color !important; color: #FFF !important; }
+html body #wrap .table-striped tbody:first-child  th, html body #wrap .table-striped tbody:first-child  th a { background-color: @main-color !important; color: @menu-text-color !important; }
