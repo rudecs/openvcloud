@@ -392,7 +392,7 @@ class cloudapi_accounts(BaseActor):
             assingedpublicip = self.getConsumedCloudUnitsByType(accountId, 'CU_I')
             if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
                 raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
-                                            "to a value that is less than the current  "
+                                            "to a value that is less than the current "
                                             "assigned %s." % assingedpublicip)
             elif maxNumPublicIP != -1 and maxNumPublicIP < reservedcloudunits['CU_I']:
                 raise exceptions.BadRequest("Cannot set the maximum number of public IPs to a "
@@ -554,7 +554,7 @@ class cloudapi_accounts(BaseActor):
 
         :param accountId: id of the account reserved CUs should be calculated for
         :param excludecloudspaceid: exclude the cloudspace with the specified id when performing the
-        calculations
+            calculations
         :return: dict with the reserved cloud units
         """
         reservedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0, 'CU_S': 0, 'CU_A': 0,
@@ -573,3 +573,26 @@ class cloudapi_accounts(BaseActor):
                     reservedcudict[cukey] += cuvalue
 
         return reservedcudict
+
+    #Unexposed actor
+    def checkAvailablePublicIPs(self, accountId, numips=1):
+        """
+        Check that the required number of ip addresses are available in the given account
+
+        :param accountId: id of the account to check
+        :param numips: the number of public IP addresses that need to be free
+        :return: True if check succeeds, otherwise raise a 400 BadRequest error
+        """
+        # Validate that there still remains enough public IP addresses to assign in account
+        resourcelimits = self.models.account.get(accountId).resourceLimits
+        if 'CU_I' in resourcelimits:
+            reservedcus = resourcelimits['CU_I']
+            consumedcus = j.apps.cloudapi.accounts.getConsumedCloudUnitsByType(accountId,
+                                                                               'CU_I')
+            if reservedcus != -1:
+                availablecus= reservedcus - consumedcus
+                if availablecus < numips:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s public IP(s),"
+                                                " owning account only has %s free IP(s)." % (numips,
+                                                                                             availablecus))
+        return True
