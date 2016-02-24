@@ -233,6 +233,10 @@ class cloudapi_cloudspaces(BaseActor):
         ace.type = 'U'
         ace.right = 'CXDRAU'
         ace.status = 'CONFIRMED'
+        if maxNumPublicIP != -1 and maxNumPublicIP < 1:
+            raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
+                                        "address for its VFW")
+
         cs.resourceLimits = {'CU_M': maxMemoryCapacity, 'CU_D': maxVDiskCapacity,
                              'CU_C': maxCPUCapacity, 'CU_S': maxNASCapacity,
                              'CU_A': maxArchiveCapacity, 'CU_NO': maxNetworkOptTransfer,
@@ -245,7 +249,9 @@ class cloudapi_cloudspaces(BaseActor):
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
         cs.creationTime = int(time.time())
-        # Validate that the specified CU limits can be reserved on account
+        # Validate that the specified CU limits can be reserved on account, since there is a
+        # validation earlier that maxNumPublicIP > 0 (or -1 meaning unlimited), this check will
+        # make sure that 1 Public IP address will be reserved for this cloudspace
         self._validateAvaliableAccountResources(cs, maxMemoryCapacity, maxVDiskCapacity,
                                                 maxCPUCapacity, maxNASCapacity, maxArchiveCapacity,
                                                 maxNetworkOptTransfer, maxNetworkPeerTransfer,
@@ -275,6 +281,10 @@ class cloudapi_cloudspaces(BaseActor):
         :return: status of deployment
         """
         cs = self.models.cloudspace.get(cloudspaceId)
+
+        # Validate that there is at least 1 public IP is available within the CU limits to reserve
+        # for deploying the VFW
+        self.checkAvailablePublicIPs(cs.id, 1)
         if cs.status != 'VIRTUAL':
             return cs.status
 
@@ -775,7 +785,10 @@ class cloudapi_cloudspaces(BaseActor):
 
         if maxNumPublicIP is not None:
             assingedpublicip = self.getConsumedPublicIPs(cloudspaceId)
-            if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
+            if maxNumPublicIP != -1 and maxNumPublicIP < 1:
+                raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
+                                            "address for its VFW")
+            elif maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
                 raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
                                             "to a value that is less than the current "
                                             "assigned %s." % assingedpublicip)
@@ -829,3 +842,31 @@ class cloudapi_cloudspaces(BaseActor):
         url = '%s/ovcinit/%s/' % (location,getIP(cloudspace.publicipaddress))
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
+
+    #Unexposed actor
+    def checkAvailablePublicIPs(self, cloudspaceId, numips=1):
+        """
+        Check that the required number of ip addresses are available in the given account
+
+        :param accountId: id of the account to check
+        :param numips: the number of public IP addresses that need to be free
+        :return: True if check succeeds, otherwise raise a 400 BadRequest error
+        """
+        # Validate that there still remains enough public IP addresses to assign in account
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        j.apps.cloudapi.accounts.checkAvailablePublicIPs(cloudspace.accountId, numips)
+
+        # Validate that there still remains enough public IP addresses to assign in cloudspace
+        resourcelimits = cloudspace.resourceLimits
+        if 'CU_I' in resourcelimits:
+            reservedcus = cloudspace.resourceLimits['CU_I']
+            consumedcus = self.getConsumedPublicIPs(cloudspaceId)
+
+            if reservedcus != -1:
+                availablecus= reservedcus - consumedcus
+                if availablecus < numips:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s public IP(s),"
+                                                " owning cloudspace only has %s free IP(s)." % (numips,
+                                                                                             availablecus))
+
+        return True

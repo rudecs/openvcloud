@@ -908,6 +908,8 @@ class cloudapi_machines(BaseActor):
             if nic.type == 'PUBLIC':
                 return True
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        # Check that attaching a public network will not exceed the allowed CU limits
+        j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(vmachine.cloudspaceId, 1)
         networkid = cloudspace.networkId
         netinfo = self.network.getPublicIpAddress(cloudspace.gid)
         if netinfo is None:
