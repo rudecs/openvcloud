@@ -140,7 +140,12 @@ class ISO(object):
             assert length > 0
             env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
             disktemplate = env.get_template("iso.xml")
-            diskxml = disktemplate.render({'diskname': 'cloud-init.{name}.iso'.format(name=name), 'disksize': length})
+            diskname = 'cloud-init.{name}.iso'.format(name=name)
+            diskxml = disktemplate.render({'diskname': diskname, 'disksize': length})
+            pool.refresh()
+            for vol in pool.listAllVolumes():
+                if vol.name() == diskname:
+                    vol.delete()
             vol = pool.createXML(diskxml, flags=0)
             self.upload_volume(
                 vol=vol,
