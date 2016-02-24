@@ -14,7 +14,8 @@
         """
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:gateway str,, gateway of the subnet
-        var:freeips list,, list of ips to mark as free in the subnet
+        var:startip str,, First IP Address from the range to add
+        var:endip str,, Last IP Address from the range to add
         var:gid int,, id of grid
 
     method:addPublicIPv4IPS
@@ -22,7 +23,15 @@
         Adds a public network range to be used for cloudspaces
         """
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
-        var:freeips list,, list of ips to mark as free in the subnet
+        var:startip str,, First IP Address from the range to add
+        var:endip str,, Last IP Address from the range to add
+
+    method:changeIPv4Gateway
+        """
+        Updates the gateway of the pool
+        """
+        var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
+        var:gateway str,, Gateway of the pool
 
     method:removePublicIPv4IPS
         """
