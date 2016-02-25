@@ -3,17 +3,43 @@
 {{publicnetwork: networkid:$$networkid}}
 {% if id %}
 
+{{actions:
+- display: Change Gateway
+  action: /restmachine/cloudbroker/iaas/changeIPv4Gateway
+  hide: true
+  input:
+  - label: Gateway IP Address
+    type: text
+    name: gateway
+  data:
+    subnet: ${id}
+
+- display: Add Public IP Addresses
+  action: /restmachine/cloudbroker/iaas/addPublicIPv4IPS
+  hide: true
+  input:
+  - label: Start IP Address
+    type: text
+    name: startip
+  - label: End IP Address
+    type: text
+    name: endip
+  data:
+    subnet: ${id}
+}}
+
 {{datatables_use}}
 
 h3. Public Network
 
 |*Network*|${id}|
-|*Gateway*|${gateway}|
+|*Gateway*|${gateway} {{action: id:'action-ChangeGateway' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}} |
 
 @HR
 
 {% if pubips %}
 h4. Free IPs
+{{action: id:'action-AddPublicIPAddresses' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Public IP Addresses'}}
 ||Public IP||
 {% for freeip in pubips -%}
 |${freeip}|

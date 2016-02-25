@@ -19,13 +19,19 @@ angular.module('cloudscalers.controllers')
             }
         }
 
+        function setInitialAccount() {
+          if($scope.currentSpace){
+            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
+          }
+        };
+
         function autoLogin(username) {
             User.portalLogin(username, portal_session_cookie);
             $scope.currentUser = User.current();
             $scope.currentUser.acl = {account: 0, cloudspace: 0, machine: 0};
             $scope.currentSpace = CloudSpace.current();
-            $scope.currentAccount = $scope.currentSpace ? {id:$scope.currentSpace.accountId, name:$scope.currentSpace.accountName, userRightsOnCloudspace: $scope.currentSpace.acl, userRightsOnAccountBilling: $scope.currentSpace.userRightsOnAccountBilling} : {id:''};
-        }
+            setInitialAccount();
+        };
 
 
         $scope.setCurrentCloudspace = function(space) {
@@ -34,16 +40,20 @@ angular.module('cloudscalers.controllers')
         	}
           CloudSpace.setCurrent(space);
           $scope.currentSpace = space;
-          $scope.setCurrentAccount();
+          $scope.setCurrentAccount($scope.currentSpace.accountId);
         };
 
-        $scope.setCurrentAccount = function(){
+        $scope.setCurrentAccount = function(currentAccountId){
             $scope.currentAccount.userRightsOnAccount = {};
             if($scope.currentAccount.id){
-                Account.get($scope.currentAccount.id).then(function(account) {
+                Account.get(currentAccountId).then(function(account) {
+                    $scope.currentAccount = account;
                     $scope.currentAccount.userRightsOnAccount = account.acl;
                 }, function(reason){
-                  if(reason.status != 403){
+                  if(reason.status === 403){
+                    $scope.currentUser.acl.account = 0;
+                    setInitialAccount();
+                  }else{
                     $ErrorResponseAlert(reason);
                   }
                 });
@@ -89,6 +99,7 @@ angular.module('cloudscalers.controllers')
         $scope.getUserAccessOnAccount = function(){
           if($scope.currentAccount.userRightsOnAccount){
             var userInCurrentAccount = _.find($scope.currentAccount.userRightsOnAccount , function(acl) { return acl.userGroupId == $scope.currentUser.username; });
+            $scope.currentUser.acl.account = 0;
               if(userInCurrentAccount){
                   var currentUserAccessrightOnAccount = userInCurrentAccount.right.toUpperCase();
                   if(currentUserAccessrightOnAccount == "R"){
@@ -122,6 +133,11 @@ angular.module('cloudscalers.controllers')
                     if($scope.currentSpace.acl.length != data.acl.length){
                         $scope.currentSpace.acl = data.acl;
                     }
+                    $scope.setCurrentAccount($scope.currentSpace.accountId);
+                },function(reason) {
+                  if(reason.status === 403){
+                    $scope.currentUser.acl.cloudspace = 0;
+                  }
                 });
                 if($scope.currentUser.username && $scope.currentSpace.acl){
                     var currentUserAccessright =  _.find($scope.currentSpace.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; })
@@ -138,6 +154,6 @@ angular.module('cloudscalers.controllers')
                 }
               $scope.getUserAccessOnAccount();
             }
-
         });
+
 }]);

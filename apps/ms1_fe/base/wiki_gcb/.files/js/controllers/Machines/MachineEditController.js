@@ -117,6 +117,7 @@ angular.module('cloudscalers.controllers')
             if(acl === undefined ) {
                 return;
             }
+            $scope.currentUser.acl.machine = 0;
             if($scope.currentUser.username && $scope.machine.acl){
                 var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
                 if(currentUserAccessright == "R"){

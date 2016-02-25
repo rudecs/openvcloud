@@ -502,12 +502,6 @@ class Machine(object):
             disk.referenceId = node.extra['volumes'][order].id
             models.disk.set(disk)
 
-        cloudspace = models.cloudspace.get(machine.cloudspaceId)
-        providerstacks = set(cloudspace.resourceProviderStacks)
-        providerstacks.add(stackId)
-        cloudspace.resourceProviderStacks = list(providerstacks)
-        models.cloudspace.set(cloudspace)
-
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
         excludelist = []
         name = 'vm-%s' % machine.id

@@ -4,21 +4,6 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     filters = dict()
-    cloudspaceid = args.getTag('space')
-    if cloudspaceid:
-        cloudspaceid = int(cloudspaceid)
-        args.tags.tags.pop('space')
-        cbclient = j.clients.osis.getNamespace('cloudbroker')
-
-        if not cbclient.cloudspace.exists(cloudspaceid):
-            page.addMessage('could not find cloudspace with id "%s"' % cloudspaceid)
-            params.result = page
-            return params
-
-        stackids = list(set(cbclient.cloudspace.get(cloudspaceid).resourceProviderStacks))
-        stacks = cbclient.stack.search({'id': {'$in': stackids}})[1:]
-        nodeids = [ int(stack['referenceId']) for stack in stacks]
-        filters['id'] = {'$in': nodeids}
 
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
