@@ -195,6 +195,7 @@
     prop:accountId int,, Id of account this cloudspace belongs to
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
     prop:networkId int,, Id of the used network
+    prop:resourceProviderStacks list(int),,Not used anymore here for backwardscompatibility
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
     prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
     prop:location str,, datacenterlocation
