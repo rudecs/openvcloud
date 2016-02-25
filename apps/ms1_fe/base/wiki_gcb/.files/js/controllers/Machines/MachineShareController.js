@@ -17,7 +17,7 @@ angular.module('cloudscalers.controllers')
             $scope.shareMachineMessage = true;
             $scope.shareMachineMessageStyle = style;
             $scope.shareMachineMessageTxt = message;
-            
+
             if (resetUser) {
                 $scope.resetUser();
             }
@@ -41,6 +41,18 @@ angular.module('cloudscalers.controllers')
 
         $scope.resetUser();
 
+        $scope.loadMachineAcl = function() {
+            return Machine.get($scope.machine.id).then(function(machine) {
+                $scope.machine.acl = machine.acl;
+            }, function(reason){
+              if(reason.status == 403){
+                $scope.machine.acl = {};
+              }else{
+                $ErrorResponseAlert(reason);
+              }
+            });
+        };
+
         $scope.addUser = function() {
             if ($scope.machine.acl) {
                 var userInAcl = _.find($scope.machine.acl, function(acl) {
@@ -53,14 +65,7 @@ angular.module('cloudscalers.controllers')
                     Machine
                         .addUser($scope.machine.id, $scope.newUser.nameOrEmail, $scope.newUser.access)
                         .then(function() {
-                            $scope.machine.acl.push({
-                                type: 'U',
-                                guid: '',
-                                right: $scope.newUser.access,
-                                userGroupId: $scope.newUser.nameOrEmail,
-                                canBeDeleted: true
-                            });
-
+                            $scope.loadMachineAcl();
                             $scope.orderUsers();
                             $scope.resetSearchQuery();
                             userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
@@ -83,7 +88,7 @@ angular.module('cloudscalers.controllers')
                 userMessage($scope.newUser.nameOrEmail + ' already invited', 'danger', false);
                 return;
             }
-            
+
             Machine
                 .inviteUser($scope.machine.id, $scope.newUser.nameOrEmail, $scope.newUser.access)
                 .then(function() {
@@ -100,7 +105,7 @@ angular.module('cloudscalers.controllers')
                     $scope.resetSearchQuery();
                     userMessage('Invitation sent successfully to ' + $scope.newUser.nameOrEmail , 'success');
                 }, function(response) {
-                    userMessage(response.data, 'danger', false);                    
+                    userMessage(response.data, 'danger', false);
                 });
         };
 
@@ -125,7 +130,7 @@ angular.module('cloudscalers.controllers')
             modalInstance.result.then(function (result) {
                 Machine.deleteUser(machineId, user).
                 then(function() {
-                    $scope.machine.acl.splice(_.indexOf($scope.machine.acl, {userGroupId: user}), 1);
+                    $scope.loadMachineAcl();
                     userMessage("Assigned access right removed successfully for " + user , 'success');
                 },
                 function(reason){
@@ -161,8 +166,7 @@ angular.module('cloudscalers.controllers')
             modalInstance.result.then(function (accessRight) {
                 Machine.updateUser(accessRight.machineId, accessRight.user, accessRight.editUserAccess).
                 then(function() {
-                    var userAcl = _.find($scope.machine.acl , function(acl) { return acl.userGroupId == accessRight.user; });
-                    $scope.machine.acl[$scope.machine.acl.indexOf(userAcl)].right = accessRight.editUserAccess;
+                    $scope.loadMachineAcl();
                     userMessage("Access right updated successfully for " + user , 'success');
                 },
                 function(reason){
@@ -187,7 +191,7 @@ angular.module('cloudscalers.controllers')
             templateUrl: 'autocomplete-result-template.html',
             onSelect: function(item, event) {
                 event && event.preventDefault();
-     
+
                 $scope.$apply(function() {
                     $scope.newUser.nameOrEmail = item.value;
                 });

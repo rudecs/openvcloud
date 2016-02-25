@@ -62,11 +62,7 @@ angular.module('cloudscalers.controllers')
                     userMessage($scope.newUser.nameOrEmail + " already have access rights.", 'danger');
                 }else{
                     Account.addUser($scope.currentAccount.id, $scope.newUser.nameOrEmail, $scope.newUser.access).then(function() {
-                        $scope.currentAccount.userRightsOnAccount.push({
-                          userGroupId: $scope.newUser.nameOrEmail,
-                          right: $scope.newUser.access
-                        });
-
+                        $scope.loadAccountAcl();
                         userMessage("Assigned access rights successfully to " + $scope.newUser.nameOrEmail , 'success');
                         $scope.resetUser();
                     }, function(reason) {
@@ -111,7 +107,7 @@ angular.module('cloudscalers.controllers')
             if(user.canBeDeleted != true){
               return false;
             }
-            
+
             var modalInstance = $modal.open({
                 templateUrl: 'deleteUserDialog.html',
                 controller: function($scope, $modalInstance){
@@ -130,8 +126,7 @@ angular.module('cloudscalers.controllers')
                 Account.deleteUser($scope.currentAccount.id, user.userGroupId).
                     then(function(data) {
                         if(data === "true"){
-                          var userInACL = _.findWhere($scope.currentAccount.userRightsOnAccount, {userGroupId: user.userGroupId});
-                          $scope.currentAccount.userRightsOnAccount.splice([$scope.currentAccount.userRightsOnAccount.indexOf(userInACL)] ,1);
+                          $scope.loadAccountAcl();
                           $scope.resetUser();
                           userMessage("Assigned access right removed successfully for " + user.userGroupId , 'success');
                         }else if(data === "false"){
@@ -172,8 +167,7 @@ angular.module('cloudscalers.controllers')
             modalInstance.result.then(function (accessRight) {
                 Account.updateUser(currentAccount.id, accessRight.user, accessRight.editUserAccess).
                 then(function() {
-                    var userInACL = _.findWhere($scope.currentAccount.userRightsOnAccount, {userGroupId: accessRight.user});
-                    _.findWhere($scope.currentAccount.userRightsOnAccount, {userGroupId: accessRight.user}).right = accessRight.editUserAccess;
+                    $scope.loadAccountAcl();
                     userMessage("Access right updated successfully for " + user , 'success');
                     $scope.resetUser();
                 },
