@@ -278,6 +278,9 @@ class cloudapi_machines(BaseActor):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, self._minimum_days_of_credit_required)
+        size = self.models.size.get(sizeId)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory/1024.0, disksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
@@ -569,6 +572,7 @@ class cloudapi_machines(BaseActor):
         clone.creationTime = int(time.time())
 
         diskmapping = []
+        totaldisksize = 0
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
             clonedisk = self.models.disk.new()
@@ -584,6 +588,11 @@ class cloudapi_machines(BaseActor):
             diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
                                 'size': origdisk.sizeMax, 'type': clonedisk.type,
                                 'diskpath': origdisk.referenceId})
+            totaldisksize += clonedisk.sizeMax
+        # Validate that enough resources are available in the CU limits to clone the machine
+        size = self.models.size.get(clone.sizeId)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory/1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
         provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
@@ -939,6 +948,14 @@ class cloudapi_machines(BaseActor):
         bootdisk = self.models.disk.get(bootdisks[0]['id'])
         size = self.models.size.get(sizeId)
         providersize = provider.getSize(size, bootdisk)
+
+        # Validate that enough resources are available in the CU limits if size will be increased
+        oldsize = self.models.size.get(vmachine.sizeId)
+        # Calcultate the delta in memory and vpcu only if new size is bigger than old size
+        deltacpu = max(size.vcpus - oldsize.vcpus, 0)
+        deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId, deltacpu,
+                                                                   deltamemory, 0)
         provider.client.ex_resize(node=node, size=providersize)
         vmachine.sizeId = sizeId
         self.models.vmachine.set(vmachine)

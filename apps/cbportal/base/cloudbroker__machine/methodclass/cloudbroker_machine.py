@@ -45,6 +45,9 @@ class cloudbroker_machine(BaseActor):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, 0)
+        size = self.models.size.get(sizeId)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory/1024.0, disksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 

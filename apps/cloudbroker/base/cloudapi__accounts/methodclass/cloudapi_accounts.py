@@ -580,19 +580,72 @@ class cloudapi_accounts(BaseActor):
         Check that the required number of ip addresses are available in the given account
 
         :param accountId: id of the account to check
-        :param numips: the number of public IP addresses that need to be free
+        :param numips: the required number of public IP addresses that need to be free
         :return: True if check succeeds, otherwise raise a 400 BadRequest error
         """
         # Validate that there still remains enough public IP addresses to assign in account
         resourcelimits = self.models.account.get(accountId).resourceLimits
         if 'CU_I' in resourcelimits:
             reservedcus = resourcelimits['CU_I']
-            consumedcus = j.apps.cloudapi.accounts.getConsumedCloudUnitsByType(accountId,
-                                                                               'CU_I')
+
             if reservedcus != -1:
+                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_I')
                 availablecus= reservedcus - consumedcus
                 if availablecus < numips:
                     raise exceptions.BadRequest("Required actions will consume an extra %s public IP(s),"
                                                 " owning account only has %s free IP(s)." % (numips,
                                                                                              availablecus))
+        return True
+
+    # Unexposed actor
+    def checkAvailableMachineResources(self, accountId, numcpus, memorysize, vdisksize):
+        """
+        Check that the required machine resources are available in the given account
+
+        :param accountId: id of the accountId to check
+        :param numcpus: the required number of cpu cores that need to be free
+        :param memorysize: the required memory size in GB that need to be free
+        :param vdisksize: the required vdisk size in GB that need to be free
+        :return: True if check succeeds, otherwise raise a 400 BadRequest error
+        """
+        # Validate that there still remains enough public IP addresses to assign in account
+        account = self.models.account.get(accountId)
+        resourcelimits = account.resourceLimits
+
+        # Validate that there still remains enough cpu cores to assign in account
+        if 'CU_C' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_C']
+
+            if reservedcus != -1:
+                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_C')
+                availablecus = reservedcus - consumedcus
+                if availablecus < numcpus:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s core(s),"
+                                                " owning account only has %s free core(s)." %
+                                                (numcpus, availablecus))
+
+        # Validate that there still remains enough memory capacity to assign in account
+        if 'CU_M' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_M']
+
+            if reservedcus != -1:
+                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_M')
+                availablecus = reservedcus - consumedcus
+                if availablecus < memorysize:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
+                                                "memory, owning account only has %s GB of free "
+                                                "memory space." % (memorysize, availablecus))
+
+        # Validate that there still remains enough vdisk capacity to assign in account
+        if 'CU_D' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_D']
+
+            if reservedcus != -1:
+                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_D')
+                availablecus = reservedcus - consumedcus
+                if availablecus < vdisksize:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
+                                                "vdisk space, owning account only has %s GB of "
+                                                "free vdisk space." % (vdisksize, availablecus))
+
         return True
