@@ -146,6 +146,8 @@ class cloudapi_machines(BaseActor):
         """
         provider, node, machine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        # Validate that enough resources are available in the CU limits to add the disk
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, 0, 0, size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
         try:
@@ -278,6 +280,7 @@ class cloudapi_machines(BaseActor):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, self._minimum_days_of_credit_required)
+        # Validate that enough resources are available in the CU limits to create the machine
         size = self.models.size.get(sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
                                                                    size.memory/1024.0, disksize)
