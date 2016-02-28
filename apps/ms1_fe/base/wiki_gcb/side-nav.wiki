@@ -1,5 +1,5 @@
 {{html:
-  <div class="sideNav" ng-controller="sideNavController">
+  <div class="sideNav" ng-controller="sideNavController" ng-show="!noAccount">
     <ul class="padding-left-none">
       <li class="header orange" >
         <a href="MachineDeck" tourtip-step="2" tourtip="Create and Manage your Virtual Machines"  tourtip-placement="left">Machines</a>

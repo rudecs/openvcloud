@@ -30,7 +30,7 @@
         <div class="collapse navbar-collapse" id="navbar-list">
           <ul class="nav navbar-nav margin-all-none">
               <li><a href="../$$space/Decks">Home</a></li>
-              <li class="dropdown dropdown-accordion">
+              <li class="dropdown dropdown-accordion" ng-show="!noAccount">
                 <a id="drop1" role="button" class="margin-left-none padding-left-none" data-toggle="dropdown"
                    tourtip="Manage here your Cloud spaces. The Cloud Space is your private virtual datacenter including your compute, storage and networking capacity" tourtip-placement="bottom" tourtip-step="0">
                    <span ng-cloak>{[currentSpace.accountName]} / {[currentSpace.name]}</span>
@@ -99,7 +99,6 @@
                           <div class="modal-footer">
                             <button type="submit" class="btn btn-primary ok">Ok</button>
                             <button type="button" class="btn cancel" ng-click="cancel()">Cancel</button>
-                            <button type="button" class="btn" ng-show="cloudspaces.length == 0" ng-click="backToPortal()">Cancel</button>
                           </div>
                       </form>
                     </script>

@@ -61,10 +61,6 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
 
-                $scope.backToPortal = function () {
-                    $window.location = "/";
-                };
-
                 $scope.selectedLocation = $scope.locations[0].locationCode;
 
                 $scope.changeLocation = function(location) {
