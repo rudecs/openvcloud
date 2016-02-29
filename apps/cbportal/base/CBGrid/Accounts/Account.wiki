@@ -58,9 +58,9 @@ h2. Account: ${name}
     type: dropdown
     label: Do you want to recursively remove user permissions from all owned cloudspaces and vmachines?
     values:
-     - label: Yes
+     - label: 'Yes'
        value: true
-     - label: No
+     - label: 'No'
        value: false
 
 - display: Change Credit
