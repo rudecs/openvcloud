@@ -147,7 +147,7 @@ class cloudapi_machines(BaseActor):
         provider, node, machine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         # Validate that enough resources are available in the CU limits to add the disk
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, 0, 0, size)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
         try:
@@ -193,10 +193,16 @@ class cloudapi_machines(BaseActor):
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
+        disk = self.models.disk.get(int(diskId))
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
+            if vmachines[0]["cloudspaceId"] != machine.cloudspaceId:
+                # Validate that enough resources are available in the CU limits of the new cloudspace to add the disk
+                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
-        disk = self.models.disk.get(int(diskId))
+        else:
+            # the disk was not attached to any machines so check if there is enough resources in the cloudspace
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
@@ -507,7 +513,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'machine': set('C')})
     @audit()
-    def update(self, machineId, name=None, description=None, size=None, **kwargs):
+    def update(self, machineId, name=None, description=None, **kwargs):
         """
         Change basic properties of a machine
         Name, description can be changed with this action.
@@ -515,8 +521,6 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :param name: name of the machine
         :param description: description of the machine
-        :param size: size of the machine in CU
-
         """
         machine = self._getMachine(machineId)
         #if name:
@@ -527,8 +531,6 @@ class cloudapi_machines(BaseActor):
         #    machine.name = name
         if description:
             machine.descr = description
-        #if size:
-        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -957,8 +959,9 @@ class cloudapi_machines(BaseActor):
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
         deltacpu = max(size.vcpus - oldsize.vcpus, 0)
         deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId, deltacpu,
-                                                                   deltamemory, 0)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
+                                                                   numcpus=deltacpu,
+                                                                   memorysize=deltamemory)
         provider.client.ex_resize(node=node, size=providersize)
         vmachine.sizeId = sizeId
         self.models.vmachine.set(vmachine)

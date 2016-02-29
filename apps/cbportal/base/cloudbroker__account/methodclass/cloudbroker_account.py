@@ -125,7 +125,7 @@ class cloudbroker_account(BaseActor):
 
             self.models.credittransaction.set(credittransaction)
 
-        self.cloudapi.cloudspaces.create(accountid, location, 'default', username, None, None)
+        self.cloudapi.cloudspaces.create(accountid, location, 'default', username)
 
         mail_args = {
             'account': name,

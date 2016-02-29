@@ -450,6 +450,20 @@ class cloudapi_accounts(BaseActor):
         history = self.models.credittransaction.search(query)[1:]
         return history
 
+    # Unexposed actor
+    def getConsumedVDiskCapacity(self, accountId):
+        """
+        Calculate the total consumed disk storage in the account in GB
+
+        :param accountId: id of the accountId that should be checked
+        :return: the total consumed disk storage
+        """
+        disks = self.models.disk.search(
+            {'$query': {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}},
+             '$fields': ['sizeMax']}, size=0)[1:]
+        consumeddiskcapacity = sum([d['sizeMax'] for d in disks])
+        return consumeddiskcapacity
+
     @authenticator.auth(acl={'account': set('R')})
     def getConsumedCloudUnits(self, accountId, **kwargs):
         """
@@ -482,6 +496,8 @@ class cloudapi_accounts(BaseActor):
                 consumedcudict[cu] += cloudspaceconsumption[cu]
 
         consumedcudict.update(unimplementedcu)
+        # Calculate disks on account level so as not to miss unattached disks
+        consumedcudict['CU_D'] = self.getConsumedVDiskCapacity(accountId)
         return consumedcudict
 
     @authenticator.auth(acl={'account': set('R')})
@@ -513,7 +529,8 @@ class cloudapi_accounts(BaseActor):
         elif cutype == 'CU_C':
             cumethod = j.apps.cloudapi.cloudspaces.getConsumedCPUCores
         elif cutype == 'CU_D':
-            cumethod = j.apps.cloudapi.cloudspaces.getConsumedVDiskCapacity
+            consumedcutype = self.getConsumedVDiskCapacity(accountId)
+            return consumedcutype
         elif cutype == 'CU_S':
             return 0
         elif cutype == 'CU_A':
@@ -598,7 +615,7 @@ class cloudapi_accounts(BaseActor):
         return True
 
     # Unexposed actor
-    def checkAvailableMachineResources(self, accountId, numcpus, memorysize, vdisksize):
+    def checkAvailableMachineResources(self, accountId, numcpus=0, memorysize=0, vdisksize=0):
         """
         Check that the required machine resources are available in the given account
 
@@ -613,7 +630,7 @@ class cloudapi_accounts(BaseActor):
         resourcelimits = account.resourceLimits
 
         # Validate that there still remains enough cpu cores to assign in account
-        if 'CU_C' in resourcelimits:
+        if numcpus > 0 and 'CU_C' in resourcelimits:
             reservedcus = account.resourceLimits['CU_C']
 
             if reservedcus != -1:
@@ -625,7 +642,7 @@ class cloudapi_accounts(BaseActor):
                                                 (numcpus, availablecus))
 
         # Validate that there still remains enough memory capacity to assign in account
-        if 'CU_M' in resourcelimits:
+        if memorysize > 0 and 'CU_M' in resourcelimits:
             reservedcus = account.resourceLimits['CU_M']
 
             if reservedcus != -1:
@@ -637,7 +654,7 @@ class cloudapi_accounts(BaseActor):
                                                 "memory space." % (memorysize, availablecus))
 
         # Validate that there still remains enough vdisk capacity to assign in account
-        if 'CU_D' in resourcelimits:
+        if vdisksize > 0 and 'CU_D' in resourcelimits:
             reservedcus = account.resourceLimits['CU_D']
 
             if reservedcus != -1:
