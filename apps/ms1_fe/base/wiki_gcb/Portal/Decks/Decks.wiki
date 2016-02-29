@@ -1,5 +1,10 @@
 {{html:
-<div class="container">
+<div class="row txt-center margin-vertical-small ng-cloak" ng-show="noAccount">
+   <div class="alert alert-warning margin-center-horizontal width-60">
+     You don't have access to a single account, To solve this contact <a href="/$$space/support">support.</a>
+   </div>
+</div>
+<div class="container" ng-show="!noAccount">
     <div class="span11 newDecks newDecks2">
 
         </div>

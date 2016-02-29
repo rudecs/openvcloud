@@ -75,9 +75,9 @@ h2. Cloud Space: ${name}
     type: dropdown
     label: Do you want to recursively remove user permissions from all owned vmachines?
     values:
-     - label: Yes
+     - label: 'Yes'
        value: true
-     - label: No
+     - label: 'No'
        value: false
 
 - display: Delete Portforwarding

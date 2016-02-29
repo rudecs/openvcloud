@@ -61,27 +61,12 @@ angular.module('cloudscalers.controllers')
                     $modalInstance.dismiss('cancel');
                 };
 
-                $scope.backToPortal = function () {
-                    $window.location = "/";
-                };
-
                 $scope.selectedLocation = $scope.locations[0].locationCode;
 
                 $scope.changeLocation = function(location) {
                     $scope.selectedLocation = location.locationCode;
                 };
 
-                if($scope.accounts.length == 0){
-                    $modalInstance.close({
-                        name: "",
-                        accountId: "",
-                        selectedLocation: ""
-                    });
-                    $timeout(function(){
-                        angular.element('.new-cloudspace-modal').hide();
-                        angular.element("#cloudspacesListEmptyDialog").modal("show");
-                    });
-                }
             };
             $scope.createNewCloudSpace = function () {
                 var modalInstance = $modal.open({

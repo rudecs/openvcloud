@@ -78,7 +78,7 @@ class Vnas(object):
     """)
 
     def install_js(self, cl):
-        cl.run('curl https://raw.githubusercontent.com/Jumpscale/jumpscale_core7/master/install/install.sh > /tmp/js7.sh && bash /tmp/js7.sh')
+        cl.run('curl https://raw.githubusercontent.com/jumpscale7/jumpscale_core7/master/install/install.sh > /tmp/js7.sh && bash /tmp/js7.sh')
 
     def set_git_credentials(self, cl, login='awesomo', passwd='jsR00t3r'):
         cl.run('jsconfig hrdset -n whoami.git.login -v "%s"' % login)

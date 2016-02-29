@@ -42,7 +42,7 @@ angular.module('cloudscalers.controllers')
         $scope.addUser = function() {
             if ($scope.currentSpace.acl) {
                 var userInAcl = _.find($scope.currentSpace.acl, function(acl) {
-                    return acl.userGroupId == $scope.newUser.nameOrEmail; 
+                    return acl.userGroupId == $scope.newUser.nameOrEmail;
                 });
 
                 if (userInAcl) {
@@ -78,7 +78,7 @@ angular.module('cloudscalers.controllers')
                 userMessage($scope.newUser.nameOrEmail + ' already invited', 'danger', false);
                 return;
             }
-            
+
             CloudSpace
                 .inviteUser($scope.currentSpace, $scope.newUser.nameOrEmail, $scope.newUser.access)
                 .then(function() {
@@ -91,7 +91,7 @@ angular.module('cloudscalers.controllers')
                             $scope.resetSearchQuery();
                         });
                 }, function(response) {
-                    userMessage(response.data, 'danger', false);                    
+                    userMessage(response.data, 'danger', false);
                 });
         };
 
@@ -180,7 +180,7 @@ angular.module('cloudscalers.controllers')
             templateUrl: 'autocomplete-result-template.html',
             onSelect: function(item, event) {
                 event && event.preventDefault();
-     
+
                 $scope.$apply(function() {
                     $scope.newUser.nameOrEmail = item.value;
                 });

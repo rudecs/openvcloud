@@ -23,7 +23,7 @@ angular.module('cloudscalers.services')
                             }
                         );
                     }else{
-                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceI[[[d=' + encodeURIComponent(id)).then(
+                        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id)).then(
                             function(result){
                                 return result.data;
                             },
@@ -57,8 +57,8 @@ angular.module('cloudscalers.services')
                         }
                     );
             },
-            deletePortforward: function(cloudspaceId, id) {
-                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/delete?cloudspaceId=' + encodeURIComponent(cloudspaceId) + '&id=' + encodeURIComponent(id)).then(
+            deletePortforward: function(cloudspaceId, publicIp, publicPort) {
+                return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/deleteByPort?cloudspaceId=' + encodeURIComponent(cloudspaceId) + '&publicIp=' + encodeURIComponent(publicIp) + '&publicPort=' + encodeURIComponent(publicPort)).then(
                         function(result){
                             return result;
                         },

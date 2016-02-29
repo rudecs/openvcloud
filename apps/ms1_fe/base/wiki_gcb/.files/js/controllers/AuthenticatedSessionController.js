@@ -1,7 +1,7 @@
 angular.module('cloudscalers.controllers')
-    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', 'ipCookie', '$ErrorResponseAlert', '$modal', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location, ipCookie, $ErrorResponseAlert, $modal) {
+    .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', 'ipCookie', '$ErrorResponseAlert', '$modal', 'SessionData', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location, ipCookie, $ErrorResponseAlert, $modal, SessionData) {
 
-
+        $scope.noAccount = false;
         var portal_session_cookie = ipCookie("beaker.session.id");
         if(portal_session_cookie){
             if(!User.current() || User.current().api_key != portal_session_cookie){
@@ -65,8 +65,8 @@ angular.module('cloudscalers.controllers')
                 $scope.cloudspaces = cloudspaces;
                 if(cloudspaces.length == 0){
                     $timeout(function(){
-                        angular.element('.create-cloudspace').click();
-                        angular.element('.new-cloudspace-modal').find('.cancel').remove();
+                        $scope.noAccount = true;
+                        SessionData.setSpace();
                     });
                 }
                 return cloudspaces;

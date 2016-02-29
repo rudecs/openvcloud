@@ -213,6 +213,9 @@ class cloudapi_machines(BaseActor):
         :return True if template was created
         """
         machine = self._getMachine(machineId)
+        origimage = self.models.image.get(machine.imageId)
+        if origimage.accountId:
+            raise exceptions.Conflict("Can not make template from a machine which was created from a custom template.")
         node = self._getNode(machine.referenceId)
         provider = self._getProvider(machine)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
@@ -411,7 +414,7 @@ class cloudapi_machines(BaseActor):
     def _getProviderAndNode(self, machineId):
         machineId = int(machineId)
         machine = self._getMachine(machineId)
-        if machine.status in ['ERROR', 'DESTYROYED', 'DESTROYING']:
+        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
             return None, None, machine
         provider = self._getProvider(machine)
         if provider:
