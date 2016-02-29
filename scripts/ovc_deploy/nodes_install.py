@@ -21,7 +21,7 @@ def install(node, login, passwd, url):
     cl.mode_sudo()
     # install jumpscale
     cl.run('apt-get update')
-    cl.run('curl https://raw.githubusercontent.com/Jumpscale/jumpscale_core7/master/install/install.sh > /tmp/js7.sh')
+    cl.run('curl https://raw.githubusercontent.com/jumpscale7/jumpscale_core7/master/install/install.sh > /tmp/js7.sh')
     cl.run('bash /tmp/js7.sh')
     # add openvcloud domain to ays
     cl.file_append('/opt/jumpscale7/hrd/system/atyourservice.hrd', ovcDomain)
