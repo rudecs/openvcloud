@@ -146,8 +146,8 @@ class cloudbroker_account(BaseActor):
                 'token': validation_token.id
             })
 
-        # if emailaddress:
-        #     _send_signup_mail(hrd=self.hrd, **mail_args)
+        if emailaddress:
+            _send_signup_mail(hrd=self.hrd, **mail_args)
 
         return accountid
 
