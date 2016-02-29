@@ -1,6 +1,6 @@
 {{html:
 <div class="row txt-center margin-vertical-small ng-cloak" ng-show="noAccount">
-   <div class="alert alert-danger margin-center-horizontal width-60">
+   <div class="alert alert-warning margin-center-horizontal width-60">
      You don't have access to a single account, To solve this contact <a href="/$$space/support">support.</a>
    </div>
 </div>

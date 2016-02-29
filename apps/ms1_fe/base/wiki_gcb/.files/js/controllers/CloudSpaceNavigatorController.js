@@ -67,17 +67,6 @@ angular.module('cloudscalers.controllers')
                     $scope.selectedLocation = location.locationCode;
                 };
 
-                if($scope.accounts.length == 0){
-                    $modalInstance.close({
-                        name: "",
-                        accountId: "",
-                        selectedLocation: ""
-                    });
-                    $timeout(function(){
-                        angular.element('.new-cloudspace-modal').hide();
-                        angular.element("#cloudspacesListEmptyDialog").modal("show");
-                    });
-                }
             };
             $scope.createNewCloudSpace = function () {
                 var modalInstance = $modal.open({

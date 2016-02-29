@@ -104,7 +104,7 @@
                     </script>
                 </div>
               </li>
-              <li ng-show="currentUser.acl.cloudspace > 0"><a href="/$$space/CloudSpaceSettings" class="padding-left-none"><i class="fa fa-cog margin-right-small" title="Cloud Space settings"></i></a></li>
+              <li ng-show="currentUser.acl.cloudspace > 0 && !noAccount"><a href="/$$space/CloudSpaceSettings" class="padding-left-none"><i class="fa fa-cog margin-right-small" title="Cloud Space settings"></i></a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a id="geeting-started" href="/$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
@@ -117,15 +117,4 @@
       </div>
     </nav>
   </div>
-  <div id="cloudspacesListEmptyDialog" class="modal fade bs-example-modal-lg" data-keyboard="false" data-backdrop="static">
-    <div class="modal-header">
-      <h4 class="modal-title">Error</h4>
-    </div>
-    <div class="modal-body">
-      This user does not have access to a single account, Please contact your administrator to create an account.
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary" ng-click="invalidAccount()">Ok</button>
-    </div>
-  </div>
-}}
+  }}
