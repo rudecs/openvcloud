@@ -21,11 +21,11 @@ parser.add_option("-f", "--force-version", action='store_true', default=False, d
 (options, args) = parser.parse_args()
 
 REPOS = {'openvcloud': ['/opt/code/git/0-complexity/openvcloud'],
-         'jumpscale': ['/opt/code/github/jumpscale/jumpscale_core7',
-                       '/opt/code/github/jumpscale/jumpscale_portal']
+         'jumpscale': ['/opt/code/github/jumpscale7/jumpscale_core7',
+                       '/opt/code/github/jumpscale7/jumpscale_portal']
          }
 AYS = {'openvcloud': '/opt/code/git/0-complexity/openvcloud_ays',
-       'jumpscale': '/opt/code/github/jumpscale/ays_jumpscale7'}
+       'jumpscale': '/opt/code/github/jumpscale7/ays_jumpscale7'}
 
 def getRepoInfo(url):
     domain, type_, account, repo, localpath, url = j.do.getGitRepoArgs(url)
