@@ -134,6 +134,10 @@
         - CU_M: returns consumed memory in GB
         - CU_C: returns number of virtual cpu cores
         - CU_D: returns consumed virtual disk storage in GB
+        - CU_S: returns consumed primary storage (NAS) in TB
+        - CU_A: returns consumed secondary storage (Archive) in TB
+        - CU_NO: returns sent/received network transfer in operator in GB
+        - CU_NP: returns sent/received network transfer peering in GB
         - CU_I: returns number of public IPs
         """
         var:accountId int,, id of the account consumption should be calculated for

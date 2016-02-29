@@ -43,6 +43,8 @@ class cloudapi_disks(BaseActor):
         :return the id of the created disk
 
         """
+        # Validate that enough resources are available in the account CU limits to add the disk
+        j.apps.cloudapi.accounts.checkAvailableMachineResources(accountId, vdisksize=size)
         disk, volume = self._create(accountId, gid, name, description, size, type)
         return disk.id
 

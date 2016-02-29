@@ -544,7 +544,8 @@ class cloudapi_cloudspaces(BaseActor):
             diskids.extend(m['disks'])
 
         disksizes = {d['id']: d['sizeMax'] for d in self.models.disk.search(
-            {'$query': {'id': {'$in': diskids}}, '$fields': ['id', 'sizeMax']}, size=0)[1:]}
+            {'$query': {'id': {'$in': diskids}, 'status': {'$ne': 'DESTROYED'}},
+             '$fields': ['id', 'sizeMax']}, size=0)[1:]}
         for machine in machines:
             for diskid in machine['disks']:
                 consumeddiskcapacity += disksizes[diskid]
@@ -898,7 +899,7 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     # Unexposed actor
-    def checkAvailableMachineResources(self, cloudspaceId, numcpus, memorysize, vdisksize):
+    def checkAvailableMachineResources(self, cloudspaceId, numcpus=0, memorysize=0, vdisksize=0, checkaccount=True):
         """
         Check that the required machine resources are available in the given cloudspace
 
@@ -906,16 +907,18 @@ class cloudapi_cloudspaces(BaseActor):
         :param numcpus: the required number of cpu cores that need to be free
         :param memorysize: the required memory size in GB that need to be free
         :param vdisksize: the required vdisk size in GB that need to be free
+        :param checkaccount: check account for available resources
         :return: True if check succeeds, otherwise raise a 400 BadRequest error
         """
         # Validate that there still remains enough public IP addresses to assign in cloudspace
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         resourcelimits = cloudspace.resourceLimits
-        j.apps.cloudapi.accounts.checkAvailableMachineResources(cloudspace.accountId, numcpus,
-                                                                memorysize, vdisksize)
+        if checkaccount:
+            j.apps.cloudapi.accounts.checkAvailableMachineResources(cloudspace.accountId, numcpus,
+                                                                    memorysize, vdisksize)
 
         # Validate that there still remains enough cpu cores to assign in cloudspace
-        if 'CU_C' in resourcelimits:
+        if numcpus > 0 and 'CU_C' in resourcelimits:
             reservedcus = cloudspace.resourceLimits['CU_C']
 
             if reservedcus != -1:
@@ -927,7 +930,7 @@ class cloudapi_cloudspaces(BaseActor):
                                                 (numcpus, availablecus))
 
         # Validate that there still remains enough memory capacity to assign in cloudspace
-        if 'CU_M' in resourcelimits:
+        if memorysize > 0 and 'CU_M' in resourcelimits:
             reservedcus = cloudspace.resourceLimits['CU_M']
 
             if reservedcus != -1:
@@ -938,9 +941,8 @@ class cloudapi_cloudspaces(BaseActor):
                                                 "memory, owning cloudspace only has %s GB of free "
                                                 "memory space." % (memorysize, availablecus))
 
-
         # Validate that there still remains enough vdisk capacity to assign in cloudspace
-        if 'CU_D' in resourcelimits:
+        if vdisksize > 0 and 'CU_D' in resourcelimits:
             reservedcus = cloudspace.resourceLimits['CU_D']
 
             if reservedcus != -1:
