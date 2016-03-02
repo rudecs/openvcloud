@@ -954,3 +954,93 @@ class cloudapi_cloudspaces(BaseActor):
                                                 "free vdisk space." % (vdisksize, availablecus))
 
         return True
+
+    # Unexposed actor
+    def getConsumedCloudUnitsInCloudspaces(self, cloudspacesIds, deployedcloudspacesIds, **kwargs):
+        """
+        Calculate the currently consumed cloud units for resources in a cloudspace.
+        Calculated cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_I: number of public IPs
+
+        :param cloudspaceId: id of the cloudspace consumption should be calculated for
+        :return: dict with the consumed cloud units
+        """
+        consumedcudict = dict()
+        consumedcudict['CU_M'] = self.getConsumedMemoryInCloudspaces(cloudspacesIds)
+        consumedcudict['CU_C'] = self.getConsumedCPUCoresInCloudspaces(cloudspacesIds)
+        consumedcudict['CU_D'] = 0
+        #for calculating consumed ips we should consider only deployed cloudspaces
+        consumedcudict['CU_I'] = self.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
+
+        return consumedcudict
+
+
+    #unexposed actor
+    def getConsumedMemoryInCloudspaces(self, cloudspacesIds):
+        """
+        Calculate the total number of consumed memory by the machines in a given cloudspaces list
+
+        :param cloudspacesIds: list of ids of the cloudspaces that should be checked
+        :return: the total number of consumed memory
+        """
+
+        consumedmemcapacity = 0
+        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                '$query': {'cloudspaceId': {'$in':cloudspacesIds},
+                                                           'status': {
+                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                               size=0)[1:]
+        memsizes = {s['id']: s['memory'] for s in
+                    self.models.size.search({'$fields': ['id', 'memory']})[1:]}
+
+        machinessizeids = [d['sizeId'] for d in machines]
+        consumedmemcapacity = sum([memsizes[x] for x in machinessizeids])
+
+        return consumedmemcapacity / 1024.0
+
+    #unexposed actor
+    def getConsumedCPUCoresInCloudspaces(self, cloudspacesIds):
+        """
+        Calculate the total number of consumed cpu cores by the machines in a given cloudspaces list
+
+        :param cloudspacesIds: list of ids of the cloudspaces that should be checked
+        :return: the total number of consumed cpu cores
+        """
+        numcpus = 0
+        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                                '$query': {'cloudspaceId': {'$in':cloudspacesIds},
+                                                           'status': {
+                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                               size=0)[1:]
+
+        cpusizes = {s['id']: s['vcpus'] for s in
+                    self.models.size.search({'$fields': ['id', 'vcpus']})[1:]}
+        machinessizeids = [d['sizeId'] for d in machines]
+        numcpus = sum([cpusizes[x] for x in machinessizeids])
+        return numcpus
+
+    #unexposed actor
+    def getConsumedPublicIPsInCloudspaces(self, cloudspacesIds):
+        """
+        Calculate the total number of consumed public IPs by the machines in a given cloudspaces list
+
+        :param cloudspacesIds: list of ids of the cloudspaces that should be checked
+        :return: the total number of consumed public IPs
+        """
+        numpublicips = 0
+        # cloudspaceobj = self.models.cloudspace.get(cloudspaceId)
+        cloudspaces = self.models.cloudspace.search({'id':{'$in':cloudspacesIds}})[1:]
+
+        # Add the public IP directly attached to the cloudspace
+        for cloudspace in cloudspaces:
+            if cloudspace.get('publicipaddress'):
+                numpublicips += 1
+
+        # Add the number of machines in cloudspace that have public IPs attached to them
+        numpublicips += self.models.vmachine.count({'cloudspaceId': {'$in':cloudspacesIds},
+                                                    'nics.type': 'PUBLIC',
+                                                    'status': {'$nin': ['DESTROYED', 'ERROR']}})
+        return numpublicips

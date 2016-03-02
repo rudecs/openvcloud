@@ -487,13 +487,13 @@ class cloudapi_accounts(BaseActor):
         # consumption is properly calculated
         unimplementedcu = {'CU_S': 0, 'CU_A': 0, 'CU_NO': 0, 'CU_NP': 0}
 
-        # Aggregate the total consumed cloud units for all cloudspaces in the account
-        for cloudspace in self.models.cloudspace.search({'accountId': accountId,
-                                                         'status': 'DEPLOYED'})[1:]:
-            cloudspaceconsumption = j.apps.cloudapi.cloudspaces.getConsumedCloudUnits(
-                 cloudspace['id'])
-            for cu in consumedcudict:
-                consumedcudict[cu] += cloudspaceconsumption[cu]
+        cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
+        deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
+                                                         'status': 'DEPLOYED'}})[1:]
+        cloudspacesIds = [x['id'] for x in cloudspaces]
+        deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
+        consumedcudict = j.apps.cloudapi.cloudspaces.getConsumedCloudUnitsInCloudspaces(cloudspacesIds, deployedcloudspacesIds)
+
 
         consumedcudict.update(unimplementedcu)
         # Calculate disks on account level so as not to miss unattached disks
@@ -520,17 +520,20 @@ class cloudapi_accounts(BaseActor):
         :param cutype: cloud unit resource type
         :return: float/int for the consumed cloud unit of the specified type
         """
-        consumedcutype = 0
+        consumedamount = 0
+        #get all cloudspaces in this account
+        cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
+        cloudspacesIds = [x['id'] for x in cloudspaces]
 
         # For the following cloud unit types 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 0 will be returned
         # until proper consumption calculation is implemented
         if cutype == 'CU_M':
-            cumethod = j.apps.cloudapi.cloudspaces.getConsumedMemoryCapacity
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedMemoryInCloudspaces(cloudspacesIds)
         elif cutype == 'CU_C':
-            cumethod = j.apps.cloudapi.cloudspaces.getConsumedCPUCores
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedCPUCoresInCloudspaces(cloudspacesIds)
         elif cutype == 'CU_D':
-            consumedcutype = self.getConsumedVDiskCapacity(accountId)
-            return consumedcutype
+            consumedamount = self.getConsumedVDiskCapacity(accountId)
+            return consumedamount
         elif cutype == 'CU_S':
             return 0
         elif cutype == 'CU_A':
@@ -540,15 +543,15 @@ class cloudapi_accounts(BaseActor):
         elif cutype == 'CU_NP':
             return 0
         elif cutype == 'CU_I':
-            cumethod = j.apps.cloudapi.cloudspaces.getConsumedPublicIPs
+            #for calculating consumed ips we should consider only deployed cloudspaces
+            deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
+                                                         'status': 'DEPLOYED'}})[1:]
+            deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
         else:
             raise exceptions.BadRequest('Invalid cloud unit type: %s' % cutype)
 
-        for cloudspace in self.models.cloudspace.search({'accountId': accountId,
-                                                         'status': 'DEPLOYED'})[1:]:
-            consumedcutype += cumethod(cloudspace['id'])
-
-        return consumedcutype
+        return consumedamount
 
     # Unexposed actor
     def getReservedCloudUnits(self, accountId, excludecloudspaceid=None, **kwargs):
