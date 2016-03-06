@@ -533,7 +533,6 @@ class cloudapi_accounts(BaseActor):
             consumedamount = j.apps.cloudapi.cloudspaces.getConsumedCPUCoresInCloudspaces(cloudspacesIds)
         elif cutype == 'CU_D':
             consumedamount = self.getConsumedVDiskCapacity(accountId)
-            return consumedamount
         elif cutype == 'CU_S':
             return 0
         elif cutype == 'CU_A':
@@ -609,8 +608,8 @@ class cloudapi_accounts(BaseActor):
             reservedcus = resourcelimits['CU_I']
 
             if reservedcus != -1:
-                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_I')
-                availablecus= reservedcus - consumedcus
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_I')
+                availablecus = reservedcus - consumedcus
                 if availablecus < numips:
                     raise exceptions.BadRequest("Required actions will consume an extra %s public IP(s),"
                                                 " owning account only has %s free IP(s)." % (numips,
@@ -628,7 +627,6 @@ class cloudapi_accounts(BaseActor):
         :param vdisksize: the required vdisk size in GB that need to be free
         :return: True if check succeeds, otherwise raise a 400 BadRequest error
         """
-        # Validate that there still remains enough public IP addresses to assign in account
         account = self.models.account.get(accountId)
         resourcelimits = account.resourceLimits
 
@@ -637,7 +635,7 @@ class cloudapi_accounts(BaseActor):
             reservedcus = account.resourceLimits['CU_C']
 
             if reservedcus != -1:
-                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_C')
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_C')
                 availablecus = reservedcus - consumedcus
                 if availablecus < numcpus:
                     raise exceptions.BadRequest("Required actions will consume an extra %s core(s),"
@@ -649,7 +647,7 @@ class cloudapi_accounts(BaseActor):
             reservedcus = account.resourceLimits['CU_M']
 
             if reservedcus != -1:
-                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_M')
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_M')
                 availablecus = reservedcus - consumedcus
                 if availablecus < memorysize:
                     raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
@@ -661,7 +659,7 @@ class cloudapi_accounts(BaseActor):
             reservedcus = account.resourceLimits['CU_D']
 
             if reservedcus != -1:
-                consumedcus =self.getConsumedCloudUnitsByType(accountId, 'CU_D')
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_D')
                 availablecus = reservedcus - consumedcus
                 if availablecus < vdisksize:
                     raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
