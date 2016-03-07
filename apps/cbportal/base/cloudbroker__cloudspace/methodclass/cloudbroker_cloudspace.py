@@ -192,28 +192,58 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
-    def updateName(self, cloudspaceId, newname, **kwargs):
-        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        cloudspace.name = newname
-        self.models.cloudspace.set(cloudspace)
-        return True
+    @wrap_remote
+    def update(self, cloudspaceId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
+               maxNASCapacity, maxArchiveCapacity, maxNetworkOptTransfer,
+               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+        """
+        Update a cloudspace name or the maximum cloud units set on it
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+
+        :param cloudspaceId: id of the cloudspace to change
+        :param name: name of the cloudspace
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
+        """
+        return self.cloudspaces_actor.update(cloudspaceId, name, maxMemoryCapacity,
+                                             maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
+                                             maxArchiveCapacity, maxNetworkOptTransfer,
+                                             maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity, **kwargs):
+    def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
+               maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1, maxNetworkOptTransfer=-1,
+               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
         """
         Create a cloudspace
-        param:accountname name of account to create space for
-        param:name name of space to create
-        param:access username which has full access to this space
-        param:maxMemoryCapacity max size of memory in space (in MB)
-        param:maxDiskCapacity max size of aggregated disks (in GB)
+
+        :param accountId: id of account to create space for
+        :param name: name of space to create
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         """
-        account = self.models.account.get(accountId)
         user = self.syscl.user.search({'id': access})[1:]
         if not user:
             raise exceptions.NotFound('Username "%s" not found' % access)
-        self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity, maxDiskCapacity)
+        self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
+                                      maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
+                                      maxArchiveCapacity, maxNetworkOptTransfer,
+                                      maxNetworkPeerTransfer, maxNumPublicIP)
         return True
 
     def _checkCloudspace(self, cloudspaceId):

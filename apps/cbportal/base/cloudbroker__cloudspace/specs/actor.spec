@@ -59,25 +59,40 @@
     method:create
         """
         Create a cloudspace for given account
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
         """
         var:accountId int,, name of account to create space for
         var:name str,, name of space to create
         var:access str,, username which have full access to this space
-        var:maxMemoryCapacity int,, max size of memory in space (in MB)
-        var:maxDiskCapacity int,, max size of aggregated disks (in GB)
+        var:maxMemoryCapacity float,-1, max size of memory in GB
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
+        var:maxCPUCapacity int,-1, max number of cpu cores
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering
+        var:maxNumPublicIP int,-1, max number of assigned public IPs
+    method:update
+        """
+        Update cloudspace.
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        """"
+        var:cloudspaceId int,,ID of cloudspace
+        var:name str,, Display name
+        var:maxMemoryCapacity float,, max size of memory in GB
+        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB
+        var:maxCPUCapacity int,, max number of cpu cores
+        var:maxNASCapacity int,, max size of primary(NAS) storage in TB
+        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB
+        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator
+        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering
+        var:maxNumPublicIP int,, max number of assigned public IPs
 
     method:destroyVFW
         """
         Destroy VFW of this cloudspace
         """
         var:cloudspaceId int,,Id of the cloudspace
-
-    method:updateName
-        """
-        Update name of the cloudspace
-        """
-        var:cloudspaceId int,,Id of the cloudspace
-        var:newname str,,New name of the cloudspace
 
     method:addUser
         """

@@ -5,13 +5,20 @@
     method:create
         """
         Create an extra cloudspace
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
         """
         var:accountId int,,id of acount this cloudspace belongs to
         var:location str,, name of cloudspace to create
         var:name str,,name of space to create
         var:access str,,username of a user which has full access to this space
-        var:maxMemoryCapacity int,,max size of memory in space (in MB) @tags: optional
-        var:maxDiskCapacity int,,max size of aggregated disks (in GB) @tags: optional 
+        var:maxMemoryCapacity float,-1, max size of memory in GB @optional
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,-1, max number of cpu cores @optional
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
         result:int, id of created cloudspace
 
     method:deploy
@@ -44,11 +51,18 @@
     method:update
         """
         Update the cloudspace name and capacity parameters
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
         """
         var:cloudspaceId int,, id of the cloudspace
         var:name str,, name of the cloudspace @optional
-        var:maxMemoryCapacity int,, max size of memory in space(in MB) @optional
-        var:maxDiskCapacity int,, max size of aggregated disks(in GB) @optional
+        var:maxMemoryCapacity float,, max size of memory in GB @optional
+        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,, max number of cpu cores @optional
+        var:maxNASCapacity int,, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,, max number of assigned public IPs @optional
         result:bool, True if cloudspace was updated
 
     method:addUser

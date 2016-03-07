@@ -59,10 +59,23 @@ def main(j, args, params, tags, tasklet):
     account = cbclient.account.get(accountid).dump() if cbclient.account.exists(accountid) else {'name':'N/A'}
     cloudspacedict['accountname'] = account['name']
 
-    resourceLimits = list()
-    for k, v in cloudspacedict['resourceLimits'].iteritems():
-        resourceLimits.append(' *%s*: %s'% (k, str(v)))
-    cloudspacedict['resourceLimits'] = str(', '.join(resourceLimits))
+    # Resource limits
+    cloudspacedict['maxMemoryCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_M'] \
+        if 'CU_M' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxVDiskCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_D'] \
+        if 'CU_D' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxCPUCapacity'] = cloudspaceobj.resourceLimits['CU_C'] \
+        if 'CU_C' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxNASCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_S'] \
+        if 'CU_S' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxArchiveCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_A'] \
+        if 'CU_A' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxNetworkOptTransfer'] = "%s" % cloudspaceobj.resourceLimits['CU_NO'] \
+        if 'CU_NO' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxNetworkPeerTransfer'] = "%s" % cloudspaceobj.resourceLimits['CU_NP'] \
+        if 'CU_NP' in cloudspaceobj.resourceLimits else -1
+    cloudspacedict['maxNumPublicIP'] = cloudspaceobj.resourceLimits['CU_I'] \
+        if 'CU_I' in cloudspaceobj.resourceLimits else -1
 
     vfwkey = "%(gid)s_%(networkId)s" % (cloudspacedict)
     if vcl.virtualfirewall.exists(vfwkey):

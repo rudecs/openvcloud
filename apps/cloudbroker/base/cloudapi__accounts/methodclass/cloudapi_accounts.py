@@ -124,12 +124,23 @@ class cloudapi_accounts(BaseActor):
         return True
 
     @audit()
-    def create(self, name, access, **kwargs):
+    def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
+               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
+               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
+               **kwargs):
         """
         Create a extra an account (Method not implemented)
 
         :param name: name of account to create
         :param access: list of ids of users which have full access to this account
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
         :return int
         """
         raise NotImplementedError("Not implemented method create")
@@ -250,17 +261,148 @@ class cloudapi_accounts(BaseActor):
 
     @authenticator.auth(acl={'account': set('A')})
     @audit()
-    def update(self, accountId, name, **kwargs):
+    def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
+               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
+               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
-        Update an account name (Method not implemented)
+        Update an account name or the maximum cloud units set on it
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
 
         :param accountId: id of the account to change
         :param name: name of the account
-        :return int id of account updated
+        :param maxMemoryCapacity: max size of memory in GB
+        :param maxVDiskCapacity: max size of aggregated vdisks in GB
+        :param maxCPUCapacity: max number of cpu cores
+        :param maxNASCapacity: max size of primary(NAS) storage in TB
+        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
+        :param maxNetworkOptTransfer: max sent/received network transfer in operator
+        :param maxNetworkPeerTransfer: max sent/received network transfer peering
+        :param maxNumPublicIP: max number of assigned public IPs
+        :return: True if update was successful
         """
-        account = self.models.account.get(accountId)
-        account.name = name
-        self.models.account.set(account)
+
+        accountobj = self.models.account.get(accountId)
+
+        if name:
+            accountobj.name = name
+
+        if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNASCapacity or \
+                maxArchiveCapacity or maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
+            reservedcloudunits = self.getReservedCloudUnits(accountId)
+
+        if maxMemoryCapacity is not None:
+            consumedmemcapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_M')
+            if maxMemoryCapacity != -1 and maxMemoryCapacity < consumedmemcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
+                                            "that is less than the current consumed memory "
+                                            "capacity %s GB." % consumedmemcapacity)
+            elif maxMemoryCapacity != -1 and maxMemoryCapacity < reservedcloudunits['CU_M']:
+                raise exceptions.BadRequest("Cannot set the maximum memory capacity to a value "
+                                            "that is less than the current reserved memory "
+                                            "capacity %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_M'])
+            else:
+                accountobj.resourceLimits['CU_M'] = maxMemoryCapacity
+
+        if maxVDiskCapacity is not None:
+            consumedvdiskcapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_D')
+            if maxVDiskCapacity != -1 and maxVDiskCapacity < consumedvdiskcapacity:
+                raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value that "
+                                            "is less than the current consumed vdisk capacity %s "
+                                            "GB." % consumedvdiskcapacity)
+            elif maxVDiskCapacity != -1 and maxVDiskCapacity < reservedcloudunits['CU_D']:
+                raise exceptions.BadRequest("Cannot set the maximum vdisk capacity to a value "
+                                            "that is less than the current reserved vdisk "
+                                            "capacity %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_D'])
+            else:
+                accountobj.resourceLimits['CU_D'] = maxVDiskCapacity
+
+        if maxCPUCapacity is not None:
+            consumedcpucapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_C')
+            if maxCPUCapacity != -1 and maxCPUCapacity < consumedcpucapacity:
+                raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value that "
+                                            "is less than the current consumed cores %s "
+                                            "GB." % consumedcpucapacity)
+            elif maxCPUCapacity != -1 and maxCPUCapacity < reservedcloudunits['CU_C']:
+                raise exceptions.BadRequest("Cannot set the maximum cpu cores to a value "
+                                            "that is less than the current reserved cpu cores "
+                                            "%s by account's cloudspaces." %
+                                            reservedcloudunits['CU_C'])
+            else:
+                accountobj.resourceLimits['CU_C'] = maxCPUCapacity
+
+        if maxNASCapacity is not None:
+            consumednascapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_S')
+            if maxNASCapacity != -1 and maxNASCapacity < consumednascapacity:
+                raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
+                                            "value that is less than the current consumed capacity "
+                                            "%s TB." % consumednascapacity)
+            elif maxNASCapacity != -1 and maxNASCapacity < reservedcloudunits['CU_S']:
+                raise exceptions.BadRequest("Cannot set the maximum primary storage capacity to a "
+                                            "that is less than the current reserved capacity "
+                                            "value %s TB by account's cloudspaces." %
+                                            reservedcloudunits['CU_S'])
+            else:
+                accountobj.resourceLimits['CU_S'] = maxNASCapacity
+
+        if maxArchiveCapacity is not None:
+            consumedarchivecapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_A')
+            if maxArchiveCapacity != -1 and maxArchiveCapacity < consumedarchivecapacity:
+                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
+                                            "a value that is less than the current consumed "
+                                            "capacity %s TB." % consumedarchivecapacity)
+            elif maxArchiveCapacity != -1 and maxArchiveCapacity < reservedcloudunits['CU_A']:
+                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
+                                            "a value that is less than the current reserved "
+                                            "capacity %s TB by account's cloudspaces." %
+                                            reservedcloudunits['CU_A'])
+            else:
+                accountobj.resourceLimits['CU_A'] = maxArchiveCapacity
+
+        if maxNetworkOptTransfer is not None:
+            transferednewtopt = self.getConsumedCloudUnitsByType(accountId, 'CU_NO')
+            if maxNetworkOptTransfer != -1 and maxNetworkOptTransfer < transferednewtopt:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer in operator "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtopt)
+            elif maxNetworkOptTransfer != -1 and maxNetworkOptTransfer < reservedcloudunits['CU_NO']:
+                raise exceptions.BadRequest("Cannot set the maximum  network transfer in operator "
+                                            "to a value that is less than the current reserved "
+                                            "transfer %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_NO'])
+            else:
+                accountobj.resourceLimits['CU_NO'] = maxNetworkOptTransfer
+
+        if maxNetworkPeerTransfer is not None:
+            transferednewtpeer = self.getConsumedCloudUnitsByType(accountId, 'CU_NP')
+            if maxNetworkPeerTransfer != -1 and maxNetworkPeerTransfer < transferednewtpeer:
+                raise exceptions.BadRequest("Cannot set the maximum network transfer peering "
+                                            "to a value that is less than the current  "
+                                            "sent/received %s GB." % transferednewtpeer)
+            elif maxNetworkPeerTransfer != -1 and maxNetworkPeerTransfer < reservedcloudunits['CU_NP']:
+                raise exceptions.BadRequest("Cannot set the maximum  network transfer peering "
+                                            "to a value that is less than the current reserved "
+                                            "transfer %s GB by account's cloudspaces." %
+                                            reservedcloudunits['CU_NP'])
+            else:
+                accountobj.resourceLimits['CU_NP'] = maxNetworkPeerTransfer
+
+        if maxNumPublicIP is not None:
+            assingedpublicip = self.getConsumedCloudUnitsByType(accountId, 'CU_I')
+            if maxNumPublicIP != -1 and maxNumPublicIP < assingedpublicip:
+                raise exceptions.BadRequest("Cannot set the maximum number of public IPs "
+                                            "to a value that is less than the current "
+                                            "assigned %s." % assingedpublicip)
+            elif maxNumPublicIP != -1 and maxNumPublicIP < reservedcloudunits['CU_I']:
+                raise exceptions.BadRequest("Cannot set the maximum number of public IPs to a "
+                                            "value that is less than the current reserved "
+                                            "%s by account's cloudspaces."
+                                            % reservedcloudunits['CU_I'])
+            else:
+                accountobj.resourceLimits['CU_I'] = maxNumPublicIP
+
+        self.models.account.set(accountobj)
         return True
 
     @authenticator.auth(acl={'account': set('R')})
@@ -307,3 +449,221 @@ class cloudapi_accounts(BaseActor):
         query = {'$query': q, '$fields': fields}
         history = self.models.credittransaction.search(query)[1:]
         return history
+
+    # Unexposed actor
+    def getConsumedVDiskCapacity(self, accountId):
+        """
+        Calculate the total consumed disk storage in the account in GB
+
+        :param accountId: id of the accountId that should be checked
+        :return: the total consumed disk storage
+        """
+        disks = self.models.disk.search(
+            {'$query': {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}},
+             '$fields': ['sizeMax']}, size=0)[1:]
+        consumeddiskcapacity = sum([d['sizeMax'] for d in disks])
+        return consumeddiskcapacity
+
+    @authenticator.auth(acl={'account': set('R')})
+    def getConsumedCloudUnits(self, accountId, **kwargs):
+        """
+        Calculate the currently consumed cloud units for all cloudspaces in the account.
+
+        Calculated cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_S: consumed primary storage (NAS) in TB
+        - CU_A: consumed secondary storage (Archive) in TB
+        - CU_NO: sent/received network transfer in operator in GB
+        - CU_NP: sent/received network transfer peering in GB
+        - CU_I: number of public IPs
+
+        :param accountId: id of the account consumption should be calculated for
+        :return: dict with the consumed cloud units
+        """
+        consumedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0}
+        # The following keys are unimplemented cloud unit consumptions, will set to 0 until
+        # consumption is properly calculated
+        unimplementedcu = {'CU_S': 0, 'CU_A': 0, 'CU_NO': 0, 'CU_NP': 0}
+
+        cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
+        deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
+                                                         'status': 'DEPLOYED'}})[1:]
+        cloudspacesIds = [x['id'] for x in cloudspaces]
+        deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
+        consumedcudict = j.apps.cloudapi.cloudspaces.getConsumedCloudUnitsInCloudspaces(cloudspacesIds, deployedcloudspacesIds)
+
+
+        consumedcudict.update(unimplementedcu)
+        # Calculate disks on account level so as not to miss unattached disks
+        consumedcudict['CU_D'] = self.getConsumedVDiskCapacity(accountId)
+        return consumedcudict
+
+    @authenticator.auth(acl={'account': set('R')})
+    def getConsumedCloudUnitsByType(self, accountId, cutype, **kwargs):
+        """
+        Calculate the currently consumed cloud units of the specified type for all cloudspaces
+        in the account.
+
+        Possible types of cloud units are include:
+        - CU_M: returns consumed memory in GB
+        - CU_C: returns number of virtual cpu cores
+        - CU_D: returns consumed virtual disk storage in GB
+        - CU_S: returns consumed primary storage (NAS) in TB
+        - CU_A: returns consumed secondary storage (Archive) in TB
+        - CU_NO: returns sent/received network transfer in operator in GB
+        - CU_NP: returns sent/received network transfer peering in GB
+        - CU_I: returns number of public IPs
+
+        :param accountId: id of the account consumption should be calculated for
+        :param cutype: cloud unit resource type
+        :return: float/int for the consumed cloud unit of the specified type
+        """
+        consumedamount = 0
+        #get all cloudspaces in this account
+        cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
+        cloudspacesIds = [x['id'] for x in cloudspaces]
+
+        # For the following cloud unit types 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 0 will be returned
+        # until proper consumption calculation is implemented
+        if cutype == 'CU_M':
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedMemoryInCloudspaces(cloudspacesIds)
+        elif cutype == 'CU_C':
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedCPUCoresInCloudspaces(cloudspacesIds)
+        elif cutype == 'CU_D':
+            consumedamount = self.getConsumedVDiskCapacity(accountId)
+        elif cutype == 'CU_S':
+            return 0
+        elif cutype == 'CU_A':
+            return 0
+        elif cutype == 'CU_NO':
+            return 0
+        elif cutype == 'CU_NP':
+            return 0
+        elif cutype == 'CU_I':
+            #for calculating consumed ips we should consider only deployed cloudspaces
+            deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
+                                                         'status': 'DEPLOYED'}})[1:]
+            deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
+            consumedamount = j.apps.cloudapi.cloudspaces.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
+        else:
+            raise exceptions.BadRequest('Invalid cloud unit type: %s' % cutype)
+
+        return consumedamount
+
+    # Unexposed actor
+    def getReservedCloudUnits(self, accountId, excludecloudspaceid=None, **kwargs):
+        """
+        Calculate the currently reserved cloud units by all cloudspaces under an account
+
+        Reserved cloud units will be calculated by summing up all cloud unit limits set on the
+        cloudspaces in the account (cloudspaces with unlimited CUs, set to -1, will not be counted
+        as they do not reserve any resources)
+
+        Reserved cloud units are returned in a dict which includes:
+        - CU_M: consumed memory in GB
+        - CU_C: number of virtual cpu cores
+        - CU_D: consumed virtual disk storage in GB
+        - CU_S: consumed primary storage (NAS) in TB
+        - CU_A: consumed secondary storage (Archive) in TB
+        - CU_NO: sent/received network transfer in operator in GB
+        - CU_NP: sent/received network transfer peering in GB
+        - CU_I: number of public IPs
+
+        :param accountId: id of the account reserved CUs should be calculated for
+        :param excludecloudspaceid: exclude the cloudspace with the specified id when performing the
+            calculations
+        :return: dict with the reserved cloud units
+        """
+        reservedcudict = {'CU_M': 0, 'CU_C': 0, 'CU_D': 0, 'CU_I': 0, 'CU_S': 0, 'CU_A': 0,
+                          'CU_NO': 0, 'CU_NP': 0}
+
+        # Aggregate the total consumed cloud units for all cloudspaces in the account
+        for cloudspace in self.models.cloudspace.search({'$fields': ['id', 'resourceLimits'],
+                                                         '$query': {'accountId': accountId,
+                                                                    'status': {'$ne': 'DESTROYED'}}})[1:]:
+            if excludecloudspaceid is not None and cloudspace['id'] == excludecloudspaceid:
+                continue
+
+            for cukey, cuvalue in cloudspace['resourceLimits'].iteritems():
+                # Ignore cu limit if -1 as it indicates that no limit is set
+                if cukey in reservedcudict and cuvalue != -1:
+                    reservedcudict[cukey] += cuvalue
+
+        return reservedcudict
+
+    #Unexposed actor
+    def checkAvailablePublicIPs(self, accountId, numips=1):
+        """
+        Check that the required number of ip addresses are available in the given account
+
+        :param accountId: id of the account to check
+        :param numips: the required number of public IP addresses that need to be free
+        :return: True if check succeeds, otherwise raise a 400 BadRequest error
+        """
+        # Validate that there still remains enough public IP addresses to assign in account
+        resourcelimits = self.models.account.get(accountId).resourceLimits
+        if 'CU_I' in resourcelimits:
+            reservedcus = resourcelimits['CU_I']
+
+            if reservedcus != -1:
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_I')
+                availablecus = reservedcus - consumedcus
+                if availablecus < numips:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s public IP(s),"
+                                                " owning account only has %s free IP(s)." % (numips,
+                                                                                             availablecus))
+        return True
+
+    # Unexposed actor
+    def checkAvailableMachineResources(self, accountId, numcpus=0, memorysize=0, vdisksize=0):
+        """
+        Check that the required machine resources are available in the given account
+
+        :param accountId: id of the accountId to check
+        :param numcpus: the required number of cpu cores that need to be free
+        :param memorysize: the required memory size in GB that need to be free
+        :param vdisksize: the required vdisk size in GB that need to be free
+        :return: True if check succeeds, otherwise raise a 400 BadRequest error
+        """
+        account = self.models.account.get(accountId)
+        resourcelimits = account.resourceLimits
+
+        # Validate that there still remains enough cpu cores to assign in account
+        if numcpus > 0 and 'CU_C' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_C']
+
+            if reservedcus != -1:
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_C')
+                availablecus = reservedcus - consumedcus
+                if availablecus < numcpus:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s core(s),"
+                                                " owning account only has %s free core(s)." %
+                                                (numcpus, availablecus))
+
+        # Validate that there still remains enough memory capacity to assign in account
+        if memorysize > 0 and 'CU_M' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_M']
+
+            if reservedcus != -1:
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_M')
+                availablecus = reservedcus - consumedcus
+                if availablecus < memorysize:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
+                                                "memory, owning account only has %s GB of free "
+                                                "memory space." % (memorysize, availablecus))
+
+        # Validate that there still remains enough vdisk capacity to assign in account
+        if vdisksize > 0 and 'CU_D' in resourcelimits:
+            reservedcus = account.resourceLimits['CU_D']
+
+            if reservedcus != -1:
+                consumedcus = self.getConsumedCloudUnitsByType(accountId, 'CU_D')
+                availablecus = reservedcus - consumedcus
+                if availablecus < vdisksize:
+                    raise exceptions.BadRequest("Required actions will consume an extra %s GB of "
+                                                "vdisk space, owning account only has %s GB of "
+                                                "free vdisk space." % (vdisksize, availablecus))
+
+        return True

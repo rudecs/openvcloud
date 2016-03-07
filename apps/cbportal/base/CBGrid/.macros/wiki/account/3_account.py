@@ -61,6 +61,22 @@ def main(j, args, params, tags, tasklet):
     if balances:
         balance = sum([bal['amount'] for bal in balances])
     accountdict['balance'] = balance
+    accountdict['maxMemoryCapacity'] = "%s" % accountobj.resourceLimits['CU_M'] \
+        if 'CU_M' in accountobj.resourceLimits else -1
+    accountdict['maxVDiskCapacity'] = "%s" % accountobj.resourceLimits['CU_D'] \
+        if 'CU_D' in accountobj.resourceLimits else -1
+    accountdict['maxCPUCapacity'] = accountobj.resourceLimits['CU_C'] \
+        if 'CU_C' in accountobj.resourceLimits else -1
+    accountdict['maxNASCapacity'] = "%s" % accountobj.resourceLimits['CU_S'] \
+        if 'CU_S' in accountobj.resourceLimits else -1
+    accountdict['maxArchiveCapacity'] = "%s" % accountobj.resourceLimits['CU_A'] \
+        if 'CU_A' in accountobj.resourceLimits else -1
+    accountdict['maxNetworkOptTransfer'] = "%s" % accountobj.resourceLimits['CU_NO'] \
+        if 'CU_NO' in accountobj.resourceLimits else -1
+    accountdict['maxNetworkPeerTransfer'] = "%s" % accountobj.resourceLimits['CU_NP'] \
+        if 'CU_NP' in accountobj.resourceLimits else -1
+    accountdict['maxNumPublicIP'] = accountobj.resourceLimits['CU_I'] \
+        if 'CU_I' in accountobj.resourceLimits else -1
 
     args.doc.applyTemplate(accountdict)
     params.result = (args.doc, args.doc)

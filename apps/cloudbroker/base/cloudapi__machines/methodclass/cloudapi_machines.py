@@ -146,6 +146,8 @@ class cloudapi_machines(BaseActor):
         """
         provider, node, machine = self._getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        # Validate that enough resources are available in the CU limits to add the disk
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
         try:
@@ -191,10 +193,16 @@ class cloudapi_machines(BaseActor):
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
+        disk = self.models.disk.get(int(diskId))
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
+            if vmachines[0]["cloudspaceId"] != machine.cloudspaceId:
+                # Validate that enough resources are available in the CU limits of the new cloudspace to add the disk
+                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
-        disk = self.models.disk.get(int(diskId))
+        else:
+            # the disk was not attached to any machines so check if there is enough resources in the cloudspace
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
@@ -278,6 +286,10 @@ class cloudapi_machines(BaseActor):
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, self._minimum_days_of_credit_required)
+        # Validate that enough resources are available in the CU limits to create the machine
+        size = self.models.size.get(sizeId)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory/1024.0, disksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
@@ -501,7 +513,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'machine': set('C')})
     @audit()
-    def update(self, machineId, name=None, description=None, size=None, **kwargs):
+    def update(self, machineId, name=None, description=None, **kwargs):
         """
         Change basic properties of a machine
         Name, description can be changed with this action.
@@ -509,8 +521,6 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :param name: name of the machine
         :param description: description of the machine
-        :param size: size of the machine in CU
-
         """
         machine = self._getMachine(machineId)
         #if name:
@@ -521,8 +531,6 @@ class cloudapi_machines(BaseActor):
         #    machine.name = name
         if description:
             machine.descr = description
-        #if size:
-        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -569,6 +577,7 @@ class cloudapi_machines(BaseActor):
         clone.creationTime = int(time.time())
 
         diskmapping = []
+        totaldisksize = 0
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
             clonedisk = self.models.disk.new()
@@ -584,6 +593,11 @@ class cloudapi_machines(BaseActor):
             diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
                                 'size': origdisk.sizeMax, 'type': clonedisk.type,
                                 'diskpath': origdisk.referenceId})
+            totaldisksize += clonedisk.sizeMax
+        # Validate that enough resources are available in the CU limits to clone the machine
+        size = self.models.size.get(clone.sizeId)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory/1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
         provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
@@ -908,6 +922,8 @@ class cloudapi_machines(BaseActor):
             if nic.type == 'PUBLIC':
                 return True
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        # Check that attaching a public network will not exceed the allowed CU limits
+        j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(vmachine.cloudspaceId, 1)
         networkid = cloudspace.networkId
         netinfo = self.network.getPublicIpAddress(cloudspace.gid)
         if netinfo is None:
@@ -937,6 +953,15 @@ class cloudapi_machines(BaseActor):
         bootdisk = self.models.disk.get(bootdisks[0]['id'])
         size = self.models.size.get(sizeId)
         providersize = provider.getSize(size, bootdisk)
+
+        # Validate that enough resources are available in the CU limits if size will be increased
+        oldsize = self.models.size.get(vmachine.sizeId)
+        # Calcultate the delta in memory and vpcu only if new size is bigger than old size
+        deltacpu = max(size.vcpus - oldsize.vcpus, 0)
+        deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
+                                                                   numcpus=deltacpu,
+                                                                   memorysize=deltamemory)
         provider.client.ex_resize(node=node, size=providersize)
         vmachine.sizeId = sizeId
         self.models.vmachine.set(vmachine)

@@ -40,18 +40,37 @@
         var:username str,,name of the user to be removed
         var:recursivedelete bool,, recursively delete access rights from owned cloudspaces and vmachines
 
-    method:rename
-        """
-        rename account.
-        """"
-        var:accountId int,,ID of account
-        var:name str,,new name
 
     method:create
         """
         Create Account.
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
         """"
         var:name str,, Display name
         var:username str,, name of the account
         var:emailaddress str,,email
         var:location str,,locationcode
+        var:maxMemoryCapacity float,-1, max size of memory in GB
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
+        var:maxCPUCapacity int,-1, max number of cpu cores
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering
+        var:maxNumPublicIP int,-1, max number of assigned public IPs
+
+    method:update
+        """
+        Update Account.
+        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        """"
+        var:accountId int,,ID of account
+        var:name str,, Display name
+        var:maxMemoryCapacity float,, max size of memory in GB
+        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB
+        var:maxCPUCapacity int,, max number of cpu cores
+        var:maxNASCapacity int,, max size of primary(NAS) storage in TB
+        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB
+        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator
+        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering
+        var:maxNumPublicIP int,, max number of assigned public IPs
