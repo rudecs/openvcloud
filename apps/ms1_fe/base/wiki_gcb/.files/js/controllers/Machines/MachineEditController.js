@@ -280,7 +280,7 @@ angular.module('cloudscalers.controllers')
         };
 
         var updatesnapshots = function(){
-            $scope.snapshots = {};
+            $scope.snapshots = [];
             $scope.snapshotsLoader = true;
             Machine.listSnapshots($routeParams.machineId).then(function(data) {
                 $scope.snapshots = data;
@@ -365,8 +365,11 @@ angular.module('cloudscalers.controllers')
                 Machine.rollbackSnapshot($scope.machine.id, snapshot.epoch).then(
                         function(result){
                             LoadingDialog.hide();
-                            var removedSnapshot = _.where($scope.snapshots, {epoch: snapshot.epoch})[0];
-                            $scope.snapshots.splice( $scope.snapshots.indexOf(removedSnapshot) , 1);
+                            for (var i = $scope.snapshots.length - 1; i > 0; i--) {
+                                if ($scope.snapshots[i].epoch > snapshot.epoch) {
+                                    $scope.snapshots.splice(i, 1);
+                                }
+                            }
                         }, function(reason){
                             LoadingDialog.hide();
                             $alert(reason.data);
