@@ -323,7 +323,10 @@ class cloudapi_machines(BaseActor):
             if nic.type != 'PUBLIC' and nic.macAddress:
                 macs.append(nic.macAddress)
         if macs:
-            self.netmgr.fw_remove_lease(fwid, macs)
+            try:
+                self.netmgr.fw_remove_lease(fwid, macs)
+            except exceptions.ServiceUnavailable:
+                pass  # vfw is not deployed yet
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
