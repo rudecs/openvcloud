@@ -16,8 +16,10 @@ queue = 'hypervisor'
 
 def action(networkid):
     import libvirt
+    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    connection = LibvirtUtil()
 
-    con = libvirt.open()
+    con = connection.connection
 
     networkidHex = '%04x' % int(networkid)
     networkname = "space_%s"  % networkidHex
@@ -25,31 +27,12 @@ def action(networkid):
     destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
 
-    def cleanup():
-        print "CLEANUP: %s/%s"%(networkid,networkidHex)
-        try:
-            dom = con.lookupByName(name)
-            dom.destroy()
-            dom.undefine()
-        except libvirt.libvirtError:
-            pass
-        j.system.fs.removeDirTree(destinationdir)
-        def deleteNet(net):
-            try:
-                net.destroy()
-            except:
-                pass
-            try:
-                net.undefine()
-            except:
-                pass
-        try:
-            for net in con.listAllNetworks():
-                if net.name() == networkname:
-                    deleteNet(net)
-                    break
-        except:
-            pass
-
-    cleanup()
-
+    print "CLEANUP: %s/%s"%(networkid,networkidHex)
+    try:
+        dom = con.lookupByName(name)
+        dom.destroy()
+        dom.undefine()
+    except libvirt.libvirtError:
+        pass
+    j.system.fs.removeDirTree(destinationdir)
+    connection.cleanupNetwork(networkid)

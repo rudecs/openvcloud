@@ -7,6 +7,7 @@ import shutil
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
 from JumpScale.lib.btrfs import *
+from JumpScale.lib.ovsnetconfig.VXNet import netclasses
 
 
 LOCKCREATED = 1
@@ -94,6 +95,7 @@ class LibvirtUtil(object):
             raise Exception("Can't stop a locked machine")
         domain = self._get_domain(id)
         if domain:
+            networkid = self._get_domain_networkid(domain)
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 if not domain.shutdown() == 0:
                     return False
@@ -103,6 +105,8 @@ class LibvirtUtil(object):
                     j.errorconditionhandler.processPythonExceptionObject(e)
                     domain.destroy()
             domain.undefine()
+            if networkid:
+                self.cleanupNetwork(networkid)
         return True
 
     def waitForAction(self, domid, timeout=None, events=None):
@@ -192,6 +196,7 @@ class LibvirtUtil(object):
             domain = None
             xml = ElementTree.fromstring(machinexml)
         diskfiles = self._get_domain_disk_file_names(xml)
+        networkid = self._get_domain_networkid(xml)
         if domain:
             if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
@@ -199,6 +204,8 @@ class LibvirtUtil(object):
                 domain.undefine()
             except:
                 pass  # none persistant vms dont need to be undefined
+        if networkid:
+            self.cleanupNetwork(networkid)
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
@@ -236,6 +243,20 @@ class LibvirtUtil(object):
                     if disk.attrib['device'] == 'cdrom':
                         diskfiles.append(source.attrib['file'])
         return diskfiles
+
+    def _get_domain_networkid(self, dom):
+        if isinstance(dom, ElementTree.Element):
+            xml = dom
+        else:
+            xml = ElementTree.fromstring(dom.XMLDesc(0))
+        interfaces = xml.findall('devices/interface/source')
+        diskfiles = list()
+        for interface in interfaces:
+            if interface.attrib['bridge'].startswith('space_'):
+                bridgename = interface.attrib['bridge'].partition('_')[-1]
+                return int(bridgename, 16)
+        return None
+
 
     def check_disk(self, diskxml):
         return True
@@ -532,7 +553,26 @@ class LibvirtUtil(object):
     def createNetwork(self, networkname, bridge):
         networkxml = self.env.get_template('network.xml').render(
             networkname=networkname, bridge=bridge)
-        self.connection.networkCreateXML(networkxml)
+        network = self.connection.networkDefineXML(networkxml)
+        network.create()
+        network.setAutostart(True)
+
+    def cleanupNetwork(self, networkid):
+        if j.system.ovsnetconfig.cleanupIfUnused(networkid):
+            networkname = netclasses.VXBridge(networkid).name
+            try:
+                network = self.connection.networkLookupByName(networkname)
+                try:
+                    network.destroy()
+                except:
+                    pass
+                try:
+                    network.undefine()
+                except:
+                    pass
+            except:
+                # network does not exists
+                pass
 
     def createVMStorSnapshot(self, name):
         vmstor_snapshot_path = j.system.fs.joinPaths(
