@@ -15,12 +15,12 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
-- display: Rename
-  action: /restmachine/cloudbroker/cloudspace/updateName
+- display: rename
+  action: /restmachine/cloudbroker/cloudspace/updatename
   input:
   - newname
   data:
-   cloudspaceId: $$id
+   cloudspaceid: $$id
 
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
@@ -141,6 +141,29 @@ h3. Port Forwardings
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
+
+{{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
+- display: Start Machines
+  action: /restmachine/cloudbroker/machine/startMachines
+  input:
+  - reason
+
+- display: Stop Machines
+  action: /restmachine/cloudbroker/machine/stopMachines
+  input:
+  - reason
+
+- display: Reboot Machines
+  action: /restmachine/cloudbroker/machine/rebootMachines
+  input:
+  - reason
+
+- display: Destroy Machines
+  action: /restmachine/cloudbroker/machine/destroyMachines
+  input:
+  - reason
+ }}
+
 {{vmachines cloudspaceid:$$id}}
 
 {% else %}

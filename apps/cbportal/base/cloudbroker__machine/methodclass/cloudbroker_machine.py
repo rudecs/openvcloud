@@ -68,15 +68,33 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    def destroyMachines(self, machineIds, reason, **kwargs):
+        for machineId in machineIds:
+            self.destroy(machineId, reason)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def start(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.start(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
+    def startMachines(self, machineIds, reason, **kwargs):
+        for machineId in machineIds:
+            self.start(machineId, reason)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
     def stop(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.stop(machineId)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def stopMachines(self, machineIds, reason, **kwargs):
+        for machineId in machineIds:
+            self.stop(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -95,6 +113,12 @@ class cloudbroker_machine(BaseActor):
     def reboot(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.reboot(machineId)
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def rebootMachines(self, machineIds, reason, **kwargs):
+        for machineId in machineIds:
+            self.reboot(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
