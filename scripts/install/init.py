@@ -60,8 +60,6 @@ if options.gituser == None:
 else:
 	gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
 
-if 
-
 choice     = string.ascii_letters + string.digits
 vmpassword = ''.join(random.choice(choice) for _ in range(12))
 
