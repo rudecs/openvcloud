@@ -20,7 +20,7 @@ h2. Cloud Space: ${name}
   input:
   - newname
   data:
-   cloudspaceid: $$id
+   cloudspaceId: $$id
 
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
@@ -145,23 +145,31 @@ h3. Virtual Machines
 {{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
 - display: Start Machines
   action: /restmachine/cloudbroker/machine/startMachines
+  reload: false
   input:
   - reason
+  data:
+   async: True
 
 - display: Stop Machines
   action: /restmachine/cloudbroker/machine/stopMachines
+  reload: false
   input:
   - reason
 
 - display: Reboot Machines
   action: /restmachine/cloudbroker/machine/rebootMachines
+  reload: false
   input:
   - reason
 
 - display: Destroy Machines
   action: /restmachine/cloudbroker/machine/destroyMachines
+  reload: false
   input:
   - reason
+  data:
+   async: True
  }}
 
 {{vmachines cloudspaceid:$$id}}

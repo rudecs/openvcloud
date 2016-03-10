@@ -370,10 +370,6 @@ angular.module('cloudscalers.controllers')
                                     $scope.snapshots.splice(i, 1);
                                 }
                             }
-                            var remainingsnapshots = _.filter($scope.snapshots, function (snap) {
-                                return snap.epoch <= snapshot.epoch;
-                            });
-                            $scope.snapshots = remainingsnapshots;
                         }, function(reason){
                             LoadingDialog.hide();
                             $alert(reason.data);

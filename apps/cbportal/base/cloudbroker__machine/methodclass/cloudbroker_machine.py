@@ -69,7 +69,18 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def destroyMachines(self, machineIds, reason, **kwargs):
-        for machineId in machineIds:
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._destroyMachines,
+                            args=(machineIds, reason, ctx),
+                            kwargs={},
+                            title='Destroying Machines',
+                            success='Machines destroyed successfully',
+                            error='Failed to destroy machines')
+
+    def _destroyMachines(self, machineIds, reason, ctx):
+        for idx, machineId in enumerate(machineIds):
+            ctx.events.sendMessage("Destroying Machine", 'Destroying Machine %s/%s' %
+                                   (idx+1, len(machineIds)))
             self.destroy(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])
@@ -81,7 +92,18 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def startMachines(self, machineIds, reason, **kwargs):
-        for machineId in machineIds:
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._startMachines,
+                            args=(machineIds, reason, ctx),
+                            kwargs={},
+                            title='Starting machines',
+                            success='Machines started successfully',
+                            error='Failed to start machines')
+
+    def _startMachines(self, machineIds, reason, ctx):
+        for idx, machineId in enumerate(machineIds):
+            ctx.events.sendMessage("Starting", 'Starting Machine %s/%s' %
+                                   (idx+1, len(machineIds)))
             self.start(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])
@@ -93,7 +115,18 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def stopMachines(self, machineIds, reason, **kwargs):
-        for machineId in machineIds:
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._stopMachines,
+                            args=(machineIds, reason, ctx),
+                            kwargs={},
+                            title='Stopping machines',
+                            success='Machines stopped successfully',
+                            error='Failed to stop machines')
+
+    def _stopMachines(self, machineIds, reason, ctx):
+        for idx, machineId in enumerate(machineIds):
+            ctx.events.sendMessage("Stopping Machine", 'Stopping Machine %s/%s' %
+                                   (idx+1, len(machineIds)))
             self.stop(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])
@@ -117,7 +150,18 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rebootMachines(self, machineIds, reason, **kwargs):
-        for machineId in machineIds:
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._rebootMachines,
+                            args=(machineIds, reason, ctx),
+                            kwargs={},
+                            title='Rebooting machines',
+                            success='Machines rebooted successfully',
+                            error='Failed to reboot machines')
+
+    def _rebootMachines(self, machineIds, reason, ctx):
+        for idx, machineId in enumerate(machineIds):
+            ctx.events.sendMessage("Rebooting Machine", 'Rebooting Machine %s/%s' %
+                                  (idx+1, len(machineIds)))
             self.reboot(machineId, reason)
 
     @auth(['level1', 'level2', 'level3'])

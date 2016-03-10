@@ -10,4 +10,4 @@ apps/osis/logic/libvirt
 apps/osis/logic/cryptopayment
 .pydevproject
 .project
-
+.idea
