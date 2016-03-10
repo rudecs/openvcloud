@@ -7,12 +7,35 @@ from xml.etree import ElementTree
 import urlparse
 import json
 import uuid
-import os
 import crypt
 import random
+import string
 
 BASEPOOLPATH = '/mnt/vmstor/'
 IMAGEPOOL = '/mnt/vmstor/templates'
+baselength = len(string.lowercase)
+
+
+def convertnumber(number):
+    output = ''
+    if number == 0:
+        return string.lowercase[0]
+    segment = number // baselength
+    remainder = number % baselength
+    if segment > 0:
+        output += convertnumber(segment -1)
+    output += string.lowercase[remainder]
+
+    return output
+
+def convertchar(word):
+    number = 0
+    word = list(reversed(word))
+    for idx in xrange(len(word) -1, -1, -1):
+        addme = 1 if idx != 0 else 0
+        number += (addme + string.lowercase.index(word[idx])) * baselength ** idx
+    return number
+
 
 class NetworkInterface(object):
     def __init__(self, mac, target, type):
@@ -149,10 +172,10 @@ class CSLibvirtNodeDriver():
             for target in devices.iterfind('disk/target'):
                 if target.attrib['bus'] != 'virtio':
                     continue
-                dev = ord(target.attrib.get('dev', 'vda')[2:]) - ord('a')
+                dev = convertchar(target.attrib.get('dev', 'vda')[2:])
                 if dev > devid:
                     devid = dev
-            return 'vd%s' % chr(devid + 1 + ord('a'))
+            return 'vd%s' % convertnumber(devid + 1)
 
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
@@ -272,7 +295,7 @@ class CSLibvirtNodeDriver():
         if datadisks:
             datavolumes = []
             for idx, (diskname, disksize) in enumerate(datadisks):
-                volume = {'name': diskname, 'size': disksize * (1000 ** 3), 'dev': 'vd%c' % (ord('b') + idx)}
+                volume = {'name': diskname, 'size': disksize * (1000 ** 3), 'dev': 'vd%s' % convertnumber(idx + 1)}
                 datavolumes.append(volume)
             volumes += self.create_volumes(datavolumes)
         return self._create_node(name, size, metadata_iso, networkid, volumes)
@@ -459,7 +482,7 @@ class CSLibvirtNodeDriver():
         volumes = []
         for idx, path in enumerate(diskpaths):
             volume = StorageVolume(id=path, name='N/A', size=-1, driver=self)
-            volume.dev = 'vd%c' % (ord('a') + idx)
+            volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
