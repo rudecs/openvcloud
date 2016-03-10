@@ -20,7 +20,7 @@ h2. Cloud Space: ${name}
   input:
   - newname
   data:
-   cloudspaceId: $$id
+   cloudspaceid: $$id
 
 {% if status == "VIRTUAL" %}
 - display: Deploy VFW
@@ -148,8 +148,6 @@ h3. Virtual Machines
   reload: false
   input:
   - reason
-  data:
-   async: True
 
 - display: Stop Machines
   action: /restmachine/cloudbroker/machine/stopMachines
@@ -168,8 +166,6 @@ h3. Virtual Machines
   reload: false
   input:
   - reason
-  data:
-   async: True
  }}
 
 {{vmachines cloudspaceid:$$id}}
