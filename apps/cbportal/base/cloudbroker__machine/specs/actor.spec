@@ -309,3 +309,31 @@
         Change memory and vcpu from machine
         """
         var:machineId int,, ID of machine
+
+    method:startMachines
+        """
+        Starts a deployed machines
+        """
+        var:machineIds list(int),,Machine ids
+        var:reason str,,Reason
+
+    method:stopMachines
+        """
+        Stops the running machines
+        """
+        var:machineIds list(int),,Machine ids
+        var:reason str,,Reason
+
+    method:rebootMachines
+        """
+        Reboots running machines
+        """
+        var:machineIds list(int),,Machine ids
+        var:reason str,,Reason
+
+    method:destroyMachines
+        """
+        Destroys machines
+        """
+        var:machineIds list(int),,Machine ids
+        var:reason str,,Reason

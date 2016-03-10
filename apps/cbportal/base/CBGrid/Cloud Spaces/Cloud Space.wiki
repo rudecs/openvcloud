@@ -141,6 +141,33 @@ h3. Port Forwardings
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
+
+{{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
+- display: Start Machines
+  action: /restmachine/cloudbroker/machine/startMachines
+  reload: false
+  input:
+  - reason
+
+- display: Stop Machines
+  action: /restmachine/cloudbroker/machine/stopMachines
+  reload: false
+  input:
+  - reason
+
+- display: Reboot Machines
+  action: /restmachine/cloudbroker/machine/rebootMachines
+  reload: false
+  input:
+  - reason
+
+- display: Destroy Machines
+  action: /restmachine/cloudbroker/machine/destroyMachines
+  reload: false
+  input:
+  - reason
+ }}
+
 {{vmachines cloudspaceid:$$id}}
 
 {% else %}
