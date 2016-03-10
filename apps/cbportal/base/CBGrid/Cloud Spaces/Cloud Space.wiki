@@ -15,8 +15,8 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
-- display: rename
-  action: /restmachine/cloudbroker/cloudspace/updatename
+- display: Rename
+  action: /restmachine/cloudbroker/cloudspace/updateName
   input:
   - newname
   data:
