@@ -107,7 +107,15 @@ h3. Credit Transactions
 
 {{action: id:'action-ChangeCredit' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Credit'}}
 {{transactions: accountId:$$id}}
-
+{{actions: gridbinding:'table_cloudbroker_cloudspace cloudspaceIds'
+- display: Destroy Cloudspaces
+  action: /restmachine/cloudbroker/cloudspace/destroyCloudSpaces
+  data:
+   accountId: $$id
+  reload: false
+  input:
+  - reason
+  }}
 {% else %}
 No account provided
 {% endif %}

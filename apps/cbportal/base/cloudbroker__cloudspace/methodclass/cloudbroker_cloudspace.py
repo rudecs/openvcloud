@@ -17,13 +17,9 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
         self.actors = self.cb.actors.cloudapi
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
-    def destroy(self, accountId, cloudspaceId, reason, **kwargs):
-        """
-        Destroys a cloudspacec and its machines, vfws and routeros
-        """
 
+
+    def _getCloudSpace(self, accountId, cloudspaceId):
         cloudspaceId = int(cloudspaceId)
 
         accountid = int(accountId)
@@ -33,6 +29,16 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s that has accountId %s not found' % (cloudspaceId, accountId))
 
         cloudspace = cloudspaces[0]
+        return cloudspace
+
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def destroy(self, accountId, cloudspaceId, reason, **kwargs):
+        """
+        Destroys a cloudspacec and its machines, vfws and routeros
+        """
+        cloudspace = self._getCloudSpace(accountId, cloudspaceId)
 
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,
@@ -74,6 +80,25 @@ class cloudbroker_cloudspace(BaseActor):
         cloudspace['publicipaddress'] = None
         self.models.cloudspace.set(cloudspace)
         return True
+
+    @auth(['level1', 'level2', 'level3'])
+    @wrap_remote
+    def destroyCloudSpaces(self, accountId, cloudspaceIds, reason, **kwargs):
+        """
+        Destroys a cloudspacec and its machines, vfws and routeros
+        """
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._destroyCloudSpaces,
+                            args=(accountId, cloudspaceIds, reason, ctx),
+                            kwargs={},
+                            title='Destroying Cloud Spaces',
+                            success='Finished destroying Cloud Spaces',
+                            error='Failed to destroy Cloud Space')
+
+    def _destroyCloudSpaces(self, accountId, cloudspaceIds, reason, ctx):
+        for idx, cloudspaceId in enumerate(cloudspaceIds):
+            cloudspace = self._getCloudSpace(accountId, cloudspaceId)
+            self._destroy(cloudspace, reason, ctx)
 
     def _destroyVFW(self, gid, cloudspaceId):
         fws = self.netmgr.fw_list(int(gid), str(cloudspaceId))
