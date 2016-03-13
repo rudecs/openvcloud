@@ -371,11 +371,10 @@ class cloudapi_machines(BaseActor):
 
     # Authentication (permissions) are checked while retrieving the machines
     @audit()
-    def list(self, cloudspaceId, status=None, **kwargs):
+    def list(self, cloudspaceId, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible
         :param cloudspaceId: id of cloud space in which machine exists @tags: optional
-        :param status: when not empty will filter on type (types are ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT)
         :return list of dict with each element containing the machine details
 
         """
