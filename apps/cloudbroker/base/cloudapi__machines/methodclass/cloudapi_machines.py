@@ -504,7 +504,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'machine': set('C')})
     @audit()
-    def update(self, machineId, name=None, description=None, size=None, **kwargs):
+    def update(self, machineId, name=None, description=None, **kwargs):
         """
         Change basic properties of a machine
         Name, description can be changed with this action.
@@ -512,20 +512,15 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :param name: name of the machine
         :param description: description of the machine
-        :param size: size of the machine in CU
 
         """
         machine = self._getMachine(machineId)
-        #if name:
-        #    if not self._assertName(machine.cloudspaceId, name, **kwargs):
-        #        ctx = kwargs['ctx']
-        #        ctx.start_response('409 Conflict', [])
-        #        return 'Selected name already exists'
-        #    machine.name = name
+        if name:
+            if not self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
+                raise exceptions.Conflict('Selected name already exists')
+            machine.name = name
         if description:
             machine.descr = description
-        #if size:
-        #    machine.nrCU = size
         return self.models.vmachine.set(machine)[0]
 
     @authenticator.auth(acl={'machine': set('R')})
