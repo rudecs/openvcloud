@@ -1,5 +1,5 @@
 from JumpScale import j
-import JumpScale.grid.osis
+from JumpScale.portal.portal import exceptions
 import uuid
 ujson = j.db.serializers.ujson
 import netaddr
@@ -28,6 +28,7 @@ class libcloud_libvirt(object):
         self.cache = j.clients.redis.getByInstance('system')
         self.blobdb = self._getKeyValueStore()
         self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc', 'macaddress'])
+        self.cbmodel = j.clients.osis.getNamespace('cloudbroker')
 
     def _getKeyValueStore(self):
         if self.NAMESPACE not in self._client.listNamespaces():
@@ -132,13 +133,22 @@ class libcloud_libvirt(object):
         result 
         """
         key = 'networkids_%s' % gid
+        newrange = set(range(int(start), int(end) + 1))
         with self.blobdb.lock(key):
             if self.blobdb.exists(key):
                 networkids = set(ujson.loads(self.blobdb.get(key)))
+                cloudspaces = self.cbmodel.cloudspace.search({'$fields': ['networkId'],
+                                                              '$query': {'status': {'$in': ['DEPLOYED', 'VIRTUAL']},
+                                                                         'gid': gid}
+                                                              })[1:]
+                usednetworkids = {space['networkId'] for space in cloudspaces}
+                if usednetworkids.intersection(newrange):
+                    raise exceptions.Conflict("Atleast one networkId conflicts with deployed networkids")
             else:
                 #  no list yet
                 networkids = set()
-            networkids.update(range(int(start), int(end) + 1))
+
+            networkids.update(newrange)
             self.blobdb.set(key=key, obj=ujson.dumps(list(networkids)))
         return True
 

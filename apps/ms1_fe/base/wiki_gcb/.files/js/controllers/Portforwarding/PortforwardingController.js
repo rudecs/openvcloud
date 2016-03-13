@@ -275,6 +275,11 @@ angular.module('cloudscalers.controllers')
               modelCtrl.$setViewValue(transformedInput);
               modelCtrl.$render();
            }
+           if (parseInt(inputValue) > 65535) {
+              modelCtrl.$setViewValue(modelCtrl.$modelValue);
+              modelCtrl.$render();
+              return modelCtrl.$modelValue;
+           }
 
            return transformedInput;
        });

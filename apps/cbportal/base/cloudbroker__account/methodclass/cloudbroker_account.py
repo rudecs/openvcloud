@@ -82,14 +82,14 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            self.cb.actors.cloudbroker.user.create(username, emailaddress, password, 'user')
+            j.apps.cloudbroker.user.create(username, [emailaddress], password, 'user')
             created = True
 
         now = int(time.time())
 
         location = location.lower()
 
-        locationurl = j.apps.cloudapi.locations.getUrl().strip('/')
+        locationurl = self.cloudapi.locations.getUrl().strip('/')
 
         account = self.models.account.new()
         account.name = name

@@ -5,7 +5,7 @@ h3. JumpScale
    * Portal: {{repoversion: account:jumpscale7 repo:jumpscale_portal provider:github}}
 
 h3. OpenvCloud
-   * Core: {{repoversion: account:0-complexity repo:openvcloud provider:git}}
+   * Core: {{repoversion: account:0-complexity repo:openvcloud provider:github}}
 
 h3. OpenvStorage:
 {{ovsversion}}

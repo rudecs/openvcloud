@@ -119,3 +119,12 @@
         var:publicIp str,,Portforwarding public ip
         var:publicPort int,,Portforwarding public port
         var:proto str,,Portforwarding protocol
+
+    method:destroyCloudSpaces
+        """
+        Destroy a group of cloud spaces
+        """
+        var:accountId int,, ID of account
+        var:cloudspaceIds list(int),, IDs of cloudspaces
+        var:reason str,, ID of account
+

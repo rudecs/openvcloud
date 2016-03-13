@@ -14,10 +14,10 @@ async = True
 queue = 'default'
 
 
-def cleanup(name, networkname, destinationdir):
+def cleanup(name, networkid, destinationdir):
     import libvirt
+    from CloudscalerLibcloud.utils import libvirtutil
     con = libvirt.open()
-    print "CLEANUP: %s" % (networkname)
     try:
         dom = con.lookupByName(name)
         if dom.isActive():
@@ -37,10 +37,7 @@ def cleanup(name, networkname, destinationdir):
         except:
             pass
     try:
-        for net in con.listAllNetworks():
-            if net.name() == networkname:
-                deleteNet(net)
-                break
+        libvirtutil.LibvirtUtil().cleanupNetwork(networkid)
     except:
         pass
 
@@ -67,12 +64,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
-    BACKPLANE = 'vxbackend'
     netrange = hrd.get("instance.vfw.netrange.internal")
     defaultpasswd = hrd.get("instance.vfw.admin.passwd")
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
-    nc = j.system.ovsnetconfig
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -86,8 +81,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     name = 'routeros_%s' % networkidHex
     destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
-
-    j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
+    j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
+                                       networkid=networkid, destinationdir=destinationdir)
     print 'Testing network'
     if not j.system.net.tcpPortConnectionTest(internalip, 22, 1):
         print "OK no other router found."
@@ -96,16 +91,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
     try:
         # setup network vxlan
-        nc.ensureVXNet(int(networkid), BACKPLANE)
-        xml = '''  <network>
-        <name>%(networkname)s</name>
-        <forward mode="bridge"/>
-        <bridge name='%(networkname)s'/>
-         <virtualport type='openvswitch'/>
-     </network>''' % {'networkname': networkname}
-
         print 'Creating network'
-        j.clients.redisworker.execFunction(createNetwork, _queue='hypervisor', xml=xml)
+        createnetwork = j.clients.redisworker.getJumpscriptFromName('cloudscalers', 'createnetwork')
+        j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
 
         j.system.fs.createDir(destinationdir)
         destinationfile = 'routeros-small-%s.raw' % networkidHex
@@ -125,12 +113,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         try:
             j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource)
         except Exception, e:
-            j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
             raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         data['internalip'] = internalip
-
-
 
         try:
             run = pexpect.spawn("virsh console %s" % name)
@@ -150,7 +135,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             run.send("\r\n")
             run.close()
         except Exception, e:
-            j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         print "wait max 30 sec on tcp port 22 connection to '%s'"%internalip
@@ -255,7 +239,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             raise RuntimeError("Internal ssh is not accsessible.")
 
     except:
-        j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name, networkname=networkname, destinationdir=destinationdir)
+        j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
+                                           networkid=networkid, destinationdir=destinationdir)
         raise
 
     return data

@@ -33,8 +33,6 @@ Stage 1: options parsing: global settings
 """
 # global settings
 optlist = {
-	'git-user': options.gituser,
-	'git-pass': options.gitpass,
 	'environment': options.environment,
 }
 
@@ -42,6 +40,9 @@ for item in optlist:
 	if optlist[item] == None:
 		print '[-] missing global argument: %s' % item
 		j.application.stop()
+
+if options.gituser == None:
+	print("[+] no git user given, github will be used")
 
 if options.backend not in targets:
 	print '[-] unknown or missing backend'
@@ -53,7 +54,11 @@ domain = options.domain if options.domain else 'demo.greenitglobe.com'
 Stage 2: settings hardcoded values
 """
 # Settings
-gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
+if options.gituser == None:
+	gitlink = 'git@github.com:0-complexity/%s' % options.environment
+	
+else:
+	gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
 
 choice     = string.ascii_letters + string.digits
 vmpassword = ''.join(random.choice(choice) for _ in range(12))

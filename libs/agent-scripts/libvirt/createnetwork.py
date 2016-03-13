@@ -15,17 +15,16 @@ async = True
 
 
 def action(networkid):
-    networkname = 'space_%s' % networkid
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     networks = connection.connection.listNetworks()
-    networkinformation = {'networkname':networkname}
     from JumpScale.lib import ovsnetconfig
     vxnet = j.system.ovsnetconfig.ensureVXNet(networkid, 'vxbackend')
-    if networkname not in networks:
+    bridgename = vxnet.bridge.name
+    networkinformation = {'networkname': bridgename}
+    if bridgename not in networks:
         #create the bridge if it does not exist
-        bridgename = vxnet.bridge.name
-        connection.createNetwork(networkname,bridgename)
+        connection.createNetwork(bridgename, bridgename)
     return networkinformation
 
 

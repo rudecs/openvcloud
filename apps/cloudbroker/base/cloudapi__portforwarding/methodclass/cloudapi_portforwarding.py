@@ -42,6 +42,13 @@ class cloudapi_portforwarding(BaseActor):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
+        if publicPort > 65535 or publicPort < 1:
+            raise exceptions.BadRequest("Public port should be between 1 and 65535")
+        if localPort > 65535 or localPort < 1:
+            raise exceptions.BadRequest("Local port should be between 1 and 65535")
+        if protocol and protocol not in ('tcp', 'udp'):
+            raise exceptions.BadRequest("Protocol should be either tcp or udp")
+
         if len(fw) == 0:
             raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
