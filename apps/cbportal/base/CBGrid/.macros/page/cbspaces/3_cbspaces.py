@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
                    '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
                    makeNetworkLink, 'location', 'status',
                    'publicipaddress']
-    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters)
+    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 0, 'desc')
 
