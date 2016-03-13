@@ -85,9 +85,14 @@ class LibvirtUtil(object):
         domain = self._get_domain(id)
         if not domain and xml:
             domain = self.connection.defineXML(xml)
-        if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
+        state = domain.state(0)[0]
+        if state == libvirt.VIR_DOMAIN_RUNNING:
             return domain.XMLDesc()
-        domain.create() == 0
+        elif state == libvirt.VIR_DOMAIN_PAUSED:
+            domain.resume()
+        else:
+            if not domain.create() == 0:
+                raise Exception("Failed to start machine")
         return domain.XMLDesc()
 
     def shutdown(self, id):
