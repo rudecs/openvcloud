@@ -23,7 +23,6 @@
         List the deployed machines in a space. Filtering based on status is possible
         """
         var:cloudspaceId int,,id of cloud space in which machine exists @tags: optional
-        var:type str,,when not empty will filter on type (types are ACTIVE,HALTED,BACKUP,EXPORT,SNAPSHOT) @tags: optional
         result:list
 
     method:get
@@ -49,7 +48,6 @@
         var:machineId int,, id of the machine
         var:name str,, name of the machine @tags: optional
         var:description str,, description of the machine @tags: optional
-        var:size int,,size of the machine in CU @tags: optional
 
     method:start
         """
