@@ -15,10 +15,12 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
-- display: Rename
+- display: Rename Cloud Space
   action: /restmachine/cloudbroker/cloudspace/updateName
   input:
-  - newname
+  - name: newname
+    label: New name
+    type: text
   data:
    cloudspaceId: $$id
 
@@ -34,7 +36,7 @@ h2. Cloud Space: ${name}
 
 {% endif %}
 
-- display: Delete CloudSpace
+- display: Delete Cloud Space
   action: /restmachine/cloudbroker/cloudspace/destroy
   reload: false
   data:

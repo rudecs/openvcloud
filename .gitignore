@@ -11,3 +11,4 @@ apps/osis/logic/cryptopayment
 .pydevproject
 .project
 .idea
+node_modules/
