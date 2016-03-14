@@ -285,6 +285,7 @@ class cloudapi_cloudspaces(BaseActor):
                                   'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
+            cs.publicipaddress = None
             cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
             raise
