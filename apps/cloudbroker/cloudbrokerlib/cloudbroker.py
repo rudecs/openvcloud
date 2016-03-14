@@ -102,7 +102,7 @@ class CloudBroker(object):
         stacks = models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
         if stacks:
             return self.getProviderByStackId(stacks[0]['id'])
-        raise ValueError('No provider available on grid %s' % gid)
+        raise exceptions.ServiceUnavailable('Not enough resources available on current location')
 
     def markProvider(self, stackId):
         stack = models.stack.get(stackId)
