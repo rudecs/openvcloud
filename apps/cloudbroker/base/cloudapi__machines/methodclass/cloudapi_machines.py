@@ -340,6 +340,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         locked = False
         disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
@@ -464,6 +466,8 @@ class cloudapi_machines(BaseActor):
         :return: list with the available snapshots
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
@@ -533,6 +537,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         if machine.status != enums.MachineStatus.RUNNING:
             return None
         return provider.client.ex_get_console_url(node)
@@ -600,6 +606,9 @@ class cloudapi_machines(BaseActor):
         :param size: number of entries to return
         :return: list of the history of the machine
         """
+        provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         tags = str(machineId)
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
