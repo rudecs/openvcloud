@@ -13,7 +13,7 @@ timeout = 60 * 5
 enable = True
 async = True
 queue = 'io'
-log = False
+log = True
 
 LOG_TYPES = {0: 'ERROR',  #FAILURE
              1: 'OK',  #SUCCESS
