@@ -7,13 +7,13 @@ organization = 'cloudscalers'
 author = "foudaa@codescalers.com"
 version = "1.0"
 category = "monitor.healthcheck"
-roles = ['cpunode']
+roles = ['storagenode']
 period = 60 * 30 # 30min
 timeout = 60 * 5
 enable = True
 async = True
 queue = 'io'
-log = True
+log = False
 
 LOG_TYPES = {0: 'ERROR',  #FAILURE
              1: 'OK',  #SUCCESS
@@ -30,6 +30,7 @@ def logger(self, message, module, log_type, unattended_mode_name, unattended_pri
 def action():
     import sys
     sys.path.insert(0, '/opt/OpenvStorage-healthcheck')
+    sys.path.insert(0, '/opt/OpenvStorage')
     from utils.extension import Utils
     from openvstorage.openvstoragecluster_health_check import OpenvStorageHealthCheck
     from arakoon.arakooncluster_health_check import ArakoonHealthCheck
