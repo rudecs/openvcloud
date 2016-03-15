@@ -17,15 +17,16 @@ log = True
 
 LOG_TYPES = {0: 'ERROR',  #FAILURE
              1: 'OK',  #SUCCESS
-             2: 'WARNINNG',
-             3: 'OK',  #info
+             2: 'WARNING',
+             # 3: 'OK',  #info
              4: 'ERROR',  #EXCEPTION
              5: 'SKIPPED',
              6: 'DEBUG'}
 
 
 def logger(self, message, module, log_type, unattended_mode_name, unattended_print_mode=True):
-    self.results.append({'message': message, 'category': module, 'state': LOG_TYPES[log_type]})
+    if not log_type == 3:
+        self.results.append({'message': message, 'category': module, 'state': LOG_TYPES[log_type]})
 
 def action():
     import sys
