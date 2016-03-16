@@ -145,6 +145,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot create more than 25 disk on a machine")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
