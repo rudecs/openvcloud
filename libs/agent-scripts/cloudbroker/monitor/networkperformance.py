@@ -55,7 +55,11 @@ class OpenvStorage():
             from ovs.lib.storagerouter import StorageRouterList
             storageips = [router for router in StorageRouterList.get_storagerouters() if\
                                 router.ip != self.localIp]
-            self._storagerouters = random.sample(storageips, int(math.log(len(storageips)) + 1))
+            if storageips:
+                self._storagerouters = random.sample(storageips, int(math.log(len(storageips)) + 1))
+            else:
+                self._storagerouters = []
+
         return self._storagerouters
     
     def runIperfServer(self):
