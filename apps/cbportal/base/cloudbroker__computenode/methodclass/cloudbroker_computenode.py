@@ -83,8 +83,12 @@ class cloudbroker_computenode(BaseActor):
         self._changeStackStatus(stack, "MAINTENANCE")
         title = 'Putting Node in Maintenance'
         if vmaction == 'stop':
-            job = self.acl.scheduleCmd(gid, int(stack['referenceId']), 'cloudscalers', 'stopallmachines', args={}, log=True, timeout=600, wait=True)
-            kwargs['ctx'].events.waitForJob(job, 'Stopped all Virtual Machines on Node', 'Failed to stop Virtual Machines', title)
+            machines_actor = j.apps.cloudbroker.machine
+            stackmachines = self.models.vmachine.search({'$fields': ['id'], '$query':{'stackId': stack['id'],
+                                                        'status': {'$nin': ['DESTROYED', 'ERROR']}
+                                                    }})[1:]
+            machineIds = [machine['id'] for machine in stackmachines]
+            machines_actor.stopMachines(machineIds, "", ctx=kwargs['ctx'])
         elif vmaction == 'move':
             kwargs['ctx'].events.runAsync(self._move_virtual_machines,
                                           args=(stack, title, kwargs['ctx']),
