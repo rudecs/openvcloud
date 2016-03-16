@@ -193,6 +193,8 @@ class cloudapi_machines(BaseActor):
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot attach more than 25 disk to a machine")
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
