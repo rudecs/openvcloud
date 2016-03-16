@@ -145,6 +145,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot create more than 25 disk on a machine")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                     name=diskName, description=description, size=size, type=type, **kwargs)
@@ -191,6 +193,8 @@ class cloudapi_machines(BaseActor):
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot attach more than 25 disk to a machine")
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
