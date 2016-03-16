@@ -18,7 +18,7 @@ log = True
 LOG_TYPES = {0: 'ERROR',  #FAILURE
              1: 'OK',  #SUCCESS
              2: 'WARNING',
-             # 3: 'OK',  #info
+             3: 'OK',  #info
              4: 'ERROR',  #EXCEPTION
              5: 'SKIPPED',
              6: 'DEBUG'}
