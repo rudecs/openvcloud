@@ -114,20 +114,17 @@ angular.module('cloudscalers.controllers')
         }
 
         $scope.$watch('machine.acl', function (acl) {
-            if(acl === undefined ) {
-                return;
-            }
-            $scope.currentUser.acl.machine = 0;
-            if($scope.currentUser.username && $scope.machine.acl){
-                var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
-                if(currentUserAccessright == "R"){
-                    $scope.currentUser.acl.machine = 1;
-                }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
-                    $scope.currentUser.acl.machine = 2;
-                }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
-                    $scope.currentUser.acl.machine = 3;
-                }
-            }
+              if($scope.currentUser.username && acl && $scope.currentAccount.status !== 'DISABLED'){
+                  $scope.currentUser.acl.machine = 0;
+                  var currentUserAccessright =  _.find($scope.machine.acl , function(acl) { return acl.userGroupId == $scope.currentUser.username; }).right.toUpperCase();
+                  if(currentUserAccessright == "R"){
+                      $scope.currentUser.acl.machine = 1;
+                  }else if( currentUserAccessright.search(/R|C|X/) != -1 && currentUserAccessright.search(/D|U/) == -1 ){
+                      $scope.currentUser.acl.machine = 2;
+                  }else if( currentUserAccessright.search(/R|C|X|D|U/) != -1 ){
+                      $scope.currentUser.acl.machine = 3;
+                  }
+              }
         }, true);
 
         $scope.tabactive = {actions: true, console: false, snapshots: false, changelog: false};
