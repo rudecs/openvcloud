@@ -1,6 +1,5 @@
 angular.module('cloudscalers.controllers')
     .controller('AuthenticatedSessionController', ['$scope', 'User', 'Account', 'CloudSpace', 'LoadingDialog', '$route', '$window','$timeout', '$location', 'ipCookie', '$ErrorResponseAlert', '$modal', 'SessionData', function($scope, User, Account, CloudSpace, LoadingDialog, $route, $window, $timeout, $location, ipCookie, $ErrorResponseAlert, $modal, SessionData) {
-
         $scope.noAccount = false;
         var portal_session_cookie = ipCookie("beaker.session.id");
         if(portal_session_cookie){
@@ -30,7 +29,9 @@ angular.module('cloudscalers.controllers')
             $scope.currentUser = User.current();
             $scope.currentUser.acl = {account: 0, cloudspace: 0, machine: 0};
             $scope.currentSpace = CloudSpace.current();
+            
             setInitialAccount();
+
         };
 
 
@@ -42,13 +43,21 @@ angular.module('cloudscalers.controllers')
           $scope.currentSpace = space;
           $scope.setCurrentAccount($scope.currentSpace.accountId);
         };
-
+        $scope.checkDisabledAccount = function(status){
+          $scope.visibility = 'show';
+          if(status === "DISABLED"){
+            _.each($scope.currentUser.acl ,function(value, key){
+              $scope.currentUser.acl[key] = 1;
+            });
+          }
+        };
         $scope.setCurrentAccount = function(currentAccountId){
             $scope.currentAccount.userRightsOnAccount = {};
             if($scope.currentAccount.id){
                 Account.get(currentAccountId).then(function(account) {
                     $scope.currentAccount = account;
                     $scope.currentAccount.userRightsOnAccount = account.acl;
+                    $scope.checkDisabledAccount(account.status);
                 }, function(reason){
                   if(reason.status === 403){
                     $scope.currentUser.acl.account = 0;
@@ -114,7 +123,7 @@ angular.module('cloudscalers.controllers')
         };
 
 	      $scope.$watch('currentAccount.id + currentAccount.userRightsOnAccount',  function(){
-          if($scope.currentAccount){
+          if($scope.currentAccount && $scope.currentAccount.status !== 'DISABLED'){
             $scope.getUserAccessOnAccount();
           }
         });
