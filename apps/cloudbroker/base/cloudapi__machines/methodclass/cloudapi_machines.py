@@ -197,7 +197,7 @@ class cloudapi_machines(BaseActor):
         if vmachines:
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
         disk = self.models.disk.get(int(diskId))
-        volume = j.aons.cloudapi.disks.getStorageVolume(disk, provider, node)
+        volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
         self.models.vmachine.set(machine)

@@ -61,6 +61,7 @@ class cloudbroker_computenode(BaseActor):
 
     @auth(['level2', 'level3'], True)
     def enable(self, id, gid, message, **kwargs):
+        title = "Enabling Stack"
         stack = self._getStack(id, gid)
         status = self._changeStackStatus(stack, 'ENABLED')
         startmachines = []
@@ -72,6 +73,13 @@ class cloudbroker_computenode(BaseActor):
                 startmachines.append(machine['id'])
         if startmachines:
             j.apps.cloudbroker.machine.startMachines(startmachines, "", ctx=kwargs['ctx'])
+
+        kwargs['ctx'].events.runAsync(self._start_vfws,
+                                      args=(stack, title, kwargs['ctx']),
+                                      kwargs={},
+                                      title='Starting virtual Firewalls',
+                                      success='Successfully started all Virtual Firewalls',
+                                      error='Failed to Start Virtual Firewalls')
         return status
 
     def _get_stack_machines(self, stackId, fields=None):
@@ -104,6 +112,14 @@ class cloudbroker_computenode(BaseActor):
                 if machine['status'] == 'RUNNING':
                     if 'start' not in machine['tags'].split(" "):
                         machines_actor.tag(machine['id'], 'start')
+
+            kwargs['ctx'].events.runAsync(self._stop_vfws,
+                                          args=(stack, title, kwargs['ctx']),
+                                          kwargs={},
+                                          title='Stopping virtual Firewalls',
+                                          success='Successfully Stopped all Virtual Firewalls',
+                                          error='Failed to Stop Virtual Firewalls')
+
             machineIds = [machine['id'] for machine in stackmachines]
             machines_actor.stopMachines(machineIds, "", ctx=kwargs['ctx'])
         elif vmaction == 'move':
@@ -114,6 +130,20 @@ class cloudbroker_computenode(BaseActor):
                                           success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines')
         return True
+
+    def _stop_vfws(self, stack, title, ctx):
+        vfws = self._vcl.search({'gid': stack['gid'],
+                                 'nid': int(stack['referenceId'])})[1:]
+        for vfw in vfws:
+            ctx.events.sendMessage(title, 'Stopping Virtual Firewal %s' % vfw['id'])
+            j.apps.jumpscale.netmgr.fw_stop(vfw['guid'])
+
+    def _start_vfws(self, stack, title, ctx):
+        vfws = self._vcl.search({'gid': stack['gid'],
+                                 'nid': int(stack['referenceId'])})[1:]
+        for vfw in vfws:
+            ctx.events.sendMessage(title, 'Starting Virtual Firewal %s' % vfw['id'])
+            j.apps.jumpscale.netmgr.fw_start(vfw['guid'])
 
     def _move_virtual_machines(self, stack, title, ctx):
         machines_actor = j.apps.cloudbroker.machine
