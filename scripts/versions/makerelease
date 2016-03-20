@@ -20,11 +20,11 @@ parser.add_option("-d", "--delete-release", dest="delete", action='store_true', 
 parser.add_option("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
 (options, args) = parser.parse_args()
 
-REPOS = {'openvcloud': ['/opt/code/git/0-complexity/openvcloud'],
+REPOS = {'openvcloud': ['/opt/code/github/0-complexity/openvcloud'],
          'jumpscale': ['/opt/code/github/jumpscale7/jumpscale_core7',
                        '/opt/code/github/jumpscale7/jumpscale_portal']
          }
-AYS = {'openvcloud': '/opt/code/git/0-complexity/openvcloud_ays',
+AYS = {'openvcloud': '/opt/code/github/0-complexity/openvcloud_ays',
        'jumpscale': '/opt/code/github/jumpscale7/ays_jumpscale7'}
 
 def getRepoInfo(url):
