@@ -5,7 +5,10 @@ def main(j, args, params, tags, tasklet):
     filters = dict()
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
+        if val and val.isdigit():
+            val = int(val)
         filters[tag] = val
+
 
     fieldnames = ['GID', 'ID', 'Cloud Space ID', 'Public IPs', 'Management IP' ]
 
