@@ -196,7 +196,10 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxDiskCapacity: max size of aggregated disks (in GB)
         :return int with id of created cloudspace
         """
-        accountId = int(accountId)
+        accountId = accountId
+        account = self.models.account.get(accountId)
+        if account.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Account does not exist')
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
             raise exceptions.BadRequest('Location %s does not exists' % location)
