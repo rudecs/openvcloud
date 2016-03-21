@@ -95,7 +95,6 @@ class cloudapi_portforwarding(BaseActor):
         return True
 
     def _selfcheckduplicate(self, fw_id, publicIp, publicPort, protocol, gid):
-        import ipdb; ipdb.set_trace()
         forwards = self.netmgr.fw_forward_list(fw_id, gid)
         for fw in forwards:
             if fw['publicIp'] == publicIp \
