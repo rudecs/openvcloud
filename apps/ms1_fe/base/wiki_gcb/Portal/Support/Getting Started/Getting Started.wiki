@@ -41,7 +41,7 @@ The Cloud Space is protected by the Defense Shield, your personal firewall that 
 h2. Cloud Space
 
 	*# Optionally Go to Cloud Space Settings to provide access to other registered users in the OpenvCloud cloud.
-	*# Optionally create an additional Cloud Space, allowing you to divide your resources into 2 private networks, managed fron the same portal!
+	*# Optionally create an additional Cloud Space, allowing you to divide your resources into 2 private networks, managed from the same portal!
 
 {{div2}}
 
