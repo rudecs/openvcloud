@@ -25,7 +25,7 @@ def action():
     vfws = vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid, 'nid': j.application.whoAmI.nid})[1:]
     networkids = {vfw['id'] for vfw in vfws}
     if not stacks:
-        return # not registered as a stack
+        return result  # not registered as a stack
     vms = cbcl.vmachine.search({'stackId': stacks[0]['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
     vmsbyguid = { vm['referenceId']: vm for vm in vms }
     con = libvirt.open()
