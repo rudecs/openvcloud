@@ -445,23 +445,31 @@ class CSLibvirtNodeDriver():
 
 
     def ex_soft_reboot_node(self, node):
-        machineid = node.id
-        return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid = machineid)
+        if self._ensure_network(node) == -1:
+            return -1
+        xml = self._get_persistent_xml(node)
+        return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
 
     def ex_hard_reboot_node(self, node):
-        machineid = node.id
-        return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid = machineid)
+        if self._ensure_network(node) == -1:
+            return -1
+        xml = self._get_persistent_xml(node)
+        return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
-    def ex_start_node(self, node):
+    def _ensure_network(self, node):
         backendnode = self.backendconnection.getNode(node.id)
         networkid = backendnode['networkid']
-        xml = self._get_persistent_xml(node)
-        machineid = node.id
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
-        xml = self._execute_agent_job('startmachine', queue='hypervisor', machineid=machineid, xml=xml)
+        return True
+
+    def ex_start_node(self, node):
+        xml = self._get_persistent_xml(node)
+        if self._ensure_network(node) == -1:
+            return -1
+        xml = self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=xml)
         self._set_persistent_xml(node, xml)
         return True
 

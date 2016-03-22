@@ -141,7 +141,7 @@ class LibvirtUtil(object):
         if run['timeout']:
             raise TimeoutError("Failed to wait for state")
 
-    def reboot(self, id):
+    def reboot(self, id, xml):
         if isLocked(id):
             raise Exception("Can't reboot a locked machine")
         domain = self._get_domain(id)
@@ -151,7 +151,7 @@ class LibvirtUtil(object):
             else:
                 domain.reboot()
         else:
-            raise Exception("Machine is currently not running")
+            self.create(id, xml)
 
     def suspend(self, id):
         if isLocked(id):
@@ -600,7 +600,7 @@ class LibvirtUtil(object):
             self.basepath, 'snapshots')
         return j.system.btrfs.subvolumeList(vmstor_snapshot_path)
 
-    def reset(self, id):
+    def reset(self, id, xml):
         if isLocked(id):
             raise Exception("Can't reboot a locked machine")
         domain = self._get_domain(id)
@@ -610,4 +610,4 @@ class LibvirtUtil(object):
             else:
                 domain.reset()
         else:
-            raise Exception("Machine is currently not running")
+            self.create(id, xml)
