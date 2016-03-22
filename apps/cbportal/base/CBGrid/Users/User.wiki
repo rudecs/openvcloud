@@ -36,5 +36,5 @@ h3. Cloud Spaces
 {{cbspacesusers: userId:$$id}}
 
 {% else %}
-No user provided
+No user found with id $$id
 {% endif %}
