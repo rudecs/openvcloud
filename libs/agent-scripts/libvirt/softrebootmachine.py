@@ -15,7 +15,7 @@ async = True
 queue = "hypervisor"
 
 
-def action(machineid):
+def action(machineid, xml):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
-    return connection.reboot(machineid)
+    return connection.reboot(machineid, xml)
