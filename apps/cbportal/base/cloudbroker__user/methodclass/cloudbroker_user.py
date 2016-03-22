@@ -3,7 +3,7 @@ from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal import exceptions
 from JumpScale.baselib.http_client.HttpClient import HTTPError
-import md5
+import hashlib
 
 
 class cloudbroker_user(BaseActor):
@@ -21,24 +21,18 @@ class cloudbroker_user(BaseActor):
         This key can be used in a webbrowser to browse the cloud portal from the perspective of that specific user or to use the api in his/her authorization context
         param:username name of the user an authorization key is required for
         """
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        check, result = self._checkUser(username)
-        if not check:
-            ctx.start_response('404', headers)
-            return result
-        return self.users_actor.authenticate(username, result['passwd'])
+        user = self.cb.checkUser(username)
+        if not user:
+            raise exceptions.NotFound("User with name %s does not exists" % username)
+        return self.users_actor.authenticate(username, user['passwd'])
 
     @auth(['level1', 'level2', 'level3'])
     def updatePassword(self, username, password, **kwargs):
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        check, result = self._checkUser(username)
-        if not check:
-            ctx.start_response('404', headers)
-            return result
-        result['passwd'] = md5.new(password).hexdigest()
-        self.syscl.user.set(result)
+        user = self.cb.checkUser(username)
+        if not user:
+            raise exceptions.NotFound("User with name %s does not exists" % username)
+        user['passwd'] = hashlib.md5(password).hexdigest()
+        self.syscl.user.set(user)
         return True
     
     @auth(['level1', 'level2', 'level3'])
@@ -55,13 +49,10 @@ class cloudbroker_user(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def sendResetPasswordLink(self, username, **kwargs):
-        ctx = kwargs['ctx']
-        headers = [('Content-Type', 'application/json'), ]
-        check, result = self._checkUser(username)
-        if not check:
-            ctx.start_response('404', headers)
-            return result
-        email = result['emails']
+        user = self.cb.checkUser(username)
+        if not user:
+            raise exceptions.NotFound("User with name %s does not exists" % username)
+        email = user['emails']
         return self.users_actor.sendResetPasswordLink(email)
 
     @auth(['level1', 'level2', 'level3'])
@@ -72,11 +63,11 @@ class cloudbroker_user(BaseActor):
         :param username: username of the user to delete
         :return: True if deletion was successful
         """
-        users = self.syscl.user.search({'id': username})[1:]
-        if not users:
-            raise exceptions.NotFound('User does not exist.')
+        user = self.cb.checkUser(username)
+        if not user:
+            raise exceptions.NotFound("User with name %s does not exists" % username)
         else:
-            userobj = self.syscl.user.get(users[0]['id'])
+            userobj = self.syscl.user.get(user['id'])
 
         query = {'acl.userGroupId': username, 'acl.type': 'U'}
         # Delete user from all accounts, if account status is Destoryed then delete without

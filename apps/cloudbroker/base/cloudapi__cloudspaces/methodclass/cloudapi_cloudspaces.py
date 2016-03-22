@@ -207,7 +207,10 @@ class cloudapi_cloudspaces(BaseActor):
         :return: True if update was successful
         :return int with id of created cloudspace
         """
-        accountId = int(accountId)
+        accountId = accountId
+        account = self.models.account.get(accountId)
+        if account.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Account does not exist')
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
             raise exceptions.BadRequest('Location %s does not exists' % location)
@@ -316,6 +319,7 @@ class cloudapi_cloudspaces(BaseActor):
                                   'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
+            cs.publicipaddress = None
             cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
             raise
@@ -433,13 +437,10 @@ class cloudapi_cloudspaces(BaseActor):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        query = {'status': 'DISABLED'}
-        disabledaccounts = self.models.account.search(query)[1:]
-        disabled = [account['id'] for account in disabledaccounts]
         cloudspaceaccess = set()
 
         # get cloudspaces access via account
-        q = {'acl.userGroupId': user, 'status': {'$ne': 'DISABLED'}}
+        q = {'acl.userGroupId': user}
         query = {'$query': q, '$fields': ['id']}
         accountaccess = set(ac['id'] for ac in self.models.account.search(query)[1:])
         q = {'accountId': {'$in': list(accountaccess)}}
@@ -453,8 +454,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         fields = ['id', 'name', 'descr', 'status', 'accountId', 'acl', 'publicipaddress',
                   'location']
-        q = {"accountId": {"$nin": disabled},
-             "$or": [{"acl.userGroupId": user},
+        q = {"$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)}}],
              "status": {"$ne": "DESTROYED"}}
         query = {'$query': q, '$fields': fields}

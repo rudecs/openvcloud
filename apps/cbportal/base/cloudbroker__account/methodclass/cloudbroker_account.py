@@ -82,7 +82,7 @@ class cloudbroker_account(BaseActor):
                 raise exceptions.BadRequest('Email address is required for new users.')
 
             password = j.base.idgenerator.generateGUID()
-            j.apps.cloudbroker.user.create(username, [emailaddress], password, 'user')
+            j.apps.cloudbroker.user.create(username, [emailaddress], password, ['user'])
             created = True
 
         now = int(time.time())

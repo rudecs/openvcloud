@@ -73,6 +73,10 @@ h3. Images:
 
 {{images: stackid:$$id}}
 
+h3. Virtual Firewalls:
+
+{{networks: nid:${referenceId}}}
+
 h3. Virtual Machines:
 
 {{vmachines: stackid:$$id}}

@@ -64,7 +64,7 @@ class cloudapi_portforwarding(BaseActor):
         if localIp is None:
             raise exceptions.NotFound('No correct ipaddress found for this machine')
 
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
             raise exceptions.Conflict("Forward to %s with port %s already exists" % (publicIp, publicPort))
         try:
             result = self.netmgr.fw_forward_create(fw_id, grid_id, publicIp, publicPort, localIp, localPort, protocol)
@@ -94,11 +94,11 @@ class cloudapi_portforwarding(BaseActor):
                 self._deleteByPort(cloudspaceId, fw['publicIp'], fw['publicPort'], fw['protocol'])
         return True
 
-    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, localIp, localPort, protocol, gid):
+    def _selfcheckduplicate(self, fw_id, publicIp, publicPort, protocol, gid):
         forwards = self.netmgr.fw_forward_list(fw_id, gid)
         for fw in forwards:
             if fw['publicIp'] == publicIp \
-               and fw['publicPort'] == publicPort \
+               and int(fw['publicPort']) == publicPort \
                and fw['protocol'] == protocol:
                 return True
         return False
@@ -201,7 +201,7 @@ class cloudapi_portforwarding(BaseActor):
                 localIp = machine.nics[0].ipAddress
             else:
                 raise exceptions.NotFound('No correct ipaddress found for machine with id %s' % machineId)
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, localIp, localPort, protocol, cloudspace.gid):
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
             raise exceptions.Forbidden("Forward for %s with port %s already exists" % (publicIp, publicPort))
         self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])

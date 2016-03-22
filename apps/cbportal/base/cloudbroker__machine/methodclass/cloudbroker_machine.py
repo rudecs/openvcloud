@@ -90,6 +90,8 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def start(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
+        if "start" in vmachine.tags.split(" "):
+            j.apps.cloudbroker.machine.untag(vmachine.id, "start")
         self.actors.machines.start(machineId)
 
     @auth(['level1', 'level2', 'level3'])

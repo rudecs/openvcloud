@@ -18,6 +18,8 @@ class auth(object):
     def getAccountAcl(self, accountId):
         result = dict()
         account = self.models.account.get(accountId)
+        if account.status in ['DESTROYED', 'DESTROYING']:
+            return result
         for ace in account.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
@@ -27,6 +29,8 @@ class auth(object):
     def getCloudspaceAcl(self, cloudspaceId):
         result = dict()
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status in ['DESTROYED', 'DESTROYING']:
+            return result
         for ace in cloudspace.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)

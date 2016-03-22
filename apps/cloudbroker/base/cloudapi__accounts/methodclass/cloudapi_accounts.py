@@ -254,7 +254,7 @@ class cloudapi_accounts(BaseActor):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         fields = ['id', 'name', 'acl']
-        q = {'acl.userGroupId': user, 'status': 'CONFIRMED'}
+        q = {'acl.userGroupId': user, 'status': {'$in': ['DISABLED', 'CONFIRMED']}}
         query = {'$query': q, '$fields': fields}
         accounts = self.models.account.search(query)[1:]
         return accounts

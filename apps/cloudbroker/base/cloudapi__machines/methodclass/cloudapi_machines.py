@@ -76,6 +76,8 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         """
         machine = self._getMachine(machineId)
+        if "start" in machine.tags.split(" "):
+            j.apps.cloudbroker.machine.untag(machine.id, "start")
         if machine.status not in ['RUNNING', 'PAUSED']:
             self.cb.chooseProvider(machine)
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
@@ -145,6 +147,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot create more than 25 disk on a machine")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         # Validate that enough resources are available in the CU limits to add the disk
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
@@ -193,6 +197,8 @@ class cloudapi_machines(BaseActor):
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
+        if len(machine.disks) >= 25:
+            raise exceptions.BadRequest("Cannot attach more than 25 disk to a machine")
         disk = self.models.disk.get(int(diskId))
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
@@ -352,6 +358,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         locked = False
         disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
@@ -476,6 +484,8 @@ class cloudapi_machines(BaseActor):
         :return: list with the available snapshots
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         node.name = 'vm-%s' % machineId
         snapshots = provider.client.ex_list_snapshots(node)
         result = []
@@ -544,6 +554,8 @@ class cloudapi_machines(BaseActor):
 
         """
         provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         if machine.status != enums.MachineStatus.RUNNING:
             return None
         return provider.client.ex_get_console_url(node)
@@ -617,6 +629,9 @@ class cloudapi_machines(BaseActor):
         :param size: number of entries to return
         :return: list of the history of the machine
         """
+        provider, node, machine = self._getProviderAndNode(machineId)
+        if machine.status in ['DESTROYED', 'DESTROYING']:
+            raise exceptions.NotFound('Machine %s not found' % machineId)
         tags = str(machineId)
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
