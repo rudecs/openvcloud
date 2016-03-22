@@ -5,13 +5,12 @@ def main(j, args, params, tags, tasklet):
         params.result = (args.doc, args.doc)
         return params
 
-    user = j.apps.system.usermanager.modelUser.get(guid)
-    if not user:
-        out = 'Could not find Username: %s' % guid
-        params.result = (out, args.doc)
+    if not j.apps.system.usermanager.modelUser.exists(guid):
+        args.doc.applyTemplate({})
+        params.result = (args.doc, args.doc)
         return params
 
-    obj = user.dump()
+    obj = j.apps.system.usermanager.modelUser.get(guid).dump()
 
     args.doc.applyTemplate(obj)
     params.result = (args.doc, args.doc)
