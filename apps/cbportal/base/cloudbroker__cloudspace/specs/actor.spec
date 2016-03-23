@@ -61,6 +61,7 @@
         Create a cloudspace for given account
         """
         var:accountId int,, name of account to create space for
+        var:location str,, location key where the space should be created
         var:name str,, name of space to create
         var:access str,, username which have full access to this space
         var:maxMemoryCapacity int,, max size of memory in space (in MB)
