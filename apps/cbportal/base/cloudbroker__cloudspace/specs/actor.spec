@@ -62,6 +62,7 @@
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
         """
         var:accountId int,, name of account to create space for
+        var:location str,, location key where the space should be created
         var:name str,, name of space to create
         var:access str,, username which have full access to this space
         var:maxMemoryCapacity float,-1, max size of memory in GB
