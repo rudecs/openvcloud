@@ -27,7 +27,7 @@ def action():
     loc = ccl.location.search({})[1]['locationCode']
     images = ccl.image.search({'name': 'Ubuntu 14.04 x64'})[1:]
     if not images:
-        return [{'message': "Image not available (yet)", 'category': category, 'state': "ERROR"}]
+        return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
     imageId = images[0]['id']
 
     if not accounts:
