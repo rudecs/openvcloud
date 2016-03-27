@@ -41,7 +41,7 @@ def action():
                                        })[1:]
     if not cloudspaces:
         msg = "No cloudspace available for account %s, disabling test" % ACCOUNTNAME
-        return [{'message': msg, 'category': category, 'state': 'OK'}]
+        return [{'message': msg, 'category': category, 'state': 'SKIPPED'}]
     else:
         cloudspace = cloudspaces[0]
 
@@ -57,7 +57,7 @@ def action():
 
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
     if stack['status'] != 'ENABLED':
-        return [{'message': 'Disabling test stack is not enabled', 'category': category, 'state': 'OK'}]
+        return [{'message': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
 
     name = '%s on %s' % (timestamp, stack['name'])
     j.console.echo('Deleting vms older then 24h', log=True)
