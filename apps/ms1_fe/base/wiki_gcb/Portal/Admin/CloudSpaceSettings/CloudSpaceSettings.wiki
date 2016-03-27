@@ -18,18 +18,17 @@
 		<tab id="details" heading="Details">
 			<div id="details" class="tab-pane active" >
 				<div class="clearfix margin-bottom-medium">
-					<label class="left margin-right-medium settings-label">Secret API Key:</label>
-					<p class="txt-14 txt-gray">{[ cloudSpaceDetails.secret]}</p>
+					<label class="left margin-right-medium">Secret API Key:</label>
+					<span class="txt-gray txt-13">{[ cloudSpaceDetails.secret]}</span>
 				</div>
-				<br/>
-				<div class="margin-bottom-medium" ng-show="currentLocation">
-          			<label class="left margin-right-medium settings-label">Location:</label>
-          			<div class="txt-center margin-bottom-large left">
-          				<!-- <img src="/$$space/.files/img/flags/{[ currentLocation.flag  ]}.png" title="{[ currentLocation.name  ]}" /> -->
-          				<span class="block margin-top-small txt-13">{[currentLocation.name]}</span>
-          			</div>
-        		</div>
-				<br><button class="btn margin-top-large clear-both block" ng-click="deleteCloudspace()" ng-show="currentUser.acl.cloudspace == 3"><i class="fa fa-trash"></i> Delete Cloud Space</button>
+				<div class="margin-bottom-medium clearfix" ng-show="currentLocation">
+      			<label class="left margin-right-medium">Location:</label>
+      			<div class="left">
+      				<span class="txt-gray txt-13 bg-info padding-horizontal-medium padding-vertical-small">{[currentLocation.name]}</span>
+      			</div>
+    		</div>
+				<hr class="margin-top-large margin-bottom-large">
+				<button class="btn margin-top-large clear-both left" ng-click="deleteCloudspace()" ng-show="currentUser.acl.cloudspace == 3"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">
 					<form name="destroyform" ng-submit="cancelDeletion()">
 						<div class="modal-header">
