@@ -3835,3 +3835,20 @@ html body #wrap .table-striped tbody:first-child th a {
   background-color: #345E79 !important;
   color: #ECF0F1 !important;
 }
+/* line 723, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003723}}
+.stick-top-right {
+  position: fixed;
+  top: 0;
+  right: 10px;
+}
+/* line 728, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003728}}
+.signUp {
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+  -moz-border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}

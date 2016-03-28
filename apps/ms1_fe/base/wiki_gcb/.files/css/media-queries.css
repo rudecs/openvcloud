@@ -133,7 +133,6 @@
 	.gray .panel-body {background: inherit !important;border-top: 0 !important;}
 	.gray .panel-heading.open .panel-title>a{background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important;padding: 8px 25px;color: #000 !important;}
 	.pull-right .right { margin: 0 0 0 0;}
-	.pull-right.span7 {display: inline-block;width: 220px;position: fixed;top: 0;right:0;}
 	.logo {    margin: 12px 0 10px 0;display: inline-block;}
 	.creditForm .nameField { width: 70% !important; }
 	.boxes p { width: 77% !important; }
@@ -183,7 +182,6 @@
 	.mainText { font-size: 35px !important; color: #FFF; }
 	.dropdown-menu { position: static; }
 	.navbar-collapse { max-height: inherit !important; }
-	.signUp { -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-right-radius: 5px; -moz-border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
 	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a { color: #FFF; }
 	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover { color: #000; }
 	label + .controls { display: inherit !important; margin: 0 0 0 0; }
@@ -247,7 +245,6 @@
 	.mainText { color: #FFF !important; font-size: 25px !important; font-weight: bold; margin-top: 18px; }
 	.dropdown-menu { position: static; }
 	.navbar-collapse { max-height: inherit !important; }
-	.signUp { -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-right-radius: 5px; -moz-border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
 	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a { color: #FFF; }
 	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover { color: #000; }
 	label + .controls { display: inherit !important; margin: 0 0 0 0; }

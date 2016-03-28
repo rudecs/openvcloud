@@ -1,11 +1,11 @@
 {{html:
   <div class="navbar navbar-inverse navbar-inner navbar-form" ng-controller="CloudSpaceNavigatorController" role="navigation">
     <div class="subnavbar-inner">
-      <div class="container">
+      <div class="container relative">
         <a class="logo" href="../$$space/Decks"><img src="/$$space/.files/img/logo-colored.png" title="Home" class="margin-vertical-small" width='132' height='56'></a>
-        <ul class="pull-right span7">
+        <ul class="stick-top-right">
           <li class="right">
-            <a class="signUp login right" href="/restmachine//system/oauth/getOauthLogoutURl" >
+            <a class="logout" href="/restmachine//system/oauth/getOauthLogoutURl" >
               <i class="fa fa-lock"></i>
               <span>Logout</span>
             </a>
@@ -101,10 +101,10 @@
                 </script>
               </div>
             </li>
-            <li ng-show="currentUser.acl.cloudspace > 0 && !noAccount"><a href="/$$space/CloudSpaceSettings" class="padding-left-none"><i class="fa fa-cog margin-right-small" title="Cloud Space settings"></i></a></li>
+            <li ng-show="currentUser.acl.cloudspace > 0 && !noAccount"><a href="/$$space/CloudSpaceSettings" class="padding-left-none content-gear"><i class="fa fa-cog margin-right-small" title="Cloud Space settings"></i></a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a id="geeting-started" href="/$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
+            <li><a href="/$$space/Getting Started" tourtip="1 min to read" tourtip-step="5" tourtip-placement="bottom">Getting Started</a></li>
             <li><a href="/$$space/ApiDocs">Machine API</a></li>
             <li><a href="/$$space/Docs">Knowledge Base</a></li>
             <li><a href="/$$space/support">Support</a></li>
