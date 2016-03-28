@@ -57,7 +57,7 @@ class cloudbroker_cloudspace(BaseActor):
         try:
             #delete machines
             machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
-            for idx, machine in enumerate(machines):
+            for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
                     ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
