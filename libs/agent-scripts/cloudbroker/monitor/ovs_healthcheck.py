@@ -58,7 +58,6 @@ def action():
         Checks all critical components of Open vStorage
         """
         ovs.getLocalSettings()
-        ovs.checkOvsProcesses()
         ovs.checkOvsWorkers()
         ovs.checkOvsPackages()
         ovs.checkRequiredPorts()
@@ -67,7 +66,7 @@ def action():
         ovs.checkHypervisorManagementInformation()
         ovs.checkSizeOfLogFiles()
         ovs.checkIfDNSResolves()
-        ovs.checkModelConsistency()
+        # ovs.checkModelConsistency()
         ovs.checkForHaltedVolumes()
         ovs.checkFileDriver()
         ovs.checkVolumeDriver()

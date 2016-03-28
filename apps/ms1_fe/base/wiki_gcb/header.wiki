@@ -86,12 +86,9 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">Location</label>
                         <div class="controls col-sm-9">
-                          <ul class="flags-list margin-top-none margin-left-small padding-left-none row">
-                            <li class="margin-right-medium" ng-repeat="location in locations" ng-class="{ 'selected': selectedLocation == location.locationCode }" ng-click="changeLocation(location)">
-                              <a href="" class="{[ 'flag-' + location.flag ]}"></a>
-                              <span class="mts block cursor-default">{[ location.name ]}</span>
-                            </li>
-                          </ul>
+                          <select class="form-control" ng-repeat="location in locations" required>
+                            <option ng-class="{ 'selected': selectedLocation == location.locationCode }" ng-click="changeLocation(location)">{[ location.name ]}</option>
+                          </select>
                         </div>
                       </div>
                       <em ng-show="cloudspaces.length == 0">You should have at least one CloudSpace.</em>

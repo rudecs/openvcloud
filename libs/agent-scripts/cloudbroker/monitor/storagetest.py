@@ -27,7 +27,7 @@ def action():
     loc = ccl.location.search({})[1]['locationCode']
     images = ccl.image.search({'name': 'Ubuntu 14.04 x64'})[1:]
     if not images:
-        return [{'message': "Image not available (yet)", 'category': category, 'state': "ERROR"}]
+        return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
     imageId = images[0]['id']
 
     if not accounts:
@@ -41,7 +41,7 @@ def action():
                                        })[1:]
     if not cloudspaces:
         msg = "No cloudspace available for account %s, disabling test" % ACCOUNTNAME
-        return [{'message': msg, 'category': category, 'state': 'OK'}]
+        return [{'message': msg, 'category': category, 'state': 'SKIPPED'}]
     else:
         cloudspace = cloudspaces[0]
 
@@ -57,7 +57,7 @@ def action():
 
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
     if stack['status'] != 'ENABLED':
-        return [{'message': 'Disabling test stack is not enabled', 'category': category, 'state': 'OK'}]
+        return [{'message': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
 
     name = '%s on %s' % (timestamp, stack['name'])
     j.console.echo('Deleting vms older then 24h', log=True)
