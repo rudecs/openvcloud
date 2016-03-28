@@ -47,7 +47,6 @@
 	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px; }
 	.nav-tabs>li>a { padding: 5px 10px !important; }
 	.nav-tabs { margin:  10px 0; }
-	.create-cloudspace-container { padding: 0px 0 0px 39px; }
 	.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open.png) 11px 11px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
 	.osimage-label { width: 9% !important; }
 	.account-container.stacked { width: 544px !important; }
@@ -101,7 +100,6 @@
 	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { padding: 5px 10px; background: #345E79;color: #FFF;}
 	.nav-tabs>li>a { padding: 5px 10px !important; }
 	.nav-tabs { margin:  10px 0; }
-	.create-cloudspace-container { padding: 0px 0 0px 24px; width: 98%;margin-left: 1%;}
 	.gray .panel-heading .panel-title>a{ background: url(../img/images/acc-arrow-close.png) 13px 9px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
 	.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open.png) 11px 10px no-repeat #F3F3F3 !important; padding: 8px 25px; color: #4f4f4f !important; }
 	.osimage-label { width: 12% !important; }
@@ -128,7 +126,7 @@
     .borderRight1 + .col-md-6 ul li { list-style: none; }
 }
 @media (max-width: 992px) {
-	.create-cloudspace-container { background: #4E8BB3 !important;}
+	.create-cloudspace-container { background: #4E8BB3 !important; padding-left: 47px;}
 	.gray a {color: #FFF !important;}
 	.gray .panel-body {background: inherit !important;border-top: 0 !important;}
 	.gray .panel-heading.open .panel-title>a{background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important;padding: 8px 25px;color: #000 !important;}
@@ -167,7 +165,9 @@
     .nav.navbar-nav li:first-child a {color: #FFF;}
 	.sideNav { width: 100% !important;position: static !important; padding-bottom: 20px;}
 	.white { padding-top: 0 !important;}
-
+	a.content-gear:after {
+    content: "Cloud Space Settings";
+	}
 }
 @media (max-width: 768px) {
 	.navbar-inverse .navbar-toggle {border-color: #333;margin: 8px 35px 0 0;}
@@ -202,7 +202,7 @@
 	.gray a { color: #FFF !important; }
 	.gray a:hover { color: #000 !important; }
 	.accordionInside { min-width: auto; }
-	.create-cloudspace-container { background: #4E8BB3 !important; }
+	.create-cloudspace-container { background: #4E8BB3 !important; padding-left: 25px;}
 	.create-cloudspace { color: #FFF; }
 	.create-cloudspace:hover { color: #000; }
 	.gray .panel-body ul li { margin: 5px 9px !important; }
@@ -224,16 +224,15 @@
 	.techspecs tr td { display: inherit; }
 	.appMargin { margin-top: -38px; width: 80%; }
 	.half.copy.col-md-6 + .justOne { text-align: center; }
-	.navbar-right > li { padding-left: 15px; }
+	.navbar-right > li { padding-left: 0; }
 	.question-symbol, .question-symbol:hover { color: #fff; margin-left: 5px; }
-	#geeting-started { padding-left: 29px; }
 	.signup-btn-decks { position: absolute; top: -50px; width: 93%; left: 0; margin: 0 15px; }
 	.bigButtonSignUp {margin-top: 45px !important;margin-bottom: -12px !important;text-align: center !important;}
 	.borderRight1 { border-right: 0; }
-    .borderRight1 + .col-md-6 ul li { list-style: none; }
-    .borderRight1 img { margin-left: -50px; }
-    .create-cloudspace-container li a:hover { color: #FFF !important; }
-    .accordionInside { padding-bottom: 0 !important; }
+  .borderRight1 + .col-md-6 ul li { list-style: none; }
+  .borderRight1 img { margin-left: -50px; }
+  .create-cloudspace-container li a:hover { color: #FFF !important; }
+  .accordionInside { padding-bottom: 0 !important; }
 }
 @media (max-width: 580px) {
 	.osimage-label, .controls2, .signUpForm .inputWrap input, .boxes p, .nameField textarea,
@@ -307,6 +306,9 @@
 }
 
 @media (min-width: 768px) and (max-width: 992px) {
+		.container {
+			width: auto;
+		}
     .navbar-collapse.collapse { display: none !important;}
     .navbar-collapse.collapse.in { display: block !important;}
     .navbar-header .collapse, .navbar-toggle { display:block !important; margin: 15px 17px 15px 0 !important;}
@@ -315,7 +317,11 @@
 }
 @media only screen and (max-width : 992px) {
     .navbar-nav > li {float: none;}
+    .nav>li>a {padding-left: 0;}
     .navbar-nav { float: none;}
     .nav.navbar-nav { clear: both; float: left; margin: 0 0 0 -15px; width: 100%;}
+    .accordionInside {
+    	padding: 0;
+    }
 }
 /* End of Media Queries */
