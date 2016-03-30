@@ -1354,31 +1354,30 @@ canvas {
 }
 /* line 238, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003238}}
-.login {
-  color: #ECF0F1 !important;
-}
-/* line 239, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003239}}
-.login:hover,
-.login:focus {
-  color: #fff !important;
-}
-/* line 240, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003240}}
 .navbar-default {
   border: 0;
 }
-/* line 241, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003241}}
+/* line 239, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003239}}
 .navbar {
   margin-bottom: 0;
   border-radius: 0;
 }
-/* line 242, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003242}}
+/* line 240, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003240}}
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
   color: rgba(236, 240, 241, 0.8);
+}
+/* line 241, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003241}}
+.navbar-default {
+  background-color: #345E79;
+}
+/* line 242, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003242}}
+.navbar-collapse.bs-example-js-navbar-collapse.collapse.in {
+  background: #345E79;
 }
 /* line 243, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003243}}
@@ -1387,125 +1386,115 @@ canvas {
 }
 /* line 244, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003244}}
-.navbar-collapse.bs-example-js-navbar-collapse.collapse.in {
-  background: #345E79;
-}
-/* line 245, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003245}}
-.navbar-default {
-  background-color: #345E79;
-}
-/* line 246, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003246}}
 .navbar-inverse .navbar-nav > .open > a,
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
   background: inherit;
   color: #000 !important;
 }
-/* line 247, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003247}}
+/* line 245, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003245}}
 .navbar-nav > li > .dropdown-menu {
   /* border-color: @main-color; */
   border-top: 0;
 }
-/* line 248, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003248}}
+/* line 246, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003246}}
 .sticky .navbar.navbar-inverse .subnavbar-inner {
   background-color: #f2f2f2;
 }
-/* line 249, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003249}}
+/* line 247, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003247}}
 .sticky .navbar.navbar-inverse .subnavbar-inner .user-name {
   color: #151515;
   text-shadow: none;
 }
-/* line 250, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003250}}
+/* line 248, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003248}}
 .sticky .navbar.navbar-inverse .subnavbar-inner .user-name:hover {
   color: #003d7a;
 }
-/* line 251, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003251}}
+/* line 249, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003249}}
 .navbar-collapse.collapse {
   box-shadow: none;
   border-top: 0;
 }
-/* line 252, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003252}}
+/* line 250, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003250}}
 .navbar-inverse .navbar-collapse,
 .navbar-inverse .navbar-form {
   border: 0;
 }
-/* line 253, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003253}}
+/* line 251, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003251}}
 .nav.navbar-nav > li:first-child a {
   padding-left: 0;
 }
-/* line 254, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003254}}
+/* line 252, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003252}}
 .sticky2 > .navbar.navbar-inverse {
   background: url(../img/images/space&mountain.jpg) no-repeat center top #000;
   background-size: 100%;
 }
-/* line 255, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003255}}
+/* line 253, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003253}}
 .gray h4 > a {
   background: #BEE4F2;
   padding: 14px 25px;
 }
-/* line 256, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003256}}
+/* line 254, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003254}}
 .gray a {
   color: #4f4f4f;
   font-family: arial, sans-serif;
 }
-/* line 257, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003257}}
+/* line 255, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003255}}
 .gray a:hover {
   color: #345E79;
 }
-/* line 258, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003258}}
+/* line 256, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003256}}
 .gray .panel-title > a {
   font-size: 14px;
   color: #000000 !important;
   font-weight: normal;
   background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3;
 }
-/* line 259, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003259}}
+/* line 257, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003257}}
 .gray .panel-heading.open .panel-title > a {
   background: url(../img/images/acc-arrow-open.png) 9px 19px no-repeat #F3F3F3;
 }
-/* line 260, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003260}}
+/* line 258, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003258}}
 .gray .panel.panel-default {
   margin: 0 0 2px 0;
 }
-/* line 261, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003261}}
+/* line 259, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003259}}
 .gray .panel-body ul {
   padding: 0 0 0 15px;
 }
-/* line 262, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003262}}
+/* line 260, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003260}}
 .gray .panel-body ul li {
   margin: 5px 0;
 }
-/* line 263, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003263}}
+/* line 261, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003261}}
 .gray .panel-body {
   padding: 5px 15px;
 }
-/* line 264, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003264}}
+/* line 262, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003262}}
 .gray .panel-title > a:first-child:hover {
   background: url(../img/images/acc-arrow-close.png) 11px 18px no-repeat #F3F3F3;
   text-decoration: none;
 }
-/* line 265, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003265}}
+/* line 263, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003263}}
 .panel {
   background-color: initial;
   border: 0;
@@ -1513,30 +1502,30 @@ canvas {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-/* line 266, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003266}}
+/* line 264, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003264}}
 .panel-group .panel {
   border-radius: 0;
 }
-/* line 267, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003267}}
+/* line 265, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003265}}
 .panel-group .panel + .panel {
   margin-top: 0;
 }
-/* line 268, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003268}}
+/* line 266, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003266}}
 .panel-body {
   color: #77777b;
   font-size: 13px;
   background: #FFF;
 }
-/* line 269, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003269}}
+/* line 267, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003267}}
 .panel-primary {
   border: 1px solid #428bca !important;
 }
-/* line 270, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003270}}
+/* line 268, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003268}}
 .panel-primary {
   border: 1px solid #428bca !important;
   margin-bottom: 20px;
@@ -1546,36 +1535,173 @@ canvas {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-/* line 271, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003271}}
+/* line 269, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003269}}
 .panel-primary > .panel-heading {
   background-color: #345E79;
   border-color: #345E79;
 }
-/* line 272, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003272}}
+/* line 270, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003270}}
 .panel-primary {
   border: 1px solid #345E79;
 }
-/* line 273, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003273}}
+/* line 271, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003271}}
 .minCloud .panel-body {
   min-height: 218px;
 }
-/* line 274, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003274}}
+/* line 272, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003272}}
 .panel-group .panel-heading + .panel-collapse .panel-body {
   border-top: 0;
 }
-/* line 275, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003275}}
+/* line 273, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003273}}
 .panel-group {
   margin: 0;
 }
+/* line 274, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003274}}
+.clearR {
+  clear: right;
+}
+/* line 275, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003275}}
+.myNav ul li {
+  float: left;
+  margin: 0;
+  list-style: none;
+  margin: 0 5px;
+}
 /* line 276, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003276}}
-.signUp {
-  background: #80bd01;
+.myNav ul li a {
+  font-family: arial, sans-serif;
+  color: #fff;
+  font-size: 18px;
+  display: inline-block;
+  padding: 0 12px;
+  font-weight: 100;
+}
+/* line 277, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003277}}
+.myNav ul li a:hover,
+.motherShipSub ul#homepage-submenu li a:hover {
+  color: #345E79;
+}
+/* line 278, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003278}}
+.blueBar {
+  background: #345E79;
+  height: 48px;
+  z-index: 5555555555555555555555555;
+}
+/* line 279, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003279}}
+.caret {
+  border-top: 5px solid;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+}
+/* line 280, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003280}}
+.accordionInside {
+  min-width: 425px;
+  box-shadow: none;
+  padding: 5px 5px;
+}
+/* line 281, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003281}}
+.create-cloudspace {
+  margin: 7px 0 7px -21px;
+  display: inline-block;
+}
+/* line 282, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003282}}
+.user-name {
+  color: #fff;
+  margin-top: 5px;
+  display: inline-block;
+  margin-right: 15px;
+  font-size: 16px;
+}
+/* line 283, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003283}}
+.user-name:hover {
+  color: #345E79;
+}
+/* line 284, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003284}}
+.create-cloudspace:hover {
+  color: initial !important;
+}
+/* line 285, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003285}}
+.create-cloudspace + .icon-faq {
+  background: url(../img/images/ques.png);
+  width: 22px !important;
+  height: 21px;
+  margin: 7px 11px 7px;
+  display: inline-block;
+  float: right;
+}
+/* line 286, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003286}}
+.create-cloudspace-container {
+  background: #FFF;
+  display: block;
+}
+/* line 287, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003287}}
+.open-cloudspace-nav {
+  padding: 0;
+  border-radius: 0 !important;
+}
+/* line 288, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003288}}
+.motherShipSub .dropdown-toggle:hover,
+.dropdown.open > a {
+  background: transparent !important;
+  color: #345E79;
+}
+/* line 289, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003289}}
+.motherShipSub ul#homepage-submenu li a {
+  color: #000;
+  font-size: 14px;
+  display: inline-block;
+  padding: 4px 0 4px 15px;
+  font-weight: inherit;
+  width: 174px;
+}
+/* line 290, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003290}}
+.motherShipSub ul {
+  background: #ffffff;
+  margin: 12px 10px 0 0;
+  border: 1px solid #345E79;
+  left: 6px !important;
+}
+/* line 291, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003291}}
+.motherShipSub ul li {
+  margin: 0;
+}
+/* line 292, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003292}}
+.myNav ul li:last-child {
+  margin-right: 0;
+}
+/* line 293, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003293}}
+.question-symbol:hover {
+  color: #428bca;
+}
+/* line 295, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003295}}
+.logout {
+  background: #345E79;
   -webkit-border-bottom-right-radius: 5px;
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomright: 5px;
@@ -1585,250 +1711,105 @@ canvas {
   padding: 5px 24px;
   line-height: 1.42857143;
   display: inline-block;
-  color: #FFF;
+  color: #ECF0F1;
   /* font-weight: bold; */
   font-size: 14px;
   letter-spacing: 0px;
   text-transform: uppercase;
 }
-/* line 277, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003277}}
-.login {
-  background: #345E79;
-  padding: 5px 16px;
-  margin: 0 0 0 10px;
-  color: #030000;
-}
-/* line 278, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003278}}
-.clearR {
-  clear: right;
-}
-/* line 279, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003279}}
-.why {
-  width: 63px;
-  background: url(../img/images/why.png) no-repeat 42px 7px;
-}
-/* line 280, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003280}}
-.myNav ul li {
-  float: left;
-  margin: 0;
-  list-style: none;
-  margin: 0 5px;
-}
-/* line 281, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003281}}
-.myNav ul li a {
-  font-family: arial, sans-serif;
-  color: #fff;
-  font-size: 18px;
-  display: inline-block;
-  padding: 0 12px;
-  font-weight: 100;
-}
-/* line 282, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003282}}
-.myNav ul li a:hover,
-.motherShipSub ul#homepage-submenu li a:hover {
-  color: #345E79;
-}
-/* line 283, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003283}}
-.blueBar {
-  background: #345E79;
-  height: 48px;
-  z-index: 5555555555555555555555555;
-}
-/* line 284, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003284}}
-.caret {
-  border-top: 5px solid;
-  border-right: 5px solid transparent;
-  border-left: 5px solid transparent;
-}
-/* line 285, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003285}}
-.accordionInside {
-  min-width: 425px;
-  box-shadow: none;
-  padding: 5px 5px;
-}
-/* line 286, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003286}}
-.create-cloudspace {
-  margin: 7px 0 10px -21px;
-  display: inline-block;
-}
-/* line 287, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003287}}
-.user-name {
-  color: #fff;
-  margin-top: 5px;
-  display: inline-block;
-  margin-right: 15px;
-  font-size: 16px;
-}
-/* line 288, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003288}}
-.user-name:hover {
-  color: #345E79;
-}
-/* line 289, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003289}}
-.create-cloudspace:hover {
-  color: initial !important;
-}
-/* line 290, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003290}}
-.create-cloudspace + .icon-faq {
-  background: url(../img/images/ques.png);
-  width: 22px !important;
-  height: 21px;
-  margin: 7px 11px 7px;
-  display: inline-block;
-  float: right;
-}
-/* line 291, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003291}}
-.create-cloudspace-container {
-  background: #FFF;
-  display: block;
-}
-/* line 292, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003292}}
-.open-cloudspace-nav {
-  padding: 0;
-  border-radius: 0 !important;
-}
-/* line 293, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003293}}
-.motherShipSub .dropdown-toggle:hover,
-.dropdown.open > a {
-  background: transparent !important;
-  color: #345E79;
-}
-/* line 294, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003294}}
-.motherShipSub ul#homepage-submenu li a {
-  color: #000;
-  font-size: 14px;
-  display: inline-block;
-  padding: 4px 0 4px 15px;
-  font-weight: inherit;
-  width: 174px;
-}
-/* line 295, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003295}}
-.motherShipSub ul {
-  background: #ffffff;
-  margin: 12px 10px 0 0;
-  border: 1px solid #345E79;
-  left: 6px !important;
-}
-/* line 296, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003296}}
-.motherShipSub ul li {
-  margin: 0;
-}
-/* line 297, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003297}}
-.myNav ul li:last-child {
-  margin-right: 0;
-}
-/* line 298, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003298}}
-.question-symbol:hover {
-  color: #428bca;
+/* line 311, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003311}}
+.logout:hover,
+.logout:focus {
+  color: #fff !important;
 }
 /* end of header */
 /* Footer */
-/* line 302, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003302}}
+/* line 315, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003315}}
 .bottomFooter {
   min-height: 50px;
   padding: 6px 0;
 }
-/* line 303, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003303}}
+/* line 316, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003316}}
 .bottomFooter .first-list li {
   list-style: none;
   float: left;
   padding: 0 11px;
   background: url(../img/images/seperat.png) no-repeat right 50%;
 }
-/* line 304, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003304}}
+/* line 317, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003317}}
 .bottomFooter .second-list li {
   list-style: none;
   float: left;
   padding: 0 16px;
   color: #fff;
 }
-/* line 305, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003305}}
+/* line 318, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003318}}
 .bottomFooter ul li a,
 .bottomFooter ul li {
   color: #fff;
   font-family: arial, sans-serif;
   font-size: 16px;
 }
-/* line 306, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003306}}
+/* line 319, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003319}}
 .bottomFooter ul {
   margin-left: -65px;
   line-height: 39px;
 }
-/* line 307, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003307}}
+/* line 320, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003320}}
 .bottomFooter div,
 .bottonFooter ul li {
   height: 40px;
 }
-/* line 308, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003308}}
+/* line 321, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003321}}
 .bottomFooter ul li:last-child {
   height: 40px;
   background: none;
 }
-/* line 309, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003309}}
+/* line 322, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003322}}
 footer {
   background: #345E79;
   margin: 0 0 0 0;
   width: 100%;
 }
-/* line 310, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003310}}
+/* line 323, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003323}}
 .topFooter {
   height: 191px;
   background: url(../img/images/footer-bg.jpg) no-repeat center top;
   display: none;
 }
-/* line 311, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003311}}
+/* line 324, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003324}}
 .midFooter {
   padding: 5px 0;
   min-height: 20px;
   border-bottom: 1px solid #fff;
   display: block;
 }
-/* line 312, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003312}}
+/* line 325, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003325}}
 .midFooter ul li {
   float: left;
   margin: 0 15px;
 }
-/* line 313, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003313}}
+/* line 326, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003326}}
 .midFooter ul li a {
   color: #FFF;
   font-family: arial, sans-serif;
   font-size: 16px;
 }
-/* line 314, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003314}}
+/* line 327, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003327}}
 #footer {
   position: relative;
   margin-top: -150px;
@@ -1837,28 +1818,28 @@ footer {
 }
 /* end of footer */
 /* Swagger */
-/* line 318, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003318}}
+/* line 331, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003331}}
 #swagger-ui-container .container {
   width: auto;
 }
-/* line 319, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003319}}
+/* line 332, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003332}}
 #swagger-ui-container h2 {
   font-size: 13px;
 }
-/* line 320, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003320}}
+/* line 333, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003333}}
 .toggleOperation {
   font-size: 13px;
 }
-/* line 321, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003321}}
+/* line 334, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003334}}
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options {
   margin: 0 10px 0 0;
 }
-/* line 322, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003322}}
+/* line 335, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003335}}
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content div.sandbox_header input.submit {
   padding: 0 10px;
   color: #fff;
@@ -1882,34 +1863,34 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   -ms-user-select: none;
   user-select: none;
 }
-/* line 323, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003323}}
+/* line 336, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003336}}
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options li:last-child,
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading ul.options li.last {
   padding: 0;
 }
-/* line 324, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003324}}
+/* line 337, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003337}}
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading h3 span.http_method a {
   background-color: #5bc0de;
 }
-/* line 325, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003325}}
+/* line 338, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003338}}
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content h4 {
   color: #345E79;
 }
 /* end of swagger*/
 /* Machines list Page */
-/* line 329, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003329}}
+/* line 342, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003342}}
 #singlebutton:hover,
 #singlebutton:focus {
   color: #fff;
 }
 /* End of Machines list Page */
 /* Docs Page */
-/* line 333, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003333}}
+/* line 346, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003346}}
 .docs-title {
   color: #fff;
   padding: 3px 10px;
@@ -1919,20 +1900,20 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   top: -11px;
   left: 11px;
 }
-/* line 334, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003334}}
+/* line 347, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003347}}
 #docs-index-list {
   border: 1px solid #CCCCCC;
 }
-/* line 335, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003335}}
+/* line 348, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003348}}
 #docs-index-list a {
   padding-left: 10px;
   font-size: 15px;
   display: block;
 }
-/* line 336, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003336}}
+/* line 349, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003349}}
 #docs-index-list a:hover,
 #docs-index-list a.active {
   background: #DCDCDC;
@@ -1940,8 +1921,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 }
 /* End of Docs Page */
 /* New Machine Page */
-/* line 340, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003340}}
+/* line 353, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003353}}
 .machineList ul li,
 .storage-size-list li {
   float: left;
@@ -1950,8 +1931,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   display: inline-block;
   height: 137px;
 }
-/* line 341, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003341}}
+/* line 354, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003354}}
 .machineList ul li a,
 .storage-size-list button {
   color: #77777b;
@@ -1967,35 +1948,35 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   vertical-align: middle;
 }
 /**/
-/* line 342, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003342}}
+/* line 355, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003355}}
 .machineList ul li a:hover,
 .storage-size-list button:hover,
 .storage-size-list button.active {
   background: url(../img/images/machine-hover-dark2.jpg) no-repeat;
   color: #FFF;
 }
-/* line 343, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003343}}
+/* line 356, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003356}}
 .machineList ul li a.active,
 .packages li a.active-package {
   background: url(../img/images/machine-hover-dark2.jpg);
   color: #FFF;
 }
-/* line 344, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003344}}
+/* line 357, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003357}}
 .storage-size-list li button {
   box-shadow: none !important;
   border: 0;
 }
-/* line 345, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003345}}
+/* line 358, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003358}}
 .storage-size-list li button:focus {
   outline: 0 !important;
   outline-offset: 0 !important;
 }
-/* line 346, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003346}}
+/* line 359, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003359}}
 .storage-size-list button.small {
   background-size: 92%;
   padding: 0;
@@ -2003,39 +1984,39 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   width: 215px;
   font-size: 100%;
 }
-/* line 347, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003347}}
+/* line 360, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003360}}
 .storage-size-list {
   padding-left: 6%;
 }
-/* line 348, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003348}}
+/* line 361, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003361}}
 .machineWrap {
   clear: both;
   margin: 0 0 38px 0;
 }
-/* line 349, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003349}}
+/* line 362, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003362}}
 .controls2 {
   display: inline-block;
   width: 88%;
   float: left;
 }
-/* line 350, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003350}}
+/* line 363, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003363}}
 .osImage-btn {
   background-color: #DDDDDF;
   color: #77777b;
   border: #c2c2c2 1px solid;
 }
-/* line 351, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003351}}
+/* line 364, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003364}}
 .osImage-btn.active {
   background-color: #345E79;
   color: #fff;
 }
-/* line 352, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003352}}
+/* line 365, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003365}}
 .disk-control-bar {
   width: 75%;
   margin: 0 auto;
@@ -2043,25 +2024,25 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   visibility: hidden;
   min-height: 28px;
 }
-/* line 353, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003353}}
+/* line 366, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003366}}
 .disk-control-bar .disk-control {
   font-size: 22px;
   color: #355e7a;
   cursor: pointer;
 }
-/* line 354, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003354}}
+/* line 367, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003367}}
 .disk-control-bar .detach {
   color: #A94442;
 }
-/* line 355, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003355}}
+/* line 368, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003368}}
 .disk-container:hover .disk-control-bar {
   visibility: visible;
 }
-/* line 356, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003356}}
+/* line 369, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003369}}
 .label-name {
   background: #345E79;
   color: #fff;
@@ -2072,26 +2053,26 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   right: 35px;
   font-size: 0.9em;
 }
-/* line 357, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003357}}
+/* line 370, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003370}}
 .storage-size-list li.small {
   margin: 15px;
 }
-/* line 358, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003358}}
+/* line 371, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003371}}
 .storage-size-list li .disk-control-bar {
   width: 65%;
 }
-/* line 359, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003359}}
+/* line 372, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003372}}
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
   background: #345e79 !important;
   border-bottom-color: transparent !important;
 }
-/* line 360, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003360}}
+/* line 373, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003373}}
 .nav-pills > li > a {
   padding: 4px 11px;
   border-bottom-right-radius: 0;
@@ -2100,8 +2081,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border: 1px solid transparent;
   border-bottom: 1px solid #345E79;
 }
-/* line 361, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003361}}
+/* line 374, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003374}}
 .nav-pills > li > a:hover,
 .nav-pills > li > a:focus,
 .nav-pills > li > a:active {
@@ -2111,15 +2092,15 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-bottom: 1px solid #345E79;
   outline: 0;
 }
-/* line 362, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003362}}
+/* line 375, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003375}}
 .border-bottom-gray {
   border-bottom: 1px solid #cac8c8;
 }
 /* End of new machine page*/
 /* Machine Details Page */
-/* line 366, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003366}}
+/* line 379, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003379}}
 .list li {
   clear: both;
   width: 100%;
@@ -2127,8 +2108,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-bottom: 1px solid #77777b;
   min-height: 33px;
 }
-/* line 367, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003367}}
+/* line 380, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003380}}
 .list .span3 {
   font-size: 14px;
   color: #77777b;
@@ -2136,77 +2117,77 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   width: 151px;
   clear: none;
 }
-/* line 368, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003368}}
+/* line 381, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003381}}
 .machine-actions {
   border-left: 1px solid #77777b;
   padding-left: 30px;
 }
-/* line 369, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003369}}
+/* line 382, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003382}}
 .edit-description:hover .edit-description-link {
   display: inline !important;
 }
-/* line 370, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003370}}
+/* line 383, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003383}}
 .edit-description-link {
   color: #0088cc;
   cursor: pointer;
   margin-right: 15px;
   display: none;
 }
-/* line 371, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003371}}
+/* line 384, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003384}}
 .edit-description-link:hover {
   text-decoration: underline;
 }
-/* line 372, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003372}}
+/* line 385, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003385}}
 .refresh-page {
   margin-bottom: -35px;
   padding: 3px 8px;
 }
-/* line 373, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003373}}
+/* line 386, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003386}}
 .refresh-page:hover {
   color: #fff !important;
 }
-/* line 374, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003374}}
+/* line 387, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003387}}
 .description-textarea {
   min-height: 130px;
   width: 330px;
 }
-/* line 375, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003375}}
+/* line 388, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003388}}
 .gray-loader {
   font-size: 175%;
   text-align: center;
   margin-top: 5%;
   color: #c2bebe;
 }
-/* line 376, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003376}}
+/* line 389, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003389}}
 .access-rights {
   border: 1px solid #FFF;
   padding: 4px 12px;
   color: #333;
   background: #fff;
 }
-/* line 377, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003377}}
+/* line 390, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003390}}
 .users-table tr:hover {
   background-color: #EBF3F5;
 }
-/* line 378, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003378}}
+/* line 391, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003391}}
 .access-right {
   font-size: 85%;
   border-radius: 5px;
   width: 15px;
 }
-/* line 379, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003379}}
+/* line 392, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003392}}
 .share-machine-message {
   top: -15px;
   padding: 3px;
@@ -2217,23 +2198,23 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   margin-left: auto;
   margin-right: auto;
 }
-/* line 380, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003380}}
+/* line 393, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003393}}
 .access-rights.update .access-right-block {
   margin-right: 15px;
   padding: 10px;
   display: inline;
 }
-/* line 381, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003381}}
+/* line 394, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003394}}
 .access-rights.update .access-right-block:hover,
 .access-rights.update .access-right-block.selected {
   background-color: #eaeaea;
   border-radius: 5px;
   cursor: pointer;
 }
-/* line 382, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003382}}
+/* line 395, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003395}}
 .share-cloudspace-message {
   top: -25px;
   padding: 3px;
@@ -2244,8 +2225,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   margin-left: auto;
   margin-right: auto;
 }
-/* line 383, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003383}}
+/* line 396, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003396}}
 .machine-disks .disk:hover,
 .machine-disks .disk:active,
 .machine-disks .disk:focus {
@@ -2253,31 +2234,31 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   color: #77777b;
   cursor: default;
 }
-/* line 385, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003385}}
+/* line 398, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003398}}
 .packages {
   margin: 0 0 0.75em 0;
 }
-/* line 389, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003389}}
+/* line 402, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003402}}
 .packages .package {
   background-color: #EEEEEE;
   margin-bottom: 2px;
 }
-/* line 394, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003394}}
+/* line 407, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003407}}
 .packages .package input[type="radio"] {
   display: none;
 }
-/* line 398, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003398}}
+/* line 411, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003411}}
 .packages .package input[type="radio"] + label {
   color: #292321;
   font-family: Arial, sans-serif;
   font-size: 14px;
 }
-/* line 404, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003404}}
+/* line 417, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003417}}
 .packages .package input[type="radio"] + label span {
   display: inline-block;
   width: 19px;
@@ -2288,20 +2269,20 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-/* line 415, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003415}}
+/* line 428, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003428}}
 .packages .package input[type="radio"] + label span {
   background-color: #fff;
   border: 2px solid #939393;
 }
-/* line 420, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003420}}
+/* line 433, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003433}}
 .packages .package input[type="radio"]:checked + label span {
   background-color: #fff;
   border: 6px solid #317FB0;
 }
-/* line 425, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003425}}
+/* line 438, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003438}}
 .packages .package input[type="radio"] + label {
   font-weight: 100;
   width: 100%;
@@ -2309,29 +2290,29 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   padding: 5px 0;
   padding-left: 5px;
 }
-/* line 433, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003433}}
+/* line 446, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003446}}
 .packages .package input[type="radio"] + label:hover {
   cursor: pointer;
   background-color: #C5D0D6;
 }
-/* line 438, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003438}}
+/* line 451, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003451}}
 .packages .package input[type="radio"]:checked + label {
   background-color: #C0D3DD;
   font-size: 17px;
 }
 /* end of machine details page*/
 /* Decks Public Pages */
-/* line 445, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003445}}
+/* line 458, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003458}}
 .cloudSpaceColor h1,
 .cloudSpaceColor h3,
 .cloudSpaceColor i {
   color: #ae45c2;
 }
-/* line 446, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003446}}
+/* line 459, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003459}}
 .DefenseShieldColor h1,
 .DefenseShieldColor h3,
 .DefenseShieldColor i,
@@ -2340,8 +2321,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .color5 p a {
   color: #ff3d3d;
 }
-/* line 447, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003447}}
+/* line 460, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003460}}
 .MachineDeckColor h1,
 .MachineDeckColor h3,
 .MachineDeckColor i,
@@ -2350,8 +2331,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .color2 p a {
   color: #d97804;
 }
-/* line 448, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003448}}
+/* line 461, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003461}}
 .StorageDeckColor h1,
 .StorageDeckColor h3,
 .StorageDeckColor i,
@@ -2360,8 +2341,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .color3 p a {
   color: #06A7E2;
 }
-/* line 449, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003449}}
+/* line 462, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003462}}
 .DesktopDeckColor h1,
 .DesktopDeckColor h3,
 .DesktopDeckColor i,
@@ -2370,8 +2351,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .color1 h2 p a {
   color: #80bd01;
 }
-/* line 450, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003450}}
+/* line 463, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003463}}
 .ApplicationDeckColor h1,
 .ApplicationDeckColor h3,
 .ApplicationDeckColor i,
@@ -2380,65 +2361,65 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .color4 p a {
   color: #f6b332;
 }
-/* line 451, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003451}}
+/* line 464, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003464}}
 .color6 h2,
 .color6 h2 p a,
 .color6 p a {
   color: #af45c3;
 }
-/* line 452, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003452}}
+/* line 465, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003465}}
 .color3 {
   clear: left;
 }
-/* line 453, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003453}}
+/* line 466, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003466}}
 .MachineDeckColor + .half.col-md-6 {
   margin: 34px 0 0 0;
   z-index: 999;
 }
-/* line 454, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003454}}
+/* line 467, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003467}}
 .cloudSpaceColor + .half.col-md-6 {
   margin: 65px 0 -35px 0;
 }
-/* line 455, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003455}}
+/* line 468, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003468}}
 .DefenseShieldColor + .half.col-md-6 {
   margin: 54px 0 15px 0;
 }
-/* line 456, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003456}}
+/* line 469, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003469}}
 .StorageDeckColor + .half.col-md-6 {
   margin: 3px 0 0 0;
   z-index: 999;
 }
-/* line 457, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003457}}
+/* line 470, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003470}}
 .DesktopDeckColor + .half.col-md-6 {
   margin: 36px 0 0px 0;
 }
-/* line 458, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003458}}
+/* line 471, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003471}}
 .ApplicationDeckColor + .half.col-md-6 {
   margin: -16px 0 0 0;
 }
-/* line 459, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003459}}
+/* line 472, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003472}}
 .boxes h2 p a,
 .boxes p a,
 .boxes h2 {
   font-size: 22px;
 }
-/* line 460, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003460}}
+/* line 473, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003473}}
 .boxes img {
   float: left;
   margin: 25px 18px 0 0;
 }
-/* line 461, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003461}}
+/* line 474, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003474}}
 .boxes h2 + p {
   float: left;
   width: 279px;
@@ -2446,8 +2427,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   letter-spacing: 1px;
   font-family: arial, sans-serif;
 }
-/* line 462, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003462}}
+/* line 475, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003475}}
 .boxes h2 + .font.andP {
   float: left;
   width: 400px;
@@ -2456,28 +2437,28 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   font-family: arial, sans-serif;
   list-style: inherit;
 }
-/* line 463, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003463}}
+/* line 476, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003476}}
 .boxes h2 p a:hover {
   color: inherit;
 }
-/* line 464, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003464}}
+/* line 477, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003477}}
 .newDecks .boxes {
   margin: 10px 0;
 }
-/* line 465, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003465}}
+/* line 478, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003478}}
 .newDecks .color3 {
   clear: none;
 }
-/* line 466, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003466}}
+/* line 479, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003479}}
 .leftIcon {
   margin: 0 0 50px 215px;
 }
-/* line 467, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003467}}
+/* line 480, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003480}}
 .loginFieldName {
   color: #FFF;
   font-size: 19px;
@@ -2485,16 +2466,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   width: 113px;
   padding: 6px 0 0 0;
 }
-/* line 468, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003468}}
+/* line 481, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003481}}
 .loginField {
   clear: both;
   display: inline-block;
   width: 100%;
   margin: 8px 0;
 }
-/* line 469, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003469}}
+/* line 482, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003482}}
 .inputLogin {
   width: 100%;
   box-shadow: none !important;
@@ -2503,24 +2484,24 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   font-size: 20px !important;
   padding: 5px 0 7px 5px !important;
 }
-/* line 470, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003470}}
+/* line 483, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003483}}
 .inputWrap {
   float: left;
   width: 74%;
 }
-/* line 471, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003471}}
+/* line 484, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003484}}
 .signUpForm .inputWrap {
   width: 73%;
 }
-/* line 472, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003472}}
+/* line 485, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003485}}
 .signUpForm .inputWrap .inputLogin {
   font-size: 16px !important;
 }
-/* line 473, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003473}}
+/* line 486, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003486}}
 .signUpForm .inputWrap input {
   background-color: #FFF !important;
   background-attachment: none !important;
@@ -2530,8 +2511,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   white-space: pre-wrap;
   line-height: 20px;
 }
-/* line 474, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003474}}
+/* line 487, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003487}}
 .primaryMine {
   background: #FFF !important;
   color: #0087b9;
@@ -2547,16 +2528,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   text-shadow: none;
   margin: 5px 0;
 }
-/* line 475, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003475}}
+/* line 488, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003488}}
 .primaryMine:hover {
   background: #FFF !important;
   color: #0087b9;
   border: 0 !important;
   text-shadow: none;
 }
-/* line 476, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003476}}
+/* line 489, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003489}}
 .defaultMine {
   background: #444444 !important;
   color: #FFF;
@@ -2572,8 +2553,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   text-shadow: none;
   margin: 5px 0;
 }
-/* line 477, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003477}}
+/* line 490, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003490}}
 .defaultMine:hover {
   border: 0 !important;
   background: #444444 !important;
@@ -2588,33 +2569,33 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   padding: 10px 0!important;
   text-shadow: none;
 }
-/* line 478, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003478}}
+/* line 491, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003491}}
 .login-symbol {
   background: url(../img/images/login-symbol.png) no-repeat 31px 19px;
   padding: 15px 34px;
   padding-bottom: 20px;
 }
-/* line 479, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003479}}
+/* line 492, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003492}}
 .loginFieldName2 {
   font-size: 16px;
   width: 130px;
   text-align: left;
   margin-right: 10px;
 }
-/* line 480, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003480}}
+/* line 493, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003493}}
 .upMargin {
   margin: 80px auto 0;
 }
-/* line 481, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003481}}
+/* line 494, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003494}}
 .section h3 {
   font-size: 17px;
 }
-/* line 482, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003482}}
+/* line 495, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003495}}
 #openTerms {
   color: #fff;
   text-decoration: underline;
@@ -2623,63 +2604,63 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   font-size: 16px;
   text-align: center;
 }
-/* line 483, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003483}}
+/* line 496, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003496}}
 #openTerms:hover {
   color: #345E79;
 }
-/* line 484, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003484}}
+/* line 497, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003497}}
 .copy {
   margin-top: 51px;
   padding: 0;
 }
-/* line 485, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003485}}
+/* line 498, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003498}}
 .niceHead {
   color: #333 !important;
   font-size: 20px !important;
   line-height: 33px;
   margin: 15px 0 0 0;
 }
-/* line 486, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003486}}
+/* line 499, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003499}}
 .justOne {
   margin: 31px 0 -24px 0;
 }
-/* line 487, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003487}}
+/* line 500, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003500}}
 .boxDecks {
   border-top: 1px solid #d6d6d7;
   padding: 10px 0 15px;
 }
-/* line 488, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003488}}
+/* line 501, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003501}}
 .boxDecks i {
   position: absolute;
   left: 0;
   top: 34px;
 }
-/* line 489, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003489}}
+/* line 502, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003502}}
 .boxDecks h3 {
   padding-left: 18px;
 }
-/* line 490, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003490}}
+/* line 503, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003503}}
 .smallIcon {
   width: 110px;
   position: absolute;
   left: -221px;
   top: 0;
 }
-/* line 491, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003491}}
+/* line 504, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003504}}
 .why-page ul {
   list-style: initial;
 }
-/* line 492, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003492}}
+/* line 505, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003505}}
 .boxDecks2 h3 {
   padding: 10px 15px 10px 20px;
   border-bottom: 1px solid transparent;
@@ -2690,8 +2671,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   text-align: left;
   font-size: 21px;
 }
-/* line 493, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003493}}
+/* line 506, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003506}}
 .boxDecks2 {
   text-align: center;
   margin: 15px 18px 35px;
@@ -2703,53 +2684,53 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   width: 30.333333%;
   min-height: 286px;
 }
-/* line 494, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003494}}
+/* line 507, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003507}}
 .boxDecks2 h3 + p {
   padding: 5px 20px 0;
   text-align: left;
 }
-/* line 495, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003495}}
+/* line 508, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003508}}
 #terms ul li {
   list-style-type: disc !important;
 }
-/* line 496, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003496}}
+/* line 509, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003509}}
 .signup-btn-decks {
   position: absolute;
   left: -248px;
   top: 370px;
   width: 180px;
 }
-/* line 497, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003497}}
+/* line 510, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003510}}
 .forPic img {
   width: 74px;
   margin: 21px 0 0 0;
 }
 /* end of public pages */
 /* Home page */
-/* line 501, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003501}}
+/* line 514, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003514}}
 .jumbotron {
   background-color: rgba(0, 0, 0, 0);
   margin: 0;
   padding-top: 60px;
 }
-/* line 502, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003502}}
+/* line 515, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003515}}
 .font {
   font-family: arial, sans-serif;
 }
-/* line 503, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003503}}
+/* line 516, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003516}}
 .mainText {
   font-size: 41px !important;
   color: #345E79;
 }
-/* line 504, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003504}}
+/* line 517, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003517}}
 .arrow {
   color: #FFFFFF;
   font-size: 27px;
@@ -2757,92 +2738,92 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   margin: 0;
   padding: 0;
 }
-/* line 505, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003505}}
+/* line 518, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003518}}
 .someText {
   line-height: 28px;
 }
-/* line 506, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003506}}
+/* line 519, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003519}}
 .marginTop {
   margin-top: 50px;
   margin-bottom: 80px;
 }
-/* line 507, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003507}}
+/* line 520, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003520}}
 .marginTop + .container {
   margin-bottom: 100px;
 }
-/* line 508, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003508}}
+/* line 521, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003521}}
 .newDecks .leftIcon {
   margin-left: 0;
   /*margin-bottom: 37px;*/
 }
-/* line 509, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003509}}
+/* line 522, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003522}}
 .marginText {
   min-height: 413px;
   margin: 24px 0 0 0;
 }
-/* line 510, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003510}}
+/* line 523, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003523}}
 .videoMain iframe {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   box-shadow: 0px 0px 9px #345E79;
 }
-/* line 511, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003511}}
+/* line 524, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003524}}
 .bigButtonSignUp {
   margin-top: -66px;
   margin-bottom: -42px;
 }
-/* line 512, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003512}}
+/* line 525, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003525}}
 .borderRight1 {
   border-right: 2px solid rgba(255, 255, 255, 0.6);
 }
-/* line 513, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003513}}
+/* line 526, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003526}}
 .borderRight1 + .col-md-6 ul li {
   color: #FFF;
   font-size: 16px;
   font-weight: bold;
   list-style: initial;
 }
-/* line 514, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003514}}
+/* line 527, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003527}}
 .nav-stacked li {
   margin: 19px 0;
 }
-/* line 515, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003515}}
+/* line 528, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003528}}
 .nav-stacked {
   margin-top: 15px;
   margin-bottom: -5px;
 }
-/* line 516, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003516}}
+/* line 529, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003529}}
 .nav-stacked li a {
   display: block;
   padding: 9px 19px;
   color: #e4e4e4;
 }
-/* line 517, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003517}}
+/* line 530, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003530}}
 .nav-stacked li a strong {
   color: #FFF;
 }
-/* line 518, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003518}}
+/* line 531, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003531}}
 .videoBox2 {
   background: rgba(6, 167, 226, 0.2);
   box-shadow: 0px 0px 9px #345E79;
 }
-/* line 519, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003519}}
+/* line 532, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003532}}
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
@@ -2851,67 +2832,67 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border: 1px solid #345E79;
   /*border-bottom-color: transparent; border-bottom: 3px solid transparent;*/
 }
-/* line 520, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003520}}
+/* line 533, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003533}}
 .video-tour-container {
   margin-bottom: 45px;
 }
-/* line 521, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003521}}
+/* line 534, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003534}}
 .tab-pane video {
   border: 1px solid #345E79;
 }
-/* line 522, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003522}}
+/* line 535, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003535}}
 .revolutionary-cloud-container {
   margin-top: -7px;
   margin-bottom: 20px;
 }
-/* line 523, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003523}}
+/* line 536, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003536}}
 .homepage-decks .leftIcon {
   margin: 0 0 50px 210px;
 }
 /* end of home */
 /* Decks page */
-/* line 527, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003527}}
+/* line 540, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003540}}
 .newDecks2 .boxes img {
   float: none;
   margin: 10px 0;
 }
-/* line 528, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003528}}
+/* line 541, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003541}}
 .newDecks2 .boxes {
   list-style-type: none;
 }
-/* line 529, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003529}}
+/* line 542, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003542}}
 .newDecks2 .boxes ul {
   margin: 0;
   padding: 0;
 }
 /* end of decks page */
 /* Pricing Page */
-/* line 533, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003533}}
+/* line 546, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003546}}
 .tabOfPrice.nav-tabs > li > a:hover {
   padding-bottom: 9px;
 }
-/* line 534, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003534}}
+/* line 547, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003547}}
 .tabOfPrice + .tab-content > .tab-pane {
   padding: 29px 12px;
 }
-/* line 535, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003535}}
+/* line 548, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003548}}
 .headPrice {
   font-size: 15px;
   padding: 5px 0px 5px 16px;
   margin: 0;
 }
-/* line 536, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003536}}
+/* line 549, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003549}}
 .the-price h1 {
   line-height: 1em;
   padding: 0;
@@ -2919,16 +2900,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   color: #333;
   font-size: 2em;
 }
-/* line 537, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003537}}
+/* line 550, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003550}}
 #pricing .cnrflash-label p {
   color: #FFF;
   font-size: 11px;
   margin: 0 0 1px 10px;
   line-height: 12px !important;
 }
-/* line 538, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003538}}
+/* line 551, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003551}}
 .the-price {
   background-color: rgba(220, 220, 220, 0.17);
   box-shadow: 0 1px 0 #dcdcdc, inset 0 1px 0 #fff;
@@ -2936,8 +2917,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   margin: 0;
   text-align: center;
 }
-/* line 539, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003539}}
+/* line 552, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003552}}
 .cnrflash {
   position: absolute;
   top: -6px;
@@ -2948,8 +2929,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   height: 75px;
   border-radius: 3px 5px 3px 0;
 }
-/* line 540, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003540}}
+/* line 553, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003553}}
 .cnrflash-inner {
   position: absolute;
   bottom: 0;
@@ -2969,8 +2950,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   background-color: #aa0101;
   box-shadow: 0 3px 3px 0 rgba(1, 1, 1, 0.5), 0 1px 0 0 rgba(1, 1, 1, 0.5), inset 0 -1px 8px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
 }
-/* line 541, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003541}}
+/* line 554, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003554}}
 .cnrflash-inner:before,
 .cnrflash-inner:after {
   content: " ";
@@ -2981,22 +2962,22 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   height: 0;
   border: 8px solid #800000;
 }
-/* line 542, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003542}}
+/* line 555, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003555}}
 .cnrflash-inner:before {
   left: 1px;
   border-bottom-color: transparent;
   border-right-color: transparent;
 }
-/* line 543, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003543}}
+/* line 556, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003556}}
 .cnrflash-inner:after {
   right: 0;
   border-bottom-color: transparent;
   border-left-color: transparent;
 }
-/* line 544, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003544}}
+/* line 557, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003557}}
 .cnrflash-label {
   position: absolute;
   bottom: 0;
@@ -3010,19 +2991,19 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   font-weight: bold;
   text-align: center;
 }
-/* line 545, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003545}}
+/* line 558, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003558}}
 #pricing ul.bulletStyle li {
   font-size: 16px;
   line-height: 30px;
 }
-/* line 546, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003546}}
+/* line 559, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003559}}
 .subscript {
   font-size: 25px;
 }
-/* line 547, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003547}}
+/* line 560, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003560}}
 .operationWrap .form-control {
   border: 1px solid #345E79;
   box-shadow: none;
@@ -3030,16 +3011,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   color: #000;
   margin: -6px 0 0 0;
 }
-/* line 548, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003548}}
+/* line 561, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003561}}
 .operationWrap .control-label {
   margin: 0 -52px 0 0;
   padding: 0;
 }
 /* end of pricing page */
 /* Access Management Pages  */
-/* line 552, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003552}}
+/* line 565, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003565}}
 .username-text-container input {
   width: 99%;
   border: 1px solid #FFF;
@@ -3048,38 +3029,38 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 }
 /* end of access management pages  */
 /* Billing Page */
-/* line 556, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003556}}
+/* line 569, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003569}}
 .input-group-addon {
   background-color: #345E79;
   color: #FFF;
   border-radius: 0 !important;
 }
-/* line 557, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003557}}
+/* line 570, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003570}}
 .billWrap {
   margin-bottom: 23px;
 }
-/* line 558, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003558}}
+/* line 571, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003571}}
 .billWrap .span6 {
   border-left: thin;
   border-left-style: dotted;
   border-left-color: gray;
   height: 100%;
 }
-/* line 559, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003559}}
+/* line 572, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003572}}
 .visa {
   margin: -8px 0 0 -7px;
 }
-/* line 560, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003560}}
+/* line 573, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003573}}
 .creditMargin {
   margin: 15px 0;
 }
-/* line 561, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003561}}
+/* line 574, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003574}}
 .creditMargin .form-control {
   margin: 10px 0;
   border: 1px solid #345E79;
@@ -3087,41 +3068,41 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-radius: 0;
   color: #000;
 }
-/* line 562, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003562}}
+/* line 575, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003575}}
 .creditMargin .form-control::-webkit-input-placeholder {
   color: #000;
 }
-/* line 565, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003565}}
+/* line 578, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003578}}
 .discRow {
   margin: 10px 15px;
   color: #345E79;
 }
-/* line 566, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003566}}
+/* line 579, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003579}}
 .paypal-image {
   height: 25px;
 }
 /* end of billing page */
 /* Portfwarding Page */
-/* line 570, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003570}}
+/* line 583, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003583}}
 .protocol-select {
   width: 173px;
 }
 /* end of portfwarding page  */
 /* Reset Password Page */
-/* line 574, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003574}}
+/* line 587, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003587}}
 .reset-password {
   margin-bottom: 40px;
   margin-left: 15px;
 }
 /* end of reset password page */
 /* Profile Page */
-/* line 578, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003578}}
+/* line 591, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003591}}
 .switch {
   position: relative;
   display: block;
@@ -3136,16 +3117,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
-/* line 579, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003579}}
+/* line 592, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003592}}
 .switch-input {
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
 }
-/* line 580, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003580}}
+/* line 593, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003593}}
 .switch-label {
   position: relative;
   display: block;
@@ -3156,8 +3137,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-radius: inherit;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
 }
-/* line 581, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003581}}
+/* line 594, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003594}}
 .switch-label:before,
 .switch-label:after {
   position: absolute;
@@ -3169,16 +3150,16 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   -o-transition: inherit;
   transition: inherit;
 }
-/* line 582, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003582}}
+/* line 595, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003595}}
 .switch-label:before {
   content: attr(data-off);
   right: 11px;
   color: #aaaaaa;
   text-shadow: 0 1px rgba(255, 255, 255, 0.5);
 }
-/* line 583, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003583}}
+/* line 596, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003596}}
 .switch-label:after {
   content: attr(data-on);
   left: 11px;
@@ -3186,24 +3167,24 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   text-shadow: 0 1px rgba(0, 0, 0, 0.2);
   opacity: 0;
 }
-/* line 584, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003584}}
+/* line 597, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003597}}
 .switch-input:checked ~ .switch-label {
   background: #E1B42B;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
-/* line 588, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003588}}
+/* line 601, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003601}}
 .switch-input:checked ~ .switch-label:before {
   opacity: 0;
 }
-/* line 591, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003591}}
+/* line 604, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003604}}
 .switch-input:checked ~ .switch-label:after {
   opacity: 1;
 }
-/* line 594, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003594}}
+/* line 607, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003607}}
 .switch-handle {
   position: absolute;
   top: 4px;
@@ -3215,8 +3196,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-radius: 100%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
-/* line 595, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003595}}
+/* line 608, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003608}}
 .switch-handle:before {
   content: "";
   position: absolute;
@@ -3230,14 +3211,14 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   border-radius: 6px;
   box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
 }
-/* line 596, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003596}}
+/* line 609, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003609}}
 .switch-input:checked ~ .switch-handle {
   left: 74px;
   box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 }
-/* line 600, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003600}}
+/* line 613, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003613}}
 .switch-label,
 .switch-handle {
   transition: All 0.3s ease;
@@ -3245,27 +3226,27 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   -moz-transition: All 0.3s ease;
   -o-transition: All 0.3s ease;
 }
-/* line 601, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003601}}
+/* line 614, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003614}}
 .switch-flat {
   padding: 0;
   background: #FFF;
   background-image: none;
 }
-/* line 602, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003602}}
+/* line 615, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003615}}
 .switch-flat .switch-label {
   background: #FFF;
   border: solid 2px #eceeef;
   box-shadow: none;
 }
-/* line 603, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003603}}
+/* line 616, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003616}}
 .switch-flat .switch-label:after {
   color: #06A7E2;
 }
-/* line 604, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003604}}
+/* line 617, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003617}}
 .switch-flat .switch-handle {
   top: 4px;
   left: 6px;
@@ -3274,34 +3255,34 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   height: 22px;
   box-shadow: none;
 }
-/* line 605, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003605}}
+/* line 618, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003618}}
 .switch-flat .switch-handle:before {
   background: #eceeef;
 }
-/* line 606, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003606}}
+/* line 619, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003619}}
 .switch-flat .switch-input:checked ~ .switch-label {
   background: #FFF;
   border-color: #06A7E2;
 }
 /* End of Profile Page */
 /* Defense Shield Page */
-/* line 613, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003613}}
+/* line 626, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003626}}
 .routeros-modal-header {
   z-index: 1;
   background-color: #fff;
   min-width: 98%;
 }
-/* line 614, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003614}}
+/* line 627, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003627}}
 .routeros-modal {
   width: 100% !important;
 }
 /* End of Defense Shield Page */
-/* line 617, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003617}}
+/* line 630, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003630}}
 #cloudspacesListEmptyDialog,
 #disableTourDialog {
   width: 560px;
@@ -3309,13 +3290,13 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   margin: -250px 0 0 -280px;
 }
 /* Hamburger menu */
-/* line 619, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003619}}
+/* line 632, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003632}}
 #PortalsHamburgerMenu {
   margin-top: 2px;
 }
-/* line 620, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003620}}
+/* line 633, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003633}}
 .c-hamburger {
   display: block;
   position: relative;
@@ -3334,13 +3315,13 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   transition: background 0.3s;
   margin-bottom: 10px;
 }
-/* line 621, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003621}}
+/* line 634, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003634}}
 .c-hamburger:focus {
   outline: none;
 }
-/* line 622, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003622}}
+/* line 635, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003635}}
 .c-hamburger span {
   display: block;
   position: absolute;
@@ -3350,8 +3331,8 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   height: 2px;
   background: #000;
 }
-/* line 623, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003623}}
+/* line 636, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003636}}
 .c-hamburger span::before,
 .c-hamburger span::after {
   position: absolute;
@@ -3362,92 +3343,92 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   background-color: #000;
   content: "";
 }
-/* line 624, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003624}}
+/* line 637, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003637}}
 .c-hamburger span::before {
   top: -9px;
 }
-/* line 625, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003625}}
+/* line 638, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003638}}
 .c-hamburger span::after {
   bottom: -9px;
 }
-/* line 626, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003626}}
+/* line 639, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003639}}
 .c-hamburger:hover span::before {
   top: -11px;
 }
-/* line 627, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003627}}
+/* line 640, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003640}}
 .c-hamburger:hover span::after {
   bottom: -11px;
 }
-/* line 628, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003628}}
+/* line 641, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003641}}
 .c-hamburger--htla,
 .c-hamburger--htla.is-active {
   background-color: #fff;
 }
-/* line 629, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003629}}
+/* line 642, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003642}}
 .c-hamburger--htla span {
   transition: transform 0.3s;
 }
-/* line 630, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003630}}
+/* line 643, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003643}}
 .c-hamburger--htla span::before {
   transform-origin: top right;
   transition: transform 0.3s, width 0.3s, top 0.3s;
 }
-/* line 631, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003631}}
+/* line 644, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003644}}
 .c-hamburger--htla span::after {
   transform-origin: bottom right;
   transition: transform 0.3s, width 0.3s, bottom 0.3s;
 }
-/* line 632, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003632}}
+/* line 645, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003645}}
 .c-hamburger--htla.is-active span {
   transform: rotate(180deg);
 }
-/* line 633, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003633}}
+/* line 646, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003646}}
 .c-hamburger--htla.is-active span::before,
 .c-hamburger--htla.is-active span::after {
   width: 50%;
   left: -25px;
 }
-/* line 634, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003634}}
+/* line 647, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003647}}
 .c-hamburger--htla.is-active .c-hamburger span {
   height: 6px;
 }
-/* line 635, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003635}}
+/* line 648, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003648}}
 .c-hamburger--htla.is-active span::before {
   top: 0;
   transform: translateX(39px) translateY(1px) rotate(40deg);
 }
-/* line 636, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003636}}
+/* line 649, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003649}}
 .c-hamburger--htla.is-active span::after {
   bottom: 0;
   transform: translateX(39px) translateY(-3px) rotate(-50deg);
 }
-/* line 637, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003637}}
+/* line 650, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003650}}
 .navbar-form {
   margin: 0;
   padding: 0;
 }
-/* line 638, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003638}}
+/* line 651, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003651}}
 .explore-portals {
   background: #345E79 !important;
   color: #ECF0F1 !important;
 }
-/* line 642, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003642}}
+/* line 655, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003655}}
 #PortalsHamburgerMenu.light span,
 #PortalsHamburgerMenu.light span::before,
 #PortalsHamburgerMenu.light span::after,
@@ -3458,125 +3439,125 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 }
 /* end of Hamburger menu */
 /* ApiDocs page */
-/* line 653, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003653}}
+/* line 666, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003666}}
 .api-list {
   padding: 0;
 }
-/* line 654, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003654}}
+/* line 667, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003667}}
 .api-list #swagger-ui-container {
   margin: 0;
 }
-/* line 655, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003655}}
+/* line 668, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003668}}
 .api-list .info_title {
   font-size: 30px;
   color: #345E79;
 }
-/* line 656, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003656}}
+/* line 669, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003669}}
 .api-list .info_description p {
   font-size: 21px !important;
   color: #345E79;
 }
-/* line 657, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003657}}
+/* line 670, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003670}}
 .api-list ul#resources li.resource div.heading h2 a {
   color: #000 !important;
 }
-/* line 658, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003658}}
+/* line 671, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003671}}
 .api-list ul#resources li.resource div.heading h2 {
   width: 570px;
   color: #666 !important;
 }
-/* line 659, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003659}}
+/* line 672, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003672}}
 .api-list .container {
   padding: 0;
 }
-/* line 660, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003660}}
+/* line 673, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003673}}
 .api-list ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.heading h3 {
   margin: 10px 0 0 10px !important;
 }
-/* line 661, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003661}}
+/* line 674, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003674}}
 .api-list ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.post div.heading h3 {
   margin: 10px 0 0 10px !important;
 }
-/* line 662, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003662}}
+/* line 675, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003675}}
 .api-list ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.get div.content h4 {
   font-size: 13px !important;
   font-weight: bold;
 }
-/* line 663, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003663}}
+/* line 676, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003676}}
 .api-list .response-content-type label {
   color: #345E79;
 }
-/* line 664, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003664}}
+/* line 677, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003677}}
 .api-list .code {
   font-family: inherit !important;
 }
-/* line 665, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003665}}
+/* line 678, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003678}}
 .api-list .required {
   font-weight: normal !important;
   font-size: 16px;
 }
-/* line 666, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003666}}
+/* line 679, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003679}}
 .api-list table tbody tr td strong span p {
   font-weight: normal !important;
   margin-top: -15px;
   margin-top: -6px;
 }
-/* line 667, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003667}}
+/* line 680, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003680}}
 .api-list table {
   font-size: 16px;
 }
-/* line 668, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003668}}
+/* line 681, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003681}}
 .api-list table th {
   max-width: auto;
 }
-/* line 669, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003669}}
+/* line 682, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003682}}
 html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   margin: 16px 10px 15px 0 !important;
 }
-/* line 670, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003670}}
+/* line 683, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003683}}
 .api-list #resources_container .footer {
   display: none;
 }
-/* line 671, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003671}}
+/* line 684, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003684}}
 .api-list ul#resources li.resource div.heading h2 {
   line-height: 1.6em;
 }
-/* line 672, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003672}}
+/* line 685, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003685}}
 .api-list .content * {
   font-size: 13px !important;
 }
-/* line 673, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003673}}
+/* line 686, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003686}}
 .api-list table tbody tr td {
   vertical-align: middle;
 }
-/* line 674, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003674}}
+/* line 687, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003687}}
 .api-list table thead tr th {
   line-height: 16px;
 }
-/* line 675, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003675}}
+/* line 688, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003688}}
 .api-list .sandbox_header input.submit {
   padding: 0 10px;
   color: #fff;
@@ -3602,8 +3583,8 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
 }
 /* end of ApiDocs page */
 /* ------------ loader --------------*/
-/* line 678, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003678}}
+/* line 691, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003691}}
 #overlay-loader {
   position: fixed;
   width: 100%;
@@ -3613,16 +3594,16 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   /*background-color: #002031;*/
   display: none;
 }
-/* line 679, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003679}}
+/* line 692, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003692}}
 #overlay-loader .loader-title {
   font-size: 33px;
   color: #FFF;
   text-align: center;
   padding-top: 15%;
 }
-/* line 680, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003680}}
+/* line 693, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003693}}
 #overlay-loader .small2 {
   position: absolute;
   height: 100px;
@@ -3632,8 +3613,8 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/* line 681, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003681}}
+/* line 694, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003694}}
 #overlay-loader .small1 {
   position: absolute;
   height: 100px;
@@ -3644,8 +3625,8 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   transform: translate(-50%, -50%) rotate(45deg);
   background-color: transparent;
 }
-/* line 682, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003682}}
+/* line 695, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003695}}
 #overlay-loader .bigcon {
   position: absolute;
   height: 95px;
@@ -3658,14 +3639,14 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   animation: bigcon 2s infinite linear;
   animation-delay: 0.25s;
 }
-/* line 683, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003683}}
+/* line 696, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003696}}
 #overlay-loader .ball {
   border-radius: 50%;
   position: absolute;
 }
-/* line 684, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003684}}
+/* line 697, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003697}}
 #overlay-loader .small {
   width: 25px;
   height: 25px;
@@ -3673,32 +3654,32 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   box-shadow: 0px 2px rgba(0, 0, 0, 0.3);
   background-color: #46b9ff;
 }
-/* line 685, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003685}}
+/* line 698, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003698}}
 #overlay-loader .small:nth-child(1) {
   top: 0%;
   left: 0%;
 }
-/* line 686, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003686}}
+/* line 699, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003699}}
 #overlay-loader .small:nth-child(2) {
   top: 0%;
   right: 0%;
 }
-/* line 687, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003687}}
+/* line 700, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003700}}
 #overlay-loader .small:nth-child(3) {
   right: 0%;
   bottom: 0%;
 }
-/* line 688, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003688}}
+/* line 701, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003701}}
 #overlay-loader .small:nth-child(4) {
   bottom: 0%;
   left: 0%;
 }
-/* line 689, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003689}}
+/* line 702, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003702}}
 #overlay-loader .big {
   width: 20px;
   height: 20px;
@@ -3708,147 +3689,137 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options {
   background-color: #54f7f8;
   animation: bigball 1s infinite linear;
 }
-/* line 690, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003690}}
+/* line 703, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003703}}
 #overlay-loader .smallball1 {
   animation-delay: -1.75s;
 }
-/* line 691, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003691}}
+/* line 704, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003704}}
 #overlay-loader .smallball6 {
   animation-delay: -1.5s;
 }
-/* line 692, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003692}}
+/* line 705, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003705}}
 #overlay-loader .smallball2 {
   animation-delay: -1.25s;
 }
-/* line 693, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003693}}
+/* line 706, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003706}}
 #overlay-loader .smallball7 {
   animation-delay: -1s;
 }
-/* line 694, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003694}}
+/* line 707, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003707}}
 #overlay-loader .smallball3 {
   animation-delay: -0.75s;
 }
-/* line 695, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003695}}
+/* line 708, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003708}}
 #overlay-loader .smallball8 {
   animation-delay: -0.5s;
 }
-/* line 696, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003696}}
+/* line 709, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003709}}
 #overlay-loader .smallball4 {
   animation-delay: -0.25s;
 }
-/* line 697, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003697}}
+/* line 710, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003710}}
 #overlay-loader .smallball5 {
   animation-delay: 0s;
 }
 @keyframes bigcon {
-  /* line 699, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003699}}
+  /* line 712, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+  @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003712}}
   0% {
     transform-origin: center;
     transform: translate(-50%, -50%) rotate(45deg);
   }
-  /* line 703, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-  @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003703}}
+  /* line 716, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+  @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003716}}
   100% {
     transform-origin: center;
     transform: translate(-50%, -50%) rotate(405deg);
   }
 }
 /* ------------ End loader --------------*/
-/* line 709, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003709}}
+/* line 722, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003722}}
 .navbar-inverse .navbar-toggle:hover,
 .navbar-inverse .navbar-toggle:focus {
   background-color: transparent !important;
 }
-/* line 710, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003710}}
+/* line 723, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003723}}
 .navbar-inverse .navbar-toggle {
   border: 0 !important;
 }
-/* line 711, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003711}}
+/* line 724, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003724}}
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
   color: #333;
 }
-/* line 712, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003712}}
+/* line 725, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003725}}
 .table.table-striped.table-bordered a,
 button + .table-responsive table a:hover {
   color: #5D88B3 !important;
   background-color: transparent !important;
 }
-/* line 713, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003713}}
+/* line 726, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003726}}
 .table.table-striped.table-bordered a:hover {
   color: rgba(93, 136, 179, 0.8) !important;
 }
 /** oocss **/
-/* line 715, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003715}}
+/* line 728, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003728}}
 .background-transparent {
   background-color: rgba(0, 0, 0, 0) !important;
 }
-/* line 716, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003716}}
+/* line 729, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003729}}
 .txt-gray {
   color: #666666 !important;
 }
-/* line 717, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003717}}
+/* line 730, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003730}}
 .txt-dark-gray {
   color: #444444 !important;
 }
-/* line 718, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003718}}
+/* line 731, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003731}}
 .txt-black {
   color: #000 !important;
 }
-/* line 719, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003719}}
+/* line 732, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003732}}
 .txt-white {
   color: #fff !important;
 }
-/* line 720, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003720}}
+/* line 733, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003733}}
 .txt-dark-blue {
   color: #345E79 !important;
 }
-/* line 721, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003721}}
+/* line 734, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003734}}
 .background-white {
   background-color: #fff !important;
 }
-/* line 722, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003722}}
+/* line 735, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003735}}
 html body #wrap .table-striped tbody:first-child th,
 html body #wrap .table-striped tbody:first-child th a {
   background-color: #345E79 !important;
   color: #ECF0F1 !important;
 }
-/* line 723, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003723}}
+/* line 736, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003736}}
 .stick-top-right {
-  position: fixed;
+  position: absolute;
   top: 0;
-  right: 10px;
-}
-/* line 728, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
-@media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003728}}
-.signUp {
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-bottom-right-radius: 5px;
-  -moz-border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  right: 45px;
 }
