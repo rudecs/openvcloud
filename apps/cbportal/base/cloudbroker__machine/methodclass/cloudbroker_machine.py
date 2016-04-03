@@ -480,12 +480,7 @@ class cloudbroker_machine(BaseActor):
     def updateMachine(self, machineId, description, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        account = self.models.account.get(cloudspace.accountId)
-        msg = 'Account: %s\nSpace: %s\nMachine: %s\nUpdating machine description: %s\nReason: %s' % (vmachine.name, description, reason)
-        subject = 'Updating description: %s for machine %s' % (description, vmachine.name)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, 'High')
         self.actors.machines.update(machineId, description=description)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
