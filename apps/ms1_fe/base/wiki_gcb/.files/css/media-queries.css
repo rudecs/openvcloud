@@ -126,10 +126,11 @@
     .borderRight1 + .col-md-6 ul li { list-style: none; }
 }
 @media (max-width: 992px) {
+	.access-rights.update .access-right-block {display: block;}
 	.create-cloudspace-container { background: #4E8BB3 !important; padding-left: 47px;}
 	.gray a {color: #FFF !important;}
 	.gray .panel-body {background: inherit !important;border-top: 0 !important;}
-	.gray .panel-heading.open .panel-title>a{background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important;padding: 8px 25px;color: #000 !important;}
+	.gray .panel-heading.open .panel-title>a{background: url(../img/images/acc-arrow-open-white.png) 11px 10px no-repeat #4E8BB3 !important;padding: 8px 25px;color: #fff !important;}
 	.pull-right .right { margin: 0 0 0 0;}
 	.logo {    margin: 12px 0 10px 0;display: inline-block;}
 	.creditForm .nameField { width: 70% !important; }
@@ -168,8 +169,12 @@
 	a.content-gear:after {
     content: "Cloud Space Settings";
 	}
+	.sm-margin {
+		margin-top: 35px;
+	}
 }
 @media (max-width: 768px) {
+	.nav-tabs { border-bottom: 1px solid #345E79;}
 	.navbar-inverse .navbar-toggle {border-color: #333;margin: 8px 35px 0 0;}
 	.nameField textarea { font-size: 16px; }
 	.creditForm .nameField, .nameField textarea, .osimage-label, .signUpForm .inputWrap input, .controls2, .sideNav { width: 100% !important; }
@@ -197,7 +202,7 @@
 	.modal .col-md-3 h4 { margin: 10px auto !important; }
 	.modal .col-md-3 img { display: none; }
 	.gray .panel-heading .panel-title>a{ background: url(../img/images/acc-arrow-close-white.png) 13px 9px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #FFF !important; }
-	.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #000 !important; }
+/*	.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #000 !important; }*/
 	.gray .panel-body { background: inherit !important; border-top: 0 !important; }
 	.gray a { color: #FFF !important; }
 	.gray a:hover { color: #000 !important; }
@@ -236,7 +241,7 @@
 }
 @media (max-width: 580px) {
 	.osimage-label, .controls2, .signUpForm .inputWrap input, .boxes p, .nameField textarea,
-	.boxes.font, .open-cloudspace-nav, .nameField, .nameField input, .nameField select, .modal, .sideNav { width: 100% !important; }
+	.boxes.font, .open-cloudspace-nav, .nameField, .nameField input, .nameField select, .sideNav { width: 100% !important; }
 	.boxes.font { display: inline-block; margin: 20px 0; }
 	.sideNav { position: static !important; }
 	.nameField textarea { font-size: 16px; }
@@ -252,13 +257,13 @@
 	.midFooter { padding: 0; }
 	.bottomFooter .col-md-1 { display: none; }
 	.bottomFooter .col-md-3 { }
-	.modal { width: 80% !important; left: 69% !important; }
+	.modal { width: 65% !important; left: 65% !important;}
 	.modal-footer button { font-size: 12px; }
 	.modal-header h2 { font-size: 15px; }
 	.modal .col-md-3 h4 { margin: 10px auto !important; }
 	.modal .col-md-3 img { display: none; }
 	.gray .panel-heading .panel-title>a{ background: url(../img/images/acc-arrow-close-white.png) 13px 9px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #FFF !important; }
-	.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #000 !important; }
+	/*.gray .panel-heading.open .panel-title>a{ background: url(../img/images/acc-arrow-open-black.png) 11px 10px no-repeat #4E8BB3 !important; padding: 8px 25px; color: #000 !important; }*/
 	.gray .panel-body { background: inherit !important; border-top: 0 !important; }
 	.gray a { color: #FFF !important; }
 	.gray a:hover { color: #000 !important; }
@@ -323,5 +328,38 @@
     .accordionInside {
     	padding: 0;
     }
+    .sm-color {
+    	color: #fff !important;
+    }
 }
+
+/* Mobile Media queries Android, Apple */
+@media (max-width: 500px) {
+	.modal{
+		left: 80% !important;
+	}
+	.stick-top-right {
+		right: 14px !important;
+	}
+	.sm-font {
+		font-size: 12px !important;
+	}
+}
+@media (max-width: 425px) {
+	.modal{
+		left: 93% !important;
+	}
+}
+@media (max-width: 361px) {
+	.modal{
+		left: 100% !important;
+	}
+	.stick-top-right {
+		right: 10px !important;
+	}
+	.sm-font {
+		font-size: 10px !important;
+	}
+}
+
 /* End of Media Queries */

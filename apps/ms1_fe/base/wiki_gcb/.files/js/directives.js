@@ -345,7 +345,8 @@ angular.module('cloudscalers.directives', [])
       });
     },
     template: '<div class="autocomplete {{attrs.class}}" id="{{attrs.id}}">'+
-                '<input type="text" ng-model="searchParam" required numbers-only="numbers-only" placeholder="{{attrs.placeholder}}" class="form-control" id="{{attrs.inputid}}" style="width: 173px; position:relative;"></input>' +
+                '<input type="text" ng-model="searchParam" required numbers-only="numbers-only"' +
+                ' placeholder="{{attrs.placeholder}}" class="form-control" id="{{attrs.inputid}}"></input>' +
                 '<ul ng-show="completing">' +
                   '<li suggestion ng-repeat="suggestion in suggestions | filter:searchFilter | orderBy:\'toString()\' track by $index"'+
                   'index="{{$index}}" val="{{suggestion.port}}" ng-class="{active: '+
