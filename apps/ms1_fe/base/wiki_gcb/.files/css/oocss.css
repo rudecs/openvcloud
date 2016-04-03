@@ -418,6 +418,9 @@
 .position-top-small{
 	top: 5px;
 }
+.position-top-none{
+	top: 0px;
+}
 .position-right-medium{
 	right: 15px;
 }

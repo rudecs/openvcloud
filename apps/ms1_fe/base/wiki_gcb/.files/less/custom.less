@@ -84,7 +84,7 @@ margin: : 10px 0; font-size: 18px; }
 /* Tabs */
 .tab-content>.tab-pane { padding: 30px 0; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { border: 1px solid @main-color; border-bottom-color: transparent; font-size: 17px; border-bottom: 3px solid transparent; padding-bottom: 9px; }
-.nav-tabs { border-bottom: 1px solid @main-color; }
+.nav-tabs { border-color: @main-color; }
 .nav-tabs>li>a { font-size: 17px; }
 .nav-tabs>li>a:hover { color: @main-color; background: #FFF; padding-bottom: 11px; border-bottom: 0; }
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #000; }
@@ -199,7 +199,7 @@ canvas { display: block; float: left; }
 .sideNav .panel-body { padding: 7px 0 7px 15px; }
 .sideNav .panel-body ul { padding: 0; list-style: none; }
 .sideNav .panel-body ul li a, .sideNav .body a { padding: 0; display: inline-block; color: #000; font-size: 13px; }
-.sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active { color: #000; }
+.sideNav .panel-body ul li a:hover, .sideNav .body a:hover, .sideNav .body a.active { color: fade(@tab-background, 80%);}
 .panel-heading { padding: 0; }
 .panel-title>a{ padding: 8px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
 .sideNav .header > a { padding: 5px 15px; display: block; color: #FFF !important; font-family: arial, sans-serif; }
@@ -235,8 +235,6 @@ canvas { display: block; float: left; }
 .navbar-search .search-query { font-family: arial, sans-serif; }
 .navbar-right.clearR { margin: 46px 0 0 0; }
 .navbar-default .navbar-nav>li>a { color: @menu-text-color; font-size: 16px; }
-.login { color: @menu-text-color !important; }
-.login:hover, .login:focus { color: #fff !important; }
 .navbar-default { border: 0; }
 .navbar { margin-bottom: 0; border-radius: 0; }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus { color: fade(@menu-text-color, 80%); }
@@ -273,17 +271,14 @@ canvas { display: block; float: left; }
 .minCloud .panel-body { min-height: 218px; }
 .panel-group .panel-heading+.panel-collapse .panel-body { border-top: 0; }
 .panel-group { margin: 0 }
-.signUp { background: #80bd01; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding: 5px 24px; line-height: 1.42857143; display: inline-block; color: #FFF; /* font-weight: bold; */ font-size: 14px; letter-spacing: 0px; text-transform: uppercase; }
-.login { background: @main-color; padding: 5px 16px; margin: 0 0 0 10px; color: #030000; }
 .clearR { clear: right; }
-.why { width: 63px; background: url(../img/images/why.png) no-repeat 42px 7px; }
 .myNav ul li { float: left; margin: 0; list-style: none; margin: 0 5px; }
 .myNav ul li a { font-family: arial, sans-serif; color: #fff; font-size: 18px; display: inline-block; padding: 0 12px; font-weight: 100; }
 .myNav ul li a:hover, .motherShipSub ul#homepage-submenu li a:hover { color: @main-color; }
 .blueBar { background: @main-color; height: 48px; z-index: 5555555555555555555555555; }
 .caret { border-top: 5px solid; border-right: 5px solid transparent; border-left: 5px solid transparent; }
 .accordionInside { min-width: 425px; box-shadow: none; padding: 5px 5px; }
-.create-cloudspace { margin: 7px 0 10px -21px; display: inline-block; }
+.create-cloudspace { margin: 7px 0 7px -21px; display: inline-block; }
 .user-name { color: #fff; margin-top: 5px; display: inline-block; margin-right: 15px; font-size: 16px; }
 .user-name:hover { color: @main-color; }
 .create-cloudspace:hover { color: initial !important; }
@@ -296,6 +291,24 @@ canvas { display: block; float: left; }
 .motherShipSub ul li { margin: 0; }
 .myNav ul li:last-child { margin-right: 0; }
 .question-symbol:hover { color: #428bca; }
+
+.logout {
+  background: @main-color;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  padding: 5px 24px;
+  line-height: 1.42857143;
+  display: inline-block;
+  color: @menu-text-color; /* font-weight: bold; */
+  font-size: 14px;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+}
+.logout:hover, .logout:focus { color: #fff !important; }
 /* end of header */
 
 /* Footer */
@@ -377,7 +390,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .users-table tr:hover { background-color: #EBF3F5; }
 .access-right { font-size: 85%; border-radius: 5px; width: 15px; }
 .share-machine-message { margin: 0 auto !important; top: -15px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
-.access-rights.update .access-right-block { margin-right: 15px; padding: 10px; display: inline; }
+.access-rights.update .access-right-block { margin-right: 15px; padding: 10px; display: inline-block; }
 .access-rights.update .access-right-block:hover, .access-rights.update .access-right-block.selected { background-color: rgb(234, 234, 234); border-radius: 5px; cursor: pointer; }
 .share-cloudspace-message { margin: 0 auto !important; top: -25px; padding: 3px; margin: 0 auto !important; position: absolute; left: 0; right: 0; margin-left: auto; margin-right: auto; }
 .machine-disks .disk:hover, .machine-disks .disk:active, .machine-disks .disk:focus { background: url(../img/images/machine.jpg) no-repeat; color: #77777b; cursor: default; }
@@ -720,3 +733,8 @@ html body .api-list ul#resources li.resource div.heading h2 + ul.options { margi
 .txt-dark-blue { color: @main-color !important; }
 .background-white { background-color: #fff !important; }
 html body #wrap .table-striped tbody:first-child  th, html body #wrap .table-striped tbody:first-child  th a { background-color: @main-color !important; color: @menu-text-color !important; }
+.stick-top-right {
+  position: absolute;
+  top: 0;
+  right: 45px;
+}

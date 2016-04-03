@@ -24,6 +24,11 @@ def main(j, args, params, tags, tasklet):
                   reload_on_success=False)
 
     key = "%(gid)s_%(networkId)s" % cloudspace.dump()
+    if not vcl.virtualfirewall.exists(key):
+        popup = Popup(id='movevfw', header='CloudSpace is not properly deployed', submit_url='#')
+        popup.write_html(page)
+        return params
+
     vfw = vcl.virtualfirewall.get(key)
     dropnodes = list()
     for node in vfwnodes:
