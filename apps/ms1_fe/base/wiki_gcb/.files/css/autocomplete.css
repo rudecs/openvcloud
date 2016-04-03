@@ -1,6 +1,7 @@
 #szn-autocomplete-wrap {
     max-width: 500px;
     position: relative;
+    min-width: 150px;
 }
 
 input[szn-autocomplete],

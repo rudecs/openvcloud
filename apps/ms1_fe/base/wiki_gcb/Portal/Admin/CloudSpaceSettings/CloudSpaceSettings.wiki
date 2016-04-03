@@ -26,7 +26,7 @@
       			<div class="left">
       				<span class="txt-gray txt-13 bg-info padding-horizontal-medium padding-vertical-small">{[currentLocation.name]}</span>
       			</div>
-    		</div>
+    		</div> 
 				<hr class="margin-top-large margin-bottom-large">
 				<button class="btn margin-top-large clear-both left" ng-click="deleteCloudspace()" ng-show="currentUser.acl.cloudspace == 3"><i class="fa fa-trash"></i> Delete Cloud Space</button>
 				<script type="text/ng-template" id="deleteCloudSpaceDialog.html">

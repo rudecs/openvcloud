@@ -103,35 +103,33 @@
 <h3>Edit Port Forward</h3>
 </div>
 <div class="modal-body row-fluid width-95">
-<div class="col-md-5">
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 	<h4>Source</h4>
-	<div class="control-group margin-top-none">
+	<div class="margin-top-none">
 		<label class="control-label float-none" for="inputNewIP">Public IP</label>
-		<div class="controls margin-left-noneline-height">
+		<div class="controls margin-left-none line-height">
 			{[currentSpace.publicipaddress]}
 		</div>
 		<label class="control-label float-none margin-top-medium">Port</label>
-		<div class="controls">
+		<div class="">
 		<autocomplete ng-model="editRule.publicPort" class="publicPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 	</div>
-	<label class="control-label float-none" for="inputProtocol">Protocol</label>
-	<div class="controls">
-	<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control protocol-select"></select>
+	<label class="control-label float-none margin-top-small" for="inputProtocol">Protocol</label>
+	<div class="">
+	<select ng-model="editRule.protocol" ng-options="o as o for o in ['tcp','udp']" class="form-control"></select>
 </div>
 </div>
 </div>
-<div class="col-md-2">
-</div>
-<div class="col-md-4">
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 sm-margin">
 <h4>Destination</h4>
-<div class="control-group margin-top-none">
+<div class="margin-top-none">
 <label class="control-label float-none width-90">Virtual Machine</label>
-<div class="controls">
-	<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control protocol-select">
+<div class="">
+	<select ng-model="editRule.VM.id" ng-options="machine.id as machine.name for machine in currentSpace.machines" class="form-control">
 	</select>
 </div>
-<label class="control-label float-none" for="inputNewLocalPort">Port</label>
-<div class="controls">
+<label class="control-label  float-none margin-top-small" for="inputNewLocalPort">Port</label>
+<div class="">
 <autocomplete ng-model="editRule.localPort" class="localPort" click-activation="true" data="commonPorts" on-type="suggestCommonPorts"></autocomplete>
 </div>
 </div>
