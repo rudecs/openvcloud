@@ -110,8 +110,6 @@ h2. Cloud Space: ${name}
 {{createmachine: cloudspaceId:$$id}}
 {{createportforwarding: cloudspaceId:$$id}}
 
-{{movevfw: cloudspaceId:$$id}}
-
 h3. Details
 |*CloudSpace ID*|$$id|
 |*Account*|[${accountname}|account?id=${accountId}]|
