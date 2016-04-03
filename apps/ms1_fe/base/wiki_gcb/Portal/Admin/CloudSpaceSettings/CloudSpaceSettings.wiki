@@ -40,8 +40,8 @@
 								all data and authorizations to it will be removed.
 						</div>
 						<div class="modal-footer">
-								<button type="button" class="btn ok" ng-click="ok()">Ok</button>
-								<button type="submit" id="canceldelete" class="btn btn-primary" autofocus>Cancel</button>
+								<button type="button" class="btn btn-primary ok" ng-click="ok()">Ok</button>
+								<button type="submit" id="canceldelete" class="btn" autofocus>Cancel</button>
 						</div>
 					</form>
 				</script>
