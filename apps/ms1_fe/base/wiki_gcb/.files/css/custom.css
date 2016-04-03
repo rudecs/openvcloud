@@ -416,7 +416,7 @@ input:-webkit-autofill:focus {
 /* line 87, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\0000387}}
 .nav-tabs {
-  border-bottom: 1px solid #345E79;
+  border-color: #345E79;
 }
 /* line 88, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\0000388}}
@@ -1169,7 +1169,7 @@ canvas {
 .sideNav .panel-body ul li a:hover,
 .sideNav .body a:hover,
 .sideNav .body a.active {
-  color: #000;
+  color: rgba(64, 64, 64, 0.8);
 }
 /* line 203, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003203}}
@@ -2203,7 +2203,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 .access-rights.update .access-right-block {
   margin-right: 15px;
   padding: 10px;
-  display: inline;
+  display: inline-block;
 }
 /* line 394, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003394}}
