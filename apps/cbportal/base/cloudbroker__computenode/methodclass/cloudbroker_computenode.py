@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
+import functools
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import random
@@ -52,7 +53,7 @@ class cloudbroker_computenode(BaseActor):
         stack['status'] = status
         self.models.stack.set(stack)
         if status in ['ENABLED', 'MAINTENANCE', 'DECOMMISSIONED', 'ERROR']:
-            nodes = self.scl.node.search({'id':int(stack['referenceId']), 'gid':stack['gid']})[1:]
+            nodes = self.scl.node.search({'id':int(stack['referenceId']), 'gid': stack['gid']})[1:]
             if len(nodes) > 0:
                 node = nodes[0]
                 node['active'] = True if status == 'ENABLED' else False
@@ -63,6 +64,7 @@ class cloudbroker_computenode(BaseActor):
     def enable(self, id, gid, message, **kwargs):
         title = "Enabling Stack"
         stack = self._getStack(id, gid)
+        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
         status = self._changeStackStatus(stack, 'ENABLED')
         startmachines = []
         machines = self._get_stack_machines(id)
@@ -79,7 +81,8 @@ class cloudbroker_computenode(BaseActor):
                                       kwargs={},
                                       title='Starting virtual Firewalls',
                                       success='Successfully started all Virtual Firewalls',
-                                      error='Failed to Start Virtual Firewalls')
+                                      error='Failed to Start Virtual Firewalls',
+                                      errorcb=errorcb)
         return status
 
     def _get_stack_machines(self, stackId, fields=None):
@@ -103,6 +106,7 @@ class cloudbroker_computenode(BaseActor):
         if vmaction not in ('move', 'stop'):
             raise exceptions.BadRequest("VMAction should either be move or stop")
         stack = self._getStack(id, gid)
+        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
         self._changeStackStatus(stack, "MAINTENANCE")
         title = 'Putting Node in Maintenance'
         if vmaction == 'stop':
@@ -118,7 +122,8 @@ class cloudbroker_computenode(BaseActor):
                                           kwargs={},
                                           title='Stopping virtual Firewalls',
                                           success='Successfully Stopped all Virtual Firewalls',
-                                          error='Failed to Stop Virtual Firewalls')
+                                          error='Failed to Stop Virtual Firewalls',
+                                          errorcb=errorcb)
 
             machineIds = [machine['id'] for machine in stackmachines]
             machines_actor.stopMachines(machineIds, "", ctx=kwargs['ctx'])
@@ -128,7 +133,8 @@ class cloudbroker_computenode(BaseActor):
                                           kwargs={},
                                           title='Putting Node in Maintenance',
                                           success='Successfully moved all Virtual Machines',
-                                          error='Failed to move Virtual Machines')
+                                          error='Failed to move Virtual Machines',
+                                          errorcb=errorcb)
         return True
 
     def _stop_vfws(self, stack, title, ctx):
@@ -169,6 +175,7 @@ class cloudbroker_computenode(BaseActor):
     @wrap_remote
     def decommission(self, id, gid, message, **kwargs):
         stack = self._getStack(id, gid)
+        status = stack['status']
         stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
         if not stacks:
             raise exceptions.PreconditionFailed("Decommissioning stack not possible when there are no other enabled stacks")
@@ -179,16 +186,19 @@ class cloudbroker_computenode(BaseActor):
                                          nid=int(otherstack['referenceId']), gid=otherstack['gid'],
                                          args=args)
         if job['state'] != 'OK':
+            self._changeStackStatus(stack, status)
             raise exceptions.Error("Failed to put storage node offline")
 
         ctx = kwargs['ctx']
         title = 'Decommissioning Node'
+        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
         ctx.events.runAsync(self._move_virtual_machines,
                             args=(stack, title, ctx),
                             kwargs={},
                             title=title,
                             success='Successfully moved all Virtual Machines.</br>Decommissioning finished.',
-                            error='Failed to move all Virtual Machines')
+                            error='Failed to move all Virtual Machines',
+                            errorcb=errorcb)
         return True
 
     def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
