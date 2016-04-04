@@ -50,6 +50,8 @@ class cloudbroker_cloudspace(BaseActor):
 
     def _destroy(self, cloudspace, reason, ctx):
         status = cloudspace['status']
+        if status == 'DEPLOYING':
+            raise ValueError('Can not delete a Cloud Space which is being deployed')
         cloudspace['status'] = 'DESTROYING'
         self.models.cloudspace.set(cloudspace)
         cloudspace['status'] = 'DESTROYED'

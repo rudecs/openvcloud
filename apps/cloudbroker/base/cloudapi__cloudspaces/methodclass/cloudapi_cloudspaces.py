@@ -313,6 +313,9 @@ class cloudapi_cloudspaces(BaseActor):
             raise exceptions.Conflict('In order to delete a CloudSpace it can not contain Machines.')
         # The last cloudspace in a space may not be deleted
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status == 'DEPLOYING':
+            raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
+
         query = {'accountId': cloudspace.accountId,
                   'status': {'$ne': 'DESTROYED'},
                   'id': {'$ne': cloudspaceId}}
