@@ -57,7 +57,7 @@ function setupdev() {
 
 
 echo mknod
-rexec "${node}" mkdir /dev/net
+rexec mkdir /dev/net
 dupdev /dev/net/tun
 dupdev /dev/fuse
 dupdev /dev/kvm
@@ -65,5 +65,7 @@ dupdev /dev/kvm
 setupdev cache 4GB
 setupdev db 4GB
 
+sudo udevadm trigger
 rexec udevadm trigger
 rexec chmod 777 /dev/kvm
+rexec ip l s vxbackend mtu 2000
