@@ -229,6 +229,9 @@ class cloudapi_cloudspaces(BaseActor):
             if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
                 raise exceptions.Conflict(
                     'Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
+                raise exceptions.Conflict('Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
+        if name in [ space['name'] for space in active_cloudspaces ]:
+            raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
 
         cs = self.models.cloudspace.new()
         cs.name = name
