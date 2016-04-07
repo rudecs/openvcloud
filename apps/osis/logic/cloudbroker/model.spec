@@ -130,6 +130,7 @@
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
     prop:error int,,Track amount of errors happened
+    prop:eco str,,ECO which put stack in error
     prop:gid int,,Grid id.
     prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
 	prop:type str,,Indicates the type of stack [libvirt/openstack]

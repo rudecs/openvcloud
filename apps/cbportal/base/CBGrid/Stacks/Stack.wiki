@@ -67,7 +67,11 @@ h3. Stack: ${name}
 * *ApiURL*: ${apiUrl}
 * *Description*: ${descr}
 * *ReferenceId*: [${gid}:${referenceId}|/grid/Grid Node?id=${referenceId}&gid=${gid}]
+{% if eco -%}
+* *Status*: [${status}|/grid/Error Condition?id=${eco}]
+{% else -%}
 * *Status*: ${status}
+{% endif %}
 
 h3. Images:
 

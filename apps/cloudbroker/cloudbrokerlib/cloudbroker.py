@@ -104,16 +104,18 @@ class CloudBroker(object):
             return self.getProviderByStackId(stacks[0]['id'])
         raise exceptions.ServiceUnavailable('Not enough resources available on current location')
 
-    def markProvider(self, stackId):
+    def markProvider(self, stackId, eco):
         stack = models.stack.get(stackId)
         stack.error += 1
-        if stack.error >=2:
+        if stack.error >= 2:
             stack.status = 'ERROR'
+            stack.eco = eco.guid
         models.stack.set(stack)
 
     def clearProvider(self, stackId):
         stack = models.stack.get(stackId)
         stack.error = 0
+        stack.eco = None
         stack.status = 'ENABLED'
         models.stack.set(stack)
 
@@ -529,8 +531,9 @@ class Machine(object):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
-            except Exception:
-                self.cb.markProvider(newstackId)
+            except Exception as e:
+                eco = j.errorconditionhandler.processPythonExceptionObject(e)
+                self.cb.markProvider(newstackId, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
