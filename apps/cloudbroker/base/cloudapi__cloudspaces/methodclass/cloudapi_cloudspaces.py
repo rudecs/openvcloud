@@ -270,7 +270,7 @@ class cloudapi_cloudspaces(BaseActor):
         return cloudspace_id
 
     def _release_resources(self, cloudspace):
-        # delete routeros
+        #  delete routeros
         fws = self.netmgr.fw_list(cloudspace.gid, str(cloudspace.id))
         if fws:
             self.netmgr.fw_delete(fws[0]['guid'], cloudspace.gid)
@@ -290,16 +290,16 @@ class cloudapi_cloudspaces(BaseActor):
         :param cloudspaceId: id of the cloudspace
         :return: status of deployment
         """
-        cs = self.models.cloudspace.get(cloudspaceId)
-
         # Validate that there is at least 1 public IP is available within the CU limits to reserve
         # for deploying the VFW
-        self.checkAvailablePublicIPs(cs.id, 1)
-        if cs.status != 'VIRTUAL':
-            return cs.status
+        with self.models.cloudspace.lock(cloudspaceId):
+            self.checkAvailablePublicIPs(cs.id, 1)
+            cs = self.models.cloudspace.get(cloudspaceId)
+            if cs.status != 'VIRTUAL':
+                return cs.status
 
-        cs.status = 'DEPLOYING'
-        self.models.cloudspace.set(cs)
+            cs.status = 'DEPLOYING'
+            self.models.cloudspace.set(cs)
         networkid = cs.networkId
         netinfo = self.network.getPublicIpAddress(cs.gid)
         if netinfo is None:
@@ -347,9 +347,10 @@ class cloudapi_cloudspaces(BaseActor):
             raise exceptions.Conflict(
                 'In order to delete a CloudSpace it can not contain Machines.')
         # The last cloudspace in a space may not be deleted
-        cloudspace = self.models.cloudspace.get(cloudspaceId)
-        if cloudspace.status == 'DEPLOYING':
-            raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
+        with self.models.cloudspace.lock(cloudspaceId):
+            cloudspace = self.models.cloudspace.get(cloudspaceId)
+            if cloudspace.status == 'DEPLOYING':
+                raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
 
         query = {'accountId': cloudspace.accountId,
                  'status': {'$ne': 'DESTROYED'},

@@ -184,7 +184,6 @@ class cloudapi_portforwarding(BaseActor):
         machineId = int(machineId)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        ctx = kwargs['ctx']
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if len(fw) == 0:
             raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
@@ -201,10 +200,10 @@ class cloudapi_portforwarding(BaseActor):
                 localIp = machine.nics[0].ipAddress
             else:
                 raise exceptions.NotFound('No correct ipaddress found for machine with id %s' % machineId)
-        if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
-            raise exceptions.Forbidden("Forward for %s with port %s already exists" % (publicIp, publicPort))
         self.netmgr.fw_forward_delete(fw_id, cloudspace.gid,
                                       forward['publicIp'], forward['publicPort'], forward['localIp'], forward['localPort'], forward['protocol'])
+        if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
+            raise exceptions.Conflict("Forward for %s with port %s already exists" % (publicIp, publicPort))
         self.netmgr.fw_forward_create(fw_id, cloudspace.gid, publicIp, publicPort, localIp, localPort, protocol)
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         return self._process_list(forwards, cloudspaceId)
