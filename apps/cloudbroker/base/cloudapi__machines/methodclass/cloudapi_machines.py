@@ -398,7 +398,7 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         auth = authenticator.auth()
         acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
-        q = {"cloudspaceId": cloudspaceId, "status": {"$nin": ["DESTROYED", "ERROR"]}}
+        q = {"cloudspaceId": cloudspaceId, "status": {"$nin": ["DESTROYED", "ERROR", ""]}}
         if 'R' not in acl and 'A' not in acl:
             q['acl.userGroupId'] = user
 
