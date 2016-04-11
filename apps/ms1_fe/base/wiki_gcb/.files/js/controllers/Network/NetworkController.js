@@ -1,62 +1,66 @@
-angular.module('cloudscalers.controllers')
-    .controller('NetworkController', ['$scope', 'Networks', 'Machine', '$modal', '$interval', '$sce', 'CloudSpace', '$ErrorResponseAlert', '$timeout',
-        function ($scope, Networks, Machine, $modal, $interval, $sce, CloudSpace, $ErrorResponseAlert, $timeout) {
+(function() {
+  'use strict';
+  //jshint latedef: nofunc
+  angular.module('cloudscalers.controllers')
+  .controller('NetworkController', NetworkController);
 
-    	var cloudspaceupdater;
-    	$scope.$watch('currentSpace.id + currentSpace.status',function(){
-            if ($scope.currentSpace){
-            	if ($scope.currentSpace.status != "DEPLOYED"){
-            		if (!(angular.isDefined(cloudspaceupdater))){
-            			cloudspaceupdater = $interval($scope.loadSpaces,5000);
-            		}
-            	}
-            	else{
-            		if (angular.isDefined(cloudspaceupdater)){
-            			$interval.cancel(cloudspaceupdater);
-            			cloudspaceupdater = undefined;
-            		}
-            	}
+  function NetworkController($scope, Networks, Machine, $modal, $interval,
+      $sce, CloudSpace, $ErrorResponseAlert, $timeout) {
+
+    var cloudspaceupdater;
+    $scope.showDefenseShield = showDefenseShield;
+    $scope.$watch('currentSpace.id + currentSpace.status', currentSpaceIdAndStatus);
+    $scope.$on('$destroy', destroy);
+
+    function routerosController($scope, $modalInstance) {
+        $timeout(function() {
+          angular.element('.routeros-modal-header').parents('.modal').addClass('routeros-modal');
+        }, 100);
+        $scope.cancel = function() {
+          $modalInstance.dismiss('cancel');
+        };
+        var defenseshieldautologin = 'autologin=' + $scope.defenseshield.user + '|' + $scope.defenseshield.password;
+        $scope.defenseshieldframe = $sce.trustAsHtml('<iframe name="' + defenseshieldautologin +
+        '" src="' + $scope.defenseshield.url + '" style="width:100%;height:80%"></iframe>');
+      }
+
+    function showDefenseShield() {
+        CloudSpace.getDefenseShield($scope.currentSpace.id)
+        .then(
+          function(shieldobj) {
+            $scope.defenseshield = shieldobj;
+            $modal.open({
+              templateUrl: 'routerosDialog.html',
+              controller: routerosController,
+              resolve: {},
+              scope: $scope
+            });
+          }, function(reason) {
+            $ErrorResponseAlert(reason);
+          }
+        );
+      }
+
+    function currentSpaceIdAndStatus() {
+        if ($scope.currentSpace) {
+          if ($scope.currentSpace.status !== 'DEPLOYED') {
+            if (!(angular.isDefined(cloudspaceupdater))) {
+              cloudspaceupdater = $interval($scope.loadSpaces,5000);
             }
-        });
-
-        $scope.$on(
-                "$destroy",
-                function( event ) {
-                	if (angular.isDefined(cloudspaceupdater)){
-                		$interval.cancel(cloudspaceupdater );
-                		cloudspaceupdater = undefined;
-                	}
-                }
-            );
-
-
-            var routerosController = function ($scope, $modalInstance) {
-                $timeout(function(){
-                    angular.element('.routeros-modal-header').parents('.modal').addClass('routeros-modal');
-                }, 100);
-                $scope.cancel = function () {
-            		$modalInstance.dismiss('cancel');
-            	};
-            	var defenseshieldautologin =  "autologin=" + $scope.defenseshield.user + "|" + $scope.defenseshield.password;
-                $scope.defenseshieldframe = $sce.trustAsHtml('<iframe name="' + defenseshieldautologin + '" src="' + $scope.defenseshield.url +'" style="width:100%;height:80%"></iframe>');
-            };
-
-	    $scope.showDefenseShield = function(){
-		CloudSpace.getDefenseShield($scope.currentSpace.id).then(function(shieldobj) {
-		    	$scope.defenseshield = shieldobj;
-	    		var modalInstance = $modal.open({
-                   		templateUrl: 'routerosDialog.html',
-                    		controller: routerosController,
-                    		resolve: {},
-                    		scope: $scope
-                	});
-                },
-                function(reason){
-                    $ErrorResponseAlert(reason);
-                });
-
-
-	    };
-
+          } else {
+            if (angular.isDefined(cloudspaceupdater)) {
+              $interval.cancel(cloudspaceupdater);
+              cloudspaceupdater = undefined;
+            }
+          }
         }
-    ]);
+      }
+
+    function destroy() {
+        if (angular.isDefined(cloudspaceupdater)) {
+          $interval.cancel(cloudspaceupdater);
+          cloudspaceupdater = undefined;
+        }
+      }
+  }
+})();

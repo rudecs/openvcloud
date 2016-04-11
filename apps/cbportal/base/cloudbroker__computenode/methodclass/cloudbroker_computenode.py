@@ -48,9 +48,10 @@ class cloudbroker_computenode(BaseActor):
         else:
             return self._changeStackStatus(stack, status)
 
-
     def _changeStackStatus(self, stack, status):
         stack['status'] = status
+        if status == 'ENABLED':
+            stack['eco'] = None
         self.models.stack.set(stack)
         if status in ['ENABLED', 'MAINTENANCE', 'DECOMMISSIONED', 'ERROR']:
             nodes = self.scl.node.search({'id':int(stack['referenceId']), 'gid': stack['gid']})[1:]
@@ -60,11 +61,16 @@ class cloudbroker_computenode(BaseActor):
                 self.scl.node.set(node)
         return stack['status']
 
+    def _errorcb(self, stack, eco):
+        stack['status'] = 'ERROR'
+        stack['eco'] = eco.guid
+        self.models.stack.set(stack)
+
     @auth(['level2', 'level3'], True)
     def enable(self, id, gid, message, **kwargs):
         title = "Enabling Stack"
         stack = self._getStack(id, gid)
-        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
+        errorcb = functools.partial(self._errorcb, stack)
         status = self._changeStackStatus(stack, 'ENABLED')
         startmachines = []
         machines = self._get_stack_machines(id)
@@ -106,7 +112,7 @@ class cloudbroker_computenode(BaseActor):
         if vmaction not in ('move', 'stop'):
             raise exceptions.BadRequest("VMAction should either be move or stop")
         stack = self._getStack(id, gid)
-        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
+        errorcb = functools.partial(self._errorcb, stack)
         self._changeStackStatus(stack, "MAINTENANCE")
         title = 'Putting Node in Maintenance'
         if vmaction == 'stop':
@@ -191,7 +197,7 @@ class cloudbroker_computenode(BaseActor):
 
         ctx = kwargs['ctx']
         title = 'Decommissioning Node'
-        errorcb = functools.partial(self._changeStackStatus, stack, 'ERROR')
+        errorcb = functools.partial(self._errorcb, stack)
         ctx.events.runAsync(self._move_virtual_machines,
                             args=(stack, title, ctx),
                             kwargs={},

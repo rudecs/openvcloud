@@ -61,6 +61,9 @@ class cloudapi_images(BaseActor):
                                                  'status': {'$ne': 'DESTROYED'}})
         if references:
             raise exceptions.Conflict("Can not delete an image which is still used")
+        if image.status != 'CREATED':
+            raise exceptions.Forbidden("Can not delete an image which is not created yet.")
+
 
         stacks = self.models.stack.search({'images': imageId})[1:]
         gid = None

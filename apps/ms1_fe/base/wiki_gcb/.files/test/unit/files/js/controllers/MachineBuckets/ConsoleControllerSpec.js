@@ -22,10 +22,10 @@ describe("Machine console controller tests", function(){
 		 	consoleUrlResult.url = "http://test.com:8900/blabla/aut0_vnc?token=mytoken";
 		 	scope.$digest();
 		 	
-			expect(scope.novnc_connectioninfo).not.toBe(null);
-			expect(scope.novnc_connectioninfo.host).toBe('test.com');
-			expect(scope.novnc_connectioninfo.path).toBe('websockify?token=mytoken');
-			expect(scope.novnc_connectioninfo.port).toBe('8900');
+			expect(scope.novncConnectionInfo).not.toBe(null);
+			expect(scope.novncConnectionInfo.host).toBe('test.com');
+			expect(scope.novncConnectionInfo.path).toBe('websockify?token=mytoken');
+			expect(scope.novncConnectionInfo.port).toBe('8900');
 			
 		});
 		
@@ -41,10 +41,10 @@ describe("Machine console controller tests", function(){
 		 	consoleUrlResult.url = "http://test.com/blabla/aut0_vnc?token=mytoken";
 		 	scope.$digest();
 		 	
-			expect(scope.novnc_connectioninfo).not.toBe(null);
-			expect(scope.novnc_connectioninfo.host).toBe('test.com');
-			expect(scope.novnc_connectioninfo.path).toBe('websockify?token=mytoken');
-			expect(scope.novnc_connectioninfo.port).toBe('80');
+			expect(scope.novncConnectionInfo).not.toBe(null);
+			expect(scope.novncConnectionInfo.host).toBe('test.com');
+			expect(scope.novncConnectionInfo.path).toBe('websockify?token=mytoken');
+			expect(scope.novncConnectionInfo.port).toBe('80');
 			
 		});
 		

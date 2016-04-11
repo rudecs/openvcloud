@@ -45,16 +45,15 @@ class libcloud_libvirt(object):
         param:resourceid optional resourceproviderid.
         result
         """
+        query = {}
         if resourceid:
             images = []
             try:
                 rp = self._models.resourceprovider.get(resourceid)
             except:
                 return []
-            for i in rp.images:
-                images.append(j.code.object2dict(self._models.image.get(i)))
-            return images
-        images = self._models.image.search({})[1:]
+            query = {'id': {'$in': rp.images}}
+        images = self._models.image.search(query)[1:]
         return images
 
     def listSizes(self, **kwargs):

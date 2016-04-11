@@ -1,0 +1,14 @@
+{
+  "preset": "google",
+  "maximumLineLength": 120,
+  "disallowTrailingComma": true,
+  "disallowMultipleSpaces": true,
+  "disallowMixedSpacesAndTabs": true,
+  "disallowTabs": true,
+  "requireDotNotation": false,
+  "requireCamelCaseOrUpperCaseIdentifiers": {
+    "allowedPrefixes": ["opt_"],
+    "allExcept": ["var_args", "api_key", "dom_id", "set_focused", "get_keyboard"]
+  }
+  // "disallowUnusedParams": true
+}

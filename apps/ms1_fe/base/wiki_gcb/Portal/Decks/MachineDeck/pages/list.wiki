@@ -38,7 +38,6 @@
             <td>{[machine.status]}</td>
             <td>
               <a ng-href="#/edit/{[machine.id]}" title="{[machine.description]}">{[machine.name]}</a>
-              <a href="#" ng-click=(updateMachineName(machine.id))></a>
             </td>
             <td class="hidden">{[machine.ip]}</td>
             <td>{[numeral(machineinfo[machine.id].size.memory * 1024 * 1024).format('0 b')]}</td>
@@ -49,9 +48,11 @@
       </table>
     </div>
   </div>
-  <div class="portforwordTip" >
-    <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
+</div>
+</div>
+<div class="portforwordTip" >
+  <div tourtip="To publicly access your Virtual Machine, set port forward!" tourtip-placement="left" tourtip-placement="-600"></div>
   </div>
-  </tour>
+</tour>
 </div>
 }}
