@@ -1170,6 +1170,7 @@ canvas {
 .sideNav .body a:hover,
 .sideNav .body a.active {
   color: rgba(64, 64, 64, 0.8);
+  font-weight: bold;
 }
 /* line 203, apps/ms1_fe/base/wiki_gcb/.files/less/custom.less */
 @media -sass-debug-info{filename{font-family:file\:\/\/apps\/ms1_fe\/base\/wiki_gcb\/\.files\/less\/custom\.less}line{font-family:\00003203}}
