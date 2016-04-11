@@ -192,10 +192,11 @@
           id: index.id,
           ip: selectForwardRule.publicIp,
           publicPort: selectForwardRule.publicPort,
-          VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.machineId},
+          VM: {'name': selectForwardRule.vmName , 'id': selectForwardRule.vmid},
           localPort: selectForwardRule.localPort,
           protocol: selectForwardRule.protocol
         };
+
       var modalInstance = $modal.open({
           templateUrl: 'editPortForwardDialog.html',
           controller: editRuleController,
