@@ -222,10 +222,10 @@ class cloudapi_portforwarding(BaseActor):
             f['id'] = index
             machine = getMachineByIP(f['localIp'])
             if machine is None:
-                f['vmName'] = f['localIp']
+                f['machineName'] = f['localIp']
             else:
-                f['vmName'] = "%s (%s)" % (machine['name'], f['localIp'])
-                f['vmid'] = machine['id']
+                f['machineName'] = "%s (%s)" % (machine['name'], f['localIp'])
+                f['machineId'] = machine['id']
             if not f['protocol']:
                 f['protocol'] = 'tcp'
             result.append(f)
