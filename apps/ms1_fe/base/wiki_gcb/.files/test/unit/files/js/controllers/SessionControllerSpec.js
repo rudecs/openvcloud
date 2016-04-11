@@ -22,7 +22,7 @@ describe("SessionController tests", function(){
         $scope.$digest();
         
         expect(User.login).toHaveBeenCalledWith('error', 'pa$$w0rd');
-        expect($scope.login_error).toBe(403);
+        expect($scope.loginError).toBe(403);
     });
 });
 

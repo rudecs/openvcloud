@@ -17,10 +17,10 @@
   <script src="/$$space/.files/js/app.js" type="text/javascript"></script>
   <script src="/$$space/.files/js/directives.js" type="text/javascript"></script>
   <!--[if lt IE 9]>
-    <script src="/$$space/.files/js/html5.js"></script>
+    <script src="/$$space/.files/lib/html5.js"></script>
   <![endif]-->
   <script src="/$$space/.files/js/general.js"></script>
-  <script src="/$$space/.files/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="/$$space/.files/lib/bootstrap.min.js" type="text/javascript"></script>
   <script src="/$$space/.files/js/services/AccountServices.js" type="text/javascript"></script>
   <script src="/$$space/.files/js/services/CloudSpaceServices.js" type="text/javascript"></script>
   <script src="/$$space/.files/js/services/SessionServices.js" type="text/javascript"></script>

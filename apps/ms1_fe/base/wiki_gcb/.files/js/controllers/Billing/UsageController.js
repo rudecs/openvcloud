@@ -1,44 +1,62 @@
-angular.module('cloudscalers.controllers')
-    .controller('UsageController', ['$scope', 'Account', '$ErrorResponseAlert', '$window', '$location',
-    function($scope, Account, $ErrorResponseAlert, $window, $location) {
-      $scope.orderByField = 'name';
-      $scope.reverseSort = false;
+(function() {
+  'use strict';
+  //jshint latedef: nofunc
+  angular
+    .module('cloudscalers.controllers')
+    .controller('UsageController', UsageController);
 
+  function UsageController($scope, Account, $ErrorResponseAlert, $window) {
+    var uri = new URI($window.location);
+    var reference = uri.search(true).reference;
+    $scope.orderByField = 'name';
+    $scope.reverseSort = false;
+    $scope.usagereportLoader = true;
+    $scope.storeCurrentAccountId = $scope.currentAccount.id;
+    $scope.toUTCDate = toUTCDate;
+    $scope.millisToUTCDate = millisToUTCDate;
+
+    $scope.$watch('currentAccount.id', currentAccountId);
+
+    initAccountUsage();
+
+    function initAccountUsage() {
+      Account.getUsage($scope.currentAccount, reference)
+      .then(function(result) {
+        $scope.usagereport = result;
+        $scope.usagereportLoader = false;
+      }, function() {
+        // in case he don't have access to the page redirect to home
         var uri = new URI($window.location);
-        var reference = uri.search(true).reference;
-        $scope.usagereportLoader = true;
-        Account.getUsage($scope.currentAccount, reference).
-          then(function(result){
-                  $scope.usagereport = result;
-                  $scope.usagereportLoader = false;
-                },
-                function(reason){
-                  // in case he don't have access to the page redirect to home
-                  var uri = new URI($window.location);
-                  uri.filename('Decks');
-                  $window.location = uri.toString();
-        });
-        $scope.storeCurrentAccountId = $scope.currentAccount.id;
+        uri.filename('Decks');
+        $window.location = uri.toString();
+      });
+    }
 
-        $scope.$watch('currentAccount.id', function(){
-          if ($scope.currentAccount.id) {
-              if($scope.storeCurrentAccountId && $scope.storeCurrentAccountId != $scope.currentAccount.id){
-                var uri = new URI($window.location);
-                uri.filename('AccountSettings');
-                uri.removeQuery('reference');
-                $window.location = uri.toString();
-              }
-            }
-        });
-        var toUTCDate = function(date){
-          var _utc = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-          return _utc;
-        };
+    function currentAccountId() {
+      if ($scope.currentAccount.id) {
+        if ($scope.storeCurrentAccountId && $scope.storeCurrentAccountId !== $scope.currentAccount.id) {
+          var uri = new URI($window.location);
+          uri.filename('AccountSettings');
+          uri.removeQuery('reference');
+          $window.location = uri.toString();
+        }
+      }
+    }
 
-        var millisToUTCDate = function(millis){
-          return toUTCDate(new Date(millis));
-        };
+    function toUTCDate(date) {
+      var _utc = new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds());
+      return _utc;
+    }
 
-          $scope.toUTCDate = toUTCDate;
-          $scope.millisToUTCDate = millisToUTCDate;
-  }]);
+    function millisToUTCDate(millis) {
+      return toUTCDate(new Date(millis));
+    }
+  }
+
+})();

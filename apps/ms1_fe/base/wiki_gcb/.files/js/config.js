@@ -1,3 +1,5 @@
-cloudspaceconfig = {
-    apibaseurl: '../../restmachine/cloudapi'
+'use strict';
+
+var cloudspaceconfig = { // jshint ignore:line
+  apibaseurl: '../../restmachine/cloudapi'
 };
