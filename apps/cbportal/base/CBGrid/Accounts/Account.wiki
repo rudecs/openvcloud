@@ -67,7 +67,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/finance/changeCredit
   hide: true
   data:
-   accountname: ${name}
+   accountId: $$id
   input:
   - name: amount
     label: Credit Amount (can be negative)
