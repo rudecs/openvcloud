@@ -165,7 +165,7 @@ h2. Cloud Space: ${name}
 h3. Details
 |*CloudSpace ID*|$$id|
 |*Account*|[${accountname}|account?id=${accountId}]|
-|*Network ID*|${networkid}|
+|*Network ID*|[${networkId}|private network?id=${networkId}&gid=${gid}]|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
 |*Status*|${status}|

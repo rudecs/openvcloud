@@ -29,7 +29,7 @@ h2. Virtual Machine: ${name}
 {% endif -%}
 |*Deleted at*| ${deletedat}|
 |*Size*| ${size}|
-|*Image*| ${image}|
+|*Image*| [${image.name}|image?id=${image.referenceId}]|
 |*Status*| ${status}|
 |*Host Name*| ${hostName}|
 |*Hypervisor Type*| ${hypervisortype}|

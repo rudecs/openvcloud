@@ -28,7 +28,7 @@ def main(j, args, params, tags, tasklet):
                 vm['publicipaddress'] = nic['ipAddress']
                 network['vms'].append(vm)
 
-    args.doc.applyTemplate(network)
+    args.doc.applyTemplate(network, True)
     params.result = (args.doc, args.doc)
     return params
 

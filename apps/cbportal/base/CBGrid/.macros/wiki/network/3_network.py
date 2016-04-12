@@ -39,7 +39,7 @@ def main(j, args, params, tags, tasklet):
     obj['pubips'] = ', '.join(obj['pubips'])
     obj['running'] = j.apps.jumpscale.netmgr.fw_check(network.guid)
 
-    args.doc.applyTemplate(obj)
+    args.doc.applyTemplate(obj, True)
     params.result = (args.doc, args.doc)
     return params
 

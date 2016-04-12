@@ -20,7 +20,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     obj = locations[0]
-    args.doc.applyTemplate(obj)
+    args.doc.applyTemplate(obj, True)
     params.result = (args.doc, args.doc)
     return params
 

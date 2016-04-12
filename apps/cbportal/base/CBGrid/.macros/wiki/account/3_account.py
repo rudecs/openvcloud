@@ -78,7 +78,7 @@ def main(j, args, params, tags, tasklet):
     accountdict['maxNumPublicIP'] = accountobj.resourceLimits['CU_I'] \
         if 'CU_I' in accountobj.resourceLimits else -1
 
-    args.doc.applyTemplate(accountdict)
+    args.doc.applyTemplate(accountdict, True)
     params.result = (args.doc, args.doc)
     return params
 
