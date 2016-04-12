@@ -309,6 +309,8 @@
         Change memory and vcpu from machine
         """
         var:machineId int,, ID of machine
+        var:sizeId int,,new sizeId
+        result:bool
 
     method:startMachines
         """
