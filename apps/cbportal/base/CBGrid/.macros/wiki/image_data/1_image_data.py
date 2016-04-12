@@ -18,7 +18,7 @@ def main(j, args, params, tags, tasklet):
     
     image = imageobj.dump()
 
-    args.doc.applyTemplate(image)
+    args.doc.applyTemplate(image, True)
 
     params.result = (args.doc, args.doc)
     return params

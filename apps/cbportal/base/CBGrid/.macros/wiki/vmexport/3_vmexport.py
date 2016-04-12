@@ -25,7 +25,7 @@ def main(j, args, params, tags, tasklet):
     vmexport['timestamp'] = j.base.time.epoch2HRDateTime(vmexport['timestamp']) if not vmexport['timestamp']==0 else 'N/A'
     
     vmexport['config'] = pprint.pformat(json.loads(vmexport['config']))
-    args.doc.applyTemplate(vmexport)
+    args.doc.applyTemplate(vmexport, True)
 
     params.result = (args.doc, args.doc)
     return params

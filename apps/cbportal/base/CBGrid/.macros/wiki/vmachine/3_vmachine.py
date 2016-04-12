@@ -96,12 +96,8 @@ def main(j, args, params, tags, tasklet):
         stack = {'name': 'N/A', 'referenceId': 'N/A', 'type': 'UNKNOWN'}
     try: 
         image = cbosis.image.get(obj.imageId).dump()
-        ccl = j.clients.osis.getNamespace('libvirt')
-        imagedata = ccl.image.search({'name': image['name']})[1:]
-        imageid = imagedata[0]['id'] if imagedata else None
     except Exception:
-        image = {'name':'N/A'}
-        imageid = None
+        image = {'name': 'N/A', 'referenceId': ''}
     try:
         space = cbosis.cloudspace.get(obj.cloudspaceId).dump()
         data['accountId'] = space['accountId']
@@ -147,7 +143,7 @@ def main(j, args, params, tags, tasklet):
     if hasattr(obj, 'deletionTime'):
         data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
     data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
-    data['image'] = '[%s|image?id=%s]' % (image['name'], imageid) if imageid else image['name']
+    data['image'] = image
     data['stackname'] = stack['name']
     data['spacename'] = space['name']
     data['stackrefid'] = stack['referenceId'] or 'N/A'
@@ -171,7 +167,8 @@ def main(j, args, params, tags, tasklet):
 
     data['users'] = generateUsersList(sosis, data)
 
-    args.doc.applyTemplate(data)
+    data['referenceId'] = data['referenceId'].replace('-', '%2d')
+    args.doc.applyTemplate(data, True)
     params.result = (args.doc, args.doc)
     return params
 

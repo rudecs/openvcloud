@@ -62,7 +62,7 @@ def main(j, args, params, tags, tasklet):
         balance = sum([bal['amount'] for bal in balances])
     accountdict['balance'] = balance
 
-    args.doc.applyTemplate(accountdict)
+    args.doc.applyTemplate(accountdict, True)
     params.result = (args.doc, args.doc)
     return params
 

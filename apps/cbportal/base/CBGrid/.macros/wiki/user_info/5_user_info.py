@@ -12,6 +12,6 @@ def main(j, args, params, tags, tasklet):
 
     obj = j.apps.system.usermanager.modelUser.get(guid).dump()
 
-    args.doc.applyTemplate(obj)
+    args.doc.applyTemplate(obj, True)
     params.result = (args.doc, args.doc)
     return params

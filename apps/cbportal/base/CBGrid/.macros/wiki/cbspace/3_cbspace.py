@@ -67,7 +67,6 @@ def main(j, args, params, tags, tasklet):
     vfwkey = "%(gid)s_%(networkId)s" % (cloudspacedict)
     if vcl.virtualfirewall.exists(vfwkey):
         network = vcl.virtualfirewall.get(vfwkey).dump()
-        cloudspacedict['networkid'] = '[%s|private network?id=%s&gid=%s]' % (cloudspacedict['networkId'], cloudspacedict['networkId'], cloudspacedict['gid'])
         cloudspacedict['network'] = network
     else:
         if cloudspacedict['networkId']:
@@ -78,7 +77,7 @@ def main(j, args, params, tags, tasklet):
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
 
-    args.doc.applyTemplate(cloudspacedict)
+    args.doc.applyTemplate(cloudspacedict, True)
     params.result = (args.doc, args.doc)
     return params
 
