@@ -20,7 +20,7 @@
 				<tr>
 					<th><a href="" ng-click="predicate = 'ip'; reverse=!reverse">IP</a></th>
 					<th><a href="" ng-click="predicate = 'puplicPort'; reverse=!reverse">Port</a></th>
-					<th><a href="" ng-click="predicate = 'vmName'; reverse=!reverse">Virtual Machine</a></th>
+					<th><a href="" ng-click="predicate = 'machineName'; reverse=!reverse">Virtual Machine</a></th>
 					<th><a href="" ng-click="predicate = 'localPort'; reverse=!reverse">Port</a></th>
 					<th><a href="" ng-click="predicate = 'protocol'; reverse=!reverse">Protocol</a></th>
 				</tr>
@@ -29,7 +29,7 @@
 						<td class="hidden">{[portforward.id]}</td>
 						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.publicIp]}</td>
 						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.publicPort]}</td>
-						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.vmName]}</td>
+						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.machineName]}</td>
 						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.localPort]}</td>
 						<td ng-class="{'cursor-pointer': currentUser.acl.cloudspace > 1}">{[portforward.protocol]}</td>
 					</tr>

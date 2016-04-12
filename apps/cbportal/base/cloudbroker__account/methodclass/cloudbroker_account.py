@@ -196,16 +196,24 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):
         """
-        Complete delete an acount from the system
+        Complete delete an account from the system
         """
         account = self._checkAccount(accountId)
+        startstate = account['status']
+
+        def restorestate(eco):
+            account = self.models.account.get(accountId)
+            account.status = startstate
+            self.models.account.set(account)
+
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._delete,
                             (accountId, reason, kwargs),
                             {},
                             'Deleting Account %(name)s' % account,
                             'Finished deleting Account',
-                            'Failed to delete Account')
+                            'Failed to delete Account',
+                            errorcb=restorestate)
 
     def _delete(self, accountId, reason, kwargs):
         ctx = kwargs['ctx']
