@@ -629,7 +629,8 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         memory = dom.find('memory')
-        dom.remove(dom.find('currentMemory'))
+        if dom.find('currentMemory'):
+            dom.remove(dom.find('currentMemory'))
         memory.text = str(size.ram * 1024)
         vcpu = dom.find('vcpu')
         vcpu.text = str(size.extra['vcpus'])
