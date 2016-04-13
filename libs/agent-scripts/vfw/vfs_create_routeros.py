@@ -214,26 +214,12 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         cmd="/system reboot"
         try:
             ro.executeScript(cmd)
-        except Exception,e:
+        except Exception:
             pass
         print "reboot busy"
 
-        start = time.time()
-        timeout = 60
-        while time.time() - start < timeout:
-            try:
-                ro=j.clients.routeros.get(internalip,username,newpassword)
-                if ro.ping(publicgwip):
-                    print "Failed to ping %s waiting..." % publicgwip
-                    break
-            except:
-                print 'Failed to connect will try again in 3sec'
-            time.sleep(3)
-        else:
-            raise RuntimeError("Could not ping to:%s for VFW %s"%(publicgwip, networkid))
-
-        print "wait max 2 sec on tcp port 9022 connection to '%s'"%internalip
-        if j.system.net.waitConnectionTest(internalip,9022,timeout=2):
+        print "wait max 60 sec on tcp port 9022 connection to '%s'"%internalip
+        if j.system.net.waitConnectionTest(internalip,9022,timeout=60):
             print "Router is accessible, configuration probably ok."
         else:
             raise RuntimeError("Internal ssh is not accsessible.")
