@@ -65,13 +65,13 @@ class cloudapi_logs(BaseActor):
                     machine_dict['CU_I'] = 0
                     for diskid in machine['disks']:
                         machine_dict['CU_D'] += self.disksizes[diskid]
-                    cloudspace_dict['machines'].append({machine['id']: machine_dict})
+
                     for nic in machine["nics"]:
                         if nic["type"] == "PUBLIC":
                             machine_dict['CU_I'] += 1
 
+                    cloudspace_dict['machines'].append({machine['id']: machine_dict})
                 account_log['cloudspaces'].append({cloudspace['id']: cloudspace_dict})
-
-            with open("%s/%s_%s.json" % (accountpath, hour, minute), 'w+') as f:
+            with open("%s/%s_%s_%s_%s_%s.json" % (accountpath, year, month, day, hour, minute), 'w+') as f:
                 f.write(str(account_log))
         return True
