@@ -1,60 +1,52 @@
-(function() {
-  'use strict';
-  //jshint latedef: nofunc
-  angular
-    .module('cloudscalers.controllers')
-    .controller('ConsoleController', ConsoleController);
-
-  function ConsoleController($scope, $routeParams, Machine) {
-    $scope.machineConsoleUrlResult = {};
-    $scope.novncConnectionInfo = {};
-    $scope.sendText = sendText;
-
-    $scope.$watch('tabactive.console+$parent.machine.status', tabActiveConsoleAndMachineStatus);
-    //Make sure the keyboard is not captured when going to other pages
-    $scope.$on('$destroy', destroy);
-    $scope.$watch('machineConsoleUrlResult', machineConsoleUrlResult, true);
-
-    function tabActiveConsoleAndMachineStatus() {
-      if ($scope.tabactive.console && $scope.$parent.machine.status === 'RUNNING') {
-        $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
-      } else {
+angular.module('cloudscalers.controllers')
+    .controller('ConsoleController', ['$scope','$routeParams', 'Machine', function($scope, $routeParams, Machine) {
         $scope.machineConsoleUrlResult = {};
-      }
-    }
+        $scope.novnc_connectioninfo = {};
 
-    function destroy() {
-      $scope.machineConsoleUrlResult = {};
-    }
 
-    function sendText(rfb, text) {
-      for (var i = 0; i < text.length; i++) {
-        rfb.sendKey(text.charCodeAt(i));
-      }
-    }
+        $scope.$watch('tabactive.console+$parent.machine.status',function(){
+            if ($scope.tabactive.console && $scope.$parent.machine.status == "RUNNING"){
+                $scope.machineConsoleUrlResult = Machine.getConsoleUrl($routeParams.machineId);
+            }
+            else {
+                $scope.machineConsoleUrlResult = {};
+            }
+        });
 
-    function machineConsoleUrlResult(newvalue) {
-      if (newvalue.url) {
-        var newConnectionInfo = {};
-        var consoleUri = URI(newvalue.url);
-        newConnectionInfo.host = consoleUri.hostname();
-        newConnectionInfo.port = consoleUri.port();
+        //Make sure the keyboard is not captured when going to other pages
+        $scope.$on(
+                "$destroy",
+                function( event ) {
+                    $scope.machineConsoleUrlResult = {};
+                }
+            );
 
-        if (newConnectionInfo.port === '') {
-          if (consoleUri.protocol() === 'http') {
-            newConnectionInfo.port = '80';
-          } else if (consoleUri.protocol() === 'https') {
-            newConnectionInfo.port = '443';
-          }
-        }
+        $scope.sendText = function(rfb, text) {
+            for (var i=0; i<text.length; i++){
+                rfb.sendKey(text.charCodeAt(i));
+            }
+        };
 
-        var token = consoleUri.search(true)['token'];
-        newConnectionInfo.path = 'websockify?token=' + token;
+        $scope.$watch('machineConsoleUrlResult',function(newvalue, oldvalue){
+            if (newvalue.url){
+                var new_connection_info = {};
+                console_uri = URI(newvalue.url);
+                new_connection_info.host = console_uri.hostname();
+                new_connection_info.port = console_uri.port();
+                if (new_connection_info.port === ''){
+                    if (console_uri.protocol() == 'http'){
+                        new_connection_info.port = '80';
+                    }
+                    else if (console_uri.protocol() == 'https'){
+                        new_connection_info.port = '443';
+                    }
+                }
+                token = console_uri.search(true).token;
+                new_connection_info.path = "websockify?token=" + token;
+                $scope.novnc_connectioninfo = new_connection_info;
+            }else{
+                $scope.novnc_connectioninfo = {};
+            }
+        }, true);
 
-        $scope.novncConnectionInfo = newConnectionInfo;
-      } else {
-        $scope.novncConnectionInfo = {};
-      }
-    }
-  }
-})();
+    }]);
