@@ -353,22 +353,18 @@ angular.module('cloudscalers.services')
     }
   };
 })
-.factory('Image', function($http) {
+.factory('Image', function($http, $q) {
   return {
     list: function(accountId, cloudspaceId) {
-      var images = [];
       var url = cloudspaceconfig.apibaseurl + '/images/list?accountId=' + accountId + '&cloudspaceId=' + cloudspaceId;
-      $http.get(url).success(
-        function(data) {
-          _.each(data, function(image) {
-            images.push(image);
-          });
-        }).error(
-        function(data, status) {
-          images.error = status;
+      return $http.get(url).then(
+        function(result){
+          return result.data;
+        },
+        function(reason){
+          return $q.reject(reason);
         }
       );
-      return images;
     }
   };
 })

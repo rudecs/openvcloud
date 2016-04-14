@@ -125,7 +125,7 @@
           return cloudspace.id === $scope.currentSpace.id;
         });
       }
-      if (currentCloudSpaceFromList === null) {
+      if (!currentCloudSpaceFromList) {
         currentCloudSpaceFromList = _.first($scope.cloudspaces);
       }
       $scope.setCurrentCloudspace(currentCloudSpaceFromList);
