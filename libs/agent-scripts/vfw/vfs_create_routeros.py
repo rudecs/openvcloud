@@ -222,10 +222,12 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         timeout = 60
         while time.time() - start < timeout:
             try:
-                ro=j.clients.routeros.get(internalip,username,newpassword)
-                if ro.ping(publicgwip):
-                    print "Failed to ping %s waiting..." % publicgwip
+                ro = j.clients.routeros.get(internalip,username,newpassword)
+                if ro.arping(publicgwip, 'public'):
+                    print "Ping %s succeeded" % publicgwip
                     break
+                else:
+                    print "Failed to ping %s waiting..." % publicgwip
             except:
                 print 'Failed to connect will try again in 3sec'
             time.sleep(3)
