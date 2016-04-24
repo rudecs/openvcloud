@@ -361,7 +361,10 @@ class cloudapi_machines(BaseActor):
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         locked = False
-        disks = self.models.disk.search({'id': {'$in': machine.disks}})[1:]
+        diskquery = {'id': {'$in': machine.disks}}
+        disks = self.models.disk.search({'$query': diskquery,
+                                         '$fields': ['status', 'type', 'name', 'descr', 'acl', 'sizeMax', 'id']
+                                         })[1:]
         storage = sum(disk['sizeMax'] for disk in disks)
         osImage = self.models.image.get(machine.imageId).name
         if machine.nics and machine.nics[0].ipAddress == 'Undefined' and node:
