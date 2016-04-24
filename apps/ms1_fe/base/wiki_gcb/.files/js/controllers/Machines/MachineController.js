@@ -14,6 +14,7 @@
     $scope.updateMachineList = updateMachineList;
     $scope.$watch('currentSpace.id',currentSpaceId);
     $scope.$watch('currentspace.accountId', currentSpaceAccountId);
+    $scope.$watch('currentSpace', currentSpaceAccountId);
     $rootScope.$on('callUpdateMachineList', callUpdateMachineList);
     $scope.machineIsManageable = machineIsManageable;
 
@@ -23,7 +24,14 @@
 
     function currentSpaceAccountId() {
       if ($scope.currentSpace) {
-        $scope.images = Image.list($scope.currentSpace.accountId, $scope.currentSpace.id);
+        Image.list($scope.currentSpace.accountId, $scope.currentSpace.id).then(
+          function(images) {
+            $scope.images = images;
+          },
+          function(reason) {
+            $ErrorResponseAlert(reason);
+          }
+        );
       }
     }
 
