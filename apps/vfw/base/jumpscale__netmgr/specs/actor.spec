@@ -106,3 +106,8 @@
         var:destport int,,port where we forward to e.g. a ssh server in DMZ
         var:protocol str,, protocol used to forward the port
 
+    method:fw_get_openvpn_config
+        """
+        Get openvpn config
+        """
+        var:fwid str,,firewall id

@@ -107,3 +107,10 @@
         var:emailaddress str,, emailaddress of the unregistered user that will be invited
         var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         result:bool, True if user was added successfully
+
+    method:getOpenvpnConfig
+        """
+        Get OpenVPN config file (in zip format) for specified cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        result:str, binary zip file

@@ -110,6 +110,14 @@ class jumpscale_netmgr(j.code.classGetBase()):
             raise RuntimeError("Failed to set password. Error: %s" % (job['result']['errormessage']))
         return job['result']
 
+    def fw_get_openvpn_config(self, fwid, **kwargs):
+        fwobj = self._getVFWObject(fwid)
+        args = {'fwobject': fwobj.obj2dict()}
+        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_openvpn_config_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        if job['state'] != 'OK':
+            raise RuntimeError("Failed to set password. Error: %s" % (job['result']['errormessage']))
+        return job['result']
+
     def fw_delete(self, fwid, gid, **kwargs):
         """
         param:fwid firewall id
