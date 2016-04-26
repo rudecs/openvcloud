@@ -25,3 +25,7 @@ set certificate=cert_1 cipher=blowfish128,aes128,aes192,aes256 enabled=yes \
 
 /interface pptp-server server
 set enabled=yes authentication=pap,chap,mschap1,mschap2 mrru=1600
+
+/ppp
+secret remove numbers=[/ppp secret find]
+/ppp secret add name=vpn service=any password="$vpnpassword"

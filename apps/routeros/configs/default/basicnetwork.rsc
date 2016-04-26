@@ -28,6 +28,15 @@ add address=192.168.103.0/24 gateway=192.168.103.1 netmask=255.255.255.0 dns-ser
 remove [/ip dhcp-server find name=server1]
 add address-pool=dhcp disabled=no interface=cloudspace-bridge name=server1
 
+/ip address
+remove numbers=[/ip address find network=192.168.1.0]
+remove numbers=[/ip address find network=192.168.103.0]
+add interface=public address=$pubip
+add interface=cloudspace-bridge address=$privateip
+
+/ip neighbor
+discovery set [ /interface ethernet find name=public ] discover=no
+
 /interface ethernet reset-mac-address numbers=0
 /interface ethernet reset-mac-address numbers=1
 /interface ethernet reset-mac-address numbers=2

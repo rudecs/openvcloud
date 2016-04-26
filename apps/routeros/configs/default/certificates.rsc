@@ -2,10 +2,10 @@
 # software id = WLVA-21HW
 #
 
-/certificate import file-name=ca.crt passphrase="123456"
-import file-name=RB450.crt passphrase="123456"
-import file-name=RB450.pem passphrase="123456"
-
-
+/certificate
+remove numbers=[/certificate find ]
+import file-name=server.crt passphrase=""
+import file-name=server.key passphrase=""
+import file-name=ca.crt passphrase=""
 
 
