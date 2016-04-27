@@ -10,8 +10,6 @@ h1. Access your Cloud Space using OpenVPN
 *# Click "Next" for the default components
 *# Click "Install"
 *# Click "Next" after the installation in completed
-*# Download our [OpenVPN configuration file|/$$space/.files/downloads/client.ovpn]
-*# Download our [CA certificate|/$$space/.files/downloads/ca.crt]
-*# Copy the "OpenVPN configuration file" and "CA certificate" to: "C:\Program Files\OpenVPN\config"
+*# Download our OpenVPN configuration zip from the [Network Deck|/$$space/NetworkDeck]
+*# Unzip the "OpenVPN configuration zip" at: "C:\Program Files\OpenVPN\config"
 *# Right-click on the "OpenVPN GUI" icon and choose: "Run as administrator".
-*# Enter your username and password
