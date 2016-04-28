@@ -5,7 +5,7 @@
 
 /interface bridge
 remove [/interface bridge find name=cloudspace-bridge]
-add name=cloudspace-bridge
+add name=cloudspace-bridge arp=proxy-arp
 
 /interface ethernet
 set [ find default-name=ether2 ] arp=proxy-arp name=cloudspace
