@@ -20,7 +20,7 @@ set 0 bridge=cloudspace-bridge local-address=192.168.103.1 remote-address=\
     dhcpppp use-encryption=required
 
 /interface ovpn-server server
-set certificate=cert_1 cipher=blowfish128,aes128,aes192,aes256 enabled=yes \
+set certificate="server.crt_0" cipher=blowfish128,aes128,aes192,aes256 enabled=yes \
     keepalive-timeout=disabled mode=ethernet
 
 /interface pptp-server server

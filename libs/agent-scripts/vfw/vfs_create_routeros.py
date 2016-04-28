@@ -137,7 +137,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         print "wait max 30 sec on tcp port 22 connection to '%s'"%internalip
-        if j.system.net.waitConnectionTest(internalip,22,timeout=30):
+        if j.system.net.waitConnectionTest(internalip, 9022,timeout=30):
             print "Router is accessible, initial configuration probably ok."
         else:
             raise RuntimeError("Could not connect to router on %s"%internalip)
