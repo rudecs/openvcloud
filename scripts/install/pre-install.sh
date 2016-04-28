@@ -69,7 +69,7 @@ fi
 
 if [ ! -d /opt/jumpscale7 ]; then
 	echo "[+] installing Jumpscale"
-	curl https://raw.githubusercontent.com/jumpscale7/jumpscale_core7/master/install/install.sh > /tmp/js7.sh
+	curl https://raw.githubusercontent.com/Jumpscale7/jumpscale_core7/master/install/install.sh > /tmp/js7.sh
 	JSBRANCH=$JSBRANCH AYSBRANCH=$AYSBRANCH bash /tmp/js7.sh
 else
 	echo "[+] jumpscale already installed"
@@ -80,7 +80,7 @@ if [ $? == 1 ]; then
 	echo "[+] configuring atyourservice"
 	echo "metadata.openvcloud            =" >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 	echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
-	echo "    url:'https://github.com/0-complexity/openvcloud_ays'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
+	echo "    url:'git@github.com:0-complexity/openvcloud_ays'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 else
 	echo "[+] atyourservice already configured"
 fi
