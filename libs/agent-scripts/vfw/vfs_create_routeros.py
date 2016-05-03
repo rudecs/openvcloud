@@ -77,7 +77,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
-    networkname = "space_%s" % networkidHex
     name = 'routeros_%s' % networkidHex
     destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
@@ -138,7 +137,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         print "wait max 30 sec on tcp port 22 connection to '%s'"%internalip
-        if j.system.net.waitConnectionTest(internalip,22,timeout=30):
+        if j.system.net.waitConnectionTest(internalip, 9022,timeout=30):
             print "Router is accessible, initial configuration probably ok."
         else:
             raise RuntimeError("Could not connect to router on %s"%internalip)
@@ -151,94 +150,59 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e)) 
 
         ro.do("/system/identity/set",{"name":"%s/%s"%(networkid,networkidHex)})
-        toremove=[ item for item in ro.list("/") if item.find('.backup')<>-1]
-        for item in toremove:
-            ro.delfile(item)
+        ro.executeScript('/file remove numbers=[/file find]')
 
         if not "skins" in ro.list("/"):
             ro.mkdir("/skins")
-        ro.uploadFilesFromDir("keys")
+
+        # create certificates
+        certdir = j.system.fs.getTmpDirPath()
+        j.tools.sslSigning.create_self_signed_ca_cert(certdir)
+        j.tools.sslSigning.createSignedCert(certdir, 'server')
+
+        ro.uploadFilesFromDir(certdir)
+        vpnpassword = j.tools.hash.sha1(j.system.fs.joinPaths(certdir, 'ca.crt'))
+        j.system.fs.removeDirTree(certdir)
         ro.uploadFilesFromDir("skins","/skins")
-        time.sleep(10)
 
-        ro.executeScript("/ip address remove numbers=[/ip address find network=192.168.1.0]")
-        ro.executeScript("/ip address remove numbers=[/ip address find network=192.168.103.0]")
-        ro.uploadExecuteScript("basicnetwork")
-        ro.ipaddr_set('public', "%s/%s" % (publicip, publiccidr), single=True)
-
-        ipaddr=[]
-        for item in ro.ipaddr_getall():
-            if item["interface"]=="public":
-                ipaddr.append(item["ip"])
-        if not ipaddr:
-            raise RuntimeError("Each VFW needs to have 1 public ip addr at this state, this vfw has not")
-
-        ro.ipaddr_set('cloudspace-bridge', '192.168.103.1/24',single=True)
-
+        pubip = "%s/%s" % (publicip, publiccidr)
+        privateip = "192.168.103.1/24"
+        ro.uploadExecuteScript("basicnetwork", vars={'$pubip': pubip, '$privateip': privateip})
         ro.uploadExecuteScript("route", vars={'$gw': publicgwip})
-        ro.uploadExecuteScript("ppp")
-        ro.uploadExecuteScript("customer")
+        ro.uploadExecuteScript("certificates")
+        ro.uploadExecuteScript("ppp", vars={'$vpnpassword': vpnpassword})
         ro.uploadExecuteScript("systemscripts")
-        cmd="/certificate import file-name=ca.crt passphrase='123456'"
-        #ro.executeScript(cmd)
-        #import file-name=RB450.crt passphrase="123456"
-        #import file-name=RB450.pem passphrase="123456"
+        ro.uploadExecuteScript("services")
 
-        cmd="/user set numbers=[/user find name=admin] password=\"%s\""% password
-        ro.executeScript(cmd)
-
-        cmd="/ppp secret remove numbers=[/ppp secret find name=admin]"
-        ro.executeScript(cmd)
-        cmd="/ppp secret add name=admin service=pptp password=\"%s\" profile=default"%password
-        ro.executeScript(cmd)
-        cmd="/ip neighbor discovery set [ /interface ethernet find name=public ] discover=no"
-        ro.executeScript(cmd)
-
-        print "change port for www"
-        ro.executeScript("/ip service set port=9080 numbers=[/ip service find name=www]")
-        print "disable telnet"
-        ro.executeScript("/ip service disable numbers=[/ip service find name=telnet]")
-        print "change port for ftp"
-        ro.executeScript("/ip service set port=9021 numbers=[/ip service find name=ftp]")
-        print "change port for ssh"
-        ro.executeScript("/ip service set port=9022 numbers=[/ip service find name=ssh]")
         print "change admin password"
         try:
             ro.executeScript('/user set %s password=%s' % (username, newpassword))
         except:
             pass
 
-        ro=j.clients.routeros.get(internalip,username,newpassword)
-
-        print "reboot of router"
-        cmd="/system reboot"
-        try:
-            ro.executeScript(cmd)
-        except Exception,e:
-            pass
-        print "reboot busy"
+        ro = j.clients.routeros.get(internalip,username,newpassword)
+        if not ro.arping(publicgwip, 'public'):
+            raise RuntimeError("Could not ping to:%s for VFW %s"%(publicgwip, networkid))
 
         start = time.time()
         timeout = 60
         while time.time() - start < timeout:
             try:
-                ro = j.clients.routeros.get(internalip,username,newpassword)
-                if ro.arping(publicgwip, 'public'):
-                    print "Ping %s succeeded" % publicgwip
-                    break
-                else:
-                    print "Failed to ping %s waiting..." % publicgwip
-            except:
-                print 'Failed to connect will try again in 3sec'
-            time.sleep(3)
+                ro.uploadExecuteScript("customer", vars={'$password': password})
+                break
+            except Exception as e:
+                print 'Failed to set skin will try again in 1sec', e
+            time.sleep(1)
         else:
-            raise RuntimeError("Could not ping to:%s for VFW %s"%(publicgwip, networkid))
+            raise RuntimeError("Failed to set customer skin")
 
         print "wait max 2 sec on tcp port 9022 connection to '%s'"%internalip
         if j.system.net.waitConnectionTest(internalip,9022,timeout=2):
             print "Router is accessible, configuration probably ok."
         else:
             raise RuntimeError("Internal ssh is not accsessible.")
+
+        print 'Finished configuring VFW'
 
     except:
         j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,

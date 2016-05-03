@@ -279,7 +279,15 @@ class CSLibvirtNodeDriver():
             # At this moment we handle only NodeAuthPassword
             password = auth.password
             if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
-                userdata = {'password': password, 'users': [{'name':'cloudscalers', 'plain_text_passwd': password, 'lock-passwd': False, 'shell':'/bin/bash', 'sudo':'ALL=(ALL) ALL'}], 'ssh_pwauth': True, 'chpasswd': {'expire': False }}
+                userdata = {'password': password,
+                            'users': [{'name':'cloudscalers',
+                                       'plain_text_passwd': password,
+                                       'lock-passwd': False,
+                                       'shell':'/bin/bash',
+                                       'sudo':'ALL=(ALL) ALL'}],
+                            'ssh_pwauth': True,
+                            'manage_etc_hosts': True,
+                            'chpasswd': {'expire': False }}
                 metadata = {'local-hostname': name}
             else:
                 userdata = {}

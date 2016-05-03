@@ -9,6 +9,7 @@
 
     var cloudspaceupdater;
     $scope.showDefenseShield = showDefenseShield;
+    $scope.downloadOpenvpnConfig = downloadOpenvpnConfig;
     $scope.$watch('currentSpace.id + currentSpace.status', currentSpaceIdAndStatus);
     $scope.$on('$destroy', destroy);
 
@@ -40,6 +41,10 @@
           }
         );
       }
+
+    function downloadOpenvpnConfig() {
+        CloudSpace.getOpenvpnConfig($scope.currentSpace.id);
+    }
 
     function currentSpaceIdAndStatus() {
         if ($scope.currentSpace) {

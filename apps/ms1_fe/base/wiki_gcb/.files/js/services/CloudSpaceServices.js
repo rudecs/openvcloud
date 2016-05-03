@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cloudscalers.services')
-.factory('CloudSpace', function($http, $q, SessionData) {
+.factory('CloudSpace', function($http, $q, $window, SessionData) {
   return {
     list: function() {
       return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list')
@@ -53,6 +53,9 @@ angular.module('cloudscalers.services')
           return $q.reject(reason);
         }
       );
+    },
+    getOpenvpnConfig: function(cloudspaceId) {
+      return $window.open(cloudspaceconfig.apibaseurl + '/cloudspaces/getOpenvpnConfig?cloudspaceId=' + cloudspaceId);
     },
     addUser: function(space, user, accessType) {
       return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser?cloudspaceId=' + space.id +

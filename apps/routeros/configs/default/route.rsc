@@ -4,5 +4,3 @@
 /ip route remove [/ip route find static=yes]
 /ip route
 add comment="added by setup" distance=1 gateway=$gw
-/ping count=3 8.8.8.8
-#york 192.198.94.1

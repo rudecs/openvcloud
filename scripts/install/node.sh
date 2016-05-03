@@ -17,9 +17,14 @@ if [ "$UID" != "0" ]; then
 	return 1
 fi
 
+if [ ! -f /proc/sys/net/ipv4/conf/backplane1/tag ]; then
+	echo "[-] no backplane1 found"
+	return 1
+fi
+
 echo "[+] discovering proxy"
 BACKPLANE=$(ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1)
-PROXHOST=$(echo $BACKPLANE | sed -r 's/([0-9]+.[0-9]+).([0-9]+.[0-9]+)/\1.2.2/')
+PROXHOST=$(echo $BACKPLANE | sed -r 's/([0-9]+.[0-9]+).([0-9]+.[0-9]+)/\1.2.254/')
 if nc -w1 -z $PROXHOST 8123; then
 	echo "[+] proxy found: $PROXHOST"
 	echo "Acquire::http::Proxy \"http://$PROXHOST:8123\";" > /etc/apt/apt.conf.d/proxy
@@ -32,6 +37,10 @@ if nc -w1 -z $PROXHOST 8123; then
 else
 	echo "[-] no proxy found at $PROXHOST"
 fi
+
+
+echo "[+] updating apt-get mirror list"
+sed -i 's/us.archive/nl.archive/g' /etc/apt/sources.list
 
 LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
 LASTUNIX=$(date --date "$LASTTIME" +%s)
@@ -345,6 +354,7 @@ touch /mnt/ovs-db-write/.dontreportusage
 touch /mnt/ovs-read/.dontreportusage
 
 echo '[+] fixing permissions'
+chmod 777 /tmp /var/tmp
 chmod ugo+rwx,o+t /var/tmp
 
 TEST=$(grep '^PermitRootLogin yes' /etc/ssh/sshd_config)
@@ -375,6 +385,12 @@ apt-get install -y ntp kvm libvirt0 python-libvirt virtinst rabbitmq-server pyth
 
 echo "[+] fixing some permissions"
 chown syslog:adm /var/log/syslog /var/log/auth.log /var/log/kern.log
+
+echo "[+] ensure that hosts file is correct for ovs"
+if [ $(awk '/^127.0.0.1/ { print $2 }' /etc/hosts) == "localhost" ]; then
+	HOSTLINE="127.0.0.1   $(hostname) localhost"
+	sed -i "s/^127.0.0.1.*/$HOSTLINE/" /etc/hosts
+fi
 
 if ! grep -q ^PS1 /root/.bashrc; then
 	echo "[+] setting up console"

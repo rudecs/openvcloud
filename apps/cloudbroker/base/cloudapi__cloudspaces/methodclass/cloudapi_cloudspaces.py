@@ -278,7 +278,7 @@ class cloudapi_cloudspaces(BaseActor):
         # Validate that there is at least 1 public IP is available within the CU limits to reserve
         # for deploying the VFW
         with self.models.cloudspace.lock(cloudspaceId):
-            self.checkAvailablePublicIPs(cs.id, 1)
+            self.checkAvailablePublicIPs(cloudspaceId, 1)
             cs = self.models.cloudspace.get(cloudspaceId)
             if cs.status != 'VIRTUAL':
                 return cs.status
@@ -1035,3 +1035,22 @@ class cloudapi_cloudspaces(BaseActor):
                                                     'nics.type': 'PUBLIC',
                                                     'status': {'$nin': ['DESTROYED', 'ERROR']}})
         return numpublicips
+
+    @authenticator.auth(acl={'cloudspace': set('X')})
+    def getOpenvpnConfig(self, cloudspaceId, **kwargs):
+        import zipfile
+        from cStringIO import StringIO
+        ctx = kwargs['ctx']
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status != 'DEPLOYED':
+            raise exceptions.NotFound('Can not get openvpn config for a cloudspace which is not deployed')
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        config = j.apps.jumpscale.netmgr.fw_get_openvpn_config(fwid)
+        ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
+                                      ('content-disposition', "inline; filename = openvpn.zip")])
+        fp = StringIO()
+        zip = zipfile.ZipFile(fp, 'w')
+        for filename, filecontent in config.iteritems():
+            zip.writestr(filename, filecontent)
+        zip.close()
+        return fp.getvalue()
