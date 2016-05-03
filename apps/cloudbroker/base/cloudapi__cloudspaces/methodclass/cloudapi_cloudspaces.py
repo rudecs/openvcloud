@@ -2,8 +2,6 @@ from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, network
-from billingenginelib import account as accountbilling
-from billingenginelib import pricing
 from cloudbrokerlib.baseactor import BaseActor
 import netaddr
 import uuid
@@ -27,8 +25,6 @@ class cloudapi_cloudspaces(BaseActor):
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.netmgr = j.apps.jumpscale.netmgr
         self.network = network.Network(self.models)
-        self._accountbilling = accountbilling.account()
-        self._pricing = pricing.pricing()
         self._minimum_days_of_credit_required = float(
             self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.systemodel = j.clients.osis.getNamespace('system')
@@ -218,18 +214,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
-        if (len(active_cloudspaces) > 0):
-            if (not self._accountbilling.isPayingCustomer(accountId)):
-                raise exceptions.Conflict(
-                    'Creating an extra cloudspace is only available if you made at least 1 payment')
 
-            available_credit = self._accountbilling.getCreditBalance(accountId)
-            burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
-            new_burnrate = burnrate + self._pricing.get_cloudspace_price_per_hour()
-            if available_credit < (new_burnrate * 24 * self._minimum_days_of_credit_required):
-                raise exceptions.Conflict(
-                    'Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
-                raise exceptions.Conflict('Not enough credit to hold this cloudspace for %i days' % self._minimum_days_of_credit_required)
         if name in [ space['name'] for space in active_cloudspaces ]:
             raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
 
@@ -480,7 +465,6 @@ class cloudapi_cloudspaces(BaseActor):
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
-                    cloudspace['userRightsOnAccountBilling'] = True
             cloudspace['accountDCLocation'] = account.DCLocation
 
         return cloudspaces

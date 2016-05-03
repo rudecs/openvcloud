@@ -4,8 +4,6 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
 from libcloud.compute.base import StorageVolume
-from billingenginelib import pricing
-from billingenginelib import account as accountbilling
 
 
 class cloudapi_disks(BaseActor):
@@ -18,8 +16,6 @@ class cloudapi_disks(BaseActor):
         self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
-        self._pricing = pricing.pricing()
-        self._accountbilling = accountbilling.account()
         self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
 

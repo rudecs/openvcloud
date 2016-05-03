@@ -89,20 +89,6 @@
         var:accountId int,, id of the account
         result:dict, dict with the template images for the given account
 
-    method:getCreditBalance
-        """
-        Get the current available credit balance
-        """
-        var:accountId int,, id of the account
-        result:dict json dict containing the available credit
-
-    method:getCreditHistory
-        """
-        Get all the credit transactions (positive and negative) for this account
-        """
-        var:accountId int,, id of the account
-        result:[], list with the transactions details each as a dict
-
     method:addExternalUser
         """
         Give an unregistered user access rights by sending an invite email

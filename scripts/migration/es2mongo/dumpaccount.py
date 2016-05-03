@@ -8,7 +8,6 @@ def do(username):
     data = {}
     scl = j.clients.osis.getNamespace('system')
     ccl = j.clients.osis.getNamespace('cloudbroker')
-    bcl = j.clients.osis.getNamespace('billing')
     lcl = j.clients.osis.getNamespace('libcloud')
     lclvrt = j.clients.osis.getNamespace('libvirt')
     vcl = j.clients.osis.getNamespace('vfw')
@@ -40,12 +39,6 @@ def do(username):
 
 
     data['stacks'] = ccl.stack.simpleSearch({})
-    data['transactions'] = ccl.credittransaction.simpleSearch({'accountId': accountId})
-    for transaction in data['transactions']:
-        if transaction['reference']:
-            bill = bcl.billingstatement.get(transaction['reference'])
-            if bill:
-                transaction['bill'] = bill.dump()
     cloudspaces = list()
     data['cloudspaces'] = cloudspaces
     for cloudspace in ccl.cloudspace.simpleSearch({'accountId': accountId}):

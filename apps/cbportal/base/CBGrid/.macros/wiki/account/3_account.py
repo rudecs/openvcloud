@@ -55,12 +55,6 @@ def main(j, args, params, tags, tasklet):
     accountdict = accountobj.dump()
 
     accountdict['users'] = generateUsersList(sclient, accountdict)
-
-    balances = cbclient.credittransaction.search({'accountId': id})[1:]
-    balance = 0
-    if balances:
-        balance = sum([bal['amount'] for bal in balances])
-    accountdict['balance'] = balance
     accountdict['maxMemoryCapacity'] = "%s" % accountobj.resourceLimits['CU_M'] \
         if 'CU_M' in accountobj.resourceLimits else -1
     accountdict['maxVDiskCapacity'] = "%s" % accountobj.resourceLimits['CU_D'] \

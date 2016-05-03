@@ -1,3 +1,2 @@
-Credit:Billing
 Account Details:AccountSettings
 Access Management:AccountAccessManagement

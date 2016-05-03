@@ -405,51 +405,6 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(accountobj)
         return True
 
-    @authenticator.auth(acl={'account': set('R')})
-    @audit()
-    def getCreditBalance(self, accountId, **kwargs):
-        """
-        Get the current available credit balance
-
-        :param accountId: id of the account
-        :return json dict containing the available credit
-        """
-        # For now, don't get the balance statement, just calculate it
-        #query = {'fields': ['time', 'credit']}
-        #query['query'] = {'term': {"accountId": accountId}}
-        #query['size'] = 1
-        #query['sort'] = [{ "time" : {'order':'desc', 'ignore_unmapped' : True}}]
-        #results = self.models.creditbalance.find(ujson.dumps(query))['result']
-        #balance = [res['fields'] for res in results]
-
-        #return balance[0] if len(balance) > 0 else {'credit':0, 'time':-1}
-
-        fields = ['time', 'credit', 'status']
-        q = {'accountId': int(accountId), 'status': {'$ne': 'UNCONFIRMED'}}
-        query = {'$query': q, '$fields': fields}
-        history = self.models.credittransaction.search(query)[1:]
-        balance = 0.0
-        for transaction in history:
-            balance += float(transaction['credit'])
-        import time
-        return {'credit': balance, 'time': int(time.time())}
-
-    @authenticator.auth(acl={'account': set('R')})
-    @audit()
-    def getCreditHistory(self, accountId, **kwargs):
-        """
-        Get all the credit transactions (positive and negative) for this account
-
-        :param accountId: id of the account
-        :return list with the transactions details each as a dict
-        """
-
-        fields = ['time', 'currency', 'amount', 'credit','reference', 'status', 'comment']
-        q = {"accountId": int(accountId)}
-        query = {'$query': q, '$fields': fields}
-        history = self.models.credittransaction.search(query)[1:]
-        return history
-
     # Unexposed actor
     def getConsumedVDiskCapacity(self, accountId):
         """

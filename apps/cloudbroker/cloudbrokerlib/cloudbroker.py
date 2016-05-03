@@ -7,8 +7,6 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
-from billingenginelib import pricing
-from billingenginelib import account as accountbilling
 import random
 import time
 import string
@@ -388,8 +386,6 @@ class Machine(object):
     def __init__(self, cb):
         self.cb = cb
         self.acl = j.clients.agentcontroller.get()
-        self._pricing = pricing.pricing()
-        self._accountbilling = accountbilling.account()
 
     def cleanup(self, machine):
         for diskid in machine.disks:
@@ -409,12 +405,6 @@ class Machine(object):
         imageId = int(imageId)
         #Check if there is enough credit
         accountId = cloudspace.accountId
-        available_credit = self._accountbilling.getCreditBalance(accountId)
-        burnrate = self._pricing.get_burn_rate(accountId)['hourlyCost']
-        hourly_price_new_machine = self._pricing.get_price_per_hour(imageId, sizeId, disksize)
-        new_burnrate = burnrate + hourly_price_new_machine
-        if available_credit < (new_burnrate * 24 * minimum_days_of_credit_required):
-            raise exceptions.Conflict('Not enough credit for this machine to run for %i days' % minimum_days_of_credit_required)
 
     def _assertName(self, cloudspaceId, name, **kwargs):
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
