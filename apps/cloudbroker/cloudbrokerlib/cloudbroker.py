@@ -422,6 +422,10 @@ class Machine(object):
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
+        image = models.image.get(imageId)
+
+        if disksize < image.size:
+            raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
 
         #create a public ip and virtual firewall on the cloudspace if needed
         if cloudspace.status != 'DEPLOYED':
@@ -429,7 +433,6 @@ class Machine(object):
             self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
 
         machine = models.vmachine.new()
-        image = models.image.get(imageId)
         machine.cloudspaceId = cloudspace.id
         machine.descr = description
         machine.name = name
