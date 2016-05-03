@@ -9,7 +9,7 @@
       <li><a href="/$$space/My First Machine Linux">My First Machine Linux</a></li>
       <li><a href="/$$space/Enable Root access on ubuntu over SSH">Enable Root access on ubuntu over SSH</a></li>
       <li><a href="/$$space/My First Machine Windows">My First Machine Windows</a></li>
-      <li><a href="/$$space/PPTP Connection To Space From Windows 8.1">PPTP Connection To Space From Windows 8.1</a></li>
+      <li><a href="/$$space/PPTP Connection to Cloud Space from Windows 10">Setup a PPTP connection in Windows 10 to your cloud space</a></li>
       <li><a href="/$$space/Getting Started with JumpScale">Getting Started with JumpScale</a></li>
     </ul>
   </div>
