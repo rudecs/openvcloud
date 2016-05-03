@@ -1,9 +1,0 @@
-@usedefault
-
-h2. Credit Information
-
-h3. Credit Transactions
-{{transactions}}
-
-h3. Credit Balance
-{{balances}}

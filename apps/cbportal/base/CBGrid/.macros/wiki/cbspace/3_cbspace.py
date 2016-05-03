@@ -89,7 +89,6 @@ def main(j, args, params, tags, tasklet):
         cloudspacedict['network'] = {'tcpForwardRules': []}
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
-
     args.doc.applyTemplate(cloudspacedict, True)
     params.result = (args.doc, args.doc)
     return params

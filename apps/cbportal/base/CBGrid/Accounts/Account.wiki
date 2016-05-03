@@ -1,6 +1,4 @@
 @usedefault
-{{editaccount accountId:$$id}}
-
 @@title Account: ${name}
 {{Account id:$$id}}
 {% if id %}
@@ -126,19 +124,6 @@ h2. Account: ${name}
        value: true
      - label: 'No'
        value: false
-
-- display: Change Credit
-  action: /restmachine/cloudbroker/finance/changeCredit
-  hide: true
-  data:
-   accountId: $$id
-  input:
-  - name: amount
-    label: Credit Amount (can be negative)
-    type: number
-  - name: message
-    label: Reason for transaction
-    type: text
 }}
 
 {{createspace: accountId:$$id}}
@@ -168,19 +153,6 @@ h3. Cloud Spaces
 {{action: id:'create_space' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Cloud Space'}}
 {{cbspaces: accountId:$$id}}
 
-h3. Credit Transactions
-
-{{action: id:'action-ChangeCredit' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Credit'}}
-{{transactions: accountId:$$id}}
-{{actions: gridbinding:'table_cloudbroker_cloudspace cloudspaceIds'
-- display: Destroy Cloudspaces
-  action: /restmachine/cloudbroker/cloudspace/destroyCloudSpaces
-  data:
-   accountId: $$id
-  reload: false
-  input:
-  - reason
-  }}
 {% else %}
 No account provided
 {% endif %}

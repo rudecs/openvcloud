@@ -21,7 +21,6 @@ def do(username, data, credit):
     import JumpScale.grid
     scl = j.clients.osis.getNamespace('system')
     ccl = j.clients.osis.getNamespace('cloudbroker')
-    bcl = j.clients.osis.getNamespace('billing')
     vcl = j.clients.osis.getNamespace('vfw')
     lcl = j.clients.osis.getNamespace('libcloud')
     lclvrt = j.clients.osis.getNamespace('libvirt')
@@ -50,23 +49,6 @@ def do(username, data, credit):
     else:
         accountId = accounts[0]['id']
     print 'AccountId %s for user %s' % (accountId, username)
-
-    if credit:
-        for transaction in data['transactions']:
-            bill = transaction.pop('bill', None)
-            billId = None
-            if bill:
-                bill.pop('guid', None)
-                bill.pop('id', None)
-                bill['accountId'] = accountId
-                billId, _,_ = bcl.billingstatement.set(bill)
-            transaction.pop('id', None)
-            transaction.pop('guid', None)
-            transaction['accountId'] = accountId
-            transaction['reference'] = billId
-            ccl.credittransaction.set(transaction)
-        print 'Done'
-        return
 
     def getNewStackId(gid, stackId):
         for stack in data['stacks']:

@@ -111,20 +111,6 @@ class cloudbroker_account(BaseActor):
         ace.status = 'CONFIRMED'
         accountid = self.models.account.set(account)[0]
 
-        signupcredit = self.hrd.getFloat('instance.openvcloud.cloudbroker.signupcredit')
-        creditcomment = 'Getting you started'
-        if signupcredit > 0.0:
-            credittransaction = self.models.credittransaction.new()
-            credittransaction.accountId = accountid
-            credittransaction.amount = signupcredit
-            credittransaction.credit = signupcredit
-            credittransaction.currency = 'USD'
-            credittransaction.comment = creditcomment
-            credittransaction.status = 'CREDIT'
-            credittransaction.time = now
-
-            self.models.credittransaction.set(credittransaction)
-
         self.cloudapi.cloudspaces.create(accountid, location, 'default', username)
 
         mail_args = {

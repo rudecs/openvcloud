@@ -61,41 +61,6 @@
     prop:right str,,right string now RWD  (depending type of object this action can be anything each type of action represented as 1 letter)
     prop:status str,CONFIRMED, whether the user is still INVITED or has already CONFIRMED (registered) in the system
 
-[rootmodel:CreditTransaction] @dbtype:osis
-	"""
-  Credit transaction (positive and negative) for an account
-	"""
-	prop:accountId int,,
-	prop:time int,,
-	prop:currency str,, the currency the transaction was made in
-	prop:amount float,, the amount of (in currency) of the transaction
-	prop:credit float,, the credit this transaction adds or takes away
-	prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
-	prop:status str,, status of the transaction
-	prop:comment str,, optional comment
-
-
-[rootmodel:ValidationTransaction] @dbtype:osis
-    """
-    Validation transaction (this is a transcation to validate an account)
-    """
-    prop:accountId int,,
-    prop:time int,,
-    prop:currency str,, the currency the transaction was made in
-    prop:amount float,, the amount of (in currency) of the transaction
-    prop:reference str,, the reference the payment processor gives to uniquely identify this transaction
-    prop:status str,, status of the transaction
-    prop:payerId str,, paypal reference
-    prop:comment str,, optional comment
-
-[rootmodel:CreditBalance] @dbtype:osis
-	"""
-	Available credit for an account at a specific point in time
-	"""
-	prop:accountId int,,
-	prop:time int,, the time at wich this creditbalance was calculated
-	prop:credit float,, the available credit
-
 [rootmodel:Image] @dbtype:osis
     """
     """
