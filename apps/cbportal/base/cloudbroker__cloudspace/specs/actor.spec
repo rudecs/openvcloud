@@ -65,14 +65,14 @@
         var:location str,, location key where the space should be created
         var:name str,, name of space to create
         var:access str,, username which have full access to this space
-        var:maxMemoryCapacity float,-1, max size of memory in GB
-        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
-        var:maxCPUCapacity int,-1, max number of cpu cores
-        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB
-        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB
-        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator
-        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering
-        var:maxNumPublicIP int,-1, max number of assigned public IPs
+        var:maxMemoryCapacity float,-1, max size of memory in GB @optional
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,-1, max number of cpu cores @optional
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
     method:update
         """
         Update cloudspace.
