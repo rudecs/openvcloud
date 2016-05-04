@@ -172,14 +172,16 @@ h3. Details
 |*Location*|${location}|
 |*Description*|${descr}|
 |*Public IP Adress*|${publicipaddress}|
-|*Max Memory Capacity*|{% if maxMemoryCapacity == -1 %} Unlimited {% else %} ${maxMemoryCapacity} GB {% endif %}|
-|*Max VDisk Capacity*|{% if maxVDiskCapacity == -1 %} Unlimited {% else %} ${maxVDiskCapacity} GB {% endif %}|
-|*Max Number of CPU Cores*|{% if maxCPUCapacity == -1 %} Unlimited {% else %} ${maxCPUCapacity} {% endif %} |
-|*Max Primary Storage(NAS) Capacity*|{% if maxNASCapacity == -1 %} Unlimited {% else %}${maxNASCapacity} TB {% endif %}|
-|*Max Secondary Storage(Archive) Capacity*|{% if maxArchiveCapacity == -1 %} Unlimited {% else %} ${maxArchiveCapacity} TB {% endif %}|
-|*Max Network Transfer In Operator*|{% if maxNetworkOptTransfer == -1 %} Unlimited {% else %}${maxNetworkOptTransfer} GB {% endif %}|
-|*Max Network Transfer Peering*|{%if maxNetworkPeerTransfer == -1 %} Unlimited {% else %}${maxNetworkPeerTransfer} GB {% endif %}|
-|*Max Number of Public IP Addresses*|{% if maxNumPublicIP == -1 %} Unlimited {%else %}${maxNumPublicIP} {%endif %}|
+
+h3. Cloud Resource Limits
+|*Memory Capacity*|{% if maxMemoryCapacity == -1 %} Unlimited {% else %} ${maxMemoryCapacity} GB {% endif %}|
+|*VDisk Capacity*|{% if maxVDiskCapacity == -1 %} Unlimited {% else %} ${maxVDiskCapacity} GB {% endif %}|
+|*Number of CPU Cores*|{% if maxCPUCapacity == -1 %} Unlimited {% else %} ${maxCPUCapacity} {% endif %} |
+|*Primary Storage(NAS) Capacity*|{% if maxNASCapacity == -1 %} Unlimited {% else %}${maxNASCapacity} TB {% endif %}|
+|*Secondary Storage(Archive) Capacity*|{% if maxArchiveCapacity == -1 %} Unlimited {% else %} ${maxArchiveCapacity} TB {% endif %}|
+|*Network Transfer In Operator*|{% if maxNetworkOptTransfer == -1 %} Unlimited {% else %}${maxNetworkOptTransfer} GB {% endif %}|
+|*Network Transfer Peering*|{%if maxNetworkPeerTransfer == -1 %} Unlimited {% else %}${maxNetworkPeerTransfer} GB {% endif %}|
+|*Number of Public IP Addresses*|{% if maxNumPublicIP == -1 %} Unlimited {%else %}${maxNumPublicIP} {%endif %}|
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
