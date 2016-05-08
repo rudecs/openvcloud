@@ -115,7 +115,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         args = {'fwobject': fwobj.obj2dict()}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_openvpn_config_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
-            raise RuntimeError("Failed to set password. Error: %s" % (job['result']['errormessage']))
+            raise exceptions.ServiceUnavailable("Failed to get OpenVPN Config")
         return job['result']
 
     def fw_delete(self, fwid, gid, **kwargs):
