@@ -99,10 +99,16 @@ class cloudbroker_account(BaseActor):
         account.companyurl = ''
         account.status = 'CONFIRMED'
 
-        account.resourceLimits = {'CU_M': maxMemoryCapacity, 'CU_D': maxVDiskCapacity,
-                                  'CU_C': maxCPUCapacity, 'CU_S': maxNASCapacity,
-                                  'CU_A': maxArchiveCapacity, 'CU_NO': maxNetworkOptTransfer,
-                                  'CU_NP': maxNetworkPeerTransfer, 'CU_I':  maxNumPublicIP}
+        resourcelimits = {'CU_M': maxMemoryCapacity,
+                          'CU_D': maxVDiskCapacity,
+                          'CU_C': maxCPUCapacity,
+                          'CU_S': maxNASCapacity,
+                          'CU_A': maxArchiveCapacity,
+                          'CU_NO': maxNetworkOptTransfer,
+                          'CU_NP': maxNetworkPeerTransfer,
+                          'CU_I':  maxNumPublicIP}
+        self.cb.fillResourceLimits(resourcelimits)
+        account.resourceLimits = resourcelimits
 
         ace = account.new_acl()
         ace.userGroupId = username

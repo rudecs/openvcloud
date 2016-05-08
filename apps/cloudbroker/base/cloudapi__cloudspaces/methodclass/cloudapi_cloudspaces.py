@@ -228,9 +228,6 @@ class cloudapi_cloudspaces(BaseActor):
         ace.type = 'U'
         ace.right = 'CXDRAU'
         ace.status = 'CONFIRMED'
-        if maxNumPublicIP != -1 and maxNumPublicIP < 1:
-            raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
-                                        "address for its VFW")
 
         cs.resourceLimits = {'CU_M': maxMemoryCapacity,
                              'CU_D': maxVDiskCapacity,
@@ -240,8 +237,12 @@ class cloudapi_cloudspaces(BaseActor):
                              'CU_NO': maxNetworkOptTransfer,
                              'CU_NP': maxNetworkPeerTransfer,
                              'CU_I': maxNumPublicIP}
-
         self.cb.fillResourceLimits(cs.resourceLimits)
+
+        if cs.resourceLimits['CU_I'] != -1 and cs.resourceLimits['CU_I'] < 1:
+            raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
+                                        "address for its VFW")
+
 
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)

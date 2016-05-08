@@ -50,14 +50,14 @@
         var:username str,, name of the account
         var:emailaddress str,,email
         var:location str,,locationcode
-        var:maxMemoryCapacity float,-1, max size of memory in GB
-        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
-        var:maxCPUCapacity int,-1, max number of cpu cores
-        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB
-        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB
-        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator
-        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering
-        var:maxNumPublicIP int,-1, max number of assigned public IPs
+        var:maxMemoryCapacity float,-1, max size of memory in GB @optional
+        var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,-1, max number of cpu cores @optional
+        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,-1, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
 
     method:update
         """
