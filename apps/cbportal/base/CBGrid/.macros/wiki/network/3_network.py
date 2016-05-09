@@ -5,11 +5,11 @@ except:
 
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
     gid = args.getTag('gid')
-    if not id or not gid:
+    if not id or not gid or not id.isdigit() or not gid.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)
@@ -27,7 +27,6 @@ def main(j, args, params, tags, tasklet):
             data['cloudspaceName'] = cloudspaces[0]['name']
 
         args.doc.applyTemplate(data)
-        params.result = (args.doc, args.doc)
         return params
 
     network = vcl.virtualfirewall.get(key)
@@ -40,7 +39,6 @@ def main(j, args, params, tags, tasklet):
     obj['running'] = j.apps.jumpscale.netmgr.fw_check(network.guid)
 
     args.doc.applyTemplate(obj, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

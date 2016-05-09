@@ -35,10 +35,10 @@ def generateUsersList(sclient, vmachinedict):
 
 def main(j, args, params, tags, tasklet):
     import gevent
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id:
+    if not id or not id.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)
@@ -59,7 +59,6 @@ def main(j, args, params, tags, tasklet):
         obj = cbosis.vmachine.get(id)
     except:
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     if obj.status not in ['DESTROYED', 'ERROR']:
@@ -169,7 +168,6 @@ def main(j, args, params, tags, tasklet):
 
     data['referenceId'] = data['referenceId'].replace('-', '%2d')
     args.doc.applyTemplate(data, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

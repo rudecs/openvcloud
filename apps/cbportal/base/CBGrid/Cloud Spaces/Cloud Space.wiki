@@ -233,5 +233,5 @@ h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
 
 {% else %}
-No Cloud Space provided
+Invalid Cloud Space provided
 {% endif %}

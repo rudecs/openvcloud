@@ -36,10 +36,10 @@ def generateUsersList(sclient, cloudspacedict):
 
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id:
+    if not id or not id.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)
@@ -48,7 +48,7 @@ def main(j, args, params, tags, tasklet):
     vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
-        params.result = ('CloudSpace with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({'id': None}, True)
         return params
 
     cloudspaceobj = cbclient.cloudspace.get(id)
@@ -77,7 +77,6 @@ def main(j, args, params, tags, tasklet):
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
     args.doc.applyTemplate(cloudspacedict, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):
