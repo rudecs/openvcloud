@@ -411,6 +411,11 @@ class Machine(object):
         if disksize < image.size:
             raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
 
+        size = models.size.get(sizeId)
+        if disksize not in size.disks:
+            raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))
+
+
     def _assertName(self, cloudspaceId, name, **kwargs):
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
         return False if results else True
