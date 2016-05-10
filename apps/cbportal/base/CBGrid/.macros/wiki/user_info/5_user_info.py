@@ -1,7 +1,7 @@
 def main(j, args, params, tags, tasklet):
     params.result = (args.doc, args.doc)
     guid = args.getTag('guid')
-    if not guid or not guid.isdigit():
+    if not guid:
         args.doc.applyTemplate({})
         return params
 
