@@ -4,7 +4,7 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal import exceptions
 from JumpScale.baselib.http_client.HttpClient import HTTPError
 import hashlib
-
+import time
 
 class cloudbroker_user(BaseActor):
     """
@@ -101,6 +101,10 @@ class cloudbroker_user(BaseActor):
 
         # Set the user to inactive
         userobj.active = False
+        gid, uid = userobj.guid.split('_')
+        userobj.id = 'DELETED_%i_%s'%(time.time(), uid)
+        userobj.guid = '%s_DELETED_%i_%s'%(gid, time.time(), uid)
+        self.syscl.user.delete(uid)
         self.syscl.user.set(userobj)
 
         return True
