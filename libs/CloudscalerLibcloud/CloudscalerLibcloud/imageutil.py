@@ -12,23 +12,26 @@ def setAsTemplate(imagepath):
     pool = VPoolList.get_vpool_by_name('vmstor')
     disk = None
     start = time.time()
+    imagepath = 'templates/%s' % imagepath
     while not disk and start + 60 > time.time():
         time.sleep(2)
-        disk = VDiskList.get_by_devicename_and_vpool('templates/%s' % imagepath, pool)
+        disk = VDiskList.get_by_devicename_and_vpool(imagepath, pool)
+    if not disk:
+        raise RuntimeError("Template did not become available on OVS at %s" % imagepath)
     if disk.info['object_type'] != 'TEMPLATE':
         VDiskController.set_as_template(disk.guid)
     return disk.guid
 
 def copyImageToOVS(imagepath):
 
-    newimagepath = imagepath.replace('.qcow2', '.raw')
+    newimagepath = os.path.splitext(imagepath)[0] + '.raw'
     dstdir = '/mnt/vmstor/templates'
     j.system.fs.createDir(dstdir)
     src = j.system.fs.joinPaths('/opt/jumpscale7/var/tmp/templates/', imagepath)
     dst = j.system.fs.joinPaths(dstdir, newimagepath)
 
     if not j.system.fs.exists(dst):
-        j.system.platform.qemu_img.convert(src, 'qcow2', dst, 'raw')
+        j.system.platform.qemu_img.convert(src, None, dst, 'raw')
         size = int(j.system.platform.qemu_img.info(dst, unit='')['virtual size'])
         fd = os.open(dst, os.O_RDWR | os.O_CREAT)
         os.ftruncate(fd, size)

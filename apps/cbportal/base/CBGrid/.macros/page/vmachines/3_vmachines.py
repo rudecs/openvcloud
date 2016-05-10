@@ -1,6 +1,6 @@
 
-
 def main(j, args, params, tags, tasklet):
+    import cgi
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
     stackid = args.getTag("stackid")
@@ -36,7 +36,7 @@ def main(j, args, params, tags, tasklet):
         return '[%s|stack?id=%s]' % (row[field], row[field])
 
     def nameLinkify(row, field):
-        return '[%s|Virtual Machine?id=%s]' % (row[field], row['id'])
+        return '[%s|Virtual Machine?id=%s]' % (cgi.escape(row[field]), row['id'])
 
     def spaceLinkify(row, field):
         return '[%s|cloud space?id=%s]' % (row[field], row[field])

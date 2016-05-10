@@ -36,10 +36,10 @@ def generateUsersList(sclient, cloudspacedict):
 
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id:
+    if not id or not id.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     id = int(id)
@@ -48,7 +48,7 @@ def main(j, args, params, tags, tasklet):
     vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
-        params.result = ('CloudSpace with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({'id': None}, True)
         return params
 
     cloudspaceobj = cbclient.cloudspace.get(id)
@@ -60,22 +60,9 @@ def main(j, args, params, tags, tasklet):
     cloudspacedict['accountname'] = account['name']
 
     # Resource limits
-    cloudspacedict['maxMemoryCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_M'] \
-        if 'CU_M' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxVDiskCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_D'] \
-        if 'CU_D' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxCPUCapacity'] = cloudspaceobj.resourceLimits['CU_C'] \
-        if 'CU_C' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxNASCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_S'] \
-        if 'CU_S' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxArchiveCapacity'] = "%s" % cloudspaceobj.resourceLimits['CU_A'] \
-        if 'CU_A' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxNetworkOptTransfer'] = "%s" % cloudspaceobj.resourceLimits['CU_NO'] \
-        if 'CU_NO' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxNetworkPeerTransfer'] = "%s" % cloudspaceobj.resourceLimits['CU_NP'] \
-        if 'CU_NP' in cloudspaceobj.resourceLimits else -1
-    cloudspacedict['maxNumPublicIP'] = cloudspaceobj.resourceLimits['CU_I'] \
-        if 'CU_I' in cloudspaceobj.resourceLimits else -1
+
+    j.apps.cloudbroker.account.cb.fillResourceLimits(cloudspaceobj.resourceLimits)
+    cloudspacedict['reslimits'] = cloudspaceobj.resourceLimits
 
     vfwkey = "%(gid)s_%(networkId)s" % (cloudspacedict)
     if vcl.virtualfirewall.exists(vfwkey):
@@ -90,7 +77,6 @@ def main(j, args, params, tags, tasklet):
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
     args.doc.applyTemplate(cloudspacedict, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

@@ -36,44 +36,28 @@ def generateUsersList(sclient, accountdict):
 
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id:
+    if not id or not id.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
-    
+
     id = int(id)
     cbclient = j.clients.osis.getNamespace('cloudbroker')
     sclient = j.clients.osis.getNamespace('system')
 
     if not cbclient.account.exists(id):
-        params.result = ('Account with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({'id': None}, True)
         return params
 
     accountobj = cbclient.account.get(id)
-    
     accountdict = accountobj.dump()
 
     accountdict['users'] = generateUsersList(sclient, accountdict)
-    accountdict['maxMemoryCapacity'] = "%s" % accountobj.resourceLimits['CU_M'] \
-        if 'CU_M' in accountobj.resourceLimits else -1
-    accountdict['maxVDiskCapacity'] = "%s" % accountobj.resourceLimits['CU_D'] \
-        if 'CU_D' in accountobj.resourceLimits else -1
-    accountdict['maxCPUCapacity'] = accountobj.resourceLimits['CU_C'] \
-        if 'CU_C' in accountobj.resourceLimits else -1
-    accountdict['maxNASCapacity'] = "%s" % accountobj.resourceLimits['CU_S'] \
-        if 'CU_S' in accountobj.resourceLimits else -1
-    accountdict['maxArchiveCapacity'] = "%s" % accountobj.resourceLimits['CU_A'] \
-        if 'CU_A' in accountobj.resourceLimits else -1
-    accountdict['maxNetworkOptTransfer'] = "%s" % accountobj.resourceLimits['CU_NO'] \
-        if 'CU_NO' in accountobj.resourceLimits else -1
-    accountdict['maxNetworkPeerTransfer'] = "%s" % accountobj.resourceLimits['CU_NP'] \
-        if 'CU_NP' in accountobj.resourceLimits else -1
-    accountdict['maxNumPublicIP'] = accountobj.resourceLimits['CU_I'] \
-        if 'CU_I' in accountobj.resourceLimits else -1
+    j.apps.cloudbroker.account.cb.fillResourceLimits(accountobj.resourceLimits)
+    accountdict['reslimits'] = accountobj.resourceLimits
 
     args.doc.applyTemplate(accountdict, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

@@ -5,10 +5,10 @@ except:
 
 def main(j, args, params, tags, tasklet):
 
+    params.result = (args.doc, args.doc)
     gid = args.getTag('gid')
-    if not gid:
+    if not gid or not gid.isdigit():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
 
     gid = int(gid)
@@ -16,12 +16,11 @@ def main(j, args, params, tags, tasklet):
 
     locations = cbclient.location.search({'gid': gid})[1:]
     if not locations:
-        params.result = ('Grid with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({'gid': None}, True)
         return params
 
     obj = locations[0]
     args.doc.applyTemplate(obj, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

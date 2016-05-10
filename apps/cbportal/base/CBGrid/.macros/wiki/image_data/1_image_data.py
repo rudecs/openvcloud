@@ -2,15 +2,15 @@
 def main(j, args, params, tags, tasklet):
     import JumpScale.baselib.units
 
+    params.result = (args.doc, args.doc)
     imageid = args.getTag('id')
-    if not imageid:
+    if not imageid or not imageid.isalnum():
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
     ccl = j.clients.osis.getNamespace('libvirt')
 
     if not ccl.image.exists(imageid):
-        params.result = ('Image with id %s not found' % imageid, args.doc)
+        args.doc.applyTemplate({'imageid': None}, True)
         return params
 
 
@@ -20,7 +20,6 @@ def main(j, args, params, tags, tasklet):
 
     args.doc.applyTemplate(image, True)
 
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

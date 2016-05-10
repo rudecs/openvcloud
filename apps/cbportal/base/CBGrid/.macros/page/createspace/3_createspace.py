@@ -9,7 +9,7 @@ def main(j, args, params, tags, tasklet):
         locations.append((location['name'], location['locationCode']))
 
     # Placeholder that -1 means no limits are set on the cloud unit
-    culimitplaceholder = 'set to -1 if no limits should be set'
+    culimitplaceholder = 'leave empty if no limits should be set'
     popup = Popup(id='create_space', header='Create Cloud Space', submit_url='/restmachine/cloudbroker/cloudspace/create')
     popup.addText('Name', 'name', required=True)
     popup.addText('Username to grant access', 'access', required=True)

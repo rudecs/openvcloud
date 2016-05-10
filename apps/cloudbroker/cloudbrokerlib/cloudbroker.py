@@ -381,6 +381,12 @@ class CloudBroker(object):
                                         'for Read, "RCX" for Read/Write and "ARCXDU" for Admin '
                                         'access.' % accessrights)
 
+    def fillResourceLimits(self, resourcelimits):
+        for limittype in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 'CU_I']:
+            if limittype not in resourcelimits:
+                resourcelimits[limittype] = -1
+            elif resourcelimits[limittype] is None:
+                resourcelimits[limittype] = -1
 
 class Machine(object):
     def __init__(self, cb):
@@ -404,11 +410,6 @@ class Machine(object):
         image = models.image.get(imageId)
         if disksize < image.size:
             raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
-
-        sizeId = int(sizeId)
-        imageId = int(imageId)
-        #Check if there is enough credit
-        accountId = cloudspace.accountId
 
     def _assertName(self, cloudspaceId, name, **kwargs):
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]

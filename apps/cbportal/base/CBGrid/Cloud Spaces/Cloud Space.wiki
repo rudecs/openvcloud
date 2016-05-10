@@ -26,49 +26,49 @@ h2. Cloud Space: ${name}
 
   - name: maxMemoryCapacity
     label: Max Memory Capacity (GB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: float
     default: ${maxMemoryCapacity}
 
   - name: maxVDiskCapacity
     label: Max VDisk Capacity (GB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxVDiskCapacity}
 
   - name: maxCPUCapacity
     label: Max Number of CPU Cores
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxCPUCapacity}
 
   - name: maxNASCapacity
     label: Max Primary Storage(NAS) Capacity (TB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxNASCapacity}
 
   - name: maxArchiveCapacity
     label: Max Secondary Storage(Archive) Capacity (TB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxArchiveCapacity}
 
   - name: maxNetworkOptTransfer
     label: Max Network Transfer In Operator (GB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxNetworkOptTransfer}
 
   - name: maxNetworkPeerTransfer
     label: Max Network Transfer Peering (GB)
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxNetworkPeerTransfer}
 
   - name: maxNumPublicIP
     label: Max Number of Public IP Addresses
-    placeholder: set to -1 if no limits should be set
+    placeholder: leave empty if no limits should be set
     type: number
     default: ${maxNumPublicIP}
 
@@ -172,14 +172,17 @@ h3. Details
 |*Location*|${location}|
 |*Description*|${descr}|
 |*Public IP Adress*|${publicipaddress}|
-|*Max Memory Capacity*|{% if maxMemoryCapacity == "-1" %} Unlimited {% else %} ${maxMemoryCapacity} GB {% endif %}|
-|*Max VDisk Capacity*|{% if maxVDiskCapacity == "-1" %} Unlimited {% else %} ${maxVDiskCapacity} GB {% endif %}|
-|*Max Number of CPU Cores*|{% if maxCPUCapacity == "-1" %} Unlimited {% else %} ${maxCPUCapacity} {% endif %} |
-|*Max Primary Storage(NAS) Capacity*|{% if maxNASCapacity == "-1" %} Unlimited {% else %}${maxNASCapacity} TB {% endif %}|
-|*Max Secondary Storage(Archive) Capacity*|{% if maxArchiveCapacity == "-1" %} Unlimited {% else %} ${maxArchiveCapacity} TB {% endif %}|
-|*Max Network Transfer In Operator*|{% if maxNetworkOptTransfer == "-1" %} Unlimited {% else %}${maxNetworkOptTransfer} GB {% endif %}|
-|*Max Network Transfer Peering*|{%if maxNetworkPeerTransfer == "-1" %} Unlimited {% else %}${maxNetworkPeerTransfer} GB {% endif %}|
-|*Max Number of Public IP Addresses*|{% if maxNumPublicIP == "-1" %} Unlimited {%else %}${maxNumPublicIP} {%endif %}|
+
+h3. Cloud Resource Limits
+
+|*Memory Capacity*|${'Unlimited' if reslimits.CU_M == -1  else reslimits.CU_M + ' GB'}|
+|*VDisk Capacity*|${'Unlimited' if reslimits.CU_D == -1  else reslimits.CU_D + ' GB'}|
+|*Number of CPU Cores*|${'Unlimited' if reslimits.CU_C == -1  else reslimits.CU_C}|
+|*Primary Storage(NAS) Capacity*|${'Unlimited' if reslimits.CU_S == -1  else reslimits.CU_S + ' TB'}|
+|*Secondary Storage(Archive) Capacity*|${'Unlimited' if reslimits.CU_A == -1  else reslimits.CU_A + ' TB'}|
+|*Network Transfer In Operator*|${'Unlimited' if reslimits.CU_NO == -1  else reslimits.CU_NO + ' GB'}|
+|*Network Transfer Peering*|${'Unlimited' if reslimits.CU_NP == -1  else reslimits.CU_NP + ' GB'}|
+|*Number of Public IP Addresses*|${'Unlimited' if reslimits.CU_I == -1  else reslimits.CU_I}|
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
@@ -230,5 +233,5 @@ h3. Virtual Machines
 {{vmachines cloudspaceid:$$id}}
 
 {% else %}
-No Cloud Space provided
+Invalid Cloud Space provided
 {% endif %}

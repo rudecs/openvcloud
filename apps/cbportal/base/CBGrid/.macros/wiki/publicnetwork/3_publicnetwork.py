@@ -1,16 +1,17 @@
 def main(j, args, params, tags, tasklet):
     import netaddr
+    import re
 
+    params.result = (args.doc, args.doc)
     id = args.getTag('networkid')
-    if not id:
+    if not id and re.search('^\d+\.\d+\.\d+\.\d+/\d+$', id):
         args.doc.applyTemplate({})
-        params.result = (args.doc, args.doc)
         return params
     
     cbclient = j.clients.osis.getNamespace('cloudbroker')
 
     if not cbclient.publicipv4pool.exists(id):
-        params.result = ('Account with id %s not found' % id, args.doc)
+        args.doc.applyTemplate({id: None}, True)
         return params
 
     network = cbclient.publicipv4pool.get(id).dump()
@@ -29,7 +30,6 @@ def main(j, args, params, tags, tasklet):
                 network['vms'].append(vm)
 
     args.doc.applyTemplate(network, True)
-    params.result = (args.doc, args.doc)
     return params
 
 def match(j, args, params, tags, tasklet):

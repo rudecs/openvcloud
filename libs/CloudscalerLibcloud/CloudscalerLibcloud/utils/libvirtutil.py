@@ -255,11 +255,11 @@ class LibvirtUtil(object):
         else:
             xml = ElementTree.fromstring(dom.XMLDesc(0))
         interfaces = xml.findall('devices/interface/source')
-        diskfiles = list()
         for interface in interfaces:
-            if interface.attrib['bridge'].startswith('space_'):
-                bridgename = interface.attrib['bridge'].partition('_')[-1]
-                return int(bridgename, 16)
+            for network_key in ['bridge', 'network']:
+                if interface.attrib.get(network_key, '').startswith('space_'):
+                    bridgename = interface.attrib[network_key].partition('_')[-1]
+                    return int(bridgename, 16)
         return None
 
 

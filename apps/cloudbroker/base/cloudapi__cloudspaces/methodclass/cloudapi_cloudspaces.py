@@ -228,14 +228,22 @@ class cloudapi_cloudspaces(BaseActor):
         ace.type = 'U'
         ace.right = 'CXDRAU'
         ace.status = 'CONFIRMED'
-        if maxNumPublicIP != -1 and maxNumPublicIP < 1:
+
+        cs.resourceLimits = {'CU_M': maxMemoryCapacity,
+                             'CU_D': maxVDiskCapacity,
+                             'CU_C': maxCPUCapacity,
+                             'CU_S': maxNASCapacity,
+                             'CU_A': maxArchiveCapacity,
+                             'CU_NO': maxNetworkOptTransfer,
+                             'CU_NP': maxNetworkPeerTransfer,
+                             'CU_I': maxNumPublicIP}
+        self.cb.fillResourceLimits(cs.resourceLimits)
+
+        if cs.resourceLimits['CU_I'] != -1 and cs.resourceLimits['CU_I'] < 1:
             raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
                                         "address for its VFW")
 
-        cs.resourceLimits = {'CU_M': maxMemoryCapacity, 'CU_D': maxVDiskCapacity,
-                             'CU_C': maxCPUCapacity, 'CU_S': maxNASCapacity,
-                             'CU_A': maxArchiveCapacity, 'CU_NO': maxNetworkOptTransfer,
-                             'CU_NP': maxNetworkPeerTransfer, 'CU_I': maxNumPublicIP}
+
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
@@ -635,6 +643,7 @@ class cloudapi_cloudspaces(BaseActor):
         :return: True if all required CUs are available in account
         """
         accountcus = self.models.account.get(cloudspace.accountId).resourceLimits
+        self.cb.fillResourceLimits(accountcus)
         if excludecloudspace:
             excludecloudspaceid = cloudspace.id
         else:
@@ -645,8 +654,8 @@ class cloudapi_cloudspaces(BaseActor):
 
         if maxMemoryCapacity:
             avaliablememorycapacity = accountcus['CU_M'] - reservedcus['CU_M']
-            if maxMemoryCapacity != -1 and accountcus[
-                'CU_M'] != -1 and maxMemoryCapacity > avaliablememorycapacity:
+            if maxMemoryCapacity != -1 and accountcus['CU_M'] != -1 and \
+                            maxMemoryCapacity > avaliablememorycapacity:
                 raise exceptions.BadRequest("Owning account has only %s GB of unreserved memory, "
                                             "cannot reserve %s GB for this cloudspace" %
                                             (avaliablememorycapacity, maxMemoryCapacity))
