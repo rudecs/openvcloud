@@ -312,6 +312,10 @@ class cloudapi_machines(BaseActor):
         provider, node, vmachinemodel = self._getProviderAndNode(machineId)
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
+        vms = self.models.vmachine.search({'cloneReference': machineId, 'status': {'$ne': 'DESTROYED'}})[1:]
+        if vms:
+            clonenames = ['  * %s' % vm['name'] for vm in vms]
+            raise exceptions.Conflict("Can not delete a Virtual Machine which has clones.\nExisting Clones Are:\n%s" % '\n'.join(clonenames))
         self. _detachPublicNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
@@ -562,7 +566,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
-    @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped machine bucket')
+    @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
     def clone(self, machineId, name, **kwargs):
         """
         Clone the machine
