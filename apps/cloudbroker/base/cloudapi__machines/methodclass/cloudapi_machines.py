@@ -466,9 +466,6 @@ class cloudapi_machines(BaseActor):
         :return the snapshot name
         """
         provider, node, machine = self._getProviderAndNode(machineId)
-        snapshots = provider.client.ex_list_snapshots(node)
-        if len(snapshots) > 5:
-            raise exceptions.Conflict('Max 5 snapshots allowed')
         node = provider.client.ex_get_node_details(node.id)
         if node.extra.get('locked', False):
             raise exceptions.Conflict('Cannot create snapshot on a locked machine')
