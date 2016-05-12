@@ -381,12 +381,13 @@ class CloudBroker(object):
                                         'for Read, "RCX" for Read/Write and "ARCXDU" for Admin '
                                         'access.' % accessrights)
 
-    def fillResourceLimits(self, resourcelimits):
-        for limittype in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 'CU_I']:
-            if limittype not in resourcelimits:
-                resourcelimits[limittype] = -1
-            elif resourcelimits[limittype] is None:
-                resourcelimits[limittype] = -1
+    def fillResourceLimits(self, resource_limits, preserve_none=False):
+        for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 'CU_I']:
+            if limit_type not in resource_limits or resource_limits[limit_type] is None:
+                resource_limits[limit_type] = None if preserve_none else -1
+            elif resource_limits[limit_type] < -1:
+                    resource_limits[limit_type] = -1
+            resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
 
 class Machine(object):
     def __init__(self, cb):
