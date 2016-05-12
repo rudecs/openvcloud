@@ -540,8 +540,7 @@ class cloudapi_machines(BaseActor):
         """
         machine = self._getMachine(machineId)
         if name:
-            if not self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
-                raise exceptions.Conflict('Selected name already exists')
+            self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
             machine.name = name
         if description:
             machine.descr = description
@@ -580,8 +579,7 @@ class cloudapi_machines(BaseActor):
         if machine.cloneReference:
             raise exceptions.MethodNotAllowed('Cannot clone a cloned machine.')
 
-        if not self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
-            raise exceptions.Conflict('Selected name already exists')
+        self.cb.machine._assertName(machine.cloudspaceId, name, **kwargs):
         clone = self.models.vmachine.new()
         clone.cloudspaceId = machine.cloudspaceId
         clone.name = name

@@ -399,8 +399,7 @@ class Machine(object):
         models.vmachine.delete(machine.id)
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, minimum_days_of_credit_required):
-        if not self._assertName(cloudspace.id, name):
-            raise exceptions.Conflict('Selected name already exists')
+        self._assertName(cloudspace.id, name):
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
 
@@ -417,8 +416,11 @@ class Machine(object):
 
 
     def _assertName(self, cloudspaceId, name, **kwargs):
+        if not name or not name.strip():
+            raise ValueError("Machine name can not be empty")
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
-        return False if results else True
+        if results:
+            raise exceptions.Conflict('Selected name already exists')
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
