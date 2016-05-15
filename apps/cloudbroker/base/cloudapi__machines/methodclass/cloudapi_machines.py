@@ -37,7 +37,6 @@ class cloudapi_machines(BaseActor):
         self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
-        self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
         self.network = network.Network(self.models)
         self.systemodel = j.clients.osis.getNamespace('system')
@@ -291,7 +290,7 @@ class cloudapi_machines(BaseActor):
 
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, self._minimum_days_of_credit_required)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize)
         # Validate that enough resources are available in the CU limits to create the machine
         size = self.models.size.get(sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
