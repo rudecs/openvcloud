@@ -415,7 +415,6 @@ class Machine(object):
         if disksize not in size.disks:
             raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))
 
-
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")

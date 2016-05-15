@@ -540,7 +540,7 @@ class cloudapi_machines(BaseActor):
         """
         machine = self._getMachine(machineId)
         if name:
-            self.cb.machine.assertName(machine.cloudspaceId, name, **kwargs)
+            self.cb.machine.assertName(machine.cloudspaceId, name)
             machine.name = name
         if description:
             machine.descr = description
