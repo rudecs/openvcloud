@@ -399,8 +399,8 @@ class Machine(object):
             models.disk.delete(diskid)
         models.vmachine.delete(machine.id)
 
-    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, minimum_days_of_credit_required):
-        self._assertName(cloudspace.id, name)
+    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize):
+        self.assertName(cloudspace.id, name)
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
 
@@ -416,7 +416,7 @@ class Machine(object):
             raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))
 
 
-    def _assertName(self, cloudspaceId, name, **kwargs):
+    def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
