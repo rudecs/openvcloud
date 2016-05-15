@@ -400,7 +400,7 @@ class Machine(object):
         models.vmachine.delete(machine.id)
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, minimum_days_of_credit_required):
-        self._assertName(cloudspace.id, name):
+        self._assertName(cloudspace.id, name)
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
 
