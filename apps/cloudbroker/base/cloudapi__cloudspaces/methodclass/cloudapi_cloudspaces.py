@@ -385,6 +385,7 @@ class cloudapi_cloudspaces(BaseActor):
                       "description": cloudspaceObject.descr,
                       "id": cloudspaceObject.id,
                       "name": cloudspaceObject.name,
+                      "resourceLimits": cloudspaceObject.resourceLimits,
                       "publicipaddress": getIP(cloudspaceObject.publicipaddress),
                       "status": cloudspaceObject.status,
                       "location": cloudspaceObject.location,
