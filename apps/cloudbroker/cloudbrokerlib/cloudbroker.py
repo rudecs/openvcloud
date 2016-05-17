@@ -385,8 +385,8 @@ class CloudBroker(object):
         for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 'CU_I']:
             if limit_type not in resource_limits or resource_limits[limit_type] is None:
                 resource_limits[limit_type] = None if preserve_none else -1
-            elif resource_limits[limit_type] < -1:
-                    resource_limits[limit_type] = -1
+            elif resource_limits[limit_type] < -1 or resource_limits[limit_type] == 0:
+                raise exceptions.BadRequest('A resource limit should be a positive number or -1 (unlimited).')
             resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
 
 class Machine(object):
