@@ -44,7 +44,7 @@
     method:create
         """
         Create Account.
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """"
         var:name str,, Display name
         var:username str,, name of the account
@@ -62,7 +62,7 @@
     method:update
         """
         Update Account.
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 ore empty will not put any restrictions on the resource
         """"
         var:accountId int,,ID of account
         var:name str,, Display name

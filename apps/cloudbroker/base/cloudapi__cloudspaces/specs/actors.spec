@@ -5,7 +5,7 @@
     method:create
         """
         Create an extra cloudspace
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """
         var:accountId int,,id of acount this cloudspace belongs to
         var:location str,, name of cloudspace to create
@@ -51,7 +51,7 @@
     method:update
         """
         Update the cloudspace name and capacity parameters
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """
         var:cloudspaceId int,, id of the cloudspace
         var:name str,, name of the cloudspace @optional

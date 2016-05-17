@@ -59,7 +59,7 @@
     method:create
         """
         Create a cloudspace for given account
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """
         var:accountId int,, name of account to create space for
         var:location str,, location key where the space should be created
@@ -73,10 +73,11 @@
         var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
+
     method:update
         """
         Update cloudspace.
-        Setting a cloud unit maximum to -1 will not put any restrictions on the resource
+        Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """"
         var:cloudspaceId int,,ID of cloudspace
         var:name str,, Display name
