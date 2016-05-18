@@ -399,10 +399,14 @@ class Machine(object):
             models.disk.delete(diskid)
         models.vmachine.delete(machine.id)
 
-    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize):
+    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):
         self.assertName(cloudspace.id, name)
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
+
+        for datadisksize in datadisks:
+            if datadisksize > 2000:
+                raise exceptions.BadRequest("Invalid data disk size {}GB max size is 2000GB".format(datadisksize))
 
         if cloudspace.status == 'DESTROYED':
             raise exceptions.BadRequest('Can not create machine on destroyed Cloud Space')

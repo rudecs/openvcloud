@@ -289,12 +289,14 @@ class cloudapi_machines(BaseActor):
         :return bool
 
         """
+        datadisks = datadisks or []
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
         # Validate that enough resources are available in the CU limits to create the machine
         size = self.models.size.get(sizeId)
+        totaldisksize = sum(datadisks + [disksize])
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, disksize)
+                                                                   size.memory/1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 

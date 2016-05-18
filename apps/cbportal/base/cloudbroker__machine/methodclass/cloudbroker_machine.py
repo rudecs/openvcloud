@@ -43,11 +43,13 @@ class cloudbroker_machine(BaseActor):
         param:datadisks list of disk sizes
         result bool
         """
+        datadisks = datadisks or []
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
+        totaldisksize = sum(datadisks + [disksize])
         size = self.models.size.get(sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, disksize)
+                                                                   size.memory/1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 
