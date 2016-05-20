@@ -5,7 +5,7 @@ Check for orphan disk
 """
 
 organization = 'cloudscalers'
-category = "monitor.healthcheck"
+category = "monitor"
 author = "deboeckj@codescalers.com"
 version = "1.0"
 
