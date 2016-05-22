@@ -191,7 +191,7 @@ class auth(object):
         :return: True if username is authorized to access the resource, False otherwise
         """
         userobj = j.core.portal.active.auth.getUserInfo(username)
-        if not userobj.active:
+        if not userobj or not userobj.active:
             raise exceptions.Forbidden('User is not allowed to execute action while status is '
                                        'inactive.')
         groups = userobj.groups

@@ -6,7 +6,6 @@ import JumpScale.baselib.mailclient
 from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
 import json
-import md5
 
 
 VALIDATION_TIME = 7 * 24 * 60 * 60
@@ -112,11 +111,11 @@ class cloudapi_users(BaseActor):
         ctx = kwargs['ctx']
         user = j.core.portal.active.auth.getUserInfo(ctx.env['beaker.session']['user'])
         if user:
-              if user.passwd == md5.new(oldPassword).hexdigest():
+              if user.passwd == j.tools.hash.md5_string(oldPassword):
                  if not self._isValidPassword(newPassword):
                     return [400, "A password must be at least 8 and maximum 80 characters long and may not contain whitespace."]
                  else:
-                    user.passwd =  md5.new(newPassword).hexdigest()
+                    user.passwd = j.tools.hash.md5_string(newPassword)
                     self.systemodel.user.set(user)
                     return [200, "Your password has been changed."]
               else:
@@ -221,7 +220,7 @@ class cloudapi_users(BaseActor):
             return 'Invalid or expired validation token'
 
         user = self.systemodel.user.get(actual_reset_token.userguid)
-        user.passwd = md5.new(newpassword).hexdigest()
+        user.passwd = j.tools.hash.md5_string(newpassword)
         self.systemodel.user.set(user)
 
         self.models.resetpasswordtoken.delete(resettoken)
@@ -243,7 +242,7 @@ class cloudapi_users(BaseActor):
             return 'Invalid or expired validation token'
 
         user = self.systemodel.user.get(activation_token['username'])
-        user.passwd = md5.new(password).hexdigest()
+        user.passwd = j.tools.hash.md5_string(password)
         self.systemodel.user.set(user)
 
         # Invalidate the token.
@@ -267,10 +266,11 @@ class cloudapi_users(BaseActor):
                                                     size=limit)[1:]
 
         if matchingusers:
-            return map(lambda u: {'username': u['id'],
-                                  'gravatarurl': 'http://www.gravatar.com/avatar/%s' %
-                                                 md5.md5(u['emails'][0]).hexdigest()},
-                       matchingusers)
+            def userinfo(user):
+                emailhash = j.tools.hash.md5_string(next(iter(user['emails']), ''))
+                return {'username': user['id'],
+                        'gravatarurl': 'http://www.gravatar.com/avatar/%s' % emailhash }
+            return map(userinfo, matchingusers)
         else:
             return []
 
@@ -310,25 +310,24 @@ class cloudapi_users(BaseActor):
         return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
                                     templatename, extratemplateargs)
 
-    def sendShareResourceEmail(self, emailaddress, resourcetype, resourceid, accesstype,
-                               username, activated=True):
+    def sendShareResourceEmail(self, user, resourcetype, resourceid, accesstype):
         """
         Send an email to a registered users to inform a vmachine, cloudspace, account management
         has been shared with them
 
-        :param emailaddress: emailaddress of the registered user
+        :param user: user object
         :param resourcetype: the type of the resource that will be shared (account,
                              cloudspace, vmachine)
         :param resourceid: the id of the resource that will be shared
         :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
-        :param username: username of the registered user
-        :param activated: True if user is activated on the system
         :return True if email was was successfully sent
         """
         templatename = 'invite_internal_users'
-        extratemplateargs = {'username': username, 'activated': activated}
-        return self._sendShareEmail(emailaddress, resourcetype, resourceid, accesstype,
-                                    templatename, extratemplateargs)
+        extratemplateargs = {'username': user['id'], 'activated': user['active']}
+        if user['emails']:
+            return self._sendShareEmail(user['emails'][0], resourcetype, resourceid, accesstype,
+                                        templatename, extratemplateargs)
+        return True
 
     def _sendShareEmail(self, emailaddress, resourcetype, resourceid, accesstype, templatename,
                         extratemplateargs=None):

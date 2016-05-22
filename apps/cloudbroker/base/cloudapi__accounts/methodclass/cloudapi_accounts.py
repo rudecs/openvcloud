@@ -32,10 +32,8 @@ class cloudapi_accounts(BaseActor):
             userId = user['id']
 
         self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
-        emailaddress = user['emails'][0]
         try:
-            j.apps.cloudapi.users.sendShareResourceEmail(emailaddress, 'account', accountId,
-                                                         accesstype,  userId, user['active'])
+            j.apps.cloudapi.users.sendShareResourceEmail(user, 'account', accountId, accesstype)
             return True
         except:
             self.deleteUser(accountId, userId, recursivedelete=False)
