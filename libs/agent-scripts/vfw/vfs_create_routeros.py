@@ -131,7 +131,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             run.send("/ip addr add address=%s/22 interface=internal\r\n" % internalip)
             print 'waiting for end of command'
             run.expect("\] >", timeout=2) # wait for primpt
-            run.send("\r\n")
+            run.send("/quit\r\n")
+            run.expect("Login:", timeout=2)
             run.close()
         except Exception, e:
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
