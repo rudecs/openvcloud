@@ -44,7 +44,7 @@
         """
         Create a user
         """
-        var:username str,, id of user
+        var:username str,, id of user @tags validator:username
         var:emailaddress list,, emailaddresses of the user
         var:password str,, password of user
         var:groups list,None,list of groups this user belongs to @optional

@@ -63,7 +63,7 @@
         """
         var:accountId int,, name of account to create space for
         var:location str,, location key where the space should be created
-        var:name str,, name of space to create
+        var:name str,, name of space to create @tags validator:name
         var:access str,, username which have full access to this space
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
         var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional

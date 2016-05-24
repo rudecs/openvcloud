@@ -6,7 +6,7 @@
         """
         Create a extra an account (Method not implemented)
         """
-        var:name str,,name of account to create
+        var:name str,,name of account to create @tags validator:name
         var:access list,,list of ids of users which have full access to this account
         var:maxMemoryCapacity float,-1, max size of memory in GB
         var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB
@@ -36,7 +36,7 @@
         Update an account name and resource limits
         """
         var:accountId int,, id of the account to change
-        var:name str,, name of the account @optional
+        var:name str,, name of the account @optional @tags validator:name
         var:maxMemoryCapacity float,, max size of memory in GB @optional
         var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,, max number of cpu cores @optional

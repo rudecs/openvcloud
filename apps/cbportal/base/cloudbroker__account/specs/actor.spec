@@ -46,8 +46,8 @@
         Create Account.
         Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """"
-        var:name str,, Display name
-        var:username str,, name of the account
+        var:name str,, Display name @tags validator:name
+        var:username str,, name of the account @tags validator:username
         var:emailaddress str,,email
         var:location str,,locationcode
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
@@ -65,7 +65,7 @@
         Setting a cloud unit maximum to -1 ore empty will not put any restrictions on the resource
         """"
         var:accountId int,,ID of account
-        var:name str,, Display name
+        var:name str,, Display name @tags validator:name
         var:maxMemoryCapacity float,, max size of memory in GB
         var:maxVDiskCapacity int,, max size of aggregated vdisks in GB
         var:maxCPUCapacity int,, max number of cpu cores

@@ -9,7 +9,7 @@
         The user needs write access rights on the space.
         """
         var:cloudspaceId int,,id of space in which we want to create a machine
-        var:name str,,name of machine
+        var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
@@ -22,7 +22,7 @@
         Create a machine on a specific stackid
         """
         var:cloudspaceId int,,id of space in which we want to create a machine
-        var:name str,,name of machine
+        var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
@@ -71,7 +71,7 @@
         Takes a snapshot of a deployed machine
         """
         var:machineId int,,Machine id
-        var:snapshotName str,,Snapshot name
+        var:snapshotName str,,Snapshot name @tags validator:name
         var:reason str,,Reason
 
     method:rollbackSnapshot
@@ -95,7 +95,7 @@
         Clones a machine
         """
         var:machineId int,,Machine id
-        var:cloneName str,,Clone name
+        var:cloneName str,,Clone name @tags validator:name
         var:reason str,,Reason
 
     method:destroy
@@ -248,7 +248,7 @@
         Adds a disk to a deployed machine
         """
         var:machineId int,, ID of machine
-        var:diskName str,,Name of the disk
+        var:diskName str,,Name of the disk @tags validator:name
         var:description str,,Description
         var:size int,,size in GByte default=10 @tags: optional
 
@@ -264,7 +264,7 @@
         Creates a template from a deployed machine
         """
         var:machineId int,, ID of machine
-        var:templateName str,, Name of the template
+        var:templateName str,, Name of the template @tags validator:name
         var:reason str,,Reason
 
     method:updateMachine

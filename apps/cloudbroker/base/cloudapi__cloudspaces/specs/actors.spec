@@ -9,8 +9,8 @@
         """
         var:accountId int,,id of acount this cloudspace belongs to
         var:location str,, name of cloudspace to create
-        var:name str,,name of space to create
-        var:access str,,username of a user which has full access to this space
+        var:name str,,name of space to create @tags validator:name
+        var:access str,,username of a user which has full access to this space @tags validator:name
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
         var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
@@ -54,7 +54,7 @@
         Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:name str,, name of the cloudspace @optional
+        var:name str,, name of the cloudspace @optional @tags validator:name
         var:maxMemoryCapacity float,, max size of memory in GB @optional
         var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,, max number of cpu cores @optional

@@ -9,7 +9,7 @@
         The user needs write access rights on the cloud space
         """
         var:cloudspaceId int,,id of cloud space in which we want to create a machine
-        var:name str,,name of machine
+        var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
         var:sizeId int,,id of the specific size
         var:imageId int,, id of the specific image
@@ -46,7 +46,7 @@
         Name, description can be changed with this action.
         """
         var:machineId int,, id of the machine
-        var:name str,, name of the machine @tags: optional
+        var:name str,, name of the machine @tags: optional validator:name
         var:description str,, description of the machine @tags: optional
 
     method:start
@@ -123,7 +123,7 @@
         Take a snapshot of the machine
         """
         var:machineId int,,id of machine to snapshot
-        var:name str,, name to give snapshot
+        var:name str,, name to give snapshot @tags validator:name
         result:str the snapshot name
 
     method:listSnapshots
@@ -190,15 +190,15 @@
         """
         Clone the machine
         """
-        var:machineId str,,id of the machine to clone
-        var:name str,, name of the cloned machine
+        var:machineId int,,id of the machine to clone
+        var:name str,, name of the cloned machine @tags validator:name
         result:int, id of the new cloned machine
 
     method:getHistory
         """
         Get machine history
         """
-        var:machineId str,,id of the machine
+        var:machineId int,,id of the machine
         var:size int,, number of entries to return
         result:list, list of the history of the machine
 
