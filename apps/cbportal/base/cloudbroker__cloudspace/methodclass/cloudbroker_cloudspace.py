@@ -49,9 +49,11 @@ class cloudbroker_cloudspace(BaseActor):
                             error='Failed to delete Cloud Space')
 
     def _destroy(self, cloudspace, reason, ctx):
+        with self.models.cloudspace.lock(cloudspace['id']):
+            cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
+            if cloudspace['status'] == 'DEPLOYING':
+                raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
         status = cloudspace['status']
-        if status == 'DEPLOYING':
-            raise ValueError('Can not delete a Cloud Space which is being deployed')
         cloudspace['status'] = 'DESTROYING'
         self.models.cloudspace.set(cloudspace)
         cloudspace['status'] = 'DESTROYED'
@@ -65,6 +67,7 @@ class cloudbroker_cloudspace(BaseActor):
                     ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
+            cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
             cloudspace['status'] = status
             self.models.cloudspace.set(cloudspace)
             raise
