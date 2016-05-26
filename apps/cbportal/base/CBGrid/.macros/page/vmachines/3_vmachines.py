@@ -8,7 +8,6 @@ def main(j, args, params, tags, tasklet):
     imageid = args.getTag('imageid')
     gid = args.getTag('gid')
     filters = dict()
-    filters['status'] = {'$in': ['RUNNING', 'HALTED', 'PAUSED']}
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
     if stackid:
