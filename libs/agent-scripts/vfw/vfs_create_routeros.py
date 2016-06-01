@@ -12,6 +12,7 @@ category = "deploy.routeros"
 enable = True
 async = True
 queue = 'default'
+docleanup = True
 
 
 def cleanup(name, networkid, destinationdir):
@@ -206,10 +207,23 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         print 'Finished configuring VFW'
 
     except:
-        j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
-                                           networkid=networkid, destinationdir=destinationdir)
+        if docleanup:
+            j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
+                                               networkid=networkid, destinationdir=destinationdir)
         raise
 
     return data
 
 
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--networkid', type=int, required=True)
+    parser.add_argument('-p', '--public-ip', dest='publicip', required=True)
+    parser.add_argument('-pg', '--public-gw', dest='publicgw', required=True)
+    parser.add_argument('-pc', '--public-cidr', dest='publiccidr', required=True, type=int)
+    parser.add_argument('-pw', '--password', required=True)
+    parser.add_argument('-c', '--cleanup', action='store_true', default=False, help='Cleanup in case of failure')
+    options = parser.parse_args()
+    docleanup = options.cleanup
+    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password)
