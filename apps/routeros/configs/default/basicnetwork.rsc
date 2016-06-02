@@ -20,6 +20,8 @@ add bridge=cloudspace-bridge interface=cloudspace
 remove [/ip pool find name=dhcp]
 add name=dhcp ranges=192.168.103.3-192.168.103.254
 
+/ip dns set allow-remote-requests=no
+
 /ip dhcp-server network
 remove [/ip dhcp-server network find]
 add address=192.168.103.0/24 gateway=192.168.103.1 netmask=255.255.255.0 dns-server=8.8.8.8
