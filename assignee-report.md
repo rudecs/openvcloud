@@ -2,12 +2,12 @@
 
 # Issues per assignee
 - [lzonneke](#lzonneke) has 3 assigned
-- [delandtj](#delandtj) has 1 assigned
-- [ramezsaeed](#ramezsaeed) has 1 assigned
-- [maxux](#maxux) has 2 assigned
 - [grimpy](#grimpy) has 2 assigned
-- [davshafik](#davshafik) has 2 assigned
+- [ramezsaeed](#ramezsaeed) has 1 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
+- [delandtj](#delandtj) has 1 assigned
+- [davshafik](#davshafik) has 2 assigned
+- [maxux](#maxux) has 2 assigned
 
 
 
@@ -20,11 +20,12 @@
 |[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
 
 
-## [delandtj](https://github.com/delandtj)
+## [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#85](https://github.com/0-complexity/openvcloud/issues/85)|DoS attack against the CS router OS|:red_circle: Open|bug|
+|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:red_circle: Open||
+|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
 ## [ramezsaeed](https://github.com/ramezsaeed)
@@ -34,20 +35,18 @@
 |[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
-## [maxux](https://github.com/maxux)
+## [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
-|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
 
-## [grimpy](https://github.com/grimpy)
+## [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:red_circle: Open||
-|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#85](https://github.com/0-complexity/openvcloud/issues/85)|DoS attack against the CS router OS|:red_circle: Open|bug|
 
 
 ## [davshafik](https://github.com/davshafik)
@@ -58,9 +57,10 @@
 |[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
 
 
-## [yveskerwyn](https://github.com/yveskerwyn)
+## [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
+|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
+|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 
