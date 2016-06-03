@@ -20,20 +20,21 @@
 
 
 ## Issues per assignee
-- [maxux](#maxux)
-- [yveskerwyn](#yveskerwyn)
-- [grimpy](#grimpy)
 - [ramezsaeed](#ramezsaeed)
+- [yveskerwyn](#yveskerwyn)
+- [maxux](#maxux)
+- [grimpy](#grimpy)
+- [delandtj](#delandtj)
 - [lzonneke](#lzonneke)
 - [davshafik](#davshafik)
-- [delandtj](#delandtj)
 
 
 
-### [maxux](https://github.com/maxux)
+### [ramezsaeed](https://github.com/ramezsaeed)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
@@ -43,6 +44,12 @@
 |[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
 
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
 ### [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
@@ -50,11 +57,10 @@
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
-### [ramezsaeed](https://github.com/ramezsaeed)
+### [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
 ### [lzonneke](https://github.com/lzonneke)
@@ -71,10 +77,4 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
-
-
-### [delandtj](https://github.com/delandtj)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
