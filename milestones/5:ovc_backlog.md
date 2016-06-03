@@ -14,23 +14,23 @@
 
 
 ## Issues per assignee
-- [lzonneke](#lzonneke)
 - [yveskerwyn](#yveskerwyn)
-- [ramezsaeed](#ramezsaeed)
-- [maxux](#maxux)
 - [davshafik](#davshafik)
-- [grimpy](#grimpy)
+- [ramezsaeed](#ramezsaeed)
+- [lzonneke](#lzonneke)
 - [delandtj](#delandtj)
+- [grimpy](#grimpy)
+- [maxux](#maxux)
 
 
 
-### [lzonneke](https://github.com/lzonneke)
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -42,14 +42,13 @@
 |-----|-----|-----|----|
 
 
-### [maxux](https://github.com/maxux)
+### [lzonneke](https://github.com/lzonneke)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
 
-### [davshafik](https://github.com/davshafik)
+### [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -61,8 +60,9 @@
 |-----|-----|-----|----|
 
 
-### [delandtj](https://github.com/delandtj)
+### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
