@@ -20,34 +20,14 @@
 
 
 ## Issues per assignee
-- [yveskerwyn](#yveskerwyn)
-- [ramezsaeed](#ramezsaeed)
-- [maxux](#maxux)
 - [lzonneke](#lzonneke)
 - [delandtj](#delandtj)
-- [davshafik](#davshafik)
+- [ramezsaeed](#ramezsaeed)
+- [maxux](#maxux)
 - [grimpy](#grimpy)
+- [davshafik](#davshafik)
+- [yveskerwyn](#yveskerwyn)
 
-
-
-### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
-
-
-### [ramezsaeed](https://github.com/ramezsaeed)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
-
-
-### [maxux](https://github.com/maxux)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [lzonneke](https://github.com/lzonneke)
@@ -65,11 +45,17 @@
 |-----|-----|-----|----|
 
 
-### [davshafik](https://github.com/davshafik)
+### [ramezsaeed](https://github.com/ramezsaeed)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
+|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [grimpy](https://github.com/grimpy)
@@ -77,4 +63,18 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+
+
+### [davshafik](https://github.com/davshafik)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
+
+
+### [yveskerwyn](https://github.com/yveskerwyn)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
