@@ -20,30 +20,14 @@
 
 
 ## Issues per assignee
-- [lzonneke](#lzonneke)
-- [grimpy](#grimpy)
 - [ramezsaeed](#ramezsaeed)
-- [yveskerwyn](#yveskerwyn)
-- [delandtj](#delandtj)
-- [davshafik](#davshafik)
+- [grimpy](#grimpy)
 - [maxux](#maxux)
+- [davshafik](#davshafik)
+- [yveskerwyn](#yveskerwyn)
+- [lzonneke](#lzonneke)
+- [delandtj](#delandtj)
 
-
-
-### [lzonneke](https://github.com/lzonneke)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
-|[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
-|[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
-
-
-### [grimpy](https://github.com/grimpy)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
 ### [ramezsaeed](https://github.com/ramezsaeed)
@@ -53,14 +37,14 @@
 |[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
+|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
-### [delandtj](https://github.com/delandtj)
+### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -73,7 +57,23 @@
 |[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
 
 
-### [maxux](https://github.com/maxux)
+### [yveskerwyn](https://github.com/yveskerwyn)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
+
+
+### [lzonneke](https://github.com/lzonneke)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
+|[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
+|[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
+
+
+### [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
