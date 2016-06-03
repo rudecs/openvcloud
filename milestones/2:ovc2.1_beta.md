@@ -20,21 +20,14 @@
 
 
 ## Issues per assignee
-- [ramezsaeed](#ramezsaeed)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
+- [delandtj](#delandtj)
+- [lzonneke](#lzonneke)
+- [ramezsaeed](#ramezsaeed)
 - [davshafik](#davshafik)
 - [yveskerwyn](#yveskerwyn)
-- [lzonneke](#lzonneke)
-- [delandtj](#delandtj)
 
-
-
-### [ramezsaeed](https://github.com/ramezsaeed)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
 ### [grimpy](https://github.com/grimpy)
@@ -50,6 +43,28 @@
 |-----|-----|-----|----|
 
 
+### [delandtj](https://github.com/delandtj)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [lzonneke](https://github.com/lzonneke)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
+|[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
+|[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
+
+
+### [ramezsaeed](https://github.com/ramezsaeed)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
+
+
 ### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
@@ -62,19 +77,4 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
-
-
-### [lzonneke](https://github.com/lzonneke)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
-|[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
-|[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
-
-
-### [delandtj](https://github.com/delandtj)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
