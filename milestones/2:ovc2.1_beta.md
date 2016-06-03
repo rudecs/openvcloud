@@ -21,12 +21,12 @@
 
 ## Issues per assignee
 - [lzonneke](#lzonneke)
-- [delandtj](#delandtj)
-- [ramezsaeed](#ramezsaeed)
-- [maxux](#maxux)
 - [grimpy](#grimpy)
-- [davshafik](#davshafik)
+- [ramezsaeed](#ramezsaeed)
 - [yveskerwyn](#yveskerwyn)
+- [delandtj](#delandtj)
+- [davshafik](#davshafik)
+- [maxux](#maxux)
 
 
 
@@ -39,10 +39,11 @@
 |[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
 
 
-### [delandtj](https://github.com/delandtj)
+### [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
 ### [ramezsaeed](https://github.com/ramezsaeed)
@@ -52,17 +53,17 @@
 |[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 
 
-### [maxux](https://github.com/maxux)
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
 
-### [grimpy](https://github.com/grimpy)
+### [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
 ### [davshafik](https://github.com/davshafik)
@@ -72,9 +73,8 @@
 |[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
