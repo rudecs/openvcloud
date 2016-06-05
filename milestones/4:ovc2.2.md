@@ -10,14 +10,25 @@
 
 
 ## Issues per assignee
-- [grimpy](#grimpy)
 - [maxux](#maxux)
+- [yveskerwyn](#yveskerwyn)
+- [grimpy](#grimpy)
+- [davshafik](#davshafik)
 - [delandtj](#delandtj)
 - [lzonneke](#lzonneke)
-- [ramezsaeed](#ramezsaeed)
-- [davshafik](#davshafik)
-- [yveskerwyn](#yveskerwyn)
 
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [yveskerwyn](https://github.com/yveskerwyn)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [grimpy](https://github.com/grimpy)
@@ -26,7 +37,7 @@
 |-----|-----|-----|----|
 
 
-### [maxux](https://github.com/maxux)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -39,24 +50,6 @@
 
 
 ### [lzonneke](https://github.com/lzonneke)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [ramezsaeed](https://github.com/ramezsaeed)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [davshafik](https://github.com/davshafik)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
