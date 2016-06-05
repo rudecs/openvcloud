@@ -18,9 +18,9 @@ def action():
     import os
     cbcl = j.clients.osis.getNamespace('cloudbroker', j.core.osis.client)
     vcl = j.clients.osis.getNamespace('vfw', j.core.osis.client)
-    disks = cbcl.disk.search({'$fields': ['status', 'referenceId']})[1:]
+    disks = cbcl.disk.search({'$fields': ['status', 'referenceId']}, size=0)[1:]
     diskmap = {disk['referenceId']: disk['status'] for disk in disks}
-    networks = vcl.virtualfirewall.search({'$fields': ['id'], '$query': {'gid': j.application.whoAmI.gid}})[1:]
+    networks = vcl.virtualfirewall.search({'$fields': ['id'], '$query': {'gid': j.application.whoAmI.gid}}, size=0)[1:]
     activenetworks = [network['id'] for network in networks]
     results = []
 
