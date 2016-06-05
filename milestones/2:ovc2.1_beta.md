@@ -9,6 +9,7 @@
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#146](https://github.com/0-complexity/openvcloud/issues/146)|The Default cloudspace have unlimited resources under limited account resources.  Also we can create vm under virtual cloudspace|:red_circle: Open|bug|
+|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
 |[#138](https://github.com/0-complexity/openvcloud/issues/138)|All stacks crash when creating machine with >2200GB disk size|:red_circle: Open|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:red_circle: Open|bug|
@@ -20,14 +21,26 @@
 
 
 ## Issues per assignee
-- [grimpy](#grimpy)
 - [maxux](#maxux)
+- [yveskerwyn](#yveskerwyn)
+- [grimpy](#grimpy)
+- [davshafik](#davshafik)
 - [delandtj](#delandtj)
 - [lzonneke](#lzonneke)
-- [ramezsaeed](#ramezsaeed)
-- [davshafik](#davshafik)
-- [yveskerwyn](#yveskerwyn)
 
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [yveskerwyn](https://github.com/yveskerwyn)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
 
 ### [grimpy](https://github.com/grimpy)
@@ -37,10 +50,11 @@
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
-### [maxux](https://github.com/maxux)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
 
 
 ### [delandtj](https://github.com/delandtj)
@@ -56,25 +70,4 @@
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
-
-
-### [ramezsaeed](https://github.com/ramezsaeed)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
-
-
-### [davshafik](https://github.com/davshafik)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
-
-
-### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
