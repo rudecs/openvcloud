@@ -6,6 +6,8 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
+|[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:red_circle: Open|bug|
+|[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:red_circle: Open|bug|
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
 |[#174](https://github.com/0-complexity/openvcloud/issues/174)|Redirected to ROS login page after pressing Advanced Shield Configuration Button|:red_circle: Open|bug|
 |[#173](https://github.com/0-complexity/openvcloud/issues/173)|DoS the enviroment when create a CS, account or VM with a very long name|:red_circle: Open|bug|
