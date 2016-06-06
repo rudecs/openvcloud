@@ -30,20 +30,19 @@
 
 
 ## Issues per assignee
-- [davshafik](#davshafik)
-- [delandtj](#delandtj)
 - [maxux](#maxux)
+- [delandtj](#delandtj)
+- [davshafik](#davshafik)
 - [yveskerwyn](#yveskerwyn)
 - [grimpy](#grimpy)
 - [lzonneke](#lzonneke)
 
 
 
-### [davshafik](https://github.com/davshafik)
+### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
 
 
 ### [delandtj](https://github.com/delandtj)
@@ -52,10 +51,11 @@
 |-----|-----|-----|----|
 
 
-### [maxux](https://github.com/maxux)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
