@@ -6,6 +6,16 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
+|[#193](https://github.com/0-complexity/openvcloud/issues/193)|A Running VM under a virtual cloudspace|:red_circle: Open|bug|
+|[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
+|[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:red_circle: Open|bug|
+|[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:red_circle: Open|bug|
+|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:red_circle: Open||
+|[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:red_circle: Open|bug|
+|[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:red_circle: Open|bug|
+|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:red_circle: Open|bug|
+|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:red_circle: Open|bug|
+|[#180](https://github.com/0-complexity/openvcloud/issues/180)|Wrong information is displayed on the account page|:red_circle: Open|bug|
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#146](https://github.com/0-complexity/openvcloud/issues/146)|The Default cloudspace have unlimited resources under limited account resources.  Also we can create vm under virtual cloudspace|:red_circle: Open|bug|
@@ -17,7 +27,6 @@
 |[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:red_circle: Open|bug|
 |[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:red_circle: Open|bug|
-|[#67](https://github.com/0-complexity/openvcloud/issues/67)|validate on VDC if port forwards list is disappered when add a nre port forward|:red_circle: Open|bug|
 
 
 ## Issues per assignee
@@ -42,6 +51,7 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
+|[#67](https://github.com/0-complexity/openvcloud/issues/67)|validate on VDC if port forwards list is disappered when add a nre port forward|:red_circle: Open|bug|
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
 
@@ -63,7 +73,7 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:red_circle: Open|question|
+|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
 
 
 ### [maxux](https://github.com/maxux)
