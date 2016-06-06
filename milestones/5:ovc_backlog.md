@@ -15,11 +15,11 @@
 
 ## Issues per assignee
 - [grimpy](#grimpy)
+- [maxux](#maxux)
 - [lzonneke](#lzonneke)
 - [delandtj](#delandtj)
-- [yveskerwyn](#yveskerwyn)
 - [davshafik](#davshafik)
-- [maxux](#maxux)
+- [yveskerwyn](#yveskerwyn)
 
 
 
@@ -27,6 +27,13 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
 
 ### [lzonneke](https://github.com/lzonneke)
@@ -41,21 +48,14 @@
 |-----|-----|-----|----|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
 ### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 
 
-### [maxux](https://github.com/maxux)
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
