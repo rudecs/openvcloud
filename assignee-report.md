@@ -2,11 +2,11 @@
 
 # Issues per assignee
 - [grimpy](#grimpy) has 1 assigned
+- [maxux](#maxux) has 2 assigned
 - [lzonneke](#lzonneke) has 4 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [yveskerwyn](#yveskerwyn) has 1 assigned
 - [davshafik](#davshafik) has 2 assigned
-- [maxux](#maxux) has 2 assigned
+- [yveskerwyn](#yveskerwyn) has 1 assigned
 
 
 
@@ -15,6 +15,14 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+
+
+## [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
+|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 
 
 ## [lzonneke](https://github.com/lzonneke)
@@ -34,13 +42,6 @@
 |[#85](https://github.com/0-complexity/openvcloud/issues/85)|DoS attack against the CS router OS|:red_circle: Open|bug|
 
 
-## [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
-
-
 ## [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
@@ -49,10 +50,9 @@
 |[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
 
 
-## [maxux](https://github.com/maxux)
+## [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
-|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
