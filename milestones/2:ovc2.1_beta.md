@@ -10,7 +10,7 @@
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#146](https://github.com/0-complexity/openvcloud/issues/146)|The Default cloudspace have unlimited resources under limited account resources.  Also we can create vm under virtual cloudspace|:red_circle: Open|bug|
 |[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
-|[#138](https://github.com/0-complexity/openvcloud/issues/138)|All stacks crash when creating machine with >2200GB disk size|:red_circle: Open|bug|
+|[#138](https://github.com/0-complexity/openvcloud/issues/138)|All stacks crash when creating machine with >2200GB disk size|:white_circle: Verification|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:red_circle: Open|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:white_circle: Verification|bug|
