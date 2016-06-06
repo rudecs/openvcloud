@@ -5,6 +5,7 @@ from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.async import async
+from JumpScale.portal.portal import Validators
 
 
 def _send_signup_mail(hrd, **kwargs):
@@ -81,6 +82,7 @@ class cloudbroker_account(BaseActor):
         else:
             if not emailaddress:
                 raise exceptions.BadRequest('Email address is required for new users.')
+            Validators.EMAIL(emailaddress)
 
             password = j.base.idgenerator.generateGUID()
             j.apps.cloudbroker.user.create(username, [emailaddress], password, ['user'])
