@@ -8,7 +8,7 @@
 |-----|-----|-----|---|
 |[#193](https://github.com/0-complexity/openvcloud/issues/193)|A Running VM under a virtual cloudspace|:red_circle: Open|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
-|[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:red_circle: Open|bug|
+|[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:white_circle: Verification|bug|
 |[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:red_circle: Open|bug|
 |[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:red_circle: Open||
 |[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:red_circle: Open|bug|
