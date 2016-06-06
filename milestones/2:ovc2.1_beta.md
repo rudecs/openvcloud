@@ -31,11 +31,11 @@
 
 ## Issues per assignee
 - [grimpy](#grimpy)
+- [maxux](#maxux)
 - [lzonneke](#lzonneke)
 - [delandtj](#delandtj)
-- [yveskerwyn](#yveskerwyn)
 - [davshafik](#davshafik)
-- [maxux](#maxux)
+- [yveskerwyn](#yveskerwyn)
 
 
 
@@ -44,6 +44,12 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [lzonneke](https://github.com/lzonneke)
@@ -62,13 +68,6 @@
 |-----|-----|-----|----|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
-
-
 ### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
@@ -76,8 +75,9 @@
 |[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
 
 
-### [maxux](https://github.com/maxux)
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
 
