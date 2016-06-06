@@ -10,16 +10,16 @@
 
 
 ## Issues per assignee
-- [davshafik](#davshafik)
-- [delandtj](#delandtj)
 - [maxux](#maxux)
+- [delandtj](#delandtj)
+- [davshafik](#davshafik)
 - [yveskerwyn](#yveskerwyn)
 - [grimpy](#grimpy)
 - [lzonneke](#lzonneke)
 
 
 
-### [davshafik](https://github.com/davshafik)
+### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -31,7 +31,7 @@
 |-----|-----|-----|----|
 
 
-### [maxux](https://github.com/maxux)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
