@@ -5,7 +5,8 @@
 - [lzonneke](#lzonneke) has 4 assigned
 - [maxux](#maxux) has 2 assigned
 - [davshafik](#davshafik) has 2 assigned
-- [grimpy](#grimpy) has 1 assigned
+- [mie00](#mie00) has 3 assigned
+- [grimpy](#grimpy) has 2 assigned
 - [delandtj](#delandtj) has 1 assigned
 
 
@@ -43,10 +44,20 @@
 |[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
 
 
+## [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:large_blue_circle: In Progress|bug|
+|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:large_blue_circle: In Progress|bug|
+|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:large_blue_circle: In Progress|bug|
+
+
 ## [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#200](https://github.com/0-complexity/openvcloud/issues/200)|fix the eco link of the stack|:white_circle: Verification||
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 
 
