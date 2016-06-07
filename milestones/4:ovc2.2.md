@@ -14,6 +14,7 @@
 - [lzonneke](#lzonneke)
 - [maxux](#maxux)
 - [davshafik](#davshafik)
+- [mie00](#mie00)
 - [grimpy](#grimpy)
 - [delandtj](#delandtj)
 
@@ -38,6 +39,12 @@
 
 
 ### [davshafik](https://github.com/davshafik)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [mie00](https://github.com/mie00)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
