@@ -39,6 +39,7 @@
 - [lzonneke](#lzonneke)
 - [maxux](#maxux)
 - [davshafik](#davshafik)
+- [mie00](#mie00)
 - [grimpy](#grimpy)
 - [delandtj](#delandtj)
 
@@ -68,6 +69,12 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
+
+
+### [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [grimpy](https://github.com/grimpy)
