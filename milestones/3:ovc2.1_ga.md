@@ -35,20 +35,19 @@
 
 
 ## Issues per assignee
-- [maxux](#maxux)
-- [delandtj](#delandtj)
-- [davshafik](#davshafik)
-- [yveskerwyn](#yveskerwyn)
-- [grimpy](#grimpy)
 - [lzonneke](#lzonneke)
+- [delandtj](#delandtj)
+- [grimpy](#grimpy)
+- [maxux](#maxux)
+- [yveskerwyn](#yveskerwyn)
+- [davshafik](#davshafik)
 
 
 
-### [maxux](https://github.com/maxux)
+### [lzonneke](https://github.com/lzonneke)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 
 
 ### [delandtj](https://github.com/delandtj)
@@ -58,11 +57,17 @@
 |[#85](https://github.com/0-complexity/openvcloud/issues/85)|DoS attack against the CS router OS|:red_circle: Open|bug|
 
 
-### [davshafik](https://github.com/davshafik)
+### [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
+
+
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
@@ -71,14 +76,9 @@
 |-----|-----|-----|----|
 
 
-### [grimpy](https://github.com/grimpy)
+### [davshafik](https://github.com/davshafik)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-
-
-### [lzonneke](https://github.com/lzonneke)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
+|[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
 
