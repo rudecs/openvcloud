@@ -190,7 +190,7 @@ class cloudbroker_account(BaseActor):
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I':  maxNumPublicIP}
-        self.cb.fillResourceLimits(resourcelimits, preservenone=True)
+        self.cb.fillResourceLimits(resourcelimits, preserve_none=True)
         maxMemoryCapacity = resourcelimits['CU_M']
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
