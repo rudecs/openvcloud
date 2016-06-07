@@ -9,21 +9,16 @@
 |[#193](https://github.com/0-complexity/openvcloud/issues/193)|A Running VM under a virtual cloudspace|:red_circle: Open|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
 |[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:white_circle: Verification|bug|
-|[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:red_circle: Open|bug|
 |[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:red_circle: Open||
-|[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:red_circle: Open|bug|
-|[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:red_circle: Open|bug|
-|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:red_circle: Open|bug|
-|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:red_circle: Open|bug|
-|[#180](https://github.com/0-complexity/openvcloud/issues/180)|Wrong information is displayed on the account page|:red_circle: Open|bug|
+|[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:white_circle: Verification|bug|
+|[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:white_circle: Verification|bug|
+|[#180](https://github.com/0-complexity/openvcloud/issues/180)|Wrong information is displayed on the account page|:white_circle: Verification|bug|
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#146](https://github.com/0-complexity/openvcloud/issues/146)|The Default cloudspace have unlimited resources under limited account resources.  Also we can create vm under virtual cloudspace|:red_circle: Open|bug|
-|[#143](https://github.com/0-complexity/openvcloud/issues/143)|Can't create cloudspace with maxMemmoryCapacity that is less than that of the corresponding account.|:white_circle: Verification|bug|
-|[#138](https://github.com/0-complexity/openvcloud/issues/138)|All stacks crash when creating machine with >2200GB disk size|:white_circle: Verification|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:red_circle: Open|bug|
-|[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:white_circle: Verification|bug|
+|[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
 |[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:red_circle: Open|bug|
 |[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:red_circle: Open|bug|
@@ -34,6 +29,7 @@
 - [lzonneke](#lzonneke)
 - [maxux](#maxux)
 - [davshafik](#davshafik)
+- [mie00](#mie00)
 - [grimpy](#grimpy)
 - [delandtj](#delandtj)
 
@@ -67,6 +63,15 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
+
+
+### [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:large_blue_circle: In Progress|bug|
+|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:large_blue_circle: In Progress|bug|
+|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:large_blue_circle: In Progress|bug|
 
 
 ### [grimpy](https://github.com/grimpy)
