@@ -18,9 +18,9 @@
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:white_circle: Verification|bug|
 |[#180](https://github.com/0-complexity/openvcloud/issues/180)|Wrong information is displayed on the account page|:white_circle: Verification|bug|
+|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:white_circle: Verification|bug|
 |[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:white_circle: Verification|bug|
 |[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:white_circle: Verification|bug|
-|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:large_blue_circle: In Progress||
 |[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:white_circle: Verification|bug|
 |[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
@@ -32,7 +32,6 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [mie00](#mie00)
 - [yveskerwyn](#yveskerwyn)
 
 
@@ -55,20 +54,14 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:white_circle: Verification|bug|
+|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:large_blue_circle: In Progress||
 
 
 ### [maxux](https://github.com/maxux)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-
-
-### [mie00](https://github.com/mie00)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:large_blue_circle: In Progress|bug|
-|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:large_blue_circle: In Progress|bug|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
