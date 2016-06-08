@@ -15,7 +15,6 @@
 
 ## Issues per assignee
 - [yveskerwyn](#yveskerwyn)
-- [lzonneke](#lzonneke)
 - [maxux](#maxux)
 - [davshafik](#davshafik)
 - [mie00](#mie00)
@@ -25,12 +24,6 @@
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [lzonneke](https://github.com/lzonneke)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
