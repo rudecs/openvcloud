@@ -30,7 +30,7 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#206](https://github.com/0-complexity/openvcloud/issues/206)|remove the default cloudspace created for the account|:white_circle: Verification||
+|[#207](https://github.com/0-complexity/openvcloud/issues/207)|add lasterror time to the status overview|:white_circle: Verification||
 
 
 ## [maxux](https://github.com/maxux)
