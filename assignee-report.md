@@ -3,9 +3,8 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 2 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 2 assigned
+- [grimpy](#grimpy) has 3 assigned
 - [maxux](#maxux) has 2 assigned
-- [mie00](#mie00) has 2 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
 
 
@@ -30,7 +29,8 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#207](https://github.com/0-complexity/openvcloud/issues/207)|add lasterror time to the status overview|:white_circle: Verification||
+|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:white_circle: Verification|bug|
+|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:large_blue_circle: In Progress||
 
 
 ## [maxux](https://github.com/maxux)
@@ -39,14 +39,6 @@
 |-----|-----|-----|----|
 |[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
-
-
-## [mie00](https://github.com/mie00)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:large_blue_circle: In Progress|bug|
-|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:large_blue_circle: In Progress|bug|
 
 
 ## [yveskerwyn](https://github.com/yveskerwyn)
