@@ -26,7 +26,7 @@ LOG_TYPES = {0: 'ERROR',  #FAILURE
 
 def logger(self, message, module, log_type, unattended_mode_name, unattended_print_mode=True):
     if not log_type == 3:
-        self.results.append({'message': message, 'category': module, 'state': LOG_TYPES[log_type]})
+        self.results.append({'message': message, 'uid': unattended_mode_name, 'category': module, 'state': LOG_TYPES[log_type]})
 
 def action():
     import sys
