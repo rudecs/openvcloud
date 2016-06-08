@@ -10,25 +10,13 @@
 
 
 ## Issues per assignee
-- [yveskerwyn](#yveskerwyn)
-- [maxux](#maxux)
 - [davshafik](#davshafik)
-- [mie00](#mie00)
-- [grimpy](#grimpy)
 - [delandtj](#delandtj)
+- [grimpy](#grimpy)
+- [maxux](#maxux)
+- [mie00](#mie00)
+- [yveskerwyn](#yveskerwyn)
 
-
-
-### [yveskerwyn](https://github.com/yveskerwyn)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [maxux](https://github.com/maxux)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [davshafik](https://github.com/davshafik)
@@ -37,7 +25,7 @@
 |-----|-----|-----|----|
 
 
-### [mie00](https://github.com/mie00)
+### [delandtj](https://github.com/delandtj)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -49,7 +37,19 @@
 |-----|-----|-----|----|
 
 
-### [delandtj](https://github.com/delandtj)
+### [maxux](https://github.com/maxux)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
