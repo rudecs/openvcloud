@@ -6,24 +6,36 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
-|[#64](https://github.com/0-complexity/openvcloud/issues/64)|We need to have a build in check on available public IP's when deploying cloudspace|:red_circle: Open|feature|
-|[#47](https://github.com/0-complexity/openvcloud/issues/47)|he "Burger menu" in the top action bar in the small screen is not clickable|:red_circle: Open|bug|
-|[#32](https://github.com/0-complexity/openvcloud/issues/32)|Enduser portal responsive: Add & Edit portforward popups|:red_circle: Open|bug|
-|[#31](https://github.com/0-complexity/openvcloud/issues/31)|Enduser portal responsive: Fix header|:red_circle: Open|bug|
 |[#26](https://github.com/0-complexity/openvcloud/issues/26)|Revisit responsive design in openvcloud|:red_circle: Open|feature|
+|[#31](https://github.com/0-complexity/openvcloud/issues/31)|Enduser portal responsive: Fix header|:red_circle: Open|bug|
+|[#32](https://github.com/0-complexity/openvcloud/issues/32)|Enduser portal responsive: Add & Edit portforward popups|:red_circle: Open|bug|
+|[#47](https://github.com/0-complexity/openvcloud/issues/47)|he "Burger menu" in the top action bar in the small screen is not clickable|:red_circle: Open|bug|
+|[#64](https://github.com/0-complexity/openvcloud/issues/64)|We need to have a build in check on available public IP's when deploying cloudspace|:red_circle: Open|feature|
 
 
 ## Issues per assignee
-- [yveskerwyn](#yveskerwyn)
-- [maxux](#maxux)
 - [davshafik](#davshafik)
-- [mie00](#mie00)
-- [grimpy](#grimpy)
 - [delandtj](#delandtj)
+- [grimpy](#grimpy)
+- [maxux](#maxux)
+- [mie00](#mie00)
+- [yveskerwyn](#yveskerwyn)
 
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [davshafik](https://github.com/davshafik)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [delandtj](https://github.com/delandtj)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [grimpy](https://github.com/grimpy)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
@@ -36,25 +48,13 @@
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
 
-### [davshafik](https://github.com/davshafik)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
 ### [mie00](https://github.com/mie00)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 
 
-### [grimpy](https://github.com/grimpy)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-
-
-### [delandtj](https://github.com/delandtj)
+### [yveskerwyn](https://github.com/yveskerwyn)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
