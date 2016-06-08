@@ -2,7 +2,6 @@
 
 # Issues per assignee
 - [yveskerwyn](#yveskerwyn) has 1 assigned
-- [lzonneke](#lzonneke) has 4 assigned
 - [maxux](#maxux) has 2 assigned
 - [davshafik](#davshafik) has 2 assigned
 - [mie00](#mie00) has 2 assigned
@@ -16,16 +15,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#66](https://github.com/0-complexity/openvcloud/issues/66)|Integration WHMCS|:large_blue_circle: In Progress|feature|
-
-
-## [lzonneke](https://github.com/lzonneke)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
-|[#67](https://github.com/0-complexity/openvcloud/issues/67)|validate on VDC if port forwards list is disappered when add a nre port forward|:red_circle: Open|bug|
-|[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
-|[#13](https://github.com/0-complexity/openvcloud/issues/13)|Should prevent creating port forwarding with the same port to the same VM|:red_circle: Open|bug|
 
 
 ## [maxux](https://github.com/maxux)
