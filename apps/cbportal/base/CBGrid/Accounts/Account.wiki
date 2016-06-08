@@ -12,55 +12,55 @@ h2. Account: ${name}
     label: Name
     placeholder:
     type: text
-    default: "${name}"
+    default: '${name}'
 
   - name: maxMemoryCapacity
     label: Max Memory Capacity (GB)
     placeholder: leave empty if no limits should be set
     type: float
-    default: ${maxMemoryCapacity}
+    default: '${maxMemoryCapacity}'
 
   - name: maxVDiskCapacity
     label: Max VDisk Capacity (GB)
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxVDiskCapacity}
+    default: '${maxVDiskCapacity}'
 
   - name: maxCPUCapacity
     label: Max Number of CPU Cores
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxCPUCapacity}
+    default: '${maxCPUCapacity}'
 
   - name: maxNASCapacity
     label: Max Primary Storage(NAS) Capacity (TB)
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxNASCapacity}
+    default: '${maxNASCapacity}'
 
   - name: maxArchiveCapacity
     label: Max Secondary Storage(Archive) Capacity (TB)
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxArchiveCapacity}
+    default: '${maxArchiveCapacity}'
 
   - name: maxNetworkOptTransfer
     label: Max Network Transfer In Operator (GB)
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxNetworkOptTransfer}
+    default: '${maxNetworkOptTransfer}'
 
   - name: maxNetworkPeerTransfer
     label: Max Network Transfer Peering (GB)
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxNetworkPeerTransfer}
+    default: '${maxNetworkPeerTransfer}'
 
   - name: maxNumPublicIP
     label: Max Number of Public IP Addresses
     placeholder: leave empty if no limits should be set
     type: number
-    default: ${maxNumPublicIP}
+    default: '${maxNumPublicIP}'
 
   - name: accountId
     type: hidden
