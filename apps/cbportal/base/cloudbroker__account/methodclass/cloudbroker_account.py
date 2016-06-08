@@ -118,8 +118,6 @@ class cloudbroker_account(BaseActor):
         ace.status = 'CONFIRMED'
         accountid = self.models.account.set(account)[0]
 
-        self.cloudapi.cloudspaces.create(accountid, location, 'default', username)
-
         mail_args = {
             'account': name,
             'username': username,
