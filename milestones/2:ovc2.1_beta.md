@@ -21,6 +21,7 @@
 |[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:white_circle: Verification|bug|
 |[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:white_circle: Verification|bug|
 |[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:white_circle: Verification|bug|
+|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:white_circle: Verification||
 |[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:white_circle: Verification|bug|
 |[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
@@ -55,7 +56,6 @@
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 |[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:white_circle: Verification|bug|
-|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:large_blue_circle: In Progress||
 
 
 ### [maxux](https://github.com/maxux)
