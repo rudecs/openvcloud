@@ -3,7 +3,7 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 2 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 3 assigned
+- [grimpy](#grimpy) has 2 assigned
 - [maxux](#maxux) has 2 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
 
@@ -30,7 +30,6 @@
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
 |[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:white_circle: Verification|bug|
-|[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:large_blue_circle: In Progress||
 
 
 ## [maxux](https://github.com/maxux)
