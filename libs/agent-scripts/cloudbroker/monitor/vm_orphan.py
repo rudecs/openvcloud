@@ -46,7 +46,7 @@ def action():
     if orphans:
         message = "Found following orphan machines\n" + "\n".join(orphans)
         for orphan in orphans:
-            result.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan machine %s' % orphan})
+            result.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan machine %s' % orphan, 'uid': 'Found orphan machine %s' % orphan})
         print(message)
         j.errorconditionhandler.raiseOperationalWarning(message, 'monitoring')
     else:

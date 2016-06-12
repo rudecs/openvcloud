@@ -57,7 +57,7 @@ def action():
 
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
     if stack['status'] != 'ENABLED':
-        return [{'message': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
+        return [{'message': 'Disabling test stack is not enabled', 'uid': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
 
     name = '%s on %s' % (timestamp, stack['name'])
     j.console.echo('Deleting vms older then 24h', log=True)
@@ -115,6 +115,7 @@ def action():
             j.console.echo('Failed to get public connection %s:%s' % (publicip, publicport), log=True)
             status = 'ERROR'
             msg = 'Could not connect to VM over public interface'
+            uid = 'Could not connect to VM over public interface'
         else:
             def runtests():
                 status = 'OK'
@@ -123,6 +124,7 @@ def action():
                 connection.user(account['login'])
                 connection.fabric.api.env['abort_on_prompts'] = True
                 connection.fabric.api.env['abort_exception'] = RuntimeError
+                uid = None
 
                 j.console.echo('Running dd', log=True)
                 try:
@@ -130,6 +132,7 @@ def action():
                 except Exception, e:
                     status = "ERROR"
                     msg = "Failed to run dd command. Login error? %s" % e
+                    uid = "Failed to run dd command. Login error? %s" % e
                     return status, msg
 
                 try:
@@ -137,6 +140,7 @@ def action():
                     connection.run('ping -c 1 8.8.8.8')
                 except:
                     msg = "Could not connect to internet from vm on node %s" % stack['name']
+                    uid = "Could not connect to internet from vm on node %s" % stack['name']
                     j.console.echo(msg, log=True)
                     status = 'ERROR'
                     return status, msg
@@ -147,9 +151,10 @@ def action():
                 j.console.echo(msg, log=True)
                 if speed < 50:
                     status = 'WARNING'
-                return status, msg
+                    uid = 'Measured write speed on disk was so fast on Node %s' % (stack['name'])
+                return status, msg, uid
 
-            status, msg = runtests()
+            status, msg, uid = runtests()
         if status != 'OK':
             eco = j.errorconditionhandler.getErrorConditionObject(msg=msg, category='monitoring', level=1, type='OPERATIONS')
             eco.process()
@@ -158,7 +163,7 @@ def action():
         pcl.actors.cloudapi.machines.delete(vmachineId)
         j.console.echo('Finished deleting test vm', log=True)
         raise
-    return [{'message': msg, 'category': 'Storage Test', 'state': status}]
+    return [{'message': msg, 'uid': uid, 'category': 'Storage Test', 'state': status}]
 
 if __name__ == '__main__':
     print action()

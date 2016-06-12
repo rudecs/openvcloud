@@ -21,12 +21,14 @@ def action():
     category = 'Stack Status'
     if not stacks:
         return [{'message': 'Node with role CPUNode is not configured as stack',
+                 'uid': 'Node with role CPUNode is not configured as stack',
                  'category': category,
                  'state': 'ERROR'}
                 ]
     stack = stacks[0]
     if stack['status'] == 'ERROR':
         return [{'message': 'Node is in error status',
+                 'uid': 'Node is in error status',
                  'category': category,
                  'state': 'ERROR'}
                 ]
@@ -37,11 +39,13 @@ def action():
                 ]
     elif stack['status'] in ['MAINTENANCE', 'DECOMISSIONED']:
         return [{'message': 'Node state is %' % stack['status'],
+                 'uid': 'Node state is %' % stack['status'],
                  'category': category,
                  'state': 'SKIPPED'}
                 ]
     else:
         return [{'message': 'Node has an invalid state %' % stack['status'],
+                 'uid': 'Node has an invalid state %' % stack['status'],
                  'category': category,
                  'state': 'ERROR'}
                 ]

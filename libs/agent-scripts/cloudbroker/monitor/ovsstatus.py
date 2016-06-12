@@ -23,7 +23,7 @@ def action():
         if exitcode == 0:
             for result in results.splitlines():
                 msg = result.split(' ')[0]
-                ovsresults.append({'message': msg, 'category': 'OVS Services', 'state': state})
+                ovsresults.append({'message': msg, 'uid': msg, 'category': 'OVS Services', 'state': state})
                 if state != 'OK':
                     msg += "is in state %s" % state
                     j.errorconditionhandler.raiseOperationalCritical(msg, 'monitoring', die=False)

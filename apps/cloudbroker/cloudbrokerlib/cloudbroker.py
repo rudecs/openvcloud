@@ -387,7 +387,10 @@ class CloudBroker(object):
                 resource_limits[limit_type] = None if preserve_none else -1
             elif resource_limits[limit_type] < -1 or resource_limits[limit_type] == 0:
                 raise exceptions.BadRequest('A resource limit should be a positive number or -1 (unlimited).')
-            resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
+            if limit_type == 'CU_M':
+                resource_limits[limit_type] = resource_limits[limit_type] and float(resource_limits[limit_type])
+            else:
+                resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
 
 class Machine(object):
     def __init__(self, cb):

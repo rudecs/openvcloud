@@ -103,6 +103,7 @@ class OpenvStorage():
             except NetworkError:
                 result['state'] = 'ERROR'
                 result['message'] = 'Failed to connect to %s. Status of storagerouter: %s' % (router.ip, router.status)
+                result['uid'] = 'Failed to connect to %s. Status of storagerouter: %s' % (router.ip, router.status)
                 final.append(result)
         if not final:
             return [{'message': 'Single node', 'state': 'OK', 'category': 'Bandwidth Test'}]
