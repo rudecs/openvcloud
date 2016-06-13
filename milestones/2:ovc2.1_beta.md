@@ -36,7 +36,6 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#140](https://github.com/0-complexity/openvcloud/issues/140)|security: Nginx published security issues|:white_circle: Verification|question|
 
 
 ### [delandtj](https://github.com/delandtj)
