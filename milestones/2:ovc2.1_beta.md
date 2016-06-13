@@ -17,8 +17,9 @@
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:white_circle: Verification||
-|[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
+|[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:red_circle: Open|bug|
+|[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:red_circle: Open|bug|
 
 
 ## Issues per assignee
