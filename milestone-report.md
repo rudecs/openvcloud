@@ -7,7 +7,7 @@
 |[ovc2.1_ga](#milestone-ovc21_ga)|0 seconds|
 |[ovc2.2](#milestone-ovc22)|0 seconds|
 |[ovc_backlog](#milestone-ovc_backlog)|0 seconds|
-|[No milestone](#no-milestone)|N/A|
+|[No milestone](#no-milestone)|0 seconds|
 
 ## [Milestone ovc2.1_beta](milestones/2:ovc2.1_beta.md)
 
@@ -39,4 +39,3 @@
 ## No milestone
 |Issue|Title|State|Owner|ETA|
 |-----|-----|-----|-----|---|
-|[#196](https://github.com/0-complexity/openvcloud/issues/196)|Creating a machine error (one time)|:red_circle: Open||N/A|
