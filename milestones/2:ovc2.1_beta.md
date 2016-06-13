@@ -9,23 +9,16 @@
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:red_circle: Open|bug|
 |[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:red_circle: Open|bug|
-|[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:white_circle: Verification|bug|
+|[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:red_circle: Open|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:red_circle: Open|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
-|[#146](https://github.com/0-complexity/openvcloud/issues/146)|The Default cloudspace have unlimited resources under limited account resources.  Also we can create vm under virtual cloudspace|:white_circle: Verification|bug|
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
-|[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:white_circle: Verification|bug|
-|[#180](https://github.com/0-complexity/openvcloud/issues/180)|Wrong information is displayed on the account page|:white_circle: Verification|bug|
-|[#184](https://github.com/0-complexity/openvcloud/issues/184)|Error in the account action combo box|:white_circle: Verification|bug|
-|[#185](https://github.com/0-complexity/openvcloud/issues/185)|Edit the cloudspace, accounts or VM produce an error|:white_circle: Verification|bug|
-|[#186](https://github.com/0-complexity/openvcloud/issues/186)|Can't create a CS, account or VM with one char in the name field|:white_circle: Verification|bug|
+|[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#189](https://github.com/0-complexity/openvcloud/issues/189)|Error state timestamp|:white_circle: Verification||
 |[#190](https://github.com/0-complexity/openvcloud/issues/190)|Status Error: in Stacks page Empty page no Eco found|:white_circle: Verification|bug|
-|[#191](https://github.com/0-complexity/openvcloud/issues/191)|Require emailaddress for existing user when try to create account.|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
-|[#193](https://github.com/0-complexity/openvcloud/issues/193)|A Running VM under a virtual cloudspace|:white_circle: Verification|bug|
 
 
 ## Issues per assignee
@@ -55,7 +48,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#182](https://github.com/0-complexity/openvcloud/issues/182)|Error in the cloudspace action combo box|:white_circle: Verification|bug|
 
 
 ### [maxux](https://github.com/maxux)
