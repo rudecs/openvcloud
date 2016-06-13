@@ -8,7 +8,6 @@
 |-----|-----|-----|---|
 |[#24](https://github.com/0-complexity/openvcloud/issues/24)|Create a graph per created vm in graphana|:red_circle: Open|feature|
 |[#39](https://github.com/0-complexity/openvcloud/issues/39)|Enduser portal responsive: Autocomplete|:red_circle: Open||
-|[#51](https://github.com/0-complexity/openvcloud/issues/51)|Creating new account with a special charaters will produce an error|:white_circle: Verification|bug|
 |[#69](https://github.com/0-complexity/openvcloud/issues/69)|Not handled error message while creating a VM in dead environment|:red_circle: Open|bug|
 |[#70](https://github.com/0-complexity/openvcloud/issues/70)|New Cloud Space Button disappeared|:red_circle: Open|bug|
 |[#79](https://github.com/0-complexity/openvcloud/issues/79)|Cosmetic change for base actor table|:red_circle: Open|bug|
