@@ -11,12 +11,17 @@ print '[+] nodes found: %d' % len(nodes)
 for node in nodes:
 	# if nginx is installed, this is a good node for list
 	cpunode = j.atyourservice.findServices(name='nginx', parent=node)
+	autossh = j.atyourservice.findServices(name='autossh', parent=node)
 	
 	if len(cpunode) < 1:
 		continue
+
+	if len(autossh) < 1:
+		print("[-] missing autossh (%s), skipping", node)
+		continue
 	
-	host = node.hrd.getStr('instance.ip')
-	port = 2001 # FIXME: variable ?
+	host = autossh[0].hrd.getStr('instance.remote.bind')
+	port = autossh[0].hrd.getInt('instance.remote.port')
 	
 	print '[+] %s: %s:%s' % (node.instance, host, port)
 	
