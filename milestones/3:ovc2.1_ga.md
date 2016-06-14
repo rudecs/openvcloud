@@ -25,12 +25,16 @@
 |[#148](https://github.com/0-complexity/openvcloud/issues/148)|Not handled error message when browsing API|:red_circle: Open|bug|
 |[#154](https://github.com/0-complexity/openvcloud/issues/154)|Add time stamp for account and CS deployment in the details menu of the portal|:red_circle: Open|feature|
 |[#156](https://github.com/0-complexity/openvcloud/issues/156)|security: Buffer Overflow in the grid parmeter value|:red_circle: Open|bug|
+|[#167](https://github.com/0-complexity/openvcloud/issues/167)|security: Force all nodes to be in DoS from single client.|:red_circle: Open|bug|
+|[#169](https://github.com/0-complexity/openvcloud/issues/169)|security: DoS of the portal from one client |:red_circle: Open|bug|
 |[#171](https://github.com/0-complexity/openvcloud/issues/171)|Add portforward to a VM before the CS be deployed will produce an error|:red_circle: Open|bug|
 |[#173](https://github.com/0-complexity/openvcloud/issues/173)|DoS the enviroment when create a CS, account or VM with a very long name|:red_circle: Open|bug|
 |[#174](https://github.com/0-complexity/openvcloud/issues/174)|Redirected to ROS login page after pressing Advanced Shield Configuration Button|:red_circle: Open|bug|
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
+|[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
 |[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:red_circle: Open|bug|
 |[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:red_circle: Open|bug|
+|[#210](https://github.com/0-complexity/openvcloud/issues/210)|security: XSS and Internal server error|:red_circle: Open|bug|
 
 
 ## Issues per assignee
