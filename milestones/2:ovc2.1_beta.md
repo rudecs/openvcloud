@@ -18,7 +18,7 @@
 |[#178](https://github.com/0-complexity/openvcloud/issues/178)|AccountId is not working as a filter when trying to list images|:red_circle: Open|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
 |[#195](https://github.com/0-complexity/openvcloud/issues/195)|Destroy the enviroment when create a space|:red_circle: Open|bug|
-|[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:red_circle: Open|bug|
+|[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:white_circle: Verification|bug|
 |[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:red_circle: Open|bug|
 |[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:red_circle: Open|bug|
 
