@@ -19,7 +19,7 @@
 |[#195](https://github.com/0-complexity/openvcloud/issues/195)|Destroy the enviroment when create a space|:white_circle: Verification|bug|
 |[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:white_circle: Verification|bug|
 |[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:white_circle: Verification|bug|
-|[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:red_circle: Open|bug|
+|[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:white_circle: Verification|bug|
 
 
 ## Issues per assignee
