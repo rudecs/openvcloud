@@ -15,7 +15,6 @@
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
-|[#170](https://github.com/0-complexity/openvcloud/issues/170)|security: Is the Werkzeug debug mode is enable?|:red_circle: Open|question|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
 |[#195](https://github.com/0-complexity/openvcloud/issues/195)|Destroy the enviroment when create a space|:white_circle: Verification|bug|
 |[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:white_circle: Verification|bug|
@@ -55,6 +54,7 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
+|[#170](https://github.com/0-complexity/openvcloud/issues/170)|security: Is the Werkzeug debug mode is enable?|:white_circle: Verification|question|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
