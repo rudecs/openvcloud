@@ -9,7 +9,7 @@
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:red_circle: Open|bug|
 |[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:red_circle: Open|bug|
-|[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:red_circle: Open|bug|
+|[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:white_circle: Verification|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:red_circle: Open|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:red_circle: Open|bug|
