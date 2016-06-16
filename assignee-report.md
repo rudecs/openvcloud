@@ -4,7 +4,7 @@
 - [davshafik](#davshafik) has 1 assigned
 - [delandtj](#delandtj) has 1 assigned
 - [grimpy](#grimpy) has 1 assigned
-- [maxux](#maxux) has 2 assigned
+- [maxux](#maxux) has 3 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
 
 
@@ -36,6 +36,7 @@
 |-----|-----|-----|----|
 |[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
+|[#170](https://github.com/0-complexity/openvcloud/issues/170)|security: Is the Werkzeug debug mode is enable?|:white_circle: Verification|question|
 
 
 ## [yveskerwyn](https://github.com/yveskerwyn)
