@@ -38,14 +38,14 @@ def action():
                  'state': 'OK'}
                 ]
     elif stack['status'] in ['MAINTENANCE', 'DECOMISSIONED']:
-        return [{'message': 'Node state is %' % stack['status'],
-                 'uid': 'Node state is %' % stack['status'],
+        return [{'message': 'Node state is %s' % stack['status'],
+                 'uid': 'Node state is %s' % stack['status'],
                  'category': category,
                  'state': 'SKIPPED'}
                 ]
     else:
-        return [{'message': 'Node has an invalid state %' % stack['status'],
-                 'uid': 'Node has an invalid state %' % stack['status'],
+        return [{'message': 'Node has an invalid state %s' % stack['status'],
+                 'uid': 'Node has an invalid state %s' % stack['status'],
                  'category': category,
                  'state': 'ERROR'}
                 ]
