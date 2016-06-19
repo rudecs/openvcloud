@@ -39,7 +39,7 @@ class cloudbroker_user(BaseActor):
     def create(self, username, emailaddress, password, groups, **kwargs):
         groups = groups or []
         created = j.core.portal.active.auth.createUser(username, password, emailaddress, groups,
-                                                       None)
+                                                       None, protected=True)
         if created:
             primaryemailaddress = emailaddress[0]
             self.cb.updateResourceInvitations(username, primaryemailaddress)
@@ -104,6 +104,7 @@ class cloudbroker_user(BaseActor):
         gid, uid = userobj.guid.split('_')
         userobj.id = 'DELETED_%i_%s'%(time.time(), uid)
         userobj.guid = '%s_DELETED_%i_%s'%(gid, time.time(), uid)
+        userobj.protected = False
         self.syscl.user.delete(uid)
         self.syscl.user.set(userobj)
 

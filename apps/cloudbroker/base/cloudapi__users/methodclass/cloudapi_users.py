@@ -437,7 +437,7 @@ class cloudapi_users(BaseActor):
         groups = ['user']
         emails = [emailaddress]
         created = j.core.portal.active.auth.createUser(username, password, emails, groups,
-                                                       None)
+                                                       None, protected=True)
         if created:
             # Check all shared resources invites and update invited users to CONFIRMED status with
             # newly registered username
