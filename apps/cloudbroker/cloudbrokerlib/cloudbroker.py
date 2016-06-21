@@ -536,6 +536,10 @@ class Machine(object):
         while node == -1:
             provider, newstackId = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
+            if not image:
+                self.cleanup(machine)
+                raise exceptions.BadRequest("Image is not available on requested stack")
+
             psize = self.getSize(provider, machine)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
