@@ -308,11 +308,10 @@ class cloudbroker_cloudspace(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
+        return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
                                       maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
                                       maxArchiveCapacity, maxNetworkOptTransfer,
                                       maxNetworkPeerTransfer, maxNumPublicIP)
-        return True
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
