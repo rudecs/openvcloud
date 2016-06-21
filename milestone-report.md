@@ -3,11 +3,18 @@
 # Summary
 |Milestone|ETA|
 |---------|---|
+|[ovc2.1.5](#milestone-ovc215)|N/A|
 |[ovc2.1_beta](#milestone-ovc21_beta)|N/A|
 |[ovc2.1_ga](#milestone-ovc21_ga)|N/A|
 |[ovc2.2](#milestone-ovc22)|N/A|
 |[ovc_backlog](#milestone-ovc_backlog)|N/A|
-|[No milestone](#no-milestone)|N/A|
+|[No milestone](#no-milestone)|2016/06/21|
+
+## [Milestone ovc2.1.5](milestones/7:ovc2.1.5.md)
+
+
+|Issue|Title|State|Owner|ETA|
+|-----|-----|-----|-----|---|
 
 ## [Milestone ovc2.1_beta](milestones/2:ovc2.1_beta.md)
 
@@ -39,3 +46,8 @@
 ## No milestone
 |Issue|Title|State|Owner|ETA|
 |-----|-----|-----|-----|---|
+|[#196](https://github.com/0-complexity/openvcloud/issues/196)|Creating a machine error (one time)|:red_circle: Open||[2016/06/21](https://github.com/0-complexity/openvcloud/issues/196#issuecomment-None)|
+|[#219](https://github.com/0-complexity/openvcloud/issues/219)|security : XSS and internal server error (Grid pages)|:red_circle: Open||[2016/06/21](https://github.com/0-complexity/openvcloud/issues/219#issuecomment-None)|
+|[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:red_circle: Open||[2016/06/21](https://github.com/0-complexity/openvcloud/issues/220#issuecomment-None)|
+|[#221](https://github.com/0-complexity/openvcloud/issues/221)|securyt# XSS and steal the Cookies (system)|:red_circle: Open||[2016/06/21](https://github.com/0-complexity/openvcloud/issues/221#issuecomment-None)|
+|[#222](https://github.com/0-complexity/openvcloud/issues/222)|#security: XSS and internal server error (System)|:red_circle: Open||[2016/06/21](https://github.com/0-complexity/openvcloud/issues/222#issuecomment-None)|
