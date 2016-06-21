@@ -11,7 +11,6 @@
 |[#32](https://github.com/0-complexity/openvcloud/issues/32)|Enduser portal responsive: Add & Edit portforward popups|:red_circle: Open|bug|
 |[#47](https://github.com/0-complexity/openvcloud/issues/47)|he "Burger menu" in the top action bar in the small screen is not clickable|:red_circle: Open|bug|
 |[#64](https://github.com/0-complexity/openvcloud/issues/64)|We need to have a build in check on available public IP's when deploying cloudspace|:red_circle: Open|feature|
-|[#205](https://github.com/0-complexity/openvcloud/issues/205)|improve error message when enable a stack entering no reason|:red_circle: Open||
 
 
 ## Issues per assignee
