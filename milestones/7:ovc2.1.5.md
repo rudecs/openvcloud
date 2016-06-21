@@ -6,6 +6,7 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
+|[#213](https://github.com/0-complexity/openvcloud/issues/213)|When upgrading openvcloud newly introduced libraries are not beeing installed / configured|:red_circle: Open|bug|
 
 
 ## Issues per assignee
