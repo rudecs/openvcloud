@@ -8,7 +8,6 @@
 |-----|-----|-----|---|
 |[#24](https://github.com/0-complexity/openvcloud/issues/24)|Create a graph per created vm in graphana|:red_circle: Open|feature|
 |[#39](https://github.com/0-complexity/openvcloud/issues/39)|Enduser portal responsive: Autocomplete|:red_circle: Open||
-|[#51](https://github.com/0-complexity/openvcloud/issues/51)|Creating new account with a special charaters will produce an error|:white_circle: Verification|bug|
 |[#69](https://github.com/0-complexity/openvcloud/issues/69)|Not handled error message while creating a VM in dead environment|:red_circle: Open|bug|
 |[#70](https://github.com/0-complexity/openvcloud/issues/70)|New Cloud Space Button disappeared|:red_circle: Open|bug|
 |[#79](https://github.com/0-complexity/openvcloud/issues/79)|Cosmetic change for base actor table|:red_circle: Open|bug|
@@ -23,15 +22,19 @@
 |[#119](https://github.com/0-complexity/openvcloud/issues/119)|security: Inject code in the server side and Crash it|:red_circle: Open|bug|
 |[#120](https://github.com/0-complexity/openvcloud/issues/120)|crap paths|:red_circle: Open|bug|
 |[#147](https://github.com/0-complexity/openvcloud/issues/147)|AYS sql database error|:red_circle: Open|bug|
-|[#148](https://github.com/0-complexity/openvcloud/issues/148)|Not handled error message when browsing API|:red_circle: Open|bug|
+|[#148](https://github.com/0-complexity/openvcloud/issues/148)|Not handled error message when browsing API|:white_circle: Verification|bug|
 |[#154](https://github.com/0-complexity/openvcloud/issues/154)|Add time stamp for account and CS deployment in the details menu of the portal|:red_circle: Open|feature|
 |[#156](https://github.com/0-complexity/openvcloud/issues/156)|security: Buffer Overflow in the grid parmeter value|:red_circle: Open|bug|
+|[#167](https://github.com/0-complexity/openvcloud/issues/167)|security: Force all nodes to be in DoS from single client.|:red_circle: Open|bug|
+|[#169](https://github.com/0-complexity/openvcloud/issues/169)|security: DoS of the portal from one client |:red_circle: Open|bug|
 |[#171](https://github.com/0-complexity/openvcloud/issues/171)|Add portforward to a VM before the CS be deployed will produce an error|:red_circle: Open|bug|
 |[#173](https://github.com/0-complexity/openvcloud/issues/173)|DoS the enviroment when create a CS, account or VM with a very long name|:red_circle: Open|bug|
 |[#174](https://github.com/0-complexity/openvcloud/issues/174)|Redirected to ROS login page after pressing Advanced Shield Configuration Button|:red_circle: Open|bug|
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
-|[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:red_circle: Open|bug|
-|[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:red_circle: Open|bug|
+|[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
+|[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:white_circle: Verification|bug|
+|[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:white_circle: Verification|bug|
+|[#210](https://github.com/0-complexity/openvcloud/issues/210)|security: XSS and Internal server error|:white_circle: Verification|bug|
 
 
 ## Issues per assignee
