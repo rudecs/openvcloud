@@ -17,9 +17,6 @@ class cloudapi_logs(BaseActor):
                     self.models.size.search({'$fields': ['id', 'memory']})[1:]}
         self.cpusizes = {s['id']: s['vcpus'] for s in
                     self.models.size.search({'$fields': ['id', 'vcpus']})[1:]}
-        self.disksizes = {d['id']: d['sizeMax'] for d in self.models.disk.search(
-            {'$query': {'status': {'$ne': 'DESTROYED'}},
-             '$fields': ['id', 'sizeMax']}, size=0)[1:]}
 
     @audit()
     def logCloudUnits(self, **kwargs):
@@ -33,6 +30,9 @@ class cloudapi_logs(BaseActor):
         hour = currenttime.hour
         minute = currenttime.minute
 
+        disksizes = {d['id']: d['sizeMax'] for d in self.models.disk.search(
+            {'$query': {'status': {'$ne': 'DESTROYED'}},
+             '$fields': ['id', 'sizeMax']}, size=0)[1:]}
         accounts = self.model.account.search({'$fields': ['id', 'name'], '$query': {'status': {'$ne': 'DESTROYED'}}}, size=0)[1:]
         for account in accounts:
             accountpath = os.path.join(self.basedir, "%s/%s/%s/%s" % (account['id'], year, month, day))
@@ -64,7 +64,7 @@ class cloudapi_logs(BaseActor):
                     machine_dict['CU_D'] = 0
                     machine_dict['CU_I'] = 0
                     for diskid in machine['disks']:
-                        machine_dict['CU_D'] += self.disksizes[diskid]
+                        machine_dict['CU_D'] += disksizes[diskid]
 
                     for nic in machine["nics"]:
                         if nic["type"] == "PUBLIC":
