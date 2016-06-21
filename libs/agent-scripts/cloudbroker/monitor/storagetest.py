@@ -21,11 +21,12 @@ def action():
     import netaddr
     category = 'Deployment Test'
     ACCOUNTNAME = 'test_storage'
+    CLOUDSPACENAME = 'test_storage'
     pcl = j.clients.portal.getByInstance('main')
     ccl = j.clients.osis.getNamespace('cloudbroker')
     accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
     loc = ccl.location.search({})[1]['locationCode']
-    images = ccl.image.search({'name': 'Ubuntu 14.04 x64'})[1:]
+    images = ccl.image.search({'name': 'Ubuntu 16.04 x64'})[1:]
     if not images:
         return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
     imageId = images[0]['id']
@@ -36,12 +37,14 @@ def action():
     else:
         j.console.echo('Found Account', log=True)
         accountId = accounts[0]['id']
-    cloudspaces = ccl.cloudspace.search({'accountId': accountId,
+
+    cloudspaces = ccl.cloudspace.search({'accountId': accountId, 'name': CLOUDSPACENAME,
                                         'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
                                        })[1:]
     if not cloudspaces:
-        msg = "No cloudspace available for account %s, disabling test" % ACCOUNTNAME
-        return [{'message': msg, 'category': category, 'state': 'SKIPPED'}]
+        j.console.echo('Creating CloudSpace', log=True)
+        cloudspaceId = pcl.actors.cloudbroker.cloudspace.create(accountId, loc, CLOUDSPACENAME, 'admin')
+        cloudspace = ccl.cloudspace.get(cloudspaceId)
     else:
         cloudspace = cloudspaces[0]
 
