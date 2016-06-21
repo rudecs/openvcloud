@@ -231,7 +231,6 @@
         var:localPort int,,Source port
         var:destPort int,,Destination port
         var:proto str,,Protocol
-        var:reason str,,Reason
 
     method:deletePortForward
         """

@@ -444,7 +444,7 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createPortForward(self, machineId, localPort, destPort, proto, reason, **kwargs):
+    def createPortForward(self, machineId, localPort, destPort, proto, **kwargs):
         machineId = int(machineId)
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
