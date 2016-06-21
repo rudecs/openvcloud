@@ -2,7 +2,7 @@ h1. Create Machine
 
 Configure your virtual machine by choosing your package, server OS and additional SSD storage.
 
-{{html:
+{{%html:
 
 <div class="form-horizontal">
     <div class="nameField">
@@ -23,9 +23,9 @@ Configure your virtual machine by choosing your package, server OS and additiona
         {{include:packages_list}}
     </div>
 
-}}
+%}}
 
-{{html:
+{{%html:
 
     <div>
         <h2>Increase disk size to:</h2>
@@ -46,6 +46,6 @@ Configure your virtual machine by choosing your package, server OS and additiona
         <button class="btn btn-info btn-large mainButton" ng-click="saveNewMachine()" ng-disabled="!isValid()">Create</button>
     </div>
 
-}}
+%}}
 
 {{html: </div>}}
