@@ -42,6 +42,7 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
+- [mie00](#mie00)
 - [yveskerwyn](#yveskerwyn)
 
 
@@ -71,6 +72,12 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
+
+
+### [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
