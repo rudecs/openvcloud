@@ -35,7 +35,7 @@
 |[#229](https://github.com/0-complexity/openvcloud/issues/229)|HealthCheck :Storage test  failed on storage node be-g81|:red_circle: Open|bug|
 |[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#231](https://github.com/0-complexity/openvcloud/issues/231)|security: XSS and Internal server error|:white_circle: Verification|bug|
-|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:large_blue_circle: In Progress|bug|
+|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
 |[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:white_circle: Verification|bug|
 |[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State|:white_circle: Verification|bug|
 |[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
