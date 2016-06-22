@@ -3,7 +3,7 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 1 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 1 assigned
+- [grimpy](#grimpy) has 3 assigned
 - [maxux](#maxux) has 3 assigned
 - [mie00](#mie00) has 3 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
@@ -29,6 +29,8 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#265](https://github.com/0-complexity/openvcloud/issues/265)|make sure the public ip exist in the cs while creating pf|:large_blue_circle: In Progress||
+|[#266](https://github.com/0-complexity/openvcloud/issues/266)|Csid|:large_blue_circle: In Progress||
 
 
 ## [maxux](https://github.com/maxux)
@@ -45,8 +47,8 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
-|[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:large_blue_circle: In Progress|bug|
-|[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:large_blue_circle: In Progress|bug|
+|[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:white_circle: Verification|bug|
+|[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:white_circle: Verification|bug|
 
 
 ## [yveskerwyn](https://github.com/yveskerwyn)
