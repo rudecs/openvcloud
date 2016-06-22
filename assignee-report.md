@@ -3,8 +3,9 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 1 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 2 assigned
+- [grimpy](#grimpy) has 1 assigned
 - [maxux](#maxux) has 3 assigned
+- [mie00](#mie00) has 3 assigned
 - [yveskerwyn](#yveskerwyn) has 1 assigned
 
 
@@ -28,7 +29,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#260](https://github.com/0-complexity/openvcloud/issues/260)|no reason for the port forward|:large_blue_circle: In Progress||
 
 
 ## [maxux](https://github.com/maxux)
@@ -38,6 +38,15 @@
 |[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 |[#170](https://github.com/0-complexity/openvcloud/issues/170)|security: Is the Werkzeug debug mode is enable?|:white_circle: Verification|question|
+
+
+## [mie00](https://github.com/mie00)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
+|[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:large_blue_circle: In Progress|bug|
+|[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:large_blue_circle: In Progress|bug|
 
 
 ## [yveskerwyn](https://github.com/yveskerwyn)
