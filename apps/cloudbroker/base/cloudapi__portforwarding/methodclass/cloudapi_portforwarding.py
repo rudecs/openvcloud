@@ -41,6 +41,7 @@ class cloudapi_portforwarding(BaseActor):
         machineId = int(machineId)
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
         if publicPort > 65535 or publicPort < 1:
             raise exceptions.BadRequest("Public port should be between 1 and 65535")
@@ -57,6 +58,9 @@ class cloudapi_portforwarding(BaseActor):
         try:
             publicIp = str(netaddr.IPNetwork(publicIp).ip)
         except netaddr.AddrFormatError:
+            raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
+
+        if cloudspace.publicipaddress.split('/')[0] != publicIp:
             raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
         machine = j.apps.cloudapi.machines.get(machineId)
