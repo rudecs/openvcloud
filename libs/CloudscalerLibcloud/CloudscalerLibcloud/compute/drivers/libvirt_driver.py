@@ -15,6 +15,7 @@ BASEPOOLPATH = '/mnt/vmstor/'
 IMAGEPOOL = '/mnt/vmstor/templates'
 baselength = len(string.lowercase)
 
+env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 def convertnumber(number):
     output = ''
@@ -44,6 +45,37 @@ class NetworkInterface(object):
         self.type = type
 
 
+class OpenvStorageVolume(StorageVolume):
+    def __init__(self, *args, **kwargs):
+        super(OpenvStorageVolume, self).__init__(*args, **kwargs)
+        url = urlparse.urlparse(self.id)
+        self.edgetransport = 'tcp' if '+' not in url.scheme else url.scheme.split('+')[1]
+        self.edgehost = url.hostname
+        self.edgeport = url.port
+        self.name = url.path.strip('/')
+
+    def __str__(self):
+        template = env.get_template("ovsdisk.xml")
+        return template.render(self.__dict__)
+
+
+def OpenvStorageVolumeFromXML(disk, driver):
+    source = disk.find('source')
+    protocol = source.attrib.get('protocol')
+    name = source.attrib.get('name')
+    host = source.find('host')
+    hostname = host.attrib.get('name')
+    hostport = host.attrib.get('port')
+    transport = host.attrib.get('transport', 'tcp')
+    url = "{protocol}+{transport}://{hostname}:{port}/{name}".format(
+        protocol=protocol,
+        transport=transport,
+        hostname=hostname,
+        port=hostport,
+        name=name
+    )
+    return OpenvStorageVolume(id=url, name='N/A', size=0, driver=driver)
+
 class CSLibvirtNodeDriver():
 
     NODE_STATE_MAP = {
@@ -63,8 +95,8 @@ class CSLibvirtNodeDriver():
         self.gid = gid
         self.name = 'libvirt'
         self.uri = uri
+        self.env = env
 
-    env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
     backendconnection = connection.DummyConnection()
 
     def set_backend(self, connection):
@@ -160,7 +192,7 @@ class CSLibvirtNodeDriver():
         volumes = self._execute_agent_job('createvolumes', queue='hypervisor', volumes=volumes)
         stvolumes = []
         for volume in volumes:
-            stvol = StorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
+            stvol = OpenvStorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
             stvol.dev = volume['dev']
             stvolumes.append(stvol)
         return stvolumes
@@ -181,15 +213,10 @@ class CSLibvirtNodeDriver():
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         dev = getNextDev(devices)
-        disk = ElementTree.Element('disk')
-        disk.attrib['type'] = 'file'
-        disk.attrib['device'] = 'disk'
-        ElementTree.SubElement(disk, 'driver').attrib = {'name': 'qemu', 'type': 'raw', 'cache': 'none', 'io': 'threads'}
-        ElementTree.SubElement(disk, 'source').attrib = {'file': volume.id}
-        ElementTree.SubElement(disk, 'target').attrib = {'bus': 'virtio', 'dev': dev}
-        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ElementTree.tostring(disk), machineid=node.id)
+        volume.dev = dev
+        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
         if domxml is None:
-            devices.append(disk)
+            devices.append(ElementTree.fromstring(volume))
             domxml = ElementTree.tostring(dom)
         return self._update_node(node, domxml)
 
@@ -212,7 +239,7 @@ class CSLibvirtNodeDriver():
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
-            if source.attrib.get('dev', source.attrib.get('file')) == volume.id:
+            if source.attrib.get('dev', source.attrib.get('name')) == volume.name:
                 diskxml = ElementTree.tostring(disk)
                 domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
                 if domxml is None:
@@ -297,7 +324,7 @@ class CSLibvirtNodeDriver():
         if not diskpath or diskpath == -1:
             # not enough free capcity to create a disk on this node
             return -1
-        volume = StorageVolume(id=diskpath, name='Bootdisk', size=size, driver=self)
+        volume = OpenvStorageVolume(id=diskpath, name='Bootdisk', size=size, driver=self)
         volume.dev = 'vda'
         volumes = [volume]
         if datadisks:
@@ -497,7 +524,7 @@ class CSLibvirtNodeDriver():
         diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, diskmapping=diskmapping, pmachineip=pmachineip)
         volumes = []
         for idx, path in enumerate(diskpaths):
-            volume = StorageVolume(id=path, name='N/A', size=-1, driver=self)
+            volume = OpenvStorageVolume(id=path, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
@@ -562,10 +589,7 @@ class CSLibvirtNodeDriver():
         for disk in dom.findall('devices/disk'):
             if disk.attrib['device'] != 'disk':
                 continue
-            sourceattribs = disk.find('source').attrib
-            diskpath = sourceattribs.get('dev', sourceattribs.get('file'))
-            volume = StorageVolume(id=diskpath, name='N/A', size=0, driver=self)
-            volume.dev = disk.find('target').attrib['dev']
+            volume = OpenvStorageVolumeFromXML(disk, self)
             volumes.append(volume)
         for nic in dom.findall('devices/interface'):
             mac = None

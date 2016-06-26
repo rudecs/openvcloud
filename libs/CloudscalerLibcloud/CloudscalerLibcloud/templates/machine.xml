@@ -4,7 +4,7 @@
         <currentMemory unit='MB'>{{memory}}</currentMemory>
         <vcpu placement='static'>{{nrcpu}}</vcpu>
         <os>
-            <type arch='x86_64'>hvm</type>
+            <type arch='x86_64' machine='pc-1.3'>hvm</type>
             <boot dev='hd'/>
         </os>
         <features>
@@ -19,11 +19,7 @@
         <devices>
             <emulator>/usr/bin/qemu-system-x86_64</emulator>
             {% for volume in volumes %}
-            <disk type='file' device='disk'>
-                <driver name='qemu' type='raw' cache='none' io='threads'/>
-                <source file='{{volume.id}}'/>
-                <target dev='{{volume.dev}}' bus='virtio'/>
-            </disk>
+            {{volume}}
             {% endfor %}
             {% if isoname %}
             <disk type='file' device='cdrom'>
