@@ -37,18 +37,35 @@ def getVDisk(path, vpool=None):
         vpool = VPoolList.get_vpool_by_name('vmstor')
     return VDiskList.get_by_devicename_and_vpool(path, vpool)
 
+def getUrlPath(path):
+    storageip, edgeport, protocol = getEdgeconnection()
+    path = os.path.splitext(path)[0].strip('/')
+    if not storageip:
+        raise RuntimeError("Could not find edge connection")
+    return "openvstorage+{protocol}://{ip}:{port}/{name}".format(protocol=protocol,
+                                                                 ip=storageip,
+                                                                 port=edgeport,
+                                                                 name=path)
+
+def getPath(path):
+    return os.path.join('/mnt/vmstor', path)
+
 def copyImage(srcpath):
     # qemu-img convert volume1.qcow2 openvstorage+tcp:127.0.0.1:12329/volume3
     imagename = os.path.splitext(j.system.fs.getBaseName(srcpath))[0]
     templatepath = 'templates/%s.raw' % imagename
+    dest = getUrlPath("templates/%s" % imagename)
     if not getVDisk(templatepath):
-        storageip, edgeport, protocol = getEdgeconnection()
-        if not storageip:
-            raise RuntimeError("Could not find edge connection")
-        dest = "openvstorage+{protocol}:{ip}:{port}/templates/{name}".format(protocol=protocol,
-                                                                             ip=storageip,
-                                                                             port=edgeport,
-                                                                             name=imagename)
-        j.system.platform.qemu_img.convert(srcpath, None, dest, 'raw')
+        j.system.platform.qemu_img.convert(srcpath, None, dest.replace('://', ':', 1), 'raw')
+        truncate(getPath(templatepath))
     diskguid = setAsTemplate(templatepath)
-    return diskguid, templatepath
+    return diskguid, dest
+
+def truncate(filepath, size=None):
+    if size is None:
+        size = os.stat(filepath).st_size
+    fd = os.open(filepath, os.O_RDWR|os.O_CREAT)
+    try:
+        os.ftruncate(fd, size)
+    finally:
+        os.close(fd)

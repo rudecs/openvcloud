@@ -1,0 +1,7 @@
+<disk type='network' device='disk'>
+    <driver name='qemu' type='raw' cache='none' io='threads'/>
+    <source protocol='openvstorage' name='{{name}}'>
+        <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
+    </source>
+    <target dev='{{dev}}' bus='virtio'/>
+</disk>
