@@ -1,46 +1,14 @@
 from JumpScale import j
-import JumpScale.grid
-import os
-import sys
-import time
+from CloudscalerLibcloud import openvstorage
 
-def setAsTemplate(imagepath):
-    sys.path.append('/opt/OpenvStorage')
-    from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.dal.lists.vpoollist import VPoolList
-    pool = VPoolList.get_vpool_by_name('vmstor')
-    disk = None
-    start = time.time()
-    imagepath = 'templates/%s' % imagepath
-    while not disk and start + 60 > time.time():
-        time.sleep(2)
-        disk = VDiskList.get_by_devicename_and_vpool(imagepath, pool)
-    if not disk:
-        raise RuntimeError("Template did not become available on OVS at %s" % imagepath)
-    if disk.info['object_type'] != 'TEMPLATE':
-        VDiskController.set_as_template(disk.guid)
-    return disk.guid
+def registerImage(service, name, type, disksize, username=None):
+    imagepath = None
+    for export in service.hrd.getListFromPrefix('service.web.export'):
+        imagepath = export['dest']
+    if not imagepath:
+        raise RuntimeError("No image export defined in service")
 
-def copyImageToOVS(imagepath):
-
-    newimagepath = os.path.splitext(imagepath)[0] + '.raw'
-    dstdir = '/mnt/vmstor/templates'
-    j.system.fs.createDir(dstdir)
-    src = j.system.fs.joinPaths('/opt/jumpscale7/var/tmp/templates/', imagepath)
-    dst = j.system.fs.joinPaths(dstdir, newimagepath)
-
-    if not j.system.fs.exists(dst):
-        j.system.platform.qemu_img.convert(src, None, dst, 'raw')
-        size = int(j.system.platform.qemu_img.info(dst, unit='')['virtual size'])
-        fd = os.open(dst, os.O_RDWR | os.O_CREAT)
-        os.ftruncate(fd, size)
-        os.close(fd)
-    diskguid = setAsTemplate(newimagepath)
-    return diskguid, newimagepath
-
-def registerImage(jp, name, imagepath, type, disksize, username=None):
-    templateguid, imagepath = copyImageToOVS(imagepath)
+    templateguid, imagepath = openvstorage.copyImage(imagepath)
     templateguid = templateguid.replace('-', '') # osis strips dashes
     #register image on cloudbroker
     node_id = "%s_%s" % (j.application.whoAmI.gid, j.application.whoAmI.nid)
@@ -90,6 +58,5 @@ def registerImage(jp, name, imagepath, type, disksize, username=None):
         if imageId not in stack.get('images', []):
             stack.setdefault('images', []).append(imageId)
             ccl.stack.set(stack)
-
 
     return True
