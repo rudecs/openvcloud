@@ -15,17 +15,11 @@ async = True
 
 
 def action(diskpaths):
-    import sys
-    sys.path.append('/opt/OpenvStorage')
-    from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.dal.lists.vpoollist import VPoolList
+    from CloudscalerLibcloud import openvstorage
 
     snapshots = set()
-    pool = VPoolList.get_vpool_by_name('vmstor')
     for diskpath in diskpaths:
-        diskpath = diskpath.replace('/mnt/vmstor/', '')
-        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        disk = openvstorage.getVDisk(diskpath)
         if disk:
             for snap in disk.snapshots:
                 if not snap['is_automatic']:

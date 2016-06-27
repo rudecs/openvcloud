@@ -79,7 +79,7 @@
         Rolls back a machine snapshot
         """
         var:machineId int,,Machine id
-        var:snapshotName str,,Snapshot name
+        var:epoch int,,Snapshot timestamp
         var:reason str,,Reason
 
     method:deleteSnapshot
@@ -87,7 +87,7 @@
         Deletes a machine snapshot
         """
         var:machineId int,,Machine id
-        var:snapshotName str,,Snapshot name
+        var:epoch int,,Snapshot timestamp
         var:reason str,,Reason
 
     method:clone

@@ -2,6 +2,7 @@ from JumpScale import j
 import sys
 import os
 import time
+import urlparse
 sys.path.append('/opt/OpenvStorage')
 from ovs.lib.vdisk import VDiskController
 from ovs.dal.lists.vdisklist import VDiskList
@@ -33,6 +34,10 @@ def getEdgeconnection():
 
 
 def getVDisk(path, vpool=None):
+    url = urlparse.urlparse(path)
+    path = url.path.strip('/')
+    if not path.endswith('.raw'):
+        path += '.raw'
     if vpool is None:
         vpool = VPoolList.get_vpool_by_name('vmstor')
     return VDiskList.get_by_devicename_and_vpool(path, vpool)

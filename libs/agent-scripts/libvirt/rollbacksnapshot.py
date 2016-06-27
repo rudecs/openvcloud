@@ -15,16 +15,11 @@ async = True
 
 
 def action(diskpaths, timestamp):
-    import sys
-    sys.path.append('/opt/OpenvStorage')
+    from CloudscalerLibcloud import openvstorage
     from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.dal.lists.vpoollist import VPoolList
 
-    pool = VPoolList.get_vpool_by_name('vmstor')
     for diskpath in diskpaths:
-        diskpath = diskpath.replace('/mnt/vmstor/', '')
-        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        disk = openvstorage.getVDisk(diskpath)
         for snap in disk.snapshots:
             if snap['timestamp'] == str(timestamp):
                 VDiskController.rollback(disk.guid, snap['timestamp'])
