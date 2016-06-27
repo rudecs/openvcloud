@@ -19,7 +19,7 @@ def action(templateguid, vmname, size, pmachineip):
     from ovs.lib.vdisk import VDiskController, PMachineList
     pmguid = PMachineList.get_by_ip(pmachineip).guid
     data = VDiskController.create_from_template(templateguid, machinename='%s/base' % vmname, devicename='image', pmachineguid=pmguid)
-    filepath = j.system.fs.joinPaths('/mnt/vmstor', data['backingdevice'].lstrip('/'))
+    filepath = openvstorage.getPath(data['backingdevice'].lstrip('/'))
     openvstorage.truncate(filepath, size)
     return openvstorage.getUrlPath(data['backingdevice'])
 

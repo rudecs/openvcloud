@@ -33,6 +33,7 @@ def action(volumes):
             'sco_size': 64,
             'dedupe_mode': 'non_dedupe',
             'write_buffer': 1024,
+            'dtl_mode': 'a_sync',
             'cache_strategy': 'on_read',
             'readcache_limit': 10}
         timeout = 120
@@ -44,7 +45,9 @@ def action(volumes):
                 vdisk = openvstorage.getVDisk(volume['id'])
             if not vdisk:
                 raise RuntimeError("Could not find volume %s on OVS backend" % volume)
-            VDiskController.set_config_params(vdisk.guid, params)
+            diskparams = params.copy()
+            diskparams['dtl_target'] = vdisk.domains_dtl_guids
+            VDiskController.set_config_params(vdisk.guid, diskparams)
     j.clients.redisworker.execFunction(setConfigs, _queue='io', _sync=False, volumes=volumes)
     return volumes
 
