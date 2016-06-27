@@ -1,6 +1,6 @@
 
 <domain type='kvm'>
-  <name>routeros_NETWORK-ID</name>
+  <name>routeros_{{networkid}}</name>
   <memory unit='MB'>128</memory>
   <vcpu placement='static'>1</vcpu>
   <os>
@@ -19,9 +19,11 @@
   <on_crash>restart</on_crash>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source file='/mnt/vmstor/routeros/NETWORK-ID/routeros-small-NETWORK-ID.raw'/>
+    <disk type='network' device='disk'>
+      <driver name='qemu' type='raw' cache='none' io='threads'/>
+      <source protocol='openvstorage' name='{{name}}'>
+        <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
+      </source>
       <target dev='hda' bus='ide'/>
     </disk>
     <controller type='usb' index='0'>
@@ -37,17 +39,17 @@
     <interface type='network'>
       <source network='public'/>
       <model type='virtio'/>
-      <target dev='pub-NETWORK-ID'/>
+      <target dev='pub-{{networkid}}'/>
     </interface>
     <interface type='network'>
-      <source network='space_NETWORK-ID'/>
+      <source network='space_{{networkid}}'/>
       <model type='virtio'/>
-      <target dev='spc-NETWORK-ID'/>
+      <target dev='spc-{{networkid}}'/>
     </interface>
     <interface type='network'>
       <source network='gw_mgmt'/>
       <model type='virtio'/>
-      <target dev='gwm-NETWORK-ID'/>
+      <target dev='gwm-{{networkid}}'/>
     </interface>
     <serial type='pty'>
       <target port='0'/>
