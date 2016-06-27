@@ -30,11 +30,8 @@ def action(volumes):
         import time
         from ovs.lib.vdisk import VDiskController
         params = {
-            'dtl_mode': 'a_sync',
             'sco_size': 64,
             'dedupe_mode': 'non_dedupe',
-            'dtl_enabled': False,
-            'dtl_target': j.system.net.getIpAddress('backplane1')[0][0],
             'write_buffer': 1024,
             'cache_strategy': 'on_read',
             'readcache_limit': 10}

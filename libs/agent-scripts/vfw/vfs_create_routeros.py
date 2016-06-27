@@ -15,6 +15,19 @@ queue = 'default'
 docleanup = True
 
 
+def getEdgeconnection():
+    import sys
+    sys.path.append('/opt/OpenvStorage')
+    from ovs.dal.lists.storagerouterlist import StorageRouterList
+    localips = j.system.net.getIpAddresses()
+    for storagerouter in StorageRouterList.get_storagerouters():
+        if storagerouter.ip in localips:
+            protocol = 'rdma' if storagerouter.rdma_capable else 'tcp'
+            for storagedriver in storagerouter.storagedrivers:
+                return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
+    return None, None, None
+
+
 def cleanup(name, networkid, destinationdir):
     import libvirt
     from CloudscalerLibcloud.utils import libvirtutil
@@ -60,6 +73,7 @@ def createNetwork(xml):
 def action(networkid, publicip, publicgwip, publiccidr, password):
     import pexpect
     import netaddr
+    import jinja2
     import time
     import os
 
@@ -89,6 +103,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     else:
         raise RuntimeError("IP conflict there is router with %s"%internalip)
 
+    storageip, edgeport, transport = getEdgeconnection()
+    if not storageip:
+        raise RuntimeError("Could not get edge connection")
+
     try:
         # setup network vxlan
         print 'Creating network'
@@ -100,14 +118,18 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
-        xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
-        xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
+        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
         print 'Converting image'
         j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
         size = int(j.system.platform.qemu_img.info(destinationfile)['virtual size'] * 1024)
         fd = os.open(destinationfile, os.O_RDWR|os.O_CREAT)
         os.ftruncate(fd, size)
         os.close(fd)
+
+        imagename = os.path.splitext(destinationfile.replace('/mnt/vmstor/', '', 1))[0]
+        xmlsource = xmltemplate.render(networkid=networkidHex, name=imagename,
+                                       edgehost=storageip, edgeport=edgeport,
+                                       edgetransport=transport)
 
         print 'Starting VM'
         try:
