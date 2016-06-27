@@ -63,7 +63,7 @@ h3. Snapshots
 
 ||Name||Time||Actions||
 {% for snapshot in snapshots -%}
-|${snapshot.name}|{{ts:${snapshot.epoch}}}|{{action: id:'action-RollbackSnapshot' class:'glyphicon glyphicon-repeat' data-snapshotName:'${snapshot.name}'}}{{action: id:'action-DeleteSnapshot' deleterow:true class:'glyphicon glyphicon-remove' data-snapshotName:'${snapshot.name}'}}|
+|${snapshot.name}|{{ts:${snapshot.epoch}}}|{{action: id:'action-RollbackSnapshot' class:'glyphicon glyphicon-repeat' data-epoch:'${snapshot.epoch}'}}{{action: id:'action-DeleteSnapshot' deleterow:true class:'glyphicon glyphicon-remove' data-epoch:'${snapshot.epoch}'}}|
 {% else -%}
 | | | |
 {% endfor %}

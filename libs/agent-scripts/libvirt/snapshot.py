@@ -15,12 +15,9 @@ async = True
 
 
 def action(diskpaths, name):
-    import sys
-    import time
-    sys.path.append('/opt/OpenvStorage')
+    from CloudscalerLibcloud import openvstorage
     from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.dal.lists.vpoollist import VPoolList
+    import time
 
     meta = {'label': name,
             'is_consistent': False,
@@ -28,10 +25,8 @@ def action(diskpaths, name):
             'is_automatic': False,
             'timestamp': str(int(time.time()))}
 
-    pool = VPoolList.get_vpool_by_name('vmstor')
     for diskpath in diskpaths:
-        diskpath = diskpath.replace('/mnt/vmstor/', '')
-        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
+        disk = openvstorage.getVDisk(diskpath)
         VDiskController.create_snapshot(diskguid=disk.guid, metadata=meta)
 
     return {'name': name}

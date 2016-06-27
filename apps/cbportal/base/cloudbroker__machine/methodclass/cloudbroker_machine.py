@@ -179,15 +179,15 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def rollbackSnapshot(self, machineId, snapshotName, reason, **kwargs):
+    def rollbackSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.rollbackSnapshot(machineId, snapshotName)
+        self.actors.machines.rollbackSnapshot(machineId, epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteSnapshot(self, machineId, snapshotName, reason, **kwargs):
+    def deleteSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.deleteSnapshot(machineId, snapshotName)
+        self.actors.machines.deleteSnapshot(machineId, epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
