@@ -3,7 +3,7 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-from libcloud.compute.base import StorageVolume
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume
 
 
 class cloudapi_disks(BaseActor):
@@ -22,7 +22,7 @@ class cloudapi_disks(BaseActor):
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):
             disk = disk.dump()
-        return StorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
+        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
 
     @authenticator.auth(acl={'account': set('C')})
     @audit()
