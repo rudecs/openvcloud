@@ -216,7 +216,7 @@ class CSLibvirtNodeDriver():
         volume.dev = dev
         domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
         if domxml is None:
-            devices.append(ElementTree.fromstring(volume))
+            devices.append(ElementTree.fromstring(str(volume)))
             domxml = ElementTree.tostring(dom)
         return self._update_node(node, domxml)
 

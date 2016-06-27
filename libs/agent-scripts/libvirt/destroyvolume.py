@@ -15,6 +15,8 @@ async = True
 
 
 def action(path):
+    from CloudscalerLibcloud import openvstorage
+    path = openvstorage.getPath(path)
     if j.system.fs.exists(path):
         j.system.fs.remove(path)
     return True

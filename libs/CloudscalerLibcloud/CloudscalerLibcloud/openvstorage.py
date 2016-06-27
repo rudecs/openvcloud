@@ -53,10 +53,15 @@ def getUrlPath(path):
                                                                  name=path)
 
 def getPath(path):
-    return os.path.join('/mnt/vmstor', path)
+    url = urlparse.urlparse(path)
+    path = url.path.strip('/')
+    if not path.startswith('/mnt/vmstor'):
+        path = os.path.join('/mnt/vmstor', path)
+    if not path.endswith('.raw'):
+        path += '.raw'
+    return path
 
 def copyImage(srcpath):
-    # qemu-img convert volume1.qcow2 openvstorage+tcp:127.0.0.1:12329/volume3
     imagename = os.path.splitext(j.system.fs.getBaseName(srcpath))[0]
     templatepath = 'templates/%s.raw' % imagename
     dest = getUrlPath("templates/%s" % imagename)
