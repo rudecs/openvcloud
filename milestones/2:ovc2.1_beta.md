@@ -55,9 +55,12 @@
 |[#251](https://github.com/0-complexity/openvcloud/issues/251)|security: XSS and internal server error (log)|:white_circle: Verification|bug|
 |[#252](https://github.com/0-complexity/openvcloud/issues/252)|security: XSS and internal server error (node status)|:white_circle: Verification|bug|
 |[#253](https://github.com/0-complexity/openvcloud/issues/253)|security: XSS and internal server error (VM)|:white_circle: Verification|bug|
+|[#254](https://github.com/0-complexity/openvcloud/issues/254)|Space for archived vms |:red_circle: Open|feature|
 |[#255](https://github.com/0-complexity/openvcloud/issues/255)|security: XSS and inernal Server error|:white_circle: Verification|bug|
 |[#256](https://github.com/0-complexity/openvcloud/issues/256)|Can't access the end user portal although there is an account existed|:red_circle: Open|bug|
 |[#257](https://github.com/0-complexity/openvcloud/issues/257)|security: XSS and steal the cookies|:white_circle: Verification|bug|
+|[#267](https://github.com/0-complexity/openvcloud/issues/267)|put node in decommission state is not working|:white_circle: Verification|bug|
+|[#268](https://github.com/0-complexity/openvcloud/issues/268)|When 2 nodes are removed they are stated HALTED in the stack overview they are still ENABLED|:red_circle: Open|bug|
 
 
 ## Issues per assignee
