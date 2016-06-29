@@ -44,13 +44,16 @@ def getVDisk(path, vpool=None):
 
 def getUrlPath(path):
     storageip, edgeport, protocol = getEdgeconnection()
-    path = os.path.splitext(path)[0].strip('/')
+    newpath, ext = os.path.splitext(path)
+    if ext != '.raw':
+        newpath = path
+    newpath = newpath.strip('/')
     if not storageip:
         raise RuntimeError("Could not find edge connection")
     return "openvstorage+{protocol}://{ip}:{port}/{name}".format(protocol=protocol,
                                                                  ip=storageip,
                                                                  port=edgeport,
-                                                                 name=path)
+                                                                 name=newpath)
 
 def getPath(path):
     url = urlparse.urlparse(path)
