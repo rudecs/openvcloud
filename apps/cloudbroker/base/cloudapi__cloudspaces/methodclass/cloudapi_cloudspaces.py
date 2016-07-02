@@ -856,16 +856,14 @@ class cloudapi_cloudspaces(BaseActor):
         """
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
-        if len(fw) == 0:
-            raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
-
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        fw = self.netmgr._getVFWObject(fwid)
+
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)
         location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')
 
-        url = '%s/ovcinit/%s/' % (location, getIP(cloudspace.publicipaddress))
+        url = '%s/ovcinit/%s/' % (location, getIP(fw.host))
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
 
