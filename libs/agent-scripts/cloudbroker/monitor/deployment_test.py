@@ -166,7 +166,7 @@ def action():
         pcl.actors.cloudapi.machines.delete(vmachineId)
         j.console.echo('Finished deleting test vm', log=True)
         raise
-    return [{'message': msg, 'uid': uid, 'category': 'Storage Test', 'state': status}]
+    return [{'message': msg, 'uid': uid, 'category': category, 'state': status}]
 
 if __name__ == '__main__':
     print action()
