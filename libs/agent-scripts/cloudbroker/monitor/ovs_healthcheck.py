@@ -7,7 +7,7 @@ organization = 'cloudscalers'
 author = "foudaa@codescalers.com"
 version = "1.0"
 category = "monitor.healthcheck"
-roles = ['storagenode']
+roles = ['storagenode', 'cpunode']
 period = 60 * 30 # 30min
 timeout = 60 * 5
 enable = True
@@ -36,6 +36,7 @@ def action():
     from openvstorage.openvstoragecluster_health_check import OpenvStorageHealthCheck
     from arakoon.arakooncluster_health_check import ArakoonHealthCheck
     from alba.alba_health_check import AlbaHealthCheck
+    roles = j.application.config.getList('grid.node.roles')
 
     Utils.logger = logger
     utility = Utils(False, False)
@@ -67,9 +68,10 @@ def action():
         ovs.checkSizeOfLogFiles()
         ovs.checkIfDNSResolves()
         # ovs.checkModelConsistency()
-        ovs.checkForHaltedVolumes()
-        ovs.checkFileDriver()
-        ovs.checkVolumeDriver()
+        if 'cpunode' in roles:
+            ovs.checkForHaltedVolumes()
+            ovs.checkFileDriver()
+            ovs.checkVolumeDriver()
 
     def check_alba():
         """
