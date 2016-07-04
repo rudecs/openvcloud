@@ -28,6 +28,8 @@ def action():
     def process(_, folder, files):
         if 'templates' in files:
             files.remove('templates')
+        if 'archive' in files:
+            files.remove('archive')
         for file_ in files:
             fullpath = os.path.join(folder, file_)
             if file_.endswith('.raw'):
