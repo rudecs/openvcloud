@@ -29,7 +29,7 @@ class SSHMngr(object):
 
 
 class bootstrap(Resource):
-    def lightweight(self, nodeKey, hostname, login, nid):
+    def lightweight(self, hostname):
         # FIXME
         j.system.fs.changeDir(args.gitpath)
         
@@ -78,22 +78,30 @@ class bootstrap(Resource):
         return resp
             
     def post(self):
+        j.system.fs.changeDir(args.gitpath)
         data = request.get_json()
         nodeKey = data['key.pub']
         hostname = data['hostname']
         login = data['login']
-        nid = data['nid']
-        remotePort = None
-        
         # if bootstrap service name is not set, we have a 'without-reflector'
         # setup, we only proceed to ssh-keys-exchange then
         if hrd.getStr('instance.reflector.name') == '':
-            return self.lightweight(nodeKey, hostname, login, nid)
+            return self.lightweight(hostname)
 
-        try:
-            remotePort = 21000 + int(nid)
-        except ValueError:
-            return self.error(400, 'hostname should be something like node$nbr')
+        ## search for next free remotePort
+        services = j.atyourservice.findServices(name='node.ssh')
+        remotePort = 21001
+        usedports = []
+        for service in services:
+            usedport = service.hrd.getInt('instance.ssh.port')
+            if service.instance == hostname:
+                remotePort = usedport
+                break
+            else:
+                usedports.append(usedport)
+        else:
+            while remotePort in usedports:
+                remotePort += 1
 
         try:
             # push pub key of node to reflector
