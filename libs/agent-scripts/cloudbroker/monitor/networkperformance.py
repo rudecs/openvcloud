@@ -28,6 +28,7 @@ class OpenvStorage():
     def __init__(self):
         self._localIp = None
         self._storagerouters = []
+        self._nic = None
         self._speed = None
         self._runingServer = None
         # appened opverstorage to python path
@@ -39,28 +40,53 @@ class OpenvStorage():
     @property
     def localIp(self):
         if not self._localIp:
-            self._localIp = j.system.net.getIpAddress('backplane1')[0][0]
+            self.storageRouters
         return self._localIp
+
+    @property
+    def nic(self):
+        if not self._nic:
+            for netinfo in j.system.net.getNetworkInfo():
+                if self.localIp in netinfo['ip']:
+                    self._nic = netinfo['name']
+                    break
+            else:
+                raise RuntimeError("Could not get local network card")
+        return self._nic
 
     @property
     def speed(self):
         if not self._speed:
-            ovsconfig = j.system.ovsnetconfig.getConfigFromSystem()
-            nics = j.system.process.execute('ovs-vsctl list-ifaces backplane1')[1].split('\n')
-            for nic in nics:
-                if nic in ovsconfig:
-                    if ovsconfig[nic]['detail'][0] == 'PHYS':
-                        match = re.search('(?P<speed>\d+)', ovsconfig[nic]['detail'][3])
-                        self._speed = int(match.group('speed'))
-                        break
+            speedfile = '/sys/class/net/%s/speed' % self.nic
+            if j.system.fs.exists(speedfile):
+                self._speed = int(j.system.fs.fileGetContents(speedfile))
+            else:
+                # check if its ovs bridge
+                ovsconfig = j.system.ovsnetconfig.getConfigFromSystem()
+                nics = j.system.process.execute('ovs-vsctl list-ifaces %s' % self.nic)[1].split('\n')
+                for nic in nics:
+                    if nic in ovsconfig:
+                        if ovsconfig[nic]['detail'][0] == 'PHYS':
+                            match = re.search('(?P<speed>\d+)', ovsconfig[nic]['detail'][3])
+                            self._speed = int(match.group('speed'))
+                            break
         return self._speed
 
     @property
     def storageRouters(self):
         if not self._storagerouters:
             from ovs.lib.storagerouter import StorageRouterList
-            storageips = [router for router in StorageRouterList.get_storagerouters() if\
-                                router.ip != self.localIp]
+            storageips = []
+            for router in StorageRouterList.get_storagerouters():
+                if j.system.net.isIpLocal(router.ip):
+                    self._localIp = router.ip
+                else:
+                    storageips.append(router)
+            if not self._localIp:
+                firstip = next(iter(storageips), None)
+                if firstip:
+                    self._localIp = j.system.net.getReachableIpAddress(firstip, 22)
+
             if storageips:
                 self._storagerouters = random.sample(storageips, int(math.log(len(storageips)) + 1))
             else:
