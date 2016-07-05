@@ -53,10 +53,18 @@ class OpenvStorageVolume(StorageVolume):
         self.edgehost = url.hostname
         self.edgeport = url.port
         self.name = url.path.strip('/')
+        self.type = 'disk'
 
     def __str__(self):
         template = env.get_template("ovsdisk.xml")
         return template.render(self.__dict__)
+
+
+class OpenvStorageISO(OpenvStorageVolume):
+    def __init__(self, *args, **kwargs):
+        super(OpenvStorageISO, self).__init__(*args, **kwargs)
+        self.dev = 'hdc'
+        self.type = 'cdrom'
 
 
 def OpenvStorageVolumeFromXML(disk, driver):
@@ -260,7 +268,7 @@ class CSLibvirtNodeDriver():
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        return self._execute_agent_job('createmetaiso', role='storagenode', name=name, poolname=name, metadata=metadata, userdata=userdata, type=type)
+        return self._execute_agent_job('createmetaiso', role='storagenode', name=name, metadata=metadata, userdata=userdata, type=type)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -340,16 +348,17 @@ class CSLibvirtNodeDriver():
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
         macaddress = self.backendconnection.getMacAddress(self.gid)
-        POOLPATH = '%s/%s' % (BASEPOOLPATH, name)
 
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
             return -1
 
         networkname = result['networkname']
+        if metadata_iso:
+            metadata_iso = str(OpenvStorageISO(id=metadata_iso, size=0, name='N/A', driver=self))
         machinexml = machinetemplate.render({'machinename': name, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
-                                             'network': networkname, 'poolpath': POOLPATH, 'volumes': volumes})
+                                             'network': networkname, 'volumes': volumes})
 
         # 0 means default behaviour, e.g machine is auto started.
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)

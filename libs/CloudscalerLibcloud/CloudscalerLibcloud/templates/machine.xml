@@ -22,11 +22,7 @@
             {{volume}}
             {% endfor %}
             {% if isoname %}
-            <disk type='file' device='cdrom'>
-                <driver name='qemu' type='raw'/>
-                <source file='{{poolpath}}/{{isoname}}'/>
-                <target dev='hdc' bus='ide'/>
-            </disk>
+            {{isoname}}
             {% endif %}
             <controller type='usb' index='0'>
                 <alias name='usb0'/>
