@@ -14,14 +14,32 @@ roles = []
 async = True
 
 
-def action(name, poolname, 	metadata, userdata, type):
+def action(name, metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
-    connection = LibvirtUtil()
-    connection.check_storagepool(poolname)
-    pool = connection._get_pool(poolname)
+    from CloudscalerLibcloud import openvstorage
+    imagepath = openvstorage.getUrlPath('%s/cloud-init.%s' % (name, name))
     iso = ISO()
-    vol = iso.create_meta_iso(pool, name, metadata, userdata, type)
-    return vol.name()
+    iso.create_meta_iso(imagepath.replace('://', ':'), metadata, userdata, type)
+    return imagepath
 
     
+if __name__ == '__main__':
+    userdata = {
+        "chpasswd": {
+            "expire": False
+        },
+        "manage_etc_hosts": True,
+        "password": "FxDsKJ4kS",
+        "ssh_pwauth": True,
+        "users": [
+            {
+                "lock-passwd": False,
+                "name": "cloudscalers",
+                "plain_text_passwd": "FxDsKJ4kS",
+                "shell": "/bin/bash",
+                "sudo": "ALL=(ALL) ALL"
+            }
+        ]
+    }
+    metadata = {"local-hostname": "vm-9"}
+    print action('test', metadata, userdata, 'Linux')

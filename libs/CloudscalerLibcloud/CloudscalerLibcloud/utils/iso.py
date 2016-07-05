@@ -36,15 +36,7 @@ class ISO(object):
         json.dump(meta_data,fp)
         fp.flush()
 
-
-
-    def generate_meta_iso(
-        self,
-        name,
-        fp,
-        meta_data,
-        user_data,
-        ):
+    def generate_meta_iso(self, fp, meta_data, user_data):
         def gentemp(prefix):
             return tempfile.NamedTemporaryFile(
                 prefix='cloudscalers.{prefix}.'.format(prefix=prefix),
@@ -69,13 +61,7 @@ class ISO(object):
                    close_fds=True,
                    )
 
-    def generate_windows_meta_iso(
-        self,
-        name,
-        fp,
-        meta_data,
-        user_data,
-        ):
+    def generate_windows_meta_iso(self, fp, meta_data, user_data):
         def gentemp(prefix):
             return tempfile.NamedTemporaryFile(
                 prefix='cloudscalers.{prefix}.'.format(prefix=prefix),
@@ -101,55 +87,23 @@ class ISO(object):
                    )
 
 
-    def upload_volume(self, vol, length, fp):
-        # TODO share with image.upload_volume
-        stream = vol.connect().newStream(flags=0)
-        vol.upload(stream=stream, offset=0, length=length, flags=0)
-
-        def handler(stream, nbytes, _):
-            data = fp.read(nbytes)
-            return data
-        stream.sendAll(handler, None)
-        stream.finish()
-
-
-    def create_meta_iso(
-        self, 
-        pool,
-        name,
-        meta_data,
-        user_data,
-        type,
-        ):
+    def create_meta_iso(self, output, meta_data, user_data, type):
         with tempfile.TemporaryFile() as iso:
             if type not in ['WINDOWS', 'Windows', 'windows']:
                 self.generate_meta_iso(
-                    name=name,
                     fp=iso,
                     meta_data=meta_data,
                     user_data=user_data,
                    )
             else:
                 self.generate_windows_meta_iso(
-                    name=name,
                     fp=iso,
                     meta_data=meta_data,
                     user_data=user_data)
             iso.seek(0)
             length = os.fstat(iso.fileno()).st_size
             assert length > 0
-            env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
-            disktemplate = env.get_template("iso.xml")
-            diskname = 'cloud-init.{name}.iso'.format(name=name)
-            diskxml = disktemplate.render({'diskname': diskname, 'disksize': length})
-            pool.refresh()
-            for vol in pool.listAllVolumes():
-                if vol.name() == diskname:
-                    vol.delete()
-            vol = pool.createXML(diskxml, flags=0)
-            self.upload_volume(
-                vol=vol,
-                length=length,
-                fp=iso,
-                )
-            return vol
+            proc = subprocess.Popen(['qemu-img', 'convert', '-O', 'raw', '/dev/stdin', output], stdin=iso)
+            proc.wait()
+            if proc.returncode != 0:
+                raise RuntimeError("Failed to create metadata iso.")
