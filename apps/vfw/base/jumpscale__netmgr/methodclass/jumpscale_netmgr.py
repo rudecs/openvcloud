@@ -138,6 +138,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
                 self.osisvfw.delete(fwid)
             return result
 
+    def fw_destroy(self, fwid):
+        self.osisvfw.delete(fwid)
+
     def _applyconfig(self, gid, nid, args):
         if args['fwobject']['type'] == 'routeros':
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)

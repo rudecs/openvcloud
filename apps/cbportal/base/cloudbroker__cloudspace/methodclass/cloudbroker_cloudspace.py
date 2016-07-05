@@ -56,7 +56,6 @@ class cloudbroker_cloudspace(BaseActor):
         status = cloudspace['status']
         cloudspace['status'] = 'DESTROYING'
         self.models.cloudspace.set(cloudspace)
-        cloudspace['status'] = 'DESTROYED'
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             #delete machines
@@ -75,14 +74,9 @@ class cloudbroker_cloudspace(BaseActor):
         #delete routeros
         gid = cloudspace['gid']
         ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
-        self._destroyVFW(gid, cloudspace['id'])
-        if cloudspace['networkId']:
-            self.libvirt_actor.releaseNetworkId(gid, cloudspace['networkId'])
-        if cloudspace['publicipaddress']:
-            self.network.releasePublicIpAddress(cloudspace['publicipaddress'])
-
-        cloudspace['networkId'] = None
-        cloudspace['publicipaddress'] = None
+        cloudspace = self.models.cloudspace.get(cloudspace['id'])
+        cloudspace.status = 'DESTROYED'
+        self.cb.cloudspace.release_resources(cloudspace)
         self.models.cloudspace.set(cloudspace)
         return True
 
@@ -104,13 +98,6 @@ class cloudbroker_cloudspace(BaseActor):
         for idx, cloudspaceId in enumerate(cloudspaceIds):
             cloudspace = self._getCloudSpace(accountId, cloudspaceId)
             self._destroy(cloudspace, reason, ctx)
-
-    def _destroyVFW(self, gid, cloudspaceId):
-        fws = self.netmgr.fw_list(int(gid), str(cloudspaceId))
-        if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], gid)
-            return True
-        return False
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -212,13 +199,9 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-
-        self._destroyVFW(cloudspace.gid, cloudspaceId)
-        if cloudspace.publicipaddress:
-            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
-            cloudspace.publicipaddress = None
-            cloudspace.status = 'VIRTUAL'
-            self.models.cloudspace.set(cloudspace)
+        self.cb.cloudspace.release_resources(cloudspace)
+        cloudspace.status = 'VIRTUAL'
+        self.models.cloudspace.set(cloudspace)
         return True
 
     @auth(['level1', 'level2', 'level3'])

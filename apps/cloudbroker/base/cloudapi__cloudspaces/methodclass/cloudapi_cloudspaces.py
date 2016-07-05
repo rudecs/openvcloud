@@ -260,18 +260,6 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
 
-    def _release_resources(self, cloudspace):
-        #  delete routeros
-        fws = self.netmgr.fw_list(cloudspace.gid, str(cloudspace.id))
-        if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], cloudspace.gid)
-        if cloudspace.networkId:
-            self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
-        if cloudspace.publicipaddress:
-            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
-        cloudspace.networkId = None
-        cloudspace.publicipaddress = None
-        return cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def deploy(self, cloudspaceId, **kwargs):
@@ -352,7 +340,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         cloudspace.status = "DESTROYING"
         self.models.cloudspace.set(cloudspace)
-        cloudspace = self._release_resources(cloudspace)
+        cloudspace = self.cb.cloudspace.release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
         cloudspace.deletionTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
