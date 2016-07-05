@@ -100,18 +100,9 @@ echo "" >> /root/.ssh/config
 echo "[+] loading settings"
 HOST=$(hostname -s)
 
-# Note: need to be prefixed by 10# otherwise
-# evaluation will fail on 8 and 9 (octal value)
-NODE=$((10#$(echo ${HOST##*-})))
-
-if [ "$NODE" == "" ]; then
-	echo "[-] cannot detect node id"
-	exit
-fi
-
 if [ "$2" != "--no-connect" ]; then
 	echo "[+] bootstrapping node id: $NODE"
-	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.node.id=${NODE}#"
+	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#"
 fi
 
 echo "[+] ready, have a nice day."
