@@ -186,10 +186,8 @@ class CSLibvirtNodeDriver():
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
-
-        pmachineip = self._get_connection_ip()
         disksize = size.disk * (1000 ** 3)  # from GB to bytes
-        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, templateguid=templateguid, pmachineip=pmachineip)
+        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, templateguid=templateguid)
 
     def create_volume(self, size, name):
         bytesize = size * (1000 ** 3)
@@ -375,14 +373,13 @@ class CSLibvirtNodeDriver():
         return node
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
-        pmachineip = self._get_connection_ip()
         xml = self._get_persistent_xml(node)
         node = self._from_xml_to_node(xml, None)
         bootvolume = node.extra['volumes'][0]
         return self._execute_agent_job('createtemplate', wait=False, queue='io',
                                        machineid=node.id, templatename=name,
                                        sourcepath=bootvolume.id,
-                                       imageid=imageid, pmachineip=pmachineip)
+                                       imageid=imageid)
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
@@ -529,8 +526,7 @@ class CSLibvirtNodeDriver():
 
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
-        pmachineip = self._get_connection_ip()
-        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, diskmapping=diskmapping, pmachineip=pmachineip)
+        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, diskmapping=diskmapping)
         volumes = []
         for idx, path in enumerate(diskpaths):
             volume = OpenvStorageVolume(id=path, name='N/A', size=-1, driver=self)
