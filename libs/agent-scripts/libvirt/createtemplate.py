@@ -14,23 +14,23 @@ roles = []
 async = True
 
 
-def action(machineid, templatename, imageid, sourcepath, pmachineip):
+def action(machineid, templatename, imageid, sourcepath):
     from CloudscalerLibcloud import openvstorage
     import math
     import time
     from ovs.lib.vdisk import VDiskController
     from ovs.dal.lists.vdisklist import VDiskList, VDisk
     from ovs.dal.lists.vpoollist import VPoolList
-    from ovs.lib.vdisk import VDiskController, PMachineList
-    pmguid = PMachineList.get_by_ip(pmachineip).guid
+    from ovs.lib.vdisk import VDiskController
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil, lockDomain, unlockDomain
 
     # clone disk
     lockDomain(machineid)
     try:
         sourcedisk = openvstorage.getVDisk(sourcepath)
-        devicename = '%s' % int(time.time())
-        newdiskdata = VDiskController.clone(sourcedisk.guid, None, devicename, pmachineguid=pmguid, machinename='templates/custom')
+        devicename = 'templates/custom-%s' % int(time.time())
+        storagerouter = openvstorage.getLocalStorageRouter()
+        newdiskdata = VDiskController.clone(sourcedisk.guid, devicename, storagerouter_guid=storagerouter.guid)
         VDiskController.set_as_template(newdiskdata['diskguid'])
 
         # derefence disk from original vmachine

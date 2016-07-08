@@ -9,8 +9,10 @@ from ovs.dal.lists.vdisklist import VDiskList
 from ovs.dal.lists.vpoollist import VPoolList
 from ovs.dal.lists.storagerouterlist import StorageRouterList
 
+VPOOLNAME = 'vmstor'
+
 def setAsTemplate(templatepath):
-    pool = VPoolList.get_vpool_by_name('vmstor')
+    pool = VPoolList.get_vpool_by_name(VPOOLNAME)
     disk = None
     start = time.time()
     while not disk and start + 60 > time.time():
@@ -22,15 +24,30 @@ def setAsTemplate(templatepath):
         VDiskController.set_as_template(disk.guid)
     return disk.guid
 
+def getEdgeProtocol():
+    import etcd
+    client = etcd.Client(port=2379)
+    try:
+        key = client.get('/ovs/framework/rdma')
+        return 'tcp' if key.value == 'false' else 'rdma'
+    except:
+        return 'tcp'
 
-def getEdgeconnection():
+def getLocalStorageRouter():
     localips = j.system.net.getIpAddresses()
     for storagerouter in StorageRouterList.get_storagerouters():
         if storagerouter.ip in localips:
-            protocol = 'rdma' if storagerouter.rdma_capable else 'tcp'
-            for storagedriver in storagerouter.storagedrivers:
+            return storagerouter
+
+
+def getEdgeconnection():
+    protocol = getEdgeProtocol()
+    storagerouter = getLocalStorageRouter()
+    if storagerouter:
+        for storagedriver in storagerouter.storagedrivers:
+            if storagedriver.vpool.name == VPOOLNAME:
                 return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
-    return None, None, None
+    return None, None, protocol
 
 
 def getVDisk(path, vpool=None):
@@ -39,7 +56,7 @@ def getVDisk(path, vpool=None):
     if not path.endswith('.raw'):
         path += '.raw'
     if vpool is None:
-        vpool = VPoolList.get_vpool_by_name('vmstor')
+        vpool = VPoolList.get_vpool_by_name(VPOOLNAME)
     return VDiskList.get_by_devicename_and_vpool(path, vpool)
 
 def getUrlPath(path):

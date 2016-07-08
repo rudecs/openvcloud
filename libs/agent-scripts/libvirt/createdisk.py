@@ -14,11 +14,12 @@ roles = []
 async = True
 
 
-def action(templateguid, vmname, size, pmachineip):
+def action(templateguid, vmname, size):
     from CloudscalerLibcloud import openvstorage
-    from ovs.lib.vdisk import VDiskController, PMachineList
-    pmguid = PMachineList.get_by_ip(pmachineip).guid
-    data = VDiskController.create_from_template(templateguid, machinename='%s/base' % vmname, devicename='image', pmachineguid=pmguid)
+    from ovs.lib.vdisk import VDiskController
+    name = "%s/bage-image" % vmname
+    storagerouter = openvstorage.getLocalStorageRouter()
+    data = VDiskController.create_from_template(templateguid, name=name, storagerouter_guid=storagerouter.guid)
     filepath = openvstorage.getPath(data['backingdevice'].lstrip('/'))
     openvstorage.truncate(filepath, size)
     return openvstorage.getUrlPath(data['backingdevice'])
