@@ -584,6 +584,9 @@ class Machine(object):
                 models.vmachine.set(machine)
             if node == -1 and stackId:
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+            elif node == -1:
+                excludelist.append(newstackId)
+                newstackId = 0
         self.cb.clearProvider(newstackId)
         self.updateMachineFromNode(machine, node, newstackId, psize)
         tags = str(machine.id)
