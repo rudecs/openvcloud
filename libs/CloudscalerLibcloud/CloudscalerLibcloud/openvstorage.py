@@ -17,7 +17,7 @@ def setAsTemplate(templatepath):
     start = time.time()
     while not disk and start + 60 > time.time():
         time.sleep(2)
-        disk = VDiskList.get_by_devicename_and_vpool(templatepath, pool)
+        disk = getVDisk(templatepath)
     if not disk:
         raise RuntimeError("Template did not become available on OVS at %s" % templatepath)
     if disk.info['object_type'] != 'TEMPLATE':
@@ -52,7 +52,7 @@ def getEdgeconnection():
 
 def getVDisk(path, vpool=None):
     url = urlparse.urlparse(path)
-    path = url.path.strip('/')
+    path = '/' + url.path.strip('/')
     if not path.endswith('.raw'):
         path += '.raw'
     if vpool is None:

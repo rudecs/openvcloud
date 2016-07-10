@@ -15,19 +15,6 @@ queue = 'default'
 docleanup = True
 
 
-def getEdgeconnection():
-    import sys
-    sys.path.append('/opt/OpenvStorage')
-    from ovs.dal.lists.storagerouterlist import StorageRouterList
-    localips = j.system.net.getIpAddresses()
-    for storagerouter in StorageRouterList.get_storagerouters():
-        if storagerouter.ip in localips:
-            protocol = 'rdma' if storagerouter.rdma_capable else 'tcp'
-            for storagedriver in storagerouter.storagedrivers:
-                return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
-    return None, None, None
-
-
 def cleanup(name, networkid, destinationdir):
     import libvirt
     from CloudscalerLibcloud.utils import libvirtutil
@@ -75,6 +62,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import netaddr
     import jinja2
     import time
+    from CloudscalerLibcloud import openvstorage
     import os
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
@@ -103,7 +91,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     else:
         raise RuntimeError("IP conflict there is router with %s"%internalip)
 
-    storageip, edgeport, transport = getEdgeconnection()
+    storageip, edgeport, transport = openvstorage.getEdgeconnection()
     if not storageip:
         raise RuntimeError("Could not get edge connection")
 
