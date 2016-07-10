@@ -31,14 +31,9 @@ def action(machineid, templatename, imageid, sourcepath):
         devicename = 'templates/custom-%s' % int(time.time())
         storagerouter = openvstorage.getLocalStorageRouter()
         newdiskdata = VDiskController.clone(sourcedisk.guid, devicename, storagerouter_guid=storagerouter.guid)
-        VDiskController.set_as_template(newdiskdata['diskguid'])
+        VDiskController.set_as_template(newdiskdata['vdisk_guid'])
 
-        # derefence disk from original vmachine
-        vdisk = VDisk(newdiskdata['diskguid'])
-        vdisk.vmachine = None
-        vdisk.save()
-
-        templateguid = newdiskdata['diskguid'].replace('-', '')
+        templateguid = newdiskdata['vdisk_guid'].replace('-', '')
         location = newdiskdata['backingdevice']
 
         # update our model
