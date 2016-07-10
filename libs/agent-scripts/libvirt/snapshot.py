@@ -27,7 +27,7 @@ def action(diskpaths, name):
 
     for diskpath in diskpaths:
         disk = openvstorage.getVDisk(diskpath)
-        VDiskController.create_snapshot(diskguid=disk.guid, metadata=meta)
+        VDiskController.create_snapshot(vdisk_guid=disk.guid, metadata=meta)
 
     return {'name': name}
 
