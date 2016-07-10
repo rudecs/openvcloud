@@ -17,7 +17,7 @@ async = True
 def action(templateguid, vmname, size):
     from CloudscalerLibcloud import openvstorage
     from ovs.lib.vdisk import VDiskController
-    name = "%s/bage-image" % vmname
+    name = "%s/base-image" % vmname
     storagerouter = openvstorage.getLocalStorageRouter()
     data = VDiskController.create_from_template(templateguid, name=name, storagerouter_guid=storagerouter.guid)
     filepath = openvstorage.getPath(data['backingdevice'].lstrip('/'))
