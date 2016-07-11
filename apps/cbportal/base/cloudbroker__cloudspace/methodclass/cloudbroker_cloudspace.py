@@ -199,7 +199,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.cloudspace.release_resources(cloudspace)
+        self.cb.cloudspace.release_resources(cloudspace, False)
         cloudspace.status = 'VIRTUAL'
         self.models.cloudspace.set(cloudspace)
         return True

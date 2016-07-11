@@ -401,7 +401,7 @@ class CloudSpace(object):
         self.network = network.Network(models)
 
 
-    def release_resources(self, cloudspace):
+    def release_resources(self, cloudspace, releasenetwork=True):
         #  delete routeros
         fwguid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         try:
@@ -416,12 +416,12 @@ class CloudSpace(object):
             else:
                 # destroy model only
                 self.netmgr.fw_destroy(fwguid)
-        if cloudspace.networkId:
+        if cloudspace.networkId and releasenetwork:
             self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
+            cloudspace.networkId = None
         if cloudspace.publicipaddress:
             self.network.releasePublicIpAddress(cloudspace.publicipaddress)
-        cloudspace.networkId = None
-        cloudspace.publicipaddress = None
+            cloudspace.publicipaddress = None
         return cloudspace
 
 class Machine(object):
