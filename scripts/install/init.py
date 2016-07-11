@@ -55,7 +55,7 @@ Stage 2: settings hardcoded values
 """
 # Settings
 if options.gituser == None:
-	gitlink = 'git@github.com:0-complexity/%s' % options.environment
+	gitlink = 'git@github.com:gig-projects/env_%s' % options.environment
 	
 else:
 	gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
