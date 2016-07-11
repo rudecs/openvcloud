@@ -20,7 +20,8 @@
 |[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:white_circle: Verification|bug|
 |[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:white_circle: Verification|bug|
 |[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:white_circle: Verification|bug|
-|[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:white_circle: Verification|bug|
+|[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:red_circle: Open|bug|
+|[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:red_circle: Open|bug|
 |[#216](https://github.com/0-complexity/openvcloud/issues/216)|security: XSS and Internal server error|:white_circle: Verification|bug|
 |[#217](https://github.com/0-complexity/openvcloud/issues/217)|security: XSS and Internal server error|:white_circle: Verification|bug|
 |[#218](https://github.com/0-complexity/openvcloud/issues/218)|Not handled error message in grid page|:white_circle: Verification|bug|
@@ -31,12 +32,15 @@
 |[#223](https://github.com/0-complexity/openvcloud/issues/223)|security: xss|:white_circle: Verification|bug|
 |[#224](https://github.com/0-complexity/openvcloud/issues/224)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#225](https://github.com/0-complexity/openvcloud/issues/225)|security: xss and steal the cookies|:white_circle: Verification|bug|
+|[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed |:red_circle: Open|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:red_circle: Open|bug|
+|[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed |:red_circle: Open|bug|
+|[#229](https://github.com/0-complexity/openvcloud/issues/229)|HealthCheck :Storage test  failed on storage node be-g81|:red_circle: Open|bug|
 |[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#231](https://github.com/0-complexity/openvcloud/issues/231)|security: XSS and Internal server error|:white_circle: Verification|bug|
-|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:white_circle: Verification|bug|
-|[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:white_circle: Verification|bug|
-|[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State|:white_circle: Verification|bug|
+|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
+|[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:red_circle: Open|bug|
+|[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State |:red_circle: Open|bug|
 |[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
 |[#237](https://github.com/0-complexity/openvcloud/issues/237)|security: XSS and internal server error (Accounts)|:white_circle: Verification|bug|
 |[#238](https://github.com/0-complexity/openvcloud/issues/238)|security: XSS and internal server error (CS)|:white_circle: Verification|bug|
@@ -55,12 +59,9 @@
 |[#251](https://github.com/0-complexity/openvcloud/issues/251)|security: XSS and internal server error (log)|:white_circle: Verification|bug|
 |[#252](https://github.com/0-complexity/openvcloud/issues/252)|security: XSS and internal server error (node status)|:white_circle: Verification|bug|
 |[#253](https://github.com/0-complexity/openvcloud/issues/253)|security: XSS and internal server error (VM)|:white_circle: Verification|bug|
-|[#254](https://github.com/0-complexity/openvcloud/issues/254)|Space for archived vms |:red_circle: Open|feature|
 |[#255](https://github.com/0-complexity/openvcloud/issues/255)|security: XSS and inernal Server error|:white_circle: Verification|bug|
 |[#256](https://github.com/0-complexity/openvcloud/issues/256)|Can't access the end user portal although there is an account existed|:red_circle: Open|bug|
 |[#257](https://github.com/0-complexity/openvcloud/issues/257)|security: XSS and steal the cookies|:white_circle: Verification|bug|
-|[#267](https://github.com/0-complexity/openvcloud/issues/267)|put node in decommission state is not working|:white_circle: Verification|bug|
-|[#268](https://github.com/0-complexity/openvcloud/issues/268)|When 2 nodes are removed they are stated HALTED in the stack overview they are still ENABLED|:red_circle: Open|bug|
 
 
 ## Issues per assignee
@@ -68,7 +69,6 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [mie00](#mie00)
 - [yveskerwyn](#yveskerwyn)
 
 
@@ -97,15 +97,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#170](https://github.com/0-complexity/openvcloud/issues/170)|security: Is the Werkzeug debug mode is enable?|:white_circle: Verification|question|
-
-
-### [mie00](https://github.com/mie00)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
-|[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
-|[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:white_circle: Verification|bug|
-|[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:white_circle: Verification|bug|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
