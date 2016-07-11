@@ -19,7 +19,6 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [mie00](#mie00)
 - [yveskerwyn](#yveskerwyn)
 
 
@@ -47,12 +46,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
-
-
-### [mie00](https://github.com/mie00)
-
-|Issue|Title|State|Type|
-|-----|-----|-----|----|
 
 
 ### [yveskerwyn](https://github.com/yveskerwyn)
