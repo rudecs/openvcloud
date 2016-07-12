@@ -8,6 +8,7 @@ from ovs.lib.vdisk import VDiskController
 from ovs.dal.lists.vdisklist import VDiskList
 from ovs.dal.lists.vpoollist import VPoolList
 from ovs.dal.lists.storagerouterlist import StorageRouterList
+import json
 
 VPOOLNAME = 'vmstor'
 
@@ -29,7 +30,7 @@ def getEdgeProtocol():
     client = etcd.Client(port=2379)
     try:
         key = client.get('/ovs/framework/rdma')
-        return 'tcp' if key.value == 'false' else 'rdma'
+        return 'rdma' if json.loads(key.value) else 'tcp'
     except:
         return 'tcp'
 
