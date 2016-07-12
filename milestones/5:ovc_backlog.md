@@ -11,6 +11,7 @@
 |[#32](https://github.com/0-complexity/openvcloud/issues/32)|Enduser portal responsive: Add & Edit portforward popups|:red_circle: Open|bug|
 |[#47](https://github.com/0-complexity/openvcloud/issues/47)|he "Burger menu" in the top action bar in the small screen is not clickable|:red_circle: Open|bug|
 |[#64](https://github.com/0-complexity/openvcloud/issues/64)|We need to have a build in check on available public IP's when deploying cloudspace|:red_circle: Open|feature|
+|[#151](https://github.com/0-complexity/openvcloud/issues/151)|security: DoS Attacks vulnerability over windows server 2012 R2|:red_circle: Open|feature|
 |[#205](https://github.com/0-complexity/openvcloud/issues/205)|improve error message when enable a stack entering no reason|:red_circle: Open||
 
 
@@ -19,7 +20,7 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [yveskerwyn](#yveskerwyn)
+- [mie00](#mie00)
 
 
 
@@ -48,7 +49,7 @@
 |[#141](https://github.com/0-complexity/openvcloud/issues/141)|Installation failed|:red_circle: Open|bug|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [mie00](https://github.com/mie00)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
