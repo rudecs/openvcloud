@@ -22,7 +22,6 @@
 |[#119](https://github.com/0-complexity/openvcloud/issues/119)|security: Inject code in the server side and Crash it|:red_circle: Open|bug|
 |[#120](https://github.com/0-complexity/openvcloud/issues/120)|crap paths|:red_circle: Open|bug|
 |[#147](https://github.com/0-complexity/openvcloud/issues/147)|AYS sql database error|:red_circle: Open|bug|
-|[#148](https://github.com/0-complexity/openvcloud/issues/148)|Not handled error message when browsing API|:white_circle: Verification|bug|
 |[#154](https://github.com/0-complexity/openvcloud/issues/154)|Add time stamp for account and CS deployment in the details menu of the portal|:red_circle: Open|feature|
 |[#156](https://github.com/0-complexity/openvcloud/issues/156)|security: Buffer Overflow in the grid parmeter value|:red_circle: Open|bug|
 |[#167](https://github.com/0-complexity/openvcloud/issues/167)|security: Force all nodes to be in DoS from single client.|:red_circle: Open|bug|
@@ -32,9 +31,8 @@
 |[#174](https://github.com/0-complexity/openvcloud/issues/174)|Redirected to ROS login page after pressing Advanced Shield Configuration Button|:red_circle: Open|bug|
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
 |[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
-|[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:white_circle: Verification|bug|
-|[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:white_circle: Verification|bug|
-|[#210](https://github.com/0-complexity/openvcloud/issues/210)|security: XSS and Internal server error|:white_circle: Verification|bug|
+|[#259](https://github.com/0-complexity/openvcloud/issues/259)|security : URL redirection vuln|:red_circle: Open|bug|
+|[#261](https://github.com/0-complexity/openvcloud/issues/261)|Internal server error|:red_circle: Open|bug|
 
 
 ## Issues per assignee
@@ -42,7 +40,7 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [yveskerwyn](#yveskerwyn)
+- [mie00](#mie00)
 
 
 
@@ -51,6 +49,7 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#65](https://github.com/0-complexity/openvcloud/issues/65)|Monitoring improvements requested by Support for GRID Healthcheck|:red_circle: Open|feature|
+|[#277](https://github.com/0-complexity/openvcloud/issues/277)|remove error msg form ubuntu 16.04|:red_circle: Open||
 
 
 ### [delandtj](https://github.com/delandtj)
@@ -73,7 +72,7 @@
 |[#23](https://github.com/0-complexity/openvcloud/issues/23)|Operator actions: Rebalance btrfs|:red_circle: Open|feature|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [mie00](https://github.com/mie00)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
