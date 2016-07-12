@@ -7,7 +7,6 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
 |[#33](https://github.com/0-complexity/openvcloud/issues/33)|Enduser portal responsive: Header|:red_circle: Open||
-|[#199](https://github.com/0-complexity/openvcloud/issues/199)|Destroy the enviroment when create a new page|:white_circle: Verification|bug|
 |[#201](https://github.com/0-complexity/openvcloud/issues/201)|Not handeled error when create a new page with name followed by extension|:red_circle: Open|bug|
 |[#204](https://github.com/0-complexity/openvcloud/issues/204)|Have the option to enable the all stack in on click|:red_circle: Open|feature|
 
@@ -17,7 +16,7 @@
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
 - [maxux](#maxux)
-- [yveskerwyn](#yveskerwyn)
+- [mie00](#mie00)
 
 
 
@@ -45,7 +44,7 @@
 |-----|-----|-----|----|
 
 
-### [yveskerwyn](https://github.com/yveskerwyn)
+### [mie00](https://github.com/mie00)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
