@@ -33,20 +33,20 @@ Stage 1: options parsing: global settings
 """
 # global settings
 optlist = {
-	'environment': options.environment,
+    'environment': options.environment,
 }
 
 for item in optlist:
-	if optlist[item] == None:
-		print '[-] missing global argument: %s' % item
-		j.application.stop()
+    if optlist[item] == None:
+        print '[-] missing global argument: %s' % item
+        j.application.stop()
 
 if options.gituser == None:
-	print("[+] no git user given, github will be used")
+    print("[+] no git user given, github will be used")
 
 if options.backend not in targets:
-	print '[-] unknown or missing backend'
-	j.application.stop()
+    print '[-] unknown or missing backend'
+    j.application.stop()
 
 domain = options.domain if options.domain else 'demo.greenitglobe.com'
 
@@ -55,10 +55,10 @@ Stage 2: settings hardcoded values
 """
 # Settings
 if options.gituser == None:
-	gitlink = 'git@github.com:0-complexity/%s' % options.environment
-	
+    gitlink = 'git@github.com:gig-projects/env_%s' % options.environment
+
 else:
-	gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
+    gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
 
 choice     = string.ascii_letters + string.digits
 vmpassword = ''.join(random.choice(choice) for _ in range(12))
@@ -79,40 +79,41 @@ Stage 4: options parsing: backend validator
 """
 # mothership1
 if options.backend == 'ms1':
-	optlist = {
-		'user': options.user,
-		'pass': options.passwd,
-		'cloudspace': options.cloudspace,
-		'location': options.location
-	}
-	
-	for item in optlist:
-		if optlist[item] == None:
-			print '[-] missing mothiership1 argument: %s' % item
-			j.application.stop()
-	
-	machine = ovc.initMothership(options.user, options.passwd, options.location, options.cloudspace)
-	machine['type'] = 'ms1'
+    optlist = {
+        'user': options.user,
+        'pass': options.passwd,
+        'cloudspace': options.cloudspace,
+        'location': options.location
+    }
+
+    for item in optlist:
+        if optlist[item] == None:
+            print '[-] missing mothiership1 argument: %s' % item
+            j.application.stop()
+
+    machine = ovc.initMothership(options.user, options.passwd, options.location, options.cloudspace)
+    machine['type'] = 'ms1'
 
 # docker
 if options.backend == 'docker':
-	optlist = {
-		'remote': options.remote,
-		'port': options.port,
-		'public': options.public,
-	}
-	
-	for item in optlist:
-		if optlist[item] == None:
-			print '[-] missing docker argument: %s' % item
-			j.application.stop()
-	
-	machine = ovc.initDocker(options.remote, options.port, options.public)
-	machine['type'] = 'docker'
+    optlist = {
+        'remote': options.remote,
+        'port': options.port,
+        'public': options.public,
+    }
+
+    for item in optlist:
+        if optlist[item] == None:
+            print '[-] missing docker argument: %s' % item
+            j.application.stop()
+
+    machine = ovc.initDocker(options.remote, options.port, options.public)
+    machine['type'] = 'docker'
 
 
 """
 Stage 5: installing stuff
 """
-ovc.initAYSGitVM(machine, gitlink, options.gituser, options.gitpass, vmpassword, domain, delete=True)
+ovc.initAYSGitVM(machine, gitlink, options.gituser, options.gitpass,
+                 vmpassword, domain, options.environment, delete=True)
 

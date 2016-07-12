@@ -66,11 +66,11 @@
         """"
         var:accountId int,,ID of account
         var:name str,, Display name @tags validator:name
-        var:maxMemoryCapacity float,, max size of memory in GB
-        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB
-        var:maxCPUCapacity int,, max number of cpu cores
-        var:maxNASCapacity int,, max size of primary(NAS) storage in TB
-        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB
-        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator
-        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering
-        var:maxNumPublicIP int,, max number of assigned public IPs
+        var:maxMemoryCapacity float,, max size of memory in GB @optional
+        var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
+        var:maxCPUCapacity int,, max number of cpu cores @optional
+        var:maxNASCapacity int,, max size of primary(NAS) storage in TB @optional
+        var:maxArchiveCapacity int,, max size of secondary(Archive) storage in TB @optional
+        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator @optional
+        var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
+        var:maxNumPublicIP int,, max number of assigned public IPs @optional

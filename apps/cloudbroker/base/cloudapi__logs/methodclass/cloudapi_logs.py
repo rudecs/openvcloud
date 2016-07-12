@@ -1,5 +1,6 @@
 from JumpScale import j
 import os
+import json
 import datetime
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
@@ -52,8 +53,9 @@ class cloudapi_logs(BaseActor):
                 cloudspace_dict['machines'] = list()
                 machines = self.models.vmachine.search({'$fields': ['id', 'name', 'sizeId', 'disks', 'nics'],
                                                         '$query': {'cloudspaceId': cloudspace['id'],
-                                                                   'status': {
-                                                                       '$nin': ['DESTROYED', 'ERROR']}}},
+                                                                   'status': {'$nin': ['DESTROYED', 'ERROR']}
+                                                                  }
+                                                       },
                                                        size=0)[1:]
                 for machine in machines:
                     machine_dict = dict()
@@ -73,5 +75,5 @@ class cloudapi_logs(BaseActor):
                     cloudspace_dict['machines'].append({machine['id']: machine_dict})
                 account_log['cloudspaces'].append({cloudspace['id']: cloudspace_dict})
             with open("%s/%s_%s_%s_%s_%s.json" % (accountpath, year, month, day, hour, minute), 'w+') as f:
-                f.write(str(account_log))
+                json.dump(account_log, f)
         return True

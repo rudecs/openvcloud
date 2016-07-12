@@ -11,7 +11,7 @@ angular.module('cloudscalers.services')
   // };
   return {
     list: function() {
-      return $http.get(cloudspaceconfig.apibaseurl + '/locations/list').then(
+      return $http.post(cloudspaceconfig.apibaseurl + '/locations/list').then(
         function(result) {
           return result.data;
         },

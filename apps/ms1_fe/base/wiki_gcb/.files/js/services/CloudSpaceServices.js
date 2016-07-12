@@ -4,7 +4,7 @@ angular.module('cloudscalers.services')
 .factory('CloudSpace', function($http, $q, $window, SessionData) {
   return {
     list: function() {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/list')
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/list')
       .then(
         function(result) {
           return result.data;
@@ -19,9 +19,8 @@ angular.module('cloudscalers.services')
       SessionData.setSpace(space);
     },
     create: function(name, accountId, userId, location) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/create?name=' +
-      encodeURIComponent(name) + '&accountId=' + accountId + '&access=' + encodeURI(userId) +
-      '&location=' + encodeURIComponent(location))
+      var data = {name: name, accountId: accountId, access: userId, location: location};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/create', data)
       .then(
         function(result) {
           if (result.status === 200) {
@@ -34,8 +33,10 @@ angular.module('cloudscalers.services')
         }
       );
     },
-    get: function(cloudSpaceId) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/get?cloudspaceId=' + cloudSpaceId).then(
+    get: function(cloudspaceId) {
+      var data = {cloudspaceId: cloudspaceId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/get', data)
+      .then(
         function(result) {
           return result.data;
         },
@@ -44,8 +45,10 @@ angular.module('cloudscalers.services')
         }
       );
     },
-    getDefenseShield: function(cloudSpaceId) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/getDefenseShield?cloudspaceId=' + cloudSpaceId).then(
+    getDefenseShield: function(cloudspaceId) {
+      var data = {cloudspaceId: cloudspaceId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/getDefenseShield', data)
+      .then(
         function(result) {
           return result.data;
         },
@@ -58,30 +61,32 @@ angular.module('cloudscalers.services')
       return $window.open(cloudspaceconfig.apibaseurl + '/cloudspaces/getOpenvpnConfig?cloudspaceId=' + cloudspaceId);
     },
     addUser: function(space, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser?cloudspaceId=' + space.id +
-      '&accesstype=' + accessType + '&userId=' + user)
+      var data = {cloudspaceId: cloudspaceId, accesstype: accessType, userId: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/addUser', data)
       .then(
         function(result) { return result.data;},
         function(reason) { return $q.reject(reason);
       });
     },
     inviteUser: function(space, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/addExternalUser?cloudspaceId=' + space.id +
-      '&accesstype=' + accessType + '&emailaddress=' + user)
+      var data = {cloudspaceId: space.id, accesstype: accessType, emailaddress: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/addExternalUser', data)
       .then(
         function(result) { return result.data;},
         function(reason) { return $q.reject(reason);
       });
     },
     deleteUser: function(space, userId) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser?cloudspaceId=' + space.id +
-      '&userId=' + userId).then(
+      var data = {cloudspaceId: space.id, userId: userId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/deleteUser', data)
+      .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason);
       });
     },
     delete: function(cloudspaceId) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/delete?cloudspaceId=' + cloudspaceId)
+      var data = {cloudspaceId: cloudspaceId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/delete', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason); }
@@ -104,16 +109,17 @@ angular.module('cloudscalers.services')
       return accessRights;
     },
     updateUser: function(cloudspaceId, userId, accesstype) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/cloudspaces/updateUser?cloudspaceId=' + cloudspaceId +
-      '&userId=' + userId + '&accesstype=' + accesstype)
+      var data = {cloudspaceId: cloudspaceId, userId: userId, accesstype: accesstype};
+      return $http.post(cloudspaceconfig.apibaseurl + '/cloudspaces/updateUser', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason);
       });
     },
     searchAcl: function(query) {
-      var url = cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?limit=5&usernameregex=' + query;
-      return $http.get(url).then(
+      var data = {limit: 5, usernameregex: query};
+      var url = cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames';
+      return $http.post(url, data).then(
         function(response) {
           return response.data;
         }, function(reason) {

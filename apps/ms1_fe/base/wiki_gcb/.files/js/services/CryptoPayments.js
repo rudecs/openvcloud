@@ -4,9 +4,8 @@ angular.module('cloudscalers.services')
 .factory('CryptoPayments', function($http, $q) {
   return {
     getPaymentInfo: function(accountid, coin) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/payments/getPaymentInfo?accountId=' + encodeURIComponent(accountid) +
-        '&coin=' + encodeURIComponent(coin))
+      var data = {accountId: accountId, count:coin};
+      return $http.post(cloudspaceconfig.apibaseurl + '/payments/getPaymentInfo', data)
         .then(
           function(result) {
             var info = {'coin': coin};

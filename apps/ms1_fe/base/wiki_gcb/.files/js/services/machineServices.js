@@ -11,8 +11,9 @@ angular.module('cloudscalers.services')
   };
   return {
     start: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/start?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/start';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['start'];
           return result.data;
@@ -23,8 +24,9 @@ angular.module('cloudscalers.services')
       );
     },
     stop: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/stop?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/stop';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['stop'];
           return result.data;
@@ -35,8 +37,9 @@ angular.module('cloudscalers.services')
       );
     },
     reboot: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/reboot?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/reboot';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['start'];
           return result.data;
@@ -47,8 +50,9 @@ angular.module('cloudscalers.services')
       );
     },
     reset: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/reset?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/reset';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['start'];
           return result.data;
@@ -59,8 +63,9 @@ angular.module('cloudscalers.services')
       );
     },
     pause: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/pause?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/pause';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['pause'];
           return result.data;
@@ -71,8 +76,9 @@ angular.module('cloudscalers.services')
       );
     },
     resume: function(machine) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/resume?machineId=' + machine.id;
-      return $http.get(url).then(
+      var data = {machineId: machine.id};
+      var url = cloudspaceconfig.apibaseurl + '/machines/resume';
+      return $http.post(url, data).then(
         function(result) {
           machine.status = machineStates['resume'];
           return result.data;
@@ -83,11 +89,10 @@ angular.module('cloudscalers.services')
       );
     },
     create: function(cloudspaceId, name, description, sizeId, imageId, disksize, archive, region, replication) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/create?cloudspaceId=' + cloudspaceId +
-        '&name=' + encodeURIComponent(name) + '&description=' + encodeURIComponent(description) +
-        '&sizeId=' + sizeId + '&imageId=' + imageId + '&disksize=' + disksize +
-        '&archive=' + archive + '&region=' + region + '&replication=' + replication;
-      return $http.get(url).then(
+      var data = {cloudspaceId: cloudspaceId, name: name, description: description, sizeId: sizeId,
+                  imageId: imageId, disksize: disksize, archive: archive, region: region, replication: replication};
+      var url = cloudspaceconfig.apibaseurl + '/machines/create';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -97,9 +102,9 @@ angular.module('cloudscalers.services')
       );
     },
     updateDescription: function(id, newdescription) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/update?machineId=' + encodeURIComponent(id) + '&description=' +
-      encodeURIComponent(newdescription);
-      return $http.get(url).then(
+      var data = {machineId: id, description: newdescription};
+      var url = cloudspaceconfig.apibaseurl + '/machines/update';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -109,9 +114,9 @@ angular.module('cloudscalers.services')
       );
     },
     clone: function(machine, cloneName) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/clone?machineId=' + machine.id +
-        '&name=' + encodeURIComponent(cloneName);
-      return $http.get(url).then(
+      var data = {machineId: machine.id, name: cloneName};
+      var url = cloudspaceconfig.apibaseurl + '/machines/clone';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -120,9 +125,9 @@ angular.module('cloudscalers.services')
         });
     },
     createTemplate: function(machine, templatename) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/createTemplate?machineId=' +
-        machine.id + '&templatename=' + encodeURIComponent(templatename);
-      return $http.get(url).then(
+      var data = {machineId: machine.id, templatename: templatename};
+      var url = cloudspaceconfig.apibaseurl + '/machines/createTemplate';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -132,8 +137,9 @@ angular.module('cloudscalers.services')
       );
     },
     delete: function(machineid) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/delete?machineId=' + machineid;
-      return $http.get(url).then(
+      var data = {machineId: machineid};
+      var url = cloudspaceconfig.apibaseurl + '/machines/delete';
+      return $http.post(url, data).then(
         function() {
           return;
         },
@@ -143,8 +149,9 @@ angular.module('cloudscalers.services')
       );
     },
     list: function(cloudspaceId) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/list?cloudspaceId=' + cloudspaceId + '&type=';
-      return $http.get(url).then(function(result) {
+      var data = {cloudspaceId: cloudspaceId, type: ''};
+      var url = cloudspaceconfig.apibaseurl + '/machines/list';
+      return $http.post(url, data).then(function(result) {
         _.each(result.data, function(machine) {
           if (machine.status === 'SUSPENDED') {
             machine.status = 'PAUSED';
@@ -159,8 +166,9 @@ angular.module('cloudscalers.services')
       var machine = {
         id: machineid
       };
-      var url = cloudspaceconfig.apibaseurl + '/machines/get?machineId=' + machineid;
-      return $http.get(url).then(
+      var data = {machineId: machineid};
+      var url = cloudspaceconfig.apibaseurl + '/machines/get';
+      return $http.post(url, data).then(
         function(result) {
           if (result.data.status === 'SUSPENDED') {
             result.data.status = 'PAUSED';
@@ -178,8 +186,9 @@ angular.module('cloudscalers.services')
       );
     },
     listSnapshots: function(machineid) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots?machineId=' + machineid;
-      return $http.get(url).then(
+      var data = {machineId: machineid};
+      var url = cloudspaceconfig.apibaseurl + '/machines/listSnapshots';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -189,9 +198,9 @@ angular.module('cloudscalers.services')
       );
     },
     createSnapshot: function(machineId, name) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/snapshot?machineId=' +
-        machineId + '&name=' + encodeURIComponent(name);
-      return $http.get(url).then(
+      var data = {machineId: machineId, name: name};
+      var url = cloudspaceconfig.apibaseurl + '/machines/snapshot';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -201,9 +210,9 @@ angular.module('cloudscalers.services')
       );
     },
     rollbackSnapshot: function(machineId, epoch) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot?machineId=' +
-        machineId + '&epoch=' + encodeURIComponent(epoch);
-      return $http.get(url).then(
+      var data = {machineId: machineId, epoch: epoch};
+      var url = cloudspaceconfig.apibaseurl + '/machines/rollbackSnapshot';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -213,9 +222,9 @@ angular.module('cloudscalers.services')
       );
     },
     deleteSnapshot: function(machineId, epoch) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot?machineId=' +
-        machineId + '&epoch=' + encodeURIComponent(epoch);
-      return $http.get(url).then(
+      var data = {machineId: machineId, epoch: epoch};
+      var url = cloudspaceconfig.apibaseurl + '/machines/deleteSnapshot';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -226,8 +235,9 @@ angular.module('cloudscalers.services')
     },
     getConsoleUrl: function(machineId) {
       var getConsoleUrlResult = {};
-      var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl?machineId=' + machineId;
-      $http.get(url).success(function(data, status) {
+      var data = {machineId: machineId};
+      var url = cloudspaceconfig.apibaseurl + '/machines/getConsoleUrl';
+      $http.post(url, data).success(function(data, status) {
         if (data === 'None') {
           getConsoleUrlResult.error = status;
         } else {
@@ -239,8 +249,9 @@ angular.module('cloudscalers.services')
       return getConsoleUrlResult;
     },
     getHistory: function(machineId) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/getHistory?size=100&machineId=' + machineId;
-      return $http.get(url).then(
+      var data = {machineId: machineId, size: 100};
+      var url = cloudspaceconfig.apibaseurl + '/machines/getHistory';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },function(reason) {
@@ -249,7 +260,8 @@ angular.module('cloudscalers.services')
       );
     },
     deleteTemplate: function(templateIndex) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)
+      var data = {templateIndex: templateIndex}
+      return $http.post(cloudspaceconfig.apibaseurl + '/template/delete?templateIndex=' + templateIndex)
       .then(
         function(result) {
           return result.data;
@@ -259,24 +271,25 @@ angular.module('cloudscalers.services')
       );
     },
     addUser: function(machineId, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/machines/addUser?machineId=' + machineId +
-      '&accesstype=' + accessType + '&userId=' + user)
+      var data = {machineId: machineId, accesstype: accessType, userId: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/machines/addUser', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason); }
       );
     },
     inviteUser: function(machineId, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/machines/addExternalUser?machineId=' + machineId +
-      '&accesstype=' + accessType + '&emailaddress=' + user)
+      var data = {machineId: machineId, accesstype: accessType, emailaddress: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/machines/addExternalUser', data)
       .then(
         function(result) { return result.data;},
         function(reason) { return $q.reject(reason);}
       );
     },
     deleteUser: function(machineId, user) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/machines/deleteUser?machineId=' + machineId +
-      '&userId=' + user).then(
+      var data = {machineId: machineId, accesstype: accessType, userId: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/machines/deleteUser', data)
+      .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason); }
       );
@@ -298,18 +311,18 @@ angular.module('cloudscalers.services')
       return accessRights;
     },
     updateUser: function(machineId, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/machines/updateUser?machineId=' + machineId +
-      '&userId=' + user + '&accesstype=' + accessType)
+      var data = {machineId: machineId, accesstype: accessType, userId: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/machines/updateUser', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason); }
       );
     },
     addDisk: function(machineId, diskName, description, size, type) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/addDisk?machineId=' +
-        machineId + '&diskName=' + diskName + '&description=' + description +
-        '&size=' + size + '&type=' + type;
-      return $http.get(url).then(
+      var data = {machineId: machineId, diskName: diskName,
+                  description: description, type: type, size: size};
+      var url = cloudspaceconfig.apibaseurl + '/machines/addDisk';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -319,8 +332,9 @@ angular.module('cloudscalers.services')
       );
     },
     removeDisk: function(diskId, detach) {
-      var url = cloudspaceconfig.apibaseurl + '/disks/delete?diskId=' + diskId + '&detach=' + detach;
-      return $http.get(url).then(
+      var data = {diskId: diskId, detach: detach};
+      var url = cloudspaceconfig.apibaseurl + '/disks/delete';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -330,8 +344,9 @@ angular.module('cloudscalers.services')
       );
     },
     moveDisk: function(machineId, diskId) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/attachDisk?machineId=' + machineId + '&diskId=' + diskId;
-      return $http.get(url).then(
+      var data = {diskId: diskId, machineId: machineId};
+      var url = cloudspaceconfig.apibaseurl + '/machines/attachDisk';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -341,8 +356,9 @@ angular.module('cloudscalers.services')
       );
     },
     resize: function(machineId, sizeId) {
-      var url = cloudspaceconfig.apibaseurl + '/machines/resize?machineId=' + machineId + '&sizeId=' + sizeId;
-      return $http.get(url).then(
+      var data = {sizeId: sizeId, machineId: machineId};
+      var url = cloudspaceconfig.apibaseurl + '/machines/resize';
+      return $http.post(url, data).then(
         function(result) {
           return result.data;
         },
@@ -356,8 +372,9 @@ angular.module('cloudscalers.services')
 .factory('Image', function($http, $q) {
   return {
     list: function(accountId, cloudspaceId) {
-      var url = cloudspaceconfig.apibaseurl + '/images/list?accountId=' + accountId + '&cloudspaceId=' + cloudspaceId;
-      return $http.get(url).then(
+      var data = {cloudspaceId: cloudspaceId, accountId: accountId};
+      var url = cloudspaceconfig.apibaseurl + '/images/list';
+      return $http.post(url, data).then(
         function(result){
           return result.data;
         },
@@ -371,7 +388,8 @@ angular.module('cloudscalers.services')
 .factory('Size', function($http, $q) {
   return {
     list: function(cloudspaceId) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/sizes/list?cloudspaceId=' + cloudspaceId)
+      var data = {cloudspaceId: cloudspaceId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/sizes/list', data)
       .then(
         function(result) {
           return result.data;

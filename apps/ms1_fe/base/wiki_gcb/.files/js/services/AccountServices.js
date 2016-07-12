@@ -3,13 +3,13 @@ angular.module('cloudscalers.services')
 .factory('Account', function($http, $q, SessionData) {
   return {
     list: function() {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/list').then(
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/list').then(
         function(result) {
           return result.data;
         });
     },
     listUsers: function() {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/listUsers').then(
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/listUsers').then(
         function(result) {
           return result.data;
         });
@@ -22,7 +22,8 @@ angular.module('cloudscalers.services')
     },
 
     get: function(id) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/get?accountId=' + id).then(
+      var data = {accountId: id};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/get', data).then(
         function(result) {
           return result.data;
         },
@@ -32,17 +33,16 @@ angular.module('cloudscalers.services')
       );
     },
     addUser: function(accountId, user, accessType) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/addUser?accountId=' +
-      accountId + '&accesstype=' + accessType + '&userId=' + user)
+      var data = {accountId: accountId, accesstype: accessType, userId: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/addUser', data)
       .then(
         function(result) {return result.data;},
         function(reason) {return $q.reject(reason);
       });
     },
     inviteUser: function(accountId, user, accessType) {
-      return $http
-        .get(cloudspaceconfig.apibaseurl + '/accounts/addExternalUser?accountId=' +
-        accountId + '&accesstype=' + accessType + '&emailaddress=' + user)
+      var data = {accountId: accountId, accesstype: accessType, emailaddress: user};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/addExternalUser', data)
         .then(function(result) {
           return result.data;
         }, function(reason) {
@@ -50,37 +50,39 @@ angular.module('cloudscalers.services')
         });
     },
     updateUser: function(accountId, userId, accesstype) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/updateUser?accountId=' + accountId +
-      '&userId=' + userId + '&accesstype=' + accesstype)
+      var data = {accountId: accountId, accesstype: accesstype, userId: userId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/updateUser', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason);
       });
     },
     deleteUser: function(accountId, userId) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-      '/accounts/deleteUser?accountId=' + accountId + '&userId=' + userId)
+      var data = {accountId: accountId, userId: userId};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/deleteUser', data)
       .then(function(result) { return result.data; },
         function(reason) { return reason.data;
       });
     },
     getCreditBalance: function(account) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance?accountId=' + account.id)
+      var data = {accountId: account.id};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/getCreditBalance', data)
       .then(
         function(result) {return result.data;},
         function(reason) {return $q.reject(reason);}
       );
     },
     getCreditHistory: function(account) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory?accountId=' + account.id)
+      var data = {accountId: account.id};
+      return $http.post(cloudspaceconfig.apibaseurl + '/accounts/getCreditHistory', data)
       .then(
         function(result) {return result.data;},
         function(reason) {return $q.reject(reason);}
       );
     },
     getUsage: function(account, reference) {
-      return $http.get(cloudspaceconfig.apibaseurl + '/consumption/get?accountId=' + account.id +
-      '&reference=' + encodeURIComponent(reference))
+      var data = {accountId: account.id, reference: reference};
+      return $http.post(cloudspaceconfig.apibaseurl + '/consumption/get', data)
       .then(
         function(result) { return result.data; },
         function(reason) { return $q.reject(reason); }

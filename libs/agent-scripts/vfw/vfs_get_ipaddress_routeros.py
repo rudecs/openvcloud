@@ -22,4 +22,4 @@ def action(fwobject, macaddress):
     password = fwobject['password']
 
     ro = RouterOS(host, username, password)
-    return ro.getIpaddress(macaddress)
+    return ro.getIpaddress(macaddress, 'cloudspace-bridge')

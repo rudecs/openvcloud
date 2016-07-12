@@ -36,6 +36,8 @@ angular.module('cloudscalers.services',['ng'])
     }
     //disable IE ajax request caching
     $httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
+    $httpProvider.defaults.headers.post['Accept'] = 'application/json';
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   }]);
 
 var cloudscalersControllers = angular.module('cloudscalers.controllers', [
