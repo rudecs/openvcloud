@@ -4,10 +4,8 @@ angular.module('cloudscalers.services')
 .factory('Users', function($http, $q) {
   return {
     updatePassword: function(username, oldPassword, newPassword) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/users/updatePassword?username=' + encodeURIComponent(username) +
-        '&oldPassword=' + encodeURIComponent(oldPassword) +
-        '&newPassword=' + encodeURIComponent(newPassword))
+      var data = {username: username, oldPassword: oldPassword, newPassword: newPassword};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/updatePassword', post)
       .then(
         function(result) {
           return result;
@@ -18,9 +16,9 @@ angular.module('cloudscalers.services')
       );
     },
     sendResetPasswordLink: function(emailaddress) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/users/sendResetPasswordLink?emailaddress=' + encodeURIComponent(emailaddress)
-      ).then(
+      var data = {emailaddress: emailaddress};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/sendResetPasswordLink', data)
+      .then(
         function(result) {
           return result;
         },
@@ -30,9 +28,9 @@ angular.module('cloudscalers.services')
       );
     },
     getResetPasswordInformation: function(resettoken) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/users/getResetPasswordInformation?resettoken=' + encodeURIComponent(resettoken)
-      ).then(
+      var data = {resettoken: resettoken};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/getResetPasswordInformation', data)
+      .then(
         function(result) {
           return result.data;
         },
@@ -42,10 +40,9 @@ angular.module('cloudscalers.services')
       );
     },
     resetPassword: function(resettoken, newpassword) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/users/resetPassword?resettoken=' + encodeURIComponent(resettoken) +
-        '&newpassword=' + encodeURIComponent(newpassword)
-      ).then(
+      var data = {resettoken: resettoken, newpassword: newpassword};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/resetPassword', data)
+      .then(
         function(result) {
           return result.data;
         },
@@ -55,9 +52,8 @@ angular.module('cloudscalers.services')
       );
     },
     activateUser: function(token, newpassword) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/users/validate?validationtoken=' + encodeURIComponent(token) +
-        '&password=' + encodeURIComponent(newpassword))
+      var data = {validationtoken: validationtoken, password: newpassword};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/validate')
       .then(
         function(result) {
           return result.data;
@@ -81,7 +77,8 @@ angular.module('cloudscalers.services')
     },
     // TODO make usernameregex dynamic
     getMatchingUsernames: function() {
-      return $http.get(cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames?imit=5&usernameregex=k')
+      var data = {limit: 5, usernameregex: 'k'};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/getMatchingUsernames', data)
       .then(
         function(result) {
           return result.data;
@@ -92,9 +89,8 @@ angular.module('cloudscalers.services')
       );
     },
     isValidInviteUserToken: function(inviteUserToken, emailAddress) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-      '/users/isValidInviteUserToken?inviteusertoken=' + encodeURIComponent(inviteUserToken) +
-      '&emailaddress=' + encodeURIComponent(emailAddress))
+      var data = {inviteusertoken: inviteUserToken, emailaddress: emailAddress};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/isValidInviteUserToken', data)
       .then(
         function(result) {
           return result.data;
@@ -105,10 +101,9 @@ angular.module('cloudscalers.services')
       );
     },
     registerInvitedUser: function(inviteUserToken, emailAddress, userName, passWord, confirmPassword) {
-      return $http.post(cloudspaceconfig.apibaseurl + '/users/registerInvitedUser?inviteusertoken=' +
-      encodeURIComponent(inviteUserToken) + '&emailaddress=' + encodeURIComponent(emailAddress) +
-      '&username=' + encodeURIComponent(userName) + '&password=' +
-      encodeURIComponent(passWord) + '&confirmpassword=' + encodeURIComponent(confirmPassword))
+      var data = {inviteusertoken: inviteUserToken, emailaddress: emailAddress, username: userName,
+                  password: passWord, confirmpassword: confirmPassword};
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/registerInvitedUser', data)
       .then(
         function(result) {
           return result.data;

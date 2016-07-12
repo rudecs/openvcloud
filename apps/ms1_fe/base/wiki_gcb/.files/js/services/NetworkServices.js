@@ -4,50 +4,28 @@ angular.module('cloudscalers.services')
 .factory('Networks', function($http, $q) {
   return {
     listPortforwarding: function(id, machineId) {
-      if (encodeURIComponent(id) === 'undefined') {
-        return $http.get(cloudspaceconfig.apibaseurl + '/portforwarding/list')
-        .then(
-          function(result) {
-            return result.data;
-          },
-          function(reason) {
-            return $q.reject(reason);
-          }
-        );
-      }else {
-        if (machineId) {
-          return $http.get(cloudspaceconfig.apibaseurl +
-            '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id) +
-            '&machineId=' + encodeURIComponent(machineId))
-          .then(
-            function(result) {
-              return result.data;
-            },function(reason) {
-              return $q.reject(reason);
-            }
-          );
-        } else {
-          return $http.get(cloudspaceconfig.apibaseurl +
-            '/portforwarding/list?cloudspaceId=' + encodeURIComponent(id))
-          .then(
-            function(result) {
-              return result.data;
-            },
-            function(reason) {
-              return $q.reject(reason);
-            }
-          );
-        }
+      var data = {};
+      if (encodeURIComponent(id) !== 'undefined') {
+         data['cloudspaceId'] = id;
+
       }
+      if (machineId) {
+        data['machineId'] = machineId;
+      }
+      return $http.post(cloudspaceconfig.apibaseurl + '/portforwarding/list', data)
+      .then(
+        function(result) {
+          return result.data;
+        },
+        function(reason) {
+          return $q.reject(reason);
+        }
+      );
     },
     createPortforward: function(id, ip, publicPort, machineId, localPort, protocol) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/portforwarding/create?cloudspaceId=' + encodeURIComponent(id) +
-        '&publicIp=' + encodeURIComponent(ip) +
-        '&publicPort=' + encodeURIComponent(publicPort) +
-        '&machineId=' + encodeURIComponent(machineId) +
-        '&localPort=' + encodeURIComponent(localPort) +
-        '&protocol=' + encodeURIComponent(protocol))
+      var data = {cloudspaceId: id, publicIp: ip, publicPort: publicPort, machineId: machineId,
+                  localPort: localPort, protocol: protocol};
+      return $http.post(cloudspaceconfig.apibaseurl + '/portforwarding/create', data)
       .then(
         function(result) {
           return result;
@@ -58,14 +36,9 @@ angular.module('cloudscalers.services')
       );
     },
     updatePortforward: function(cloudspaceId, id, ip, publicPort, machineId, localPort, protocol) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/portforwarding/update?cloudspaceId=' + encodeURIComponent(cloudspaceId) +
-        '&id=' + encodeURIComponent(id) +
-        '&publicIp=' + encodeURIComponent(ip) +
-        '&publicPort=' + encodeURIComponent(publicPort) +
-        '&machineId=' + encodeURIComponent(machineId) +
-        '&localPort=' + encodeURIComponent(localPort) +
-        '&protocol=' + encodeURIComponent(protocol))
+      var data = {cloudspaceId: cloudspaceId, publicIp: ip, publicPort: publicPort, id: id,
+                  machineId: machineId, localPort: localPort, protocol: protocol};
+      return $http.post(cloudspaceconfig.apibaseurl + '/portforwarding/update', data)
       .then(
         function(result) {
           return result;
@@ -76,10 +49,8 @@ angular.module('cloudscalers.services')
       );
     },
     deletePortforward: function(cloudspaceId, publicIp, publicPort) {
-      return $http.get(cloudspaceconfig.apibaseurl +
-        '/portforwarding/deleteByPort?cloudspaceId=' + encodeURIComponent(cloudspaceId) +
-        '&publicIp=' + encodeURIComponent(publicIp) +
-        '&publicPort=' + encodeURIComponent(publicPort))
+      var data = {cloudspaceId: cloudspaceId, publicIp: publicIp, publicPort: publicPort};
+      return $http.post(cloudspaceconfig.apibaseurl + '/portforwarding/deleteByPort', data)
       .then(
         function(result) {
           return result;
