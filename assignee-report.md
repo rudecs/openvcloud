@@ -3,9 +3,10 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 3 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 2 assigned
+- [grimpy](#grimpy) has 1 assigned
+- [john-kheir](#john-kheir) has 1 assigned
 - [maxux](#maxux) has 3 assigned
-- [mie00](#mie00) has 4 assigned
+- [mie00](#mie00) has 3 assigned
 
 
 
@@ -30,7 +31,13 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:large_blue_circle: In Progress|bug|
+
+
+## [john-kheir](https://github.com/john-kheir)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+|[#278](https://github.com/0-complexity/openvcloud/issues/278)|Can't find out already created running VMs on the cloudbroker-virtual_machines page|:red_circle: Open|bug|
 
 
 ## [maxux](https://github.com/maxux)
@@ -46,7 +53,6 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#210](https://github.com/0-complexity/openvcloud/issues/210)|security: XSS and Internal server error|:white_circle: Verification|bug|
 |[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
 |[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:white_circle: Verification|bug|
 |[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:white_circle: Verification|bug|
