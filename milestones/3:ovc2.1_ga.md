@@ -32,13 +32,14 @@
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
 |[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
 |[#259](https://github.com/0-complexity/openvcloud/issues/259)|security : URL redirection vuln|:red_circle: Open|bug|
-|[#261](https://github.com/0-complexity/openvcloud/issues/261)|Internal server error|:red_circle: Open|bug|
+|[#261](https://github.com/0-complexity/openvcloud/issues/261)|Internal server error|:white_circle: Verification|bug|
 
 
 ## Issues per assignee
 - [davshafik](#davshafik)
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
+- [john-kheir](#john-kheir)
 - [maxux](#maxux)
 - [mie00](#mie00)
 
@@ -60,6 +61,12 @@
 
 
 ### [grimpy](https://github.com/grimpy)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [john-kheir](https://github.com/john-kheir)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
