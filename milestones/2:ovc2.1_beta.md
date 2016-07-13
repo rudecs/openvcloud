@@ -28,8 +28,6 @@
 |[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:white_circle: Verification|bug|
 |[#218](https://github.com/0-complexity/openvcloud/issues/218)|Not handled error message in grid page|:white_circle: Verification|bug|
 |[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification|bug|
-|[#221](https://github.com/0-complexity/openvcloud/issues/221)|securyt# XSS and steal the Cookies (system)|:white_circle: Verification|bug|
-|[#224](https://github.com/0-complexity/openvcloud/issues/224)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:white_circle: Verification|bug|
 |[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:white_circle: Verification|bug|
@@ -37,17 +35,17 @@
 |[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State|:white_circle: Verification|bug|
 |[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
 |[#254](https://github.com/0-complexity/openvcloud/issues/254)|Space for archived vms |:white_circle: Verification|feature|
-|[#255](https://github.com/0-complexity/openvcloud/issues/255)|security: XSS and inernal Server error|:white_circle: Verification|bug|
 |[#256](https://github.com/0-complexity/openvcloud/issues/256)|Can't access the end user portal although there is an account existed|:red_circle: Open|bug|
 |[#267](https://github.com/0-complexity/openvcloud/issues/267)|put node in decommission state is not working|:red_circle: Open|bug|
 |[#268](https://github.com/0-complexity/openvcloud/issues/268)|When 2 nodes are removed they are stated HALTED in the stack overview they are still ENABLED|:red_circle: Open|bug|
 |[#271](https://github.com/0-complexity/openvcloud/issues/271)|Force CloudSpace deletion|:white_circle: Verification|bug|
 |[#273](https://github.com/0-complexity/openvcloud/issues/273)|CPU-05 is still visible in the OVS portal|:red_circle: Open|bug|
 |[#274](https://github.com/0-complexity/openvcloud/issues/274)|Worker Stuck : worker stuck unexpectedly|:white_circle: Verification|bug|
-|[#279](https://github.com/0-complexity/openvcloud/issues/279)|security : xss and steal the cookies|:red_circle: Open|bug|
-|[#280](https://github.com/0-complexity/openvcloud/issues/280)|Hidden url which contains alot of error links|:red_circle: Open|bug|
-|[#281](https://github.com/0-complexity/openvcloud/issues/281)|When trying to rename a cloud space value for maxCPUCapacity is unexpectedly required|:red_circle: Open|bug|
+|[#279](https://github.com/0-complexity/openvcloud/issues/279)|security : xss and steal the cookies|:white_circle: Verification|bug|
+|[#280](https://github.com/0-complexity/openvcloud/issues/280)|Hidden url which contains alot of error links|:white_circle: Verification|bug|
+|[#281](https://github.com/0-complexity/openvcloud/issues/281)|When trying to rename a cloud space value for maxCPUCapacity is unexpectedly required|:white_circle: Verification|bug|
 |[#282](https://github.com/0-complexity/openvcloud/issues/282)|healthcheck (be-scale1 and 3 envt) turns red because of orphan disks|:red_circle: Open|bug|
+|[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:white_circle: Verification|bug|
 |[#286](https://github.com/0-complexity/openvcloud/issues/286)|Cpunodes is  in loop state|:white_circle: Verification||
 
 
@@ -55,6 +53,7 @@
 - [davshafik](#davshafik)
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
+- [john-kheir](#john-kheir)
 - [maxux](#maxux)
 - [mie00](#mie00)
 
@@ -78,7 +77,12 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
-|[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:large_blue_circle: In Progress|bug|
+
+
+### [john-kheir](https://github.com/john-kheir)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
 
 
 ### [maxux](https://github.com/maxux)
@@ -92,7 +96,6 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#210](https://github.com/0-complexity/openvcloud/issues/210)|security: XSS and Internal server error|:white_circle: Verification|bug|
 |[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
 |[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:white_circle: Verification|bug|
 |[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:white_circle: Verification|bug|
