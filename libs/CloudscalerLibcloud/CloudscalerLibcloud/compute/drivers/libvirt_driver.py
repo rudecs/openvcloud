@@ -54,6 +54,7 @@ class OpenvStorageVolume(StorageVolume):
         self.edgeport = url.port
         self.name = url.path.strip('/')
         self.type = 'disk'
+        self.bus = 'virtio'
 
     def __str__(self):
         template = env.get_template("ovsdisk.xml")
@@ -65,6 +66,7 @@ class OpenvStorageISO(OpenvStorageVolume):
         super(OpenvStorageISO, self).__init__(*args, **kwargs)
         self.dev = 'hdc'
         self.type = 'cdrom'
+        self.bus = 'ide'
 
 
 def OpenvStorageVolumeFromXML(disk, driver):

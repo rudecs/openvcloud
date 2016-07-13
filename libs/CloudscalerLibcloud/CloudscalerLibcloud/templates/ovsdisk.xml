@@ -3,5 +3,5 @@
     <source protocol='openvstorage' name='{{name}}'>
         <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
     </source>
-    <target dev='{{dev}}' bus='virtio'/>
+    <target dev='{{dev}}' bus='{{bus}}'/>
 </disk>
