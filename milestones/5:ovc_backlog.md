@@ -19,6 +19,7 @@
 - [davshafik](#davshafik)
 - [delandtj](#delandtj)
 - [grimpy](#grimpy)
+- [john-kheir](#john-kheir)
 - [maxux](#maxux)
 - [mie00](#mie00)
 
@@ -37,6 +38,12 @@
 
 
 ### [grimpy](https://github.com/grimpy)
+
+|Issue|Title|State|Type|
+|-----|-----|-----|----|
+
+
+### [john-kheir](https://github.com/john-kheir)
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
