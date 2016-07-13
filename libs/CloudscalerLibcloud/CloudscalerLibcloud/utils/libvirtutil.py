@@ -215,9 +215,11 @@ class LibvirtUtil(object):
             if os.path.exists(diskfile):
                 try:
                     vol = self.connection.storageVolLookupByPath(diskfile)
+                    vol.delete(0)
                 except:
                     continue
-                vol.delete(0)
+            if os.path.exists(diskfile):
+                os.remove(diskfile)
         name = xml.find('name').text
         poolpath = os.path.join(self.basepath, name)
         try:
@@ -237,16 +239,16 @@ class LibvirtUtil(object):
         disks = xml.findall('devices/disk')
         diskfiles = list()
         for disk in disks:
-            if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
+            if disk.attrib['device'] in ('disk', 'cdrom'):
                 source = disk.find('source')
                 if source != None:
-                    if disk.attrib['device'] == 'disk':
+                    if source.attrib.get('protocol') == 'openvstorage':
+                        diskfiles.append(os.path.join(self.basepath, source.attrib['name'] + '.raw'))
+                    else:
                         if 'dev' in source.attrib:
                             diskfiles.append(source.attrib['dev'])
                         if 'file' in source.attrib:
                             diskfiles.append(source.attrib['file'])
-                    if disk.attrib['device'] == 'cdrom':
-                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def _get_domain_networkid(self, dom):
