@@ -22,7 +22,6 @@
 |Issue|Title|State|Owner|ETA|
 |-----|-----|-----|-----|---|
 |[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification||[2016/07/13](https://github.com/0-complexity/openvcloud/issues/220#issuecomment-None)|
-|[#221](https://github.com/0-complexity/openvcloud/issues/221)|securyt# XSS and steal the Cookies (system)|:white_circle: Verification||[2016/07/13](https://github.com/0-complexity/openvcloud/issues/221#issuecomment-None)|
 
 ## [Milestone ovc2.1_ga](milestones/3:ovc2.1_ga.md)
 
