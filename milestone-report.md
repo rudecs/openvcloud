@@ -4,7 +4,7 @@
 |Milestone|ETA|
 |---------|---|
 |[ovc2.1.5](#milestone-ovc215)|N/A|
-|[ovc2.1_beta](#milestone-ovc21_beta)|2016/07/12|
+|[ovc2.1_beta](#milestone-ovc21_beta)|2016/07/13|
 |[ovc2.1_ga](#milestone-ovc21_ga)|N/A|
 |[ovc2.2](#milestone-ovc22)|N/A|
 |[ovc_backlog](#milestone-ovc_backlog)|N/A|
@@ -21,8 +21,8 @@
 
 |Issue|Title|State|Owner|ETA|
 |-----|-----|-----|-----|---|
-|[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification||[2016/07/12](https://github.com/0-complexity/openvcloud/issues/220#issuecomment-None)|
-|[#221](https://github.com/0-complexity/openvcloud/issues/221)|securyt# XSS and steal the Cookies (system)|:white_circle: Verification||[2016/07/12](https://github.com/0-complexity/openvcloud/issues/221#issuecomment-None)|
+|[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification||[2016/07/13](https://github.com/0-complexity/openvcloud/issues/220#issuecomment-None)|
+|[#221](https://github.com/0-complexity/openvcloud/issues/221)|securyt# XSS and steal the Cookies (system)|:white_circle: Verification||[2016/07/13](https://github.com/0-complexity/openvcloud/issues/221#issuecomment-None)|
 
 ## [Milestone ovc2.1_ga](milestones/3:ovc2.1_ga.md)
 
