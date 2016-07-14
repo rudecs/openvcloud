@@ -3,7 +3,7 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 3 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 1 assigned
+- [grimpy](#grimpy) has 2 assigned
 - [john-kheir](#john-kheir) has 1 assigned
 - [maxux](#maxux) has 3 assigned
 - [mie00](#mie00) has 3 assigned
@@ -31,6 +31,7 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#294](https://github.com/0-complexity/openvcloud/issues/294)|Self assigned IP address on be-scale-2|:red_circle: Open|bug|
 
 
 ## [john-kheir](https://github.com/john-kheir)
