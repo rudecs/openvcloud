@@ -44,7 +44,6 @@
 |[#279](https://github.com/0-complexity/openvcloud/issues/279)|security : xss and steal the cookies|:white_circle: Verification|bug|
 |[#280](https://github.com/0-complexity/openvcloud/issues/280)|Hidden url which contains alot of error links|:white_circle: Verification|bug|
 |[#281](https://github.com/0-complexity/openvcloud/issues/281)|When trying to rename a cloud space value for maxCPUCapacity is unexpectedly required|:white_circle: Verification|bug|
-|[#282](https://github.com/0-complexity/openvcloud/issues/282)|healthcheck (be-scale1 and 3 envt) turns red because of orphan disks|:red_circle: Open|bug|
 |[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:white_circle: Verification|bug|
 |[#286](https://github.com/0-complexity/openvcloud/issues/286)|Cpunodes is  in loop state|:white_circle: Verification||
 |[#293](https://github.com/0-complexity/openvcloud/issues/293)|Regular orphanage problems on all environments|:red_circle: Open|bug|
