@@ -1,4 +1,22 @@
 #!/bin/bash
+environment=""
+branch=""
+while getopts ":e:b:h" opt; do
+  case $opt in
+    e)
+      environment="$OPTARG"
+      ;;
+    b)
+      branch="$OPTARG"
+      ;;
+    h)
+      echo "Usage pre-install.sh [options] url:
+      -e pass environment name
+      -b pass branch name (only master supported)
+      "
+      exit 44
+  esac
+done
 if [ "$1" == "" ]; then
 	echo "Usage: pre-install.sh remote-host"
 	exit 1
@@ -26,7 +44,7 @@ if [ "${x::4}" == "http" ]; then
 	exit 1
 fi
 
-if [ "$2" != "master" ]; then
+if [ "$branch" != "master" ]; then
 	if [ ! -f /tmp/branch.sh ]; then
 		echo "[-] /tmp/branch.sh not found"
 		exit 1
@@ -47,6 +65,7 @@ else
 fi
 
 REMOTEADDR="$1"
+exit 1
 
 # REMOTEADDR=37.203.43.120   # du-conv-2
 # REMOTEADDR=37.203.43.127   # du-conv-1
@@ -111,7 +130,7 @@ fi
 
 if [ "$2" != "--no-connect" ]; then
 	echo "[+] bootstrapping node id: $NODE"
-	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.node.id=${NODE}#"
+	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.environment=${environment}#"
 fi
 
 echo "[+] ready, have a nice day."
