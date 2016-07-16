@@ -189,7 +189,7 @@ class CSLibvirtNodeDriver():
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
         disksize = size.disk * (1000 ** 3)  # from GB to bytes
-        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, role='storagenode', templateguid=templateguid)
+        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, role='storagedriver', templateguid=templateguid)
 
     def create_volume(self, size, name):
         bytesize = size * (1000 ** 3)
@@ -197,7 +197,7 @@ class CSLibvirtNodeDriver():
         return self.create_volumes(volumes)[0]
 
     def create_volumes(self, volumes):
-        volumes = self._execute_agent_job('createvolumes', role='storagenode', volumes=volumes)
+        volumes = self._execute_agent_job('createvolumes', role='storagedriver', volumes=volumes)
         stvolumes = []
         for volume in volumes:
             stvol = OpenvStorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
@@ -234,7 +234,7 @@ class CSLibvirtNodeDriver():
         return self._from_xml_to_node(xml, node)
 
     def destroy_volume(self, volume):
-        return self._execute_agent_job('destroyvolume', role='storagenode', path=volume.id)
+        return self._execute_agent_job('destroyvolume', role='storagedriver', path=volume.id)
 
     def detach_volume(self, volume):
         node = volume.extra['node']
@@ -264,11 +264,11 @@ class CSLibvirtNodeDriver():
         diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
                                        diskbasevolume, 'disksize': size.disk})
         poolname = vm_id
-        self._execute_agent_job('createdisk', diskxml=diskxml, role='storagenode', poolname=poolname)
+        self._execute_agent_job('createdisk', diskxml=diskxml, role='storagedriver', poolname=poolname)
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        return self._execute_agent_job('createmetaiso', role='storagenode', name=name, metadata=metadata, userdata=userdata, type=type)
+        return self._execute_agent_job('createmetaiso', role='storagedriver', name=name, metadata=metadata, userdata=userdata, type=type)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -400,19 +400,19 @@ class CSLibvirtNodeDriver():
 
     def ex_create_snapshot(self, node, name):
         diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('snapshot', role='storagenode', diskpaths=diskpaths, name=name)
+        return self._execute_agent_job('snapshot', role='storagedriver', diskpaths=diskpaths, name=name)
 
     def ex_list_snapshots(self, node):
         diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('listsnapshots', role='storagenode', diskpaths=diskpaths)
+        return self._execute_agent_job('listsnapshots', role='storagedriver', diskpaths=diskpaths)
 
     def ex_delete_snapshot(self, node, timestamp):
         diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('deletesnapshot', wait=False, role='storagenode', diskpaths=diskpaths, timestamp=timestamp)
+        return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', diskpaths=diskpaths, timestamp=timestamp)
 
     def ex_rollback_snapshot(self, node, timestamp):
         diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('rollbacksnapshot', role='storagenode', diskpaths=diskpaths, timestamp=timestamp)
+        return self._execute_agent_job('rollbacksnapshot', role='storagedriver', diskpaths=diskpaths, timestamp=timestamp)
 
     def _get_domain_disk_file_names(self, dom):
         if isinstance(dom, ElementTree.Element):
@@ -528,7 +528,7 @@ class CSLibvirtNodeDriver():
 
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
-        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, role='storagenode', diskmapping=diskmapping)
+        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, role='storagedriver', diskmapping=diskmapping)
         volumes = []
         for idx, path in enumerate(diskpaths):
             volume = OpenvStorageVolume(id=path, name='N/A', size=-1, driver=self)
