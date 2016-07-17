@@ -25,7 +25,7 @@ def action():
     pcl = j.clients.portal.getByInstance('main')
     ccl = j.clients.osis.getNamespace('cloudbroker')
     accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
-    loc = ccl.location.search({})[1]['locationCode']
+    loc = ccl.location.search({'gid': j.application.whoAmI.gid})[1]['locationCode']
     images = ccl.image.search({'name': 'Ubuntu 16.04 x64'})[1:]
     if not images:
         return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
