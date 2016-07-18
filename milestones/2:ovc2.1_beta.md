@@ -28,7 +28,6 @@
 |[#212](https://github.com/0-complexity/openvcloud/issues/212)|try to delete a machine provide error|:red_circle: Open|bug|
 |[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:white_circle: Verification|bug|
 |[#218](https://github.com/0-complexity/openvcloud/issues/218)|Not handled error message in grid page|:white_circle: Verification|bug|
-|[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:white_circle: Verification|bug|
 |[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
