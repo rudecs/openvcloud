@@ -29,11 +29,9 @@
 |[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:white_circle: Verification|bug|
 |[#218](https://github.com/0-complexity/openvcloud/issues/218)|Not handled error message in grid page|:white_circle: Verification|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:white_circle: Verification|bug|
-|[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
 |[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
 |[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:white_circle: Verification|bug|
 |[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State|:white_circle: Verification|bug|
-|[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
 |[#254](https://github.com/0-complexity/openvcloud/issues/254)|Space for archived vms |:white_circle: Verification|feature|
 |[#256](https://github.com/0-complexity/openvcloud/issues/256)|Can't access the end user portal although there is an account existed|:red_circle: Open|bug|
 |[#259](https://github.com/0-complexity/openvcloud/issues/259)|security : URL redirection vuln|:red_circle: Open|bug|
