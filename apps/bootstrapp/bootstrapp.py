@@ -29,6 +29,7 @@ class SSHMngr(object):
 
 
 class bootstrap(Resource):
+
     def lightweight(self, hostname):
         # FIXME
         j.system.fs.changeDir(args.gitpath)
@@ -83,6 +84,10 @@ class bootstrap(Resource):
         nodeKey = data['key.pub']
         hostname = data['hostname']
         login = data['login']
+        environment = data.get('environment')
+        if not environment:
+            setuphrd = j.application.getAppInstanceHRD('ovc_setup', 'main', 'openvcloud')
+            environment = setuphrd.get('instance.ovc.environment')
         # if bootstrap service name is not set, we have a 'without-reflector'
         # setup, we only proceed to ssh-keys-exchange then
         if hrd.getStr('instance.reflector.name') == '':
@@ -125,6 +130,12 @@ class bootstrap(Resource):
         gitPub = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root.pub'))
         gitPriv = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root'))
 
+        #make location
+        location = next(iter(j.atyourservice.findServices(name='location', instance=environment), None))
+        if not location:
+            location = j.atyourservice.new(name='location', instance=environment)
+            location.install()
+
         try:
             # create sshkey to accces the new node
             data = {
@@ -143,7 +154,7 @@ class bootstrap(Resource):
                 'instance.jumpscale': False,
                 'instance.ssh.shell': '/bin/bash -l -c'
             }
-            node = j.atyourservice.new(name='node.ssh', instance=hostname, args=data)
+            node = j.atyourservice.new(name='node.ssh', instance=hostname, args=data, parent=location)
             node.hrd  # force creation of service.hrd and action.py
         except Exception as e:
             j.atyourservice.remove(name='sshkey', instance=hostname)
