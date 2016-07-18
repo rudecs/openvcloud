@@ -1,7 +1,9 @@
 #!/bin/bash
+set -e
 environment=""
 branch=""
-while getopts ":e:b:h" opt; do
+noconnect=""
+while getopts ":e:b:hn" opt; do
   case $opt in
     e)
       environment="$OPTARG"
@@ -9,14 +11,19 @@ while getopts ":e:b:h" opt; do
     b)
       branch="$OPTARG"
       ;;
+    n)
+      noconnect="true"
+      ;;
     h)
       echo "Usage pre-install.sh [options] url:
       -e pass environment name
       -b pass branch name (only master supported)
+      -n do not create reverse ssh tunnel (autossh)
       "
       exit 44
   esac
 done
+shift $((OPTIND-1))
 if [ "$1" == "" ]; then
 	echo "Usage: pre-install.sh remote-host"
 	exit 1
@@ -26,7 +33,7 @@ if [ "$SSH_AUTH_SOCK" == "" ]; then
 	echo "[-] no ssh authentification found, checking anyway"
 	
 	AGENT=$(ssh-add -L > /dev/null 2>&1)
-	
+
 	if [ $? != 0 ]; then
 		echo "[-] no ssh key found or agent is not running."
 		exit 1
@@ -64,16 +71,7 @@ else
 	echo "[+] installing from master"
 fi
 
-REMOTEADDR="$1"
-exit 1
-
-# REMOTEADDR=37.203.43.120   # du-conv-2
-# REMOTEADDR=37.203.43.127   # du-conv-1
-# REMOTEADDR=185.69.164.155  # be-conv-2
-# REMOTEADDR=37.203.43.122   # be-dev-1
-# REMOTEADDR=185.69.164.158  # be-stor-1
-
-BOOTSTRAP="http://${REMOTEADDR}:5000"
+BOOTSTRAP="http://${1}:5000"
 
 LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
 LASTUNIX=$(date --date "$LASTTIME" +%s)
@@ -94,8 +92,7 @@ else
 	echo "[+] jumpscale already installed"
 fi
 
-TEST=$(grep openvcloud_ays /opt/jumpscale7/hrd/system/atyourservice.hrd)
-if [ $? == 1 ]; then
+if ! grep openvcloud_ays /opt/jumpscale7/hrd/system/atyourservice.hrd > /dev/null; then
 	echo "[+] configuring atyourservice"
 	echo "metadata.openvcloud            =" >> /opt/jumpscale7/hrd/system/atyourservice.hrd
 	echo "    branch:'$OVCBRANCH'," >> /opt/jumpscale7/hrd/system/atyourservice.hrd
@@ -119,17 +116,8 @@ echo "" >> /root/.ssh/config
 echo "[+] loading settings"
 HOST=$(hostname -s)
 
-# Note: need to be prefixed by 10# otherwise
-# evaluation will fail on 8 and 9 (octal value)
-NODE=$((10#$(echo ${HOST##*-})))
-
-if [ "$NODE" == "" ]; then
-	echo "[-] cannot detect node id"
-	exit
-fi
-
-if [ "$2" != "--no-connect" ]; then
-	echo "[+] bootstrapping node id: $NODE"
+if [ -z "$noconnect" ]; then
+	echo "[+] bootstrapping node: $HOST"
 	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#instance.environment=${environment}#"
 fi
 

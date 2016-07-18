@@ -1,50 +1,19 @@
 from JumpScale import j
 
-# building nodes list
-openvcloud = j.clients.openvcloud.get()
-nodes = openvcloud.getRemoteNodes()
-hosts = []
+locations = {}
+for service in j.atyourservice.findServices(name='autossh', instance='http_proxy'):
+    location = service.parent.parent.instance
+    host = service.hrd.getStr('instance.remote.bind')
+    port = service.hrd.getStr('instance.remote.port')
+    locations.setdefault(location, []).append('%s:%s' % (host, port))
 
-# dump
-print '[+] nodes found: %d' % len(nodes)
-
-for node in nodes:
-	# if nginx is installed, this is a good node for list
-	cpunode = j.atyourservice.findServices(name='nginx', parent=node)
-	autossh = j.atyourservice.findServices(name='autossh', parent=node)
-	
-	if len(cpunode) < 1:
-		continue
-
-	if len(autossh) < 1:
-		print("[-] missing autossh (%s), skipping", node)
-		continue
-	
-	host = autossh[0].hrd.getStr('instance.remote.bind')
-	port = autossh[0].hrd.getInt('instance.remote.port')
-	
-	print '[+] %s: %s:%s' % (node.instance, host, port)
-	
-	remote = 'server %s:%s;' % (host, port)
-	hosts.append(remote)
-
-if len(hosts) == 0:
-	print '[-] no nodes found'
-	j.application.stop()
-
-# building defense and novnc server list
-delimiter = "           \n"
-novnc = delimiter.join(hosts)
-defense = delimiter.join(hosts)
-ovs = delimiter.join(hosts[:3])
 
 # updating proxy service
 proxy = j.atyourservice.get(name='node.ssh', instance='ovc_proxy')
-offloader = j.atyourservice.get(name='ssloffloader', parent=proxy)
 
-offloader.hrd.set('instance.generated.novnc', novnc)
-offloader.hrd.set('instance.generated.defense', defense)
-offloader.hrd.set('instance.generated.ovs', ovs)
+offloader = j.atyourservice.get(name='ssloffloader', parent=proxy)
+for location, hosts in locations.iteritems():
+    offloader.hrd.set('instance.generated.%s' % location, hosts)
 offloader.hrd.save()
 
 print '[+] patching nginx configuration'
