@@ -31,7 +31,6 @@
 |[#174](https://github.com/0-complexity/openvcloud/issues/174)|Redirected to ROS login page after pressing Advanced Shield Configuration Button|:red_circle: Open|bug|
 |[#175](https://github.com/0-complexity/openvcloud/issues/175)|Add public ip  and networkid warning in the Healthcheck|:red_circle: Open|feature|
 |[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
-|[#261](https://github.com/0-complexity/openvcloud/issues/261)|Internal server error|:white_circle: Verification|bug|
 |[#287](https://github.com/0-complexity/openvcloud/issues/287)|Create multi cloud spaces with the same name for the same account|:red_circle: Open|bug|
 |[#288](https://github.com/0-complexity/openvcloud/issues/288)|grid: No procedure to add/edit locations.|:red_circle: Open|feature|
 |[#295](https://github.com/0-complexity/openvcloud/issues/295)|Router OS died. Now what?|:red_circle: Open|bug|
