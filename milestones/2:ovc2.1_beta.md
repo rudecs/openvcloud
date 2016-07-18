@@ -6,6 +6,7 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|---|
+|[#19](https://github.com/0-complexity/openvcloud/issues/19)|press enter when creating the account closes the create account window|:red_circle: Open|bug|
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:white_circle: Verification|bug|
 |[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:white_circle: Verification|bug|
@@ -36,6 +37,7 @@
 |[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
 |[#254](https://github.com/0-complexity/openvcloud/issues/254)|Space for archived vms |:white_circle: Verification|feature|
 |[#256](https://github.com/0-complexity/openvcloud/issues/256)|Can't access the end user portal although there is an account existed|:red_circle: Open|bug|
+|[#259](https://github.com/0-complexity/openvcloud/issues/259)|security : URL redirection vuln|:red_circle: Open|bug|
 |[#267](https://github.com/0-complexity/openvcloud/issues/267)|put node in decommission state is not working|:red_circle: Open|bug|
 |[#268](https://github.com/0-complexity/openvcloud/issues/268)|When 2 nodes are removed they are stated HALTED in the stack overview they are still ENABLED|:red_circle: Open|bug|
 |[#271](https://github.com/0-complexity/openvcloud/issues/271)|Force CloudSpace deletion|:white_circle: Verification|bug|
