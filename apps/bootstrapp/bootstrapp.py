@@ -131,7 +131,7 @@ class bootstrap(Resource):
         gitPriv = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root'))
 
         #make location
-        location = next(iter(j.atyourservice.findServices(name='location', instance=environment), None))
+        location = next(iter(j.atyourservice.findServices(name='location', instance=environment)), None)
         if not location:
             location = j.atyourservice.new(name='location', instance=environment)
             location.install()
