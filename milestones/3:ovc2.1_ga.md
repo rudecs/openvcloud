@@ -33,6 +33,9 @@
 |[#177](https://github.com/0-complexity/openvcloud/issues/177)|security: DoS the server through port 443|:red_circle: Open|bug|
 |[#259](https://github.com/0-complexity/openvcloud/issues/259)|security : URL redirection vuln|:red_circle: Open|bug|
 |[#261](https://github.com/0-complexity/openvcloud/issues/261)|Internal server error|:white_circle: Verification|bug|
+|[#288](https://github.com/0-complexity/openvcloud/issues/288)|grid: No procedure to add/edit locations.|:red_circle: Open|feature|
+|[#295](https://github.com/0-complexity/openvcloud/issues/295)|Router OS died. Now what?|:red_circle: Open|bug|
+|[#303](https://github.com/0-complexity/openvcloud/issues/303)|add a link on the top navigation bar which opens a support request|:red_circle: Open|feature|
 
 
 ## Issues per assignee
