@@ -31,7 +31,7 @@
 |[#220](https://github.com/0-complexity/openvcloud/issues/220)|security: XSS and Internal server error (Jumpscale)|:white_circle: Verification|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:white_circle: Verification|bug|
 |[#230](https://github.com/0-complexity/openvcloud/issues/230)|security: xss and steal the cookies|:white_circle: Verification|bug|
-|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:white_circle: Verification|bug|
+|[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
 |[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:white_circle: Verification|bug|
 |[#234](https://github.com/0-complexity/openvcloud/issues/234)|API  bad handling : Stacks In Error State|:white_circle: Verification|bug|
 |[#236](https://github.com/0-complexity/openvcloud/issues/236)|security: XSS and internal server error AYS|:white_circle: Verification|bug|
@@ -43,9 +43,6 @@
 |[#271](https://github.com/0-complexity/openvcloud/issues/271)|Force CloudSpace deletion|:white_circle: Verification|bug|
 |[#273](https://github.com/0-complexity/openvcloud/issues/273)|CPU-05 is still visible in the OVS portal|:red_circle: Open|bug|
 |[#274](https://github.com/0-complexity/openvcloud/issues/274)|Worker Stuck : worker stuck unexpectedly|:white_circle: Verification|bug|
-|[#279](https://github.com/0-complexity/openvcloud/issues/279)|security : xss and steal the cookies|:white_circle: Verification|bug|
-|[#280](https://github.com/0-complexity/openvcloud/issues/280)|Hidden url which contains alot of error links|:white_circle: Verification|bug|
-|[#281](https://github.com/0-complexity/openvcloud/issues/281)|When trying to rename a cloud space value for maxCPUCapacity is unexpectedly required|:white_circle: Verification|bug|
 |[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:white_circle: Verification|bug|
 |[#286](https://github.com/0-complexity/openvcloud/issues/286)|Cpunodes is  in loop state|:white_circle: Verification||
 |[#289](https://github.com/0-complexity/openvcloud/issues/289)|grid: Image management withing a multigrid is confusing|:red_circle: Open|bug|
