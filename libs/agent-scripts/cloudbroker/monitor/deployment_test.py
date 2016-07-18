@@ -20,13 +20,18 @@ def action():
     import re
     import netaddr
     category = 'Deployment Test'
-    ACCOUNTNAME = 'test_storage'
-    CLOUDSPACENAME = 'test_storage'
+    ACCOUNTNAME = 'test_deployment'
+    CLOUDSPACENAME = 'test_deployment'
     pcl = j.clients.portal.getByInstance('main')
     ccl = j.clients.osis.getNamespace('cloudbroker')
     accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
     loc = ccl.location.search({'gid': j.application.whoAmI.gid})[1]['locationCode']
-    images = ccl.image.search({'name': 'Ubuntu 16.04 x64'})[1:]
+
+    stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
+    if stack['status'] != 'ENABLED':
+        return [{'message': 'Disabling test stack is not enabled', 'uid': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
+
+    images = ccl.image.search({'name': 'Ubuntu 16.04 x64', 'id': {'$in': stack['images']}})[1:]
     if not images:
         return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
     imageId = images[0]['id']
@@ -39,8 +44,9 @@ def action():
         accountId = accounts[0]['id']
 
     cloudspaces = ccl.cloudspace.search({'accountId': accountId, 'name': CLOUDSPACENAME,
-                                        'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
-                                       })[1:]
+                                         'gid': j.application.whoAmI.gid,
+                                         'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
+                                        })[1:]
     if not cloudspaces:
         j.console.echo('Creating CloudSpace', log=True)
         cloudspaceId = pcl.actors.cloudbroker.cloudspace.create(accountId, loc, CLOUDSPACENAME, 'admin')
@@ -58,9 +64,6 @@ def action():
     diskSize = min(size['disks'])
     timestamp = time.ctime()
 
-    stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
-    if stack['status'] != 'ENABLED':
-        return [{'message': 'Disabling test stack is not enabled', 'uid': 'Disabling test stack is not enabled', 'category': category, 'state': 'SKIPPED'}]
 
     name = '%s on %s' % (timestamp, stack['name'])
     j.console.echo('Deleting vms older then 24h', log=True)
