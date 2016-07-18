@@ -49,9 +49,7 @@
 |[#283](https://github.com/0-complexity/openvcloud/issues/283)|Some Virtual Machines take different IP other than the one that exist in the portal|:white_circle: Verification|bug|
 |[#286](https://github.com/0-complexity/openvcloud/issues/286)|Cpunodes is  in loop state|:white_circle: Verification||
 |[#289](https://github.com/0-complexity/openvcloud/issues/289)|grid: Image management withing a multigrid is confusing|:red_circle: Open|bug|
-|[#290](https://github.com/0-complexity/openvcloud/issues/290)|grid: Deployment test is not location aware|:red_circle: Open|bug|
 |[#291](https://github.com/0-complexity/openvcloud/issues/291)|grid: Choosing storage is not per location|:red_circle: Open||
-|[#292](https://github.com/0-complexity/openvcloud/issues/292)|Console not working in multi-location environment|:red_circle: Open|bug|
 |[#293](https://github.com/0-complexity/openvcloud/issues/293)|Regular orphanage problems on all environments|:red_circle: Open|bug|
 |[#296](https://github.com/0-complexity/openvcloud/issues/296)|Login screen invites to login to "GreenITGlobe, should be "Green IT Globe"|:red_circle: Open|bug|
 |[#297](https://github.com/0-complexity/openvcloud/issues/297)|healthcheck: issues in deployment test|:red_circle: Open|bug|
@@ -86,6 +84,8 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#290](https://github.com/0-complexity/openvcloud/issues/290)|grid: Deployment test is not location aware|:large_blue_circle: In Progress|bug|
+|[#292](https://github.com/0-complexity/openvcloud/issues/292)|Console not working in multi-location environment|:large_blue_circle: In Progress|bug|
 |[#294](https://github.com/0-complexity/openvcloud/issues/294)|Self assigned IP address on be-scale-2|:red_circle: Open|bug|
 
 
