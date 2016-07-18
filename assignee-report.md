@@ -3,7 +3,7 @@
 # Issues per assignee
 - [davshafik](#davshafik) has 3 assigned
 - [delandtj](#delandtj) has 1 assigned
-- [grimpy](#grimpy) has 2 assigned
+- [grimpy](#grimpy) has 4 assigned
 - [john-kheir](#john-kheir) has 1 assigned
 - [maxux](#maxux) has 3 assigned
 - [mie00](#mie00) has 3 assigned
@@ -31,6 +31,8 @@
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
 |[#160](https://github.com/0-complexity/openvcloud/issues/160)|CPU Nodes authentication to agentcontroller|:white_circle: Verification|bug|
+|[#290](https://github.com/0-complexity/openvcloud/issues/290)|grid: Deployment test is not location aware|:large_blue_circle: In Progress|bug|
+|[#292](https://github.com/0-complexity/openvcloud/issues/292)|Console not working in multi-location environment|:large_blue_circle: In Progress|bug|
 |[#294](https://github.com/0-complexity/openvcloud/issues/294)|Self assigned IP address on be-scale-2|:red_circle: Open|bug|
 
 
