@@ -43,7 +43,7 @@ def action():
                         results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
             elif file_.endswith('.iso') and len(files) == 1:
                 results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
-        if not files:
+        if not files and folder != '/mnt/vmstor/volumes':
             results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
 
 
