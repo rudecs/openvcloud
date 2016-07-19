@@ -15,7 +15,7 @@ queue = 'default'
 docleanup = True
 
 
-def cleanup(name, networkid, destinationdir):
+def cleanup(name, networkid):
     import libvirt
     from CloudscalerLibcloud.utils import libvirtutil
     con = libvirt.open()
@@ -26,22 +26,11 @@ def cleanup(name, networkid, destinationdir):
         dom.undefine()
     except libvirt.libvirtError:
         pass
-    j.system.fs.removeDirTree(destinationdir)
 
-    def deleteNet(net):
-        try:
-            net.destroy()
-        except:
-            pass
-        try:
-            net.undefine()
-        except:
-            pass
     try:
         libvirtutil.LibvirtUtil().cleanupNetwork(networkid)
     except:
         pass
-
 
 def createVM(xml):
     import libvirt
@@ -62,8 +51,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import netaddr
     import jinja2
     import time
-    from CloudscalerLibcloud import openvstorage
     import os
+    acl = j.clients.agentcontroller.get()
+    edgeip, edgeport, edgetransport = acl.execute('cloudscalers', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
+
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
@@ -71,6 +62,12 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     defaultpasswd = hrd.get("instance.vfw.admin.passwd")
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
+    destinationfile = None
+
+    def destroy_device(path):
+        acl.execute('cloudscalers', 'destroyvolume',
+                    role='storagedriver', gid=j.application.whoAmI.gid,
+                    args={'path': path})
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -81,19 +78,14 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
     name = 'routeros_%s' % networkidHex
-    destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
     j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
-                                       networkid=networkid, destinationdir=destinationdir)
+                                       networkid=networkid)
     print 'Testing network'
     if not j.system.net.tcpPortConnectionTest(internalip, 22, 1):
         print "OK no other router found."
     else:
         raise RuntimeError("IP conflict there is router with %s"%internalip)
-
-    storageip, edgeport, transport = openvstorage.getEdgeconnection()
-    if not storageip:
-        raise RuntimeError("Could not get edge connection")
 
     try:
         # setup network vxlan
@@ -101,23 +93,20 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         createnetwork = j.clients.redisworker.getJumpscriptFromName('cloudscalers', 'createnetwork')
         j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
 
-        j.system.fs.createDir(destinationdir)
-        destinationfile = 'routeros-small-%s.raw' % networkidHex
-        destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
+        devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
+        destinationfile = 'openvstorage+%s://%s:%s/%s' % (
+            edgetransport, edgeip, edgeport, devicename
+        )
+        destroy_device(destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
-        print 'Converting image'
-        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
-        size = int(j.system.platform.qemu_img.info(destinationfile)['virtual size'] * 1024)
-        fd = os.open(destinationfile, os.O_RDWR|os.O_CREAT)
-        os.ftruncate(fd, size)
-        os.close(fd)
+        print 'Converting image %s -> %s' % (imagefile, destinationfile)
+        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile.replace('://', ':'), 'raw')
 
-        imagename = os.path.splitext(destinationfile.replace('/mnt/vmstor/', '', 1))[0]
-        xmlsource = xmltemplate.render(networkid=networkidHex, name=imagename,
-                                       edgehost=storageip, edgeport=edgeport,
-                                       edgetransport=transport)
+        xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
+                                       edgehost=edgeip, edgeport=edgeport,
+                                       edgetransport=edgetransport)
 
         print 'Starting VM'
         try:
@@ -219,7 +208,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     except:
         if docleanup:
             j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
-                                               networkid=networkid, destinationdir=destinationdir)
+                                               networkid=networkid)
+            if destinationfile:
+                destroy_device(destinationfile)
         raise
 
     return data
