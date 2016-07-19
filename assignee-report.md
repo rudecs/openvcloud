@@ -6,7 +6,7 @@
 - [grimpy](#grimpy) has 4 assigned
 - [john-kheir](#john-kheir) has 1 assigned
 - [maxux](#maxux) has 3 assigned
-- [mie00](#mie00) has 3 assigned
+- [mie00](#mie00) has 2 assigned
 
 
 
@@ -56,7 +56,6 @@
 
 |Issue|Title|State|Type|
 |-----|-----|-----|----|
-|[#215](https://github.com/0-complexity/openvcloud/issues/215)|Manipulate the portforward table with wrong info|:white_circle: Verification|bug|
 |[#226](https://github.com/0-complexity/openvcloud/issues/226)|Test_Storage : Account creation failed|:white_circle: Verification|bug|
 |[#228](https://github.com/0-complexity/openvcloud/issues/228)|HealthCheck : Test_Storage  Cloud Space creation failed|:white_circle: Verification|bug|
 
