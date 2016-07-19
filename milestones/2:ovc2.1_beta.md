@@ -11,7 +11,6 @@
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:white_circle: Verification|bug|
 |[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:white_circle: Verification|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
-|[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:white_circle: Verification|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:white_circle: Verification|bug|
 |[#148](https://github.com/0-complexity/openvcloud/issues/148)|Not handled error message when browsing API|:white_circle: Verification|bug|
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
@@ -20,7 +19,7 @@
 |[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
 |[#195](https://github.com/0-complexity/openvcloud/issues/195)|Destroy the enviroment when create a space|:white_circle: Verification|bug|
-|[#199](https://github.com/0-complexity/openvcloud/issues/199)|Destroy the enviroment when create a new page|:white_circle: Verification|bug|
+|[#199](https://github.com/0-complexity/openvcloud/issues/199)|Destroy the enviroment when create a new page|:red_circle: Open|bug|
 |[#203](https://github.com/0-complexity/openvcloud/issues/203)|Put stack which has a running VM in the Maintenance staus will prdouce an error|:white_circle: Verification|bug|
 |[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:white_circle: Verification|bug|
 |[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:white_circle: Verification|bug|
