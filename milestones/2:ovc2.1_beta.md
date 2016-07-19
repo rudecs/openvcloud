@@ -9,7 +9,6 @@
 |[#19](https://github.com/0-complexity/openvcloud/issues/19)|press enter when creating the account closes the create account window|:red_circle: Open|bug|
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:white_circle: Verification|bug|
-|[#82](https://github.com/0-complexity/openvcloud/issues/82)|A new user with the same name of an old user has the old_user's diabled account in his page in confirmed status|:white_circle: Verification|bug|
 |[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:white_circle: Verification|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
 |[#117](https://github.com/0-complexity/openvcloud/issues/117)|Syntax errors in the end portal in cloudSpaceSettings page.|:white_circle: Verification|bug|
@@ -26,8 +25,6 @@
 |[#209](https://github.com/0-complexity/openvcloud/issues/209)|Not handeled error when edit the Edit page|:white_circle: Verification|bug|
 |[#211](https://github.com/0-complexity/openvcloud/issues/211)|Deleting the entire error condtions when trying to delete the selected ones|:white_circle: Verification|bug|
 |[#212](https://github.com/0-complexity/openvcloud/issues/212)|try to delete a machine provide error|:red_circle: Open|bug|
-|[#214](https://github.com/0-complexity/openvcloud/issues/214)|Can't create a portforward from the portal|:white_circle: Verification|bug|
-|[#218](https://github.com/0-complexity/openvcloud/issues/218)|Not handled error message in grid page|:white_circle: Verification|bug|
 |[#227](https://github.com/0-complexity/openvcloud/issues/227)|Storage Nodes : has roles cpunodes and fwnode|:white_circle: Verification|bug|
 |[#232](https://github.com/0-complexity/openvcloud/issues/232)|These links have a lot of error and internal server error|:red_circle: Open|bug|
 |[#233](https://github.com/0-complexity/openvcloud/issues/233)|Failed Call with 500 : /restmachine/cloudapi/logs/logCloudUnits|:white_circle: Verification|bug|
