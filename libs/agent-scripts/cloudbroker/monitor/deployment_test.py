@@ -21,11 +21,11 @@ def action():
     import netaddr
     category = 'Deployment Test'
     ACCOUNTNAME = 'test_deployment'
-    CLOUDSPACENAME = 'test_deployment'
     pcl = j.clients.portal.getByInstance('main')
     ccl = j.clients.osis.getNamespace('cloudbroker')
     accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
     loc = ccl.location.search({'gid': j.application.whoAmI.gid})[1]['locationCode']
+    CLOUDSPACENAME = loc
 
     stack = ccl.stack.search({'referenceId': str(j.application.whoAmI.nid), 'gid': j.application.whoAmI.gid})[1]
     if stack['status'] != 'ENABLED':
