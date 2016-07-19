@@ -86,8 +86,7 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label">Location</label>
                         <div class="controls col-sm-9">
-                          <select class="form-control" ng-repeat="location in locations" required>
-                            <option ng-class="{ 'selected': selectedLocation == location.locationCode }" ng-click="changeLocation(location)">{[ location.name ]}</option>
+                          <select class="form-control" ng-model="newCloudSpace.locationCode" required ng-options="location.locationCode for location in locations">
                           </select>
                         </div>
                       </div>
