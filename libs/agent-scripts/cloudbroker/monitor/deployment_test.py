@@ -139,7 +139,7 @@ def action():
                     status = "ERROR"
                     msg = "Failed to run dd command. Login error? %s" % e
                     uid = "Failed to run dd command. Login error? %s" % e
-                    return status, msg
+                    return status, msg, uid
 
                 try:
                     j.console.echo('Perfoming internet test', log=True)
@@ -149,7 +149,7 @@ def action():
                     uid = "Could not connect to internet from vm on node %s" % stack['name']
                     j.console.echo(msg, log=True)
                     status = 'ERROR'
-                    return status, msg
+                    return status, msg, uid
 
                 match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
                 speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
