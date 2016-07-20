@@ -31,6 +31,8 @@ def action():
         if 'archive' in files:
             files.remove('archive')
         for file_ in files:
+            if file_.startswith('ovs-healthcheck-test'):
+                continue
             fullpath = os.path.join(folder, file_)
             if file_.endswith('.raw'):
                 if 'routeros' in file_:
