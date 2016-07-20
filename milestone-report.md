@@ -4,6 +4,7 @@
 |Milestone|ETA|
 |---------|---|
 |[ovc2.1.5](#milestone-ovc215)|N/A|
+|[ovc2.1.5-beta](#milestone-ovc215-beta)|N/A|
 |[ovc2.1_beta](#milestone-ovc21_beta)|N/A|
 |[ovc2.1_ga](#milestone-ovc21_ga)|N/A|
 |[ovc2.2](#milestone-ovc22)|N/A|
@@ -11,6 +12,12 @@
 |[No milestone](#no-milestone)|N/A|
 
 ## [Milestone ovc2.1.5](milestones/7:ovc2.1.5.md)
+
+
+|Issue|Title|State|Owner|ETA|
+|-----|-----|-----|-----|---|
+
+## [Milestone ovc2.1.5-beta](milestones/8:ovc2.1.5-beta.md)
 
 
 |Issue|Title|State|Owner|ETA|
