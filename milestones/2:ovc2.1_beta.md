@@ -9,7 +9,6 @@
 |[#19](https://github.com/0-complexity/openvcloud/issues/19)|press enter when creating the account closes the create account window|:red_circle: Open|bug|
 |[#48](https://github.com/0-complexity/openvcloud/issues/48)|Creating port forward should have an automated refresh of the page and a loading image while it is created|:red_circle: Open|bug|
 |[#76](https://github.com/0-complexity/openvcloud/issues/76)|Account disabled message in the enduser portal knowledge base|:red_circle: Open|bug|
-|[#83](https://github.com/0-complexity/openvcloud/issues/83)|user.create api accepts any entry for groups|:white_circle: Verification|bug|
 |[#86](https://github.com/0-complexity/openvcloud/issues/86)|Leak of frontend API mock|:red_circle: Open|bug|
 |[#129](https://github.com/0-complexity/openvcloud/issues/129)|Consumption page not found|:white_circle: Verification|bug|
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
