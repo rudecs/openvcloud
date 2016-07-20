@@ -442,6 +442,8 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
+        files = self._get_domain_disk_file_names(xml)
+        self._execute_agent_job('destroyvolumes', diskpaths=files, role='storagedriver')
         return True
 
     def ex_get_console_url(self, node):
