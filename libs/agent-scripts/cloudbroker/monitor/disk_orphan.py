@@ -18,10 +18,11 @@ queue = 'process'
 
 def action():
     import os
+    from CloudscalerLibcloud import openvstorage
     cbcl = j.clients.osis.getNamespace('cloudbroker', j.core.osis.client)
     vcl = j.clients.osis.getNamespace('vfw', j.core.osis.client)
     disks = cbcl.disk.search({'$fields': ['status', 'referenceId']}, size=0)[1:]
-    diskmap = {disk['referenceId']: disk['status'] for disk in disks}
+    diskmap = {openvstorage.getPath(disk['referenceId']): disk['status'] for disk in disks}
     networks = vcl.virtualfirewall.search({'$fields': ['id'], '$query': {'gid': j.application.whoAmI.gid}}, size=0)[1:]
     activenetworks = [network['id'] for network in networks]
     results = []
@@ -41,13 +42,13 @@ def action():
                     networkid = int(os.path.basename(folder), 16)
                     if networkid not in activenetworks:
                         results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
+                elif file_.startswith('cloud-init') and len(files) == 1:
+                    results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
                 else:
                     diskstatus = diskmap.get(fullpath, 'DESTROYED')
                     if diskstatus == 'DESTROYED':
                         results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
-            elif file_.endswith('.iso') and len(files) == 1:
-                results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
-        if not files and folder != '/mnt/vmstor/volumes':
+        if not files:
             results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
 
 
