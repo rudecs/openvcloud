@@ -12,6 +12,9 @@
             <apic/>
             <pae/>
         </features>
+        <cpu mode='custom' match='exact'>
+            <model fallback='allow'>SandyBridge</model>
+        </cpu>
         <clock offset='utc'/>
         <on_poweroff>destroy</on_poweroff>
         <on_reboot>restart</on_reboot>
