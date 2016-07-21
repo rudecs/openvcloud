@@ -414,7 +414,7 @@ class CSLibvirtNodeDriver():
         diskpaths = self._get_volume_paths(node)
         return self._execute_agent_job('rollbacksnapshot', role='storagedriver', diskpaths=diskpaths, timestamp=timestamp)
 
-    def _get_domain_disk_file_names(self, dom):
+    def _get_domain_disk_file_names(self, dom, disktype='disk'):
         if isinstance(dom, ElementTree.Element):
             xml = dom
         elif isinstance(dom, basestring):
@@ -424,12 +424,15 @@ class CSLibvirtNodeDriver():
         disks = xml.findall('devices/disk')
         diskfiles = list()
         for disk in disks:
-            if disk.attrib['device'] == 'disk':
+            if disktype is None or disk.attrib['device'] == disktype:
                 source = disk.find('source')
                 if source is not None:
-                    if 'dev' in source.attrib:
+                    if source.attrib.get('protocol') == 'openvstorage':
+                        ovsdisk = OpenvStorageVolumeFromXML(disk, self)
+                        diskfiles.append(ovsdisk.id)
+                    elif 'dev' in source.attrib:
                         diskfiles.append(source.attrib['dev'])
-                    if 'file' in source.attrib:
+                    elif 'file' in source.attrib:
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 
@@ -442,7 +445,7 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
-        files = self._get_domain_disk_file_names(xml)
+        files = self._get_domain_disk_file_names(xml, None)
         self._execute_agent_job('destroyvolumes', diskpaths=files, role='storagedriver')
         return True
 
