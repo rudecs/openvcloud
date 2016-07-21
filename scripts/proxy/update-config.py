@@ -22,3 +22,19 @@ print '[+] patching nginx configuration'
 proxy.execute('rm -f /opt/jumpscale7/hrd/apps/openvcloud__ssloffloader__main/installed.version')
 offloader.consume('node', proxy.instance)
 offloader.install(reinstall=True)
+
+# update portal entries
+master = j.atyourservice.get(name='node.ssh', instance='ovc_master')
+portal = j.atyourservice.get(name='portal', parent=master)
+ovs = portal.hrd.getDict('instance.navigationlinks.ovs')
+ovs['children'] = 'instance.ovslinks'
+ovslinks = {}
+for location in locations.keys():
+    ovslinks[location] = ovs['url'] + '/ovcinit/%s' % location
+
+portal.hrd.set('instance.navigationlinks.ovs', ovs)
+portal.hrd.set('instance.ovslinks', ovslinks)
+
+master.execute('rm -f /opt/jumpscale7/hrd/apps/jumpscale__portal__main/installed.version')
+portal.consume('node', master.instance)
+portal.restart()
