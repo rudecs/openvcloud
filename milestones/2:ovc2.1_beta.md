@@ -14,7 +14,6 @@
 |[#159](https://github.com/0-complexity/openvcloud/issues/159)|Issue in login in into a virtual machine with windows installed|:red_circle: Open|bug|
 |[#166](https://github.com/0-complexity/openvcloud/issues/166)|One of "Technical Tutorials" pages shows "Your account is disabled"|:red_circle: Open|bug|
 |[#187](https://github.com/0-complexity/openvcloud/issues/187)|Creata an account with alphanumeric characters is producing an error|:white_circle: Verification|bug|
-|[#188](https://github.com/0-complexity/openvcloud/issues/188)|Error in the account and cloudspace  action combo box|:white_circle: Verification|bug|
 |[#192](https://github.com/0-complexity/openvcloud/issues/192)|Create snapshot with empty name gives undefined|:red_circle: Open|bug|
 |[#195](https://github.com/0-complexity/openvcloud/issues/195)|Destroy the enviroment when create a space|:red_circle: Open|bug|
 |[#199](https://github.com/0-complexity/openvcloud/issues/199)|Destroy the enviroment when create a new page|:red_circle: Open|bug|
