@@ -15,7 +15,7 @@ Generates an error if bandwidth is below 10% of the maximum speed
 organization = "cloudscalers"
 author = "hamdy.farag@codescalers.com"
 order = 1
-enable = True
+enable = False
 async = True
 log = True
 queue = 'io'
