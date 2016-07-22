@@ -8,10 +8,10 @@ organization = 'cloudscalers'
 author = "foudaa@codescalers.com"
 version = "1.0"
 category = "monitor.healthcheck"
-roles = ['storagenode', 'cpunode']
+roles = ['storagedriver']
 period = 60 * 30 # 30min
 timeout = 60 * 5
-enable = True
+enable = False
 async = True
 queue = 'io'
 log = True
@@ -25,28 +25,20 @@ LOG_TYPES = {0: 'ERROR',  #FAILURE
              6: 'DEBUG'}
 
 
-def logger(self, message, module, log_type, unattended_mode_name, unattended_print_mode=True):
-    if not log_type == 3:
-        self.results.append({'message': message, 'uid': unattended_mode_name, 'category': module, 'state': LOG_TYPES[log_type]})
 
 def action():
     import sys
-    sys.path.insert(0, '/opt/OpenvStorage-healthcheck')
     sys.path.insert(0, '/opt/OpenvStorage')
-    from utils.extension import Utils
-    from openvstorage.openvstoragecluster_health_check import OpenvStorageHealthCheck
-    from arakoon.arakooncluster_health_check import ArakoonHealthCheck
-    from alba.alba_health_check import AlbaHealthCheck
+    from ovs.extensions.healthcheck.openvstorage.openvstoragecluster_health_check import OpenvStorageHealthCheck
+    from ovs.extensions.healthcheck.arakoon.arakooncluster_health_check import ArakoonHealthCheck
+    from ovs.extensions.healthcheck.alba.alba_health_check import AlbaHealthCheck
     roles = j.application.config.getList('grid.node.roles')
 
-    Utils.logger = logger
-    utility = Utils(False, False)
-    utility.results = []
-    alba = AlbaHealthCheck(utility)
+    alba = AlbaHealthCheck()
     alba.module = "Alba Module"
-    arakoon = ArakoonHealthCheck(utility)
+    arakoon = ArakoonHealthCheck()
     arakoon.module = "Arakoon Module"
-    ovs = OpenvStorageHealthCheck(utility)
+    ovs = OpenvStorageHealthCheck()
     ovs.module = "OVS Module"
 
     def check_arakoon():
@@ -83,8 +75,6 @@ def action():
     check_openvstorage()
     check_arakoon()
     check_alba()
-
-    return utility.results
 
 
 if __name__ == '__main__':
