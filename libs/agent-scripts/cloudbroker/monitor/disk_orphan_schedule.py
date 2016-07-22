@@ -24,7 +24,7 @@ def action():
 
     results = []
     for location in ccl.location.search({})[1:]:
-        job = acl.executeJumpscript('cloudscalers', 'disk_orphan', role='cpunode', gid=location['gid'])
+        job = acl.executeJumpscript('cloudscalers', 'disk_orphan', role='storagedriver', gid=location['gid'])
         if job['state'] == 'OK':
             results.extend(job['result'])
 
