@@ -29,7 +29,11 @@ def action():
     vms = cbcl.vmachine.search({'stackId': stacks[0]['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
     vmsbyguid = { vm['referenceId']: vm for vm in vms }
     con = libvirt.open()
-    orphans = list()
+    networkorphan = "Found orphan network %s"
+    networkwrongloc = "Found network %s which should be at node %s"
+    vmorphan = "Found orphan %s"
+    vmwrongloc = "Found %s which should be at stack %s"
+    messages = []
     try:
         domains = con.listAllDomains()
         for domain in domains:
@@ -37,20 +41,28 @@ def action():
             if name.startswith('routeros'):
                 networkid = int(name.split('_')[-1], 16)
                 if networkid not in networkids:
-                    orphans.append("%s" % domain.name())
+                    vfw = next(iter(vcl.virtualfirewall.search({"id": networkid})[1:]), None)
+                    if vfw:
+                        messages.append(networkwrongloc % (networkid, vfw['nid']))
+                    else:
+                        messages.append(networkorphan % networkid)
             elif domain.UUIDString() not in vmsbyguid:
-                orphans.append("%s" % domain.name())
+                vm = next(iter(cbcl.vmachine.search({"referenceId": domain.UUIDString()})[1:]), None)
+                if vm:
+                    messages.append(vmwrongloc % (domain.name(), vm['stackId']))
+                else:
+                    messages.append(vmorphan % (domain.name()))
     finally:
         con.close()
 
-    if orphans:
-        message = "Found following orphan machines\n" + "\n".join(orphans)
-        for orphan in orphans:
-            result.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan machine %s' % orphan, 'uid': 'Found orphan machine %s' % orphan})
-        print(message)
-        j.errorconditionhandler.raiseOperationalWarning(message, 'monitoring')
+    if messages:
+        for message in messages:
+            result.append({'state': 'ERROR', 'category': 'Orphanage', 'message': message, 'uid': message})
+        errormsg = '\n'.join(messages)
+        print(errormsg)
+        j.errorconditionhandler.raiseOperationalWarning(errormsg, 'monitoring')
     else:
-        result.append({'state': 'OK', 'category': 'Orphanage', 'message': 'No orphan machines found'})
+        result.append({'state': 'OK', 'category': 'Orphanage', 'message': 'No orphans found'})
 
     return result
 
