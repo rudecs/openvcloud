@@ -108,7 +108,7 @@
         var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         result:bool, True if user was added successfully
 
-    method:getOpenvpnConfig
+    method:getOpenvpnConfig @method:get
         """
         Get OpenVPN config file (in zip format) for specified cloudspace
         """
