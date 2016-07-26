@@ -23,7 +23,6 @@ def action():
     ACCOUNTNAME = 'test_deployment'
     pcl = j.clients.portal.getByInstance('main')
     ccl = j.clients.osis.getNamespace('cloudbroker')
-    accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
     loc = ccl.location.search({'gid': j.application.whoAmI.gid})[1]['locationCode']
     CLOUDSPACENAME = loc
 
@@ -36,28 +35,33 @@ def action():
         return [{'message': "Image not available (yet)", 'category': category, 'state': "SKIPPED"}]
     imageId = images[0]['id']
 
-    if not accounts:
-        j.console.echo('Creating Account', log=True)
-        accountId = pcl.actors.cloudbroker.account.create(ACCOUNTNAME, 'admin', None, loc)
-    else:
-        j.console.echo('Found Account', log=True)
-        accountId = accounts[0]['id']
+    with ccl.account.lock(ACCOUNTNAME):
+        accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
+        if not accounts:
+            j.console.echo('Creating Account', log=True)
+            accountId = pcl.actors.cloudbroker.account.create(ACCOUNTNAME, 'admin', None, loc)
+        else:
+            j.console.echo('Found Account', log=True)
+            accountId = accounts[0]['id']
 
-    cloudspaces = ccl.cloudspace.search({'accountId': accountId, 'name': CLOUDSPACENAME,
-                                         'gid': j.application.whoAmI.gid,
-                                         'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
-                                        })[1:]
-    if not cloudspaces:
-        j.console.echo('Creating CloudSpace', log=True)
-        cloudspaceId = pcl.actors.cloudbroker.cloudspace.create(accountId, loc, CLOUDSPACENAME, 'admin')
-        cloudspace = ccl.cloudspace.get(cloudspaceId)
-    else:
-        cloudspace = cloudspaces[0]
 
-    if cloudspace['status'] == 'VIRTUAL':
-        j.console.echo('Deploying CloudSpace', log=True)
-        pcl.actors.cloudbroker.cloudspace.deployVFW(cloudspace['id'])
-        cloudspace = ccl.cloudspace.get(cloudspace['id']).dump()
+    lockname = '%s_%s' % (ACCOUNTNAME, CLOUDSPACENAME)
+    with ccl.cloudspace.lock(lockname, timeout=120):
+        cloudspaces = ccl.cloudspace.search({'accountId': accountId, 'name': CLOUDSPACENAME,
+                                             'gid': j.application.whoAmI.gid,
+                                             'status': {'$in': ['VIRTUAL', 'DEPLOYED']}
+                                            })[1:]
+        if not cloudspaces:
+            j.console.echo('Creating CloudSpace', log=True)
+            cloudspaceId = pcl.actors.cloudbroker.cloudspace.create(accountId, loc, CLOUDSPACENAME, 'admin')
+            cloudspace = ccl.cloudspace.get(cloudspaceId).dump()
+        else:
+            cloudspace = cloudspaces[0]
+
+        if cloudspace['status'] == 'VIRTUAL':
+            j.console.echo('Deploying CloudSpace', log=True)
+            pcl.actors.cloudbroker.cloudspace.deployVFW(cloudspace['id'])
+            cloudspace = ccl.cloudspace.get(cloudspace['id']).dump()
 
     size = ccl.size.search({'memory': 512})[1]
     sizeId = size['id']
