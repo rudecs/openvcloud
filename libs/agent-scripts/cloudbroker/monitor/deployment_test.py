@@ -129,7 +129,8 @@ def action():
         else:
             def runtests():
                 status = 'OK'
-                j.console.echo('Connecting over ssh', log=True)
+                j.console.echo('Connecting over ssh %s:%s' % (publicip, publicport), log=True)
+                print account
                 connection = j.remote.cuisine.connect(publicip, publicport, account['password'], account['login'])
                 connection.user(account['login'])
                 connection.fabric.api.env['abort_on_prompts'] = True
@@ -137,12 +138,18 @@ def action():
                 uid = None
 
                 j.console.echo('Running dd', log=True)
-                try:
-                    output = connection.run("rm -f 500mb.dd; dd if=/dev/zero of=500mb.dd bs=4k count=128k")
-                except Exception, e:
+                error = ''
+                for x in xrange(5):
+                    try:
+                        output = connection.run("rm -f 500mb.dd; dd if=/dev/zero of=500mb.dd bs=4k count=128k")
+                        break
+                    except Exception, error:
+                        print "Retrying, Failed to run dd command. Login error? %s" % error
+                        time.sleep(5)
+                else:
                     status = "ERROR"
-                    msg = "Failed to run dd command. Login error? %s" % e
-                    uid = "Failed to run dd command. Login error? %s" % e
+                    msg = "Failed to run dd command. Login error? %s" % error
+                    uid = "Failed to run dd command. Login error? %s" % error
                     return status, msg, uid
 
                 try:
