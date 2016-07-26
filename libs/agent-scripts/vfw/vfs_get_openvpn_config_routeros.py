@@ -36,6 +36,7 @@ up-restart
 persist-key
 persist-tun
 ca ca.crt
+tls-cipher DEFAULT
 auth-user-pass credentials
     """ % fwobject['pubips'][0]
 
