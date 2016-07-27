@@ -5,7 +5,7 @@ angular.module('cloudscalers.services')
   return {
     updatePassword: function(username, oldPassword, newPassword) {
       var data = {username: username, oldPassword: oldPassword, newPassword: newPassword};
-      return $http.post(cloudspaceconfig.apibaseurl + '/users/updatePassword', post)
+      return $http.post(cloudspaceconfig.apibaseurl + '/users/updatePassword', data)
       .then(
         function(result) {
           return result;
