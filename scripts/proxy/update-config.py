@@ -28,9 +28,11 @@ master = j.atyourservice.get(name='node.ssh', instance='ovc_master')
 portal = j.atyourservice.get(name='portal', parent=master)
 ovs = portal.hrd.getDict('instance.navigationlinks.ovs')
 ovs['children'] = 'instance.ovslinks'
+ovs['baseurl'] = ovs.get('href') or ovs.get('baseurl')
+ovs['url'] = ''
 ovslinks = {}
 for location in locations.keys():
-    ovslinks[location] = ovs['url'] + '/ovcinit/%s' % location
+    ovslinks[location] = ovs['baseurl'] + '/ovcinit/%s' % location
 
 portal.hrd.set('instance.navigationlinks.ovs', ovs)
 portal.hrd.set('instance.ovslinks', ovslinks)
