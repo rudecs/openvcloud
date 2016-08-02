@@ -5,8 +5,14 @@ import random
 import re
 from fabric.network import NetworkError
 
+descr = """
+Tests bandwidth between storage nodes, volume drivers and itself (CPU Node)
+
+Generates a warning if bandwidth is below 50% of the maximum speed
+Generates an error if bandwidth is below 10% of the maximum speed
+
+"""
 organization = "cloudscalers"
-descr = 'Perform bandwidth test'
 author = "hamdy.farag@codescalers.com"
 order = 1
 enable = True
@@ -28,8 +34,8 @@ class OpenvStorage():
         sys.path.append('/opt/OpenvStorage')
         j.logger.log('Installing iperf', 1)
         j.system.platform.ubuntu.checkInstall('iperf', 'iperf')
-        
-    
+
+
     @property
     def localIp(self):
         if not self._localIp:
@@ -48,7 +54,7 @@ class OpenvStorage():
                         self._speed = int(match.group('speed'))
                         break
         return self._speed
-            
+
     @property
     def storageRouters(self):
         if not self._storagerouters:
@@ -61,7 +67,7 @@ class OpenvStorage():
                 self._storagerouters = []
 
         return self._storagerouters
-    
+
     def runIperfServer(self):
         j.logger.log('Running iperf server', 1)
         self._runingServer = j.system.process.executeAsync('iperf', ['-s'])
@@ -69,7 +75,7 @@ class OpenvStorage():
     def stopIperfServer(self):
         if self._runingServer:
             self._runingServer.kill()
-    
+
     def getbandwidthState(self, bandwidth):
         """
         """
@@ -79,7 +85,7 @@ class OpenvStorage():
         elif bandwidth < self.speed * 0.5:
             return 'WARNING'
         return 'OK'
-    
+
     def getClusterBandwidths(self):
         final = []
         for router in self.storageRouters:

@@ -1,7 +1,11 @@
 from JumpScale import j
 
 descr = """
-Check for orphan vms
+Checks if libvirt still has VMs that are not known by the system. These VM's are called Orphan VMs.
+Takes into account VMs that have been moved to other CPU Nodes.
+
+If Orphan disks exist, WARNING is shown in the healthcheck space.
+
 """
 
 organization = 'jumpscale'
@@ -10,7 +14,7 @@ name = 'vm_orphan'
 author = "deboeckj@codescalers.com"
 version = "1.0"
 
-period = 3600 # 1 hrs 
+period = 3600 # 1 hrs
 enable = True
 async = True
 roles = ['cpunode',]

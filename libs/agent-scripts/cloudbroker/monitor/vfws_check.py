@@ -1,14 +1,14 @@
 from JumpScale import j
 
 descr = """
-Checks whether vfw can reach its gw
+Checks whether Virtual Firewall (Router OS for one Cloudspace) can reach its default gateway (public / private external IP@)
+
 """
 
 organization = 'cloudscalers'
 author = "deboeckj@codescalers.com"
 version = "1.0"
 category = "monitor.vfw"
-
 enable = True
 async = True
 log = False
@@ -62,7 +62,7 @@ def action():
             else:
                 result[cloudspaceid] = 'No GW assigned'
     for cloudspace in cbcl.cloudspace.search({'gid': j.application.whoAmI.gid, 'status': 'DEPLOYED'})[1:]:
-        print "Checking CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
+        print "Checking CloudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s" % cloudspace
         processCloudSpace(cloudspace)
     if result:
         body = """
@@ -71,7 +71,7 @@ Some VFW have connections issues please investigate
 """
         for cloudspaceid, message in result.iteritems():
             cloudspace = cloudspaces[cloudspaceid]
-            body += "* CoudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s\n" % cloudspace
+            body += "* CloudspaceId: %(id)s NetworkId: %(networkId)s PUBIP: %(publicipaddress)s\n" % cloudspace
             body += "  ** %s \n\n" % message
 
         j.errorconditionhandler.raiseOperationalWarning(body, 'monitoring')

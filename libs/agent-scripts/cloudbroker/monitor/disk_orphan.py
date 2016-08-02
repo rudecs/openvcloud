@@ -1,7 +1,9 @@
 from JumpScale import j
 
 descr = """
-Check for orphan disk
+Checks on volumedriver node for orphan disks
+
+Generates warning if orphan disks exist on the specified volumes
 """
 
 organization = 'cloudscalers'

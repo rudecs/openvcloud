@@ -10,7 +10,7 @@ author = "zains@codescalers.com"
 version = "1.0"
 category = "monitor.vms"
 
-enable = True
+enable = False
 async = True
 log = False
 roles = ['fw',]

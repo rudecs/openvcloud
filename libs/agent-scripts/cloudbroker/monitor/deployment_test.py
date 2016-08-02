@@ -1,6 +1,10 @@
 from JumpScale import j
 descr = """
-check status of alertservice
+Tests every period if test VM exists and if exists it test write speed.
+Every 24hrs, test VM is recreated
+
+Generates warning if write speed is lower than 50 MiB / second
+
 """
 
 organization = 'cloudscalers'
