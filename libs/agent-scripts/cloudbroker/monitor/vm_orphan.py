@@ -57,7 +57,7 @@ def action():
 
     if messages:
         for message in messages:
-            result.append({'state': 'ERROR', 'category': 'Orphanage', 'message': message, 'uid': message})
+            result.append({'state': 'WARNING', 'category': 'Orphanage', 'message': message, 'uid': message})
         errormsg = '\n'.join(messages)
         print(errormsg)
         j.errorconditionhandler.raiseOperationalWarning(errormsg, 'monitoring')

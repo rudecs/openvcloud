@@ -38,15 +38,15 @@ def action():
                 if 'routeros' in file_:
                     networkid = int(os.path.basename(folder), 16)
                     if networkid not in activenetworks:
-                        results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
+                        results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
                 else:
                     diskstatus = diskmap.get(fullpath, 'DESTROYED')
                     if diskstatus == 'DESTROYED':
-                        results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
+                        results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
             elif file_.endswith('.iso') and len(files) == 1:
-                results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
+                results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
         if not files and folder != '/mnt/vmstor/volumes':
-            results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
+            results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
 
 
     os.path.walk(vmstor, process, None)
