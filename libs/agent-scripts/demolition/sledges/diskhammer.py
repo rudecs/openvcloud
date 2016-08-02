@@ -14,9 +14,11 @@ async = True
 queue = 'process'
 
 
-def action():
-    pass
+def action(device):
+    with open(device,'w') as f:
+        # write 4Mb of 0's to the disk
+        f.write('\0' * 1024 * 1024 * 4)
+        f.flush()
 
 if __name__ == '__main__':
-    result = action()
-    print result
+    action('/dev/null')
