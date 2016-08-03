@@ -166,14 +166,20 @@ def action():
                     status = 'ERROR'
                     return status, msg, uid
 
-                match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
-                speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
-                msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
-                j.console.echo(msg, log=True)
-                if speed < 50:
-                    status = 'WARNING'
-                    uid = 'Measured write speed on disk was so fast on Node %s' % (stack['name'])
-                return status, msg, uid
+                try:
+                    match = re.search('^\d+.*copied,.*?, (?P<speed>.*?)B/s$', output, re.MULTILINE).group('speed').split()
+                    speed = j.tools.units.bytes.toSize(float(match[0]), match[1], 'M')
+                    msg = 'Measured write speed on disk was %sMB/s on Node %s' % (speed, stack['name'])
+                    j.console.echo(msg, log=True)
+                    if speed < 50:
+                        status = 'WARNING'
+                        uid = 'Measured write speed on disk was so fast on Node %s' % (stack['name'])
+                    return status, msg, uid
+                except Exception, e:
+                    status = 'ERROR'
+                    uid = 'Failed to parse dd speed %s' % (stack['name'])
+                    msg = "Failed to parse dd speed %s, failed with %s" % (output, e)
+                    return status, msg, uid
 
             status, msg, uid = runtests()
         if status != 'OK':
