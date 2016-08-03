@@ -18,6 +18,7 @@ h3. Stack: ${name}
    - type: text
      name: message
      label: Reason
+     required: true
 {% endif %}
 
 {% if status in ['ERROR', 'ENABLED'] %}
@@ -44,6 +45,7 @@ h3. Stack: ${name}
 
    - type: text
      name: message
+     required: true
      label: Reason
 {% endif %}
 
@@ -61,6 +63,7 @@ h3. Stack: ${name}
               All Virtual Machines will be moved to another node.
    - type: text
      name: message
+     required: true
      label: Reason
 }}
 {% endif %}
