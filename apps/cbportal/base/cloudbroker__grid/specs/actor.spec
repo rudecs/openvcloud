@@ -19,3 +19,19 @@
         var:gid int,, id of the grid
         result: bool
 
+    method:rename
+        """
+        Rename a grid/location
+        """
+        var:gid int,, id of the grid
+        var:name str,, New name of the location @validator:name
+        result: bool
+
+    method:add
+        """
+        Adds a location/grid
+        """
+        var:gid int,, id of the grid
+        var:name str,, Name of the location @validator:name
+        var:locationcode str,, Location code typicly used in dns names
+        result: str

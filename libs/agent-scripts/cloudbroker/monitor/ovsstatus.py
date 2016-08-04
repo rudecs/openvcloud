@@ -1,6 +1,9 @@
 from JumpScale import j
 descr = """
-check status of ovs services
+Checks every defined period if all OVS processes still run
+
+Shows WARNING if process not running anymore
+
 """
 
 organization = 'cloudscalers'
@@ -31,7 +34,7 @@ def action():
             ovsresults.append({'message': '', 'category': 'OVS Services', 'state': 'UNKNOWN'})
 
     return ovsresults
-    
+
 
 if __name__ == '__main__':
     print action()

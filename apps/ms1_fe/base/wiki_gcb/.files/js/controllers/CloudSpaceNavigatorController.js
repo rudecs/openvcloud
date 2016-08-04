@@ -134,7 +134,7 @@
 
   function nospace() {
     return function(value) {
-      return (!value) ? '' : value.replace(/ /g, '');
+      return (!value) ? '' : value.replace(/[\s\.]/g, '');
     };
   }
 })();

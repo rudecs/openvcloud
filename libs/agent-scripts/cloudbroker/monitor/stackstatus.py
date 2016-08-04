@@ -1,6 +1,11 @@
 from JumpScale import j
 descr = """
-check status of stack
+Checks the status of each stack.
+
+A stack equals a CPU node.
+
+ERROR state is automatically attributed to a stack by OpenVCloud - this is done if a specific action cannot be executed anymore on the CPU Node.
+
 """
 
 organization = 'cloudscalers'

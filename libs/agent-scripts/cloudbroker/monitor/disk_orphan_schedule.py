@@ -1,7 +1,9 @@
 from JumpScale import j
 
 descr = """
-Check for orphan disk
+Scheduler that runs on master to check for orphan disks on specific volumedriver nodes
+
+Generates warning if orphan disks exist on the specified volumes
 """
 
 organization = 'cloudscalers'

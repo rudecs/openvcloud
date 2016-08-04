@@ -1,6 +1,7 @@
 from JumpScale import j
 descr = """
-check status of alertservice
+This healthcheck calls the standard OpenVStorage healthcheck.  This can be found on : https://github.com/openvstorage/openvstorage-health-check
+
 """
 
 organization = 'cloudscalers'

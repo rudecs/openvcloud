@@ -1,7 +1,9 @@
 from JumpScale import j
 
 descr = """
-Check for orphan disk
+Checks on volumedriver node for orphan disks
+
+Generates warning if orphan disks exist on the specified volumes
 """
 
 organization = 'cloudscalers'
@@ -32,20 +34,22 @@ def action():
         if 'archive' in files:
             files.remove('archive')
         for file_ in files:
+            if file_.startswith('ovs-healthcheck-test'):
+                continue
             fullpath = os.path.join(folder, file_)
             if file_.endswith('.raw'):
                 if 'routeros' in file_:
                     networkid = int(os.path.basename(folder), 16)
                     if networkid not in activenetworks:
-                        results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
+                        results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
                 elif file_.startswith('cloud-init') and len(files) == 1:
-                    results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
+                    results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan cloud-init %s' % fullpath, 'uid': 'Found orphan cloud-init %s' % fullpath})
                 else:
                     diskstatus = diskmap.get(fullpath, 'DESTROYED')
                     if diskstatus == 'DESTROYED':
-                        results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
+                        results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found orphan disk %s' % fullpath, 'uid': 'Found orphan disk %s' % fullpath})
         if not files:
-            results.append({'state': 'ERROR', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
+            results.append({'state': 'WARNING', 'category': 'Orphanage', 'message': 'Found empty folder %s' % folder, 'uid': 'Found empty folder %s' % folder})
 
 
     os.path.walk(vmstor, process, None)

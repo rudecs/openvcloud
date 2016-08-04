@@ -849,9 +849,10 @@ class cloudapi_cloudspaces(BaseActor):
 
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)
-        location = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')
+        urllocation = self.hrd.get('instance.openvcloud.cloudbroker.defense_proxy')
+        location = self.models.location.search({'gid': cloudspace.gid})[1]
 
-        url = '%s/ovcinit/%s/' % (location, getIP(fw.host))
+        url = '%s/ovcinit/%s/%s' % (urllocation, getIP(fw.host), location['locationCode'])
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
 

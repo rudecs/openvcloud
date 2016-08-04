@@ -11,8 +11,8 @@ author = "zains@codescalers.com"
 version = "1.0"
 category = "monitor.vms"
 
-period = 3600 * 2 # 2 hrs 
-enable = True
+period = 3600 * 2 # 2 hrs
+enable = False
 async = True
 roles = ['master',]
 log = False
@@ -104,4 +104,3 @@ def action(gid=None):
 
 if __name__ == '__main__':
     action()
-
