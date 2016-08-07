@@ -127,8 +127,8 @@ if not options.delete:
             branchname, tagname = getVersions(type)
             repo = j.clients.git.get(path)
             print '[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name)))
-            repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
-            repo.repo.git.checkout(branchname)
+            repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
+            repo.repo.git.checkout('-f', '-B', branchname, 'origin/%s' % branchname)
             make_tag(repo, tagname)
             print '[+] Pushing tag %s' % tagname
             repo.repo.git.push('--tags')
@@ -137,15 +137,13 @@ if not options.delete:
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
         print '[+] Making release on repo %s/%s' % (repo.account, repo.name)
-        repo.repo.git.fetch('-f', '-u', 'origin', '%s:%s' % (branchname, branchname))
-        repo.repo.git.checkout(branchname)
+        repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
+        repo.repo.git.checkout('-f', '-B', branchname, 'origin/%s' % branchname)
         changeversion(repo, getTagTargets())
         repo.commit('Tagging %s' % tagname)
         make_tag(repo, tagname)
-        changeversion(repo, getBranchTargets())
-        repo.commit('Putting on branch %s' % branchname)
+        repo.repo.git.reset('--hard', 'origin/%s' % branchname)
         print '[+]   Pushing'
-        repo.repo.git.push()
         repo.repo.git.push('--tags')
 else:
     for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
