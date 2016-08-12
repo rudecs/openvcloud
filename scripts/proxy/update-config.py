@@ -28,7 +28,7 @@ master = j.atyourservice.get(name='node.ssh', instance='ovc_master')
 portal = j.atyourservice.get(name='portal', parent=master)
 ovs = portal.hrd.getDict('instance.navigationlinks.ovs')
 ovs['children'] = 'instance.ovslinks'
-ovs['baseurl'] = ovs.get('href') or ovs.get('baseurl')
+ovs['baseurl'] = ovs.get('url') or ovs.get('baseurl')
 ovs['url'] = ''
 ovslinks = {}
 for location in locations.keys():
