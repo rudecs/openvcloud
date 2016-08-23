@@ -460,7 +460,6 @@ class cloudapi_cloudspaces(BaseActor):
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
                     cloudspace['accountAcl'] = acl
-            cloudspace['accountDCLocation'] = account.DCLocation
 
         return cloudspaces
 

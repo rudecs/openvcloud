@@ -63,7 +63,7 @@ class cloudbroker_account(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, name, username, emailaddress, location, maxMemoryCapacity=-1,
+    def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
                maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
 
@@ -89,15 +89,11 @@ class cloudbroker_account(BaseActor):
             created = True
 
         now = int(time.time())
-
-        location = location.lower()
-
         locationurl = self.cloudapi.locations.getUrl().strip('/')
 
         account = self.models.account.new()
         account.name = name
         account.creationTime = now
-        account.DCLocation = location
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'
