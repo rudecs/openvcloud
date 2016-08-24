@@ -17,14 +17,19 @@ Functions:
 
 ### Nodes
 
-Actual servers and storage (SSD/HDD).
+There are two types of nodes:
 
-Functions: 
-- Hypervisor
+- CPU/compute nodes
+- Storage nodes
+
+CPU/compute node functions: 
+- Hypervisors
 - Virtual machines
 - Virtual networks
 - Virtual routers
 - Applications
+
+Storage node fuctions:
 - Storage (OVS)
 - Alba (OVS)
 - VSAN
