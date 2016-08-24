@@ -1,3 +1,0 @@
-## Configure Network Devices
-
-@todo

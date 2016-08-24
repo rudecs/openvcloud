@@ -1,3 +1,0 @@
-## Physical Network
-
-![](PhysicalNetwork.png)

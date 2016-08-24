@@ -1,3 +1,0 @@
-## Logical Network
-
-![](LogicalNetwork.png)
