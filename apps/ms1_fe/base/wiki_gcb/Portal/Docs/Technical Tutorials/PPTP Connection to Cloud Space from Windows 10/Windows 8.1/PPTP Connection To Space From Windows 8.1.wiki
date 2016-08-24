@@ -19,7 +19,7 @@ Select create a new connection
 Go to your defense shield page on OpenvCloud portal
 to find the external ip address of your space
 
-!pptp-4.jpg!
+!pptp-4-new.jpg!
 
 Click on Advanced Shield Configuration
 
@@ -57,12 +57,12 @@ Do right mouse button and select properties
 !pptp-12.jpg!
 !pptp-13.jpg!
 
-Ggo to security tab and choose pptp
+Go to security tab and choose pptp
 !pptp-14.jpg!
 
-Choose connect on same screen ( or go to other screen with network connections)
+Choose connect on same screen (or go to other screen with network connections)
 
-Fillin your credentials
+Fill in your credentials
 login=admin
 passwd=your space passwd
 !pptp-15.jpg!

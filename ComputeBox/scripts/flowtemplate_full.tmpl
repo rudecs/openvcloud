@@ -4,16 +4,16 @@ in_port=${port},priority=8000,dl_type=0x0800,nw_proto=0x11,tp_dst=67,dl_src=${ma
 in_port=${port},priority=7000,dl_type=0x0806,dl_src=${mac},arp_sha=${mac},nw_src=0.0.0.0,idle_timeout=0,action=normal
 # Drop DHCP server replies coming from here (rogue dhcp server)
 in_port=${port},priority=8000,dl_type=0x0800,nw_proto=0x11,tp_src=68,dl_src=${mac},idle_timeout=0,action=drop
-# Filter ARP responses.
+# Allow ARP responses.
 in_port=${port},priority=7000,dl_type=0x0806,dl_src=${mac},arp_sha=${mac},nw_src=${{publicipv4subnet}}/24,idle_timeout=0,action=normal
 # Allow ipv4/mac (note: this is a /32) there can be only one (sic McLeod)
-in_port=${port},priority=6000,dl_type=0x0800,nw_src=${mac},dl_src={{publicipv4subnet}}/24,idle_timeout=0,action=normal
+in_port=${port},priority=6000,dl_type=0x0800,nw_src=${mac},dl_src={{publicipv4addr}}/32,idle_timeout=0,action=normal
 # For Ipv6 we'll allow from the assigned subnet, but restrictive
 # Who'ze my Neighbour
 in_port=${port},priority=8000,dl_src=${mac},icmp6,ipv6_src={{ipv6prefix}}/64,icmp_type=135,nd_sll=${mac},idle_timeout=0,action=normal
 # I am Neighbour
 in_port=${port},priority=8000,dl_src=${mac},icmp6,ipv6_src={{ipv6prefix}}/64,icmp_type=136,nd_target={{ipv6prefix}}/64,idle_timeout=0,action=normal
-# Standard ipv6 traffic
+# Standard ipv6 traffic (they can add 2^64 addresses to the pub iface, we don't care)
 in_port=${port},priority=5000,dl_src=${mac},ipv6_src={{ipv6prefix}}/64,icmp6,action=normal
 in_port=${port},priority=5000,dl_src=${mac},ipv6_src={{ipv6prefix}}/64,tcp6,action=normal
 in_port=${port},priority=5000,dl_src=${mac},ipv6_src={{ipv6prefix}}/64,udp6,action=normal
