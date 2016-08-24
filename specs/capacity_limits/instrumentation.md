@@ -8,7 +8,18 @@ A new actor will be added under our private api `cloudbroker` which will be call
 
 ### Methods that will be added
 
-#### limitBandwith
+#### limitInternetBandwith
+
+This will put a limit on the outgoing traffic on the public vif off the vfw on the physical machine
+
+Params:
+* cloudspaceId: Id of the cloudspace to limit
+* maxSpeed: maximum speeds in kilobyts per second
+
+
+#### limitInternalBanwwith
+
+This will put a limit on the virtual interface of all VMs within the cloudspace
 
 Params:
 * cloudspaceId: Id of the cloudspace to limit
@@ -17,7 +28,7 @@ Params:
 #### limitIO
 
 Params:
-* machineId: Id of the virtual machine
+* diskId: Id of the disk to limit
 * iops: Max IO per second
 
 #### limitCPU
