@@ -1,3 +1,3 @@
 ## Testing
 
-See https://github.com/gig-projects/org_quality/tree/master/Documentation
+See the [G8 Testing Guide](https://www.gitbook.com/book/gig/g8-testing-guide/details)
