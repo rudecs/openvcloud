@@ -19,10 +19,13 @@ Params:
 
 #### limitInternalBandwith
 
-This will put a limit on the VIF of all VMs within the cloudspace
+This will put a limit on the VIF of all VMs within the cloudspace or machine
+Pass either cloudspaceId or machineId depending what you want to filter down.
+
 
 Params:
 * cloudspaceId: Id of the cloudspace to limit
+* machineId: Id of the virtual machine to limit
 * maxSpeed: maximum speeds in kilobytes per second
 
 #### limitIO
