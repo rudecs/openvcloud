@@ -15,6 +15,7 @@ LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
 
+
 class TimeoutError(Exception):
     pass
 
@@ -132,9 +133,9 @@ class LibvirtUtil(object):
         if timeout:
             libvirt.virEventAddTimeout(timeout, timecb, None)
         rocon.domainEventRegisterAny(None,
-                                    libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
-                                    callback,
-                                    rocon)
+                                     libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
+                                     callback,
+                                     rocon)
         while run['state']:
             libvirt.virEventRunDefaultImpl()
 
@@ -231,24 +232,30 @@ class LibvirtUtil(object):
             shutil.rmtree(poolpath)
         return True
 
-    def _get_domain_disk_file_names(self, dom):
+    def get_domain_disks(self, dom):
         if isinstance(dom, ElementTree.Element):
             xml = dom
+        elif isinstance(dom, basestring):
+            xml = ElementTree.fromstring(dom)
         else:
             xml = ElementTree.fromstring(dom.XMLDesc(0))
         disks = xml.findall('devices/disk')
-        diskfiles = list()
         for disk in disks:
             if disk.attrib['device'] in ('disk', 'cdrom'):
-                source = disk.find('source')
-                if source != None:
-                    if source.attrib.get('protocol') == 'openvstorage':
-                        diskfiles.append(os.path.join(self.basepath, source.attrib['name'] + '.raw'))
-                    else:
-                        if 'dev' in source.attrib:
-                            diskfiles.append(source.attrib['dev'])
-                        if 'file' in source.attrib:
-                            diskfiles.append(source.attrib['file'])
+                yield disk
+
+    def _get_domain_disk_file_names(self, dom):
+        diskfiles = list()
+        for disk in self.get_domain_disks(dom):
+            source = disk.find('source')
+            if source is not None:
+                if source.attrib.get('protocol') == 'openvstorage':
+                    diskfiles.append(os.path.join(self.basepath, source.attrib['name'] + '.raw'))
+                else:
+                    if 'dev' in source.attrib:
+                        diskfiles.append(source.attrib['dev'])
+                    if 'file' in source.attrib:
+                        diskfiles.append(source.attrib['file'])
         return diskfiles
 
     def _get_domain_networkid(self, dom):
@@ -263,7 +270,6 @@ class LibvirtUtil(object):
                     bridgename = interface.attrib[network_key].partition('_')[-1]
                     return int(bridgename, 16)
         return None
-
 
     def check_disk(self, diskxml):
         return True
@@ -317,7 +323,7 @@ class LibvirtUtil(object):
         return {'name': snap.getName(), 'epoch': snap.getXMLDesc()}
 
     def _isRootVolume(self, domain, file):
-        diskfiles = self._getDomainDiskFiles(domain)
+        diskfiles = self._get_domain_disk_file_names(domain)
         if file in diskfiles:
             return True
         return False
@@ -454,7 +460,7 @@ class LibvirtUtil(object):
             raise Exception("Can't export a locked machine")
         domain = self.connection.lookupByUUIDString(id)
         if not clonefrom:
-            domaindisks = self._getDomainDiskFiles(domain)
+            domaindisks = self._get_domain_disk_file_names(domain)
             if len(domaindisks) > 0:
                 clonefrom = domaindisks[0]
             else:
@@ -533,20 +539,6 @@ class LibvirtUtil(object):
         for x in self.connection.listAllDomains(0):
             nodes.append(self._to_node_list(x))
         return nodes
-
-    def _getDomainDiskFiles(self, domain):
-        xml = ElementTree.fromstring(domain.XMLDesc(0))
-        disks = xml.findall('devices/disk')
-        diskfiles = list()
-        for disk in disks:
-            if disk.attrib['device'] == 'disk':
-                source = disk.find('source')
-                if source != None:
-                    if 'dev' in source.attrib:
-                        diskfiles.append(source.attrib['dev'])
-                    if 'file' in source.attrib:
-                        diskfiles.append(source.attrib['file'])
-        return diskfiles
 
     def _getPool(self, domain):
         # poolname is by definition the machine name
