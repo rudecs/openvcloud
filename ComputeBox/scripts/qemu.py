@@ -16,7 +16,7 @@ command_name = sys.argv[0]
 vsctl = "/usr/bin/ovs-vsctl"
 ofctl = "/usr/bin/ovs-ofctl"
 ip = "/sbin/ip"
-pubvxlan="{{envid}}"
+publicbr="{{envid}}"
 flowtemplate='/etc/libvirt/hooks/flowtemplate'
 
 # no flowtable? no party! (but let VM start anyway)
@@ -53,6 +53,7 @@ def doexec(args):
         stderr = proc.stderr
         return (rc, stdout, stderr)
 
+""" Unusable function: Calling libvirt from within libvirt causes deadlock"""
 def get_dom_ifaces_libvirt(dom):
   tree=ElementTree.fromstring(dom.XMLDesc(0))
   devices={}
@@ -68,7 +69,7 @@ def get_dom_ifaces_libvirt(dom):
 def list_ports_in_of():
     ports = []
     ipm=re.compile('(?<=in_port\=)\d{1,5}')
-    cmd = ofctl + " dump-flows " + pubvxlan
+    cmd = ofctl + " dump-flows " + publicbr
     (r,s,e) = doexec(cmd.split())
     li=[line.strip() for line in s.readlines() if 'in_port' in line]
     ports = [int(ipm.search(x).group(0)) for x in li]
@@ -77,7 +78,7 @@ def list_ports_in_of():
 def cleanup_flows(bridge_name):
     # flows of which ports do not exist any more get removed (generic cleanup)
     flowports = list_ports_in_of()
-    activeports = [int(get_vswitch_port(x)) for x in list_ports(pubvxlan)]
+    activeports = [int(get_vswitch_port(x)) for x in list_ports(publicbr)]
     ap = set(activeports)
     todelete = [x for x in flowports if x not in ap]
     for i in todelete:
@@ -103,21 +104,6 @@ def get_attached_mac_port(virt_vif):
         send_to_syslog("No matching virt port found in get_attached_mac_port(virt_vif): ; qemu hook bails")
         sys.exit(0)
 
-# borderline stoopid )-: but learned some nicies... but hey, IT workz
-def get_all_ifaces_ipl():
-    newifline = re.compile('\d+:$')
-    arr = []; devices = {}
-    (rc, stdout,stderr) = doexec([ip, "link", "show"])
-    for line in stdout.readlines():
-        arr.append(line.split())
-    for i in range(0,len(arr)):
-        if newifline.match(arr[i][0]):
-            dev = re.match('[^:]*',arr[i][1]).group()
-            if not devices.has_key(dev) :
-                devices[dev] = arr[i+1][1]
-                i += 1
-    send_to_syslog(devices)
-    return devices
 
 def get_dom_ifaces(guest):
     devs = get_all_ifaces_ls()
@@ -135,11 +121,11 @@ def get_bridge_name(vif_name):
 def get_pub_vifname(domifaces):
     #dict received [ vif: mac ]
     for vif_name in domifaces.keys():
-        if get_bridge_name(vif_name) == pubvxlan:
+        if get_bridge_name(vif_name) == publicbr:
             # returns vif
             return vif_name
         else:
-            send_to_syslog("No interface of guest is connected on %s, or bridge doesn't exist!" % pubvxlan)
+            send_to_syslog("No interface of guest is connected on %s, or bridge doesn't exist!" % publicbr)
 
 def list_ports(bridge_name):
     (rc, stdout, stderr) = doexec([vsctl, "list-ports", bridge_name])
@@ -188,17 +174,17 @@ if __name__ == "__main__":
         if stage =='started' :
             # vm is started, as of now booting, quickly add flows
             pub_vif_port, pub_vif_mac = wrap_get_port(guest)
-            create_vswitch_rules(pubvxlan, pub_vif_port, pub_vif_mac)
+            create_vswitch_rules(publicbr, pub_vif_port, pub_vif_mac)
         elif stage == 'release':
             # remove rules for port
-            cleanup_flows(pubvxlan)
+            cleanup_flows(publicbr)
         elif stage == 'reconnect':
             # Libvirtd has been restarted, we get called for every running vm -> expensive?
             pub_vif_port, pub_vif_mac = wrap_get_port(guest)
             # these overwrite the flows
-            create_vswitch_rules(pubvxlan, pub_vif_port, pub_vif_mac)
+            create_vswitch_rules(publicbr, pub_vif_port, pub_vif_mac)
             # cleanup lingering flows, while we're at it
-            cleanup_flows(pubvxlan)
+            cleanup_flows(publicbr)
         else:
             send_to_syslog("/etc/libvirt/hooks/qemu called without known state %s %s" % (guest, stage))
             sys.exit(0)

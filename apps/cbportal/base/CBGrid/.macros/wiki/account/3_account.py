@@ -41,7 +41,7 @@ def main(j, args, params, tags, tasklet):
     if not id or not id.isdigit():
         args.doc.applyTemplate({})
         return params
-    
+
     id = int(id)
     cbclient = j.clients.osis.getNamespace('cloudbroker')
     sclient = j.clients.osis.getNamespace('system')
@@ -51,7 +51,6 @@ def main(j, args, params, tags, tasklet):
         return params
 
     accountobj = cbclient.account.get(id)
-    
     accountdict = accountobj.dump()
 
     accountdict['users'] = generateUsersList(sclient, accountdict)

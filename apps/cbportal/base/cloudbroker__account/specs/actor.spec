@@ -49,7 +49,6 @@
         var:name str,, Display name @tags validator:name
         var:username str,, name of the account @tags validator:username
         var:emailaddress str,,email @optional
-        var:location str,,locationcode
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
         var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
