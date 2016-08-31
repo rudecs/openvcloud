@@ -15,6 +15,8 @@ LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
 
+RESERVED_MEM = 16384
+
 class TimeoutError(Exception):
     pass
 
@@ -281,11 +283,11 @@ class LibvirtUtil(object):
                 totalrunningmax += maxmem / 1000
         return (hostmem, totalmax, totalrunningmax)
 
-    def check_machine(self, machinexml):
+    def check_machine(self, machinexml, reserved_mem=RESERVED_MEM):
         xml = ElementTree.fromstring(machinexml)
         memory = int(xml.find('memory').text)
         hostmem, totalmax, totalrunningmax = self.memory_usage()
-        if (totalrunningmax + memory) > (hostmem - 1024):
+        if (totalrunningmax + memory) > (hostmem - reserved_mem):
             return False
         return True
 
