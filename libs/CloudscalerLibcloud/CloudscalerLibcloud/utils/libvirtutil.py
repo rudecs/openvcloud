@@ -4,6 +4,7 @@ from jinja2 import Environment, PackageLoader
 import os
 import time
 import shutil
+from multiprocessing import cpu_count
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
 from JumpScale.lib.btrfs import *
@@ -15,7 +16,10 @@ LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
 
-RESERVED_MEM = 16384
+# for thin provisioning
+RESERVED_MEM = 16384 # 16 GB
+CPU_COUNT = cpu_count()
+RESERVED_CPUS = 4    # CPUS: 0,1,2,3
 
 class TimeoutError(Exception):
     pass
@@ -81,12 +85,19 @@ class LibvirtUtil(object):
                 return None
         return domain
 
+    def defineXML(self, xml):
+        root = ElementTree.fromstring(xml)
+        vcpu = root.find("vcpu")
+        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPU,cpulimit=CPU_COUNT-1))
+        xml = root.tostring()
+        return self.connection.defineXML(xml)
+
     def create(self, id, xml):
         if isLocked(id):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
         if not domain and xml:
-            domain = self.connection.defineXML(xml)
+            domain = self.defineXML(xml)
         state = domain.state(0)[0]
         if state == libvirt.VIR_DOMAIN_RUNNING:
             return domain.XMLDesc()
@@ -409,7 +420,7 @@ class LibvirtUtil(object):
         snapshotdomainxml = ElementTree.fromstring(snapshot.getXMLDesc(0))
         domainxml = snapshotdomainxml.find('domain')
         newxml = ElementTree.tostring(domainxml)
-        self.connection.defineXML(newxml)
+        self.defineXML(newxml)
         if deletechildren:
             children = snapshot.listAllChildren(1)
             for child in children:
@@ -448,7 +459,7 @@ class LibvirtUtil(object):
                 while not rebasedone:
                     rebasedone = self._block_job_info(domain, clonefrom)
             finally:
-                self.connection.defineXML(domainconfig)
+                self.defineXML(domainconfig)
         return destination_path
 
     def exportToTemplate(self, id, name, clonefrom, filename):
@@ -506,7 +517,7 @@ class LibvirtUtil(object):
         return True
 
     def create_machine(self, machinexml):
-        domain = self.connection.defineXML(machinexml)
+        domain = self.defineXML(machinexml)
         domain.create()
         return self._to_node(domain)
 
