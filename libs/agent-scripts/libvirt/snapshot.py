@@ -38,4 +38,3 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--path', help='Volume path')
     options = parser.parse_args()
     action([options.path], options.name)
-
