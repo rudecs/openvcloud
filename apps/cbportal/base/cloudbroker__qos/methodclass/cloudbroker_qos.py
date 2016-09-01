@@ -1,5 +1,5 @@
 from JumpScale import j
-from Jumpscale.portal.portal import exceptions
+from JumpScale.portal.portal import exceptions
 import itertools
 
 
