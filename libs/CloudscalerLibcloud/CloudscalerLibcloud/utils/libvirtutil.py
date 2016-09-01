@@ -7,7 +7,6 @@ import shutil
 from multiprocessing import cpu_count
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
-from JumpScale.lib.btrfs import *
 from JumpScale.lib.ovsnetconfig.VXNet import netclasses
 
 
@@ -17,9 +16,10 @@ NOLOCK = 3
 LOCKEXIST = 4
 
 # for thin provisioning
-RESERVED_MEM = 16384 # 16 GB
+RESERVED_MEM = 16384  # 16 GB
 CPU_COUNT = cpu_count()
 RESERVED_CPUS = 4    # CPUS: 0,1,2,3
+
 
 class TimeoutError(Exception):
     pass
@@ -88,7 +88,7 @@ class LibvirtUtil(object):
     def defineXML(self, xml):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
-        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPU,cpulimit=CPU_COUNT-1))
+        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=CPU_COUNT - 1))
         xml = root.tostring()
         return self.connection.defineXML(xml)
 
@@ -181,28 +181,6 @@ class LibvirtUtil(object):
         if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
             return True
         return domain.resume() == 0
-
-    def backup_machine_to_filesystem(self, machineid, backuppath):
-        if isLocked(id):
-            raise Exception("Can't backup a locked machine")
-        from shutil import make_archive
-        domain = self.connection.lookupByUUIDString(machineid)
-        diskfiles = self._get_domain_disk_file_names(domain)
-        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            domain.destroy()
-        for diskfile in diskfiles:
-            if os.path.exists(diskfile):
-                try:
-                    self.connection.storageVolLookupByPath(diskfile)
-                except:
-                    continue
-                poolpath = os.path.join(self.basepath, domain.name())
-                if os.path.exists(poolpath):
-                    archive_name = os.path.join(
-                        backuppath, 'vm-%04x' % machineid)
-                    root_dir = poolpath
-                    make_archive(archive_name, gztar, root_dir)
-        return True
 
     def delete_machine(self, machineid, machinexml):
         if isLocked(id):
@@ -377,8 +355,8 @@ class LibvirtUtil(object):
                 domain, snapshotfile['file'].path)
             if not is_root_volume:
                 print 'Blockcommit from %s to %s' % (snapshotfile['file'].path, snapshotfile['file'].backing_file_path)
-                result = domain.blockCommit(snapshotfile['name'], snapshotfile[
-                                            'file'].backing_file_path, snapshotfile['file'].path)
+                domain.blockCommit(snapshotfile['name'], snapshotfile[
+                                   'file'].backing_file_path, snapshotfile['file'].path)
                 todelete.append(snapshotfile['file'].path)
                 volumes.append(snapshotfile['name'])
             else:

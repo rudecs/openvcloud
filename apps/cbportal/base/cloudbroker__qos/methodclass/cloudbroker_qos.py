@@ -36,7 +36,6 @@ class cloudbroker_qos(object):
                                          gid=stack.gid, nid=int(stack.referenceId),
                                          args={'disks': [disk.referenceId], 'machineid': machine['referenceId']})
         return job['result']
-        raise NotImplementedError("not implemented method limitIO")
 
     def limitInternalBandwith(self, cloudspaceId, machineId, rate, burst, **kwargs):
         """
@@ -51,23 +50,23 @@ class cloudbroker_qos(object):
             raise exceptions.ValueError("Either cloudspaceId or machineId should be given")
 
         machines = []
-        query = {'state': 'RUNNING'}
+        query = {'status': 'RUNNING'}
         if machineId:
             query['id'] = machineId
         else:
             query['cloudspaceId'] = cloudspaceId
         machines = self.ccl.vmachine.search(query)[1:]
-        stackids = set(vm['stackId'] for vm in machines)
+        stackids = list(set(vm['stackId'] for vm in machines))
         stacks = {stack['id']: stack for stack in self.ccl.stack.search({'id': {'$in': stackids}})[1:]}
 
-        for stackId, machines in itertools.group(machines, lambda vm: vm['stackId']):
+        for stackId, machines in itertools.groupby(machines, lambda vm: vm['stackId']):
             stack = stacks.get(stackId)
             if stack:
                 machineids = [vm['referenceId'] for vm in machines]
                 args = {'machineids': machineids, 'rate': rate, 'burst': burst}
-                self.acl.executeJumpscript('cloudscalers', 'limitnics',
-                                           gid=stack['gid'], nid=int(stack['referenceId']),
-                                           args=args)
+                self.acl.execute('cloudscalers', 'limitnics',
+                                 gid=stack['gid'], nid=int(stack['referenceId']),
+                                 args=args)
         return True
 
     def limitInternetBandwith(self, cloudspaceId, rate, burst, **kwargs):
