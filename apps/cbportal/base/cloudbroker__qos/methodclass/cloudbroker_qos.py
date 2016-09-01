@@ -1,11 +1,13 @@
 from JumpScale import j
 from Jumpscale.portal.portal import exceptions
+import itertools
 
 
 class cloudbroker_qos(object):
     def __init__(self):
         self.acl = j.clients.agentcontroller.get()
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
+        self.vcl = j.clients.osis.getNamespace('vfw')
 
     def limitCPU(self, machineId, **kwargs):
         """
@@ -22,34 +24,64 @@ class cloudbroker_qos(object):
         param:iops Max IO per second, 0 mean unlimited
         result bool
         """
-        disk = ccl.disk.get(diskId)
+        disk = self.ccl.disk.get(diskId)
         if disk.status != 'CREATED':
             raise exceptions.ValueError("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.ccl.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
             raise ValueError("Could not find virtual machine beloning to disk")
-        job = self.acl.executeJumpscript('cloudscalers', 'limitdiskio', gid=..., role='storagedriver',
-                                         args={'disks': [disk.referenceId], 'machineid': machine.referenceId})
+        stack = self.ccl.stack.get(machine['stackId'])
+        job = self.acl.executeJumpscript('cloudscalers', 'limitdiskio', role='storagedriver',
+                                         gid=stack.gid, nid=int(stack.referenceId),
+                                         args={'disks': [disk.referenceId], 'machineid': machine['referenceId']})
         return job['result']
         raise NotImplementedError("not implemented method limitIO")
 
-    def limitInternalBandwith(self, cloudspaceId, machineId, maxSpeed, **kwargs):
+    def limitInternalBandwith(self, cloudspaceId, machineId, rate, burst, **kwargs):
         """
         This will put a limit on the VIF of all VMs within the cloudspace
+        Pass either cloudspaceId or machineId depending what you want to filter down.
         param:cloudspaceId Id of the cloudspace to limit
-        param:maxSpeed maximum speeds in kilobytes per second, 0 means unlimited
+        param:rate maximum speed in kilobytes per second, 0 means unlimited
+        param:burst maximum speed in kilobytes per second, 0 means unlimited
         result bool
         """
-        if not machineId and not cloudspaceId:
+        if [bool(machineId), bool(cloudspaceId)].count(True) != 1:
             raise exceptions.ValueError("Either cloudspaceId or machineId should be given")
-        raise NotImplementedError("not implemented method limitInternalBandwith")
 
-    def limitInternetBandwith(self, cloudspaceId, maxSpeed, **kwargs):
+        machines = []
+        query = {'state': 'RUNNING'}
+        if machineId:
+            query['id'] = machineId
+        else:
+            query['cloudspaceId'] = cloudspaceId
+        machines = self.ccl.vmachine.search(query)[1:]
+        stackids = set(vm['stackId'] for vm in machines)
+        stacks = {stack['id']: stack for stack in self.ccl.stack.search({'id': {'$in': stackids}})[1:]}
+
+        for stackId, machines in itertools.group(machines, lambda vm: vm['stackId']):
+            stack = stacks.get(stackId)
+            if stack:
+                machineids = [vm['referenceId'] for vm in machines]
+                args = {'machineids': machineids, 'rate': rate, 'burst': burst}
+                self.acl.executeJumpscript('cloudscalers', 'limitnics',
+                                           gid=stack['gid'], nid=int(stack['referenceId']),
+                                           args=args)
+        return True
+
+    def limitInternetBandwith(self, cloudspaceId, rate, burst, **kwargs):
         """
         This will put a limit on the outgoing traffic on the public VIF of the VFW on the physical machine
         param:cloudspaceId Id of the cloudspace to limit
-        param:maxSpeed maximum speeds in kilobytes per second, 0 means unlimited
+        param:reate maximum speeds in kilobytes per second, 0 means unlimited
+        param:burst maximum speed in kilobytes per second, 0 means unlimited
         result bool
         """
-        raise NotImplementedError("not implemented method limitInternetBandwith")
+        cloudspace = self.ccl.cloudspace.get(cloudspaceId)
+        vfwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+        if not self.vcl.virtualfirewall.exists(vfwid):
+            raise exceptions.NotFound("VFW for cloudspace %s does not exists" % cloudspaceId)
+        vfw = self.vcl.virtualfirewall.get(vfwid)
+        self.acl.executeJumpscript('cloudscalers', 'limitpublicnet', gid=vfw.gid, nid=vfw.nid,
+                                   args={'networkId': cloudspace.networkId, 'rate': rate, 'burst': burst})

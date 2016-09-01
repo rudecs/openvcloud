@@ -11,7 +11,8 @@
         """
         var:cloudspaceId int,0, Id of the cloudspace to limit @optional
         var:machineId int,0, Id of the machineId to limit @optional
-        var:maxSpeed int,, maximum speeds in kilobytes per second, 0 means unlimited
+        var:rate int,, maximum speeds in kilobytes per second, 0 means unlimited
+        var:burst int,, maximum burst speed in kilobytes per second, 0 means unlimited
         result:bool
 
     method:limitInternetBandwith
@@ -19,8 +20,8 @@
         This will put a limit on the outgoing traffic on the public VIF of the VFW on the physical machine
         """
         var:cloudspaceId int,, Id of the cloudspace to limit
-        var:cloudspaceId int,, Id of the cloudspace to limit
-        var:maxSpeed int,, maximum speeds in kilobytes per second, 0 means unlimited
+        var:rate int,, maximum speeds in kilobytes per second, 0 means unlimited
+        var:burst int,, maximum burst speed in kilobytes per second, 0 means unlimited
         result:bool
 
     method:limitIO

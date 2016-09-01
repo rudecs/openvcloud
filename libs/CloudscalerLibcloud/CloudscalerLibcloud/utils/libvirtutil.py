@@ -256,6 +256,16 @@ class LibvirtUtil(object):
             if disk.attrib['device'] in ('disk', 'cdrom'):
                 yield disk
 
+    def get_domain_nics(self, dom):
+        if isinstance(dom, ElementTree.Element):
+            xml = dom
+        elif isinstance(dom, basestring):
+            xml = ElementTree.fromstring(dom)
+        else:
+            xml = ElementTree.fromstring(dom.XMLDesc(0))
+        for target in xml.findall('devices/interface/target'):
+            yield target.attrib['dev']
+
     def _get_domain_disk_file_names(self, dom):
         diskfiles = list()
         for disk in self.get_domain_disks(dom):
