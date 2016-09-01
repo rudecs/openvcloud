@@ -1,4 +1,4 @@
-## User Manangement
+## User Management
 
 As documented in the [section about the Users page](../../CloudBrokerPortal/Users/Users.md) user management is done from the **Users** page wich is both accessible from the **Cloud Broker Portal** and **System Portal**.
 
