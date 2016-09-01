@@ -14,8 +14,9 @@ async = True
 
 
 def action(networkId, rate, burst):
-    pubiface = 'pub-%04x' % networkId
-    if rate:
-        j.system.qos.limitNic(pubiface, '%skb' % rate, '%skb' % burst)
-    else:
-        j.system.qos.removeLimit(pubiface)
+    for iface in ['pub', 'spc']:
+        pubiface = '%s-%04x' % (iface, networkId)
+        if rate:
+            j.system.qos.limitNic(pubiface, '%skb' % rate, '%skb' % burst)
+        else:
+            j.system.qos.removeLimit(pubiface)
