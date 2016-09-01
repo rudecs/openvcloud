@@ -25,16 +25,18 @@ class cloudbroker_qos(object):
         result bool
         """
         disk = self.ccl.disk.get(diskId)
-        if disk.status != 'CREATED':
-            raise exceptions.ValueError("Disk with id %s is not created" % diskId)
+        if disk.status == 'DESTROYED':
+            raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.ccl.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
-            raise ValueError("Could not find virtual machine beloning to disk")
+            raise exceptions.NotFound("Could not find virtual machine beloning to disk")
         stack = self.ccl.stack.get(machine['stackId'])
-        job = self.acl.executeJumpscript('cloudscalers', 'limitdiskio', role='storagedriver',
+        job = self.acl.executeJumpscript('cloudscalers', 'limitdiskio',
                                          gid=stack.gid, nid=int(stack.referenceId),
-                                         args={'disks': [disk.referenceId], 'machineid': machine['referenceId']})
+                                         args={'disks': [disk.referenceId],
+                                               'iops': iops,
+                                               'machineid': machine['referenceId']})
         return job['result']
 
     def limitInternalBandwith(self, cloudspaceId, machineId, rate, burst, **kwargs):
