@@ -43,7 +43,7 @@ def action():
         accounts = ccl.account.search({'name': ACCOUNTNAME, 'status': 'CONFIRMED'})[1:]
         if not accounts:
             j.console.echo('Creating Account', log=True)
-            accountId = pcl.actors.cloudbroker.account.create(ACCOUNTNAME, 'admin', None, loc)
+            accountId = pcl.actors.cloudbroker.account.create(ACCOUNTNAME, 'admin', None)
         else:
             j.console.echo('Found Account', log=True)
             accountId = accounts[0]['id']
