@@ -89,7 +89,7 @@ class LibvirtUtil(object):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
         vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=CPU_COUNT - 1))
-        xml = root.tostring()
+        xml = ElementTree.tostring(root)
         return self.connection.defineXML(xml)
 
     def create(self, id, xml):
