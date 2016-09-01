@@ -28,15 +28,37 @@ class NetworkSummary():
     
     def nodes(self):
         with open("/opt/g8-pxeboot/pxeboot/conf/hosts") as f:
-            full = f.read()
+            hosts = f.read()
         
-        lines = full.split("\n")
+        with open("/opt/g8-pxeboot/pxeboot/conf/dhcphosts") as f:
+            dhcphosts = f.read()
+        
+        # building dhcp table
+        lines = dhcphosts.split("\n")
+        dhcp = {}
+        
+        for line in lines:
+            if line.startswith('#') or line == '':
+                continue
+            
+            temp = line.split(',')
+            dhcp[temp[1]] = temp[0]
+        
+        lines = hosts.split("\n")
         for line in lines:
             if line == '':
                 continue
             
             items = line.split(" ")
-            self._nodes.append({'name': items[1], 'address': items[0]})
+            
+            if not dhcp.get(items[2]):
+                continue
+            
+            self._nodes.append({
+                'name': items[1],
+                'address': items[0],
+                'mac': dhcp[items[2]]
+            })
         
         return self._nodes
     
@@ -50,10 +72,10 @@ class NetworkSummary():
         print("")
         
         print("# Nodes configured")
-        print("| Name | Address |")
+        print("| Name | MAC Address | IP Address | ")
         
         for node in self._nodes:
-            print("| %s | %s |" % (node['name'], node['address']))
+            print("| %s | `%s` | `%s` |" % (node['name'], node['mac'], node['address']))
         
         print("")
         
