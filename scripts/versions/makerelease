@@ -114,10 +114,10 @@ def tag_exists(repo, tag):
     return False
 
 
-def get_branch(repo):
-    version = parse_version(options.version)
+def get_branch(repo, tag):
+    version = parse_version(tag)
     branchnames = [branch.name for branch in repo.repo.branches]
-    branchnames = filter(lambda x: parse_version(x) > version, branchnames)
+    branchnames = filter(lambda x: parse_version(x + '_1') < version, branchnames)
     branchnames.sort(key=lambda x: parse_version(x))
     return branchnames[-1]
 
@@ -135,7 +135,7 @@ if not options.delete:
         for path in repos:
             branchname, tagname = getVersions(type)
             repo = j.clients.git.get(path)
-            branchname = get_branch(repo)
+            branchname = get_branch(repo, tagname)
             print('[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name))))
             if not options.dry:
                 repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
@@ -148,7 +148,8 @@ if not options.delete:
     for type, path in AYS.iteritems():
         branchname, tagname = getVersions(type)
         repo = j.clients.git.get(path)
-        print('[+] Making release on repo %s/%s' % (repo.account, repo.name))
+        branchname = get_branch(repo, tagname)
+        print('[+] Making release on repo %s/%s:%s' % (repo.account, repo.name, branchname))
         if not options.dry:
             repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
             repo.repo.git.checkout('-f', '-B', branchname, 'origin/%s' % branchname)
