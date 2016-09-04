@@ -14,18 +14,6 @@ server {
 
 server {
 	listen 2001;
-	server_name ovs;
-	location / {
-		proxy_pass https://localhost;
-		proxy_set_header Host $http_x_forwarded_host;
-	}
-
-}
-
-
-
-server {
-	listen 2001;
 	server_name novnc;
     proxy_set_header Accept-Encoding $http_accept_encoding;
 	location / {
