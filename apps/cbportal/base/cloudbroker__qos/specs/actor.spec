@@ -11,6 +11,7 @@
         """
         var:cloudspaceId int,0, Id of the cloudspace to limit @optional
         var:machineId int,0, Id of the machineId to limit @optional
+        var:machineMAC string,, MAC of the machine to limit @optional
         var:rate int,, maximum speeds in kilobytes per second, 0 means unlimited
         var:burst int,, maximum burst speed in kilobytes per second, 0 means unlimited
         result:bool

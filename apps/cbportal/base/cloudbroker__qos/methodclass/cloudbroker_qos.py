@@ -39,22 +39,26 @@ class cloudbroker_qos(object):
                                                'machineid': machine['referenceId']})
         return job['result']
 
-    def limitInternalBandwith(self, cloudspaceId, machineId, rate, burst, **kwargs):
+    def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """
         This will put a limit on the VIF of all VMs within the cloudspace
-        Pass either cloudspaceId or machineId depending what you want to filter down.
+        Pass either cloudspaceId, machineId, or machineMac depending what you want to filter down.
         param:cloudspaceId Id of the cloudspace to limit
+        param:machineId Id of the machine to limit
+        param:machineMAC MAC of themachine to limit
         param:rate maximum speed in kilobytes per second, 0 means unlimited
         param:burst maximum speed in kilobytes per second, 0 means unlimited
         result bool
         """
-        if [bool(machineId), bool(cloudspaceId)].count(True) != 1:
-            raise exceptions.ValueError("Either cloudspaceId or machineId should be given")
+        if [bool(machineId), bool(cloudspaceId), bool(machineMAC)].count(True) != 1:
+            raise exceptions.ValueError("Either cloudspaceId, machineId, or machineMAC should be given")
 
         machines = []
         query = {'status': 'RUNNING'}
         if machineId:
             query['id'] = machineId
+        elif machineMAC:
+            query['nics.macAddress'] = machineMAC
         else:
             query['cloudspaceId'] = cloudspaceId
         machines = self.ccl.vmachine.search(query)[1:]
