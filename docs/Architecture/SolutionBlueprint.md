@@ -1,4 +1,3 @@
-
 ## Solution Blueprint
 
 The G8 solution consist out of several key components:

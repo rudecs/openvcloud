@@ -67,28 +67,24 @@ From a **Cockpit** you interact with one or more **Masters** for managing the fu
 
 ### AYS Robot
 
-Key feature of the **Cockpit** is **AtYourService** (AYS) and the **AYS Robot**.
-
-**AYS** is a self-healing application management framework for cloud infrastructure. See the [section about AYS](../AtYourService/AtYourServiceIntro.md) for more details. 
-
-@todo
+Key features of the **Cockpit** are **AYS** (abreviation for "At Your Service") and the **AYS Robot**. **AYS** is a self-healing lifecycle management solution for a G8 cloud infrastructure and the workloads (virtual datacenters, virtual machines, Docker containters, applications/services, virtually anything) running on a G8 cloud. See the [section about AYS](../AtYourService/AtYourServiceIntro.md) for more details. The **AYS Robot** is the component that is actually responsible for orchestrating all work, including picking up blueprints and executing them, and also tasks such as monitoring the system and all workoads and trigger (self-healing) actions, as defined in AYS service templates.
 
 
 ### Blueprints
 
-@todo
+**Blueprints** are human readeable files to describe a full solution/workload or a change request to an existing solution. Such a solution can for instance be a virtual datacenter, or a virtual datacenter hosting a web application, of which of the services all run in a sepaerate Docker container. The solution or change request to the solution can be as sophisticated as required. A blueprint allows you declaritivelly specify exactly what you require, hidding all complexities.
 
 
 ### Cockpit Portal
 
-@todo
+The **Cockpit Portal** is a web portal for administrating the Cockpit.  
 
 
 ### Cockpit Chatbot
 
-@todo
+All functions exposed in the **Cockpit Portal** are also available through a chatbot active on **Telegram**.
 
 
 ### Marketplaces
 
-@todo
+Customers typically interact with an G8 environment via a **Marketplace** where they can order virtual datacenters and applications hosted in virtual datacenters, which are provisioned through blueprints via the Cockpit. Green IT Globe provides a WHMCS-based reference implementation of such a marketplace on GitHub, as documented here: https://www.gitbook.com/book/gig/g8-whmcs-reference-implementation/details 
