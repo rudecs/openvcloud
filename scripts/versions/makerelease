@@ -24,7 +24,9 @@ parser.add_argument("-dry", "--dry-run", dest="dry", action='store_true', defaul
 parser.add_argument("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
 options = parser.parse_args()
 
-REPOS = {'openvcloud': ['/opt/code/github/0-complexity/openvcloud'],
+REPOS = {'openvcloud': ['/opt/code/github/0-complexity/openvcloud',
+                        '/opt/code/github/0-complexity/selfhealing',
+                        '/opt/code/github/0-complexity/g8vdc'],
          'jumpscale': ['/opt/code/github/jumpscale7/jumpscale_core7',
                        '/opt/code/github/jumpscale7/jumpscale_portal']
          }
