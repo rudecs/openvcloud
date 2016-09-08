@@ -1,4 +1,4 @@
-## Images
+### Images
 
 The **Images** page lists all available images:
 

@@ -1,4 +1,4 @@
-## Private Networks
+### Private Networks
 
 For each cloud space a virtual private network is automatically created.
 

@@ -1,4 +1,4 @@
-## Error Conditions
+### Error Conditions
 
 On the **Error Conditions** page all the errors are listed:
 

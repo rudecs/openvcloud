@@ -1,4 +1,4 @@
-## Cloud Broker Portal
+### Cloud Broker Portal
 
 The **Cloud Broker Portal** is one of the sub portals used by operators to manage all the clouds:
 

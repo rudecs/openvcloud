@@ -1,4 +1,4 @@
-## Locations
+### Locations
 
 On the **Locations** page all locations are listed:
 
@@ -23,23 +23,23 @@ From the **Actions** dropdown menu you can:
 - Sync available sizes to Cloud Broker
 - Add Public IPv4 subnet
 
-### Stacks
+#### Stacks
 
 Under **Stacks** all stacks available on this location:
 
 ![[]](Stacks.png)
 
-### Public Network
+#### Public Network
 
 The **Public Networks** table lists all public network address ranges available on this location:
 
 ![[]](PublicNetworks.png)
 
-### Firewall Nodes
+#### Firewall Nodes
 
 ![[]](FirewallNodes.png)
 
-### Virtual Machines
+#### Virtual Machines
 
 Here all virtual machines are listed:
 

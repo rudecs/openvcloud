@@ -1,4 +1,4 @@
-## Public Networks
+### Public Networks
 
 The **Public Networks** pages lists all public networks managed through the Cloud Broker Portal:
 

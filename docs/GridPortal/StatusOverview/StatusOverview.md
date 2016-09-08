@@ -1,13 +1,13 @@
-## Status Overview
+### Status Overview
 
 On the **Status Overview** page you get an immediate view on the health of the system.
 
 You can access the **Status Overview** page in two ways:
 
 - By clicking the green/orange/red status dot in the top navigation bar:
-
+	
 ![](TopNavigation.png)
-
+	
 - Via the left navigation bar, under **Grid Portal** click **Status Overview**:
 
 ![](LeftNavigation.png)
@@ -91,3 +91,17 @@ rm -rf /mnt/vmstor/$vm
 **StorageTest**
 
 ![[]](StorageTest.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

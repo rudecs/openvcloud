@@ -1,4 +1,4 @@
-## Grid Nodes
+### Grid Nodes
 
 On the **Grid Nodes** page all nodes are listed:
 

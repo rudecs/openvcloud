@@ -1,4 +1,4 @@
-## Job Queues
+### Job Queues
 
 On this page you see both the central queue of the agent controller and the queues of the agents.
 

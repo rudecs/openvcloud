@@ -1,4 +1,4 @@
-## Audits
+### Audits
 
 The **Audits** page lists all important actions along with the username of the user who initiated the action:
 
