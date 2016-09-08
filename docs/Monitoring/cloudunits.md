@@ -4,7 +4,7 @@ On the **ovc_master** virtual machine of your environment every half hour the sy
 
 This will be done in the directory `/opt/jumpscale7/var/log/cloudunits`
 
-In order to access these records go through followig steps:
+In order to access these records go through following steps:
 
 - Get to your admin environment with your SSH keys loaded, can be skipped is already on it:
 
@@ -44,7 +44,7 @@ cd /opt/jumpscale7/var/log/cloudunits/%account-ID%
 
 For each account there will be a subdirectory, for instance for the account with ID 6 this is `/opt/jumpscale7/var/log/cloudunits/6`
 
-In there you'll find further subdirectories using `year/month/day`:
+In there you'll find further subdirectories structured as `year/month/day`:
 
 Here's an example of an actual JSON record:
 
@@ -124,6 +124,7 @@ cat 2016_7_19_14_8.json | python -m json.tool`
                             "CU_I": 0,
                             "CU_M": 2048,
                             "id": 1054,
+                            "imagename": "Ubuntu 14.04 x64"
                             "name": "Test machine"
                         }
                     }
@@ -146,6 +147,11 @@ This shows both an aggregated and per cloud space snapshot of the used cloud uni
 - **CU_M**: Memory, expressed in GB
 - **CU_NO**: Network transfer in operator, expressed in GB send/received
 - **CU_NP**: Network transfer peering, expressed in GB send/received
+
+At the machine-level notice following fields:
+- **id**: ID of the virtual machine, in the above example check the virtual machine with `"id": 1054`
+- **imagename**: Name of the OS image used by the virtual machine, in the above example: `"imagename": "Ubuntu 14.04 x64"``
+- **name**: Name of the virtual machine, in the above example: `"name": "Test machine"`
 
 These records are generated every 30 minutes. You can also trigger the creation process using the following Rest API:
 
