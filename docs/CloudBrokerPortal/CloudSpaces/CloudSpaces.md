@@ -13,16 +13,15 @@ From there you can navigate to the **Cloud Space Details** page of a specific cl
 ![[]](CloudSpaceDetails.png)
 
 From the **Actions** dropdown on the **Cloud Space Details** page you can choose to:
-- Rename the cloud space
-- Delete the cloud 
-- Change the available cloud capacity
-- Activate the virtual firewall (VFW) (is not active already)
+- **Edit** the cloud space name and capacity limitation properties
+- **Deploy VFW** in order to deploy the virtual firewall (VFW) (if not active already, since this normally happens automatically)
+- **Delete** the cloud space
 
-For each new cloud space a private network is automatically created, shared by all virtual machines in that cloud space. In the **Details** section of the **Cloud Space Details** page this private network is referenced with its **Network ID**. When you click this **Network ID** you navigate to the **Private Network Details** page for that cloud space:
+For each new cloud space a private network (including a virtual firewall) is automatically created, shared by all virtual machines in that cloud space. In the **Details** section of the **Cloud Space Details** page this private network is referenced with its **Network ID**. When you click this **Network ID** you navigate to the **Private Network Details** page for that cloud space:
 
 ![[]](PrivateNetworkDetails.png)
 
-On the **Private Cloud Details Page** you also see the **Management IP Address** and the **Public IP Address** for the cloud space.
+Here you also see the **Management IP Address** and the **Public IP Address** for the cloud space, as well as all active port forwardings on that private network; discussed below.
 
 
 ### Cloud Resource Limits
