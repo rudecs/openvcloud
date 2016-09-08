@@ -1,4 +1,4 @@
-### Cloud Spaces
+## Cloud Spaces
 
 A cloud space is logical grouping of cloud resources, commonly referred to as a tenant.
 

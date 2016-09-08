@@ -1,23 +1,23 @@
-# Grid Portal
+## Grid Portal
 
-[Home](Home/Home.md)
+* [Home](Home/Home.md)
 
-[Alerts](Alerts/Alerts.md)
+* [Alerts](Alerts/Alerts.md)
 
-[Audits](Audits/Audits.md)
+* [Audits](Audits/Audits.md)
 
-[Error Conditions](ErrorConditions/ErrorConditions.md)
+* [Error Conditions](ErrorConditions/ErrorConditions.md)
 
-[Jobs](Jobs/Jobs.md)
+* [Jobs](Jobs/Jobs.md)
 
-[Job Queues](JobQueues/JobQueues.md)
+* [Job Queues](JobQueues/JobQueues.md)
 
-[JumpScripts](JumpScripts/JumpScripts.md)
+* [JumpScripts](JumpScripts/JumpScripts.md)
 
-[Logs](Logs/Logs.md)
+* [Logs](Logs/Logs.md)
 
-[Grid Nodes](GridNodes/GridNodes.md)
+* [Grid Nodes](GridNodes/GridNodes.md)
 
-[Status Overview](StatusOverview/StatusOverview.md)
+* [Status Overview](StatusOverview/StatusOverview.md)
 
-[Virtual Machines](VirtualMachines/VirtualMachines.md)
+* [Virtual Machines](VirtualMachines/VirtualMachines.md)
