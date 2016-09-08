@@ -1,4 +1,4 @@
-### Stacks
+## Stacks
 
 A stack can virtually be any cloud computing software platform, such as OpenStack, GIGStack, Amazon Web Services, Microsoft Azure, or Google Cloud Platform, that you wish to manage using the Cloud Broker Portal.
 
@@ -25,4 +25,4 @@ Under **Virtual Machines** all virtual machines running on that stack are listed
 
 ![[]](VirtualMachines.png)
 
-By clikinng on the name of the virtual machine you navigate to the **Virtual Machines Details** page.
+By clicking on the name of the virtual machine you navigate to the **Virtual Machines Details** page.

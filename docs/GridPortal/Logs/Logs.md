@@ -1,4 +1,4 @@
-### Logs
+## Logs
 
 All **OpenvCloud** components are extensively instrumented, writing useful information to logs, which are searchable:
 

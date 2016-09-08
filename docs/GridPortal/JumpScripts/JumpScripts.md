@@ -1,4 +1,4 @@
-### JumpScripts
+## JumpScripts
 
 A JumpScript is a python script that can be executed on any node, typically by the agent running on the node, orchestrated by the central agent controller.
 

@@ -1,4 +1,4 @@
-### Grid Portal Home
+## Grid Portal Home
 
 The **Grid Portal** is one of the sub portals used by operators to manage all the GigStack clouds:
 

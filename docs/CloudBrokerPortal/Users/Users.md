@@ -1,4 +1,4 @@
-### Users
+## Users
 
 In order to have access the **Cloud Broker Portal**, the **User Portal**, or any portal created with **JumpScale Portal Framework**, you need a user.
 
@@ -10,7 +10,7 @@ In the **Users** page you can:
 - Add/create new users
 - Update users
 
-## Add/create Users
+### Add/create Users
 
 For adding a new user you simply choose **Add User** from the **Actions** dropdown menu:
 
@@ -26,7 +26,7 @@ It is most common to be member of the "user" and/or the "admin" group:
 - In order to have access to **End User** portal, you need at least "user" group membership
 - Access to all other portals, such as the **Cloud Broker Portal**, requires at at least "admin" group membership
 
-## Update Users
+### Update Users
 
 In order to update a user you click the user **ID** (username) of the user in the users table. This users table lists all the user in pages of 10 entries per page, which can be changed to 25, 50 or 100.
 
