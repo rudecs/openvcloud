@@ -9,3 +9,7 @@ On the **Audits** page you will find records for all API calls that require user
 - /restmachine/cloudapi/users/get
 - /restmachine/cloudapi/cloudspaces/list
 - /restmachine/cloudapi/cloudspaces/get
+
+Audits records are of course also created when somebody fails to login successfully, or uses one of the REST APIs with wrong credentials, see below the for instance for all audits filtered in **Status Code** 401:
+
+![](403.png)
