@@ -2,8 +2,10 @@
 
 In order for a user to have access to the **End User Portal** group membership to the system group **user** is required. For more details about group membership, see the **Groups** page in the **Cloud Broker Portal** and the [Groups Documentation](../../CloudBrokerPortal/Groups/Groups.md).
 
-Once access to the **End User Portal** actual privileges are determined by the rights (read, write, admin) granted to the user, this at the level of [Accounts](###account), [Cloud Spaces](###cloud-space), and [Virtual Machines](###virtual-machine).
+Once access to the **End User Portal** actual privileges are determined by the rights (read, write, admin) granted to the user, this at the level of [Accounts](#account), [Cloud Spaces](#cloud-space), and [Virtual Machines](#virtual-machine).
 
+
+<a id="account"></a>
 ### Account
 
 #### Read (R):
@@ -34,6 +36,7 @@ Once access to the **End User Portal** actual privileges are determined by the r
 \+ ALL **Admin/Write/Read** actions on **Cloud Space** and **Virtual Machine**
 
 
+<a id="cloud-space"></a>
 ### Cloud Space
 
 #### Read (R):
@@ -75,6 +78,7 @@ Once access to the **End User Portal** actual privileges are determined by the r
 \+ ALL **Admin/Write/Read** actions of **Virtual Machine**
 
 
+<a id="virtual-machine"></a>
 ### Virtual Machine
 
 #### Read (R):
