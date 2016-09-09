@@ -63,6 +63,6 @@ In the **Virtual Machines** table all virtual machines running in the cloud spac
 
 ![[]](VirtualMachines.png)
 
-In order to create a virtual machine you choose **Create Machine** or **Create Machine on Stack** from the **Actions** dropdown menu, which will pop-up the **Create Machine** dialog:
+Click the **+ Add Virtual Machine** in order to add a new virtual machine in the cloud space which will pop-up the **Create Machine On CPU Node** window:
 
 ![[]](CreateMachine.png)
