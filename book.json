@@ -1,4 +1,4 @@
 {
     "root": "./docs",
-    "plugins": ["toggle-chapters"]
+    "plugins": ["collapsible-chapters"]
 }
