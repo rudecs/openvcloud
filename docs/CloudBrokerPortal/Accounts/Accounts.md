@@ -55,24 +55,6 @@ You can grant other users access to the account by clicking the **+ Grant User A
 
 A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../../EndUserPortal/Authorization/AuthorizationModel.md) documentation for all details on this.
 
-- **Read**
- * Can access the **Getting Started**, **Machine API**, **Knowledge Base** and **Support** sections in the **End User Portal**
- * View account settings
- * Access/view the cloud space
-
-
-- **Write**
- * All the above
- * Change account settings
- * Create cloud spaces
-
-
-- **Admin**
- * All the above
- * Add users and set/change their access rights
-
-For more information, check
-
 
 ### Cloud Spaces
 
