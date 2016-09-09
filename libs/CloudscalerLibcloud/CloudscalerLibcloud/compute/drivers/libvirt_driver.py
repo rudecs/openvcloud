@@ -17,6 +17,7 @@ baselength = len(string.lowercase)
 
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
+
 def convertnumber(number):
     output = ''
     if number == 0:
@@ -24,15 +25,16 @@ def convertnumber(number):
     segment = number // baselength
     remainder = number % baselength
     if segment > 0:
-        output += convertnumber(segment -1)
+        output += convertnumber(segment - 1)
     output += string.lowercase[remainder]
 
     return output
 
+
 def convertchar(word):
     number = 0
     word = list(reversed(word))
-    for idx in xrange(len(word) -1, -1, -1):
+    for idx in xrange(len(word) - 1, -1, -1):
         addme = 1 if idx != 0 else 0
         number += (addme + string.lowercase.index(word[idx])) * baselength ** idx
     return number
@@ -85,6 +87,7 @@ def OpenvStorageVolumeFromXML(disk, driver):
         name=name
     )
     return OpenvStorageVolume(id=url, name='N/A', size=0, driver=driver)
+
 
 class CSLibvirtNodeDriver():
 
@@ -222,14 +225,12 @@ class CSLibvirtNodeDriver():
         devices = dom.find('devices')
         dev = getNextDev(devices)
         volume.dev = dev
-        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
-        if domxml is None:
-            devices.append(ElementTree.fromstring(str(volume)))
-            domxml = ElementTree.tostring(dom)
+        self._execute_agent_job('attach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
+        devices.append(ElementTree.fromstring(str(volume)))
+        domxml = ElementTree.tostring(dom)
         return self._update_node(node, domxml)
 
     def _update_node(self, node, xml):
-        self._execute_agent_job('redefinemachine', queue='hypervisor', xml=xml, domainid=node.id)
         self._set_persistent_xml(node, xml)
         return self._from_xml_to_node(xml, node)
 
@@ -249,10 +250,9 @@ class CSLibvirtNodeDriver():
             source = disk.find('source')
             if source.attrib.get('dev', source.attrib.get('name')) == volume.name:
                 diskxml = ElementTree.tostring(disk)
-                domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
-                if domxml is None:
-                    devices.remove(disk)
-                    domxml = ElementTree.tostring(dom)
+                self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+                devices.remove(disk)
+                domxml = ElementTree.tostring(dom)
         if domxml:
             return self._update_node(node, domxml)
         return node
@@ -315,14 +315,14 @@ class CSLibvirtNodeDriver():
             password = auth.password
             if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
                 userdata = {'password': password,
-                            'users': [{'name':'cloudscalers',
+                            'users': [{'name': 'cloudscalers',
                                        'plain_text_passwd': password,
                                        'lock-passwd': False,
-                                       'shell':'/bin/bash',
-                                       'sudo':'ALL=(ALL) ALL'}],
+                                       'shell': '/bin/bash',
+                                       'sudo': 'ALL=(ALL) ALL'}],
                             'ssh_pwauth': True,
                             'manage_etc_hosts': True,
-                            'chpasswd': {'expire': False }}
+                            'chpasswd': {'expire': False}}
                 metadata = {'local-hostname': name}
             else:
                 userdata = {}
@@ -371,7 +371,7 @@ class CSLibvirtNodeDriver():
         vmid = result['id']
         self.backendconnection.registerMachine(vmid, macaddress, networkid)
         node = self._from_agent_to_node(result, volumes=volumes)
-        self._set_persistent_xml(node, result['XMLDesc'])
+        self._set_persistent_xml(node, machinexml)
         return node
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
@@ -384,7 +384,7 @@ class CSLibvirtNodeDriver():
                                        imageid=imageid)
 
     def ex_get_node_details(self, node_id):
-        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='') # dummy Node as all we want is the ID
+        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='')  # dummy Node as all we want is the ID
         agentnode = self._get_domain_for_node(node)
         if agentnode is None:
             xml = self._get_persistent_xml(node)
@@ -471,33 +471,29 @@ class CSLibvirtNodeDriver():
 
     def ex_stop_node(self, node):
         machineid = node.id
-        return self._execute_agent_job('stopmachine', queue='hypervisor', machineid = machineid)
+        return self._execute_agent_job('stopmachine', queue='hypervisor', machineid=machineid)
 
     def ex_suspend_node(self, node):
         machineid = node.id
-        return self._execute_agent_job('suspendmachine', queue='hypervisor', machineid = machineid)
+        return self._execute_agent_job('suspendmachine', queue='hypervisor', machineid=machineid)
 
     def ex_resume_node(self, node):
         machineid = node.id
-        return self._execute_agent_job('resumemachine', queue='hypervisor', machineid = machineid)
-
+        return self._execute_agent_job('resumemachine', queue='hypervisor', machineid=machineid)
 
     def ex_pause_node(self, node):
         machineid = node.id
-        return self._execute_agent_job('pausemachine', queue='hypervisor', machineid = machineid)
-
+        return self._execute_agent_job('pausemachine', queue='hypervisor', machineid=machineid)
 
     def ex_unpause_node(self, node):
         machineid = node.id
-        return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid = machineid)
-
+        return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid=machineid)
 
     def ex_soft_reboot_node(self, node):
         if self._ensure_network(node) == -1:
             return -1
         xml = self._get_persistent_xml(node)
         return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
-
 
     def ex_hard_reboot_node(self, node):
         if self._ensure_network(node) == -1:
@@ -517,8 +513,7 @@ class CSLibvirtNodeDriver():
         xml = self._get_persistent_xml(node)
         if self._ensure_network(node) == -1:
             return -1
-        xml = self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=xml)
-        self._set_persistent_xml(node, xml)
+        self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=xml)
         return True
 
     def ex_get_console_output(self, node):
@@ -560,7 +555,6 @@ class CSLibvirtNodeDriver():
     def _get_persistent_xml(self, node):
         return self.backendconnection.db.get('domain_%s' % node.id)
 
-
     def _set_persistent_xml(self, node, xml):
         self.backendconnection.db.set(key='domain_%s' % node.id, obj=xml)
 
@@ -571,19 +565,18 @@ class CSLibvirtNodeDriver():
             pass
 
     def _get_domain_for_node(self, node):
-        return self._execute_agent_job('getmachine', queue='hypervisor', machineid = node.id)
+        return self._execute_agent_job('getmachine', queue='hypervisor', machineid=node.id)
 
     def _from_agent_to_node(self, domain, publicipaddress='', volumes=None):
         xml = domain.get('XMLDesc')
+        node = Node(id=domain['id'],
+                    public_ips=[],
+                    name=domain['name'],
+                    private_ips=[],
+                    state=domain['state'],
+                    driver=self)
         if xml:
-            node = self._from_xml_to_node(xml)
-        else:
-            node = Node(id=domain['id'],
-                        name=domain['name'],
-                        public_ips=[],
-                        private_ips=[],
-                        state=domain['state'],
-                        driver=self)
+            node = self._from_xml_to_node(xml, node)
         node.state = domain['state']
         extra = domain['extra']
         node.extra.update(extra)
@@ -612,9 +605,9 @@ class CSLibvirtNodeDriver():
             type = nic.attrib['type']
             ifaces.append(NetworkInterface(mac=mac, target=target, type=type))
         name = dom.find('name').text
-        id = dom.find('uuid').text
         extra = {'volumes': volumes, 'ifaces': ifaces}
         if node is None:
+            id = dom.find('uuid').text
             node = Node(id=id, name=name, state=state,
                         public_ips=[], private_ips=[], driver=self,
                         extra=extra)
@@ -641,13 +634,12 @@ class CSLibvirtNodeDriver():
         ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
         ifacexml = ElementTree.tostring(iface)
-        domxml = self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
-        if domxml is None:
-            xml = self._get_persistent_xml(node)
-            dom = ElementTree.fromstring(xml)
-            devices = dom.find('devices')
-            devices.append(iface)
-            domxml = ElementTree.tostring(dom)
+        self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        devices = dom.find('devices')
+        devices.append(iface)
+        domxml = ElementTree.tostring(dom)
         self._update_node(node, domxml)
         return NetworkInterface(mac=macaddress, target=target, type='bridge')
 
@@ -665,8 +657,7 @@ class CSLibvirtNodeDriver():
                 break
         if interfacexml:
             domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
-            if domxml is None:
-                domxml = ElementTree.tostring(dom)
+            domxml = ElementTree.tostring(dom)
             return self._update_node(node, domxml)
 
     def ex_resize(self, node, size):
@@ -685,8 +676,8 @@ class CSLibvirtNodeDriver():
     def ex_migrate(self, node, sourceprovider, force=False):
         domainxml = self._get_persistent_xml(node)
         self._execute_agent_job('vm_livemigrate',
-                vm_id=node.id,
-                sourceurl=sourceprovider.uri,
-                force=force,
-                domainxml=domainxml)
+                                vm_id=node.id,
+                                sourceurl=sourceprovider.uri,
+                                force=force,
+                                domainxml=domainxml)
         return True
