@@ -14,4 +14,7 @@ Depending on the size of the storage setup we will create 1 or more vpools that 
 - data03
 - ...
 
+## spreading
+
 Data disks will be provisioned over the different data## vpools using a simple round-robin mecanisme.
+At the same time vdisks need to be spread over the different storage routers of a vpool also via a round robin mechanisme (also for boot and routeros disks).
