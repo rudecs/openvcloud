@@ -8,17 +8,17 @@ Once access to the **End User Portal** actual privileges are determined by the r
 
 #### Read (R):
 
-- account.get()
-- account.list() (only accounts user has access to)
-- account.getCreditBalance()
-- account.getCreditHistory()
+- account.get() (viewing the account settings)
+- account.list() (listing only the accounts the user has access to)
+- account.getCreditBalance() (in earlier versions)
+- account.getCreditHistory() (in earlier versions)
 
 \+ ALL **Read** actions of **Cloud Space** and **Virtual Machine**
 
 #### Write (RCX):
 
 - ALL **Read** actions of **Account**
-
+- account.update() (changing account settings)
 - cloudspace.create()
 - machine.createTemplate()
 
@@ -38,8 +38,8 @@ Once access to the **End User Portal** actual privileges are determined by the r
 
 #### Read (R):
 
-- cloudspace.get()
-- cloudspace.list())(only the cloud spaces user has access to)
+- cloudspace.get() (viewing the cloud space settings)
+- cloudspace.list() (only the cloud spaces the user has access to)
 - machine.list()
 - portforwarding.list() (for cloudspace)
 
@@ -54,7 +54,7 @@ Once access to the **End User Portal** actual privileges are determined by the r
 - machine.importToNewMachine()
 - portforwarding.create()
 - portforwarding.delete()
-- portforwarding.update() -> Change/delete port forwards for all virtual machines in this cloud space
+- portforwarding.update() (Change/delete port forwards for all virtual machines in this cloud space)
 - machine.clone()
 - machine.delete()
 - machine.addUser()

@@ -7,7 +7,7 @@ The **Accounts** page lists all existing accounts:
 ![[]](Accounts.png)
 
 
-### Adding/creating Accounts
+### Creating Accounts
 
 Creating a new account is simple. Just click on the **+ Add Account** link which will pop-up the **Create Account** window:
 
@@ -53,9 +53,10 @@ You can grant other users access to the account by clicking the **+ Grant User A
 
 ![[]](ConfirmActionGrantUserAccess.png)
 
-A user can have read, write or admin privileges:
+A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../EndUserPortal/Authorization/AuthorizationModel.md) documentation for all details on this.
+
 - **Read**
- * Can access the Getting Started, Machine API, Knowledge Base and contact support in the User Portal
+ * Can access the **Getting Started**, **Machine API**, **Knowledge Base** and **Support** sections in the **End User Portal**
  * View account settings
  * Access/view the cloud space
 
@@ -69,6 +70,8 @@ A user can have read, write or admin privileges:
 - **Admin**
  * All the above
  * Add users and set/change their access rights
+
+For more information, check
 
 
 ### Cloud Spaces

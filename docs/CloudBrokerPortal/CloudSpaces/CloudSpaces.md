@@ -43,6 +43,8 @@ By clicking the **+ Grant User Access** link you can grant other users to the cl
 
 ![[]](GrantUserAccess.png)
 
+A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../EndUserPortal/Authorization/AuthorizationModel.md) documentation for all details on this.
+
 
 #### Port Forwardings
 
