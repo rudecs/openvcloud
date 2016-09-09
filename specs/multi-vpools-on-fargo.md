@@ -6,12 +6,12 @@ In Open vStorage Fargo release it is advisable to create multiple vpools to be a
 
 The vmstor vpool wil be used for bootdisks only. This way we do not need to make bootdisk templates available on all vpools.
 
-## data-## vpool
+## data## vpool
 
 Depending on the size of the storage setup we will create 1 or more vpools that will be used for datadisks. eg:
-- data-01
-- data-02
-- data-03
+- data01
+- data02
+- data03
 - ...
 
-Data disks will be provisioned over the different data-## vpools using a simple round-robin mecanisme.
+Data disks will be provisioned over the different data## vpools using a simple round-robin mecanisme.
