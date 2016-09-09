@@ -35,7 +35,7 @@ In order to change the limits you need to select **Edit** from the **Action** dr
 
 #### User Access
 
-In **Users Access** section you see all the users with access to the cloud space:
+In the **Users Access** section you see all the users with access to the cloud space:
 
 ![[]](UsersAccess.png)
 
@@ -43,7 +43,7 @@ By clicking the **+ Grant User Access** link you can grant other users to the cl
 
 ![[]](GrantUserAccess.png)
 
-A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../EndUserPortal/Authorization/AuthorizationModel.md) documentation for all details on this.
+A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../../EndUserPortal/Authorization/AuthorizationModel.md)) documentation for all details on this.
 
 
 #### Port Forwardings
