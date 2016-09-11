@@ -7,6 +7,12 @@ for service in j.atyourservice.findServices(name='autossh', instance='http_proxy
     port = service.hrd.getStr('instance.remote.port')
     locations.setdefault(location, []).append('%s:%s' % (host, port))
 
+for service in j.atyourservice.findServices(name='autossh', instance='http_proxy_ovs'):
+    location = service.parent.parent.instance
+    host = service.hrd.getStr('instance.remote.bind')
+    port = service.hrd.getStr('instance.remote.port')
+    locations.setdefault('ovs-' + location, []).append('%s:%s' % (host, port))
+
 
 # updating proxy service
 proxy = j.atyourservice.get(name='node.ssh', instance='ovc_proxy')

@@ -44,6 +44,7 @@ def update(nodessh):
     nodessh.execute(_get_update_cmd('jumpscale7', '*', options.branch_js, options.tag_js))
     nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
     nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc, options.tag_ovc))
+    nodessh.execute(_get_update_cmd('0-complexity', 'g8vdc', options.branch_ovc, options.tag_ovc))
     nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
 
 def restart(nodessh):
