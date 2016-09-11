@@ -20,6 +20,7 @@ def removeConfusingChars(input):
 
 class Dummy(object):
     def __init__(self, **kwargs):
+        self.extra = {}
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 

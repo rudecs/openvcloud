@@ -413,9 +413,9 @@ class CSLibvirtNodeDriver(object):
 
     def ex_create_template(self, node, name, imageid, snapshotbase=None):
         xml = self._get_persistent_xml(node)
-        node = self._from_xml_to_node(xml, None)
+        node = self._from_xml_to_node(xml, node)
         bootvolume = node.extra['volumes'][0]
-        return self._execute_agent_job('createtemplate', wait=False, queue='io',
+        return self._execute_agent_job('createtemplate', queue='io', role='storagedriver',
                                        machineid=node.id, templatename=name,
                                        sourcepath=bootvolume.id,
                                        imageid=imageid)

@@ -248,7 +248,15 @@ class cloudapi_machines(BaseActor):
         stack = self.models.stack.get(machine.stackId)
         stack.images.append(imageid)
         self.models.stack.set(stack)
-        template = provider.client.ex_create_template(node, templatename, imageid, basename)
+        try:
+            provider.client.ex_create_template(node, templatename, imageid, basename)
+        except:
+            image = self.models.image.get(imageid)
+            if image.status == 'CREATING':
+                image.status = 'ERROR'
+                self.models.image.set(image)
+            raise
+
         return True
 
     @authenticator.auth(acl={'machine': set('X')})
