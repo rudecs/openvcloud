@@ -1,5 +1,5 @@
 # Add extra specific cloudscaler functions for libvirt libcloud driver
-
+from JumpScale import j
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, StorageVolume
 from jinja2 import Environment, PackageLoader
@@ -10,11 +10,9 @@ import uuid
 import crypt
 import random
 import string
+import time
 
-BASEPOOLPATH = '/mnt/vmstor/'
-IMAGEPOOL = '/mnt/vmstor/templates'
 baselength = len(string.lowercase)
-
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
@@ -89,7 +87,11 @@ def OpenvStorageVolumeFromXML(disk, driver):
     return OpenvStorageVolume(id=url, name='N/A', size=0, driver=driver)
 
 
-class CSLibvirtNodeDriver():
+class CSLibvirtNodeDriver(object):
+
+    _roundrobinstoragedriver = {'next': 0, 'edgeclienttime': 0}
+    _edgeclients = []
+    _edgenodes = {}
 
     NODE_STATE_MAP = {
         0: NodeState.TERMINATED,
@@ -109,8 +111,42 @@ class CSLibvirtNodeDriver():
         self.name = 'libvirt'
         self.uri = uri
         self.env = env
+        self.scl = j.clients.osis.getNamespace('system')
 
     backendconnection = connection.DummyConnection()
+
+    @property
+    def edgeclients(self):
+        if self._roundrobinstoragedriver['edgeclienttime'] < time.time() - 60:
+            edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver')
+            vpools = set(client['vpool'] for client in edgeclients)
+            if len(vpools) > 1:
+                vpools.remove('vmstor')
+
+            activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
+
+            def filter_clients(client):
+                node = self._edgenodes.get(client['ip'])
+                if node is None:
+                    node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['ip']})[1:]), None)
+                    if node is None:
+                        return False
+                client['nid'] = node['id']
+                if (node['gid'], node['id']) not in activesessions:
+                    return False
+                if client['vpool'] not in vpools:
+                    return False
+                return True
+
+            self._edgeclients[:] = filter(filter_clients, edgeclients)
+            self._roundrobinstoragedriver['edgeclienttime'] = time.time()
+        return self._edgeclients
+
+    def getNextEdgeClient(self):
+        self._roundrobinstoragedriver['next'] += 1
+        rndrbn = self._roundrobinstoragedriver['next']
+        clients = self.edgeclients
+        return clients[rndrbn % len(clients)]
 
     def set_backend(self, connection):
         """
@@ -200,9 +236,10 @@ class CSLibvirtNodeDriver():
         return self.create_volumes(volumes)[0]
 
     def create_volumes(self, volumes):
-        volumes = self._execute_agent_job('createvolumes', role='storagedriver', volumes=volumes)
         stvolumes = []
         for volume in volumes:
+            edgeclient = self.getNextEdgeClient()
+            volume = self._execute_agent_job('createvolume', volume=volume, id=edgeclient['nid'], edgeclient=edgeclient)
             stvol = OpenvStorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
             stvol.dev = volume['dev']
             stvolumes.append(stvol)

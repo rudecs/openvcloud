@@ -26,7 +26,7 @@ def action(diskpaths):
                     snapshots.add((snap['label'], int(snap['timestamp'])))
     snaps = list()
     for snap in snapshots:
-        snaps.append({'name': snap[0], 'epoch':snap[1]})
+        snaps.append({'name': snap[0], 'epoch': snap[1]})
     return snaps
 
 

@@ -103,7 +103,7 @@ class ISO(object):
             iso.seek(0)
             length = os.fstat(iso.fileno()).st_size
             assert length > 0
-            proc = subprocess.Popen(['qemu-img', 'convert', '-O', 'raw', '/dev/stdin', output], stdin=iso)
+            proc = subprocess.Popen(['qemu-img', 'convert', '-O', 'raw', '/dev/stdin', output], stdin=iso, stdout=subprocess.PIPE)
             proc.wait()
             if proc.returncode != 0:
-                raise RuntimeError("Failed to create metadata iso.")
+                raise RuntimeError("Failed to create metadata iso. Error: %s" % proc.stdout.read())

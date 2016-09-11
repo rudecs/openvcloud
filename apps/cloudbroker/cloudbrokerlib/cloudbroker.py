@@ -150,14 +150,7 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, gid, imageId):
         resourcesdata = list()
-        activesessions = []
-        for gidnid, session in j.clients.agentcontroller.get().listSessions().iteritems():
-            # skip nodes that didnt respond in last 60 seconds
-            if session[0] < time.time() - 60:
-                continue
-            gridid, nid = gidnid.split('_')
-            gridid, nid = int(gridid), int(nid)
-            activesessions.append((gridid, nid))
+        activesessions = j.clients.agentcontroller.get().listActiveSessions().keys()
 
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
