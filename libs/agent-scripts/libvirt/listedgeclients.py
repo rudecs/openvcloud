@@ -4,15 +4,46 @@ descr = """
 Libvirt script to list existing vpools
 """
 
+name = "listedgeclients"
 category = "libvirt"
-organization = "cloudscalers"
-author = "deboeckj@codescalers.com"
+organization = "greenitglobe"
+author = "geert@greenitglobe.com"
 license = "bsd"
-version = "1.0"
+version = "2.0"
 roles = []
 async = True
 
 
-def action():
-    from CloudscalerLibcloud import openvstorage
-    return list(openvstorage.listEdgeclients())
+def action(ovs_connection):
+    # Lists edge clients
+    #
+    # ovs_connection: dict holding connection info for ovs restapi
+    #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
+    #
+    # returns list of edge clients
+    #   eg: [{'storageip': '10.106.1.34',
+    #         'edgeport': 26202,
+    #         'storagerouterguid': '....',
+    #         'vpool': 'vmtor'
+    #        }, ...]
+
+    ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
+                                     credentials=(ovs_connection['client_id'],
+                                                  ovs_connection['client_secret']))
+
+    # First create a vpools dict
+    vpools = dict()
+    result = ovs.get('/vpools', params={'contents': 'vpool'})
+    for vpool in result['data']:
+        vpools[vpool['guid']] = vpool['name']
+
+    # Then list the storage drivers
+    edgeclients = list()
+    result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter'})
+    for storagedriver in result['data']:
+        edgeclients.append(dict(storageip=storagedriver['storage_ip'],
+                                edgeport=storagedriver['ports']['edge'],
+                                storagerouterguid=storagedriver['storagerouter_guid'],
+                                vpool=vpools[storagedriver['vpool_guid']]))
+
+    return edgeclients
