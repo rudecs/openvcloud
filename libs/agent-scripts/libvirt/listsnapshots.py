@@ -6,7 +6,7 @@ List snapshot of specific machine
 
 name = "listsnapshots"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@incubaid.com"
 license = "bsd"
 version = "1.0"

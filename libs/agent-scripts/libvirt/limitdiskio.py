@@ -6,7 +6,7 @@ Limit disk IO per seconds
 """
 
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@greenitglobe.com"
 license = "bsd"
 version = "1.0"

@@ -5,7 +5,7 @@ Libvirt script to ge the domain
 """
 
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"

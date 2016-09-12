@@ -6,7 +6,7 @@ Script to assure the Libvirt network and the corresponding vxLan exists
 
 name = "createnetwork"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "vscalers.com"
 license = "bsd"
 version = "1.0"
@@ -26,6 +26,3 @@ def action(networkid):
         #create the bridge if it does not exist
         connection.createNetwork(bridgename, bridgename)
     return networkinformation
-
-
-

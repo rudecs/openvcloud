@@ -6,7 +6,7 @@ Rollback a snapshot on a machine
 
 name = "rollbacksnapshot"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@incubaid.com"
 license = "bsd"
 version = "1.0"

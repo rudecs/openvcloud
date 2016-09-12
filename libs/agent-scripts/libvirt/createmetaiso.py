@@ -6,7 +6,7 @@ Libvirt script to create the metadata iso
 
 name = "createmetaiso"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
@@ -22,7 +22,7 @@ def action(name, metadata, userdata, type):
     iso.create_meta_iso(imagepath.replace('://', ':'), metadata, userdata, type)
     return imagepath
 
-    
+
 if __name__ == '__main__':
     userdata = {
         "chpasswd": {

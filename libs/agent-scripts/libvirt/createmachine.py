@@ -6,7 +6,7 @@ Libvirt script to create a machine
 
 name = "createmachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
@@ -21,5 +21,3 @@ def action(machinexml):
     if not connection.check_machine(machinexml):
     	return -1
     return connection.create_machine(machinexml)
-
-

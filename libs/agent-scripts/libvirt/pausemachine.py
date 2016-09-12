@@ -6,7 +6,7 @@ Libvirt script to suspend a virtual machine
 
 name = "pausemachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"

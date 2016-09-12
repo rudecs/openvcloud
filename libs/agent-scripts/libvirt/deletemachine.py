@@ -6,7 +6,7 @@ Libvirt script to delete a virtual machine
 
 name = "deletemachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
