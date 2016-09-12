@@ -6,7 +6,7 @@ Delete snapshot of machine
 
 name = "deletesnapshot"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"

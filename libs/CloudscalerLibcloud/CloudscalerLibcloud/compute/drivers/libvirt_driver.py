@@ -48,7 +48,9 @@ class NetworkInterface(object):
 class OpenvStorageVolume(StorageVolume):
     def __init__(self, *args, **kwargs):
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
-        url = urlparse.urlparse(self.id)
+        vdiskid, _, vdiskguid = self.id.partition('_')
+        url = urlparse.urlparse(vdiskid)
+        self.vdiskguid = vdiskguid
         self.edgetransport = 'tcp' if '+' not in url.scheme else url.scheme.split('+')[1]
         self.edgehost = url.hostname
         self.edgeport = url.port
@@ -91,6 +93,7 @@ class CSLibvirtNodeDriver(object):
 
     _roundrobinstoragedriver = {'next': 0, 'edgeclienttime': 0}
     _edgeclients = []
+    _ovsdata = {}
     _edgenodes = {}
 
     NODE_STATE_MAP = {
@@ -114,6 +117,30 @@ class CSLibvirtNodeDriver(object):
         self.scl = j.clients.osis.getNamespace('system')
 
     backendconnection = connection.DummyConnection()
+
+    @property
+    def ovs_credentials(self):
+        if 'credentials' not in self._ovsdata:
+            grid = self.scl.grid.get(self.gid)
+            credentials = grid.settings['ovs_credentials']
+            self._ovsdata['credentials'] = credentials
+        return self._ovsdata['credentials']
+
+    @property
+    def ovs_connection(self):
+        return {'ips': list(set(edge['ip'] for edge in self.edgeclients)),
+                'client_id': self.ovs_credentials['client_id'],
+                'client_secret': self.ovs_credentials['client_secret']
+                }
+
+    def getVolumeId(self, vdiskguid, edgeclient, name):
+        return "openvstorage+{protocol}://{ip}:{port}/{name}@{vdiskguid}".format(
+            protocol=edgeclient['protocol'],
+            ip=edgeclient['ip'],
+            port=edgeclient['port'],
+            name=name,
+            vdiskguid=vdiskguid
+        )
 
     @property
     def edgeclients(self):
@@ -212,7 +239,7 @@ class CSLibvirtNodeDriver(object):
             id = int(self.id)
         else:
             id = id and int(id)
-        job = self.backendconnection.agentcontroller_client.executeJumpscript('cloudscalers', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
+        job = self.backendconnection.agentcontroller_client.executeJumpscript('greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
                 raise RuntimeError('Could not find agent with nid:%s' % id)
@@ -228,7 +255,15 @@ class CSLibvirtNodeDriver(object):
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
         disksize = size.disk * (1000 ** 3)  # from GB to bytes
-        return self._execute_agent_job('createdisk', vmname=vm_id, size=disksize, role='storagedriver', templateguid=templateguid)
+        edgeclient = self.getNextEdgeClient('vmstor')
+        diskname = 'vm-{0}/bootdisk-vm-{0}'.format(vm_id)
+        kwargs = {'ovs_connection': self.ovs_connection,
+                  'storagerouterguid': edgeclient['storagerouterguid'],
+                  'size': disksize,
+                  'templateguid': templateguid,
+                  'diskname': diskname}
+        vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='node', **kwargs)
+        return self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
 
     def create_volume(self, size, name):
         bytesize = size * (1000 ** 3)
@@ -239,8 +274,15 @@ class CSLibvirtNodeDriver(object):
         stvolumes = []
         for volume in volumes:
             edgeclient = self.getNextEdgeClient()
-            volume = self._execute_agent_job('createvolume', volume=volume, id=edgeclient['nid'], edgeclient=edgeclient)
-            stvol = OpenvStorageVolume(id=volume['id'], size=volume['size'], name=volume['name'], driver=self)
+            diskname = 'volumes/volume_{}'.format(volume['id'])
+            kwargs = {'ovs_connection': self.ovs_connection,
+                      'vpoolguid': edgeclient['vpoolguid'],
+                      'storagerouterguid': edgeclient['storagerouterguid'],
+                      'diskname': diskname,
+                      'size': volume['size']}
+            vdiskguid = self._execute_agent_job('createdisk', volume=volume, role='node', **kwargs)
+            volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
+            stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
             stvol.dev = volume['dev']
             stvolumes.append(stvol)
         return stvolumes
@@ -365,11 +407,8 @@ class CSLibvirtNodeDriver(object):
                 userdata = {}
                 metadata = {'admin_pass': password, 'hostname': name}
             metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        diskpath = self._create_disk(name, size, image)
-        if not diskpath or diskpath == -1:
-            # not enough free capcity to create a disk on this node
-            return -1
-        volume = OpenvStorageVolume(id=diskpath, name='Bootdisk', size=size, driver=self)
+        diskid = self._create_disk(name, size, image)
+        volume = OpenvStorageVolume(id=diskid, name='Bootdisk', size=size, driver=self)
         volume.dev = 'vda'
         volumes = [volume]
         if datadisks:

@@ -5,7 +5,7 @@ Libvirt script to start all machines
 """
 
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
