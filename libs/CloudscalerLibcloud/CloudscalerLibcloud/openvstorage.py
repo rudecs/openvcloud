@@ -113,6 +113,9 @@ def getPath(path, vpoolname=None):
     url = urlparse.urlparse(path)
     vpool = _getVPoolByUrl(url, vpoolname)
     path = url.path.strip('/')
+    pathparts = path.split('/')
+    if pathparts[0] == 'mnt':
+        path = '/'.join(pathparts[2:])
     if not path.startswith('/mnt/%s' % vpool.name):
         path = os.path.join('/mnt/%s' % vpool.name, path)
     if not path.endswith('.raw'):
