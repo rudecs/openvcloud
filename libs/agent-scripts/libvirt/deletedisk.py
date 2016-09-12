@@ -1,11 +1,10 @@
 from JumpScale import j
 
-
 descr = """
-Libvirt script to create a volume
+Libvirt script to delete a disk
 """
 
-name = "createdisk"
+name = "deletedisk"
 category = "libvirt"
 organization = "greenitglobe"
 author = "geert@greenitglobe.com"
@@ -15,27 +14,22 @@ roles = []
 async = True
 
 
-def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
-    # Creates a new blank disk
+def action(ovs_connection, diskguid):
+    # Deletes a disk
     #
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
-    # vpoolguid: guid of the vpool on which we create the disk
-    # storagerouterguid: guid of the storagerouter on wich we create the disk
-    # diskname: name for the disk
-    # size: size of the disk in MB
+    # diskguid: guid of the disk to delete
 
-    path = "/vdisks/"
-    data = dict(name=diskname, size=size, storagerouter_guid=storagerouterguid,
-                vpool_guid=vpoolguid)
+    path = "/vdisks/{}".format(diskguid)
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
-    taskguid = ovs.post(path, data=data)
+    taskguid = ovs.delete(path)
     success, result = ovs.wait_for_task(taskguid)
 
     if success:
         return result
     else:
-        raise Exception("Could not create disk:\n{}".format(result))
+        raise Exception("Could not delete disk:\n{}".format(result))

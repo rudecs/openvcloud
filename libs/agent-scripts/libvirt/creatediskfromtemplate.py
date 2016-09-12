@@ -7,7 +7,7 @@ Libvirt script to create a disk from a disk template
 
 name = "creatediskfromtemplate"
 category = "libvirt"
-organization = "Green IT Globe"
+organization = "greenitglobe"
 author = "geert@greenitglobe.com"
 license = "bsd"
 version = "2.0"
