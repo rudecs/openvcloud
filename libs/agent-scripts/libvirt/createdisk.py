@@ -39,6 +39,6 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     success, result = ovs.wait_for_task(taskguid)
 
     if success:
-        return result['vdisk_guid']
+        return result
     else:
         raise Exception("Could not create disk:\n{}".format(result))
