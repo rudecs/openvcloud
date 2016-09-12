@@ -138,8 +138,6 @@ class CleanerOVC():
 
 
     def checking(self):
-        print("[+] checking environment status")
-
         check = [
             self._getImages,
             self._getVirtualMachines,
@@ -160,6 +158,7 @@ class CleanerOVC():
 
 cleaner = CleanerOVC()
 
+print("[+] checking environment status")
 if cleaner.checking():
     print("[-] warning: environment looks already clean !")
 
