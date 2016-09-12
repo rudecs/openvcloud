@@ -26,6 +26,8 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
     # templateguid: guid of the template that needs to be used to create
     #   the volume. If omitted a blank vdisk is created.
 
+    # returns diskguid of the created disk
+
     path = "/vdisks/{}/create_from_template".format(templateguid)
     params = dict(name=diskname, storagerouter_guid=storagerouterguid)
 
@@ -36,6 +38,6 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
     success, result = ovs.wait_for_task(taskguid)
 
     if success:
-        return result
+        return result['vdisk_guid']
     else:
         raise Exception("Could not create disk:\n{}".format(result))

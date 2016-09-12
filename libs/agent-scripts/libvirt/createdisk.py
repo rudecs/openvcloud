@@ -24,6 +24,8 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     # storagerouterguid: guid of the storagerouter on wich we create the disk
     # diskname: name for the disk
     # size: size of the disk in MB
+    #
+    # returns diskguid of the created disk
 
     path = "/vdisks/"
     data = dict(name=diskname, size=size, storagerouter_guid=storagerouterguid,
@@ -36,6 +38,6 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     success, result = ovs.wait_for_task(taskguid)
 
     if success:
-        return result
+        return result['vdisk_guid']
     else:
         raise Exception("Could not create disk:\n{}".format(result))
