@@ -1,4 +1,5 @@
 from JumpScale import j
+import json
 
 
 descr = """
@@ -34,7 +35,7 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
-    taskguid = ovs.post(path, data=data)
+    taskguid = ovs.post(path, data=json.dumps(data))
     success, result = ovs.wait_for_task(taskguid)
 
     if success:

@@ -49,3 +49,12 @@ def action(ovs_connection):
                                 vpool=vpools[storagedriver['vpool_guid']]))
 
     return edgeclients
+
+
+if __name__ == '__main__':
+    import pprint
+    scl = j.clients.osis.getNamespace('system')
+    grid = scl.grid.get(j.application.whoAmI.gid)
+    credentials = grid.settings['ovs_credentials']
+    credentials['ips'] = ['localhost']
+    pprint.pprint(action(credentials))
