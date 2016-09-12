@@ -128,16 +128,25 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def ovs_connection(self):
-        return {'ips': list(set(edge['ip'] for edge in self.edgeclients)),
-                'client_id': self.ovs_credentials['client_id'],
-                'client_secret': self.ovs_credentials['client_secret']
-                }
+        if 'ovs_connection' not in self._ovsdata:
+            ips = []
+            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver', 'netaddr.name': 'backplane1'},
+                                              '$fields': ['netaddr']})[1:]
+            for address in addresses:
+                if address['name'] == 'backplane1':
+                    ips.extend(address['ip'])
+
+            connection = {'ips': ips,
+                          'client_id': self.ovs_credentials['client_id'],
+                          'client_secret': self.ovs_credentials['client_secret']}
+            self._ovsdata['ovs_connection'] = connection
+        return self._ovsdata['ovs_connection']
 
     def getVolumeId(self, vdiskguid, edgeclient, name):
         return "openvstorage+{protocol}://{ip}:{port}/{name}@{vdiskguid}".format(
-            protocol=edgeclient['protocol'],
-            ip=edgeclient['ip'],
-            port=edgeclient['port'],
+            protocol=edgeclient.get('protocol', 'tcp'),
+            ip=edgeclient['storageip'],
+            port=edgeclient['edgeport'],
             name=name,
             vdiskguid=vdiskguid
         )
@@ -145,7 +154,7 @@ class CSLibvirtNodeDriver(object):
     @property
     def edgeclients(self):
         if self._roundrobinstoragedriver['edgeclienttime'] < time.time() - 60:
-            edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver')
+            edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
             vpools = set(client['vpool'] for client in edgeclients)
             if len(vpools) > 1:
                 vpools.remove('vmstor')
@@ -153,11 +162,13 @@ class CSLibvirtNodeDriver(object):
             activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
 
             def filter_clients(client):
-                node = self._edgenodes.get(client['ip'])
+                node = self._edgenodes.get(client['storageip'])
                 if node is None:
-                    node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['ip']})[1:]), None)
+                    node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
                     if node is None:
                         return False
+                    else:
+                        self._edgenodes[client['storageip']] = node
                 client['nid'] = node['id']
                 if (node['gid'], node['id']) not in activesessions:
                     return False

@@ -24,7 +24,8 @@ def action(ovs_connection):
     #   eg: [{'storageip': '10.106.1.34',
     #         'edgeport': 26202,
     #         'storagerouterguid': '....',
-    #         'vpool': 'vmtor'
+    #         'vpool_guid': '....',
+    #         'vpool': 'vmstor'
     #        }, ...]
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
@@ -44,6 +45,7 @@ def action(ovs_connection):
         edgeclients.append(dict(storageip=storagedriver['storage_ip'],
                                 edgeport=storagedriver['ports']['edge'],
                                 storagerouterguid=storagedriver['storagerouter_guid'],
+                                vpoolguid=storagedriver['vpool_guid'],
                                 vpool=vpools[storagedriver['vpool_guid']]))
 
     return edgeclients
