@@ -119,10 +119,11 @@ class libcloud_libvirt(object):
         image.size = size
         image.id = imageid
         image.guid = imageid
-        imageid = self._models.image.set(image)[1]
+        imageid = self._models.image.set(image)[0]
         for resourceprovider in self._models.resourceprovider.search({'gid': gid})[1:]:
             resourceprovider['images'].append(imageid)
-            self._models.set(resourceprovider)
+            self._models.resourceprovider.set(resourceprovider)
+        return imageid
 
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """

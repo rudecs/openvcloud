@@ -247,7 +247,7 @@ class cloudapi_machines(BaseActor):
         imageid = self.models.image.set(image)[0]
         imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
         try:
-            referenceId = provider.client.ex_create_template(node, imagename)
+            referenceId = provider.client.ex_create_template(node, templatename, imagename)
         except:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
@@ -255,12 +255,13 @@ class cloudapi_machines(BaseActor):
                 self.models.image.set(image)
             raise
         image.referenceId = referenceId
+        image.status = 'CREATED'
         self.models.image.set(image)
-        for stack in self.models.stack({'gid': cloudspace.gid})[1:]:
+        for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
             stack['images'].append(imageid)
             self.models.stack.set(stack)
 
-        return True
+        return imageid
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()

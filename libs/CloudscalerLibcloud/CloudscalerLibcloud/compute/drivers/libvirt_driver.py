@@ -479,8 +479,7 @@ class CSLibvirtNodeDriver(object):
                   'diskguid': bootvolume.vdiskguid,
                   'name': filename}
         templateguid = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
-        self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
-        return templateguid
+        return self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='')  # dummy Node as all we want is the ID
