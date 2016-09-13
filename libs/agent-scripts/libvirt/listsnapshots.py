@@ -35,7 +35,7 @@ def action(ovs_connection, diskguids, timestamp):
     jobs = [gevent.spawn(ovs.get, path.format(diskguid)) for diskguid in diskguids]
     gevent.joinall(jobs)
     snapshots = set()
-    for snapshot in itertools.chain((job.value['snapshots'] for job in jobs)):
+    for snapshot in itertools.chain(*(job.value['snapshots'] for job in jobs)):
         if snapshot['is_automatic']:
             continue
         snapshots.add((snapshot['name'], int(snapshot['timestamp'])))
