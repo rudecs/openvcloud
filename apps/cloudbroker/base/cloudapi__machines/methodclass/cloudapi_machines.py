@@ -341,7 +341,7 @@ class cloudapi_machines(BaseActor):
         if provider:
             provider.client.destroy_node(node)
         for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
-            disk.status = 'DESTROYED'
+            disk['status'] = 'DESTROYED'
             self.models.disk.set(disk)
 
         # delete leases
