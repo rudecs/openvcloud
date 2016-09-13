@@ -20,7 +20,7 @@ def action(name, metadata, userdata, type):
     imagepath = openvstorage.getUrlPath('%s/cloud-init.%s' % (name, name))
     iso = ISO()
     iso.create_meta_iso(imagepath.replace('://', ':'), metadata, userdata, type)
-    return imagepath
+    return "{}@{}".format(imagepath, openvstorage.getVDisk(imagepath).guid)
 
 
 if __name__ == '__main__':
