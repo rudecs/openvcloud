@@ -53,7 +53,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import time
     import os
     acl = j.clients.agentcontroller.get()
-    edgeip, edgeport, edgetransport = acl.execute('cloudscalers', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
+    edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
 
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
@@ -148,7 +148,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             ro.ipaddr_remove(DEFAULTGWIP)
             ro.resetMac("internal")
         except Exception,e:
-            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e)) 
+            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         ro.do("/system/identity/set",{"name":"%s/%s"%(networkid,networkidHex)})
         ro.executeScript('/file remove numbers=[/file find]')
