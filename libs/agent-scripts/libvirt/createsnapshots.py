@@ -39,4 +39,4 @@ def action(ovs_connection, diskguids, name):
         if not success:
             raise Exception("Could not create snapshots:\n{}".format(result))
 
-    return
+    return timestamp

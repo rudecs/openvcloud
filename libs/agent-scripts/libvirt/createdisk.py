@@ -24,12 +24,12 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     # vpoolguid: guid of the vpool on which we create the disk
     # storagerouterguid: guid of the storagerouter on wich we create the disk
     # diskname: name for the disk
-    # size: size of the disk in MB
+    # size: size of the disk in GB
     #
     # returns diskguid of the created disk
 
     path = "/vdisks/"
-    data = dict(name=diskname, size=size, storagerouter_guid=storagerouterguid,
+    data = dict(name=diskname, size=size * 1000**3, storagerouter_guid=storagerouterguid,
                 vpool_guid=vpoolguid)
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],

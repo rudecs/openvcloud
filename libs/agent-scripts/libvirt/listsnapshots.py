@@ -37,6 +37,6 @@ def action(ovs_connection, diskguids):
     for snapshot in itertools.chain(*(job.value['snapshots'] for job in jobs)):
         if snapshot['is_automatic']:
             continue
-        snapshots.add((snapshot['name'], int(snapshot['timestamp'])))
+        snapshots.add((snapshot['label'], int(snapshot['timestamp'])))
 
     return [dict(name=snapshot[0], timestamp=snapshot[1]) for snapshot in snapshots]
