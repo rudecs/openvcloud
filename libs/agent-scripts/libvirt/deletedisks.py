@@ -27,7 +27,7 @@ def action(ovs_connection, diskguids):
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
-    taskguids = (ovs.delete("/vdisks/{}".format(diskguid)) for diskguid in diskguids)
+    taskguids = [ovs.delete("/vdisks/{}".format(diskguid)) for diskguid in diskguids]
     for taskguid in taskguids:
         success, result = ovs.wait_for_task(taskguid)
         if not success:
