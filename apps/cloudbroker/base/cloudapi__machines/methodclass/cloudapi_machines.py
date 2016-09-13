@@ -339,12 +339,10 @@ class cloudapi_machines(BaseActor):
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         if provider:
-            for pnode in provider.client.list_nodes():
-                if node.id == pnode.id:
-                    provider.client.destroy_node(pnode)
-                    break
-        for disk in vmachinemodel.disks:
-            j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+            provider.client.destroy_node(node)
+        for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
+            disk['status'] = 'DESTROYED'
+            self.models.disk.set(disk)
 
         # delete leases
         cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)

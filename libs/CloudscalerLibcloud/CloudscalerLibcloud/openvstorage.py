@@ -96,6 +96,7 @@ def getVDisk(path, vpool=None, timeout=None):
             disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
     return disk
 
+
 def getUrlPath(path, vpoolname=VPOOLNAME):
     storageip, edgeport, protocol = getEdgeconnection(vpoolname)
     newpath, ext = os.path.splitext(path)

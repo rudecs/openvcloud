@@ -16,13 +16,12 @@ roles = []
 async = True
 
 
-def action(ovs_connection, diskguids, timestamp):
+def action(ovs_connection, diskguids):
     # Lists snapshots
     #
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
     # diskguids: array of guids of the disks to delete
-    # timestamp: epoch timestamp when the snapshot was created (integer)
     #
     # returns list of dicts with name snapshot combinations
     #  eg: [{'name': 'ultimate', 'timestamp': 1368774635484}, ...]

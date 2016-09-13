@@ -76,9 +76,9 @@ def OpenvStorageVolumeFromXML(disk, driver):
     protocol = source.attrib.get('protocol')
     name = source.attrib.get('name')
     host = source.find('host')
+    vdiskguid = source.attrib.get('vdiskguid')
     hostname = host.attrib.get('name')
     hostport = host.attrib.get('port')
-    vdiskguid = host.attrib.get('vdiskguid')
     transport = host.attrib.get('transport', 'tcp')
     url = "{protocol}+{transport}://{hostname}:{port}/{name}@{vdiskguid}".format(
         protocol=protocol,
@@ -488,26 +488,28 @@ class CSLibvirtNodeDriver(object):
         return node
 
     def _get_volume_paths(self, node):
-        diskpaths = list()
-        for volume in node.extra['volumes']:
-            diskpaths.append(volume.id)
-        return diskpaths
+        xml = self._get_persistent_xml(node)
+        return self._get_domain_disk_file_names(xml)
 
     def ex_create_snapshot(self, node, name):
-        diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('snapshot', role='storagedriver', diskpaths=diskpaths, name=name)
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'name': name}
+        return self._execute_agent_job('createsnapshots', role='storagedriver', **kwargs)
 
     def ex_list_snapshots(self, node):
-        diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('listsnapshots', role='storagedriver', diskpaths=diskpaths)
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
+        return self._execute_agent_job('listsnapshots', role='storagedriver', **kwargs)
 
     def ex_delete_snapshot(self, node, timestamp):
-        diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', diskpaths=diskpaths, timestamp=timestamp)
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp}
+        return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        diskpaths = self._get_volume_paths(node)
-        return self._execute_agent_job('rollbacksnapshot', role='storagedriver', diskpaths=diskpaths, timestamp=timestamp)
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp}
+        return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
         if isinstance(dom, ElementTree.Element):
@@ -540,8 +542,9 @@ class CSLibvirtNodeDriver(object):
         xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
-        diskguids = self._get_domain_disk_file_names(xml, node)
-        self._execute_agent_job('deletedisks', diskguids=diskguids, role='storagedriver')
+        diskguids = self._get_domain_disk_file_names(xml, 'disk') + self._get_domain_disk_file_names(xml, 'cdrom')
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
+        self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
         return True
 
     def ex_get_console_url(self, node):
