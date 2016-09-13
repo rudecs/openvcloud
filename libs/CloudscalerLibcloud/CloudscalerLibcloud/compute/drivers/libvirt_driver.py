@@ -78,13 +78,15 @@ def OpenvStorageVolumeFromXML(disk, driver):
     host = source.find('host')
     hostname = host.attrib.get('name')
     hostport = host.attrib.get('port')
+    vdiskguid = host.attrib.get('vdiskguid')
     transport = host.attrib.get('transport', 'tcp')
-    url = "{protocol}+{transport}://{hostname}:{port}/{name}".format(
+    url = "{protocol}+{transport}://{hostname}:{port}/{name}@{vdiskguid}".format(
         protocol=protocol,
         transport=transport,
         hostname=hostname,
         port=hostport,
-        name=name
+        name=name,
+        vdiskguid=vdiskguid
     )
     return OpenvStorageVolume(id=url, name='N/A', size=0, driver=driver)
 
@@ -329,7 +331,9 @@ class CSLibvirtNodeDriver(object):
         return self._from_xml_to_node(xml, node)
 
     def destroy_volume(self, volume):
-        return self._execute_agent_job('destroyvolume', role='storagedriver', path=volume.id)
+        kwargs = {'ovs_connection': self.ovs_connection,
+                  'diskguids': [volume.vdiskguid]}
+        return self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
 
     def detach_volume(self, volume):
         node = volume.extra['node']
@@ -520,7 +524,7 @@ class CSLibvirtNodeDriver(object):
                 if source is not None:
                     if source.attrib.get('protocol') == 'openvstorage':
                         ovsdisk = OpenvStorageVolumeFromXML(disk, self)
-                        diskfiles.append(ovsdisk.id)
+                        diskfiles.append(ovsdisk.vdiskguid)
                     elif 'dev' in source.attrib:
                         diskfiles.append(source.attrib['dev'])
                     elif 'file' in source.attrib:
@@ -536,8 +540,8 @@ class CSLibvirtNodeDriver(object):
         xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
-        files = self._get_domain_disk_file_names(xml, None)
-        self._execute_agent_job('destroyvolumes', diskpaths=files, role='storagedriver')
+        diskguids = self._get_domain_disk_file_names(xml, node)
+        self._execute_agent_job('deletedisks', diskguids=diskguids, role='storagedriver')
         return True
 
     def ex_get_console_url(self, node):
