@@ -14,7 +14,6 @@ license = "bsd"
 version = "2.0"
 roles = []
 async = True
-queue = 'hypervisor'
 
 
 def action(ovs_connection, disks, name):
@@ -57,7 +56,7 @@ def action(ovs_connection, disks, name):
                                         snapshot_id=snapshot_guid))
         success, result = ovs.wait_for_task(taskguid)
         if not success:
-            raise Exception("Could not create snapshot:\n{}".format(result))
+            raise Exception("Could not create clone:\n{}".format(result))
         return result['vdisk_guid']
 
     jobs = [gevent.spawn(clone, disk) for disk in disks]
