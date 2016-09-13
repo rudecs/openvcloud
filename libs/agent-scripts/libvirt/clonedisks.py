@@ -17,19 +17,17 @@ async = True
 queue = 'hypervisor'
 
 
-def action(ovs_connection, diskguids, name, storagerouterguids):
+def action(ovs_connection, disks, name):
     # Create a clone with name name for each disk
     #
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
-    # diskguids: array of guids of the disks to delete
+    # disks: array of dicts containing diskguid, new name and storagerouterguid
+    #   eg: [ {'diskguid': '3333', 'clone_name': 'volume/volume-45', 'storagerouterguid': '65446'}]
     # name: name for the clone
     # storagerouterguids: list of storage routers equaly sized as list of diskguids
     #
     # returns list of diskguids of cloned disks corresponding to the diskguids parameter
-
-    if len(diskguids) != len(storagerouterguids):
-        raise ValueError("Invalid input parameters")
 
     timestamp = int(time.time())
     snapshot_name = 'for clone {}'.format(name)
@@ -39,7 +37,11 @@ def action(ovs_connection, diskguids, name, storagerouterguids):
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
-    def clone(diskguid, storagerouterguid):
+    def clone(disk):
+        diskguid = disk['diskguid']
+        clone_name = disk['clone_name']
+        storagerouterguid = disk['storagerouterguid']
+
         # First create snapshot
         params = dict(name=snapshot_name, timestamp=timestamp, sticky=True)
         taskguid = ovs.post(snapshot_path.format(diskguid), params=params)
@@ -50,7 +52,7 @@ def action(ovs_connection, diskguids, name, storagerouterguids):
 
         # Create clone
         taskguid = ovs.post(clone_path.format(diskguid),
-                            params=dict(name=name,
+                            params=dict(name=clone_name,
                                         storagerouter_guid=storagerouterguid,
                                         snapshot_id=snapshot_guid))
         success, result = ovs.wait_for_task(taskguid)
@@ -58,6 +60,6 @@ def action(ovs_connection, diskguids, name, storagerouterguids):
             raise Exception("Could not create snapshot:\n{}".format(result))
         return result['vdisk_guid']
 
-    jobs = [gevent.spawn(clone, dg, sg) for dg, sg in zip(diskguids, storagerouterguids)]
+    jobs = [gevent.spawn(clone, disk) for disk in disks]
     gevent.joinall(jobs)
     return [job.value for job in jobs]

@@ -33,7 +33,7 @@ def action(ovs_connection, diskguids, name):
     path = '/vdisks/{}/create_snapshot'
     params = dict(name=name, timestamp=timestamp, sticky=True)
 
-    taskguids = (ovs.post(path.format(dg), params=params) for dg in diskguids)
+    taskguids = [ovs.post(path.format(dg), params=params) for dg in diskguids]
     for taskguid in taskguids:
         success, result = ovs.wait_for_task(taskguid)
         if not success:
