@@ -76,9 +76,9 @@ def OpenvStorageVolumeFromXML(disk, driver):
     protocol = source.attrib.get('protocol')
     name = source.attrib.get('name')
     host = source.find('host')
+    vdiskguid = source.attrib.get('vdiskguid')
     hostname = host.attrib.get('name')
     hostport = host.attrib.get('port')
-    vdiskguid = host.attrib.get('vdiskguid')
     transport = host.attrib.get('transport', 'tcp')
     url = "{protocol}+{transport}://{hostname}:{port}/{name}@{vdiskguid}".format(
         protocol=protocol,
@@ -540,8 +540,9 @@ class CSLibvirtNodeDriver(object):
         xml = self._get_persistent_xml(node)
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
-        diskguids = self._get_domain_disk_file_names(xml, node)
-        self._execute_agent_job('deletedisks', diskguids=diskguids, role='storagedriver')
+        diskguids = self._get_domain_disk_file_names(xml, 'disk') + self._get_domain_disk_file_names(xml, 'cdrom')
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
+        self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
         return True
 
     def ex_get_console_url(self, node):
