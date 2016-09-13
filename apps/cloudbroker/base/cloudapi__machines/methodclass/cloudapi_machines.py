@@ -483,7 +483,7 @@ class cloudapi_machines(BaseActor):
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
-        return snapshot['name']
+        return snapshot
 
     @authenticator.auth(acl={'machine': set('R')})
     @audit()

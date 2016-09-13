@@ -39,4 +39,4 @@ def action(ovs_connection, diskguids):
             continue
         snapshots.add((snapshot['label'], int(snapshot['timestamp'])))
 
-    return [dict(name=snapshot[0], timestamp=snapshot[1]) for snapshot in snapshots]
+    return [dict(name=snapshot[0], epoch=snapshot[1]) for snapshot in snapshots]
