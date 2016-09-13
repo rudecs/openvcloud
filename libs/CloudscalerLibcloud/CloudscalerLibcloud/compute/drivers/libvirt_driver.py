@@ -275,12 +275,11 @@ class CSLibvirtNodeDriver(object):
 
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
-        disksize = size.disk * (1000 ** 3)  # from GB to bytes
         edgeclient = self.getNextEdgeClient('vmstor')
         diskname = '{0}/bootdisk-{0}'.format(vm_id)
         kwargs = {'ovs_connection': self.ovs_connection,
                   'storagerouterguid': edgeclient['storagerouterguid'],
-                  'size': disksize,
+                  'size': size.disk,
                   'templateguid': templateguid,
                   'diskname': diskname}
         vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
