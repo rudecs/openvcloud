@@ -16,11 +16,7 @@ VPOOLNAME = 'vmstor'
 
 
 def setAsTemplate(templatepath):
-    disk = None
-    start = time.time()
-    while not disk and start + 60 > time.time():
-        time.sleep(2)
-        disk = getVDisk(templatepath)
+    disk = getVDisk(templatepath, timeout=60)
     if not disk:
         raise RuntimeError("Template did not become available on OVS at %s" % templatepath)
     if disk.info['object_type'] != 'TEMPLATE':
@@ -86,14 +82,19 @@ def _getVPoolByUrl(url, vpoolname=None):
     return vpool
 
 
-def getVDisk(path, vpool=None):
+def getVDisk(path, vpool=None, timeout=None):
     url = urlparse.urlparse(path)
     path = '/' + url.path.strip('/')
     if not path.endswith('.raw'):
         path += '.raw'
     vpool = _getVPoolByUrl(url, vpool)
-    return VDiskList.get_by_devicename_and_vpool(path, vpool)
-
+    disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
+    if timeout is not None:
+        start = time.time()
+        while not disk and start + timeout > time.time():
+            time.sleep(2)
+            disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
+    return disk
 
 def getUrlPath(path, vpoolname=VPOOLNAME):
     storageip, edgeport, protocol = getEdgeconnection(vpoolname)
