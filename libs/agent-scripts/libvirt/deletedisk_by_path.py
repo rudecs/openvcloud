@@ -6,7 +6,6 @@ descr = """
 Libvirt script to delete a disk
 """
 
-name = "deletedisk"
 category = "libvirt"
 organization = "greenitglobe"
 author = "geert@greenitglobe.com"

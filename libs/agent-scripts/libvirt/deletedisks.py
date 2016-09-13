@@ -4,7 +4,6 @@ descr = """
 Libvirt script to delete a number of disks
 """
 
-name = "deletedisks"
 category = "libvirt"
 organization = "greenitglobe"
 author = "geert@greenitglobe.com"

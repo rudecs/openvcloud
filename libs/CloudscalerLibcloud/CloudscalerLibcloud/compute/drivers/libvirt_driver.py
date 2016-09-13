@@ -122,17 +122,21 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def ovs_credentials(self):
-        if 'credentials' not in self._ovsdata:
+        cachekey = 'credentials_{}'.format(self.gid)
+        if cachekey not in self._ovsdata:
             grid = self.scl.grid.get(self.gid)
             credentials = grid.settings['ovs_credentials']
-            self._ovsdata['credentials'] = credentials
-        return self._ovsdata['credentials']
+            self._ovsdata[cachekey] = credentials
+        return self._ovsdata[cachekey]
 
     @property
     def ovs_connection(self):
-        if 'ovs_connection' not in self._ovsdata:
+        cachekey = 'ovs_connection_{}'.format(self.gid)
+        if cachekey not in self._ovsdata:
             ips = []
-            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver', 'netaddr.name': 'backplane1'},
+            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver',
+                                                         'netaddr.name': 'backplane1',
+                                                         'gid': self.gid},
                                               '$fields': ['netaddr']})[1:]
             for nodeaddresses in addresses:
                 for nodeaddress in nodeaddresses['netaddr']:
@@ -142,8 +146,8 @@ class CSLibvirtNodeDriver(object):
             connection = {'ips': ips,
                           'client_id': self.ovs_credentials['client_id'],
                           'client_secret': self.ovs_credentials['client_secret']}
-            self._ovsdata['ovs_connection'] = connection
-        return self._ovsdata['ovs_connection']
+            self._ovsdata[cachekey] = connection
+        return self._ovsdata[cachekey]
 
     def getVolumeId(self, vdiskguid, edgeclient, name):
         return "openvstorage+{protocol}://{ip}:{port}/{name}@{vdiskguid}".format(

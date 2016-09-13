@@ -64,11 +64,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
     destinationfile = None
 
-    def destroy_device(path):
-        acl.execute('cloudscalers', 'destroyvolume',
-                    role='storagedriver', gid=j.application.whoAmI.gid,
-                    args={'path': path})
-
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
             'username': username,
@@ -90,14 +85,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     try:
         # setup network vxlan
         print 'Creating network'
-        createnetwork = j.clients.redisworker.getJumpscriptFromName('cloudscalers', 'createnetwork')
+        createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
         j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
 
         devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
         destinationfile = 'openvstorage+%s://%s:%s/%s' % (
             edgetransport, edgeip, edgeport, devicename
         )
-        destroy_device(destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
@@ -209,8 +203,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         if docleanup:
             j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
                                                networkid=networkid)
-            if destinationfile:
-                destroy_device(destinationfile)
         raise
 
     return data
