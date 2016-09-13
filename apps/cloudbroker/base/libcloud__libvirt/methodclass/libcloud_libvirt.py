@@ -112,6 +112,18 @@ class libcloud_libvirt(object):
         macaddr.dialect = netaddr.mac_eui48
         return str(macaddr).replace('-', ':').lower()
 
+    def registerImage(self, name, category, imageid, size, gid, **kwargs):
+        image = self._models.image.new()
+        image.name = name
+        image.type = category
+        image.size = size
+        image.id = imageid
+        image.guid = imageid
+        imageid = self._models.image.set(image)[1]
+        for resourceprovider in self._models.resourceprovider.search({'gid': gid})[1:]:
+            resourceprovider['images'].append(imageid)
+            self._models.set(resourceprovider)
+
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
         Release a ipaddress.
@@ -129,7 +141,7 @@ class libcloud_libvirt(object):
         Add a new network idrange
         param:start start of the range
         param:end end of the range
-        result 
+        result
         """
         key = 'networkids_%s' % gid
         newrange = set(range(int(start), int(end) + 1))
@@ -155,7 +167,7 @@ class libcloud_libvirt(object):
     def getFreeNetworkId(self, gid, **kwargs):
         """
         Get a free NetworkId
-        result 
+        result
         """
         key = 'networkids_%s' % gid
         with self.blobdb.lock(key):
@@ -212,8 +224,8 @@ class libcloud_libvirt(object):
 
     def getNode(self, id, **kwargs):
         """
-        Get a node 
-        param: id of the node to get 
+        Get a node
+        param: id of the node to get
         result node
         """
         node = self._models.node.get(id).dump()
@@ -313,4 +325,3 @@ class libcloud_libvirt(object):
         gid = int(gid)
         results = self._models.vnc.search({'gid': gid})[1:]
         return [res['url'] for res in results]
-

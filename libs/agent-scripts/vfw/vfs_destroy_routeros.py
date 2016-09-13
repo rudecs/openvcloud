@@ -36,12 +36,6 @@ def action(networkid):
     except libvirt.libvirtError:
         pass
 
-    acl.execute('cloudscalers', 'destroyvolume',
-                role='storagedriver', gid=j.application.whoAmI.gid,
-                args={'path': path})
-
-    connection.cleanupNetwork(networkid)
-
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()

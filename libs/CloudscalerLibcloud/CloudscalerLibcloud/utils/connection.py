@@ -1,6 +1,3 @@
-import md5
-
-
 class DummyConnection():
 
     def listSizes(self):
@@ -37,8 +34,6 @@ class CloudBrokerConnection():
     def __init__(self, client=None):
         from JumpScale import j
         self._j = j
-        import JumpScale.grid.geventws
-        from JumpScale.grid import agentcontroller
         if client:
             self.client = client
             self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
@@ -48,7 +43,6 @@ class CloudBrokerConnection():
         self.agentcontroller_client = j.clients.agentcontroller.get()
 
     def _getKeyValueStore(self):
-        import JumpScale.grid.osis
         client = self._j.clients.osis.getByInstance('main')
         if self.NAMESPACE not in client.listNamespaces():
             client.createNamespace(self.NAMESPACE, 'blob')
@@ -75,6 +69,9 @@ class CloudBrokerConnection():
 
     def registerMachine(self, id, macaddress, networkid):
         return self.libvirt_actor.registerNode(id, macaddress, networkid)
+
+    def registerImage(self, name, category, imageid, size, gid):
+        return self.libvirt_actor.registerImage(name, category, imageid, size, gid)
 
     def unregisterMachine(self, id):
         return self.libvirt_actor.unregisterNode(id)

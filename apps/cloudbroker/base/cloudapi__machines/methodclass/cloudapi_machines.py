@@ -245,17 +245,20 @@ class cloudapi_machines(BaseActor):
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
-        stack = self.models.stack.get(machine.stackId)
-        stack.images.append(imageid)
-        self.models.stack.set(stack)
+        imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
         try:
-            provider.client.ex_create_template(node, templatename, imageid, basename)
+            referenceId = provider.client.ex_create_template(node, imagename)
         except:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
                 image.status = 'ERROR'
                 self.models.image.set(image)
             raise
+        image.referenceId = referenceId
+        self.models.image.set(image)
+        for stack in self.models.stack({'gid': cloudspace.gid})[1:]:
+            stack['images'].append(imageid)
+            self.models.stack.set(stack)
 
         return True
 

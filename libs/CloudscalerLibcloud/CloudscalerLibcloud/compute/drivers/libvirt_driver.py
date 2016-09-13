@@ -469,14 +469,18 @@ class CSLibvirtNodeDriver(object):
         self._set_persistent_xml(node, machinexml)
         return node
 
-    def ex_create_template(self, node, name, imageid, snapshotbase=None):
+    def ex_create_template(self, node, name, filename):
         xml = self._get_persistent_xml(node)
         node = self._from_xml_to_node(xml, node)
         bootvolume = node.extra['volumes'][0]
-        return self._execute_agent_job('createtemplate', queue='io', role='storagedriver',
-                                       machineid=node.id, templatename=name,
-                                       sourcepath=bootvolume.id,
-                                       imageid=imageid)
+        edgeclient = self.getNextEdgeClient('vmstor')
+        kwargs = {'ovs_connection': self.ovs_connection,
+                  'storagerouterguid': edgeclient['storagerouterguid'],
+                  'diskguid': bootvolume.vdiskguid,
+                  'name': filename}
+        templateguid = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
+        self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
+        return templateguid
 
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='')  # dummy Node as all we want is the ID
