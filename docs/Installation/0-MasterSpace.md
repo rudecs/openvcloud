@@ -2,13 +2,13 @@
 
 ### Introduction
 
-The first step to deploy an Open vCloud environment is to setup the master cloud space. JumpScale provides tools to easily do this.
+The first step to deploy an OpenvCloud environment is to setup the master cloud space. JumpScale provides tools to easily do this.
 
 To bootstrap the installation of the master cloud space, you need to create the **ovc_git** virtual machine. This virtual machine will be used to install all the other virtual machines of the master cloud space.
 
 > **Warning**: Please check or keep this in mind before starting:
 - You must have a working **Redis** setup on your system
-- You need access to the **openvcloudEnvironments** GitHub repositories
+- You need write access to the **environment repository**, that is the GitHub repository that holds all configuration data of the environment, e.g. [gig-projects/env_gig](https://github.com/gig-projects/env_gig)
 - You must have set your name and your e-mail address on your GitHub account
 - Your system must have a working GitHub setup (email and name set)
 - Your GitHub account needs to have access to all involved repositories (SSL offload, Racktivity, ...)
@@ -213,10 +213,10 @@ Make sure that when you ssh into **ovc_git** that you do this with an `ssh -A ov
 
 When you are connected to it, there is another script to be executed which will deploy all the others virtual machines in the master cloud space of your environment.
 
-To start it, at first, go to the environment directory, which was cloned from the openvcloudEnvironments repository (in this example 'be-dev-1'):
+To start it, at first, go to the environment directory, which was cloned from the environment repository (in this example 'env_gig'):
 
 ```
-cd /opt/code/git/openvcloudEnvironments/be-dev-1/
+cd /opt/code/git/gig-projects/env_gig/
 ```
 
 First use the **master-spawn.py** script for creating the required virtual machines and configure them:

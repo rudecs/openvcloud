@@ -3,6 +3,7 @@
 When the image is installed, connect to the node using SSH (default credential are: `gig/rooter`, you can `sudo -s` when logged in to be root).
 
 There is a script which takes care of all the needed stuff to setup the node hardware, to apply it, just run (in root):
+
 ```
 reboot
 ```
