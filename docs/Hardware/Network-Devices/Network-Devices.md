@@ -1,3 +1,3 @@
-## Replacement of Network Devices
+## Adding, Replacing & Removing Hardware Network Devices
 
 [Mellanox](Mellanox.md)
