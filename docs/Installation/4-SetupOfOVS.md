@@ -1,8 +1,10 @@
 ## Setup of Open vStorage
 
-On `ovc_git` there is a script which will install everything needed on nodes for Open vStorage.
+For an introduction to Open vStorage you might first want to read the [Open vStorage documentation](https://openvstorage.gitbooks.io/administration/content/Openvstorage/).
 
-After having run the `pre-install.sh` script, go to the directory which contains your environment repository (example):
+On **ovc_git** there is a script which will install all Open vStorage (OVS) components.
+
+After having run the **pre-install.sh** script, go to the directory which contains your environment repository (example):
 
 ```bash
 cd /opt/code/github/openvcloudEnvironments/be-dev-1/
@@ -10,15 +12,17 @@ cd /opt/code/github/openvcloudEnvironments/be-dev-1/
 
 From there you have two options:
 
-- Use the auto-detection setup (highly recommended)
-- Or use the the custom/manual setup
+- [Use the auto-detection setup](#auto-detection) (**highly recommended**)
+- [Or use the the custom/manual setup](#custom)
 
+Both are discussed here below.
 
+<a id="auto-detection"></a>
 ### Auto-detection setup
 
 This is the simplest way to setup a basic OVS environment, if you are OK with the default configuration.
 
-Just run this script as many time you have nodes:
+Just run **cpunode-setup.py** as many times as you have nodes:
 
 ```
 jspython scripts/cpunode-setup.py
@@ -32,23 +36,26 @@ This auto-detection mode will:
 
 > **Note:** this method will auto-detect master/slave for you. If you want a more custom method, please use the custom setup.
 
-After the first node installation is done, you should have all the OVS and OVC packages downloaded into `/var/cache/apt/archives/*dep`, if you copied the packages in here to the other nodes, you shall cut the download time out of the installation .. you can do this with the following command
+After the first node installation is done, you should have all the OVS and OVC packages downloaded into `/var/cache/apt/archives/*dep`. It is best to copy these packages to the other nodes, which will cut down the installation time:
 
 ```bash
 rsync -avzp --progress /var/cache/apt/archives/ root@IP_OF_THE_OTHERNODE://var/cache/apt/archives/
 ```
-do this for all the nodes , note that you can use the internal ips of the nodes , which can be found in [here](https://git.aydo.com/openvcloudEnvironments/IP_Layout_DEMO/blob/master/Table.md)
+
+Do this for all the nodes, note that you can use the internal ips of the nodes, which can be found in [here](https://git.aydo.com/openvcloudEnvironments/IP_Layout_DEMO/blob/master/Table.md)
 
 
+<a id="custom"></a>
 ### Custom setup
 
-You can install the ovs-stuff using the same script as the auto-detect, but with some argument to make custom choice:
+You can install the Open vStorage using the same script as used with the auto-detection setup, but with some arguments to make custom choices:
+
 ```
 jspython scripts/cpunode-setup.py --node be-scale-1-01 --master
 jspython scripts/cpunode-setup.py --node $XX --slave $IPMASTER
 ```
 
-The node `$XX` should be replaced by node name (eg: envname-05, ...) and the `$IPMASTER` is the backplane master ip of the master node. The master install script should give you the IP address, it should be like: `10.xxx.1.11`
+`$XX` should be replaced by node name (e.g. envname-05) and `$IPMASTER` is the backplane master ip of the master node. The master install script should give you the IP address, it should be like: `10.xxx.1.11`.
 
 After that, your node is ready.
 

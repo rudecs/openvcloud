@@ -1,9 +1,16 @@
 ## Adding, Replacing & Removing Hardware
 
-* [CPU Node](CPUNode.md)
+* [Component Replacement](Component-Replacement.md)
 
-* [SSD](SSD.md)
+  * [SSD](Components/SSD.md)
+  * [NVMe](Components/NVME.md)
+  * [Backend Disk](Components/Backend-Disk.md)
 
-* [NVME](NVME.md)
+* [Node Replacement](Nodes/Node-Replacement.md)
 
-* [Mellanox](Mellanox.md)
+  * [OVS Node](Nodes/OVS-Node.md)
+  * [CPU Node](Nodes/CPU-Node.md)
+  * [Storage Node](Nodes/Storage-Node.md)
+
+* [Network Devices](Network-Devices/Network-Devices.md)
+  * [Mellanox](Network-Devices/Mellanox.md)
