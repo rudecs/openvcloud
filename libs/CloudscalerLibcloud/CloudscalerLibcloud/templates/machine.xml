@@ -21,9 +21,6 @@
             {% for volume in volumes %}
             {{volume}}
             {% endfor %}
-            {% if isoname %}
-            {{isoname}}
-            {% endif %}
             <controller type='usb' index='0'>
                 <alias name='usb0'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>

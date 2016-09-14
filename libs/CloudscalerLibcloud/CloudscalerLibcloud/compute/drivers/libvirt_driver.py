@@ -438,7 +438,7 @@ class CSLibvirtNodeDriver(object):
 
             volume = self._create_disk(name, size, image)
             volume.dev = 'vda'
-            volumes.append(volumes)
+            volumes.append(volume)
             if datadisks:
                 datavolumes = []
                 for idx, (diskname, disksize) in enumerate(datadisks):
