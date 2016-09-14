@@ -467,7 +467,7 @@ class CSLibvirtNodeDriver(object):
             return -1
 
         networkname = result['networkname']
-        machinexml = machinetemplate.render({'machinename': name, 'isoname': metadata_iso, 'vxlan': vxlan,
+        machinexml = machinetemplate.render({'machinename': name, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'volumes': volumes})
 
