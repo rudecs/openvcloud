@@ -448,14 +448,13 @@ class CSLibvirtNodeDriver(object):
         except Exception as e:
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
-            raise StorageException(e)
+            raise StorageException('Failed to create some volumes', e)
         try:
             return self._create_node(name, size, networkid, volumes)
         except:
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise
-
 
     def _create_node(self, name, size, networkid=None, volumes=None):
         volumes = volumes or []
