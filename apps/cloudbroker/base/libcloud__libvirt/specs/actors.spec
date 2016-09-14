@@ -95,6 +95,15 @@
         var:gid int,,grid id
         result:str
 
+
+    method: removeImage
+    """
+    remove image from model
+    """
+        var:imageid str,,id of the image
+        var:gid int,,grid id
+        result:str
+
     method: getNode
     """
     Get a node

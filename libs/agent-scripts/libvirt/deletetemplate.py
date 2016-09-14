@@ -4,7 +4,6 @@ descr = """
 Libvirt script to delete template
 """
 
-name = "deletetemplate"
 category = "libvirt"
 organization = "greenitglobe"
 author = "geert@greenitglobe.com"

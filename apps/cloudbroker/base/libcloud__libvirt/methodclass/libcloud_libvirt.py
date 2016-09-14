@@ -125,6 +125,13 @@ class libcloud_libvirt(object):
             self._models.resourceprovider.set(resourceprovider)
         return imageid
 
+    def removeImage(self, imageid, gid, **kwargs):
+        self._models.image.delete(imageid)
+        for resourceprovider in self._models.resourceprovider.search({'gid': gid})[1:]:
+            if imageid in resourceprovider['images']:
+                resourceprovider['images'].remove(imageid)
+                self._models.resourceprovider.set(resourceprovider)
+
     def releaseIpaddress(self, ipaddress, networkid, **kwargs):
         """
         Release a ipaddress.

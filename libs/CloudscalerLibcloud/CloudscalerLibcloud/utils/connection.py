@@ -73,6 +73,9 @@ class CloudBrokerConnection():
     def registerImage(self, name, category, imageid, size, gid):
         return self.libvirt_actor.registerImage(name, category, imageid, size, gid)
 
+    def removeImage(self, imageid, gid):
+        return self.libvirt_actor.removeImage(imageid, gid)
+
     def unregisterMachine(self, id):
         return self.libvirt_actor.unregisterNode(id)
 

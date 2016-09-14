@@ -497,6 +497,11 @@ class CSLibvirtNodeDriver(object):
         templateguid = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
         return self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
 
+    def ex_delete_template(self, templateid):
+        kwargs = {'ovs_connection': self.ovs_connection, 'diskguid': str(uuid.UUID(templateid))}
+        self._execute_agent_job('deletetemplate', queue='io', role='storagedriver', **kwargs)
+        return self.backendconnection.removeImage(templateid, self.gid)
+
     def ex_get_node_details(self, node_id):
         node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='')  # dummy Node as all we want is the ID
         agentnode = self._get_domain_for_node(node)
