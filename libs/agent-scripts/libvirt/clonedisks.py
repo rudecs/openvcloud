@@ -16,20 +16,19 @@ roles = []
 async = True
 
 
-def action(ovs_connection, disks, name):
+def action(ovs_connection, disks):
     # Create a clone with name name for each disk
     #
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
     # disks: array of dicts containing diskguid, new name and storagerouterguid
     #   eg: [ {'diskguid': '3333', 'clone_name': 'volume/volume-45', 'storagerouterguid': '65446'}]
-    # name: name for the clone
     # storagerouterguids: list of storage routers equaly sized as list of diskguids
     #
     # returns list of diskguids of cloned disks corresponding to the diskguids parameter
 
     timestamp = int(time.time())
-    snapshot_name = 'for clone {}'.format(name)
+    snapshot_name = 'for clone {}'
     snapshot_path = '/vdisks/{}/create_snapshot'
     clone_path = '/vdisks/{}/clone'
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
@@ -42,7 +41,7 @@ def action(ovs_connection, disks, name):
         storagerouterguid = disk['storagerouterguid']
 
         # First create snapshot
-        params = dict(name=snapshot_name, timestamp=timestamp, sticky=True)
+        params = dict(name=snapshot_name.format(clone_name), timestamp=timestamp, sticky=True)
         taskguid = ovs.post(snapshot_path.format(diskguid), params=params)
         success, result = ovs.wait_for_task(taskguid)
         if not success:

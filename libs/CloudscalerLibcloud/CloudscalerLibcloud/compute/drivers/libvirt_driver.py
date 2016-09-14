@@ -653,10 +653,27 @@ class CSLibvirtNodeDriver(object):
 
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
-        diskpaths = self._execute_agent_job('clonevolumes', name=name, machineid=node.id, role='storagedriver', diskmapping=diskmapping)
+        disks = []
+        clonedisks = []
+        for volume, diskname in diskmapping:
+            if diskname.startswith('vm'):
+                edgeclient = self.getNextEdgeClient('vmstor')
+            else:
+                edgeclient = self.getNextEdgeClient()
+            diskinfo = {'clone_name': diskname,
+                        'diskguid': volume.vdiskguid,
+                        'storagerouterguid': edgeclient['storagerouterguid']}
+            disks.append(diskinfo)
+            morediskinfo = diskinfo.copy()
+            morediskinfo['edgeclient'] = edgeclient
+            clonedisks.append(morediskinfo)
+
+        kwargs = {'ovs_connection': self.ovs_connection, 'disks': disks}
+        newdisks = self._execute_agent_job('clonedisks', role='storagedriver', **kwargs)
         volumes = []
-        for idx, path in enumerate(diskpaths):
-            volume = OpenvStorageVolume(id=path, name='N/A', size=-1, driver=self)
+        for idx, diskinfo in enumerate(clonedisks):
+            volumeid = self.getVolumeId(newdisks[idx], diskinfo['edgeclient'], diskinfo['clone_name'])
+            volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)

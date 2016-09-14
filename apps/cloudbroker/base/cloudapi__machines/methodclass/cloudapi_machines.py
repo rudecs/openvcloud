@@ -601,8 +601,11 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
+        provider, node, machine = self._getProviderAndNode(machineId)
+
         totaldisksize = 0
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -616,16 +619,18 @@ class cloudapi_machines(BaseActor):
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
-            diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
-                                'size': origdisk.sizeMax, 'type': clonedisk.type,
-                                'diskpath': origdisk.referenceId})
+            volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
+            if clonedisk.type == 'B':
+                name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
+            else:
+                name = 'volume/volume_{}'.format(clonediskId)
+            diskmapping.append((volume, name))
             totaldisksize += clonedisk.sizeMax
         # Validate that enough resources are available in the CU limits to clone the machine
         size = self.models.size.get(clone.sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
-        provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
         node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
         self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
