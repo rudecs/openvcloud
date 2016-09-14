@@ -3,7 +3,7 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
@@ -570,6 +570,10 @@ class Machine(object):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+            except StorageException as e:
+                eco = j.errorconditionhandler.processPythonExceptionObject(e)
+                self.cleanup(machine)
+                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cb.markProvider(newstackId, eco)
@@ -577,6 +581,7 @@ class Machine(object):
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
             if node == -1 and stackId:
+                self.cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             elif node == -1:
                 excludelist.append(newstackId)

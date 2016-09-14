@@ -16,6 +16,12 @@ baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
+class StorageException(Exception):
+    def __init__(self, msg, e):
+        super(StorageException, self).__init__(msg)
+        self.origexception = e
+
+
 def convertnumber(number):
     output = ''
     if number == 0:
@@ -283,7 +289,8 @@ class CSLibvirtNodeDriver(object):
                   'templateguid': templateguid,
                   'diskname': diskname}
         vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
-        return self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
+        volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
+        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
 
     def create_volume(self, size, name):
         volumes = [{'name': name, 'size': size, 'dev': ''}]
@@ -333,9 +340,7 @@ class CSLibvirtNodeDriver(object):
         return self._from_xml_to_node(xml, node)
 
     def destroy_volume(self, volume):
-        kwargs = {'ovs_connection': self.ovs_connection,
-                  'diskguids': [volume.vdiskguid]}
-        return self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        return self.destroy_volumes_by_guid([volume.vdiskguid])
 
     def detach_volume(self, volume):
         node = volume.extra['node']
@@ -368,7 +373,8 @@ class CSLibvirtNodeDriver(object):
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        return self._execute_agent_job('createmetaiso', role='storagedriver', name=name, metadata=metadata, userdata=userdata, type=type)
+        volumeid = self._execute_agent_job('createmetaiso', role='storagedriver', name=name, metadata=metadata, userdata=userdata, type=type)
+        return OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
 
     def generate_password_hash(self, password):
         def generate_salt():
@@ -408,39 +414,50 @@ class CSLibvirtNodeDriver(object):
         @return: The newly created node.
         @rtype: L{Node}
         """
-        metadata_iso = None
+        volumes = []
 
-        if auth:
-            # At this moment we handle only NodeAuthPassword
-            password = auth.password
-            if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
-                userdata = {'password': password,
-                            'users': [{'name': 'cloudscalers',
-                                       'plain_text_passwd': password,
-                                       'lock-passwd': False,
-                                       'shell': '/bin/bash',
-                                       'sudo': 'ALL=(ALL) ALL'}],
-                            'ssh_pwauth': True,
-                            'manage_etc_hosts': True,
-                            'chpasswd': {'expire': False}}
-                metadata = {'local-hostname': name}
-            else:
-                userdata = {}
-                metadata = {'admin_pass': password, 'hostname': name}
-            metadata_iso = self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype'])
-        diskid = self._create_disk(name, size, image)
-        volume = OpenvStorageVolume(id=diskid, name='Bootdisk', size=size, driver=self)
-        volume.dev = 'vda'
-        volumes = [volume]
-        if datadisks:
-            datavolumes = []
-            for idx, (diskname, disksize) in enumerate(datadisks):
-                volume = {'name': diskname, 'size': disksize, 'dev': 'vd%s' % convertnumber(idx + 1)}
-                datavolumes.append(volume)
-            volumes += self.create_volumes(datavolumes)
-        return self._create_node(name, size, metadata_iso, networkid, volumes)
+        try:
+            if auth:
+                # At this moment we handle only NodeAuthPassword
+                password = auth.password
+                if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
+                    userdata = {'password': password,
+                                'users': [{'name': 'cloudscalers',
+                                           'plain_text_passwd': password,
+                                           'lock-passwd': False,
+                                           'shell': '/bin/bash',
+                                           'sudo': 'ALL=(ALL) ALL'}],
+                                'ssh_pwauth': True,
+                                'manage_etc_hosts': True,
+                                'chpasswd': {'expire': False}}
+                    metadata = {'local-hostname': name}
+                else:
+                    userdata = {}
+                    metadata = {'admin_pass': password, 'hostname': name}
+                volumes.append(self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype']))
 
-    def _create_node(self, name, size, metadata_iso=None, networkid=None, volumes=None):
+            volume = self._create_disk(name, size, image)
+            volume.dev = 'vda'
+            volumes.append(volumes)
+            if datadisks:
+                datavolumes = []
+                for idx, (diskname, disksize) in enumerate(datadisks):
+                    volume = {'name': diskname, 'size': disksize, 'dev': 'vd%s' % convertnumber(idx + 1)}
+                    datavolumes.append(volume)
+                volumes += self.create_volumes(datavolumes)
+        except Exception as e:
+            if len(volumes) > 0:
+                self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+            raise StorageException(e)
+        try:
+            return self._create_node(name, size, networkid, volumes)
+        except:
+            if len(volumes) > 0:
+                self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+            raise
+
+
+    def _create_node(self, name, size, networkid=None, volumes=None):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -451,8 +468,6 @@ class CSLibvirtNodeDriver(object):
             return -1
 
         networkname = result['networkname']
-        if metadata_iso:
-            metadata_iso = str(OpenvStorageISO(id=metadata_iso, size=0, name='N/A', driver=self))
         machinexml = machinetemplate.render({'machinename': name, 'isoname': metadata_iso, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
                                              'network': networkname, 'volumes': volumes})
@@ -548,9 +563,12 @@ class CSLibvirtNodeDriver(object):
         self.backendconnection.unregisterMachine(node.id)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
         diskguids = self._get_domain_disk_file_names(xml, 'disk') + self._get_domain_disk_file_names(xml, 'cdrom')
+        self.destroy_volumes_by_guid(diskguids)
+        return True
+
+    def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
         self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
-        return True
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
