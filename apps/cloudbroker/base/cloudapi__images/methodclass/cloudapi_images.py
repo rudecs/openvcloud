@@ -74,5 +74,11 @@ class cloudapi_images(BaseActor):
             raise exceptions.Error("Could not find image template")
 
         provider.client.ex_delete_template(image.referenceId)
+
+        for stack in stacks:
+            if imageId in stack['images']:
+                stack['images'].remove(imageId)
+                self.models.stack.set(stack)
+
         self.models.image.delete(imageId)
         return True
