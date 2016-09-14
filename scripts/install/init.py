@@ -19,7 +19,7 @@ group.add_option("-c", "--cloudspace", dest="cloudspace", help="cloudspace name"
 group.add_option("-l", "--location", dest="location", help="cloudspace location")
 parser.add_option_group(group)
 
-group = OptionGroup(parser, "mothership1 backend")
+group = OptionGroup(parser, "docker backend")
 group.add_option("-r", "--remote", dest="remote", help="daemon remote ip")
 group.add_option("-o", "--port", dest="port", help="daemon remote port")
 group.add_option("-i", "--public", dest="public", help="public host ip address")
