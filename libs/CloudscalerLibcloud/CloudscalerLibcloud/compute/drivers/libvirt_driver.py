@@ -286,8 +286,7 @@ class CSLibvirtNodeDriver(object):
         return self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
 
     def create_volume(self, size, name):
-        bytesize = size * (1000 ** 3)
-        volumes = [{'name': name, 'size': bytesize, 'dev': ''}]
+        volumes = [{'name': name, 'size': size, 'dev': ''}]
         return self.create_volumes(volumes)[0]
 
     def create_volumes(self, volumes):
@@ -436,7 +435,7 @@ class CSLibvirtNodeDriver(object):
         if datadisks:
             datavolumes = []
             for idx, (diskname, disksize) in enumerate(datadisks):
-                volume = {'name': diskname, 'size': disksize * (1000 ** 3), 'dev': 'vd%s' % convertnumber(idx + 1)}
+                volume = {'name': diskname, 'size': disksize, 'dev': 'vd%s' % convertnumber(idx + 1)}
                 datavolumes.append(volume)
             volumes += self.create_volumes(datavolumes)
         return self._create_node(name, size, metadata_iso, networkid, volumes)
