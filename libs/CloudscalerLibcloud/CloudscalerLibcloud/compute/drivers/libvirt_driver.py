@@ -676,6 +676,12 @@ class CSLibvirtNodeDriver(object):
         return self.backendconnection.db.get('domain_%s' % node.id)
 
     def _set_persistent_xml(self, node, xml):
+        xmldom = ElementTree.fromstring(xml)
+        if xmldom.find('uuid') is None:
+            uuid = ElementTree.Element('uuid')
+            uuid.text = node.id
+            xmldom.append(uuid)
+            xml = ElementTree.tostring(xmldom)
         self.backendconnection.db.set(key='domain_%s' % node.id, obj=xml)
 
     def _remove_persistent_xml(self, node):

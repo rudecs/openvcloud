@@ -36,7 +36,7 @@
                 <model type='virtio'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
                 <bandwidth>
-                  <inbound average='134218' peak='134218' floor='200' burst='134218'/>
+                  <inbound average='134218' peak='134218' burst='134218'/>
                   <outbound average='134218' peak='134218' burst='134218'/>
                 </bandwidth>
             </interface>

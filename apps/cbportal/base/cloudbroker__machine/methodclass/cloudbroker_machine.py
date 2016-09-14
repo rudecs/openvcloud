@@ -211,7 +211,7 @@ class cloudbroker_machine(BaseActor):
 
         if vmachine.status != 'HALTED':
             # create network on target node
-            self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId},
+            self.acl.executeJumpscript('greenitglobe', 'createnetwork', args={'networkid': cloudspace.networkId},
                                        gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
 
             node = self.cb.Dummy(id=vmachine.referenceId)
