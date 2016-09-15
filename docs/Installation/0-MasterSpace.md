@@ -2,9 +2,158 @@
 
 ### Introduction
 
-The first step to deploy an OpenvCloud environment is to setup the master cloud space. JumpScale provides tools to easily do this.
+The first step to deploy an OpenvCloud environment is to setup the master cloud space.
 
-To bootstrap the installation of the master cloud space, you need to create the **ovc_git** virtual machine. This virtual machine will be used to install all the other virtual machines of the master cloud space.
+The master cloud space is a collection of 4 virtual machines - or Docker containers:
+- **ovc_git** holding all configuration of your environment
+- **ovc_master** controlling the environment based on information from ovc\_git
+- **ovc_reflector** provides [reverse SSH connections](https://en.wikipedia.org/wiki/Reverse_connection) to the physical nodes
+- **ovc_proxy** running nginx as a proxy for all port 80 and port 443 communications
+
+
+The master cloud space can either be installed on
+- [the Controller](#controller)
+- [or any other physical or virtual machine](#ms1)
+
+Both are documented here below.
+
+
+<a id="controller"></a>
+### Installing the master cloud space on the Controller
+
+There are actually three steps:
+- [Step 1: Bootstrap the installation](bootstrap)
+- [Step 2: Create the ovc_git container](#ovc_git-container)
+- [Step 3: Create all other containers](#other-containers)
+
+
+<a id="bootstrap"></a>
+#### Bootstrap the installation (step 1)
+To bootstrap the installation of the master cloud space, a temporary Docker container with all required components pre-installed is used. This container can be deleted afterwards.
+
+On the Controller, run this temporary containers and start a SSH session:
+
+```
+mkdir /opt/master_var
+docker pull jumpscale/ubuntu1404
+docker run -d name=jumpscale jumpscale/ubuntu1404
+ssh root@172.17.0.2
+```
+
+The address 17.17.0.2 is the address of Docker, which you can lookup using `docker inspect`.
+
+In the container download the **openvcloud.sh** script and run it:
+```
+wget https://arya.maxus.net/gig/openvcloud.sh
+bash openvcloud.sh
+```
+
+This script does the following:
+- Install JumpScale
+- Install Redis
+- Install OpenvCloud
+- Setup Git
+- Install dependencies
+- Check that all SSH keys are loaded
+
+
+<a id="ovc_git-container"></a>
+#### Create the ovc_git container (step 2)
+Next use the **init.py** script to do the actual work, creating the **ovc_git** container:
+
+```bash
+jspython /opt/code/github/0-complexity/openvcloud/scripts/install/init.py \
+  --environment XXXX --git-user XXX --git-pass XXX \
+  --backend docker \
+  --backend docker --remote 172.17.0.1 --port 2375 --public XXX
+```
+
+You need to change content with your credentials:
+- `environment` is the environment name (e.g.: be-conv-1, be-stor-1, du-conv-3, ...)
+- `git-user` is your GitHub username
+- `git-pass` is your GitHub password
+- `domain` is optionally the domain name you will use, if omitted, demo.greenitglobe.com will be used
+- `[ms1] user` is your Mothership1 username
+- `[ms1] pass` is your Mothership1 password
+- `[ms1] location` is the Mothership1 location of your cloud space (eu1, eu2, ...)
+- `[ms1] cloudspace` is the name of the master cloud space at Mothership1, this is where ovc_git and all the other virtual machines will be created (useably, it's the same name of the environment)
+- `[docker] remote` is the remote ip where docker daemon is reachable
+- `[docker] port` is the remote port where docker daemon is reachable
+- `[docker] public` is the public ip from where the docker is reachable (host ip)
+
+init.py -b  docker -e be-g8-1 -r 172.17.0.1 -o
+
+
+When this script has executed successfully, your **ovc_git** Docker container is ready. You can now ssh it, as mentioned in the output of the script:
+
+
+<a id="other-container"></a>
+#### Create the other containers (step 3)
+
+Make sure that when you ssh into **ovc_git** that you do this using the `-A` option, so that your private SSH keys get forwarded:
+
+```
+ssh root@172.17.0.1 -p 2202 -A
+```
+
+When you are connected to it, there is another script to be executed which will deploy all the others virtual machines in the master cloud space of your environment.
+
+To start it, at first, go to the environment directory, which was cloned from the environment repository (in this example 'env_gig'):
+
+```
+cd /opt/code/git/gig-projects/env_gig/
+```
+
+First use the **master-spawn.py** script for creating the required Docker containers:
+
+```
+jspython scripts/master-spawn.py --quiet
+```
+
+Then use the **master-configure.py** script to configure the network settings (IP addresses are fictitious examples):
+
+```bash
+jspython scripts/master-configure.py --gateway 10.101.0.1 --start 10.101.101.100 --end 10.101.101.200 --netmask 255.255.0.0 --ssl wildcard --gid $RANDOM
+```
+
+Arguments are:
+  ```
+  --gateway  the IP address of the gateway
+  --start    the IP address of the beginning of the public IP range
+  --end      the IP address of the end of the public IP range
+  --netmask  The netmask of the network
+  --ssl      set [split|wildcard] to know which certificates to deploy
+  --gid       Grid ID
+  ```
+
+For a demo.greenitglobe.com, `--ssl` option will always be "wildcard", for your domain it depends if you have a certificate per domain or a wildcard.
+
+> # Note about certificates
+>
+> Your keys needs to be in the GitHub repository (protected) and need to follow the following format than demo.greenitglobe.com repository with your keys. The repository must be called: `certificates_[domain.tld]` with a `certs` folder on it. Your keys files **must** be named: `xxx-[env.domain.tld].crt` and `xxx-[env.domain.tld].key` (xxx is for ovs, defense, ... for split certificates)
+
+
+From **ovc_git** you should be able to ssh to the other virtual machines in the master cloud space:
+
+- ovc_reflector (`ssh reflector`)
+- ovc_master (`ssh master`)
+- ovc_dcpm (`ssh dcpm`)
+- ovc_proxy (`ssh proxy`)
+
+Your next steps will now be to [setup the nodes](1-GetNodeInto911-mode.md), and [connect them to the master cloud space](3-ConnectNode2ovc_git.md).
+
+
+
+
+
+@TODO BELOW NEEDS REVIEW (legacy)
+
+
+<a id="ms1"></a>
+### Installing the master cloud space on any other physical or virtual machine
+
+Here we use a vir
+you need to create the **ovc_git** virtual machine. This virtual machine will be used to install all the other virtual machines of the master cloud space.
 
 > **Warning**: Please check or keep this in mind before starting:
 - You must have a working **Redis** setup on your system
@@ -115,12 +264,7 @@ To perform the initial setup (deploying **ovc_git** which will be used for all t
   git config --global user.email "username"
   ```
 
-Depending on where you are deploying the master cloud space, click the instructions for:
-- [Deploying the master cloud space at Mothership1 (using virtual machines)](#ms1)
-- [Deploying locally (typically on the **Controllers**) using Docker containers](#controller)
-
-<a id="ms1"></a>
-#### Deploying the master cloud space at Mothership1 (using virtual machines)
+3. Create the **ovc_git** virtual machine
 
   ```bash
   jspython /opt/code/github/0-complexity/openvcloud/scripts/install/init.py \
@@ -128,7 +272,9 @@ Depending on where you are deploying the master cloud space, click the instructi
     --backend ms1 \
     --cloudspace XXX --location eu2 --user XXX --pass XXX
   ```
-<a id="controller"></a>
+
+
+OLD - when not using openvcloud.sh:
 #### Deploying locally (typically on the **Controllers**) using Docker containers
 
 1. Edit **atyourservice.hrd**:
@@ -204,55 +350,3 @@ You need to change content with your credentials:
 
 
 When this script has executed successfully, your **ovc_git** virtual machine is ready. You can now ssh it, as mentioned in the output of the script.
-
-
-<a id="other-machines"></a>
-### Create the other virtual machines (step 3)
-
-Make sure that when you ssh into **ovc_git** that you do this with an `ssh -A ovc_git`, so that you agent forwarding is active and the **aio.py** is successful when cloning repositories and creating other machines needed for the master cloud space.
-
-When you are connected to it, there is another script to be executed which will deploy all the others virtual machines in the master cloud space of your environment.
-
-To start it, at first, go to the environment directory, which was cloned from the environment repository (in this example 'env_gig'):
-
-```
-cd /opt/code/git/gig-projects/env_gig/
-```
-
-First use the **master-spawn.py** script for creating the required virtual machines and configure them:
-
-```
-jspython scripts/master-spawn.py --quiet
-```
-
-Then use the **master-configure.py** script to configure the network settings (IP addresses are fictitious examples):
-
-```bash
-jspython scripts/master-configure.py --gateway 10.101.0.1 --start 10.101.101.100 --end 10.101.101.200 --netmask 255.255.0.0 --ssl wildcard --gid $RANDOM
-```
-
-Arguments are:
-  ```
-  --gateway  the IP address of the gateway
-  --start    the IP address of the beginning of the public IP range
-  --end      the IP address of the end of the public IP range
-  --netmask  The netmask of the network
-  --ssl      set [split|wildcard] to know which certificates to deploy
-  --gid       Grid ID
-  ```
-
-For a demo.greenitglobe.com, `--ssl` option will always be "wildcard", for your domain it depends if you have a certificate per domain or a wildcard.
-
-> # Note about certificates
->
-> Your keys needs to be in the GitHub repository (protected) and need to follow the following format than demo.greenitglobe.com repository with your keys. The repository must be called: `certificates_[domain.tld]` with a `certs` folder on it. Your keys files **must** be named: `xxx-[env.domain.tld].crt` and `xxx-[env.domain.tld].key` (xxx is for ovs, defense, ... for split certificates)
-
-
-From **ovc_git** you should be able to ssh to the other virtual machines in the master cloud space:
-
-- ovc_reflector (`ssh reflector`)
-- ovc_master (`ssh master`)
-- ovc_dcpm (`ssh dcpm`)
-- ovc_proxy (`ssh proxy`)
-
-Your next steps will now be to [setup the nodes](1-GetNodeInto911-mode.md), and [connect them to the master cloud space](3-ConnectNode2ovc_git.md).

@@ -34,8 +34,8 @@ The storage nodes run the integrated G8 Storage.
 
 Two or more small nodes installed local to the G8 physical nodes for managing/monitoring the G8 physical nodes.
 
-Functions: 
-- Boot/Install server driven by AYS (abreviation for "At Your Service" - for more information go to https://gig.gitbooks.io/jumpscale-core8/content/AYS/AYS-Introduction.html)
+Functions:
+- Boot/Install server driven by AYS (abbreviation for "At Your Service" - for more information go to https://gig.gitbooks.io/jumpscale-core8/content/AYS/AYS-Introduction.html)
 - AYS used to deploy all software on nodes
 - Monitoring services and collect statistics in the InfluxDB
 
