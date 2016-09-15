@@ -142,6 +142,33 @@ class CloudBroker(object):
         provider = capacityinfo[0]  # is sorted by least used
         return provider
 
+    def getNode(self, referenceId):
+        return self.Dummy(id=referenceId)
+
+    def getProvider(self, machine):
+        if machine.referenceId and machine.stackId:
+            return self.getProviderByStackId(machine.stackId)
+        return None
+
+    def getProviderAndNode(self, machineId):
+        machineId = int(machineId)
+        machine = models.vmachine.get(machineId)
+        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
+            return None, None, machine
+        provider = self.getProvider(machine)
+        if provider:
+            node = provider.client.ex_get_node_details(machine.referenceId)
+        else:
+            return provider, None, machine
+
+        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
+        if realstatus != machine.status:
+            if realstatus == 'DESTROYED':
+                realstatus = 'HALTED'
+            machine.status = realstatus
+            self.models.vmachine.set(machine)
+        return provider, node, machine
+
     def chooseProvider(self, machine):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
         newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
