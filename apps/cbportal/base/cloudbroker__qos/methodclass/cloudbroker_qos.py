@@ -1,13 +1,16 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
+from cloudbrokerlib.baseactor import BaseActor
 import itertools
 
 
-class cloudbroker_qos(object):
+class cloudbroker_qos(BaseActor):
     def __init__(self):
+        super(cloudbroker_qos, self).__init__()
         self.acl = j.clients.agentcontroller.get()
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.vcl = j.clients.osis.getNamespace('vfw')
+        self.actors = self.cb.actors.cloudapi
 
     def limitCPU(self, machineId, **kwargs):
         """
@@ -24,20 +27,7 @@ class cloudbroker_qos(object):
         param:iops Max IO per second, 0 mean unlimited
         result bool
         """
-        disk = self.ccl.disk.get(diskId)
-        if disk.status == 'DESTROYED':
-            raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
-
-        machine = next(iter(self.ccl.vmachine.search({'disks': diskId})[1:]), None)
-        if not machine:
-            raise exceptions.NotFound("Could not find virtual machine beloning to disk")
-        stack = self.ccl.stack.get(machine['stackId'])
-        job = self.acl.executeJumpscript('cloudscalers', 'limitdiskio',
-                                         gid=stack.gid, nid=int(stack.referenceId),
-                                         args={'disks': [disk.referenceId],
-                                               'iops': iops,
-                                               'machineid': machine['referenceId']})
-        return job['result']
+        return self.actors.disks.limitIO(diskId, iops)
 
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """

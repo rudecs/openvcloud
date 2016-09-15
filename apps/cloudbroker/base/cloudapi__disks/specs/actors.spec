@@ -18,6 +18,15 @@
         var:diskId int,, id of the disk
         result:dict, dict with the disk details
 
+
+    method:limitIO
+        """
+        Get disk details
+        """
+        var:diskId int,, id of the disk
+        var:iops int,, IO per second to limit the disk to
+        result:dict, dict with the disk details
+
     method:delete
         """
         Delete a disk

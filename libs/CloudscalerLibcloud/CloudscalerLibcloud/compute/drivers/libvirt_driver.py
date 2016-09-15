@@ -570,6 +570,10 @@ class CSLibvirtNodeDriver(object):
         self.destroy_volumes_by_guid(diskguids)
         return True
 
+    def ex_limitio(self, volume, iops):
+        node = volume.extra['node']
+        return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
+
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
         self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)

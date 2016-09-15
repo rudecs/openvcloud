@@ -66,6 +66,19 @@ class cloudapi_disks(BaseActor):
         self.models.disk.set(disk)
         return disk, volume
 
+    @authenticator.auth(acl={'account': set('C')})
+    def limitIO(self, diskId, iops, **kwargs):
+        disk = self.models.disk.get(diskId)
+        if disk.status == 'DESTROYED':
+            raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
+
+        machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
+        if not machine:
+            raise exceptions.NotFound("Could not find virtual machine beloning to disk")
+        provider, node, machine = self.cb.getProviderAndNode(machine['id'])
+        volume = self.getStorageVolume(disk, provider, node)
+        return provider.client.ex_limitio(volume, iops)
+
     @authenticator.auth(acl={'account': set('R')})
     @audit()
     def get(self, diskId, **kwargs):
