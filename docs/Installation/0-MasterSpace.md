@@ -87,7 +87,7 @@ init.py -b  docker -e be-g8-1 -r 172.17.0.1 -o
 When this script has executed successfully, your **ovc_git** Docker container is ready. You can now ssh it, as mentioned in the output of the script:
 
 
-<a id="other-container"></a>
+<a id="other-containers"></a>
 #### Create the other containers (step 3)
 
 Make sure that when you ssh into **ovc_git** that you do this using the `-A` option, so that your private SSH keys get forwarded:
