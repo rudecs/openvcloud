@@ -6,7 +6,7 @@ Libvirt script to create a virtual machine
 
 name = "startmachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"

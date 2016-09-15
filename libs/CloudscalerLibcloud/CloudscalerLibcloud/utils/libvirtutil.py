@@ -4,6 +4,7 @@ from jinja2 import Environment, PackageLoader
 import os
 import time
 import shutil
+import urlparse
 from multiprocessing import cpu_count
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
@@ -233,6 +234,16 @@ class LibvirtUtil(object):
         for disk in disks:
             if disk.attrib['device'] in ('disk', 'cdrom'):
                 yield disk
+
+    def get_domain_disk(self, referenceId, domaindisks):
+        url = urlparse.urlparse(referenceId)
+        name = url.path.split('@')[0].strip('/')
+        for disk in domaindisks:
+            source = disk.find('source')
+            if source is not None:
+                if source.attrib['name'].strip('/') == name:
+                    target = disk.find('target')
+                    return target.attrib['dev']
 
     def get_domain_nics(self, dom):
         if isinstance(dom, ElementTree.Element):

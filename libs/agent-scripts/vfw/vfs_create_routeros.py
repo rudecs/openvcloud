@@ -53,7 +53,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import time
     import os
     acl = j.clients.agentcontroller.get()
-    edgeip, edgeport, edgetransport = acl.execute('cloudscalers', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
+    edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
 
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
@@ -63,11 +63,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
     destinationfile = None
-
-    def destroy_device(path):
-        acl.execute('cloudscalers', 'destroyvolume',
-                    role='storagedriver', gid=j.application.whoAmI.gid,
-                    args={'path': path})
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -90,14 +85,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     try:
         # setup network vxlan
         print 'Creating network'
-        createnetwork = j.clients.redisworker.getJumpscriptFromName('cloudscalers', 'createnetwork')
+        createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
         j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
 
         devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
         destinationfile = 'openvstorage+%s://%s:%s/%s' % (
             edgetransport, edgeip, edgeport, devicename
         )
-        destroy_device(destinationfile)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
         xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
@@ -148,7 +142,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             ro.ipaddr_remove(DEFAULTGWIP)
             ro.resetMac("internal")
         except Exception,e:
-            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e)) 
+            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         ro.do("/system/identity/set",{"name":"%s/%s"%(networkid,networkidHex)})
         ro.executeScript('/file remove numbers=[/file find]')
@@ -209,8 +203,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         if docleanup:
             j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
                                                networkid=networkid)
-            if destinationfile:
-                destroy_device(destinationfile)
         raise
 
     return data

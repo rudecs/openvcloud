@@ -6,7 +6,7 @@ Libvirt script to redefine a machine
 
 name = "redefinemachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"

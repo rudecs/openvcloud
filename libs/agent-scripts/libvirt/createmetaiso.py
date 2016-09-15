@@ -6,7 +6,7 @@ Libvirt script to create the metadata iso
 
 name = "createmetaiso"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hendrik@awingu.com"
 license = "bsd"
 version = "1.0"
@@ -17,12 +17,12 @@ async = True
 def action(name, metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
     from CloudscalerLibcloud import openvstorage
-    imagepath = openvstorage.getUrlPath('%s/cloud-init.%s' % (name, name))
+    imagepath = openvstorage.getUrlPath('%s/cloud-init-%s' % (name, name))
     iso = ISO()
     iso.create_meta_iso(imagepath.replace('://', ':'), metadata, userdata, type)
-    return imagepath
+    return "{}@{}".format(imagepath, openvstorage.getVDisk(imagepath, timeout=60).guid)
 
-    
+
 if __name__ == '__main__':
     userdata = {
         "chpasswd": {

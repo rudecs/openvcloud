@@ -1,9 +1,8 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator, enums
+from cloudbrokerlib import authenticator, enums, network
 from cloudbrokerlib.baseactor import BaseActor
-from cloudbrokerlib import authenticator, network
 import time
 import itertools
 
@@ -152,7 +151,8 @@ class cloudapi_machines(BaseActor):
         # Validate that enough resources are available in the CU limits to add the disk
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
-                                    name=diskName, description=description, size=size, type=type, **kwargs)
+                                                     name=diskName, description=description, size=size,
+                                                     type=type, **kwargs)
         try:
             provider.client.attach_volume(node, volume)
         except:
@@ -245,19 +245,24 @@ class cloudapi_machines(BaseActor):
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
-        stack = self.models.stack.get(machine.stackId)
-        stack.images.append(imageid)
-        self.models.stack.set(stack)
+        image.id = imageid
+        imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
         try:
-            provider.client.ex_create_template(node, templatename, imageid, basename)
+            referenceId = provider.client.ex_create_template(node, templatename, imagename)
         except:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
                 image.status = 'ERROR'
                 self.models.image.set(image)
             raise
+        image.referenceId = referenceId
+        image.status = 'CREATED'
+        self.models.image.set(image)
+        for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
+            stack['images'].append(imageid)
+            self.models.stack.set(stack)
 
-        return True
+        return imageid
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()
@@ -304,7 +309,7 @@ class cloudapi_machines(BaseActor):
         size = self.models.size.get(sizeId)
         totaldisksize = sum(datadisks + [disksize])
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
@@ -335,16 +340,14 @@ class cloudapi_machines(BaseActor):
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         try:
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
-        except Exception, e:
+        except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         if provider:
-            for pnode in provider.client.list_nodes():
-                if node.id == pnode.id:
-                    provider.client.destroy_node(pnode)
-                    break
-        for disk in vmachinemodel.disks:
-            j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+            provider.client.destroy_node(node)
+        for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
+            disk['status'] = 'DESTROYED'
+            self.models.disk.set(disk)
 
         # delete leases
         cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
@@ -392,7 +395,7 @@ class cloudapi_machines(BaseActor):
                         machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
                 except exceptions.ServiceUnavailable:
-                    pass # VFW not deployed yet
+                    pass  # VFW not deployed yet
         if node:
             locked = node.extra.get('locked', False)
 
@@ -485,7 +488,7 @@ class cloudapi_machines(BaseActor):
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
-        return snapshot['name']
+        return snapshot
 
     @authenticator.auth(acl={'machine': set('R')})
     @audit()
@@ -598,8 +601,11 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
+        provider, node, machine = self._getProviderAndNode(machineId)
+
         totaldisksize = 0
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -613,16 +619,18 @@ class cloudapi_machines(BaseActor):
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
-            diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
-                                'size': origdisk.sizeMax, 'type': clonedisk.type,
-                                'diskpath': origdisk.referenceId})
+            volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
+            if clonedisk.type == 'B':
+                name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
+            else:
+                name = 'volumes/volume_{}'.format(clonediskId)
+            diskmapping.append((volume, name))
             totaldisksize += clonedisk.sizeMax
         # Validate that enough resources are available in the CU limits to clone the machine
         size = self.models.size.get(clone.sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
-        provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
         node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
         self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
@@ -687,7 +695,6 @@ class cloudapi_machines(BaseActor):
         :param aws_secret_key: s3 secret key
         :return jobid
         """
-        system_cl = j.clients.osis.getNamespace('system')
         machine = self.models.vmachine.get(machineId)
         if not machine:
             raise exceptions.NotFound('Machine %s not found' % machineId)
@@ -695,7 +702,8 @@ class cloudapi_machines(BaseActor):
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nid = int(stack.referenceId)
-        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
+        args = {'path': storagepath, 'name': name, 'machineId': machineId,
+                'storageparameters': storageparameters, 'nid': nid, 'backup_type': 'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
@@ -737,7 +745,8 @@ class cloudapi_machines(BaseActor):
         storageparameters['mdbucketname'] = bucket
         storageparameters['import_name'] = import_name
 
-        args = {'name':name, 'cloudspaceId':cloudspaceId, 'vmexportId':vmexportId, 'sizeId':sizeId, 'description':description, 'storageparameters': storageparameters}
+        args = {'name': name, 'cloudspaceId': cloudspaceId, 'vmexportId': vmexportId, 'sizeId': sizeId,
+                'description': description, 'storageparameters': storageparameters}
 
         agentcontroller = j.clients.agentcontroller.get()
 
@@ -762,7 +771,9 @@ class cloudapi_machines(BaseActor):
         exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+            exportresult.append({'status': exp['status'], 'type': exp['type'], 'storagetype': exp['storagetype'],
+                                 'machineId': exp['machineId'], 'id': exp['id'], 'name': exp['name'],
+                                 'timestamp': exp['timestamp']})
         return exportresult
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
@@ -982,7 +993,7 @@ class cloudapi_machines(BaseActor):
         oldsize = self.models.size.get(vmachine.sizeId)
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
         deltacpu = max(size.vcpus - oldsize.vcpus, 0)
-        deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
+        deltamemory = max((size.memory - oldsize.memory) / 1024.0, 0)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
                                                                    numcpus=deltacpu,
                                                                    memorysize=deltamemory)

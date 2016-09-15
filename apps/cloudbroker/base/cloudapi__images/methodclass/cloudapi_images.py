@@ -1,8 +1,8 @@
-from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
+
 
 class cloudapi_images(BaseActor):
     """
@@ -14,7 +14,7 @@ class cloudapi_images(BaseActor):
         """
         List the available images, filtering can be based on the cloudspace and the user which is doing the request
         """
-        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        fields = ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountId:
             q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
         else:
@@ -64,22 +64,21 @@ class cloudapi_images(BaseActor):
         if image.status != 'CREATED':
             raise exceptions.Forbidden("Can not delete an image which is not created yet.")
 
-
         stacks = self.models.stack.search({'images': imageId})[1:]
         gid = None
+        provider = None
         if stacks:
             gid = stacks[0]['gid']
+            provider = self.cb.getProviderByStackId(stacks[1]['id'])
         if not gid:
             raise exceptions.Error("Could not find image template")
 
-        acc = j.clients.agentcontroller.get()
-        args = {'imageId': image.referenceId}
-        job = acc.executeJumpscript('cloudscalers', 'deletetemplate', gid=gid, role='storagenode', args=args)
-        if job['state'] != 'OK':
-            raise exceptions.Error("Something unexpected went wrong, please try again later")
-        elif job['result'] == -1:
-            raise exceptions.Conflict("Can not delete an image which is still used")
+        provider.client.ex_delete_template(image.referenceId)
+
+        for stack in stacks:
+            if imageId in stack['images']:
+                stack['images'].remove(imageId)
+                self.models.stack.set(stack)
 
         self.models.image.delete(imageId)
         return True
-

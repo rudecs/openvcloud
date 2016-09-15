@@ -1,6 +1,6 @@
 <disk type='network' device='{{type}}'>
     <driver name='qemu' type='raw' cache='none' io='threads'/>
-    <source protocol='openvstorage' name='{{name}}'>
+    <source protocol='openvstorage' name='{{name}}' vdiskguid='{{vdiskguid}}'>
         <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
     </source>
     <target dev='{{dev}}' bus='{{bus}}'/>

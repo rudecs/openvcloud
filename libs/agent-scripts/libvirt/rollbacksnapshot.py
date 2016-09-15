@@ -6,7 +6,7 @@ Rollback a snapshot on a machine
 
 name = "rollbacksnapshot"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@incubaid.com"
 license = "bsd"
 version = "1.0"
@@ -15,6 +15,9 @@ async = True
 
 
 def action(diskpaths, timestamp):
+    # Todo: currently not available in fargo
+    raise NotImplemented()
+
     from CloudscalerLibcloud import openvstorage
     from ovs.lib.vdisk import VDiskController
 
@@ -33,4 +36,3 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--timestamp', help='Snapshot timestamp')
     options = parser.parse_args()
     action([options.path], options.timestamp)
-

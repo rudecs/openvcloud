@@ -30,7 +30,7 @@ def user():
     if alba_client is None:
         print '[+] adding "alba" oauth2 client'
         choice = string.ascii_letters + string.digits
-        
+
         # Creating user
         alclient = Client()
         alclient.ovs_type = 'USER'
@@ -39,21 +39,29 @@ def user():
         alclient.client_secret = ''.join(random.choice(choice) for _ in range(64))
         alclient.user = admin
         alclient.save()
-        
+
         # Adding roles
         for junction in admin.group.roles:
             roleclient = RoleClient()
             roleclient.client = alclient
             roleclient.role = junction.role
             roleclient.save()
-        
+
         alba_client = alclient.client_id
         alba_secret = alclient.client_secret
 
     return {'client': alba_client, 'secret': alba_secret}
 
-print '[+] managing users'
 
-credentials = user()
-print '[+] alba client id: %s' % credentials['client']
-print '[+] alba secret: %s' % credentials['secret']
+if __name__ == '__main__':
+    print '[+] managing users'
+
+    credentials = user()
+    scl = j.clients.osis.getNamespace('system')
+    grid = scl.grid.get(j.application.whoAmI.gid)
+    grid.settings['ovs_credentials'] = {'client_id': credentials['client'],
+                                        'client_secret': credentials['secret']}
+    scl.grid.set(grid)
+
+    print '[+] alba client id: %s' % credentials['client']
+    print '[+] alba secret: %s' % credentials['secret']

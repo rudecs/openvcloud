@@ -18,8 +18,38 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.client = j.clients.osis.getByInstance('main')
         self.osisvfw = j.clients.osis.getCategory(self.client, 'vfw', 'virtualfirewall')
         self.nodeclient = j.clients.osis.getCategory(self.client, 'system', 'node')
+        self.gridclient = j.clients.osis.getCategory(self.client, 'system', 'grid')
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
+        self._ovsdata = {}
+
+    def get_ovs_credentials(self, gid):
+        cachekey = 'credentials_{}'.format(gid)
+        if cachekey not in self._ovsdata:
+            grid = self.gridclient.get(gid)
+            credentials = grid.settings['ovs_credentials']
+            self._ovsdata[cachekey] = credentials
+        return self._ovsdata[cachekey]
+
+    def get_ovs_connection(self, gid):
+        cachekey = 'ovs_connection_{}'.format(gid)
+        if cachekey not in self._ovsdata:
+            ips = []
+            addresses = self.nodeclient.search({'$query': {'roles': 'storagedriver',
+                                                           'netaddr.name': 'backplane1',
+                                                           'gid': gid},
+                                                '$fields': ['netaddr']})[1:]
+            for nodeaddresses in addresses:
+                for nodeaddress in nodeaddresses['netaddr']:
+                    if nodeaddress['name'] == 'backplane1':
+                        ips.extend(nodeaddress['ip'])
+
+            credentials = self.get_ovs_credentials(gid)
+            connection = {'ips': ips,
+                          'client_id': credentials['client_id'],
+                          'client_secret': credentials['client_secret']}
+            self._ovsdata[cachekey] = connection
+        return self._ovsdata[cachekey]
 
     def _getVFWObject(self, fwid):
         try:
@@ -59,6 +89,11 @@ class jumpscale_netmgr(j.code.classGetBase()):
             result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default')
             if result['state'] != 'OK':
                 self.osisvfw.delete(key)
+                args = {'ovs_connection': self.get_ovs_connection(gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
+                job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
+                if job['state'] != 'OK':
+                    raise RuntimeError("Failed to remove vfw with volume %s" % networkid)
+
                 raise RuntimeError("Failed to create create fw for domain %s job was %s" % (domain, result['id']))
             data = result['result']
             fwobj.host = data['internalip']
@@ -129,6 +164,10 @@ class jumpscale_netmgr(j.code.classGetBase()):
             args = {'networkid': fwobj.id}
             if fwobj.nid:
                 job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
+                if job['state'] != 'OK':
+                    raise RuntimeError("Failed to remove vfw with id %s" % fwid)
+                args = {'ovs_connection': self.get_ovs_connection(fwobj.gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
+                job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
                     raise RuntimeError("Failed to remove vfw with id %s" % fwid)
             self.osisvfw.delete(fwid)
@@ -290,4 +329,3 @@ class jumpscale_netmgr(j.code.classGetBase()):
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to get vfw status")
         return job['result']
-
