@@ -1,9 +1,8 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator, enums
+from cloudbrokerlib import authenticator, enums, network
 from cloudbrokerlib.baseactor import BaseActor
-from cloudbrokerlib import authenticator, network
 import time
 import itertools
 
@@ -152,7 +151,8 @@ class cloudapi_machines(BaseActor):
         # Validate that enough resources are available in the CU limits to add the disk
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
-                                    name=diskName, description=description, size=size, type=type, **kwargs)
+                                                     name=diskName, description=description, size=size,
+                                                     type=type, **kwargs)
         try:
             provider.client.attach_volume(node, volume)
         except:
@@ -309,7 +309,7 @@ class cloudapi_machines(BaseActor):
         size = self.models.size.get(sizeId)
         totaldisksize = sum(datadisks + [disksize])
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
@@ -340,7 +340,7 @@ class cloudapi_machines(BaseActor):
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         try:
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
-        except Exception, e:
+        except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
 
         if provider:
@@ -395,7 +395,7 @@ class cloudapi_machines(BaseActor):
                         machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
                 except exceptions.ServiceUnavailable:
-                    pass # VFW not deployed yet
+                    pass  # VFW not deployed yet
         if node:
             locked = node.extra.get('locked', False)
 
@@ -623,7 +623,7 @@ class cloudapi_machines(BaseActor):
             if clonedisk.type == 'B':
                 name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
             else:
-                name = 'volume/volume_{}'.format(clonediskId)
+                name = 'volumes/volume_{}'.format(clonediskId)
             diskmapping.append((volume, name))
             totaldisksize += clonedisk.sizeMax
         # Validate that enough resources are available in the CU limits to clone the machine
@@ -695,7 +695,6 @@ class cloudapi_machines(BaseActor):
         :param aws_secret_key: s3 secret key
         :return jobid
         """
-        system_cl = j.clients.osis.getNamespace('system')
         machine = self.models.vmachine.get(machineId)
         if not machine:
             raise exceptions.NotFound('Machine %s not found' % machineId)
@@ -703,7 +702,8 @@ class cloudapi_machines(BaseActor):
 
         storagepath = '/mnt/vmstor/vm-%s' % machineId
         nid = int(stack.referenceId)
-        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
+        args = {'path': storagepath, 'name': name, 'machineId': machineId,
+                'storageparameters': storageparameters, 'nid': nid, 'backup_type': 'condensed'}
         agentcontroller = j.clients.agentcontroller.get()
         id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
         return id
@@ -745,7 +745,8 @@ class cloudapi_machines(BaseActor):
         storageparameters['mdbucketname'] = bucket
         storageparameters['import_name'] = import_name
 
-        args = {'name':name, 'cloudspaceId':cloudspaceId, 'vmexportId':vmexportId, 'sizeId':sizeId, 'description':description, 'storageparameters': storageparameters}
+        args = {'name': name, 'cloudspaceId': cloudspaceId, 'vmexportId': vmexportId, 'sizeId': sizeId,
+                'description': description, 'storageparameters': storageparameters}
 
         agentcontroller = j.clients.agentcontroller.get()
 
@@ -770,7 +771,9 @@ class cloudapi_machines(BaseActor):
         exports = self.models.vmexport.search(query)[1:]
         exportresult = []
         for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
+            exportresult.append({'status': exp['status'], 'type': exp['type'], 'storagetype': exp['storagetype'],
+                                 'machineId': exp['machineId'], 'id': exp['id'], 'name': exp['name'],
+                                 'timestamp': exp['timestamp']})
         return exportresult
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
@@ -990,7 +993,7 @@ class cloudapi_machines(BaseActor):
         oldsize = self.models.size.get(vmachine.sizeId)
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
         deltacpu = max(size.vcpus - oldsize.vcpus, 0)
-        deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
+        deltamemory = max((size.memory - oldsize.memory) / 1024.0, 0)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
                                                                    numcpus=deltacpu,
                                                                    memorysize=deltamemory)
