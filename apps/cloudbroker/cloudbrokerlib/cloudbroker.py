@@ -15,8 +15,10 @@ import re
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
+
 def removeConfusingChars(input):
     return input.replace('0', '').replace('O', '').replace('l', '').replace('I', '')
+
 
 class Dummy(object):
     def __init__(self, **kwargs):
@@ -137,7 +139,7 @@ class CloudBroker(object):
         if not capacityinfo:
             return -1
 
-        provider = capacityinfo[0] # is sorted by least used
+        provider = capacityinfo[0]  # is sorted by least used
         return provider
 
     def chooseProvider(self, machine):
@@ -387,13 +389,13 @@ class CloudBroker(object):
             else:
                 resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
 
+
 class CloudSpace(object):
     def __init__(self, cb):
         self.cb = cb
         self.netmgr = j.apps.jumpscale.netmgr
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.network = network.Network(models)
-
 
     def release_resources(self, cloudspace, releasenetwork=True):
         #  delete routeros
@@ -417,6 +419,7 @@ class CloudSpace(object):
             self.network.releasePublicIpAddress(cloudspace.publicipaddress)
             cloudspace.publicipaddress = None
         return cloudspace
+
 
 class Machine(object):
     def __init__(self, cb):
@@ -458,7 +461,7 @@ class Machine(object):
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
 
-        #create a public ip and virtual firewall on the cloudspace if needed
+        # create a public ip and virtual firewall on the cloudspace if needed
         if cloudspace.status != 'DEPLOYED':
             args = {'cloudspaceId': cloudspace.id}
             self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
@@ -503,7 +506,7 @@ class Machine(object):
             length = 6
             chars = removeConfusingChars(string.letters + string.digits)
             letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]
-            passwd = ''.join(random.choice(chars) for _ in xrange(length))
+            passwd = ''.join(random.choice(chars) for _ in range(length))
             passwd = passwd + random.choice(string.digits) + random.choice(letters[0]) + random.choice(letters[1])
             account.password = passwd
         auth = NodeAuthPassword(account.password)
@@ -533,10 +536,13 @@ class Machine(object):
                 nic.ipAddress = ipaddress
         models.vmachine.set(machine)
 
+        # filter out iso volumes
+        volumes = filter(lambda v: v.type == 'disk', node.extra['volumes'])
+
         for order, diskid in enumerate(machine.disks):
             disk = models.disk.get(diskid)
             disk.stackId = stackId
-            disk.referenceId = node.extra['volumes'][order].id
+            disk.referenceId = volumes[order].id
             models.disk.set(disk)
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
@@ -591,7 +597,6 @@ class Machine(object):
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
-
 
     def getSize(self, provider, machine):
         brokersize = models.size.get(machine.sizeId)
