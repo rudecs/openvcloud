@@ -31,13 +31,13 @@ fi
 
 if [ "$SSH_AUTH_SOCK" == "" ]; then
 	echo "[-] no ssh authentification found, checking anyway"
-
+	
 	AGENT=$(ssh-add -L > /dev/null 2>&1)
 
 	if [ $? != 0 ]; then
 		echo "[-] no ssh key found or agent is not running."
 		exit 1
-
+		
 	else
 		echo "[-] ssh agent seems okay"
 	fi
@@ -56,7 +56,7 @@ if [ "$branch" != "master" ]; then
 		echo "[-] /tmp/branch.sh not found"
 		exit 1
 	fi
-
+	
 	source /tmp/branch.sh
 
 	if [ "$JSBRANCH" == "" ]; then
@@ -71,7 +71,8 @@ else
 	echo "[+] installing from master"
 fi
 
-BOOTSTRAP="http://${1}:5000"
+BOOTSTRAPHOST=${1}
+BOOTSTRAPPORT=5000
 
 LASTTIME=$(stat /var/lib/apt/periodic/update-success-stamp | grep Modify | cut -b 9-)
 LASTUNIX=$(date --date "$LASTTIME" +%s)
@@ -116,9 +117,9 @@ echo "" >> /root/.ssh/config
 echo "[+] loading settings"
 HOST=$(hostname -s)
 
-if [ "$2" != "--no-connect" ]; then
-	echo "[+] bootstrapping node id: $NODE"
-	ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAP}#"
+if [ -z "$noconnect" ]; then
+    echo "[+] bootstrapping node: $HOST"
+    ays install -n bootstrap_node --data "instance.bootstrapp.addr=${BOOTSTRAPHOST}#instance.bootstrapp.port=${BOOTSTRAPPORT}#instance.environment=${environment}#"
 fi
 
 echo "[+] ready, have a nice day."
