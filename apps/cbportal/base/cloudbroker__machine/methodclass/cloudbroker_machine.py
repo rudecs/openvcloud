@@ -154,6 +154,9 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.reboot(machineId)
 
+    def get(self, machineId):
+        return self.actors.machines.get(machineId)
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rebootMachines(self, machineIds, reason, **kwargs):
