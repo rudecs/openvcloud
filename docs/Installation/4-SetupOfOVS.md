@@ -1,13 +1,13 @@
 ## Setup of Open vStorage
 
-For an introduction to Open vStorage you might first want to read the [Open vStorage documentation](https://openvstorage.gitbooks.io/administration/content/Openvstorage/).
+> For an introduction to Open vStorage you might first want to read the [Open vStorage documentation](https://openvstorage.gitbooks.io/administration/content/Openvstorage/).
 
-On **ovc_git** there is a script which will install all Open vStorage (OVS) components.
+On **ovc_git** you'll find the **cpunode-setup.py** script in order install all Open vStorage (OVS) components.
 
-After having run the **pre-install.sh** script, go to the directory which contains your environment repository (example):
+After having connected the node to **ovc_git** using the **pre-install.sh** script, documented in the the previous step [Connect Node to ovc_git](3-ConnectNode2ovc_git.md), go to the directory which contains your environment repository (example):
 
 ```bash
-cd /opt/code/github/openvcloudEnvironments/be-dev-1/
+cd /opt/code/github/gig-projects/be-g8-1/
 ```
 
 From there you have two options:

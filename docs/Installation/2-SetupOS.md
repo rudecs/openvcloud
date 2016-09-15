@@ -10,9 +10,10 @@ reboot
 
 Wait for the machine to reboot.
 
-Once rebooted connect again to the CPU node and fetch the `node.sh` script from the [0-complexity/openvcloud] GitHub repository.
+Once rebooted connect again to the CPU node and fetch the **node.sh** script from the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) GitHub repository.
 
 Unfortunately you cannot simply curl this script into your environment yet because of the authentication, so navigate to the link, then copy and paste (vi) the content into your node:
+
 ```
 curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/node.sh > /tmp/node.sh
 . /tmp/node.sh
@@ -26,4 +27,4 @@ This will:
 - Ensure that backplane1 is up
 - Pre-install lots of OVS dependancies
 
-Next you will want to connect the node to the `ovc_git` to set the reverse tunnel up.
+Next you will want to connect the node to the **ovc_git** to set the reverse tunnel up.

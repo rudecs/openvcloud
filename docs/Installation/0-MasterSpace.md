@@ -24,7 +24,7 @@ Below following steps will be discussed in detail:
 <a id="master-cloud-space"></a>
 ### Create the master cloud space (step 1)
 
-> **Note**: If this is a re-installation, *YOU HAVE TO* backup/delete the repository of the environment before proceeding.
+> **Note**: If this is a re-installation, you have to backup/delete the repository of the environment before proceeding.
 
 The very first step is to setup a temporary virtual machine, from which we will be creating **ovc_git**:
 
