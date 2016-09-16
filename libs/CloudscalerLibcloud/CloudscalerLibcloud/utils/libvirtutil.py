@@ -6,6 +6,7 @@ import time
 import shutil
 import urlparse
 from multiprocessing import cpu_count
+from psutil import virtual_memory
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
 from JumpScale.lib.ovsnetconfig.VXNet import netclasses
@@ -17,9 +18,21 @@ NOLOCK = 3
 LOCKEXIST = 4
 
 # for thin provisioning
-RESERVED_MEM = 16384  # 16 GB
+TOTAL_MEM = int(virtual_memory().total >> 30)
+if TOTAL_MEM <= 64:
+    RESERVED_MEM = 1024  # 1 GB
+elif 64 < TOTAL_MEM < 196:
+    RESERVED_MEM = 2048  # 2 GB
+else:
+    RESERVED_MEM = 4096  # 4 GB
+
 CPU_COUNT = cpu_count()
-RESERVED_CPUS = 4    # CPUS: 0,1,2,3
+if CPU_COUNT <= 16:
+    RESERVED_CPUS = 1
+elif 16 < CPU_COUNT < 32:
+    RESERVED_CPUS = 2
+else:
+    RESERVED_CPUS = 4
 
 
 class TimeoutError(Exception):
