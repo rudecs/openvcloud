@@ -1,0 +1,20 @@
+@usedefault
+
+{{actions:
+- display: Decomission
+  action: /restmachine/cloudbroker/ovsnode/decommissionNode
+  refresh: false
+  hide: true
+  showresponse: true
+  input:
+    - name: nid
+      label: Grid Node Id
+      type: number
+}}
+
+
+h3. Storage Nodes
+
+{{action: id:'action-Decomission' class:'glyphicon glyphicon-remove margin-bottom-medium margin-left-medium' label:'Decomition node'}}
+{{grid.nodes: roles:storagedriver}}
+
