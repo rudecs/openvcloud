@@ -42,7 +42,7 @@
         var:accountId int,,id of the account
         var:gid int,,id of the grid
         var:name str,,name of disk
-        var:description str,,optional description of disk
+        var:description str,,description of disk
         var:size int,10,size in GBytes, default is 0
         var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
         result:int, the id of the created disk
