@@ -6,6 +6,7 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
 from JumpScale.portal.portal import exceptions
 
+
 class cloudbroker_cloudspace(BaseActor):
     def __init__(self):
         super(cloudbroker_cloudspace, self).__init__()
@@ -17,20 +18,15 @@ class cloudbroker_cloudspace(BaseActor):
         self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
         self.actors = self.cb.actors.cloudapi
 
-
-
-    def _getCloudSpace(self, accountId, cloudspaceId):
+    def _getCloudSpace(self, cloudspaceId):
         cloudspaceId = int(cloudspaceId)
 
-        accountid = int(accountId)
-
-        cloudspaces = self.models.cloudspace.simpleSearch({ 'id': cloudspaceId, 'accountId': accountid})
+        cloudspaces = self.models.cloudspace.simpleSearch({'id': cloudspaceId})
         if not cloudspaces:
-            raise exceptions.NotFound('Cloudspace with id %s that has accountId %s not found' % (cloudspaceId, accountId))
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         cloudspace = cloudspaces[0]
         return cloudspace
-
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -38,7 +34,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
         """
-        cloudspace = self._getCloudSpace(accountId, cloudspaceId)
+        cloudspace = self._getCloudSpace(cloudspaceId)
 
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,
@@ -58,7 +54,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.models.cloudspace.set(cloudspace)
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
-            #delete machines
+            # delete machines
             machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
             for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
                 machineId = machine['id']
@@ -71,8 +67,7 @@ class cloudbroker_cloudspace(BaseActor):
             self.models.cloudspace.set(cloudspace)
             raise
 
-        #delete routeros
-        gid = cloudspace['gid']
+        # delete routeros
         ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
         cloudspace = self.models.cloudspace.get(cloudspace['id'])
         cloudspace.status = 'DESTROYED'
@@ -82,21 +77,21 @@ class cloudbroker_cloudspace(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def destroyCloudSpaces(self, accountId, cloudspaceIds, reason, **kwargs):
+    def destroyCloudSpaces(self, cloudspaceIds, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
         """
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroyCloudSpaces,
-                            args=(accountId, cloudspaceIds, reason, ctx),
+                            args=(cloudspaceIds, reason, ctx),
                             kwargs={},
                             title='Destroying Cloud Spaces',
                             success='Finished destroying Cloud Spaces',
                             error='Failed to destroy Cloud Space')
 
-    def _destroyCloudSpaces(self, accountId, cloudspaceIds, reason, ctx):
+    def _destroyCloudSpaces(self, cloudspaceIds, reason, ctx):
         for idx, cloudspaceId in enumerate(cloudspaceIds):
-            cloudspace = self._getCloudSpace(accountId, cloudspaceId)
+            cloudspace = self._getCloudSpace(cloudspaceId)
             self._destroy(cloudspace, reason, ctx)
 
     @auth(['level1', 'level2', 'level3'])
@@ -115,7 +110,7 @@ class cloudbroker_cloudspace(BaseActor):
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         self.netmgr.fw_move(fwid, int(targetNid))
         return True
-    
+
     @auth(['level1', 'level2', 'level3'])
     def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
         """
@@ -133,13 +128,13 @@ class cloudbroker_cloudspace(BaseActor):
         param:ipaddress public IP address to remove from this cloudspace
         """
         return True
-    
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):
         """
-        Deploy VFW 
+        Deploy VFW
         param:cloudspaceId id of the cloudspace
         """
         cloudspaceId = int(cloudspaceId)
@@ -233,7 +228,7 @@ class cloudbroker_cloudspace(BaseActor):
                           'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
-                          'CU_I':  maxNumPublicIP}
+                          'CU_I': maxNumPublicIP}
         self.cb.fillResourceLimits(resourcelimits, preserve_none=True)
         maxMemoryCapacity = resourcelimits['CU_M']
         maxVDiskCapacity = resourcelimits['CU_D']
@@ -280,7 +275,7 @@ class cloudbroker_cloudspace(BaseActor):
                           'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
-                          'CU_I':  maxNumPublicIP}
+                          'CU_I': maxNumPublicIP}
         self.cb.fillResourceLimits(resourcelimits)
         maxMemoryCapacity = resourcelimits['CU_M']
         maxVDiskCapacity = resourcelimits['CU_D']
@@ -292,9 +287,9 @@ class cloudbroker_cloudspace(BaseActor):
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
-                                      maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
-                                      maxArchiveCapacity, maxNetworkOptTransfer,
-                                      maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
+                                             maxArchiveCapacity, maxNetworkOptTransfer,
+                                             maxNetworkPeerTransfer, maxNumPublicIP)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
@@ -302,7 +297,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound("Cloud space with id %s does not exists" % cloudspaceId)
 
         return cloudspaces[0]
-    
+
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def addUser(self, cloudspaceId, username, accesstype, **kwargs):
@@ -345,7 +340,7 @@ class cloudbroker_cloudspace(BaseActor):
         if user:
             userId = user['id']
         else:
-            #external user, delete ACE that was added using emailaddress
+            # external user, delete ACE that was added using emailaddress
             userId = username
         self.cloudspaces_actor.deleteUser(cloudspaceId, userId, recursivedelete)
         return True
@@ -353,6 +348,4 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deletePortForward(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
-         return self.actors.portforwarding.deleteByPort(cloudspaceId, publicIp, publicPort, proto)
-
-
+        return self.actors.portforwarding.deleteByPort(cloudspaceId, publicIp, publicPort, proto)

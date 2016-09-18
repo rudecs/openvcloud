@@ -126,7 +126,5 @@
         """
         Destroy a group of cloud spaces
         """
-        var:accountId int,, ID of account
         var:cloudspaceIds list(int),, IDs of cloudspaces
         var:reason str,, ID of account
-

@@ -25,7 +25,7 @@ def main(j, args, params, tags, tasklet):
     fieldnames = ['ID', 'Grid ID', 'Name', 'Status', 'Reference ID', 'Type', 'Description']
     fieldvalues = ["<a href='/cbgrid/Stack?id=%(id)s'>%(id)s</a>", "<a href='/cbgrid/grid?gid=%(gid)s'>%(gid)s</a>", "name", 'status', 'referenceId', 'type', 'descr']
     fieldids = ['id', 'gid', 'name', 'status', 'referenceId', 'type', 'descr']
-    tableid = modifier.addTableForModel('cloudbroker', 'stack', fieldids, fieldnames, fieldvalues, filters)
+    tableid = modifier.addTableForModel('cloudbroker', 'stack', fieldids, fieldnames, fieldvalues, filters, selectable="rows")
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page

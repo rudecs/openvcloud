@@ -151,6 +151,14 @@ h3. Users Access
 
 h3. Cloud Spaces
 {{action: id:'create_space' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Cloud Space'}}
+
+{{actions: gridbinding:'table_cloudbroker_cloudspace cloudspaceIds'
+- display: Delete Cloudspaces
+  action: /restmachine/cloudbroker/cloudspace/destroyCloudSpaces
+  reload: false
+  input:
+  - reason
+ }}
 {{cbspaces: accountId:$$id}}
 
 {% else %}
