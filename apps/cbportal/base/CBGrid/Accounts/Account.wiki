@@ -7,6 +7,7 @@ h2. Account: ${name}
 {{actions:
 - display: Edit
   action: /restmachine/cloudbroker/account/update
+  reset: false
   input:
   - name: name
     label: Name
