@@ -473,6 +473,8 @@ class Machine(object):
         image = models.image.get(imageId)
         if disksize < image.size:
             raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
+        if image.status != "CREATED":
+            raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
         size = models.size.get(sizeId)
         if disksize not in size.disks:
