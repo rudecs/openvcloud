@@ -35,7 +35,7 @@ def action(networkid):
         dom.undefine()
     except libvirt.libvirtError:
         pass
-
+    j.system.ovsnetconfig.cleanupIfUnused(networkid)
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
