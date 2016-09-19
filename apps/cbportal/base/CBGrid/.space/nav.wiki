@@ -9,4 +9,5 @@ Private Networks:/cbgrid/private networks
 Users:/cbgrid/users
 Groups:/cbgrid/groups
 Virtual Machines:/cbgrid/Virtual Machines
+Storage Routers:/cbgrid/Storage Routers
 Software Versions:/cbgrid/Version
