@@ -1,20 +1,22 @@
 @usedefault
 
-{{actions:
-- display: Decomission
+{{datatables_use}}
+
+{{actions
+- display: Decommission Node
   action: /restmachine/cloudbroker/ovsnode/decommissionNode
   refresh: false
   hide: true
   showresponse: true
-  input:
-    - name: nid
-      label: Grid Node Id
-      type: number
 }}
 
-
 h3. Storage Nodes
+{{storagenodes}}
 
-{{action: id:'action-Decomission' class:'glyphicon glyphicon-remove margin-bottom-medium margin-left-medium' label:'Decomition node'}}
-{{grid.nodes: roles:storagedriver}}
 
+||Grid ID||Name||Grid Node ID||IP Address||Decomission||
+{% for node in nodes -%}
+|${node["gid"]}|${ node["name"]}|${node["id"]}|${node["ipaddr"]}|{{ action: id:'action-DecommissionNode' deleterow:true class:'glyphicon glyphicon-remove' data-nid:${node["id"]} }}|
+{% else %}
+| | | | | |
+{% endfor %}
