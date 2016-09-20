@@ -266,6 +266,9 @@ class CSLibvirtNodeDriver(object):
     def _execute_agent_job(self, name_, id=None, wait=True, queue=None, role=None, **kwargs):
         if not id and not role:
             id = int(self.id)
+
+        elif id is None:
+            id = 0
         else:
             id = id and int(id)
         job = self.backendconnection.agentcontroller_client.executeJumpscript('greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
@@ -539,8 +542,8 @@ class CSLibvirtNodeDriver(object):
         return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        diskguids = self._get_volume_paths(node)
-        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp}
+        diskpaths = self._get_volume_paths(node)
+        kwargs = {'diskpaths': diskpaths, 'timestamp': timestamp}
         return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
