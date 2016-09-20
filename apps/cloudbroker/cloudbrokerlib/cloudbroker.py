@@ -166,7 +166,7 @@ class CloudBroker(object):
             if realstatus == 'DESTROYED':
                 realstatus = 'HALTED'
             machine.status = realstatus
-            self.models.vmachine.set(machine)
+            models.vmachine.set(machine)
         return provider, node, machine
 
     def chooseProvider(self, machine):
