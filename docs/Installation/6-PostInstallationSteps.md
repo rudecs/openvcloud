@@ -1,5 +1,9 @@
 ## Post Installation Steps
 
+### Report back to the environment repository
+
+Use the **08-ovcgit-hardware-summary.py** script.
+
 
 ### Images
 
@@ -11,7 +15,7 @@ ays install -n image_ubuntu-1404-x64 --targettype node.ssh --targetname $NODENAM
 Replace `$NODENAME` by a node name (eg: be-conv-1-01)
 
 
-### Sync the image to the other nodes
+#### Sync the image to the other nodes
 
 1. Go to the **Cloud Broker Portal**
 2. Go to **Locations**
@@ -25,7 +29,7 @@ Replace `$NODENAME` by a node name (eg: be-conv-1-01)
 10. Select all nodes
 
 
-### Sync the sizes to the other nodes
+#### Sync the sizes to the other nodes
 
 1. Go to the **Cloud Broker Portal**
 2. Go to **Locations**
@@ -34,7 +38,7 @@ Replace `$NODENAME` by a node name (eg: be-conv-1-01)
 5. click sync available sizes to cloudbroker
 
 
-### Create an account/username 
+### Create an account/username
 
 1. Go to the **Cloud Broker Portal**
 2. Go to **Users**

@@ -10,13 +10,13 @@ reboot
 
 Wait for the machine to reboot.
 
-Once rebooted connect again to the CPU node and fetch the **node.sh** script from the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) GitHub repository.
+Once rebooted connect again to the CPU node and fetch the **05-node-initializer.sh** script from the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) GitHub repository.
 
 Unfortunately you cannot simply curl this script into your environment yet because of the authentication, so navigate to the link, then copy and paste (vi) the content into your node:
 
 ```
-curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/node.sh > /tmp/node.sh
-. /tmp/node.sh
+curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/05-node-initializer.sh> /tmp/05-node-initializer.sh
+. /tmp/05-node-initializer.sh
 ```
 
 This will:

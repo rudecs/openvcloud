@@ -1,6 +1,6 @@
 ## Connect Node to ovc_git
 
-Connecting a node to **ovc_git** is done using **pre-install.sh**.
+Connecting a node to **ovc_git** is done using **06-node-connect.sh**.
 
 > **Note**: Do not run this script in parallel in case of a remote (not Docker) node.
 
@@ -10,14 +10,12 @@ First make sure that you have the version tag environment variables set, specify
 export JSBRANCH="7.0.2a"; export AYSBRANCH="7.0.2a" ; export OVCBRANCH="2.0.2a" ;
 ```
 
-Then run the **pre-install.sh** script:
+Then run the **06-node-connect.sh** script:
 
 ```
-curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/pre-install.sh > /tmp/pre-install.sh
-bash /tmp/pre-install.sh $REMOTEHOST
+curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/06-node-connect.sh > /tmp/06-node-connect.sh
+bash /tmp/06-node-connect.sh $REMOTEHOST
 ```
-
-> **Note:** the name of the script is legacy, so it is not doing any real pre-installation, but rather just connects the node to **ovc_git**.
 
 `$REMOTEHOST` must be the remote **ovc_git** hostname (or IP), e.g. `be-scale-1.demo.greenitglobe.com`
 

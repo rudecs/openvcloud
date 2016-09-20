@@ -26,7 +26,7 @@ Backends
 
 ### Add the OpenvCloud Preset
 
-From the ovc_git machine, please run:
+From the **ovc_git** machine, please run:
 
 ```bash
 cd /opt/code/git/openvcloudEnvironments/be-dev-1/

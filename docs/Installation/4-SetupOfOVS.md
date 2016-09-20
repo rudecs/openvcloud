@@ -2,9 +2,9 @@
 
 > For an introduction to Open vStorage you might first want to read the [Open vStorage documentation](https://openvstorage.gitbooks.io/administration/content/Openvstorage/).
 
-On **ovc_git** you'll find the **cpunode-setup.py** script in order install all Open vStorage (OVS) components.
+On **ovc_git** you'll find the **07-ovcgit-cpunode-setup.py** script in order install all Open vStorage (OVS) components.
 
-After having connected the node to **ovc_git** using the **pre-install.sh** script, documented in the the previous step [Connect Node to ovc_git](3-ConnectNode2ovc_git.md), go to the directory which contains your environment repository (example):
+After having connected the node to **ovc_git** using the **06-node-connect.sh** script, documented in the the previous step [Connect Node to ovc_git](3-ConnectNode2ovc_git.md), go to the directory which contains your environment repository (example):
 
 ```bash
 cd /opt/code/github/gig-projects/be-g8-1/
@@ -22,14 +22,14 @@ Both are discussed here below.
 
 This is the simplest way to setup a basic OVS environment, if you are OK with the default configuration.
 
-Just run **cpunode-setup.py** as many times as you have nodes:
+Just run **07-ovcgit-cpunode-setup.py** as many times as you have nodes:
 
 ```
-jspython scripts/cpunode-setup.py
+jspython scripts/install/07-ovcgit-cpunode-setup.py
 ```
 
 This auto-detection mode will:
-- Search for an available node (sorted by name)
+- Search for an available nodes (sorted by name)
 - Search if a OVS-master is already installed by the script
 - If not, it will install the master OVS on the node-id you give, then save it
 - If yes, it will install the slave node using the master already installed
@@ -51,8 +51,8 @@ Do this for all the nodes, note that you can use the internal ips of the nodes, 
 You can install the Open vStorage using the same script as used with the auto-detection setup, but with some arguments to make custom choices:
 
 ```
-jspython scripts/cpunode-setup.py --node be-scale-1-01 --master
-jspython scripts/cpunode-setup.py --node $XX --slave $IPMASTER
+jspython scripts/install/07-ovcgit-cpunode-setup.py --node be-scale-1-01 --master
+jspython scripts/install/07-ovcgit-cpunode-setup.py --node $XX --slave $IPMASTER
 ```
 
 `$XX` should be replaced by node name (e.g. envname-05) and `$IPMASTER` is the backplane master ip of the master node. The master install script should give you the IP address, it should be like: `10.xxx.1.11`.
