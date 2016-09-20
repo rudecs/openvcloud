@@ -31,7 +31,7 @@ There are actually three steps:
 #### Bootstrap the installation (step 1)
 To bootstrap the installation of the master cloud space, a temporary Docker container with all required components pre-installed is used. This container can be deleted afterwards.
 
-On the Controller, run this temporary containers and start a SSH session:
+On the **Controller**, run this temporary container and start a SSH session:
 
 ```
 mkdir /opt/master_var
@@ -40,12 +40,13 @@ docker run -d name=jumpscale jumpscale/ubuntu1404
 ssh root@172.17.0.2
 ```
 
-The address 17.17.0.2 is the address of Docker, which you can lookup using `docker inspect`.
+The address 17.17.0.2 is the first address of Docker, which you can lookup using `docker inspect`.
 
-In the container download the **openvcloud.sh** script and run it:
+In the container download the **01-scratch-openvloud.sh** script from the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository and run it:
+
 ```
-wget https://arya.maxus.net/gig/openvcloud.sh
-bash openvcloud.sh
+cd openvcloud/scripts/install/
+bash 01-scratch-openvcloud.sh
 ```
 
 This script does the following:
@@ -59,10 +60,10 @@ This script does the following:
 
 <a id="ovc_git-container"></a>
 #### Create the ovc_git container (step 2)
-Next use the **init.py** script to do the actual work, creating the **ovc_git** container:
+Next get the **02-scratch-init.py** script from the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository to do the actual work, creating the **ovc_git** container:
 
 ```bash
-jspython /opt/code/github/0-complexity/openvcloud/scripts/install/init.py \
+jspython /opt/code/github/0-complexity/openvcloud/scripts/install/02-scratch-init.py \
   --environment XXXX --git-user XXX --git-pass XXX \
   --backend docker \
   --backend docker --remote 172.17.0.1 --port 2375 --public XXX
@@ -96,24 +97,20 @@ Make sure that when you ssh into **ovc_git** that you do this using the `-A` opt
 ssh root@172.17.0.1 -p 2202 -A
 ```
 
-When you are connected to it, there is another script to be executed which will deploy all the others virtual machines in the master cloud space of your environment.
+When you are connected to it, you'll use the **03-ovcgit-master-spawn.py** script to deploy all the others virtual machines in the master cloud space of your environment. Also this script is available from the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository.
 
-To start it, at first, go to the environment directory, which was cloned from the environment repository (in this example 'env_gig'):
+To start it, first make sure the environment directory is your current directory (in this example 'env_gig'):
 
 ```
 cd /opt/code/git/gig-projects/env_gig/
+jspython 03-ovcgit-master-spawn.py --quiet
 ```
 
-First use the **master-spawn.py** script for creating the required Docker containers:
-
-```
-jspython scripts/master-spawn.py --quiet
-```
-
-Then use the **master-configure.py** script to configure the network settings (IP addresses are fictitious examples):
+Then use the **04-ovcgit-master-configure.py** script to configure the network settings (IP addresses are fictitious examples), again make sure that the environment directory is your current directory:
 
 ```bash
-jspython scripts/master-configure.py --gateway 10.101.0.1 --start 10.101.101.100 --end 10.101.101.200 --netmask 255.255.0.0 --ssl wildcard --gid $RANDOM
+cd /opt/code/git/gig-projects/env_gig/
+jspython 04-ovcgit-master-configure.py --gateway 10.101.0.1 --start 10.101.101.100 --end 10.101.101.200 --netmask 255.255.0.0 --ssl wildcard --gid $RANDOM
 ```
 
 Arguments are:
