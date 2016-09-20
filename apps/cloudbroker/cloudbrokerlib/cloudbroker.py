@@ -416,7 +416,7 @@ class CloudBroker(object):
             else:
                 resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
         maxVDiskCapacity = resource_limits['CU_D']
-        if maxVDiskCapacity != -1 and maxVDiskCapacity < 10:
+        if maxVDiskCapacity is not None and maxVDiskCapacity != -1 and maxVDiskCapacity < 10::
             raise exceptions.BadRequest("Minimum disk capacity for cloudspace is 10GB.")
 
 class CloudSpace(object):

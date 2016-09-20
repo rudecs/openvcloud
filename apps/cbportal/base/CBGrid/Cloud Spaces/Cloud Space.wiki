@@ -15,8 +15,10 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
+
 - display: Edit
   action: /restmachine/cloudbroker/cloudspace/update
+  clearform: false
   input:
   - name: name
     label: Name
