@@ -4,6 +4,7 @@
 {% if id %}
 h2. Account: ${name}
 
+{% if status != 'DESTROYED'%}
 {{actions:
 - display: Edit
   action: /restmachine/cloudbroker/account/update
@@ -126,6 +127,7 @@ h2. Account: ${name}
      - label: 'No'
        value: false
 }}
+{% endif %}
 
 {{createspace: accountId:$$id}}
 
