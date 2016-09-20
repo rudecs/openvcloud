@@ -131,10 +131,15 @@ class cloudbroker_machine(BaseActor):
                             error='Failed to stop machines')
 
     def _stopMachines(self, machineIds, reason, ctx):
-        for idx, machineId in enumerate(machineIds):
+        runningMachineIds = []
+        for machineId in machineIds:
+            vmachine = self._validateMachineRequest(machineId)
+            if vmachine.status in ['RUNNING', 'PAUSED']:
+                runningMachineIds.append(machineId)
+        for idx, machineId in enumerate(runningMachineIds):
             ctx.events.sendMessage("Stopping Machine", 'Stopping Machine %s/%s' %
-                                   (idx+1, len(machineIds)))
-            self.stop(machineId, reason)
+                                   (idx+1, len(runningMachineIds)))
+            self.actors.machines.stop(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
