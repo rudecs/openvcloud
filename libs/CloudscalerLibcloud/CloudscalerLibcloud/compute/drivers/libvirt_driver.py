@@ -2,6 +2,7 @@
 from JumpScale import j
 from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, StorageVolume
+from libcloud.compute.drivers.dummy import DummyNodeDriver
 from jinja2 import Environment, PackageLoader
 from xml.etree import ElementTree
 import urlparse
@@ -103,6 +104,7 @@ class CSLibvirtNodeDriver(object):
     _edgeclients = []
     _ovsdata = {}
     _edgenodes = {}
+    type = 'CSLibvirt'
 
     NODE_STATE_MAP = {
         0: NodeState.TERMINATED,
@@ -503,7 +505,13 @@ class CSLibvirtNodeDriver(object):
         return self.backendconnection.removeImage(templateid, self.gid)
 
     def ex_get_node_details(self, node_id):
-        node = Node(id=node_id, name='', state='', public_ips=[], private_ips=[], driver='')  # dummy Node as all we want is the ID
+        driver = DummyNodeDriver(0)
+        node = Node(id=node_id,
+                    name='',
+                    state=NodeState.RUNNING,
+                    public_ips=[],
+                    private_ips=[],
+                    driver=driver),
         agentnode = self._get_domain_for_node(node)
         if agentnode is None:
             xml = self._get_persistent_xml(node)
