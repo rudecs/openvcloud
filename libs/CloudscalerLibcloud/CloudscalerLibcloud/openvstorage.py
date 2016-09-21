@@ -125,6 +125,7 @@ def getPath(path, vpoolname=None):
     # Strip vdiskguid from path
     head, sep, tail = path.partition('@')
     path = head
+
     if not path.endswith('.raw'):
         path += '.raw'
     return path

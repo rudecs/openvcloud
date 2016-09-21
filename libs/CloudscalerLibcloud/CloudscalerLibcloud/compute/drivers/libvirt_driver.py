@@ -514,7 +514,7 @@ class CSLibvirtNodeDriver(object):
                     state=NodeState.RUNNING,
                     public_ips=[],
                     private_ips=[],
-                    driver=driver),
+                    driver=driver)
         agentnode = self._get_domain_for_node(node)
         if agentnode is None:
             xml = self._get_persistent_xml(node)
