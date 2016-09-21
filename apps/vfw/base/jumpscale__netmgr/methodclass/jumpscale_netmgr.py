@@ -86,11 +86,16 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'publicgwip': publicgwip,
                     'publiccidr': publiccidr,
                     }
-            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default')
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default', wait=False)
+            fwobj.deployment_jobguid = job['guid']
+            result = acl.waitJumpscript(job=job)
+
             if result['state'] != 'OK':
                 self.osisvfw.delete(key)
                 args = {'ovs_connection': self.get_ovs_connection(gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
+
                 job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
+
                 if job['state'] != 'OK':
                     raise RuntimeError("Failed to remove vfw with volume %s" % networkid)
 
@@ -101,8 +106,12 @@ class jumpscale_netmgr(j.code.classGetBase()):
             fwobj.password = data['password']
             fwobj.nid = data['nid']
             self.osisvfw.set(fwobj)
+            return result
         else:
-            return self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create', role='fw', gid=gid, args=args)['result']
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create', role='fw', gid=gid, args=args, wait=False)
+            fwobj.deployment_jobguid = job['guid']
+            result = acl.waitJumpscript(job=job)
+            return result
 
     def fw_move(self, fwid, targetNid, **kwargs):
         fwobj = self._getVFWObject(fwid)
