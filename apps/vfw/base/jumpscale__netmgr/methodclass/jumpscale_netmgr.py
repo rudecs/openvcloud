@@ -92,9 +92,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
                 args = {'ovs_connection': self.get_ovs_connection(gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
                 job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
-                    raise RuntimeError("Failed to remove vfw with volume %s" % networkid)
+                    raise exceptions.ServiceUnavailable("Failed to remove vfw with volume %s" % networkid)
 
-                raise RuntimeError("Failed to create create fw for domain %s job was %s" % (domain, result['id']))
+                raise exceptions.ServiceUnavailable("Failed to create create fw for domain %s job was %s" % (domain, result['id']))
             data = result['result']
             fwobj.host = data['internalip']
             fwobj.username = data['username']
@@ -116,7 +116,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                 'sourceip': srcip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
-            raise RuntimeError("Failed to move routeros check job %(guid)s" % job)
+            raise exceptions.ServiceUnavailable("Failed to move routeros check job %(guid)s" % job)
         fwobj.nid = targetNid
         self.osisvfw.set(fwobj)
         return True
@@ -134,7 +134,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_remove_lease_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
-            raise RuntimeError("Failed to release lease for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
+            raise exceptions.ServiceUnavailable("Failed to release lease for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
         return job['result']
 
     def fw_set_password(self, fwid, username, password):
@@ -142,7 +142,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         args = {'fwobject': fwobj.obj2dict(), 'username': username, 'password': password}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_set_password_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
-            raise RuntimeError("Failed to set password. Error: %s" % (job['result']['errormessage']))
+            raise exceptions.ServiceUnavailable("Failed to set password. Error: %s" % (job['result']['errormessage']))
         return job['result']
 
     def fw_get_openvpn_config(self, fwid, **kwargs):
@@ -165,11 +165,11 @@ class jumpscale_netmgr(j.code.classGetBase()):
             if fwobj.nid:
                 job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
-                    raise RuntimeError("Failed to remove vfw with id %s" % fwid)
+                    raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
                 args = {'ovs_connection': self.get_ovs_connection(fwobj.gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
                 job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
-                    raise RuntimeError("Failed to remove vfw with id %s" % fwid)
+                    raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
             self.osisvfw.delete(fwid)
         else:
             result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_delete', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
@@ -187,7 +187,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
 
         if job['state'] != 'OK':
-            raise RuntimeError('Failed to apply config')
+            raise exceptions.ServiceUnavailable('Failed to apply config')
         return job['result']
 
 
