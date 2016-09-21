@@ -112,6 +112,7 @@ def getUrlPath(path, vpoolname=VPOOLNAME):
 
 
 def getPath(path, vpoolname=None):
+    """ Get path from referenceId of VM"""
     url = urlparse.urlparse(path)
     vpool = _getVPoolByUrl(url, vpoolname)
     path = url.path.strip('/')
@@ -120,6 +121,10 @@ def getPath(path, vpoolname=None):
         path = '/'.join(pathparts[2:])
     if not path.startswith('/mnt/%s' % vpool.name):
         path = os.path.join('/mnt/%s' % vpool.name, path)
+
+    # Strip vdiskguid from path
+    head, sep, tail = path.partition('@')
+    path = head
     if not path.endswith('.raw'):
         path += '.raw'
     return path
