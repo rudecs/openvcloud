@@ -66,7 +66,7 @@ class cloudapi_portforwarding(BaseActor):
         machine = j.apps.cloudapi.machines.get(machineId)
         localIp = self._getLocalIp(machine)
         if localIp is None:
-            raise exceptions.NotFound('No correct ipaddress found for this machine')
+            raise exceptions.NotFound('Cannot create a portforward during cloudspace deployment.')
 
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
             raise exceptions.Conflict("Forward to %s with port %s already exists" % (publicIp, publicPort))
