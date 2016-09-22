@@ -1,8 +1,6 @@
 from JumpScale import j
-import JumpScale.grid.agentcontroller
-import JumpScale.lib.lxc
-import JumpScale.baselib.serializers
 from JumpScale.portal.portal import exceptions
+
 
 class jumpscale_netmgr(j.code.classGetBase()):
     """
@@ -10,11 +8,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
 
     """
     def __init__(self):
-
-        self._te = {}
-        self.actorname = "netmgr"
-        self.appname = "jumpscale"
-        #jumpscale_netmgr_osis.__init__(self)
         self.client = j.clients.osis.getByInstance('main')
         self.osisvfw = j.clients.osis.getCategory(self.client, 'vfw', 'virtualfirewall')
         self.nodeclient = j.clients.osis.getCategory(self.client, 'system', 'node')
@@ -76,7 +69,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         fwobj.id = networkid
         fwobj.gid = gid
         fwobj.pubips.append(publicip)
-        fwobj.type =  type
+        fwobj.type = type
         key = self.osisvfw.set(fwobj)[0]
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name)}
         if type == 'routeros':
@@ -88,7 +81,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     }
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default', wait=False)
             fwobj.deployment_jobguid = job['guid']
-            result = acl.waitJumpscript(job=job)
+            result = self.agentcontroller.waitJumpscript(job=job)
 
             if result['state'] != 'OK':
                 self.osisvfw.delete(key)
@@ -110,12 +103,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
         else:
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create', role='fw', gid=gid, args=args, wait=False)
             fwobj.deployment_jobguid = job['guid']
-            result = acl.waitJumpscript(job=job)
+            result = self.agentcontroller.waitJumpscript(job=job)
             return result
 
     def fw_move(self, fwid, targetNid, **kwargs):
         fwobj = self._getVFWObject(fwid)
         srcnode = self.nodeclient.get("%s_%s" % (fwobj.gid, fwobj.nid))
+
         def get_backplane_ip(node):
             for nicinfo in node.netaddr:
                 if nicinfo['name'] == 'backplane1':
@@ -199,7 +193,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
             raise exceptions.ServiceUnavailable('Failed to apply config')
         return job['result']
 
-
     def fw_forward_create(self, fwid, gid, fwip, fwport, destip, destport, protocol='tcp', **kwargs):
         """
         param:fwid firewall id
@@ -250,7 +243,6 @@ class jumpscale_netmgr(j.code.classGetBase()):
             result = self._applyconfig(fwobj.gid, fwobj.nid, args)
         return result
 
-
     def fw_forward_list(self, fwid, gid, localip=None, **kwargs):
         """
         list all portformarding rules,
@@ -264,10 +256,18 @@ class jumpscale_netmgr(j.code.classGetBase()):
         if localip:
             for rule in fwobj.tcpForwardRules:
                 if localip == rule.toAddr:
-                    result.append({'publicIp':rule.fromAddr, 'publicPort':rule.fromPort, 'localIp':rule.toAddr, 'localPort':rule.toPort, 'protocol': rule.protocol})
+                    result.append({'publicIp': rule.fromAddr,
+                                   'publicPort': rule.fromPort,
+                                   'localIp': rule.toAddr,
+                                   'localPort': rule.toPort,
+                                   'protocol': rule.protocol})
         else:
             for rule in fwobj.tcpForwardRules:
-                result.append({'publicIp':rule.fromAddr, 'publicPort':rule.fromPort, 'localIp':rule.toAddr, 'localPort':rule.toPort, 'protocol': rule.protocol})
+                result.append({'publicIp': rule.fromAddr,
+                               'publicPort': rule.fromPort,
+                               'localIp': rule.toAddr,
+                               'localPort': rule.toPort,
+                               'protocol': rule.protocol})
         return result
 
     def fw_list(self, gid, domain=None, **kwargs):
