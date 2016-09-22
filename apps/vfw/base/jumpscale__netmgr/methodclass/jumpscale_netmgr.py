@@ -79,8 +79,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'publicgwip': publicgwip,
                     'publiccidr': publiccidr,
                     }
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create_routeros', role='fw', gid=gid, args=args, queue='default', wait=False)
+            job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_create_routeros', roles=['fw'], gid=gid, args=args, queue='default', wait=True)
             fwobj.deployment_jobguid = job['guid']
+            self.osisvfw.set(fwobj)
             result = self.agentcontroller.waitJumpscript(job=job)
 
             if result['state'] != 'OK':
@@ -101,8 +102,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
             self.osisvfw.set(fwobj)
             return result
         else:
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_create', role='fw', gid=gid, args=args, wait=False)
+            job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_routeros', roles=['fw'], gid=gid, args=args, wait=True)
             fwobj.deployment_jobguid = job['guid']
+            self.osisvfw.set(fwobj)
             result = self.agentcontroller.waitJumpscript(job=job)
             return result
 
