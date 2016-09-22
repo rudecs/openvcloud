@@ -1,5 +1,6 @@
 from JumpScale import j
 import sys
+import random
 import os
 import time
 import urlparse
@@ -10,7 +11,7 @@ from ovs.lib.vdisk import VDiskController
 from ovs.dal.lists.vdisklist import VDiskList
 from ovs.dal.lists.vpoollist import VPoolList
 from ovs.dal.lists.storagerouterlist import StorageRouterList
-from ovs.dal.lists.vpoollist import VPoolList
+from ovs.dal.lists.storagedriverlist import StorageDriverList
 
 VPOOLNAME = 'vmstor'
 
@@ -56,11 +57,11 @@ def getLocalStorageRouter():
 
 def getEdgeconnection(vpoolname=VPOOLNAME):
     protocol = getEdgeProtocol()
-    storagerouter = getLocalStorageRouter()
-    if storagerouter:
-        for storagedriver in storagerouter.storagedrivers:
-            if storagedriver.vpool.name == vpoolname:
-                return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
+    storagedrivers = list(StorageDriverList.get_storagedrivers())
+    random.shuffle(storagedrivers)
+    for storagedriver in storagedrivers:
+        if storagedriver.vpool.name == vpoolname:
+            return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
     return None, None, protocol
 
 
