@@ -23,13 +23,20 @@
         result: bool
 
     method:enable
-        """     
+        """
         Enable a stack
         """
         var:id int,,id of the computenode
         var:gid int,,the grid this computenode belongs to
         var:message str,,message. Must be less than 30 characters
         result: str
+
+    method:enableStacks
+        """
+        Enable stacks
+        """
+        var:ids list(int),,ids of stacks to enable
+        result:bool
 
     method:maintenance
         """
