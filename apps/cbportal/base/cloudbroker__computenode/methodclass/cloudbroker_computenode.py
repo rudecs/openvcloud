@@ -193,20 +193,10 @@ class cloudbroker_computenode(BaseActor):
     @wrap_remote
     def decommission(self, id, gid, message, **kwargs):
         stack = self._getStack(id, gid)
-        status = stack['status']
         stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
         if not stacks:
             raise exceptions.PreconditionFailed("Decommissioning stack not possible when there are no other enabled stacks")
         self._changeStackStatus(stack, 'DECOMMISSIONED')
-        otherstack = random.choice(filter(lambda x: x['id'] != id, stacks))
-        args = {'storageip': urlparse.urlparse(stack['apiUrl']).hostname}
-        job = self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline',
-                                         nid=int(otherstack['referenceId']), gid=otherstack['gid'],
-                                         args=args)
-        if job['state'] != 'OK':
-            self._changeStackStatus(stack, status)
-            raise exceptions.Error("Failed to put storage node offline")
-
         ctx = kwargs['ctx']
         title = 'Decommissioning Node'
         errorcb = functools.partial(self._errorcb, stack)
