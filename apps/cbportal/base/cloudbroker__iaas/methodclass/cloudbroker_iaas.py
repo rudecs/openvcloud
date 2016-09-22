@@ -1,9 +1,10 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import netaddr
-json = j.db.serializers.ujson
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor
+json = j.db.serializers.ujson
+
 
 def checkIPS(network, ips):
     for ip in ips:
@@ -11,10 +12,15 @@ def checkIPS(network, ips):
             return False
     return True
 
+
 class cloudbroker_iaas(BaseActor):
     """
     gateway to grid
     """
+    def __init__(self):
+        super(cloudbroker_iaas, self).__init__()
+        self.lcl = j.clients.osis.getNamespace('libvirt')
+
     def addPublicIPv4Subnet(self, subnet, gateway, startip, endip, gid, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
@@ -43,12 +49,11 @@ class cloudbroker_iaas(BaseActor):
         self.models.publicipv4pool.set(pool)
         return subnet
 
-
     def _getUsedIPS(self, pool):
         networkpool = netaddr.IPNetwork(pool.id)
         usedips = set()
 
-        for space in self.models.cloudspace.search({'$query': {'gid': pool.gid, 'status': 'DEPLOYED'}, '$fields': ['id','name', 'publicipaddress']})[1:]:
+        for space in self.models.cloudspace.search({'$query': {'gid': pool.gid, 'status': 'DEPLOYED'}, '$fields': ['id', 'name', 'publicipaddress']})[1:]:
             if netaddr.IPNetwork(space['publicipaddress']).ip in networkpool:
                 usedips.add(str(netaddr.IPNetwork(space['publicipaddress']).ip))
         for vm in self.models.vmachine.search({'nics.type': 'PUBLIC', 'status': {'$nin': ['ERROR', 'DESTROYED']}})[1:]:
@@ -97,7 +102,6 @@ class cloudbroker_iaas(BaseActor):
         pool.gateway = gateway
         self.models.publicipv4pool.set(pool)
 
-
     def removePublicIPv4IPS(self, subnet, freeips, **kwargs):
         """
         Remove public ips from an existing range
@@ -116,6 +120,18 @@ class cloudbroker_iaas(BaseActor):
         return subnet
 
     @auth(['level1', 'level2', 'level3'])
+    def addSize(self, name, vcpus, memory, disksize, **kwargs):
+        size = dict()
+        size['disk'] = disksize
+        size['memory'] = memory
+        size['vcpus'] = vcpus
+        if self.lcl.size.count(size) >= 1:
+            raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
+        size['name'] = name
+        self.lcl.size.set(size)
+        self.syncAvailableSizesToCloudbroker()
+
+    @auth(['level1', 'level2', 'level3'])
     def syncAvailableImagesToCloudbroker(self, **kwargs):
         """
         synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
@@ -125,7 +141,7 @@ class cloudbroker_iaas(BaseActor):
         for stack in stacks:
             self.cb.stackImportImages(stack)
         return True
-    
+
     @auth(['level1', 'level2', 'level3'])
     def syncAvailableSizesToCloudbroker(self, **kwargs):
         """
