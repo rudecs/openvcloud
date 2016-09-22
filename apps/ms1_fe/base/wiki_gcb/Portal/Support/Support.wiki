@@ -1,5 +1,0 @@
-h1. Support
-
-{{html:
-If have any problems please contact us at: <a href="mailto:support@greenitglobe.com" target="_top">support@greenitglobe.com</a>.
-}}

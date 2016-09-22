@@ -1,4 +1,0 @@
-{{html:
-	<footer class="font background-white">
-	</footer>
-}}

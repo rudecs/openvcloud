@@ -1,5 +1,0 @@
-@template default-docs
-
-{{html:
-<p><strong>Welcome</strong> to the OpenvCloud Knowledge Base. The Knowledge Base is growing based on customer questions. In case you do not find a reply, do not hesitate to contact the support team at: <a href="mailto:support@greenitglobe.com" target="_top">support@greenitglobe.com</a>.</p>
-}}
