@@ -204,6 +204,12 @@ class CSLibvirtNodeDriver(object):
 
         return clients[rndrbn % len(clients)]
 
+    def getEdgeClientByVpoolAndStorageRouter(self, vpoolguid, storagerouterguid):
+        for edgeclient in self.edgeclients:
+            if edgeclient['vpoolguid'] == vpoolguid and storagerouterguid == edgeclient['storagerouterguid']:
+                return edgeclient
+        raise ValueError("Could not find EdgeClient")
+
     def set_backend(self, connection):
         """
         Set a connection to the cloudbroker backend, this is used
@@ -669,7 +675,6 @@ class CSLibvirtNodeDriver(object):
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
         disks = []
-        clonedisks = []
         for volume, diskname in diskmapping:
             if diskname.startswith('vm'):
                 edgeclient = self.getNextEdgeClient('vmstor')
@@ -679,15 +684,14 @@ class CSLibvirtNodeDriver(object):
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
             disks.append(diskinfo)
-            morediskinfo = diskinfo.copy()
-            morediskinfo['edgeclient'] = edgeclient
-            clonedisks.append(morediskinfo)
 
         kwargs = {'ovs_connection': self.ovs_connection, 'disks': disks}
         newdisks = self._execute_agent_job('clonedisks', role='storagedriver', **kwargs)
         volumes = []
-        for idx, diskinfo in enumerate(clonedisks):
-            volumeid = self.getVolumeId(newdisks[idx], diskinfo['edgeclient'], diskinfo['clone_name'])
+        for idx, diskinfo in enumerate(disks):
+            newdiskguid, vpoolguid = newdisks[idx]
+            edgeclient = self.getEdgeClientByVpoolAndStorageRouter(vpoolguid, diskinfo['storagerouterguid'])
+            volumeid = self.getVolumeId(newdisks[idx], edgeclient, diskinfo['clone_name'])
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)

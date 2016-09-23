@@ -56,7 +56,9 @@ def action(ovs_connection, disks):
         success, result = ovs.wait_for_task(taskguid)
         if not success:
             raise Exception("Could not create clone:\n{}".format(result))
-        return result['vdisk_guid']
+        diskguid = result['vdisk_guid']
+        diskinfo = ovs.get('/vdisks/{}'.format(diskguid))
+        return [diskguid, diskinfo['vpool_guid']]
 
     jobs = [gevent.spawn(clone, disk) for disk in disks]
     gevent.joinall(jobs)
