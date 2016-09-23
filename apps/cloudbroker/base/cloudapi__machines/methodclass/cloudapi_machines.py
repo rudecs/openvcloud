@@ -574,6 +574,10 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        for account in machine.accounts:
+            newaccount = clone.new_account()
+            newaccount.login = account.login
+            newaccount.password = account.password
         clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
