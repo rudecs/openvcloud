@@ -691,7 +691,7 @@ class CSLibvirtNodeDriver(object):
         for idx, diskinfo in enumerate(disks):
             newdiskguid, vpoolguid = newdisks[idx]
             edgeclient = self.getEdgeClientByVpoolAndStorageRouter(vpoolguid, diskinfo['storagerouterguid'])
-            volumeid = self.getVolumeId(newdisks[idx], edgeclient, diskinfo['clone_name'])
+            volumeid = self.getVolumeId(newdiskguid, edgeclient, diskinfo['clone_name'])
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)
