@@ -581,7 +581,9 @@ class cloudapi_machines(BaseActor):
         clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
-        provider, node, machine = self.cb.getProviderAndNode(machineId)
+
+        _, node, machine = self.cb.getProviderAndNode(machineId)
+        provider = self.cb.getBestProvider(cloudspace.gid, machine.imageId)
 
         totaldisksize = 0
         for diskId in machine.disks:
