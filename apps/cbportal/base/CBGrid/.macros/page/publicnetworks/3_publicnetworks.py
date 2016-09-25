@@ -16,7 +16,7 @@ def main(j, args, params, tags, tasklet):
     fieldvalues = ['[%(id)s|public network?networkid=%(id)s]', 'gid', 'subnetmask', getFreeIPS]
     tableid = modifier.addTableForModel('cloudbroker', 'publicipv4pool', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
 
