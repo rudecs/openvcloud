@@ -86,6 +86,8 @@ class CloudBroker(object):
         self.cloudspace = CloudSpace(self)
         self.syscl = j.clients.osis.getNamespace('system')
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
+        self.agentcontroller = j.clients.agentcontroller.get()
+
 
     @property
     def actors(self):
@@ -178,18 +180,18 @@ class CloudBroker(object):
         models.vmachine.set(machine)
         return True
 
+    def getActiveSessionsKeys(self):
+        return self.agentcontroller.listActiveSessions().keys()
+
     def getCapacityInfo(self, gid, imageId):
         resourcesdata = list()
-        activesessions = j.clients.agentcontroller.get().listActiveSessions().keys()
-
+        activesessions = self.agetActiveSessionsKeys()
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
-                nodekey = (stack['gid'], int(stack['referenceId']))
-                if nodekey not in activesessions:
+                if (stack['gid'], int(stack['referenceId'])) not in activesessions:
                     continue
-
                 # search for all vms running on the stacks
                 usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                   '$query': {'stackId': stack['id'],
@@ -588,8 +590,11 @@ class Machine(object):
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-                    newstackId = stack['id']
-                provider = self.cb.getProviderByStackId(newstackId)
+                else:
+                    activesessions = self.getActiveSessionsKeys()
+                    provider = self.cb.getProviderByStackId(newstackId)
+                    if (provider['gid'], int(provider['referenceId'])) not in activesessions:
+                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except:
                 self.cleanup(machine)
                 raise
