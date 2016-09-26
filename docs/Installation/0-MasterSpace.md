@@ -31,16 +31,24 @@ There are actually three steps:
 #### Bootstrap the installation (step 1)
 To bootstrap the installation of the master cloud space, a temporary Docker container with all required components pre-installed is used. This container can be deleted afterwards.
 
-On the **Controller**, run this temporary container and start a SSH session:
+Get access to one of **Controllers** of your environment in order to run the temporary Docker container,
 
 ```
 mkdir /opt/master_var
 docker pull jumpscale/ubuntu1404
 docker run -d name=jumpscale jumpscale/ubuntu1404
-ssh root@172.17.0.2
 ```
 
-The address 17.17.0.2 is the first address of Docker, which you can lookup using `docker inspect`.
+Use the `docker inspect` command in order to get the IP address of the Docker container:
+```
+docker ps
+docker inspect e350390fd549
+```
+
+Now start an SSH session using the IP address, e.g. `172.17.0.2`:
+```
+ssh root@172.17.0.2
+```
 
 In the container download the **01-scratch-openvloud.sh** script from the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository and run it:
 
