@@ -185,7 +185,7 @@ class CloudBroker(object):
 
     def getCapacityInfo(self, gid, imageId):
         resourcesdata = list()
-        activesessions = self.agetActiveSessionsKeys()
+        activesessions = self.getActiveSessionsKeys()
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
