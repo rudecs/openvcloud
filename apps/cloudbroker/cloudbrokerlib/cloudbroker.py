@@ -595,16 +595,16 @@ class Machine(object):
                 else:
                     activesessions = self.getActiveSessionsKeys()
                     provider = self.cb.getProviderByStackId(newstackId)
-                    if (provider['gid'], int(provider['referenceId'])) not in activesessions:
+                    if (provider.client.gid, int(provider.client.id)) not in activesessions:
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except:
                 self.cleanup(machine)
                 raise
-            return provider, newstackId
+            return provider
 
         node = -1
         while node == -1:
-            provider, newstackId = getStackAndProvider(newstackId)
+            provider = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
             if not image:
                 self.cleanup(machine)
@@ -620,7 +620,7 @@ class Machine(object):
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cb.markProvider(newstackId, eco)
+                self.cb.markProvider(provider.stackId, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
@@ -628,10 +628,10 @@ class Machine(object):
                 self.cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             elif node == -1:
-                excludelist.append(newstackId)
+                excludelist.append(provider.stackId)
                 newstackId = 0
-        self.cb.clearProvider(newstackId)
-        self.updateMachineFromNode(machine, node, newstackId, psize)
+        self.cb.clearProvider(provider.stackId)
+        self.updateMachineFromNode(machine, node, provider.stackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
