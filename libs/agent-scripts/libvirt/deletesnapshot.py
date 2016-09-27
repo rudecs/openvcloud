@@ -47,4 +47,6 @@ def action(ovs_connection, diskguids, timestamp):
 
     jobs = [gevent.spawn(delete_snapshot, diskguid) for diskguid in diskguids]
     gevent.joinall(jobs)
+    for job in jobs:
+        job.get()  # Reraises exception
     return

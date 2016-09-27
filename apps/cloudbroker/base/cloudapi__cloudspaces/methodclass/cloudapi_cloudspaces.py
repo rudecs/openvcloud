@@ -331,13 +331,6 @@ class cloudapi_cloudspaces(BaseActor):
             if cloudspace.status == 'DEPLOYING':
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
 
-        query = {'accountId': cloudspace.accountId,
-                 'status': {'$ne': 'DESTROYED'},
-                 'id': {'$ne': cloudspaceId}}
-        results = self.models.cloudspace.search(query)[1:]
-        if len(results) == 0:
-            raise exceptions.Conflict('The last CloudSpace of an account can not be deleted.')
-
         cloudspace.status = "DESTROYING"
         self.models.cloudspace.set(cloudspace)
         cloudspace = self.cb.cloudspace.release_resources(cloudspace)

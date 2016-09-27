@@ -574,10 +574,17 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        for account in machine.accounts:
+            newaccount = clone.new_account()
+            newaccount.login = account.login
+            newaccount.password = account.password
         clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
-        provider, node, machine = self.cb.getProviderAndNode(machineId)
+
+        _, node, machine = self.cb.getProviderAndNode(machineId)
+        stack = self.cb.getBestProvider(cloudspace.gid, machine.imageId)
+        provider = self.cb.getProviderByStackId(stack['id'])
 
         totaldisksize = 0
         for diskId in machine.disks:
@@ -605,8 +612,12 @@ class cloudapi_machines(BaseActor):
                                                                    size.memory / 1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
         size = self.cb.machine.getSize(provider, clone)
-        node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
-        self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
+        try:
+            node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
+            self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
+        except:
+            self.cb.machine.cleanup(clone)
+            raise
         tags = str(machineId)
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
