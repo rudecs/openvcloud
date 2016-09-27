@@ -588,10 +588,10 @@ class Machine(object):
             try:
                 if not newstackId:
                     stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
-                    provider = stack
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                    provider = self.cb.getProviderByStackId(newstackId)
                 else:
                     activesessions = self.getActiveSessionsKeys()
                     provider = self.cb.getProviderByStackId(newstackId)
