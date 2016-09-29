@@ -86,6 +86,8 @@ class CloudBroker(object):
         self.cloudspace = CloudSpace(self)
         self.syscl = j.clients.osis.getNamespace('system')
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
+        self.agentcontroller = j.clients.agentcontroller.get()
+
 
     @property
     def actors(self):
@@ -178,18 +180,18 @@ class CloudBroker(object):
         models.vmachine.set(machine)
         return True
 
+    def getActiveSessionsKeys(self):
+        return self.agentcontroller.listActiveSessions().keys()
+
     def getCapacityInfo(self, gid, imageId):
         resourcesdata = list()
-        activesessions = j.clients.agentcontroller.get().listActiveSessions().keys()
-
+        activesessions = self.getActiveSessionsKeys()
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
-                nodekey = (stack['gid'], int(stack['referenceId']))
-                if nodekey not in activesessions:
+                if (stack['gid'], int(stack['referenceId'])) not in activesessions:
                     continue
-
                 # search for all vms running on the stacks
                 usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                   '$query': {'stackId': stack['id'],
@@ -582,22 +584,27 @@ class Machine(object):
         newstackId = stackId
 
         def getStackAndProvider(newstackId):
+            provider = None
             try:
                 if not newstackId:
                     stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-                    newstackId = stack['id']
-                provider = self.cb.getProviderByStackId(newstackId)
+                    provider = self.cb.getProviderByStackId(stack['id'])
+                else:
+                    activesessions = self.getActiveSessionsKeys()
+                    provider = self.cb.getProviderByStackId(newstackId)
+                    if (provider.client.gid, int(provider.client.id)) not in activesessions:
+                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except:
                 self.cleanup(machine)
                 raise
-            return provider, newstackId
+            return provider
 
         node = -1
         while node == -1:
-            provider, newstackId = getStackAndProvider(newstackId)
+            provider = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
             if not image:
                 self.cleanup(machine)
@@ -613,7 +620,7 @@ class Machine(object):
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cb.markProvider(newstackId, eco)
+                self.cb.markProvider(provider.stackId, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
@@ -621,10 +628,10 @@ class Machine(object):
                 self.cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             elif node == -1:
-                excludelist.append(newstackId)
+                excludelist.append(provider.stackId)
                 newstackId = 0
-        self.cb.clearProvider(newstackId)
-        self.updateMachineFromNode(machine, node, newstackId, psize)
+        self.cb.clearProvider(provider.stackId)
+        self.updateMachineFromNode(machine, node, provider.stackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id

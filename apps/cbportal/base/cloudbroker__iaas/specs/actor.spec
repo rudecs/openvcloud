@@ -33,13 +33,23 @@
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:gateway str,, Gateway of the pool
 
+
+    method:addSize
+        """
+        Add size to location
+        """
+        var:name str,, Name of the size
+        var:vcpus int,,Number of vcpus
+        var:memory int,,Memory in MB
+        var:disksize int,,Size of bootdisk in GB
+
     method:removePublicIPv4IPS
         """
         Adds a public network range to be used for cloudspaces
         """
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:freeips list,, list of ips to mark as free in the subnet
-        
+
     method:syncAvailableSizesToCloudbroker
         """
         synchronize IaaS Sizes/flavors from the libcloud model to the cloudbroker model

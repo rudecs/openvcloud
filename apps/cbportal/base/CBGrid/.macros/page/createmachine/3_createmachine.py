@@ -31,7 +31,7 @@ def main(j, args, params, tags, tasklet):
 
     for size in sorted(sizes, key=sizeSorter):
         disksizes.update(size['disks'])
-        dropsizes.append(("%(memory)s MB" % size, size['id']))
+        dropsizes.append(("%(memory)s MB,    %(vcpus)s core(s)" % size, size['id']))
 
     for size in sorted(disksizes):
         dropdisksizes.append(("%s GB" % size, str(size)))

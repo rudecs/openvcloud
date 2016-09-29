@@ -1,7 +1,0 @@
-@usedefaults
-{{jscript:
-$(function () {
-  injectIframe("../g8vdc/index.html");
-  injectHamburgerButton('dark', 'true');
- });
- }}
