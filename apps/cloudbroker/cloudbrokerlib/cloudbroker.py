@@ -593,7 +593,7 @@ class Machine(object):
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
                     provider = self.cb.getProviderByStackId(stack['id'])
                 else:
-                    activesessions = self.getActiveSessionsKeys()
+                    activesessions = self.cb.getActiveSessionsKeys()
                     provider = self.cb.getProviderByStackId(newstackId)
                     if (provider.client.gid, int(provider.client.id)) not in activesessions:
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
