@@ -337,7 +337,8 @@ class cloudapi_machines(BaseActor):
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
         except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
-
+        except exceptions.BaseError as berror:
+            j.errorconditionhandler.processPythonExceptionObject(berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
             provider.client.destroy_node(node)
         for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
@@ -354,8 +355,8 @@ class cloudapi_machines(BaseActor):
         if macs:
             try:
                 self.netmgr.fw_remove_lease(fwid, macs)
-            except exceptions.ServiceUnavailable:
-                pass  # vfw is not deployed yet
+            except exceptions.ServiceUnavailable as e:
+                j.errorconditionhandler.processPythonExceptionObject(berror, message="vfw is not deployed yet")
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
