@@ -583,7 +583,10 @@ class CSLibvirtNodeDriver(object):
 
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
-        self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        try:
+            self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        except RuntimeError as rError:
+            j.errorconditionhandler.processPythonExceptionObject(rError, message="Failed to delete disks may be they are deleted from the storage node")
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
