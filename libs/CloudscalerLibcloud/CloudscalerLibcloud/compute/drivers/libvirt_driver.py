@@ -141,17 +141,7 @@ class CSLibvirtNodeDriver(object):
     def ovs_connection(self):
         cachekey = 'ovs_connection_{}'.format(self.gid)
         if cachekey not in self._ovsdata:
-            ips = []
-            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver',
-                                                         'netaddr.name': 'backplane1',
-                                                         'gid': self.gid},
-                                              '$fields': ['netaddr']})[1:]
-            for nodeaddresses in addresses:
-                for nodeaddress in nodeaddresses['netaddr']:
-                    if nodeaddress['name'] == 'backplane1':
-                        ips.extend(nodeaddress['ip'])
-
-            connection = {'ips': ips,
+            connection = {'ips': self.ovs_credentials['ips'],
                           'client_id': self.ovs_credentials['client_id'],
                           'client_secret': self.ovs_credentials['client_secret']}
             self._ovsdata[cachekey] = connection
