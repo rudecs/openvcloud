@@ -68,7 +68,7 @@ h3. Snapshots
 | | | |
 {% endfor %}
 
-h3. Port Forwardings
+h3. Port Forwards
 {{action id:'action-CreatePortforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Portforward'}}
 ||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
 {% for portforward in portforwards -%}
@@ -83,4 +83,3 @@ h3. Jobs
 {% else %}
 No Virtual Machine found
 {% endif %}
-
