@@ -33,7 +33,7 @@ def action(ovs_connection):
     # TODO: This information should come from the OVS restapi's.
     rdma = None
     for ip in ovs_connection['ips']:
-        con = j.remote.cuisine.connect(ip)
+        con = j.remote.cuisine.connect(ip, 22)
         try:
             rdma = con.run("python -c \"import sys; sys.path.append('/opt/OpenvStorage'); from ovs.extensions.generic.configuration import Configuration; print Configuration.get('/ovs/framework/rdma')\"") == 'True'
             break
