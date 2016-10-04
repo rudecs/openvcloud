@@ -1,28 +1,42 @@
 ## Putting a Node in Maintenance Mode
 
-You will want to put a node in maintenance mode as part of the process of physically rebooting the node. This in order to minimize the impact of the planned reboot.
+You will want to put a node in **Maintenance Mode** as part of the process of physically rebooting the node. This in order to minimize the impact of the planned reboot.
+
+This is done in three steps:
+- [Go to the Stack Details page](#node)
+- [Select the Put in Maintenance action](#action)
+- [Choose to stop or move all virtual machines](#move)
+
+Once rebooted, there are some post reboot actions:
+- [Check the Open vStorage services](#ovs)
+- [Check the JumpScale services](#jumpscale)
+- [Restart the virtual machines](#restart)
 
 
-### Before rebooting
+<a id="node"></a>
+#### Go to the Stack Details page
 
-Before performing a reboot it is advised to first put the node in **Maintenance Mode**.
+In the **Cloud Broker Portal**, select the node you are about to reboot from the **Stacks** (nodes) overview page :
 
-This takes three steps:
+![](stacks.png)
 
-1. In the **Cloud Broker Portal**, select the node you are about to reboot from the **Stacks** (nodes) overview page :
 
-  ![](stacks.png)
+<a id="action"></a>
+#### Select the Put in Maintenance action
 
-2. On the **Stack Details** page select **Put in Maintenance** from the **Actions** menu in order to prevent creation of new virtual machines on this node:
+On the **Stack Details** page select **Put in Maintenance** from the **Actions** menu in order to prevent creation of new virtual machines on this node:
 
-  ![](maintenance.png)
-  
-  
-   > Level2 or Level3 group membership is required in order to be able to use this action
+![](maintenance.png)
 
-3. In the **Confirm Action Put in Maintenance** dialog window you have too options:
 
-  - **Move All Virtual Machines** in order to have all running virtual machines currently hosted on the selected node moved to another node. As a result these virtual machines stay available during maintenance, hosted other nodes. This is the preferred option since it also moves all system created virtual machines, particularly the virtual machines running the RouterOS operating system that are created for each cloud space, providing vital functions such as the virtual firewalls.
+> Note that **Level2** or **Level3** group membership is required in order to be able to use this action
+
+<a id="move"></a>
+#### Choose to stop or move all virtual machines
+
+In the **Confirm Action Put in Maintenance** dialog window you have too options:
+
+  - **Move All Virtual Machines** in order to have all running virtual machines currently hosted on the selected node moved to another node. As a result these virtual machines stay available during maintenance, hosted on other nodes. This is the preferred option since it also moves all system created virtual machines, particularly the virtual machines running the RouterOS operating system that are created for each cloud space, providing vital functions such as the virtual firewalls.
 
   - **Stop All Virtual Machines** which will just stop all running virtual machines currently hosted on the selected node. As a result, when reenabling the node (once maintenance is finished), all the stopped virtual machines will automatically get restarted on this node, while during maintenance the virtual machines are not available.
 
@@ -43,12 +57,17 @@ Alternatively you might prefer to manually move each or some of the virtual mach
 
 In case you really prefer to do everything manually, you also move the system-created virtual machines your self, this by going to the **Private Network Details** page and using the **Move VFW** action.
 
-
+<a id="post"></a>
 ### Post reboot actions
 
-After the node is booted, it is recommended to perform some checks in order to make sure all Open vStorage and JumpScale services, and all virtual machines and virtual firewalls are up again.
+After the node is booted, it is highly recommended to perform some checks in order to make sure all Open vStorage and JumpScale services, and all virtual machines and virtual firewalls are up again:
+
+- [Check the Open vStorage services](#ovs)
+- [Check the JumpScale services](#jumpscale)
+- [Restart the virtual machines](#restart)
 
 
+<a id="ovs"></a>
 #### Open vStorage
 
 ```
@@ -86,6 +105,7 @@ All services should be running. If this is not the case try to start them with t
 ovs start services
 ```
 
+<a id="jumpscale"></a>
 #### JumpScale Services
 
 ```
@@ -110,7 +130,7 @@ All services should be running if this is not the cat try to start them with
 ays start
 ```
 
-
+<a id="restart"></a>
 #### Restart virtual machines and virtual firewalls
 
 Virtual machines and virtual firewalls are not automatically restarted after a reboot, a manual restart is required.
