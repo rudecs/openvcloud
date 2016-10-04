@@ -2,7 +2,7 @@
 
 In order to move a virtual machine to another CPU node you choose **Move to another CPU node** from the **Actions** dropdown menu on the **Virtual Machine Details** page:
 
-![](Move2VMAnotherCPUNode.png)
+![](MoveVM2AnotherCPUNode.png)
 
 In the dialog that then appears you specify to which CPU node you wish to move:
 
