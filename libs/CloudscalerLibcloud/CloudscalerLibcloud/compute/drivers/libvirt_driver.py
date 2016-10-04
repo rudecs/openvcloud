@@ -826,7 +826,7 @@ class CSLibvirtNodeDriver(object):
         memory = dom.find('memory')
         if dom.find('currentMemory') is not None:
             dom.remove(dom.find('currentMemory'))
-        memory.text = str(size.ram * 1024)
+        memory.text = str(size.ram)
         vcpu = dom.find('vcpu')
         vcpu.text = str(size.extra['vcpus'])
         xml = ElementTree.tostring(dom)
