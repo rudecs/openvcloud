@@ -27,20 +27,9 @@ class jumpscale_netmgr(j.code.classGetBase()):
     def get_ovs_connection(self, gid):
         cachekey = 'ovs_connection_{}'.format(gid)
         if cachekey not in self._ovsdata:
-            ips = []
-            addresses = self.nodeclient.search({'$query': {'roles': 'storagedriver',
-                                                           'netaddr.name': 'backplane1',
-                                                           'gid': gid},
-                                                '$fields': ['netaddr']})[1:]
-            for nodeaddresses in addresses:
-                for nodeaddress in nodeaddresses['netaddr']:
-                    if nodeaddress['name'] == 'backplane1':
-                        ips.extend(nodeaddress['ip'])
-
-            credentials = self.get_ovs_credentials(gid)
-            connection = {'ips': ips,
-                          'client_id': credentials['client_id'],
-                          'client_secret': credentials['client_secret']}
+            connection = {'ips': self.ovs_credentials['ips'],
+                          'client_id': self.ovs_credentials['client_id'],
+                          'client_secret': self.ovs_credentials['client_secret']}
             self._ovsdata[cachekey] = connection
         return self._ovsdata[cachekey]
 
