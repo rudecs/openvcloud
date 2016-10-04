@@ -1,5 +1,4 @@
-
-<domain type='kvm'>
+<domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <name>routeros_{{networkid}}</name>
   <memory unit='MB'>128</memory>
   <vcpu placement='static'>1</vcpu>
@@ -70,4 +69,9 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
     </memballoon>
   </devices>
+  <qemu:commandline>
+    <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_TIME' value='10'/>
+    <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_INTVL' value='5'/>
+    <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_PROBES' value='3'/>
+  </qemu:commandline>
 </domain>
