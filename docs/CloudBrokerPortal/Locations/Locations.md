@@ -17,11 +17,13 @@ Here you see the number of:
 - Running Windows virtual machines
 
 From the **Actions** dropdown menu you can:
-- Check all virtual Machines
+- Rename Location
+- Check all virtual machines
 - Purge Logs
-- Sync available images to Cloud Broker
-- Sync available sizes to Cloud Broker
-- Add Public IPv4 subnet
+- Sync available images
+- Sync available sizes
+
+> Note that that renaming a location only changes the name of the location, not the **Location Code**, which cannot be changed.
 
 ### Stacks
 
