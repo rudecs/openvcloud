@@ -30,10 +30,11 @@ class SSHMngr(object):
 
 class bootstrap(Resource):
 
-    def lightweight(self, hostname):
+    def lightweight(self, hostname, data):
         # FIXME
         j.system.fs.changeDir(args.gitpath)
         
+        sourceip = data['sourceaddr']
         masterPub = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/master_root.pub'))
         gitPub = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root.pub'))
         gitPriv = j.system.fs.fileGetContents(j.system.fs.joinPaths(args.gitpath, 'keys/git_root'))
@@ -49,7 +50,7 @@ class bootstrap(Resource):
             sshkey.install(deps=True)
             
             data = {
-                "instance.ip": request.remote_addr,
+                "instance.ip": sourceip,
                 "instance.ssh.port": 22,
                 'instance.sshkey': sshkey.instance,
                 'instance.login': 'root',
@@ -91,7 +92,7 @@ class bootstrap(Resource):
         # if bootstrap service name is not set, we have a 'without-reflector'
         # setup, we only proceed to ssh-keys-exchange then
         if hrd.getStr('instance.reflector.name') == '':
-            return self.lightweight(hostname)
+            return self.lightweight(hostname, data)
 
         ## search for next free remotePort
         services = j.atyourservice.findServices(name='node.ssh')
