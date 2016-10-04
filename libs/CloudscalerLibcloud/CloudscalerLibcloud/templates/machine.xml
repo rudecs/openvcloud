@@ -1,4 +1,4 @@
- <domain type='kvm'>
+ <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
         <name>{{machinename}}</name>
         <memory unit='MB'>{{memory}}</memory>
         <currentMemory unit='MB'>{{memory}}</currentMemory>
@@ -65,4 +65,9 @@
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
             </memballoon>
         </devices>
+        <qemu:commandline>
+            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_TIME' value='10'/>
+            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_INTVL' value='5'/>
+            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_PROBES' value='3'/>
+        </qemu:commandline>
  </domain>
