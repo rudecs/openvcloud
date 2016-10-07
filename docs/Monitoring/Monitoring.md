@@ -1,6 +1,7 @@
 ## Monitoring
 
 * [System Health](Health/Health.md)
+* [Gathering of Statistics](Statistics/Statistics.md)
 * [Current Utilization](monitor_current_utilization.md)
 * [Cloud Units](cloudunits.md)
 * [Build a Report for Utilization for Specific Period](report_specific_period.md)
