@@ -28,7 +28,7 @@ Logs, errors and statistics collected by the **Agent**  from the running **JumpS
 
 Each single-location or multi-location OpenvCloud environment is managed from a **Master**. This is a collection of virtual machines or Docker containers running in the **Master Cloud Space** on a remote location, physically separated from OpenvCloud server nodes it orchestrates.
 
-For more details about the **Master Cloud Space** and how to access it see the [How to Connect to an OpenvCloud Environment](../Sysadmin/connect.md) section.
+For more details about the **Master Cloud Space** and how to access it see the [How to Connect to an OpenvCloud Environment](../Sysadmin/Connect/connect.md) section.
 
 
 ### Agent Controller
@@ -52,7 +52,7 @@ Both local and remote interactions with the **Datacenter Abstraction Layer** hap
 
 Operators administer their OpenvCloud environment through the Operator Portal, which are actually the [Cloud Broker Portal](../CloudBrokerPortal/CloudBrokerPortal.md) and the [Grid Portal](../GridPortal/GridPortal.md).
 
-The portals are created using the **JumpScale Portal Framework** that features wiki pages that interact with the REST APIs through macros. 
+The portals are created using the **JumpScale Portal Framework** that features wiki pages that interact with the REST APIs through macros.
 
 
 ### End User Portal
@@ -87,4 +87,4 @@ All functions exposed in the **Cockpit Portal** are also available through a cha
 
 ### Marketplaces
 
-Customers typically interact with an G8 environment via a **Marketplace** where they can order virtual datacenters and applications hosted in virtual datacenters, which are provisioned through blueprints via the Cockpit. Green IT Globe provides a WHMCS-based reference implementation of such a marketplace on GitHub, as documented here: https://www.gitbook.com/book/gig/g8-whmcs-reference-implementation/details 
+Customers typically interact with an G8 environment via a **Marketplace** where they can order virtual datacenters and applications hosted in virtual datacenters, which are provisioned through blueprints via the Cockpit. Green IT Globe provides a WHMCS-based reference implementation of such a marketplace on GitHub, as documented here: https://www.gitbook.com/book/gig/g8-whmcs-reference-implementation/details
