@@ -2,7 +2,7 @@
 
 ![](system-architecture.png)
 
-In what follows all components are dicussed botton-up.
+In what follows all components are discussed bottom-up.
 
 
 ### System Abstraction Layer
@@ -35,12 +35,12 @@ For more details about the **Master Cloud Space** and how to access it see the [
 
 The **Agent Controller** acts as a job controller distributing work to the **Agents**.
 
-Since server nodes are not publicly accessible all communication between the **Agents** and the **Agent Controller** happens throug HTTP Long Polling initiated by the agents.
+Since server nodes are not publicly accessible all communication between the **Agents** and the **Agent Controller** happens through HTTP Long Polling initiated by the agents.
 
 
 ### Datacenter Abstraction Layer
 
-Also implemeted by JumpScale 8 Core components is the **Datacenter Abstraction Layer** providing developers an interface to interact with the **Agent Controller**, and thus the server nodes.
+Also implemted by JumpScale 8 Core components is the **Datacenter Abstraction Layer** providing developers an interface to interact with the **Agent Controller**, and thus the server nodes.
 
 
 ### Master REST API
@@ -62,17 +62,17 @@ End users have access through the **End User Portal**, which is another portal c
 
 ### Cockpit
 
-From a **Cockpit** you interact with one or more **Masters** for managing the full lifecycle a workloads (services) consuming capacity from the OpenvCloud environments controlled by the **Masters** it connects to through their REST APIs.
+The **Cockpit** interacts with one or more **Masters** for managing the full lifecycle of both system and customer workloads (services) consuming capacity from the OpenvCloud environments controlled by the **Masters** it connects to through their REST APIs.
 
 
 ### AYS Robot
 
-Key features of the **Cockpit** are **AYS** (abreviation for "At Your Service") and the **AYS Robot**. **AYS** is a self-healing lifecycle management solution for a G8 cloud infrastructure and the workloads (virtual datacenters, virtual machines, Docker containters, applications/services, virtually anything) running on a G8 cloud. See the [section about AYS](../AtYourService/AtYourServiceIntro.md) for more details. The **AYS Robot** is the component that is actually responsible for orchestrating all work, including picking up blueprints and executing them, and also tasks such as monitoring the system and all workoads and trigger (self-healing) actions, as defined in AYS service templates.
+Key features of the **Cockpit** are **AYS** (abbreviation for "At Your Service") and the **AYS Robot**. **AYS** is a self-healing lifecycle management solution for a G8 cloud infrastructure and the workloads (virtual datacenters, virtual machines, Docker containers, applications/services, virtually anything) running on a G8 cloud. See the [section about AYS](../AtYourService/AtYourServiceIntro.md) for more details. The **AYS Robot** is the component that is actually responsible for orchestrating all work, including picking up blueprints and executing them, and also tasks such as monitoring the system and all workloads and trigger (self-healing) actions, as defined in AYS service templates.
 
 
 ### Blueprints
 
-**Blueprints** are human readeable files to describe a full solution/workload or a change request to an existing solution. Such a solution can for instance be a virtual datacenter, or a virtual datacenter hosting a web application, of which of the services all run in a sepaerate Docker container. The solution or change request to the solution can be as sophisticated as required. A blueprint allows you declaritivelly specify exactly what you require, hidding all complexities.
+**Blueprints** are human readable files to describe a full solution/workload or a change request to an existing solution. Such a solution can for instance be a virtual datacenter, or a virtual datacenter hosting a web application, of which of the services all run in a separate Docker container. The solution or change request to the solution can be as sophisticated as required. A blueprint allows you declaratively specify exactly what you require, hiding all complexities.
 
 
 ### Cockpit Portal
