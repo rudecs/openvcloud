@@ -3,6 +3,7 @@ import random
 import string
 import sys
 import time
+sys.path.append('/opt/OpenvStorage')
 
 from ovs.dal.hybrids.user import User
 from ovs.dal.hybrids.client import Client
