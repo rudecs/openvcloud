@@ -22,6 +22,9 @@ class StorageException(Exception):
         super(StorageException, self).__init__(msg)
         self.origexception = e
 
+    def __str__(self):
+        return "{}, {}".format(self.message, self.origexception)
+
 
 def convertnumber(number):
     output = ''
