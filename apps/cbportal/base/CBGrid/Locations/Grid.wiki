@@ -54,21 +54,21 @@ h3. Location: ${name}
     required: true
 
   - label: Number of vcpus
-    name: name
+    name: vcpus
     type: number
     placeholder: required
     required: true
 
 
   - label: Memory in MB
-    name: name
+    name: memory
     type: number
     placeholder: required
     required: true
 
 
   - label: Size of bootdisk in GB
-    name: name
+    name: disksize
     type: number
     placeholder: required
     required: true
