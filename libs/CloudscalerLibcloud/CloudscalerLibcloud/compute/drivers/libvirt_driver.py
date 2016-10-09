@@ -144,17 +144,7 @@ class CSLibvirtNodeDriver(object):
     def ovs_connection(self):
         cachekey = 'ovs_connection_{}'.format(self.gid)
         if cachekey not in self._ovsdata:
-            ips = []
-            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver',
-                                                         'netaddr.name': 'backplane1',
-                                                         'gid': self.gid},
-                                              '$fields': ['netaddr']})[1:]
-            for nodeaddresses in addresses:
-                for nodeaddress in nodeaddresses['netaddr']:
-                    if nodeaddress['name'] == 'backplane1':
-                        ips.extend(nodeaddress['ip'])
-
-            connection = {'ips': ips,
+            connection = {'ips': self.ovs_credentials['ips'],
                           'client_id': self.ovs_credentials['client_id'],
                           'client_secret': self.ovs_credentials['client_secret']}
             self._ovsdata[cachekey] = connection
@@ -551,8 +541,8 @@ class CSLibvirtNodeDriver(object):
         return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        diskpaths = self._get_volume_paths(node)
-        kwargs = {'diskpaths': diskpaths, 'timestamp': timestamp}
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'timestamp': timestamp, 'ovs_connection': self.ovs_connection}
         return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
@@ -596,7 +586,10 @@ class CSLibvirtNodeDriver(object):
 
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
-        self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        try:
+            self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        except RuntimeError as rError:
+            j.errorconditionhandler.processPythonExceptionObject(rError, message="Failed to delete disks may be they are deleted from the storage node")
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
@@ -836,7 +829,7 @@ class CSLibvirtNodeDriver(object):
         memory = dom.find('memory')
         if dom.find('currentMemory') is not None:
             dom.remove(dom.find('currentMemory'))
-        memory.text = str(size.ram * 1024)
+        memory.text = str(size.ram)
         vcpu = dom.find('vcpu')
         vcpu.text = str(size.extra['vcpus'])
         xml = ElementTree.tostring(dom)

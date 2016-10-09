@@ -356,7 +356,7 @@ class cloudapi_machines(BaseActor):
             try:
                 self.netmgr.fw_remove_lease(fwid, macs)
             except exceptions.ServiceUnavailable as e:
-                j.errorconditionhandler.processPythonExceptionObject(berror, message="vfw is not deployed yet")
+                j.errorconditionhandler.processPythonExceptionObject(e, message="vfw is not deployed yet")
         return True
 
     @authenticator.auth(acl={'machine': set('R')})

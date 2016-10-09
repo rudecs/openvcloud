@@ -39,11 +39,12 @@ def listEdgeclients():
 
 
 def getEdgeProtocol():
-    import etcd
-    client = etcd.Client(port=2379)
     try:
-        key = client.get('/ovs/framework/rdma')
-        return 'rdma' if json.loads(key.value) else 'tcp'
+        from ovs.extensions.generic.configuration import Configuration
+        if Configuration.get('/ovs/framework/rdma'):
+            return 'rdma'
+        else:
+            return 'tcp'
     except:
         return 'tcp'
 
