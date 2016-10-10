@@ -153,14 +153,14 @@ h3. Details
 |*Status*|${status}|
 
 h3. Cloud Resource Limits
-|*Memory Capacity*|${'Unlimited' if reslimits.CU_M !=  -1  else '%r GB'%(reslimits.CU_M)}|
-|*VDisk Capacity*|${'Unlimited' if reslimits.CU_D !=  -1  else '%i GB'%(reslimits.CU_D)}|
-|*Number of CPU Cores*|${'Unlimited' if reslimits.CU_C !=  -1  else reslimits.CU_C}|
-|*Primary Storage(NAS) Capacity*|${'Unlimited' if reslimits.CU_S !=  -1  else '%i TB'%(reslimits.CU_S)}|
-|*Secondary Storage(Archive) Capacity*|${'Unlimited' if reslimits.CU_A !=  -1  else '%i TB'%(reslimits.CU_A)}|
-|*Network Transfer In Operator*|${'Unlimited' if reslimits.CU_NO !=  -1  else '%i GB'%(reslimits.CU_NO)}|
-|*Network Transfer Peering*|${'Unlimited' if reslimits.CU_NP !=  -1  else '%i GB'%(reslimits.CU_NP)}|
-|*Number of Public IP Addresses*|${'Unlimited' if reslimits.CU_I !=  -1  else reslimits.CU_I}|
+|*Memory Capacity*|${'Unlimited' if reslimits.CU_M ==  -1  else '%r GB'%(reslimits.CU_M)}|
+|*VDisk Capacity*|${'Unlimited' if reslimits.CU_D ==  -1  else '%i GB'%(reslimits.CU_D)}|
+|*Number of CPU Cores*|${'Unlimited' if reslimits.CU_C ==  -1  else reslimits.CU_C}|
+|*Primary Storage(NAS) Capacity*|${'Unlimited' if reslimits.CU_S ==  -1  else '%i TB'%(reslimits.CU_S)}|
+|*Secondary Storage(Archive) Capacity*|${'Unlimited' if reslimits.CU_A ==  -1  else '%i TB'%(reslimits.CU_A)}|
+|*Network Transfer In Operator*|${'Unlimited' if reslimits.CU_NO ==  -1  else '%i GB'%(reslimits.CU_NO)}|
+|*Network Transfer Peering*|${'Unlimited' if reslimits.CU_NP ==  -1  else '%i GB'%(reslimits.CU_NP)}|
+|*Number of Public IP Addresses*|${'Unlimited' if reslimits.CU_I ==  -1  else reslimits.CU_I}|
 
 h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
