@@ -182,7 +182,8 @@ class cloudapi_cloudspaces(BaseActor):
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1,
-               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
+               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1,
+               publicipv4poolid=None, **kwargs):
         """
         Create an extra cloudspace
 
@@ -209,16 +210,22 @@ class cloudapi_cloudspaces(BaseActor):
         if not locations:
             raise exceptions.BadRequest('Location %s does not exists' % location)
         location = locations[0]
+        if publicipv4poolid:
+            if self.models.publicipv4pool.count({'id': publicipv4poolid,
+                                                 'gid': location['gid'],
+                                                 'acccountId': {'$in': [accountId, None]}}) == 0:
+                raise exceptions.BadRequest('Could not find publicipv4pool with id %s' % publicipv4poolid)
 
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
 
-        if name in [ space['name'] for space in active_cloudspaces ]:
+        if name in [space['name'] for space in active_cloudspaces]:
             raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
 
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
+        cs.publicipv4poolid = publicipv4poolid
         cs.location = location['locationCode']
         cs.gid = location['gid']
         ace = cs.new_acl()
@@ -280,7 +287,7 @@ class cloudapi_cloudspaces(BaseActor):
             cs.status = 'DEPLOYING'
             self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        netinfo = self.network.getPublicIpAddress(cs.gid)
+        netinfo = self.network.getPublicIpAddress(cs.gid, cs.publicipv4poolid)
         if netinfo is None:
             cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
@@ -298,7 +305,7 @@ class cloudapi_cloudspaces(BaseActor):
         try:
             self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password,
                                   str(publicipaddress.ip),
-                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
+                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
         except:
             self.network.releasePublicIpAddress(str(publicipaddress))
             cs.publicipaddress = None

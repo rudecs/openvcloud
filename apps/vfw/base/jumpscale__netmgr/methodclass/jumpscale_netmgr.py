@@ -43,7 +43,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
-    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, **kwargs):
+    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, vlan, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)
         param:gid grid id
@@ -67,6 +67,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'password': password,
                     'publicip': publicip,
                     'publicgwip': publicgwip,
+                    'vlan': vlan,
                     'publiccidr': publiccidr,
                     }
             job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_create_routeros', roles=['fw'], gid=gid, args=args, queue='default', wait=True)

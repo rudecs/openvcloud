@@ -32,6 +32,7 @@ def cleanup(name, networkid):
     except:
         pass
 
+
 def createVM(xml):
     import libvirt
     con = libvirt.open()
@@ -39,14 +40,22 @@ def createVM(xml):
     dom.create()
 
 
-def createNetwork(xml):
+def createNetwork(bridgename):
+    xml = '''\
+        <network>
+            <name>{0}</name>
+            <forward mode="bridge"/>
+            <bridge name='{0}'/>
+            <virtualport type='openvswitch'/>
+        </network>'''.format(bridgename)
     import libvirt
     con = libvirt.open()
-    private = con.networkDefineXML(xml)
-    private.create()
-    private.setAutostart(True)
+    if bridgename not in con.listNetworks():
+        private = con.networkDefineXML(xml)
+        private.create()
+        private.setAutostart(True)
 
-def action(networkid, publicip, publicgwip, publiccidr, password):
+def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     import pexpect
     import netaddr
     import jinja2
@@ -54,7 +63,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import os
     acl = j.clients.agentcontroller.get()
     edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
-
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
@@ -69,6 +77,14 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             'username': username,
             'password': newpassword
             }
+
+    if vlan is not None:
+        publicbridge = 'public-%04x' % vlan
+        if publicbridge not in j.system.net.getNics():
+            j.system.ovsnetconfig.newVlanBridge(publicbridge, 'backplane1', vlan)
+        j.clients.redisworker.execFunction(createNetwork, _queue='hypervisor', bridgename=publicbridge)
+    else:
+        publicbridge = 'public'
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
@@ -100,7 +116,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
         xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
                                        edgehost=edgeip, edgeport=edgeport,
-                                       edgetransport=edgetransport)
+                                       edgetransport=edgetransport, publicbridge=publicbridge)
 
         print 'Starting VM'
         try:
@@ -219,4 +235,4 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--cleanup', action='store_true', default=False, help='Cleanup in case of failure')
     options = parser.parse_args()
     docleanup = options.cleanup
-    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password)
+    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password, None)

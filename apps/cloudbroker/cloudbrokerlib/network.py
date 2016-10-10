@@ -4,9 +4,12 @@ class Network(object):
     def __init__(self, models):
         self.models = models
 
-    def getPublicIpAddress(self, gid):
+    def getPublicIpAddress(self, gid, publicipv4poolid=None):
         with self.models.publicipv4pool.lock(str(gid)):
-            for pool in self.models.publicipv4pool.search({'gid': gid})[1:]:
+            query = {'gid': gid}
+            if publicipv4poolid is not None:
+                query['id'] = publicipv4poolid
+            for pool in self.models.publicipv4pool.search(query)[1:]:
                 if pool['pubips']:
                     pool = self.models.publicipv4pool.get(pool['id'])
                     pubip = pool.pubips.pop(0)

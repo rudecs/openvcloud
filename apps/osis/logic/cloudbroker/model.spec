@@ -164,6 +164,7 @@
     prop:networkId int,, Id of the used network
     prop:resourceProviderStacks list(int),,Not used anymore here for backwardscompatibility
     prop:publicipaddress str,, Public ipaddress linked to the cloudspace
+    prop:publicipv4poolid str,, Public ipaddress Pool
     prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
     prop:location str,, datacenterlocation
     prop:gid int,, Grid ID
@@ -180,6 +181,9 @@
     prop:network str,,Network of the pool
     prop:subnetmask str,,Subnetmask of the pool
     prop:gateway str,,Gateway of th
+    prop:vlan int,,VLAN Tag of the network
+    prop:name str,,Name of public network
+    prop:accountId int,,Account which can use this network
     prop:pubips list(str),,list of ips
 
 [rootmodel:Size] @dbtype:osis
