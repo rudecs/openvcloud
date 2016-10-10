@@ -35,11 +35,43 @@ h3. Location: ${name}
   action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
   data:
    gid: $$gid
-   
+
 - display: Sync Available Sizes to CloudBroker
   action: /restmachine/cloudbroker/iaas/syncAvailableSizesToCloudbroker
   data:
    gid: $$gid
+
+
+- display: Add new size to grid Location
+  action: /restmachine/cloudbroker/iaas/addSize
+  data:
+   gid: $$gid
+  input:
+  - label: Name of the size
+    name: name
+    type: text
+    placeholder: required
+    required: true
+
+  - label: Number of vcpus
+    name: vcpus
+    type: number
+    placeholder: required
+    required: true
+
+
+  - label: Memory in MB
+    name: memory
+    type: number
+    placeholder: required
+    required: true
+
+
+  - label: Size of bootdisk in GB
+    name: disksize
+    type: number
+    placeholder: required
+    required: true
 
 }}
 
@@ -48,35 +80,35 @@ h3. Location: ${name}
 @col 4
 h5. No. of Active Accounts
 {{nraccountgauge id:1 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 
 @col 4
 h5. No. of Free IPs
 {{nrfreeipsgauge id:5 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
 h5. No. of Running Virtual Machines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 gid:$$gid width:100 height:100}}
-@colend 
-@rowend 
+@colend
+@rowend
 
 @row
 
 @col 4
 h5. No. of Active Cloud Spaces
 {{nrcloudspacegauge id:4 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
 h5. No. of Free Network IDs
 {{nrfreenwidsgauge: id:6 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
-h5. No. of Windows Vmachines Running 
+h5. No. of Windows Vmachines Running
 {{nrwinvmgauge id:2 gid:$$gid width:100 height:100}}
 @colend
 @rowend
