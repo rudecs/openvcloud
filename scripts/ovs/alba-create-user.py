@@ -69,9 +69,11 @@ if __name__ == '__main__':
     grid = scl.grid.get(j.application.whoAmI.gid)
     credentials = grid.settings.get('ovs_credentials')
     ips = set()
+    ovscreds = user()
     if credentials is None:
-        credentials = user()
+        credentials = ovscreds
     else:
+        credentials.update(ovscreds)
         ips = set(credentials.get('ips', []))
 
     ips.add(get_management_ip())
