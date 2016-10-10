@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Location', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Location Code', 'Status', 'Public IP Address']
 
     def makeNetworkLink(row, field):
         if row[field]:
@@ -16,8 +16,8 @@ def main(j, args, params, tags, tasklet):
             return ''
 
     fieldids = ['id', 'name', 'accountId', 'networkId', 'location', 'status', 'publicipaddress']
-    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name', 
-                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
+    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name',
+                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]',
                    makeNetworkLink, 'location', 'status',
                    'publicipaddress']
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
