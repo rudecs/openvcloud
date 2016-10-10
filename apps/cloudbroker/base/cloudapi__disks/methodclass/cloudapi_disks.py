@@ -22,7 +22,7 @@ class cloudapi_disks(BaseActor):
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):
             disk = disk.dump()
-        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
+        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
     @audit()
@@ -75,6 +75,8 @@ class cloudapi_disks(BaseActor):
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
             raise exceptions.NotFound("Could not find virtual machine beloning to disk")
+        disk.iops = iops
+        self.models.disk.set(disk)
         provider, node, machine = self.cb.getProviderAndNode(machine['id'])
         volume = self.getStorageVolume(disk, provider, node)
         return provider.client.ex_limitio(volume, iops)

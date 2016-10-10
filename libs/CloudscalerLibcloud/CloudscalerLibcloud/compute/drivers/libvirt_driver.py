@@ -17,6 +17,11 @@ baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
+class LibvirtState:
+    RUNNING = 1
+    HALTED = 5
+
+
 class StorageException(Exception):
     def __init__(self, msg, e):
         super(StorageException, self).__init__(msg)
@@ -57,6 +62,7 @@ class NetworkInterface(object):
 
 class OpenvStorageVolume(StorageVolume):
     def __init__(self, *args, **kwargs):
+        self.iops = kwargs.pop('iops', 0)
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
         vdiskid, _, vdiskguid = self.id.partition('@')
         url = urlparse.urlparse(vdiskid)
@@ -346,22 +352,27 @@ class CSLibvirtNodeDriver(object):
     def destroy_volume(self, volume):
         return self.destroy_volumes_by_guid([volume.vdiskguid])
 
-    def detach_volume(self, volume):
-        node = volume.extra['node']
-        xml = self._get_persistent_xml(node)
-        dom = ElementTree.fromstring(xml)
-        devices = dom.find('devices')
-        domxml = None
-
+    def get_volume_from_xml(self, xmldom, volume):
+        devices = xmldom.find('devices')
         for disk in devices.iterfind('disk'):
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
             if source.attrib.get('dev', source.attrib.get('name')) == volume.name:
-                diskxml = ElementTree.tostring(disk)
-                self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
-                devices.remove(disk)
-                domxml = ElementTree.tostring(dom)
+                return devices, disk
+        return None, None
+
+    def detach_volume(self, volume):
+        node = volume.extra['node']
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        domxml = None
+        devices, disk = self.get_volume_from_xml(dom, volume)
+        if disk is not None:
+            diskxml = ElementTree.tostring(disk)
+            self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+            devices.remove(disk)
+            domxml = ElementTree.tostring(dom)
         if domxml:
             return self._update_node(node, domxml)
         return node
@@ -582,7 +593,15 @@ class CSLibvirtNodeDriver(object):
 
     def ex_limitio(self, volume, iops):
         node = volume.extra['node']
-        return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
+        xmldom = ElementTree.fromstring(self._get_persistent_xml(node))
+        devices, disk = self.get_volume_from_xml(xmldom, volume)
+        volume.dev = disk.find('target').attrib['dev']
+        devices.remove(disk)
+        devices.append(ElementTree.fromstring(str(volume)))
+        self._set_persistent_xml(node, ElementTree.tostring(xmldom))
+
+        if node.state == LibvirtState.RUNNING:
+            return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
 
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}

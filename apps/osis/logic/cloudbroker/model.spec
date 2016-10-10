@@ -114,6 +114,7 @@
     prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
     prop:type str,,(RAW,ISCSI)
     prop:gid int,,ID of the grid
+    prop:iops int,,Limited IOPS
     prop:accountId int,,ID of the account
     prop:acl dict(ACE),,access control list
     prop:role str,,role of disk (BOOT; DATA; TEMP)
