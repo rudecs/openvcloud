@@ -4,18 +4,18 @@ h4. Dashboard
 @row clearfix
 
 @col 4
-h6. No. of Active Accounts
+h6. Active Accounts
 {{nraccountgauge: id:1 width:100 height:100}}
 @colend
 
 @col 4
-h6. No. of Running Virtual Machines
+h6. Running Virtual Machines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 width:100 height:100}}
 @colend
 
 @col 4
-h6. No. of Windows Running Virtual Machines
+h6. Running Windows VMs
 {{nrwinvmgauge: id:4 width:100 heigth:100}}^M
 @colend
 @rowend
