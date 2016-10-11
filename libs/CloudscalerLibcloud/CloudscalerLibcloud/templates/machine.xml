@@ -66,8 +66,7 @@
             </memballoon>
         </devices>
         <qemu:commandline>
-            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_TIME' value='10'/>
-            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_INTVL' value='5'/>
-            <qemu:env name='LIBOVSVOLUMEDRIVER_KEEPALIVE_PROBES' value='3'/>
+			<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_INTVL' value='5'/>
+			<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_PROBES' value='3'/>
         </qemu:commandline>
  </domain>
