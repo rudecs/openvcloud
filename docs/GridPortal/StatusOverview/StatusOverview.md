@@ -47,7 +47,7 @@ Depending on the type of node, following sections are available:
 |[Redis](#redis)                | X           | X        | X            |
 |[System Load](#system-load)    | X           | X        | X            |
 |[Temperature](#temperature)    | X           | X        | X            |
-|[Workers](#workers)            | X           | X        |              |
+|[Workers](#workers)            | X           | X        | X            |
 |[Hardware](#hardware)          |             | X        | X            |
 |[Stack Status](#stack)         |             | X        |              |
 |[Deployment Test](#deployment) |             | X        |              |
