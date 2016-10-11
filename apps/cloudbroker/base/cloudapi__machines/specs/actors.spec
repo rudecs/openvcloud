@@ -235,15 +235,16 @@
         var:userId str,, userid/email for registered users or emailaddress for unregistered users
         var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
         result:bool, True if user access was updated successfully
-        
-    method:attachPublicNetwork
+
+    method:attachExternalNetwork
         """
         Attach a public network to the machine
         """
         var:machineId int,, id of the machine
+        var:externalnetworkId int,, id of the externalnetwork @optional
         result:bool, True if a public network was attached to the machine
 
-    method:detachPublicNetwork
+    method:detachExternalNetwork
         """
         Detach the public network from the machine
         """

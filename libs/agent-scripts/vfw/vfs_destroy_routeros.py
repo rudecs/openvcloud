@@ -16,26 +16,25 @@ queue = 'hypervisor'
 
 
 def action(networkid):
-    import libvirt
-    acl = j.clients.agentcontroller.get()
-
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    import libvirt
     connection = LibvirtUtil()
 
     con = connection.connection
-
+    bridges = []
     networkidHex = '%04x' % int(networkid)
     name = 'routeros_%s' % networkidHex
-    path = '/mnt/vmstor/routeros/{0}/routeros-small-{0}.raw'.format(networkidHex)
 
     print("CLEANUP: %s/%s" % (networkid, networkidHex))
     try:
         dom = con.lookupByName(name)
+        bridges = list(connection._get_domain_bridges(dom))
         dom.destroy()
         dom.undefine()
     except libvirt.libvirtError:
         pass
-    j.system.ovsnetconfig.cleanupIfUnused(networkid)
+    connection.cleanupNetwork(networkid, bridges)
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()

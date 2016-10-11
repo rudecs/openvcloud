@@ -784,15 +784,16 @@ class CSLibvirtNodeDriver(object):
         """
         return False
 
-    def attach_public_network(self, node):
+    def attach_public_network(self, node, vlan):
         """
         Attach Virtual machine to the cpu node public network
         """
         macaddress = self.backendconnection.getMacAddress(self.gid)
         iface = ElementTree.Element('interface')
         iface.attrib['type'] = 'network'
-        target = '%s-pub' % node.name
-        ElementTree.SubElement(iface, 'source').attrib = {'network': 'public'}
+        target = '%s-ext' % (node.name)
+        bridgename = self._execute_agent_job('create_external_network', queue='hypervisor', vlan=vlan)
+        ElementTree.SubElement(iface, 'source').attrib = {'network': bridgename}
         ElementTree.SubElement(iface, 'mac').attrib = {'address': macaddress}
         ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}

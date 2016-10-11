@@ -117,8 +117,8 @@ h5. Running Windows VMs
 h3. Stacks
 {{stacks gid:$$gid}}
 
-h3. Public Networks
-{{publicnetworks gid:$$gid}}
+h3. External Networks
+{{externalnetworks gid:$$gid}}
 
 h3. Firewall Nodes
 {{fwnodes gid:$$gid roles:fw}}

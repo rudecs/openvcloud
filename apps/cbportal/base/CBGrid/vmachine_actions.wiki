@@ -229,15 +229,15 @@
   input:
   - tagName
 
-- display: Attach To Public Network
-  action: /restmachine/cloudbroker/machine/attachPublicNetwork
+- display: Attach To External Network
+  action: /restmachine/cloudbroker/machine/attachExternalNetwork
   reload: true
   hide: true
   data:
    machineId: $$id
 
-- display: Detach From Public Network
-  action: /restmachine/cloudbroker/machine/detachPublicNetwork
+- display: Detach From External Network
+  action: /restmachine/cloudbroker/machine/detachExternalNetwork
   hide: true
   reload: false
   data:

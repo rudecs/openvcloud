@@ -274,16 +274,16 @@
         var:description str,, new description
         var:reason str,,Reason
 
-    method:attachPublicNetwork
+    method:attachExternalNetwork
         """
-        Connect to VM from public network
+        Connect VM to external network of the cloudspace
         """
         var:machineId int,, ID of machine
         result:bool
 
-    method:detachPublicNetwork
+    method:detachExternalNetwork
         """
-        Detach from VM from public network
+        Detach VM from external network of the cloudspace
         """
         var:machineId int,, ID of machine
         result:bool

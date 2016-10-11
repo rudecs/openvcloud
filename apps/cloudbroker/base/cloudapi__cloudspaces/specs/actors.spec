@@ -19,7 +19,7 @@
         var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
-        var:publicipv4poolid str,, id of publicipv4pool to connect to @optional
+        var:externalnetworkId str,, id of externalnetwork to connect to @optional
         result:int, id of created cloudspace
 
     method:deploy

@@ -21,7 +21,7 @@ class cloudbroker_iaas(BaseActor):
         super(cloudbroker_iaas, self).__init__()
         self.lcl = j.clients.osis.getNamespace('libvirt')
 
-    def addPublicIPv4Subnet(self, subnet, gateway, startip, endip, gid, **kwargs):
+    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
@@ -34,59 +34,71 @@ class cloudbroker_iaas(BaseActor):
                 raise exceptions.BadRequest("End IP Addresses %s is not in subnet %s" % (endip, subnet))
             if not checkIPS(net, [gateway]):
                 raise exceptions.BadRequest("Gateway Address %s is not in subnet %s" % (gateway, subnet))
-            if self.models.publicipv4pool.exists(subnet):
-                raise exceptions.Conflict("Public IPv4 Pool with subnet already exists")
+            if self.models.externalnetwork.count({'vlan': vlan}) > 0:
+                raise exceptions.Conflict("VLAN {} is already in use by another external network")
         except netaddr.AddrFormatError as e:
             raise exceptions.BadRequest(e.message)
 
-        pool = self.models.publicipv4pool.new()
-        pool.id = subnet
+        pool = self.models.externalnetwork.new()
         pool.gid = int(gid)
         pool.gateway = gateway
+        pool.name = name
+        pool.vlan = vlan
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
-        pool.pubips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
-        self.models.publicipv4pool.set(pool)
+        pool.ips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
+        self.models.externalnetwork.set(pool)
         return subnet
 
-    def _getUsedIPS(self, pool):
-        networkpool = netaddr.IPNetwork(pool.id)
-        usedips = set()
-
-        for space in self.models.cloudspace.search({'$query': {'gid': pool.gid, 'status': 'DEPLOYED'}, '$fields': ['id', 'name', 'publicipaddress']})[1:]:
-            if netaddr.IPNetwork(space['publicipaddress']).ip in networkpool:
-                usedips.add(str(netaddr.IPNetwork(space['publicipaddress']).ip))
+    def getUsedIPInfo(self, pool):
+        network = {'spaces': [], 'vms': []}
+        for space in self.models.cloudspace.search({'$query': {'gid': pool.gid,
+                                                               'externalnetworkId': pool.id,
+                                                               'status': 'DEPLOYED'},
+                                                    '$fields': ['id', 'name', 'externalnetworkip']})[1:]:
+            network['spaces'].append(space)
         for vm in self.models.vmachine.search({'nics.type': 'PUBLIC', 'status': {'$nin': ['ERROR', 'DESTROYED']}})[1:]:
             for nic in vm['nics']:
-                if nic['type'] == 'PUBLIC' and netaddr.IPNetwork(nic['ipAddress']).ip in networkpool:
-                    usedips.add(str(netaddr.IPNetwork(nic['ipAddress']).ip))
+                if nic['type'] == 'PUBLIC':
+                    tagObject = j.core.tags.getObject(nic['params'])
+                    if int(tagObject.tags.get('externalnetworkId', 0)) == pool.id:
+                        vm['externalnetworkip'] = nic['ipAddress']
+                        network['vms'].append(vm)
+        return network
+
+    def _getUsedIPS(self, pool):
+        networkinfo = self.getUsedIPInfo(pool)
+        usedips = set()
+        for obj in networkinfo['vms'] + networkinfo['spaces']:
+            ip = str(netaddr.IPNetwork(obj['externalnetworkip']).ip)
+            usedips.add(ip)
         return usedips
 
-    def addPublicIPv4IPS(self, subnet, startip, endip, **kwargs):
+    def addExternalIPS(self, externalnetworkId, startip, endip, **kwargs):
         """
         Add public ips to an existing range
         """
-        if not self.models.publicipv4pool.exists(subnet):
-            raise exceptions.NotFound("Could not find PublicIPv4Pool with subnet %s" % subnet)
+        if not self.models.externalnetwork.exists(externalnetworkId):
+            raise exceptions.NotFound("Could not find externel network with id %s" % externalnetworkId)
+        pool = self.models.externalnetwork.get(externalnetworkId)
         try:
-            net = netaddr.IPNetwork(subnet)
+            net = netaddr.IPNetwork("{}/{}".format(pool.network, pool.subnetmask))
             if netaddr.IPAddress(startip) not in net:
-                raise exceptions.BadRequest("Start IP Addresses %s is not in subnet %s" % (startip, subnet))
+                raise exceptions.BadRequest("Start IP Addresses %s is not in subnet %s" % (startip, net))
             if netaddr.IPAddress(endip) not in net:
-                raise exceptions.BadRequest("End IP Addresses %s is not in subnet %s" % (endip, subnet))
+                raise exceptions.BadRequest("End IP Addresses %s is not in subnet %s" % (endip, net))
         except netaddr.AddrFormatError as e:
             raise exceptions.BadRequest(e.message)
-        pool = self.models.publicipv4pool.get(subnet)
-        pubips = set(pool.pubips)
+        ips = set(pool.ips)
         newset = {str(ip) for ip in netaddr.IPRange(startip, endip)}
         usedips = self._getUsedIPS(pool)
         duplicateips = usedips.intersection(newset)
         if duplicateips:
             raise exceptions.Conflict("New range overlaps with existing deployed IP Addresses")
-        pubips.update(newset)
-        pool.pubips = list(pubips)
-        self.models.publicipv4pool.set(pool)
-        return subnet
+        ips.update(newset)
+        pool.ips = list(ips)
+        self.models.externalnetwork.set(pool)
+        return True
 
     def changeIPv4Gateway(self, subnet, gateway, **kwargs):
         if not self.models.publicipv4pool.exists(subnet):

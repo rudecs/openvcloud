@@ -107,6 +107,11 @@ class LibvirtUtil(object):
         return self.connection.defineXML(xml)
 
     def create(self, id, xml):
+        for bridge in self._get_domain_bridges(xml):
+            if bridge.startswith('ext'):
+                vlan = int(bridge.partition('-')[-1], 16)
+                jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+                bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
         if isLocked(id):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
@@ -128,6 +133,7 @@ class LibvirtUtil(object):
         domain = self._get_domain(id)
         if domain:
             networkid = self._get_domain_networkid(domain)
+            bridges = list(self._get_domain_bridges(domain))
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 if not domain.shutdown() == 0:
                     return False
@@ -137,8 +143,8 @@ class LibvirtUtil(object):
                     j.errorconditionhandler.processPythonExceptionObject(e)
                     domain.destroy()
             domain.undefine()
-            if networkid:
-                self.cleanupNetwork(networkid)
+            if networkid or bridges:
+                self.cleanupNetwork(networkid, bridges)
         return True
 
     def waitForAction(self, domid, timeout=None, events=None):
@@ -207,6 +213,7 @@ class LibvirtUtil(object):
             xml = ElementTree.fromstring(machinexml)
         diskfiles = self._get_domain_disk_file_names(xml)
         networkid = self._get_domain_networkid(xml)
+        bridges = self._get_domain_bridges(xml)
         if domain:
             if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
@@ -214,8 +221,8 @@ class LibvirtUtil(object):
                 domain.undefine()
             except:
                 pass  # none persistant vms dont need to be undefined
-        if networkid:
-            self.cleanupNetwork(networkid)
+        if networkid or bridges:
+            self.cleanupNetwork(networkid, bridges)
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
@@ -259,14 +266,17 @@ class LibvirtUtil(object):
                     return target.attrib['dev']
 
     def get_domain_nics(self, dom):
-        if isinstance(dom, ElementTree.Element):
-            xml = dom
-        elif isinstance(dom, basestring):
-            xml = ElementTree.fromstring(dom)
-        else:
-            xml = ElementTree.fromstring(dom.XMLDesc(0))
+        xml = self._get_xml_dom(dom)
         for target in xml.findall('devices/interface/target'):
             yield target.attrib['dev']
+
+    def _get_xml_dom(self, dom):
+        if isinstance(dom, ElementTree.Element):
+            return dom
+        elif isinstance(dom, basestring):
+            return ElementTree.fromstring(dom)
+        else:
+            return ElementTree.fromstring(dom.XMLDesc(0))
 
     def _get_domain_disk_file_names(self, dom):
         diskfiles = list()
@@ -282,17 +292,19 @@ class LibvirtUtil(object):
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 
-    def _get_domain_networkid(self, dom):
-        if isinstance(dom, ElementTree.Element):
-            xml = dom
-        else:
-            xml = ElementTree.fromstring(dom.XMLDesc(0))
+    def _get_domain_bridges(self, dom):
+        xml = self._get_xml_dom(dom)
         interfaces = xml.findall('devices/interface/source')
         for interface in interfaces:
             for network_key in ['bridge', 'network']:
-                if interface.attrib.get(network_key, '').startswith('space_'):
-                    bridgename = interface.attrib[network_key].partition('_')[-1]
-                    return int(bridgename, 16)
+                if network_key in interface.attrib:
+                    yield interface.attrib[network_key]
+
+    def _get_domain_networkid(self, dom):
+        for bridge in self._get_domain_bridges(dom):
+            if bridge.startswith('space_'):
+                networkid = bridge.partition('_')[-1]
+                return int(networkid, 16)
         return None
 
     def check_disk(self, diskxml):
@@ -580,9 +592,11 @@ class LibvirtUtil(object):
         network.create()
         network.setAutostart(True)
 
-    def cleanupNetwork(self, networkid):
-        if j.system.ovsnetconfig.cleanupIfUnused(networkid):
-            networkname = netclasses.VXBridge(networkid).name
+    def checkNetwork(self, networkname):
+        return networkname in self.connection.listNetworks()
+
+    def cleanupNetwork(self, networkid, bridges):
+        def destroyNetwork(name):
             try:
                 network = self.connection.networkLookupByName(networkname)
                 try:
@@ -596,6 +610,16 @@ class LibvirtUtil(object):
             except:
                 # network does not exists
                 pass
+
+        if networkid and j.system.ovsnetconfig.cleanupIfUnused(networkid):
+            networkname = netclasses.VXBridge(networkid).name
+            destroyNetwork(networkname)
+
+        for bridge in bridges:
+            if not bridge.startswith('ext-'):
+                continue
+            if j.system.ovsnetconfig.cleanupIfUnusedVlanBridge(bridge):
+                destroyNetwork(bridge)
 
     def createVMStorSnapshot(self, name):
         vmstor_snapshot_path = j.system.fs.joinPaths(
