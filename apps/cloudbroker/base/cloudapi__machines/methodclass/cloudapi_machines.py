@@ -930,7 +930,7 @@ class cloudapi_machines(BaseActor):
         return self._updateACE(machineId, userId, accesstype, userstatus)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def attachExternalNetwork(self, machineId, externalnetworkId, **kwargs):
+    def attachExternalNetwork(self, machineId, **kwargs):
         """
          Attach a external network to the machine
 
@@ -945,7 +945,7 @@ class cloudapi_machines(BaseActor):
         # Check that attaching a external network will not exceed the allowed CU limits
         j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(vmachine.cloudspaceId, 1)
         networkid = cloudspace.networkId
-        netinfo = self.network.getExternalIpAddress(cloudspace.gid, externalnetworkId)
+        netinfo = self.network.getExternalIpAddress(cloudspace.gid, cloudspace.externalnetworkId)
         if netinfo is None:
             raise RuntimeError("No available externalnetwork IPAddresses")
         pool, externalnetworkip = netinfo
@@ -997,15 +997,13 @@ class cloudapi_machines(BaseActor):
         """
 
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        networkid = cloudspace.networkId
 
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
 
-            provider.client.detach_public_network(node, networkid)
+            provider.client.detach_public_network(node)
         self._detachExternalNetworkFromModel(vmachine)
         return True
 

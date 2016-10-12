@@ -241,7 +241,6 @@
         Attach a public network to the machine
         """
         var:machineId int,, id of the machine
-        var:externalnetworkId int,, id of the externalnetwork @optional
         result:bool, True if a public network was attached to the machine
 
     method:detachExternalNetwork

@@ -807,12 +807,12 @@ class CSLibvirtNodeDriver(object):
         self._update_node(node, domxml)
         return NetworkInterface(mac=macaddress, target=target, type='bridge')
 
-    def detach_public_network(self, node, networkid):
+    def detach_public_network(self, node):
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         interfacexml = None
-        targetname = '%s-pub' % node.name
+        targetname = '%s-ext' % node.name
         for interface in devices.iterfind('interface'):
             target = interface.find('target')
             if target.attrib['dev'] == targetname:
