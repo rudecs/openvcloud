@@ -41,7 +41,13 @@
         var:name str,, Name of the size
         var:vcpus int,,Number of vcpus
         var:memory int,,Memory in MB
-        var:disksize int,,Size of bootdisk in GB
+        var:disksize str,,Size of bootdisk in GB
+
+    method:deleteSize
+        """
+        Deletes unused size from location
+        """
+        var:size_id int,, Id of size to be deleted
 
     method:removePublicIPv4IPS
         """

@@ -121,15 +121,43 @@ class cloudbroker_iaas(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     def addSize(self, name, vcpus, memory, disksize, **kwargs):
+        """
+        Add a new size to grid location.
+
+        @param name: str name of new size.
+        @param vcpus: int  number of vcpus to be used.
+        @param memory: int  amount of memory for this size.
+        @param disksize: [int] list of disk sizes available.
+        """
         size = dict()
-        size['disk'] = disksize
+        disks = map(int, disksize.split(","))
+        size['disks'] = disks
         size['memory'] = memory
         size['vcpus'] = vcpus
         if self.lcl.size.count(size) >= 1:
             raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
         size['name'] = name
-        self.lcl.size.set(size)
-        self.syncAvailableSizesToCloudbroker()
+        self.models.size.set(size)
+        for disk in disks:
+            self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus})
+        return True
+
+    @auth(['level1', 'level2', 'level3'])
+    def deleteSize(self, size_id, **kwargs):
+        """
+        Delete unused size in location.
+
+        @param size_id: int id if size to be deleted.
+        """
+        cb_size = self.models.size.get(size_id)
+        disks = cb_size.disks
+        memory = cb_size.memory
+        vcpus = cb_size.vcpus
+        if self.models.vmachine.count({"sizeId": size_id}) == 0:
+            self.models.size.delete(size_id)
+            self.lcl.size.deleteSearch({"disk": {"$in": disks}, "memory": memory, "vcpus": vcpus})
+        return True
+
 
     @auth(['level1', 'level2', 'level3'])
     def syncAvailableImagesToCloudbroker(self, **kwargs):
