@@ -8,7 +8,7 @@ h2. Account: ${name}
 {{actions:
 - display: Edit
   action: /restmachine/cloudbroker/account/update
-  reload: false
+  reload: true
   clearform: false
   input:
   - name: name

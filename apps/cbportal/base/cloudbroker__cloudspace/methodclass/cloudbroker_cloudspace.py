@@ -248,7 +248,7 @@ class cloudbroker_cloudspace(BaseActor):
     @wrap_remote
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1, maxNetworkOptTransfer=-1,
-               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
+               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, **kwargs):
         """
         Create a cloudspace
 
@@ -289,7 +289,7 @@ class cloudbroker_cloudspace(BaseActor):
         return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
                                              maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
                                              maxArchiveCapacity, maxNetworkOptTransfer,
-                                             maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxNetworkPeerTransfer, maxNumPublicIP, externalnetworkId)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]

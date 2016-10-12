@@ -118,7 +118,7 @@ def main(j, args, params, tags, tasklet):
         data[field] = getattr(obj, field, 'N/A')
 
     try:
-        data['nics'] = '||Name||MAC Address||IP Address||Gateway||Delete||\n'
+        data['nics'] = []
         if [nic for nic in obj.nics if nic.ipAddress == 'Undefined']:
             # reload machine details
             j.apps.cloudbroker.machine.get(obj.id)
@@ -126,10 +126,15 @@ def main(j, args, params, tags, tasklet):
 
         for nic in obj.nics:
             action = ""
-            if nic.deviceName.endswith('pub'):
-                action = "{{action id:'action-DetachFromPublicNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
-            gateway = j.core.tags.getObject(nic.params or '').tags.get('gateway', 'N/A')
-            data['nics'] += "|%s |%s |%s |%s |%s|\n" % (nic.deviceName or 'N/A', nic.macAddress, nic.ipAddress, gateway, action)
+            if nic.deviceName.endswith('ext'):
+                action = "{{action id:'action-DetachFromExternalNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
+            tagObj = j.core.tags.getObject(nic.params or '')
+            gateway = tagObj.tags.get('gateway', 'N/A')
+            if 'externalnetworkId' in tagObj.tags:
+                nic.ipAddress = '[%s|External Network?networkid=%s]' % (nic.ipAddress, tagObj.tags['externalnetworkId'])
+            nic.gateway = gateway
+            nic.action = action
+            data['nics'].append(nic)
     except Exception as e:
         data['nics'] = 'NIC information is not available %s' % e
 

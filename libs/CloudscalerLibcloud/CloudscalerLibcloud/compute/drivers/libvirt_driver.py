@@ -796,15 +796,16 @@ class CSLibvirtNodeDriver(object):
         """
         return False
 
-    def attach_public_network(self, node):
+    def attach_public_network(self, node, vlan):
         """
         Attach Virtual machine to the cpu node public network
         """
         macaddress = self.backendconnection.getMacAddress(self.gid)
         iface = ElementTree.Element('interface')
         iface.attrib['type'] = 'network'
-        target = '%s-pub' % node.name
-        ElementTree.SubElement(iface, 'source').attrib = {'network': 'public'}
+        target = '%s-ext' % (node.name)
+        bridgename = self._execute_agent_job('create_external_network', queue='hypervisor', vlan=vlan)
+        ElementTree.SubElement(iface, 'source').attrib = {'network': bridgename}
         ElementTree.SubElement(iface, 'mac').attrib = {'address': macaddress}
         ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
@@ -818,12 +819,12 @@ class CSLibvirtNodeDriver(object):
         self._update_node(node, domxml)
         return NetworkInterface(mac=macaddress, target=target, type='bridge')
 
-    def detach_public_network(self, node, networkid):
+    def detach_public_network(self, node):
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         interfacexml = None
-        targetname = '%s-pub' % node.name
+        targetname = '%s-ext' % node.name
         for interface in devices.iterfind('interface'):
             target = interface.find('target')
             if target.attrib['dev'] == targetname:

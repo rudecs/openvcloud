@@ -32,6 +32,7 @@ def cleanup(name, networkid):
     except:
         pass
 
+
 def createVM(xml):
     import libvirt
     con = libvirt.open()
@@ -39,14 +40,7 @@ def createVM(xml):
     dom.create()
 
 
-def createNetwork(xml):
-    import libvirt
-    con = libvirt.open()
-    private = con.networkDefineXML(xml)
-    private.create()
-    private.setAutostart(True)
-
-def action(networkid, publicip, publicgwip, publiccidr, password):
+def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     import pexpect
     import netaddr
     import jinja2
@@ -54,7 +48,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     import os
     acl = j.clients.agentcontroller.get()
     edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
-
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
@@ -69,6 +62,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             'username': username,
             'password': newpassword
             }
+
+    jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+    bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
@@ -100,7 +96,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
 
         xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
                                        edgehost=edgeip, edgeport=edgeport,
-                                       edgetransport=edgetransport)
+                                       edgetransport=edgetransport, publicbridge=bridgename)
 
         print 'Starting VM'
         try:
@@ -215,8 +211,9 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--public-ip', dest='publicip', required=True)
     parser.add_argument('-pg', '--public-gw', dest='publicgw', required=True)
     parser.add_argument('-pc', '--public-cidr', dest='publiccidr', required=True, type=int)
-    parser.add_argument('-pw', '--password', required=True)
+    parser.add_argument('-v', '--vlan', dest='vlan', required=True, type=int)
+    parser.add_argument('-pw', '--password', default='rooter')
     parser.add_argument('-c', '--cleanup', action='store_true', default=False, help='Cleanup in case of failure')
     options = parser.parse_args()
     docleanup = options.cleanup
-    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password)
+    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password, options.vlan)

@@ -73,6 +73,7 @@
         var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
+        var:externalnetworkId int,, Id of external network to connect to @optional
 
     method:update
         """

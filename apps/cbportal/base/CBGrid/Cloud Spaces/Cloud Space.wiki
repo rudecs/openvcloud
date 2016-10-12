@@ -173,7 +173,7 @@ h3. Details
 |*Status*|${status}|
 |*Location Code*|${location}|
 |*Description*|${descr}|
-|*Public IP Adress*|${publicipaddress}|
+|*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|
 
 h3. Cloud Resource Limits
 
