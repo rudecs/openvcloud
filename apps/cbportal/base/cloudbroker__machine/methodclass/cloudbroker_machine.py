@@ -494,13 +494,13 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def attachPublicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.attachPublicNetwork(machineId)
+    def attachExternalNetwork(self, machineId, **kwargs):
+        return self.actors.machines.attachExternalNetwork(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def detachPublicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.detachPublicNetwork(machineId)
+    def detachExternalNetwork(self, machineId, **kwargs):
+        return self.actors.machines.detachExternalNetwork(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

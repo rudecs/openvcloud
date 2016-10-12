@@ -34,10 +34,10 @@ def action(ovs_connection, diskpath):
 
     # First query for the diskguid
     query = dict(type='AND', items=[('devicename', 'EQUALS', devicename)])
-    result = ovs.get('/vdisks', params=dict(contents='name', query=json.dumps(query)))
+    result = ovs.get('/vdisks', params=dict(contents='name,devicename', query=json.dumps(query)))
     disksfound = len(result['data'])
     if disksfound == 0:
-        return
+        return False
     elif disksfound > 1:
         raise Exception('More than 1 disk found. Do not know what to do.')
 
@@ -48,4 +48,13 @@ def action(ovs_connection, diskpath):
     if not success:
         raise Exception("Could not delete disk:\n{}".format(result))
 
-    return
+    return True
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--path')
+    options = parser.parse_args()
+    scl = j.clients.osis.getNamespace('system')
+    ovs_connection = scl.grid.get(j.application.whoAmI.gid).settings['ovs_credentials']
+    print(action(ovs_connection, options.path))

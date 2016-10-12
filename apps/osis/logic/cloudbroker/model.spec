@@ -163,7 +163,8 @@
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
     prop:networkId int,, Id of the used network
     prop:resourceProviderStacks list(int),,Not used anymore here for backwardscompatibility
-    prop:publicipaddress str,, Public ipaddress linked to the cloudspace
+    prop:externalnetworkip str,, externalnetwork ip linked to the cloudspace
+    prop:externalnetworkId int,, externalnetwork poold id
     prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
     prop:location str,, datacenterlocation
     prop:gid int,, Grid ID
@@ -171,16 +172,19 @@
     prop:creationTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
 
-[rootmodel:PublicIPv4Pool] @dbtype:osis
+[rootmodel:externalnetwork] @dbtype:osis
     """
-    public ip pool
+    externalnetwork pool
     """
-    prop:id str,,network/cidr
+    prop:id int,,incremental id of network pool
     prop:gid int,, Grid id
     prop:network str,,Network of the pool
     prop:subnetmask str,,Subnetmask of the pool
     prop:gateway str,,Gateway of th
-    prop:pubips list(str),,list of ips
+    prop:vlan int,,VLAN Tag of the network
+    prop:name str,,Name of public network
+    prop:accountId int,,Account which can use this network
+    prop:ips list(str),,list of ips
 
 [rootmodel:Size] @dbtype:osis
     """
