@@ -54,13 +54,14 @@ def action(ovs_connection):
 
     # Then list the storage drivers
     edgeclients = list()
-    result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter'})
+    result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter,vdisks_guids'})
     for storagedriver in result['data']:
         edgeclients.append(dict(storageip=storagedriver['storage_ip'],
                                 edgeport=storagedriver['ports']['edge'],
                                 storagerouterguid=storagedriver['storagerouter_guid'],
                                 vpoolguid=storagedriver['vpool_guid'],
                                 vpool=vpools[storagedriver['vpool_guid']],
+                                vdiskcount=len(storagedriver['vdisks_guids']),
                                 protocol=protocol))
 
     return edgeclients

@@ -109,8 +109,6 @@ def OpenvStorageVolumeFromXML(disk, driver):
 
 class CSLibvirtNodeDriver(object):
 
-    _roundrobinstoragedriver = {'next': 0, 'edgeclienttime': 0}
-    _edgeclients = []
     _ovsdata = {}
     _edgenodes = {}
     type = 'CSLibvirt'
@@ -167,31 +165,26 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def edgeclients(self):
-        if self._roundrobinstoragedriver['edgeclienttime'] < time.time() - 60:
-            edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
+        edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
 
-            activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
+        activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
 
-            def filter_clients(client):
-                node = self._edgenodes.get(client['storageip'])
+        def filter_clients(client):
+            node = self._edgenodes.get(client['storageip'])
+            if node is None:
+                node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
                 if node is None:
-                    node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
-                    if node is None:
-                        return False
-                    else:
-                        self._edgenodes[client['storageip']] = node
-                client['nid'] = node['id']
-                if (node['gid'], node['id']) not in activesessions:
                     return False
-                return True
+                else:
+                    self._edgenodes[client['storageip']] = node
+            client['nid'] = node['id']
+            if (node['gid'], node['id']) not in activesessions:
+                return False
+            return True
 
-            self._edgeclients[:] = filter(filter_clients, edgeclients)
-            self._roundrobinstoragedriver['edgeclienttime'] = time.time()
-        return self._edgeclients
+        return filter(filter_clients, edgeclients)
 
     def getNextEdgeClient(self, vpool=None):
-        self._roundrobinstoragedriver['next'] += 1
-        rndrbn = self._roundrobinstoragedriver['next']
         clients = self.edgeclients[:]
         if vpool:
             clients = filter(lambda x: x['vpool'] == vpool, clients)
@@ -201,7 +194,7 @@ class CSLibvirtNodeDriver(object):
                 vpools.remove('vmstor')
                 clients = filter(lambda x: x['vpool'] in vpools, clients)
 
-        return clients[rndrbn % len(clients)]
+        return sorted(clients, key=lambda client: client['vdiskcount'])[0]
 
     def getEdgeClientByVpoolAndStorageRouter(self, vpoolguid, storagerouterguid):
         for edgeclient in self.edgeclients:
