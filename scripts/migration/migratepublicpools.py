@@ -1,6 +1,11 @@
 from JumpScale import j
+import sys
 mcl = j.clients.mongodb.getByInstance('main')
 ccl = j.clients.osis.getNamespace('cloudbroker')
+
+if ccl.externalnetwork.count({}) != 0:
+    print('Migration script ran before abortint')
+    sys.exit(0)
 
 for pool in mcl.cloudbroker.publicipv4pool.find({}):
     network = ccl.externalnetwork.new()
