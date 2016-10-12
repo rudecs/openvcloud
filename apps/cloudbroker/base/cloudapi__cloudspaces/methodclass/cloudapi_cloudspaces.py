@@ -214,7 +214,7 @@ class cloudapi_cloudspaces(BaseActor):
         if externalnetworkId:
             if self.models.externalnetwork.count({'id': externalnetworkId,
                                                   'gid': location['gid'],
-                                                  'acccountId': {'$in': [accountId, None]}}) == 0:
+                                                  'accountId': {'$in': [accountId, 0]}}) == 0:
                 raise exceptions.BadRequest('Could not find externalnetwork with id %s' % externalnetworkId)
 
         active_cloudspaces = self._listActiveCloudSpaces(accountId)

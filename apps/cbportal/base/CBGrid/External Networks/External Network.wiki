@@ -49,7 +49,7 @@ h4. Free IPs
 {% endif %}
 
 h4. External IPs Used by CloudSpace
-||Public IP||Cloud Space||
+||External IP||Cloud Space||
 {% for space in spaces -%}
 |${space.externalnetworkip}|[${space.name} (${space.id})|cloud space?id=${space.id}]|
 {% endfor %}
