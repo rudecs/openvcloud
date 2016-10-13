@@ -1,1 +1,1 @@
-jspython distro.py 2> /dev/null
+jspython vdisk-distribution.py 2> /dev/null

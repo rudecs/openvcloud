@@ -9,6 +9,7 @@ def update():
     result = list()
     for sd in storage_drivers:
         result.append(dict(vpool=sd['mountpoint'].split('/')[-1], vpoolguid=sd['vpool_guid'], storagerouterguid=sd['storagerouter_guid'], diskcount=len(sd['vdisks_guids']), storageip=sd['storage_ip']))
+	result.sort(key=lambda r: r['vpool'])
     for r in result:
         print r['vpool'], r['storageip'], r['diskcount']
 
