@@ -107,22 +107,22 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         data['internalip'] = internalip
 
         try:
-            run = pexpect.spawn("virsh console %s" % name)
+            run = pexpect.spawn("virsh console %s" % name, timeout=300)
             print "Waiting to attach to console"
             run.expect("Connected to domain", timeout=10)
             run.sendline() #first enter to clear welcome message of kvm console
             print 'Waiting for Login'
-            run.expect("Login:", timeout=60)
+            run.expect("Login:", timeout=120)
             run.sendline(username)
-            run.expect("Password:", timeout=2)
+            run.expect("Password:", timeout=10)
             run.sendline(defaultpasswd)
             print 'waiting for prompt'
-            run.expect("\] >", timeout=60) # wait for primpt
+            run.expect("\] >", timeout=120) # wait for primpt
             run.send("/ip addr add address=%s/22 interface=internal\r\n" % internalip)
             print 'waiting for end of command'
-            run.expect("\] >", timeout=2) # wait for primpt
+            run.expect("\] >", timeout=10) # wait for primpt
             run.send("/quit\r\n")
-            run.expect("Login:", timeout=2)
+            run.expect("Login:", timeout=10)
             run.close()
         except Exception, e:
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
