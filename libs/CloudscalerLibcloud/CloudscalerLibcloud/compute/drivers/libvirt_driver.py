@@ -203,7 +203,7 @@ class CSLibvirtNodeDriver(object):
         if len(diskspervpool) > 1:
             diskspervpool.pop('vmstor', None)
         # get vpool with least vdiskcount
-        return sorted(diskspervpool.items(), lambda vpool: vpool[1])[0][0], edgeclients
+        return sorted(diskspervpool.items(), key=lambda vpool: vpool[1])[0][0], edgeclients
 
     def set_backend(self, connection):
         """
