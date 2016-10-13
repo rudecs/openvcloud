@@ -184,23 +184,26 @@ class CSLibvirtNodeDriver(object):
 
         return filter(filter_clients, edgeclients)
 
-    def getNextEdgeClient(self, vpool=None):
-        clients = self.edgeclients[:]
-        if vpool:
-            clients = filter(lambda x: x['vpool'] == vpool, clients)
-        else:
-            vpools = set(client['vpool'] for client in clients)
-            if len(vpools) > 1 and 'vmstor' in vpools:
-                vpools.remove('vmstor')
-                clients = filter(lambda x: x['vpool'] in vpools, clients)
-
+    def getNextEdgeClient(self, vpool, edgeclients=None):
+        clients = edgeclients or self.edgeclients[:]
+        clients = filter(lambda x: x['vpool'] == vpool, clients)
         return sorted(clients, key=lambda client: client['vdiskcount'])[0]
 
-    def getEdgeClientByVpoolAndStorageRouter(self, vpoolguid, storagerouterguid):
-        for edgeclient in self.edgeclients:
-            if edgeclient['vpoolguid'] == vpoolguid and storagerouterguid == edgeclient['storagerouterguid']:
-                return edgeclient
-        raise ValueError("Could not find EdgeClient")
+    def getEdgeClientFromVolume(self, volume):
+        edgeclients = self.edgeclients[:]
+        for edgeclient in edgeclients:
+            if volume.edgehost == edgeclient['storageip'] and volume.edgeport == edgeclient['edgeport']:
+                return edgeclient, edgeclients
+
+    def getBestDataVpool(self):
+        edgeclients = self.edgeclients[:]
+        diskspervpool = {}
+        for edgeclient in edgeclients:
+            diskspervpool[edgeclient['vpool']] = diskspervpool.setdefault(edgeclient['vpool'], 0) + edgeclient['vdiskcount']
+        if len(diskspervpool) > 1:
+            diskspervpool.pop('vmstor', None)
+        # get vpool with least vdiskcount
+        return sorted(diskspervpool.items(), lambda vpool: vpool[1])[0][0], edgeclients
 
     def set_backend(self, connection):
         """
@@ -302,7 +305,8 @@ class CSLibvirtNodeDriver(object):
     def create_volumes(self, volumes):
         stvolumes = []
         for volume in volumes:
-            edgeclient = self.getNextEdgeClient()
+            vpoolname, edgeclients = self.getBestDataVpool()
+            edgeclient = self.getNextEdgeClient(vpoolname, edgeclients)
             diskname = 'volumes/volume_{}'.format(volume['name'])
             kwargs = {'ovs_connection': self.ovs_connection,
                       'vpoolguid': edgeclient['vpoolguid'],
@@ -683,14 +687,14 @@ class CSLibvirtNodeDriver(object):
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
         disks = []
+        diskvpool = {}
         for volume, diskname in diskmapping:
-            if diskname.startswith('vm'):
-                edgeclient = self.getNextEdgeClient('vmstor')
-            else:
-                edgeclient = self.getNextEdgeClient()
+            source_edgeclient, edgeclients = self.getEdgeClientFromVolume(volume)
+            edgeclient = self.getNextEdgeClient(source_edgeclient['vpool'], edgeclients)
             diskinfo = {'clone_name': diskname,
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
+            diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
 
         kwargs = {'ovs_connection': self.ovs_connection, 'disks': disks}
@@ -698,7 +702,7 @@ class CSLibvirtNodeDriver(object):
         volumes = []
         for idx, diskinfo in enumerate(disks):
             newdiskguid, vpoolguid = newdisks[idx]
-            edgeclient = self.getEdgeClientByVpoolAndStorageRouter(vpoolguid, diskinfo['storagerouterguid'])
+            edgeclient = diskvpool[diskinfo['diskguid']]
             volumeid = self.getVolumeId(newdiskguid, edgeclient, diskinfo['clone_name'])
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
