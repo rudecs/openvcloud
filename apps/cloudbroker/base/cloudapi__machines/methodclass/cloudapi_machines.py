@@ -235,6 +235,8 @@ class cloudapi_machines(BaseActor):
         image = self.models.image.new()
         image.name = templatename
         image.type = 'Custom Templates'
+        image.username = machine.accounts[0].login
+        image.password = machine.accounts[0].login
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
