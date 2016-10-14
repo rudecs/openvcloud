@@ -21,7 +21,7 @@ The **Cloud Broker Operator Portal** comes out of the box with the **Overall Sys
 <a id="total-iops"></a>
 #### Total IOPS
 
-![](TotalIOPS.png)
+![](Total-IOPS.png)
 
 
 <a id="cpu-utilization"></a>
