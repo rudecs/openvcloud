@@ -21,6 +21,7 @@
    * [Users](CloudBrokerPortal/Users/Users.md)
    * [Virtual Machines](CloudBrokerPortal/VirtualMachines/VirtualMachines.md)
      * [Move to another CPU node](CloudBrokerPortal/VirtualMachines//Actions/MoveVM2AnotherCPUNode.md)
+* [Statistics](Statistics/Statistics.md)
 * [Grid Portal](GridPortal/GridPortal.md)
    * [Home](GridPortal/Home/Home.md)
    * [Audits](GridPortal/Audits/Audits.md)
