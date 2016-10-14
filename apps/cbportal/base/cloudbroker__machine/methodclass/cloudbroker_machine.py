@@ -400,13 +400,9 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
 
         stack = self.models.stack.get(vmachine.stackId)
-        subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
-        msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountId, vmachine.name, reason)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
         self.acl.executeJumpscript(
             'cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     def backupAndDestroy(self, accountId, machineId, reason, **kwargs):
@@ -417,7 +413,6 @@ class cloudbroker_machine(BaseActor):
         * Close the ticket
         """
         vmachine = self._validateMachineRequest(machineId)
-        stack = self.models.stack.get(vmachine.stackId)
         args = {'accountId': accountId, 'machineId': machineId, 'reason': reason,
                 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpscript(
@@ -457,7 +452,7 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         self.actors.portforwarding.create(
-            cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
+            cloudspace.id, cloudspace.externalnetworkip, str(destPort), vmachine.id, str(localPort), proto)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -465,7 +460,6 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         self.actors.portforwarding.deleteByPort(cloudspace.id, publicIp, publicPort, proto)
-
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
