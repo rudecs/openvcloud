@@ -10,7 +10,7 @@
   showresponse: true
 }}
 
-h3. Storage Nodes
+h3. Storage Routers
 {{storagenodes}}
 
 
