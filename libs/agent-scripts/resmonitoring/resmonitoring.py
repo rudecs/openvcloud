@@ -13,15 +13,14 @@ author = "foudaa@greenitglobe.com"
 license = "bsd"
 version = "1.0"
 category = "resources.monitoring"
-period = 60 * 60  # always in sec
-timeout = period * 0.2
+period = "0 * * * *"
+timeout = 120
 order = 1
 enable = True
 async = True
 queue = 'process'
 log = False
 roles = ['controller']
-
 
 
 def get_cached_accounts():
@@ -70,21 +69,24 @@ def get_last_hour_val(redis, key):
         return value['h_last']
     return 0
 
+
 def action():
+    import CloudscalerLibcloud
+    import os
     now = datetime.now()
     month = now.month
     hour = now.hour
     day = now.day
     year = now.year
     capnp.remove_import_hook()
-    cloudspace_capnp = capnp.load('../../CloudscalerLibcloud/CloudscalerLibcloud/schemas/space.capnp')
-    # redis = j.clients.redis.getByInstance('system')
+    schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas', 'cloudspace.capnp')
+    cloudspace_capnp = capnp.load(schemapath)
 
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
     sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
     dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
     cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
-    vcl =  j.clients.osis.getNamespace('vfw')
+    vcl = j.clients.osis.getNamespace('vfw')
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
     sizes_list = sizescl.search({'$fields': ['id', 'memory']})[1:]
     sizes_dict = {}

@@ -15,8 +15,8 @@ author = "tareka@greenitglobe.com"
 license = "bsd"
 version = "1.0"
 category = "account.monitoring"
-period = 60 * 60  # everyhour
-timeout = period * 0.2
+period = "30 * * * *"
+timeout = 120
 order = 1
 enable = True
 async = True
@@ -30,15 +30,15 @@ def action(gid=None):
     """
     Send tar of account data on  each enviroment
     """
+    import CloudscalerLibcloud
     agentcontroller = j.clients.agentcontroller.get()
     cbcl = j.clients.osis.getNamespace("cloudbroker")
-    data = list()
     jobs = list()
-    results = list()
 
     capnp.remove_import_hook()
-    Cloudspace_capnp = capnp.load('cloudspace.capnp')
-    Account_capnp = capnp.load('Account.capnp')
+    schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas')
+    Cloudspace_capnp = capnp.load(os.path.join(schemapath, 'cloudspace.capnp'))
+    Account_capnp = capnp.load(os.path.join(schemapath, 'account.capnp'))
 
     # schedule command
     for location in cbcl.location.search({})[1:]:
