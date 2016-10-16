@@ -50,9 +50,9 @@ def action(gid=None):
                                                 wait=True))
 
     # get return from each job.
+    accounts = dict()
     for job in jobs:
         result = agentcontroller.waitJumpscript(job=job)
-        accounts = dict()
 
         # read the tar.
         c = cStringIO.StringIO()
@@ -64,23 +64,17 @@ def action(gid=None):
             if member.name.endswith(".bin"):
                 accountid, year, month, day, hour = re.findall(
                     "opt/jumpscale7/var/resourcetracking/active/([\d]+)/([\d]+)/([\d]+)/([\d]+)/([\d]+)/", member.name)[0]
-                if accountid in accounts:
-                    if "%s/%s/%s/%s" % (year, month, day, hour) not in accounts[accountid]:
-                        accounts[accountid] = {"%s/%s/%s/%s" % (year, month, day, hour): [member]}
-                    else:
-                        accounts[accountid]["%s/%s/%s/%s" % (year, month, day, hour)].append(member)
 
-                else:
-                    accounts[accountid] = {"%s/%s/%s/%s" % (year, month, day, hour): member}
+                datekey = (year, month, day, hour)
+                accounts.setdefault(accountid, {datekey: []}).setdefault(datekey, []).append(member)
 
-        for account_id, dates in accounts.iteritems():
-            account = Account_capnp.Account.new_message()
+    for account_id, dates in accounts.iteritems():
+        account = Account_capnp.Account.new_message()
 
-            for i, val in enumerate(dates.iteritems()):
-                date, member = val
-                if member.name.endwith("bin"):
-                    year, month, day, hour = re.findall(
-                        "([\d]+)/([\d]+)/([\d]+)/([\d]+)/([\d]+)/", date)[0]
+        for i, (date, members) in enumerate(dates.iteritems()):
+            for member in members:
+                if member.name.endswith("bin"):
+                    year, month, day, hour = date
                     account.accountId = account_id
                     cloudspaces = account.init("cloudspaces", len(members))
 
