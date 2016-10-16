@@ -75,6 +75,7 @@
     prop:accountId int,,id of account to which this image belongs
     prop:acl list(ACE),,access control list
     prop:username str,, specific username for this image
+    prop:password str,, specific password for this image
     prop:provider_name str,, provider name for this image openstack/libvirt, ...
 
 

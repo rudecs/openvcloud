@@ -42,7 +42,7 @@ h3. Location: ${name}
    gid: $$gid
 
 
-- display: Add new size to grid Location
+- display: Add New VM Size
   action: /restmachine/cloudbroker/iaas/addSize
   data:
    gid: $$gid
@@ -74,7 +74,7 @@ h3. Location: ${name}
     required: true
 
 
-- display: Delete unused size from grid Location
+- display: Delete Unused VM Size
   action: /restmachine/cloudbroker/iaas/deleteSize
   data:
    gid: $$gid

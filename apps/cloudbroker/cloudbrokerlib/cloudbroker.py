@@ -528,14 +528,18 @@ class Machine(object):
             diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
-        if image.type == 'Custom Templates':
+        if hasattr(image, 'username') and image.username:
+            account.login = image.username
+        elif image.type != 'Custom Templates':
+            account.login = 'cloudscalers'
+        else:
             account.login = 'Custom login'
             account.password = 'Custom password'
-        else:
-            if hasattr(image, 'username') and image.username:
-                account.login = image.username
-            else:
-                account.login = 'cloudscalers'
+
+        if hasattr(image, 'password') and image.password:
+            account.password = image.password
+
+        if not account.password:
             length = 6
             chars = removeConfusingChars(string.letters + string.digits)
             letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]
