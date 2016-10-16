@@ -2,7 +2,7 @@ from JumpScale import j
 import capnp
 from datetime import datetime
 import json
-import re
+import urlparse
 
 descr = """
 Collects resources
@@ -49,14 +49,13 @@ def get_cached_accounts():
     return cached_accounts
 
 
-def get_redis_instance(stackId, port='9999'):
+def get_redis_instance(stackId, stacks, port=9999):
     scl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "stack")
-    stack = scl.search({'$query': {'id': stackId}})[1]
-    url = stack['apiUrl']
-    ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', url)
-    if ip:
-        redis = j.clients.redis.getRedisClient(ip[0], port)
-    return redis, stack
+    if stackId not in stacks:
+        stacks[stackId] = scl.get(stackId)
+    ip = urlparse.urlparse(stacks[stackId].apiUrl).hostname
+    redis = j.clients.redis.getRedisClient(ip[0], port)
+    return redis, stacks[stackId]
 
 
 def get_last_hour_val(redis, key):
@@ -73,6 +72,8 @@ def get_last_hour_val(redis, key):
 def action():
     import CloudscalerLibcloud
     import os
+    stacks = {}
+
     now = datetime.now()
     month = now.month
     hour = now.hour
@@ -111,13 +112,13 @@ def action():
             cs = cscl.get(cloudspace_id)
             net = vcl.virtualfirewall.get("%s_%s" % (cs.gid, cs.networkId))
             nid = net.nid
-            cloudspace.publicTX = get_last_hour_val(
+            cloudspace.publicTX = get_last_hour_val(redis,
                 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.publicRX = get_last_hour_val(
+            cloudspace.publicRX = get_last_hour_val(redis,
                 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.spaceRX = get_last_hour_val(
+            cloudspace.spaceRX = get_last_hour_val(redis,
                 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.spaceTX = get_last_hour_val(
+            cloudspace.spaceTX = get_last_hour_val(redis,
                 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
 
             machines = cloudspace.init('machines', len(vms))
@@ -140,7 +141,7 @@ def action():
 
                 if machine_dict['status'] != "HALTED" and stack_id:
                     # get redis for this stack
-                    redis, stack = get_redis_instance(stack_id)
+                    redis, stack = get_redis_instance(stack_id, stacks)
                     nid = stack['referenceId']
                     # get CPU
                     cpu_key = 'stats:{gid}_{nid}:machine.CPU.utilisation@virt.{vm_id}'.format(gid=gid, nid=nid, vm_id=vm_id)
