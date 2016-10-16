@@ -58,14 +58,14 @@ def get_redis_instance(stackId, stacks, port=9999):
     return redis, stacks[stackId]
 
 
-def get_last_hour_val(redis, key):
+def get_last_hour_val(redis, key, property='h_last'):
     now = datetime.now()
     value = redis.get(key)
     if value:
         value = json.loads(value)
-
-    if (now - datetime.utcfromtimestamp(float(value['h_last_epoch']))).total_seconds() / (60 * 60) < 2:
-        return value['h_last']
+        if value.get('h_last_epoch', 0):
+            if (now - datetime.utcfromtimestamp(float(value['h_last_epoch']))).total_seconds() / (60 * 60) < 2:
+                return value.get(property, 0)
     return 0
 
 
@@ -91,7 +91,7 @@ def action():
     day = now.day
     year = now.year
     capnp.remove_import_hook()
-    schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas', 'cloudspace.capnp')
+    schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas', 'resourcemonitoring.capnp')
     cloudspace_capnp = capnp.load(schemapath)
     nodecl = j.clients.osis.getCategory(j.core.osis.client, 'system', 'node')
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
@@ -125,32 +125,37 @@ def action():
             nid = net.nid
             node = nodecl.get("%s_%s" % (net.gid, net.nid))
             redis = get_node_redis(node)
-            cloudspace.publicTX = get_last_hour_val(redis,
-                                                    'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.publicRX = get_last_hour_val(redis,
-                                                    'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.spaceRX = get_last_hour_val(redis,
-                                                   'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            cloudspace.spaceTX = get_last_hour_val(redis,
-                                                   'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            publicTX = get_last_hour_val(redis,
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            publicRX = get_last_hour_val(redis,
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            spaceRX = get_last_hour_val(redis,
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            spaceTX = get_last_hour_val(redis,
+                'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
 
-            machines = cloudspace.init('machines', len(vms))
+            machines = cloudspace.init('machines', len(vms)+1)
+            m = machines[0]
+            m.type = 'routeros'
+            nics = m.init('networks', 2)
+            nic1 = nics[0]
+            nic1.tx = publicTX
+            nic1.tx = publicRX
+            nic2 = nics[1]
+            nic2.tx = spaceTX
+            nic2.rx = spaceRX
             for idx, (vm_id, machine_dict) in enumerate(vms.items()):
-                iops_read = 0
-                iops_write = 0
-                disks_size = 0
-                tx_value = 0
-                rx_value = 0
-                m = machines[idx]
+                m = machines[idx + 1]
+                m.type = 'vm'
                 stack_id = machine_dict.get('stackId', None)
                 # get Image name
                 image_name = images_dict.get(machine_dict['imageId'], "")
                 # get mem size
                 memory_consumption = sizes_dict[machine_dict['sizeId']]
-                # calculate disk size
-                disks = dcl.search({'id': {'$in': machine_dict['disks']}})[1:]
-                for disk in disks:
-                    disks_size += disk['sizeMax']
+                # # calculate disk size
+                # disks = dcl.search({'id': {'$in': machine_dict['disks']}})[1:]
+                # for disk in disks:
+                #     disks_size += disk['sizeMax']
 
                 if machine_dict['status'] != "HALTED" and stack_id:
                     # get redis for this stack
@@ -158,37 +163,35 @@ def action():
                     nid = stack.referenceId
                     # get CPU
                     cpu_key = 'stats:{gid}_{nid}:machine.CPU.utilisation@virt.{vm_id}'.format(gid=gid, nid=nid, vm_id=vm_id)
-                    cpu_consumption = get_last_hour_val(redis, cpu_key)
+                    cpu_seconds = get_last_hour_val(redis, cpu_key)
                     # calculate iops
-                    for disk_id in machine_dict['disks']:
+                    disks_capnp = m.init('disks', len(machine_dict['disks']))
+                    for index, disk_id in enumerate(machine_dict['disks']):
+                        disk = dcl.get(disk_id)
+                        disk_size = disk.sizeMax
+                        disk_capnp = disks_capnp[index]
+                        disk_capnp.size = disk_size
                         disk_iops_read_key = "stats:{gid}_{nid}:disk.iops.read@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
+                        disk_capnp.iopsRead = get_last_hour_val(redis, disk_iops_read_key)
+                        disk_capnp.iopsReadMax = get_last_hour_val(redis, disk_iops_read_key, 'h_last_max')
                         disk_iops_write_key = "stats:{gid}_{nid}:disk.iops.write@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
-                        iops_read += get_last_hour_val(redis, disk_iops_read_key)
-                        iops_write += get_last_hour_val(redis, disk_iops_write_key)
+                        disk_capnp.iopsWrite = get_last_hour_val(redis, disk_iops_write_key)
+                        disk_capnp.iopsWriteMax = get_last_hour_val(redis, disk_iops_write_key, 'h_last_max')
 
                     # Calculate Network tx and rx
-                    for nic in machine_dict['nics']:
+                    nics = m.init("networks", len(machine_dict))
+                    for index, nic in enumerate(machine_dict['nics']):
                         mac = nic['macAddress']
+                        nic_capnp = nics[index]
                         tx_key = "stats:{gid}_{nid}:network.packets.tx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
                         rx_key = "stats:{gid}_{nid}:network.packets.rx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
-                        tx_value += get_last_hour_val(redis, tx_key)
-                        rx_value += get_last_hour_val(redis, rx_key)
-                    # exec("m = machines[%s]" % idx)
-                    m.iopsRead = iops_read
-                    m.iopsWrite = iops_write
-                    m.network.tx = tx_value
-                    m.network.rx = rx_value
-                    m.cpuSize = cpu_consumption
-
+                        nic_capnp.tx = get_last_hour_val(redis, tx_key)
+                        nic_capnp.rx = get_last_hour_val(redis, rx_key)
+                    m.cpuMinutes = cpu_seconds/60
                 else:
-                    m.iopsRead = 0
-                    m.iopsWrite = 0
-                    m.network.tx = 0
-                    m.network.rx = 0
-                    m.cpuSize = 0
+                    m.cpuMinutes = 0
                 m.imageName = image_name
-                m.memSize = memory_consumption
-                m.disksSize = disks_size
+                m.mem = memory_consumption
                 m.status = machine_dict['status']
                 # write files to disk
             with open("%s/%s.bin" % (folder_name, cloudspace_id), "w+b") as f:

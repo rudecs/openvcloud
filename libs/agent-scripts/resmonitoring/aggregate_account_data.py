@@ -37,8 +37,7 @@ def action(gid=None):
 
     capnp.remove_import_hook()
     schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas')
-    Cloudspace_capnp = capnp.load(os.path.join(schemapath, 'cloudspace.capnp'))
-    Account_capnp = capnp.load(os.path.join(schemapath, 'account.capnp'))
+    resources_capnp = capnp.load(os.path.join(schemapath, 'resourcemonitoring.capnp'))
 
     # schedule command
     for location in cbcl.location.search({})[1:]:
@@ -69,7 +68,7 @@ def action(gid=None):
                 accounts.setdefault(accountid, {datekey: []}).setdefault(datekey, []).append(member)
 
     for account_id, dates in accounts.iteritems():
-        account = Account_capnp.Account.new_message()
+        account = resources_capnp.Account.new_message()
 
         for i, (date, members) in enumerate(dates.iteritems()):
             for member in members:
@@ -83,7 +82,7 @@ def action(gid=None):
                     binary_content = tar.extractfile(member).read()
                     fd.write(binary_content)
                     fd.seek(0)
-                    cloudspace_obj = Cloudspace_capnp.Cloudspace.read(fd)
+                    cloudspace_obj = resources_capnp.Cloudspace.read(fd)
                     cloudspaces[i] = cloudspace_obj
                     fd.close()
                     filepath = '/opt/jumpscale8/var/resourcetracking/%s/account_capnp.bin'
