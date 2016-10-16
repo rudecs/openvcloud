@@ -2,8 +2,9 @@ from JumpScale import j
 import datetime
 import os
 import tarfile
-import cStringIO
+import io
 import re
+import base64
 
 
 descr = """
@@ -34,7 +35,7 @@ def action():
     base_path_collected = "/opt/jumpscale7/var/resourcetracking/collected"
 
     def create_hour_tar():
-        c = cStringIO.StringIO()
+        c = io.BytesIO()
         with tarfile.open(mode="w", fileobj=c) as tar:
                 tar.add(base_path_active)
                 content = c.getvalue()
@@ -42,7 +43,7 @@ def action():
         return content
 
     def move_to_collected(content):
-        fd = cStringIO.StringIO()
+        fd = io.BytesIO()
         fd.write(content)
         fd.seek(0)
         with tarfile.open(mode="r", fileobj=fd) as tar:
@@ -57,10 +58,10 @@ def action():
                             raise err
                     os.rename(os.path.join(base_path_active, accountid, year, month, day, hour, name),
                               os.path.join(base_path_collected, accountid, year, month, day, hour, name))
-
+        fd.close()
     content = create_hour_tar()
     move_to_collected(content)
-    return content
+    return base64.encodestring(content)
 
 if __name__ == '__main__':
     fd = cStringIO .StringIO()

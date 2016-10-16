@@ -59,7 +59,7 @@ def get_redis_instance(stackId, stacks, port=9999):
 
 
 def get_last_hour_val(redis, key, property='h_last'):
-    now = datetime.now()
+    now = datetime.utcnow()
     value = redis.get(key)
     if value:
         value = json.loads(value)
@@ -85,7 +85,7 @@ def action():
     import os
     stacks = {}
 
-    now = datetime.now()
+    now = datetime.utcnow()
     month = now.month
     hour = now.hour
     day = now.day

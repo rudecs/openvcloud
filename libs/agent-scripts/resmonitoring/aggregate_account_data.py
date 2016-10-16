@@ -2,7 +2,8 @@ from JumpScale import j
 import os
 import re
 import tarfile
-import cStringIO
+import io
+import base64
 
 
 descr = """
@@ -54,10 +55,11 @@ def action(gid=None):
         result = agentcontroller.waitJumpscript(job=job)
 
         # read the tar.
-        c = cStringIO.StringIO()
+        c = io.BytesIO()
         if result['state'] == 'ERROR':
             raise RuntimeError("%s\n%s" % (result['result']['errormessage'], result['result']['errormessage']))
-        c.write(result['result'])
+        result_decoded = base64.decodestring(result['result'])
+        c.write(result_decoded)
         c.seek(0)
         tar = tarfile.open(mode="r", fileobj=c)
         members = tar.getmembers()
@@ -68,6 +70,7 @@ def action(gid=None):
 
                 datekey = (year, month, day, hour)
                 accounts.setdefault(accountid, {datekey: []}).setdefault(datekey, []).append(member)
+
 
     for account_id, dates in accounts.iteritems():
         account = resources_capnp.Account.new_message()
@@ -96,7 +99,6 @@ def action(gid=None):
 
                     with open(os.path.join(filepath, "account_capnp.bin"), 'w+b') as f:
                         account.write(f)
-        c.close()
 
 if __name__ == '__main__':
     print(action())
