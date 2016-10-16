@@ -69,6 +69,17 @@ def get_last_hour_val(redis, key):
     return 0
 
 
+def get_node_redis(node, port=9999):
+    for nicinfo in node.netaddr:
+        if nicinfo['name'] == 'backplane1':
+            ip =  nicinfo['ip'][0]
+            break
+    else:
+        return None
+    redis = j.clients.redis.getRedisClient(ip, port)
+    return redis
+
+
 def action():
     import CloudscalerLibcloud
     import os
@@ -82,7 +93,7 @@ def action():
     capnp.remove_import_hook()
     schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas', 'cloudspace.capnp')
     cloudspace_capnp = capnp.load(schemapath)
-
+    nodecl = j.clients.osis.getCategory(j.core.osis.client, 'system', 'node')
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
     sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
     dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
@@ -112,6 +123,8 @@ def action():
             cs = cscl.get(cloudspace_id)
             net = vcl.virtualfirewall.get("%s_%s" % (cs.gid, cs.networkId))
             nid = net.nid
+            node = nodecl.get("%s_%s" % (net.gid, net.nid))
+            redis = get_node_redis(node)
             cloudspace.publicTX = get_last_hour_val(redis,
                 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
             cloudspace.publicRX = get_last_hour_val(redis,
