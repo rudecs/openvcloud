@@ -684,6 +684,15 @@ class CSLibvirtNodeDriver(object):
         info['ipaddress'] = self._get_connection_ip()
         return info
 
+    def ex_import(self, size, vmid, networkid, disks):
+        name = 'vm-%s' % vmid
+        volumes = []
+        for i, disk in enumerate(disks):
+            volume = OpenvStorageVolume(id='%s@%s' % (disk['path'], disk['guid']), name='N/A', size=disk['size'], driver=self)
+            volume.dev = 'vd%s' % convertnumber(i + 1)
+            volumes.append(volume)
+        return self._create_node(name, size, networkid=networkid, volumes=volumes)
+
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
         disks = []

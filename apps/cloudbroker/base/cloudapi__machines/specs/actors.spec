@@ -158,17 +158,30 @@
         var:basename str,, snapshot id on which the template is based @tags: optional
         result:bool, True if template was created
 
-#    method:export
-#        """
-#        Create an export/backup of the machine
-#        """
-#        var:machineId int,, id of the machine to backup
-#        var:name str,, useful name for this backup
-#        var:host str,, host to export(if s3)
-#        var:aws_access_key str,,s3 access key
-#        var:aws_secret_key str,,s3 secret key
-#        var:bucket str,,s3 bucket name
-#        result:jobid
+    method:importOVF
+        """
+        Import a machine from owncloud(ovf)
+        """
+        var:link str,, WebDav link to owncloud
+        var:username str,, WebDav Username
+        var:passwd str,, WebDav Password
+        var:path str,, Path to ovf file in WebDav share
+        var:cloudspaceId int,, id of the cloudspace in which the vm should be created
+        var:name str,,name of machine @tags validator:name
+        var:description str,,optional description @tags: optional
+        var:sizeId int,, the size id of the machine
+        var:callbackUrl str,, callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion. @optional
+
+    method:exportOVF
+        """
+        Export a machine with it's disks to owncloud(ovf)
+        """
+        var:link str,, WebDav link to owncloud
+        var:username str,, WebDav Username
+        var:passwd str,, WebDav Password
+        var:path str,, Path to ovf file in WebDav share
+        var:machineId int,, id of the machine to export
+        var:callbackUrl str,, callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion. @optional
 
     method:getConsoleUrl
         """
@@ -201,14 +214,6 @@
         var:machineId int,,id of the machine
         var:size int,, number of entries to return
         result:list, list of the history of the machine
-
-#    method:listExports
-#        """
-#        List exported images
-#        """
-#        var:machineId str,, id of the machine
-#        var:status str,, filter on specific status @tags: optional
-#        result:list, list of exports, each as a dict
 
     method:addUser
         """

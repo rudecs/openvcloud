@@ -193,12 +193,25 @@
 
 {% endif %}
 
-# - display: Export
-#   action: ./
-#   data:
-#    machineId: $$id
-#   input:
-#   - exportName
+# def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
+- display: Export
+  action: /restmachine/cloudapi/machines/exportOVF
+  reload: false
+  data:
+   machineId: $$id
+  input:
+  - name: link
+    label: Link to export machine to
+    type: text
+  - name: path
+    type: text
+    label: Path where the ovf should be stored
+  - name: username
+    label: Username of export server
+    type: text
+  - name: passwd
+    type: password
+    label: Password of the export server
 
 # - display: Restore
 #   action: ./

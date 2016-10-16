@@ -162,6 +162,7 @@ h2. Cloud Space: ${name}
 {% endif %}
 
 {{createmachine: cloudspaceId:$$id}}
+{{importmachine: cloudspaceId:$$id}}
 {{createportforwarding: cloudspaceId:$$id}}
 
 h3. Details
@@ -205,6 +206,7 @@ h3. Port Forwards
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
+{{action id:'importmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Import Virtual Machine'}}
 
 {{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
 - display: Start Machines

@@ -3,8 +3,12 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, enums, network
 from cloudbrokerlib.baseactor import BaseActor
+from CloudscalerLibcloud.utils import ovf
 import time
 import itertools
+import re
+import requests
+import gevent
 
 
 class RequireState(object):
@@ -265,6 +269,185 @@ class cloudapi_machines(BaseActor):
             self.models.stack.set(stack)
 
         return imageid
+
+    def _sendImportCompletionMail(self, emailaddress, link, success=True):
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs = [emailaddress]
+
+        args = {
+            'email': emailaddress,
+            'link': link,
+        }
+
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/import_completion.html', **args)
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/import_completion.subject.txt', **args)
+
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
+
+    def _sendExportCompletionMail(self, emailaddress, success=True):
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs = [emailaddress]
+
+        args = {
+            'email': emailaddress,
+        }
+
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.html', **args)
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.subject.txt', **args)
+
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
+
+    def syncImportOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user):
+        try:
+
+            userobj = j.core.portal.active.auth.getUserInfo(user)
+            cloudspace = self.models.cloudspace.get(cloudspaceId)
+
+            vm = self.models.vmachine.new()
+            vm.cloudspaceId = cloudspaceId
+
+            envelope = self.acl.execute('greenitglobe', 'cloudbroker_getenvelope',
+                                   gid=cloudspace.gid, role='storagedriver',
+                                   args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
+
+            machine = ovf.ovf_to_model(envelope)
+
+            vm.name = name
+            vm.descr = description
+            vm.sizeId = sizeId
+            vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Unknown').id
+            vm.creationTime = int(time.time())
+
+            totaldisksize = 0
+            bootdisk = None
+            for i, diskobj in enumerate(machine['disks']):
+                disk = self.models.disk.new()
+                disk.gid = cloudspace.gid
+                disk.order = i
+                disk.accountId = cloudspace.accountId
+                disk.type = 'B' if i == 0 else 'D'
+                disk.sizeMax = diskobj['size'] / 1024 / 1024 / 1024
+                totaldisksize += disk.sizeMax
+                diskid = self.models.disk.set(disk)[0]
+                disk.id = diskid
+                if i == 0:
+                    bootdisk = disk
+                vm.disks.append(diskid)
+                diskobj['id'] = diskid
+                diskobj['path'] = 'disk-%i.vmdk' % i
+            # Validate that enough resources are available in the CU limits to clone the machine
+            size = self.models.size.get(vm.sizeId)
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                       size.memory / 1024.0, totaldisksize)
+
+            vm.id = self.models.vmachine.set(vm)[0]
+            stack = self.cb.getBestProvider(cloudspace.gid, vm.imageId)
+            provider = self.cb.getProviderByStackId(stack['id'])
+
+            machine['id'] = vm.id
+
+            machine = self.acl.execute('greenitglobe', 'cloudbroker_import',
+                                       gid=cloudspace.gid, role='storagedriver',
+                                       timeout=3600,
+                                       args={'link': link,
+                                             'username': username,
+                                             'passwd': passwd,
+                                             'path': path,
+                                             'machine': machine})
+            try:
+                # TODO: custom disk sizes doesn't work
+                sizeobj = provider.getSize(size, bootdisk)
+                node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
+                self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
+            except:
+                self.cb.machine.cleanup(vm)
+                raise
+            if not callbackUrl:
+                url = j.apps.cloudapi.locations.getUrl() + '/g8vdc/#/edit/%s' % vm.id
+                [self._sendImportCompletionMail(email, url, success=True) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+        except:
+            if not callbackUrl:
+                [self._sendImportCompletionMail(email, '', success=False) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+            raise
+
+    def syncExportOVF(self, link, username, passwd, path, machineId, user, callbackUrl):
+        try:
+            userobj = j.core.portal.active.auth.getUserInfo(user)
+            provider, node, vm = self.cb.getProviderAndNode(machineId)
+            cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
+            disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
+            disknames = [disk['referenceId'].split('@')[0] for disk in disks]
+            size = self.models.size.get(vm.sizeId)
+            osname = self.models.image.get(vm.imageId).name
+            os = re.match('^[a-zA-Z]+', osname).group(0).lower()
+            envelope = ovf.model_to_ovf({
+                'name': vm.name,
+                'description': vm.descr,
+                'cpus': size.vcpus,
+                'mem': size.memory,
+                'os': os,
+                'osname': osname,
+                'disks': [{
+                    'name': 'disk-%i.vmdk' % i,
+                    'size': disk['sizeMax'] * 1024 * 1024 * 1024
+                } for i, disk in enumerate(disks)]
+            })
+            self.acl.execute('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
+                             args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
+            # TODO: the url to be sent to the user
+
+            if not callbackUrl:
+                [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+        except:
+            if not callbackUrl:
+                [self._sendExportCompletionMail(email, success=False) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+            raise
+
+    def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, **kwargs):
+        """
+        Import a machine from owncloud(ovf)
+        param:link WebDav link to owncloud
+        param:username WebDav Username
+        param:passwd WebDav Password
+        param:path Path to ovf file in WebDav share
+        param:cloudspaceId id of the cloudspace in which the vm should be created
+        param:name name of machine
+        param:description optional description
+        param:sizeId the size id of the machine
+        param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
+        """
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+
+        gevent.spawn(self.syncImportOVF, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user)
+
+    def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
+        """
+        Export a machine with it's disks to owncloud(ovf)
+        param:link WebDav link to owncloud
+        param:username WebDav Username
+        param:passwd WebDav Password
+        param:path Path to ovf file in WebDav share
+        param:machineId id of the machine to export
+        param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
+        """
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        gevent.spawn(self.syncExportOVF, link, username, passwd, path, machineId, user, callbackUrl)
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()
@@ -641,127 +824,6 @@ class cloudapi_machines(BaseActor):
         tags = str(machineId)
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
-
-    @authenticator.auth(acl={'machine': set('C')})
-    @audit()
-    def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
-        """
-        Create an export/backup of the machine
-
-        :param machineId: id of the machine to backup
-        :param name: useful name for this backup
-        :param host: host to export(if s3)
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :param bucket: s3 bucket name
-        :return: jobid
-        """
-        storageparameters = {}
-        if not aws_access_key or not aws_secret_key or not host:
-            raise exceptions.BadRequest('S3 parameters are not provided')
-        storageparameters['aws_access_key'] = aws_access_key
-        storageparameters['aws_secret_key'] = aws_secret_key
-        storageparameters['host'] = host
-        storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = 'S3'
-        storageparameters['backup_type'] = 'condensed'
-        storageparameters['bucket'] = bucket
-        storageparameters['mdbucketname'] = bucket
-        return self._export(machineId, name, host, storageparameters)
-
-    def _export(self, machineId, name, storageparameters, **kwargs):
-        """
-        Create a export/backup of a machine
-
-        :param machineId: id of the machine to backup
-        :param name: useful name for this backup
-        :param backuptype: Type e.g raw, condensed
-        :param host: host to export(if s3)
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :return jobid
-        """
-        machine = self.models.vmachine.get(machineId)
-        if not machine:
-            raise exceptions.NotFound('Machine %s not found' % machineId)
-        stack = self.models.stack.get(machine.stackId)
-
-        storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nid = int(stack.referenceId)
-        args = {'path': storagepath, 'name': name, 'machineId': machineId,
-                'storageparameters': storageparameters, 'nid': nid, 'backup_type': 'condensed'}
-        agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
-        return id
-
-    @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
-    def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
-        """
-        Restore export to a new machine
-
-        :param name: name of the machine
-        :param cloudspaceId: id of the export to backup
-        :param sizeId: id of the specific size
-        :param description: optional description
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :return jobid
-        """
-        vmexport = self.models.vmexport.get(vmexportId)
-        if not vmexport:
-            raise exceptions.NotFound('Export definition with id %s not found' % vmexportId)
-        host = vmexport.server
-        bucket = vmexport.bucket
-        import_name = vmexport.name
-
-        storageparameters = {}
-
-        if not aws_access_key or not aws_secret_key:
-            raise exceptions.BadRequest('S3 parameters are not provided')
-
-        storageparameters['aws_access_key'] = aws_access_key
-        storageparameters['aws_secret_key'] = aws_secret_key
-        storageparameters['host'] = host
-        storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = 'S3'
-        storageparameters['backup_type'] = 'condensed'
-        storageparameters['bucket'] = bucket
-        storageparameters['mdbucketname'] = bucket
-        storageparameters['import_name'] = import_name
-
-        args = {'name': name, 'cloudspaceId': cloudspaceId, 'vmexportId': vmexportId, 'sizeId': sizeId,
-                'description': description, 'storageparameters': storageparameters}
-
-        agentcontroller = j.clients.agentcontroller.get()
-
-        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
-        return id
-
-    @authenticator.auth(acl={'machine': set('R')})
-    @audit()
-    def listExports(self, machineId, status, **kwargs):
-        """
-        List exported images
-
-        :param machineId: id of the machine
-        :param status: filter on specific status
-        :return list of exports, each as a dict
-        """
-        query = {}
-        if status:
-            query['status'] = status
-        if machineId:
-            query['machineId'] = machineId
-        exports = self.models.vmexport.search(query)[1:]
-        exportresult = []
-        for exp in exports:
-            exportresult.append({'status': exp['status'], 'type': exp['type'], 'storagetype': exp['storagetype'],
-                                 'machineId': exp['machineId'], 'id': exp['id'], 'name': exp['name'],
-                                 'timestamp': exp['timestamp']})
-        return exportresult
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()

@@ -16,9 +16,9 @@ class cloudapi_images(BaseActor):
         """
         fields = ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountId:
-            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
+            q = {'referenceId': {'$ne': None}, 'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
         else:
-            q = {'status': 'CREATED', 'accountId': 0}
+            q = {'referenceId': {'$ne': None}, 'status': 'CREATED', 'accountId': 0}
         query = {'$query': q, '$fields': fields}
 
         if cloudspaceId:
@@ -82,3 +82,26 @@ class cloudapi_images(BaseActor):
 
         self.models.image.delete(imageId)
         return True
+
+    def get_or_create_by_name(self, name, add_to_all_stacks=True):
+        images = self.models.image.search({'name': name})
+        if images[0]:
+            image = self.models.image.new()
+            image.load(images[1])
+            return image
+        else:
+            image = self.models.image.new()
+            image.name = name
+            image.provider_name = 'libvirt'
+            image.size = 0
+            image.status = 'CREATED'
+            image.type = 'Linux'
+            imageid = self.models.image.set(image)[0]
+            image.id = imageid
+            if add_to_all_stacks:
+                # TODO: enhance
+                for stackid in self.models.stack.list():
+                    stack = self.models.stack.get(stackid)
+                    stack.images.append(imageid)
+                    self.models.stack.set(stack)
+            return image

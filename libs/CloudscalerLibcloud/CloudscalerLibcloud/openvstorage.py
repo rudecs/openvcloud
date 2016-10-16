@@ -60,6 +60,12 @@ def getEdgeconnection(vpoolname=VPOOLNAME):
     protocol = getEdgeProtocol()
     storagedrivers = list(StorageDriverList.get_storagedrivers())
     random.shuffle(storagedrivers)
+    if vpoolname is None:
+        if storagedrivers[0].vpool.name != VPOOLNAME:
+            storagedriver = storagedrivers[0]
+        else:
+            storagedriver = storagedrivers[1]
+        return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
     for storagedriver in storagedrivers:
         if storagedriver.vpool.name == vpoolname:
             return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
@@ -142,6 +148,21 @@ def copyImage(srcpath):
         truncate(getPath(templatepath))
     diskguid = setAsTemplate(templatepath)
     return diskguid, dest
+
+
+def importVolume(srcpath, destpath, data=False):
+    if data:
+        dest = getUrlPath(destpath, vpoolname=None)
+    else:
+        dest = getUrlPath(destpath, vpoolname=VPOOLNAME)
+    j.system.platform.qemu_img.convert(srcpath, None, dest.replace('://', ':', 1), 'raw')
+    disk = getVDisk(destpath, timeout=60)
+    return disk.guid, dest
+
+
+def exportVolume(srcpath, destpath):
+    j.system.platform.qemu_img.convert(srcpath.replace('://', ':', 1), None, destpath, 'vmdk')
+    return destpath
 
 
 def truncate(filepath, size=None):
