@@ -54,7 +54,7 @@ def get_redis_instance(stackId, stacks, port=9999):
     if stackId not in stacks:
         stacks[stackId] = scl.get(stackId)
     ip = urlparse.urlparse(stacks[stackId].apiUrl).hostname
-    redis = j.clients.redis.getRedisClient(ip[0], port)
+    redis = j.clients.redis.getRedisClient(ip, port)
     return redis, stacks[stackId]
 
 
@@ -72,7 +72,7 @@ def get_last_hour_val(redis, key):
 def get_node_redis(node, port=9999):
     for nicinfo in node.netaddr:
         if nicinfo['name'] == 'backplane1':
-            ip =  nicinfo['ip'][0]
+            ip = nicinfo['ip'][0]
             break
     else:
         return None
@@ -113,7 +113,7 @@ def action():
     cached_accounts = get_cached_accounts()
 
     for account_id, cloudspaces_dict in cached_accounts.items():
-        folder_name = "/opt/var/active/resourcetracking/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
+        folder_name = "/opt/jumpscale7/var/resourcetracking/active/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
         j.do.createDir(folder_name)
 
         for cloudspace_id, vms in cloudspaces_dict.items():
@@ -126,13 +126,13 @@ def action():
             node = nodecl.get("%s_%s" % (net.gid, net.nid))
             redis = get_node_redis(node)
             cloudspace.publicTX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                                                    'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
             cloudspace.publicRX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                                                    'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
             cloudspace.spaceRX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                                                   'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
             cloudspace.spaceTX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                                                   'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
 
             machines = cloudspace.init('machines', len(vms))
             for idx, (vm_id, machine_dict) in enumerate(vms.items()):
@@ -155,7 +155,7 @@ def action():
                 if machine_dict['status'] != "HALTED" and stack_id:
                     # get redis for this stack
                     redis, stack = get_redis_instance(stack_id, stacks)
-                    nid = stack['referenceId']
+                    nid = stack.referenceId
                     # get CPU
                     cpu_key = 'stats:{gid}_{nid}:machine.CPU.utilisation@virt.{vm_id}'.format(gid=gid, nid=nid, vm_id=vm_id)
                     cpu_consumption = get_last_hour_val(redis, cpu_key)

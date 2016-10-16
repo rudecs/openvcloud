@@ -45,6 +45,7 @@ def action(gid=None):
         jobs.append(agentcontroller.scheduleCmd(cmdcategory="greenitglobe",
                                                 cmdname="collect_account_data",
                                                 nid=None,
+                                                roles=['controller'],
                                                 gid=location["gid"],
                                                 wait=True))
 
@@ -62,7 +63,7 @@ def action(gid=None):
         for member in members:
             if member.name.endswith(".bin"):
                 accountid, year, month, day, hour = re.findall(
-                    "opt/var/resourcetracking/active/([\d]+)/([\d]+)/([\d]+)/([\d]+)/([\d]+)/", member.name)[0]
+                    "opt/jumpscale7/var/resourcetracking/active/([\d]+)/([\d]+)/([\d]+)/([\d]+)/([\d]+)/", member.name)[0]
                 if accountid in accounts:
                     if "%s/%s/%s/%s" % (year, month, day, hour) not in accounts[accountid]:
                         accounts[accountid] = {"%s/%s/%s/%s" % (year, month, day, hour): [member]}
@@ -73,7 +74,7 @@ def action(gid=None):
                     accounts[accountid] = {"%s/%s/%s/%s" % (year, month, day, hour): member}
 
         for account_id, dates in accounts.iteritems():
-            account = Account_capnp.new_message()
+            account = Account_capnp.Account.new_message()
 
             for i, val in enumerate(dates.iteritems()):
                 date, member = val
@@ -88,10 +89,10 @@ def action(gid=None):
                     binary_content = tar.extractfile(member).read()
                     fd.write(binary_content)
                     fd.seek(0)
-                    cloudspace_obj = Cloudspace_capnp.read(fd)
+                    cloudspace_obj = Cloudspace_capnp.Cloudspace.read(fd)
                     cloudspaces[i] = cloudspace_obj
                     fd.close()
-                    with open('/opt/var/resourcetracking/%s account_capnp.bin' % os.path.join(account_id,
+                    with open('/opt/jumpscale8/var/resourcetracking/%s/account_capnp.bin' % os.path.join(account_id,
                                                                                               year,
                                                                                               month,
                                                                                               day,
