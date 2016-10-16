@@ -21,25 +21,31 @@ async = True
 queue = 'process'
 log = False
 
-roles = ['cpunode']
+roles = ['controller']
 
 
 def get_cached_accounts():
     cached_accounts = {}
     accl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "account")
     vmcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "vmachine")
-    dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
     cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
     accounts_ids = accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']})[1:]
     for account_id in accounts_ids:
-        cloudspaces_ids = cscl.search({'$query': {'accountId': account_id['id'], 'status': {'$ne': 'DESTROYED', 'gid': j.application.whoAmI.gid}}, '$fields': ['id']})[1:]
+        cloudspaces_ids = cscl.search({'$query': {'accountId': account_id['id'], 'status': {'$ne': 'DESTROYED'}, 'gid': j.application.whoAmI.gid}, '$fields': ['id']})[1:]
         cached_accounts[account_id['id']] = {}
         for cloudspace_id in cloudspaces_ids:
             cached_accounts[account_id['id']][cloudspace_id['id']] = {}
-            vms = vmcl.search({'$query': {'cloudspaceId': cloudspace_id['id'], 'status':{'$ne': "DESTROYED"}}, '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId']})[1:]
+            vms = vmcl.search({'$query': {'cloudspaceId': cloudspace_id['id'],
+                                          'status': {'$ne': "DESTROYED"}},
+                               '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId']})[1:]
             for vm in vms:
-                cached_accounts[account_id['id']][cloudspace_id['id']][vm['id']] =\
-                    {'id': vm['id'], 'disks': vm['disks'], 'sizeId': vm['sizeId'], 'status': vm['status'], 'nics': vm['nics'], 'imageId': vm['imageId'], 'stackId': vm['stackId']}
+                cached_accounts[account_id['id']][cloudspace_id['id']][vm['id']] = {'id': vm['id'],
+                                                                                    'disks': vm['disks'],
+                                                                                    'sizeId': vm['sizeId'],
+                                                                                    'status': vm['status'],
+                                                                                    'nics': vm['nics'],
+                                                                                    'imageId': vm['imageId'],
+                                                                                    'stackId': vm['stackId']}
 
     return cached_accounts
 
@@ -53,14 +59,16 @@ def get_redis_instance(stackId, port='9999'):
         redis = j.clients.redis.getRedisClient(ip[0], port)
     return redis, stack
 
+
 def get_last_hour_val(redis, key):
     now = datetime.now()
     value = redis.get(key)
     if value:
         value = json.loads(value)
-    if (now - datetime.utcfromtimestamp(float(value['h_last_epoch']))).total_seconds()/(24*24) < 2:
+    if (now - datetime.utcfromtimestamp(float(value['h_last_epoch']))).total_seconds() / (24 * 24) < 2:
         return value['h_last']
     return 0
+
 
 def action():
     now = datetime.now()
@@ -104,7 +112,7 @@ def action():
                 disks_size = 0
                 tx_value = 0
                 rx_value = 0
-                exec("m = machines[%s]" % idx)
+                m = machines[idx]
                 stack_id = machine_dict.get('stackId', None)
                 # get Image name
                 image_name = images_dict.get(machine_dict['imageId'], "")
