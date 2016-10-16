@@ -91,7 +91,11 @@ def action(gid=None):
                     cloudspace_obj = Cloudspace_capnp.read(fd)
                     cloudspaces[i] = cloudspace_obj
                     fd.close()
-                    with open('/opt/var/resourcetracking/%s account_capnp.bin' % key, 'w+b') as f:
+                    with open('/opt/var/resourcetracking/%s account_capnp.bin' % os.path.join(account_id,
+                                                                                              year,
+                                                                                              month,
+                                                                                              day,
+                                                                                              hour), 'w+b') as f:
                         account.write(f)
         c.close()
 
