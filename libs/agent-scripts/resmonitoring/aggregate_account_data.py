@@ -3,7 +3,6 @@ import os
 import re
 import tarfile
 import cStringIO
-import capnp
 
 
 descr = """
@@ -31,6 +30,7 @@ def action(gid=None):
     Send tar of account data on  each enviroment
     """
     import CloudscalerLibcloud
+    import capnp
     agentcontroller = j.clients.agentcontroller.get()
     cbcl = j.clients.osis.getNamespace("cloudbroker")
     jobs = list()
@@ -86,11 +86,8 @@ def action(gid=None):
                     cloudspace_obj = Cloudspace_capnp.Cloudspace.read(fd)
                     cloudspaces[i] = cloudspace_obj
                     fd.close()
-                    with open('/opt/jumpscale8/var/resourcetracking/%s/account_capnp.bin' % os.path.join(account_id,
-                                                                                              year,
-                                                                                              month,
-                                                                                              day,
-                                                                                              hour), 'w+b') as f:
+                    filepath = '/opt/jumpscale8/var/resourcetracking/%s/account_capnp.bin'
+                    with open(filepath % os.path.join(account_id, year, month, day, hour), 'w+b') as f:
                         account.write(f)
         c.close()
 
