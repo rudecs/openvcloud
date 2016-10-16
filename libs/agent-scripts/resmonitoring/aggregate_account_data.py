@@ -23,7 +23,7 @@ async = True
 queue = 'process'
 log = False
 
-roles = []
+roles = ['master']
 
 
 def action(gid=None):
@@ -44,7 +44,7 @@ def action(gid=None):
     for location in cbcl.location.search({})[1:]:
         jobs.append(agentcontroller.scheduleCmd(cmdcategory="greenitglobe",
                                                 cmdname="collect_account_data",
-                                                nid=2,
+                                                nid=None,
                                                 gid=location["gid"],
                                                 wait=True))
 
@@ -91,7 +91,11 @@ def action(gid=None):
                     cloudspace_obj = Cloudspace_capnp.read(fd)
                     cloudspaces[i] = cloudspace_obj
                     fd.close()
-                    with open('/opt/var/resourcetracking/%s account_capnp.bin' % key, 'w+b') as f:
+                    with open('/opt/var/resourcetracking/%s account_capnp.bin' % os.path.join(account_id,
+                                                                                              year,
+                                                                                              month,
+                                                                                              day,
+                                                                                              hour), 'w+b') as f:
                         account.write(f)
         c.close()
 
