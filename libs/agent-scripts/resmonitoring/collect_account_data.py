@@ -42,7 +42,7 @@ def action():
         return content
 
     def move_to_collected(content):
-        fd = cStringIO .StringIO()
+        fd = cStringIO.StringIO()
         fd.write(content)
         fd.seek(0)
         with tarfile.open(mode="r", fileobj=fd) as tar:

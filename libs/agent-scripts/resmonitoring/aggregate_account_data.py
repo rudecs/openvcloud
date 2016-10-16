@@ -55,6 +55,8 @@ def action(gid=None):
 
         # read the tar.
         c = cStringIO.StringIO()
+        if result['state'] == 'ERROR':
+            raise RuntimeError("%s\n%s" % (result['result']['errormessage'], result['result']['errormessage']))
         c.write(result['result'])
         c.seek(0)
         tar = tarfile.open(mode="r", fileobj=c)
@@ -74,19 +76,25 @@ def action(gid=None):
             for member in members:
                 if member.name.endswith("bin"):
                     year, month, day, hour = date
-                    account.accountId = account_id
+                    account.accountId = int(account_id)
                     cloudspaces = account.init("cloudspaces", len(members))
 
                     # read the capnp file obj.
-                    fd = cStringIO.StringIO()
                     binary_content = tar.extractfile(member).read()
-                    fd.write(binary_content)
-                    fd.seek(0)
-                    cloudspace_obj = resources_capnp.Cloudspace.read(fd)
+                    cloudspace_obj = resources_capnp.CloudSpace.from_bytes(binary_content)
                     cloudspaces[i] = cloudspace_obj
-                    fd.close()
-                    filepath = '/opt/jumpscale8/var/resourcetracking/%s/account_capnp.bin'
-                    with open(filepath % os.path.join(account_id, year, month, day, hour), 'w+b') as f:
+                    filepath = '/opt/jumpscale7/var/resourcetracking/%s/' % os.path.join(account_id,
+                                                                                         year,
+                                                                                         month,
+                                                                                         day,
+                                                                                         hour)
+                    try:
+                        os.makedirs(filepath)
+                    except OSError as err:
+                        if err.errno != 17:
+                            raise err
+
+                    with open(os.path.join(filepath, "account_capnp.bin"), 'w+b') as f:
                         account.write(f)
         c.close()
 
