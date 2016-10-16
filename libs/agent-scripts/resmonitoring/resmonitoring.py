@@ -77,13 +77,14 @@ def action():
     day = now.day
     year = now.year
     capnp.remove_import_hook()
-    cloudspace_capnp = capnp.load('cloudspace.capnp')
+    cloudspace_capnp = capnp.load('../../CloudscalerLibcloud/CloudscalerLibcloud/schemas/space.capnp')
     # redis = j.clients.redis.getByInstance('system')
 
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
     sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
     dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
-
+    cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
+    vcl =  j.clients.osis.getNamespace('vfw')
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
     sizes_list = sizescl.search({'$fields': ['id', 'memory']})[1:]
     sizes_dict = {}
@@ -98,13 +99,25 @@ def action():
     cached_accounts = get_cached_accounts()
 
     for account_id, cloudspaces_dict in cached_accounts.items():
-        folder_name = "/opt/var/active/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
+        folder_name = "/opt/var/active/resourcetracking/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
         j.do.createDir(folder_name)
 
         for cloudspace_id, vms in cloudspaces_dict.items():
             cloudspace = cloudspace_capnp.CloudSpace.new_message()
             cloudspace.accountId = account_id
             cloudspace.cloudSpaceId = cloudspace_id
+            cs = cscl.get(cloudspace_id)
+            net = vcl.virtualfirewall.get("%s_%s" % (cs.gid, cs.networkId))
+            nid = net.nid
+            cloudspace.publicTX = get_last_hour_val(
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            cloudspace.publicRX = get_last_hour_val(
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            cloudspace.spaceRX = get_last_hour_val(
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            cloudspace.spaceTX = get_last_hour_val(
+                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+
             machines = cloudspace.init('machines', len(vms))
             for idx, (vm_id, machine_dict) in enumerate(vms.items()):
                 iops_read = 0
