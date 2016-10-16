@@ -100,11 +100,13 @@ def action():
     cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
     vcl = j.clients.osis.getNamespace('vfw')
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
-    sizes_list = sizescl.search({'$fields': ['id', 'memory']})[1:]
-    sizes_dict = {}
+    sizes_list = sizescl.search({'$fields': ['id', 'memory', 'vcpus']})[1:]
+    mem_dict = {}
     images_dict = {}
+    cpu_dict = {}
     for size in sizes_list:
-        sizes_dict[size['id']] = size['memory']
+        mem_dict[size['id']] = size['memory']
+        cpu_dict[size['id']] = size['vcpus']
     for image in images_list:
         images_dict[image['id']] = image['name']
 
@@ -151,12 +153,8 @@ def action():
                 # get Image name
                 image_name = images_dict.get(machine_dict['imageId'], "")
                 # get mem size
-                memory_consumption = sizes_dict[machine_dict['sizeId']]
-                # # calculate disk size
-                # disks = dcl.search({'id': {'$in': machine_dict['disks']}})[1:]
-                # for disk in disks:
-                #     disks_size += disk['sizeMax']
-
+                memory_consumption = mem_dict[machine_dict['sizeId']]
+                vcpus = cpu_dict[machine_dict['sizeId']]
                 if machine_dict['status'] != "HALTED" and stack_id:
                     # get redis for this stack
                     redis, stack = get_redis_instance(stack_id, stacks)
@@ -192,6 +190,7 @@ def action():
                     m.cpuMinutes = 0
                 m.imageName = image_name
                 m.mem = memory_consumption
+                m.vcpus = vcpus
                 m.status = machine_dict['status']
                 # write files to disk
             with open("%s/%s.bin" % (folder_name, cloudspace_id), "w+b") as f:
