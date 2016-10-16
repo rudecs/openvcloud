@@ -88,7 +88,6 @@ class CloudBroker(object):
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
         self.agentcontroller = j.clients.agentcontroller.get()
 
-
     @property
     def actors(self):
         if not self._actors:
@@ -421,6 +420,7 @@ class CloudBroker(object):
         if maxVDiskCapacity is not None and maxVDiskCapacity != -1 and maxVDiskCapacity < 10:
             raise exceptions.BadRequest("Minimum disk capacity for cloudspace is 10GB.")
 
+
 class CloudSpace(object):
     def __init__(self, cb):
         self.cb = cb
@@ -446,9 +446,9 @@ class CloudSpace(object):
         if cloudspace.networkId and releasenetwork:
             self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
             cloudspace.networkId = None
-        if cloudspace.publicipaddress:
-            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
-            cloudspace.publicipaddress = None
+        if cloudspace.externalnetworkip:
+            self.network.releaseExternalIpAddress(cloudspace.externalnetworkId, cloudspace.externalnetworkip)
+            cloudspace.externalnetworkip = None
         return cloudspace
 
 
@@ -528,14 +528,18 @@ class Machine(object):
             diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
-        if image.type == 'Custom Templates':
+        if hasattr(image, 'username') and image.username:
+            account.login = image.username
+        elif image.type != 'Custom Templates':
+            account.login = 'cloudscalers'
+        else:
             account.login = 'Custom login'
             account.password = 'Custom password'
-        else:
-            if hasattr(image, 'username') and image.username:
-                account.login = image.username
-            else:
-                account.login = 'cloudscalers'
+
+        if hasattr(image, 'password') and image.password:
+            account.password = image.password
+
+        if not account.password:
             length = 6
             chars = removeConfusingChars(string.letters + string.digits)
             letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]

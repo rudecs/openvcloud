@@ -171,9 +171,9 @@ h3. Details
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
-|*Location*|${location}|
+|*Location Code*|${location}|
 |*Description*|${descr}|
-|*Public IP Adress*|${publicipaddress}|
+|*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|
 
 h3. Cloud Resource Limits
 

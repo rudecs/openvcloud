@@ -24,7 +24,7 @@ def action(machineid, disks, iops):
     for diskurl in disks:
         dev = connection.get_domain_disk(diskurl, domaindisks)
         if dev:
-            j.system.process.execute('virsh blkdeviotune %s %s --total_iops_sec %s' % (machineid, dev, iops))
+            j.system.process.execute('virsh blkdeviotune %s %s --total_iops_sec %s --config --live' % (machineid, dev, iops))
 
     return True
 

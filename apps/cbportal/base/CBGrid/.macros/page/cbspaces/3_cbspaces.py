@@ -7,7 +7,7 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Location', 'Status', 'Public IP Address']
+    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Location Code', 'Status', 'External IP Address']
 
     def makeNetworkLink(row, field):
         if row[field]:
@@ -15,11 +15,17 @@ def main(j, args, params, tags, tasklet):
         else:
             return ''
 
-    fieldids = ['id', 'name', 'accountId', 'networkId', 'location', 'status', 'publicipaddress']
-    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name', 
-                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]', 
+    def makeExternalNetworkLink(row, field):
+        if row[field]:
+            return '[%(externalnetworkip)s|/CBGrid/External Network?networkid=%(externalnetworkId)s]' % row
+        else:
+            return ''
+
+    fieldids = ['id', 'name', 'accountId', 'networkId', 'location', 'status', 'externalnetworkip']
+    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name',
+                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]',
                    makeNetworkLink, 'location', 'status',
-                   'publicipaddress']
+                   makeExternalNetworkLink]
     tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')

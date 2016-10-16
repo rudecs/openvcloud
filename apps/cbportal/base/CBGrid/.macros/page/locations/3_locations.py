@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
             val = ', '.join(val)
         filters[tag] = val
 
-    fieldnames = ['GID', 'Name', 'LocationCode']
+    fieldnames = ['GID', 'Name', 'Location Code']
 
     fieldids = ['gid', 'name', 'flag', 'locationCode']
     fieldvalues = ['[%(gid)s|/CBGrid/grid?gid=%(gid)s]', 'name', 'locationCode']

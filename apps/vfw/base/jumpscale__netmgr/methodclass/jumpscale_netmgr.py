@@ -27,20 +27,10 @@ class jumpscale_netmgr(j.code.classGetBase()):
     def get_ovs_connection(self, gid):
         cachekey = 'ovs_connection_{}'.format(gid)
         if cachekey not in self._ovsdata:
-            ips = []
-            addresses = self.nodeclient.search({'$query': {'roles': 'storagedriver',
-                                                           'netaddr.name': 'backplane1',
-                                                           'gid': gid},
-                                                '$fields': ['netaddr']})[1:]
-            for nodeaddresses in addresses:
-                for nodeaddress in nodeaddresses['netaddr']:
-                    if nodeaddress['name'] == 'backplane1':
-                        ips.extend(nodeaddress['ip'])
-
-            credentials = self.get_ovs_credentials(gid)
-            connection = {'ips': ips,
-                          'client_id': credentials['client_id'],
-                          'client_secret': credentials['client_secret']}
+            ovs_credentials = self.get_ovs_credentials(gid)
+            connection = {'ips': ovs_credentials['ips'],
+                          'client_id': ovs_credentials['client_id'],
+                          'client_secret': ovs_credentials['client_secret']}
             self._ovsdata[cachekey] = connection
         return self._ovsdata[cachekey]
 
@@ -53,7 +43,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
-    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, **kwargs):
+    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, vlan, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)
         param:gid grid id
@@ -77,6 +67,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'password': password,
                     'publicip': publicip,
                     'publicgwip': publicgwip,
+                    'vlan': vlan,
                     'publiccidr': publiccidr,
                     }
             job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_create_routeros', roles=['fw'], gid=gid, args=args, queue='default', wait=True)

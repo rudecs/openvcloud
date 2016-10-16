@@ -8,21 +8,23 @@
         """
         result:boolean
 
-    method:addPublicIPv4Subnet
+    method:addExternalNetwork
         """
-        Adds a public network range to be used for cloudspaces
+        Adds a external network range to be used for cloudspaces
         """
+        var:name str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
         var:gateway str,, gateway of the subnet
         var:startip str,, First IP Address from the range to add
         var:endip str,, Last IP Address from the range to add
         var:gid int,, id of grid
+        var:vlan int,,VLAN Tag @optional
 
-    method:addPublicIPv4IPS
+    method:addExternalIPS
         """
         Adds a public network range to be used for cloudspaces
         """
-        var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
+        var:externalnetworkId int,, the id of the external network
         var:startip str,, First IP Address from the range to add
         var:endip str,, Last IP Address from the range to add
 
@@ -41,7 +43,13 @@
         var:name str,, Name of the size
         var:vcpus int,,Number of vcpus
         var:memory int,,Memory in MB
-        var:disksize int,,Size of bootdisk in GB
+        var:disksize str,,Size of bootdisk in GB
+
+    method:deleteSize
+        """
+        Deletes unused size from location
+        """
+        var:size_id int,, Id of size to be deleted
 
     method:removePublicIPv4IPS
         """

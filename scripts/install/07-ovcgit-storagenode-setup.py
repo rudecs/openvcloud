@@ -154,9 +154,11 @@ for storagetype in options.type:
 if 'storagedriver' in options.type:
     client = nodeService.actions.getSSHClient(nodeService)
     if client.file_exists('/etc/init/ovs-webapp-api.conf'):
-        temp = j.atyourservice.new(name='autossh', instance='http_proxy_ovs', args=data_autossh, parent=nodeService)
-        temp.consume('node', nodeService.instance)
-        temp.install(deps=True)
+        if autossh:
+            temp = j.atyourservice.new(name='autossh', instance='http_proxy_ovs', args=data_autossh, parent=nodeService)
+            temp.consume('node', nodeService.instance)
+            temp.install(deps=True)
+
         nodeService.execute("python /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py")
 
         # loading ovc_master oauth server keys

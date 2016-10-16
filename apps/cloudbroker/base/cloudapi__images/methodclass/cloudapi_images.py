@@ -27,7 +27,7 @@ class cloudapi_images(BaseActor):
                 stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
                 imageids = set()
                 for stack in stacks:
-                    imageids.update(stack['images'])
+                    imageids.update(stack.get('images', []))
                 if len(imageids) > 0:
                     q['id'] = {'$in': list(imageids)}
 

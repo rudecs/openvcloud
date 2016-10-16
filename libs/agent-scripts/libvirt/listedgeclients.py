@@ -25,8 +25,22 @@ def action(ovs_connection):
     #         'edgeport': 26202,
     #         'storagerouterguid': '....',
     #         'vpool_guid': '....',
-    #         'vpool': 'vmstor'
+    #         'vpool': 'vmstor',
+    #         'protocol': 'tcp'
     #        }, ...]
+
+
+    # TODO: This information should come from the OVS restapi's.
+    rdma = None
+    for ip in ovs_connection['ips']:
+        con = j.remote.cuisine.connect(ip, 22)
+        try:
+            rdma = con.run("python -c \"import sys; sys.path.append('/opt/OpenvStorage'); from ovs.extensions.generic.configuration import Configuration; print Configuration.get('/ovs/framework/rdma')\"") == 'True'
+            break
+        except Exception, e:
+            j.logger.log("Failed to get storage transport protocol:\n\n{}".format(str(e)))
+    protocol = "rdma" if rdma else "tcp"
+
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
@@ -40,13 +54,15 @@ def action(ovs_connection):
 
     # Then list the storage drivers
     edgeclients = list()
-    result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter'})
+    result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter,vdisks_guids'})
     for storagedriver in result['data']:
         edgeclients.append(dict(storageip=storagedriver['storage_ip'],
                                 edgeport=storagedriver['ports']['edge'],
                                 storagerouterguid=storagedriver['storagerouter_guid'],
                                 vpoolguid=storagedriver['vpool_guid'],
-                                vpool=vpools[storagedriver['vpool_guid']]))
+                                vpool=vpools[storagedriver['vpool_guid']],
+                                vdiskcount=len(storagedriver['vdisks_guids']),
+                                protocol=protocol))
 
     return edgeclients
 

@@ -45,7 +45,7 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
 
     # Then resize to the correct size
     path = "/vdisks/{}/extend".format(diskguid)
-    params = dict(new_size=size * 1000**3)
+    params = dict(new_size=size * 1024**3)
     taskguid = ovs.post(path, data=json.dumps(params))
     success, result = ovs.wait_for_task(taskguid)
 

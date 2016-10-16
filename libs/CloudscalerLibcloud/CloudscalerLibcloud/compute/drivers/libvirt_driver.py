@@ -17,10 +17,18 @@ baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
 
 
+class LibvirtState:
+    RUNNING = 1
+    HALTED = 5
+
+
 class StorageException(Exception):
     def __init__(self, msg, e):
         super(StorageException, self).__init__(msg)
         self.origexception = e
+
+    def __str__(self):
+        return "{}, {}".format(self.message, self.origexception)
 
 
 def convertnumber(number):
@@ -54,6 +62,7 @@ class NetworkInterface(object):
 
 class OpenvStorageVolume(StorageVolume):
     def __init__(self, *args, **kwargs):
+        self.iops = kwargs.pop('iops', 0)
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
         vdiskid, _, vdiskguid = self.id.partition('@')
         url = urlparse.urlparse(vdiskid)
@@ -100,8 +109,6 @@ def OpenvStorageVolumeFromXML(disk, driver):
 
 class CSLibvirtNodeDriver(object):
 
-    _roundrobinstoragedriver = {'next': 0, 'edgeclienttime': 0}
-    _edgeclients = []
     _ovsdata = {}
     _edgenodes = {}
     type = 'CSLibvirt'
@@ -141,17 +148,7 @@ class CSLibvirtNodeDriver(object):
     def ovs_connection(self):
         cachekey = 'ovs_connection_{}'.format(self.gid)
         if cachekey not in self._ovsdata:
-            ips = []
-            addresses = self.scl.node.search({'$query': {'roles': 'storagedriver',
-                                                         'netaddr.name': 'backplane1',
-                                                         'gid': self.gid},
-                                              '$fields': ['netaddr']})[1:]
-            for nodeaddresses in addresses:
-                for nodeaddress in nodeaddresses['netaddr']:
-                    if nodeaddress['name'] == 'backplane1':
-                        ips.extend(nodeaddress['ip'])
-
-            connection = {'ips': ips,
+            connection = {'ips': self.ovs_credentials['ips'],
                           'client_id': self.ovs_credentials['client_id'],
                           'client_secret': self.ovs_credentials['client_secret']}
             self._ovsdata[cachekey] = connection
@@ -168,47 +165,45 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def edgeclients(self):
-        if self._roundrobinstoragedriver['edgeclienttime'] < time.time() - 60:
-            edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
+        edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
 
-            activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
+        activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
 
-            def filter_clients(client):
-                node = self._edgenodes.get(client['storageip'])
+        def filter_clients(client):
+            node = self._edgenodes.get(client['storageip'])
+            if node is None:
+                node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
                 if node is None:
-                    node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
-                    if node is None:
-                        return False
-                    else:
-                        self._edgenodes[client['storageip']] = node
-                client['nid'] = node['id']
-                if (node['gid'], node['id']) not in activesessions:
                     return False
-                return True
+                else:
+                    self._edgenodes[client['storageip']] = node
+            client['nid'] = node['id']
+            if (node['gid'], node['id']) not in activesessions:
+                return False
+            return True
 
-            self._edgeclients[:] = filter(filter_clients, edgeclients)
-            self._roundrobinstoragedriver['edgeclienttime'] = time.time()
-        return self._edgeclients
+        return filter(filter_clients, edgeclients)
 
-    def getNextEdgeClient(self, vpool=None):
-        self._roundrobinstoragedriver['next'] += 1
-        rndrbn = self._roundrobinstoragedriver['next']
-        clients = self.edgeclients[:]
-        if vpool:
-            clients = filter(lambda x: x['vpool'] == vpool, clients)
-        else:
-            vpools = set(client['vpool'] for client in clients)
-            if len(vpools) > 1 and 'vmstor' in vpools:
-                vpools.remove('vmstor')
-                clients = filter(lambda x: x['vpool'] in vpools, clients)
+    def getNextEdgeClient(self, vpool, edgeclients=None):
+        clients = edgeclients or self.edgeclients[:]
+        clients = filter(lambda x: x['vpool'] == vpool, clients)
+        return sorted(clients, key=lambda client: client['vdiskcount'])[0]
 
-        return clients[rndrbn % len(clients)]
+    def getEdgeClientFromVolume(self, volume):
+        edgeclients = self.edgeclients[:]
+        for edgeclient in edgeclients:
+            if volume.edgehost == edgeclient['storageip'] and volume.edgeport == edgeclient['edgeport']:
+                return edgeclient, edgeclients
 
-    def getEdgeClientByVpoolAndStorageRouter(self, vpoolguid, storagerouterguid):
-        for edgeclient in self.edgeclients:
-            if edgeclient['vpoolguid'] == vpoolguid and storagerouterguid == edgeclient['storagerouterguid']:
-                return edgeclient
-        raise ValueError("Could not find EdgeClient")
+    def getBestDataVpool(self):
+        edgeclients = self.edgeclients[:]
+        diskspervpool = {}
+        for edgeclient in edgeclients:
+            diskspervpool[edgeclient['vpool']] = diskspervpool.setdefault(edgeclient['vpool'], 0) + edgeclient['vdiskcount']
+        if len(diskspervpool) > 1:
+            diskspervpool.pop('vmstor', None)
+        # get vpool with least vdiskcount
+        return sorted(diskspervpool.items(), key=lambda vpool: vpool[1])[0][0], edgeclients
 
     def set_backend(self, connection):
         """
@@ -310,7 +305,8 @@ class CSLibvirtNodeDriver(object):
     def create_volumes(self, volumes):
         stvolumes = []
         for volume in volumes:
-            edgeclient = self.getNextEdgeClient()
+            vpoolname, edgeclients = self.getBestDataVpool()
+            edgeclient = self.getNextEdgeClient(vpoolname, edgeclients)
             diskname = 'volumes/volume_{}'.format(volume['name'])
             kwargs = {'ovs_connection': self.ovs_connection,
                       'vpoolguid': edgeclient['vpoolguid'],
@@ -353,22 +349,27 @@ class CSLibvirtNodeDriver(object):
     def destroy_volume(self, volume):
         return self.destroy_volumes_by_guid([volume.vdiskguid])
 
-    def detach_volume(self, volume):
-        node = volume.extra['node']
-        xml = self._get_persistent_xml(node)
-        dom = ElementTree.fromstring(xml)
-        devices = dom.find('devices')
-        domxml = None
-
+    def get_volume_from_xml(self, xmldom, volume):
+        devices = xmldom.find('devices')
         for disk in devices.iterfind('disk'):
             if disk.attrib['device'] != 'disk':
                 continue
             source = disk.find('source')
             if source.attrib.get('dev', source.attrib.get('name')) == volume.name:
-                diskxml = ElementTree.tostring(disk)
-                self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
-                devices.remove(disk)
-                domxml = ElementTree.tostring(dom)
+                return devices, disk
+        return None, None
+
+    def detach_volume(self, volume):
+        node = volume.extra['node']
+        xml = self._get_persistent_xml(node)
+        dom = ElementTree.fromstring(xml)
+        domxml = None
+        devices, disk = self.get_volume_from_xml(dom, volume)
+        if disk is not None:
+            diskxml = ElementTree.tostring(disk)
+            self._execute_agent_job('detach_device', queue='hypervisor', xml=diskxml, machineid=node.id)
+            devices.remove(disk)
+            domxml = ElementTree.tostring(dom)
         if domxml:
             return self._update_node(node, domxml)
         return node
@@ -548,8 +549,8 @@ class CSLibvirtNodeDriver(object):
         return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
     def ex_rollback_snapshot(self, node, timestamp):
-        diskpaths = self._get_volume_paths(node)
-        kwargs = {'diskpaths': diskpaths, 'timestamp': timestamp}
+        diskguids = self._get_volume_paths(node)
+        kwargs = {'diskguids': diskguids, 'timestamp': timestamp, 'ovs_connection': self.ovs_connection}
         return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
@@ -589,11 +590,22 @@ class CSLibvirtNodeDriver(object):
 
     def ex_limitio(self, volume, iops):
         node = volume.extra['node']
-        return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
+        xmldom = ElementTree.fromstring(self._get_persistent_xml(node))
+        devices, disk = self.get_volume_from_xml(xmldom, volume)
+        volume.dev = disk.find('target').attrib['dev']
+        devices.remove(disk)
+        devices.append(ElementTree.fromstring(str(volume)))
+        self._set_persistent_xml(node, ElementTree.tostring(xmldom))
+
+        if node.state == LibvirtState.RUNNING:
+            return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
 
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
-        self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        try:
+            self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
+        except RuntimeError as rError:
+            j.errorconditionhandler.processPythonExceptionObject(rError, message="Failed to delete disks may be they are deleted from the storage node")
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
@@ -675,14 +687,14 @@ class CSLibvirtNodeDriver(object):
     def ex_clone(self, node, size, vmid, networkid, diskmapping):
         name = 'vm-%s' % vmid
         disks = []
+        diskvpool = {}
         for volume, diskname in diskmapping:
-            if diskname.startswith('vm'):
-                edgeclient = self.getNextEdgeClient('vmstor')
-            else:
-                edgeclient = self.getNextEdgeClient()
+            source_edgeclient, edgeclients = self.getEdgeClientFromVolume(volume)
+            edgeclient = self.getNextEdgeClient(source_edgeclient['vpool'], edgeclients)
             diskinfo = {'clone_name': diskname,
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
+            diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
 
         kwargs = {'ovs_connection': self.ovs_connection, 'disks': disks}
@@ -690,7 +702,7 @@ class CSLibvirtNodeDriver(object):
         volumes = []
         for idx, diskinfo in enumerate(disks):
             newdiskguid, vpoolguid = newdisks[idx]
-            edgeclient = self.getEdgeClientByVpoolAndStorageRouter(vpoolguid, diskinfo['storagerouterguid'])
+            edgeclient = diskvpool[diskinfo['diskguid']]
             volumeid = self.getVolumeId(newdiskguid, edgeclient, diskinfo['clone_name'])
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
@@ -788,15 +800,16 @@ class CSLibvirtNodeDriver(object):
         """
         return False
 
-    def attach_public_network(self, node):
+    def attach_public_network(self, node, vlan):
         """
         Attach Virtual machine to the cpu node public network
         """
         macaddress = self.backendconnection.getMacAddress(self.gid)
         iface = ElementTree.Element('interface')
         iface.attrib['type'] = 'network'
-        target = '%s-pub' % node.name
-        ElementTree.SubElement(iface, 'source').attrib = {'network': 'public'}
+        target = '%s-ext' % (node.name)
+        bridgename = self._execute_agent_job('create_external_network', queue='hypervisor', vlan=vlan)
+        ElementTree.SubElement(iface, 'source').attrib = {'network': bridgename}
         ElementTree.SubElement(iface, 'mac').attrib = {'address': macaddress}
         ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
@@ -810,12 +823,12 @@ class CSLibvirtNodeDriver(object):
         self._update_node(node, domxml)
         return NetworkInterface(mac=macaddress, target=target, type='bridge')
 
-    def detach_public_network(self, node, networkid):
+    def detach_public_network(self, node):
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
         interfacexml = None
-        targetname = '%s-pub' % node.name
+        targetname = '%s-ext' % node.name
         for interface in devices.iterfind('interface'):
             target = interface.find('target')
             if target.attrib['dev'] == targetname:
@@ -833,7 +846,7 @@ class CSLibvirtNodeDriver(object):
         memory = dom.find('memory')
         if dom.find('currentMemory') is not None:
             dom.remove(dom.find('currentMemory'))
-        memory.text = str(size.ram * 1024)
+        memory.text = str(size.ram)
         vcpu = dom.find('vcpu')
         vcpu.text = str(size.extra['vcpus'])
         xml = ElementTree.tostring(dom)

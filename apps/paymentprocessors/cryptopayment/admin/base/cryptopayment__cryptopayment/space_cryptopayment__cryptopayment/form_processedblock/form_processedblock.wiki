@@ -1,5 +1,0 @@
-
-h2. processedblock
-
-{{form_cryptopayment_processedblock}}
-
