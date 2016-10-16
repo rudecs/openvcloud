@@ -23,7 +23,7 @@ async = True
 queue = 'process'
 log = False
 
-roles = []
+roles = ['master']
 
 
 def action(gid=None):
@@ -44,7 +44,7 @@ def action(gid=None):
     for location in cbcl.location.search({})[1:]:
         jobs.append(agentcontroller.scheduleCmd(cmdcategory="greenitglobe",
                                                 cmdname="collect_account_data",
-                                                nid=2,
+                                                nid=None,
                                                 gid=location["gid"],
                                                 wait=True))
 
