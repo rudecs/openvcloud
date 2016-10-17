@@ -85,7 +85,6 @@
    * [Decommission a Node](Sysadmin/Decommission/decommission_node.md)
    * [Moving Virtual Machines to Another CPU Node](Sysadmin/MovingVM/moving_vms.md)
    * [Configure Network Devices](Sysadmin/ConfigureNetworkDevices/configure_network_devices.md)
-   * [Configure Network Functions](Sysadmin/ConfigureNetworkFunctions/configure_network_functions.md)
    * [Backend Encryption](Sysadmin/BackendEncryption/backend_encryption.md)
 * [Testing](Testing/Testing.md)
 * [Branding](Branding/Branding.md)

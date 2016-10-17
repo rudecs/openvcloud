@@ -10,5 +10,4 @@
 * [Decommission a Node](Decommission/decommission_node.md)
 * [Moving Virtual Machines to Another CPU Node](MovingVM/moving_vms.md)
 * [Configure Network Devices](ConfigureNetworkDevices/configure_network_devices.md)
-* [Configure Network Functions](ConfigureNetworkFunctions/configure_network_functions.md)
 * [Backend Encryption](BackendEncryption/backend_encryption.md)
