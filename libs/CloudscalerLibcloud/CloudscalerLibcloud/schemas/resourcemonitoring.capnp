@@ -4,10 +4,6 @@ struct CloudSpace {
   accountId @1 :Int32;
   machines @2 :List(VMachine);
   state @3 :Text;
-  publicTX @4 :Float32;
-  publicRX @5 :Float32;
-  spaceRX @6 :Float32;
-  spaceTX @7 :Float32;
   struct VMachine {
     id @0 :Int32;
     type @1 :Text;

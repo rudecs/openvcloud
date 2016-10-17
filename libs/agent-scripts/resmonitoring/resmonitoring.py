@@ -2,6 +2,7 @@ from JumpScale import j
 from datetime import datetime
 import json
 import urlparse
+import itertools
 
 descr = """
 Collects resources
@@ -26,50 +27,70 @@ def get_cached_accounts():
     cached_accounts = {}
     accl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "account")
     vmcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "vmachine")
+    dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
     cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
-    accounts_ids = accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']})[1:]
-    for account_id in accounts_ids:
-        cloudspaces_ids = cscl.search({'$query': {'accountId': account_id['id'], 'status': {'$ne': 'DESTROYED'}, 'gid': j.application.whoAmI.gid}, '$fields': ['id']})[1:]
-        cached_accounts[account_id['id']] = {}
-        for cloudspace_id in cloudspaces_ids:
-            cached_accounts[account_id['id']][cloudspace_id['id']] = {}
-            vms = vmcl.search({'$query': {'cloudspaceId': cloudspace_id['id'],
-                                          'status': {'$ne': "DESTROYED"}},
-                               '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId']})[1:]
-            for vm in vms:
-                cached_accounts[account_id['id']][cloudspace_id['id']][vm['id']] = {'id': vm['id'],
-                                                                                    'disks': vm['disks'],
-                                                                                    'sizeId': vm['sizeId'],
-                                                                                    'status': vm['status'],
-                                                                                    'nics': vm['nics'],
-                                                                                    'imageId': vm['imageId'],
-                                                                                    'stackId': vm['stackId']}
+
+    def get_ids(obj):
+        return obj['id']
+
+    accounts_ids = map(get_ids, accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']})[1:])
+    cloudspaces = cscl.search({'$query': {'accountId': {'$in': accounts_ids}, 'status': {'$ne': 'DESTROYED'}, 'gid': j.application.whoAmI.gid},
+                               '$fields': ['id', 'accountId', 'status', 'gid', 'networkId']}, size=0)[1:]
+    vms = vmcl.search({'$query': {'cloudspaceId': {'$in': map(get_ids, cloudspaces)},
+                                  'status': {'$ne': "DESTROYED"}},
+                       '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId', 'cloudspaceId']}, size=0)[1:]
+    diskids = []
+    for vm in vms:
+        diskids.extend(vm['disks'])
+    disks = {disk['id']: disk['sizeMax'] for disk in dcl.search({'$query': {'id': {'$in': [diskids]}},
+                                                                 '$fields': ['id', 'sizeMax']},
+                                                                size=0)[1:]}
+    spacesperaccount = itertools.groupby(cloudspaces, lambda space: space['accountId'])
+    vmsperspace = dict(itertools.groupby(vms, lambda vm: vm['cloudspaceId']))
+    for accountid, spaces in spacesperaccount:
+        for space in spaces:
+            space = cached_accounts.setdefault(accountid, {}).setdefault(space['id'], space)
+            space['vms'] = []
+            for vm in vmsperspace.get(space['id'], []):
+                vmdisks = []
+                for diskid in vm['disks']:
+                    disk = disks.get(diskid)
+                    if disk:
+                        vmdisks.append(disk)
+                vm['disks'] = vmdisks
+                space['vms'].append(vm)
 
     return cached_accounts
 
 
-def get_redis_instance(stackId, stacks, port=9999):
-    scl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "stack")
-    if stackId not in stacks:
-        stacks[stackId] = scl.get(stackId)
-    ip = urlparse.urlparse(stacks[stackId].apiUrl).hostname
-    redis = j.clients.redis.getRedisClient(ip, port)
-    return redis, stacks[stackId]
+def get_redis_instance(stack, redisstacks, port=9999):
+    stackId = stack['id']
+    if stackId not in redisstacks:
+        ip = urlparse.urlparse(stack['apiUrl']).hostname
+        redis = j.clients.redis.getRedisClient(ip, port)
+        redisstacks[stackId] = redis
+    return redisstacks[stackId]
 
 
 def get_last_hour_val(redis, key, property='h_last'):
+    return get_val(redis, key).get(property, 0)
+
+
+def get_val(redis, key):
+    if redis is None:
+        return {}
     now = datetime.utcnow()
     value = redis.get(key)
     if value:
         value = json.loads(value)
         if value.get('h_last_epoch', 0):
             if (now - datetime.utcfromtimestamp(float(value['h_last_epoch']))).total_seconds() / (60 * 60) < 2:
-                return value.get(property, 0)
-    return 0
+                return value
+    return {}
 
 
 def get_node_redis(node, port=9999):
-    for nicinfo in node.netaddr:
+    for nicinfo in node['netaddr']:
         if nicinfo['name'] == 'backplane1':
             ip = nicinfo['ip'][0]
             break
@@ -83,7 +104,7 @@ def action():
     import CloudscalerLibcloud
     import os
     import capnp
-    stacks = {}
+    redisstacks = {}
 
     now = datetime.utcnow()
     month = now.month
@@ -95,10 +116,12 @@ def action():
     cloudspace_capnp = capnp.load(schemapath)
     nodecl = j.clients.osis.getCategory(j.core.osis.client, 'system', 'node')
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
+    stackcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "stack")
     sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
-    dcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "disk")
-    cscl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "cloudspace")
     vcl = j.clients.osis.getNamespace('vfw')
+    virtualfirewalls = {'{gid}_{id}'.format(**vfw): vfw for vfw in vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid})[1:]}
+    nodes = {(node['gid'], node['id']): node for node in nodecl.search({'gid': j.application.whoAmI.gid})[1:]}
+    stacks = {stack['id']: stack for stack in stackcl.search({'gid': j.application.whoAmI.gid})[1:]}
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
     sizes_list = sizescl.search({'$fields': ['id', 'memory', 'vcpus']})[1:]
     mem_dict = {}
@@ -118,21 +141,22 @@ def action():
         folder_name = "/opt/jumpscale7/var/resourcetracking/active/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
         j.do.createDir(folder_name)
 
-        for cloudspace_id, vms in cloudspaces_dict.items():
+        for cloudspace_id, cs in cloudspaces_dict.items():
+            vms = cs['vms']
             cloudspace = cloudspace_capnp.CloudSpace.new_message()
             cloudspace.accountId = account_id
             cloudspace.cloudSpaceId = cloudspace_id
-            cs = cscl.get(cloudspace_id)
-            vfwguid = "%s_%s" % (cs.gid, cs.networkId)
-            if cs.status == 'DEPLOYED' and vcl.virtualfirewall.exists(vfwguid):
-                net = vcl.virtualfirewall.get(vfwguid)
-                nid = net.nid
-                node = nodecl.get("%s_%s" % (net.gid, net.nid))
+            vfwguid = "%(gid)s_%(networkId)s" % (cs)
+            if cs['status'] == 'DEPLOYED' and vfwguid in virtualfirewalls:
+                networkId = hex(cs['networkId'])
+                net = virtualfirewalls[vfwguid]
+                nid = net['nid']
+                node = nodes[(net['gid'], net['nid'])]
                 redis = get_node_redis(node)
-                publicTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-                publicRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-                spaceRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-                spaceTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                publicTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=networkId))
+                publicRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.pub-{id}'.format(gid=gid, nid=nid, id=networkId))
+                spaceRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=networkId))
+                spaceTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=networkId))
             else:
                 publicTX = publicRX = spaceRX = spaceTX = 0
 
@@ -147,7 +171,8 @@ def action():
             nic2.tx = spaceTX
             nic2.rx = spaceRX
 
-            for idx, (vm_id, machine_dict) in enumerate(vms.items()):
+            for idx, machine_dict in enumerate(vms):
+                vm_id = machine_dict['id']
                 m = machines[idx + 1]
                 m.type = 'vm'
                 stack_id = machine_dict.get('stackId', None)
@@ -156,39 +181,46 @@ def action():
                 # get mem size
                 memory_consumption = mem_dict[machine_dict['sizeId']]
                 vcpus = cpu_dict[machine_dict['sizeId']]
-                if machine_dict['status'] != "HALTED" and stack_id:
+                has_stack = machine_dict['status'] != "HALTED" and stack_id
+                if has_stack:
                     # get redis for this stack
-                    redis, stack = get_redis_instance(stack_id, stacks)
-                    nid = stack.referenceId
+                    stack = stacks[stack_id]
+                    redis = get_redis_instance(stack, redisstacks)
+                    nid = stack['referenceId']
                     # get CPU
                     cpu_key = 'stats:{gid}_{nid}:machine.CPU.utilisation@virt.{vm_id}'.format(gid=gid, nid=nid, vm_id=vm_id)
                     cpu_seconds = get_last_hour_val(redis, cpu_key)
-                    # calculate iops
-                    disks_capnp = m.init('disks', len(machine_dict['disks']))
-                    for index, disk_id in enumerate(machine_dict['disks']):
-                        disk = dcl.get(disk_id)
-                        disk_size = disk.sizeMax
-                        disk_capnp = disks_capnp[index]
-                        disk_capnp.size = disk_size
-                        disk_iops_read_key = "stats:{gid}_{nid}:disk.iops.read@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
-                        disk_capnp.iopsRead = get_last_hour_val(redis, disk_iops_read_key)
-                        disk_capnp.iopsReadMax = get_last_hour_val(redis, disk_iops_read_key, 'h_last_max')
-                        disk_iops_write_key = "stats:{gid}_{nid}:disk.iops.write@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
-                        disk_capnp.iopsWrite = get_last_hour_val(redis, disk_iops_write_key)
-                        disk_capnp.iopsWriteMax = get_last_hour_val(redis, disk_iops_write_key, 'h_last_max')
-
-                    # Calculate Network tx and rx
-                    nics = m.init("networks", len(machine_dict))
-                    for index, nic in enumerate(machine_dict['nics']):
-                        mac = nic['macAddress']
-                        nic_capnp = nics[index]
-                        tx_key = "stats:{gid}_{nid}:network.packets.tx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
-                        rx_key = "stats:{gid}_{nid}:network.packets.rx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
-                        nic_capnp.tx = get_last_hour_val(redis, tx_key)
-                        nic_capnp.rx = get_last_hour_val(redis, rx_key)
-                    m.cpuMinutes = cpu_seconds/60
+                    m.cpuMinutes = cpu_seconds / 60
                 else:
+                    redis = None
                     m.cpuMinutes = 0
+
+                disks_capnp = m.init('disks', len(machine_dict['disks']))
+                # calculate iops
+                for index, disk in enumerate(machine_dict['disks']):
+                    disk_id = disk['id']
+                    disk_size = disk['sizeMax']
+                    disk_capnp = disks_capnp[index]
+                    disk_capnp.size = disk_size
+                    disk_iops_read_key = "stats:{gid}_{nid}:disk.iops.read@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
+                    val = get_val(redis, disk_iops_read_key)
+                    disk_capnp.iopsRead = val.get('h_last', 0)
+                    disk_capnp.iopsReadMax = val.get('h_last_max', 0)
+                    disk_iops_write_key = "stats:{gid}_{nid}:disk.iops.write@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
+                    val = get_val(redis, disk_iops_write_key)
+                    disk_capnp.iopsWrite = val.get('h_last', 0)
+                    disk_capnp.iopsWriteMax = val.get('h_last_max', 0)
+
+                # Calculate Network tx and rx
+                nics = m.init("networks", len(machine_dict))
+                for index, nic in enumerate(machine_dict['nics']):
+                    mac = nic['macAddress']
+                    nic_capnp = nics[index]
+                    tx_key = "stats:{gid}_{nid}:network.packets.tx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
+                    rx_key = "stats:{gid}_{nid}:network.packets.rx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
+                    nic_capnp.tx = get_last_hour_val(redis, tx_key)
+                    nic_capnp.rx = get_last_hour_val(redis, rx_key)
+
                 m.imageName = image_name
                 m.mem = memory_consumption
                 m.vcpus = vcpus
