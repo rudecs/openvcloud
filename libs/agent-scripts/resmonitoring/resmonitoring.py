@@ -1,5 +1,4 @@
 from JumpScale import j
-import capnp
 from datetime import datetime
 import json
 import urlparse
@@ -83,6 +82,7 @@ def get_node_redis(node, port=9999):
 def action():
     import CloudscalerLibcloud
     import os
+    import capnp
     stacks = {}
 
     now = datetime.utcnow()
