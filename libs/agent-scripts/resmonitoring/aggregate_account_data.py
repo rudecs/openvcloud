@@ -71,9 +71,7 @@ def action(gid=None):
                 datekey = (year, month, day, hour)
                 accounts.setdefault(accountid, {datekey: []}).setdefault(datekey, []).append(member)
 
-
     for account_id, dates in accounts.iteritems():
-
         for date, members in dates.iteritems():
             account = resources_capnp.Account.new_message()
             year, month, day, hour = date

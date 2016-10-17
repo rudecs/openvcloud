@@ -16,9 +16,6 @@ author = "tareka@greenitglobe.com"
 license = "bsd"
 version = "1.0"
 category = "account.monitoring"
-# period = 60 * 60  # everyhour
-# timeout = period * 0.2
-order = 1
 enable = True
 async = True
 queue = 'process'
@@ -36,17 +33,13 @@ def action():
 
     def create_hour_tar():
         c = io.BytesIO()
-        with tarfile.open(mode="w", fileobj=c) as tar:
-                tar.add(base_path_active)
-                content = c.getvalue()
-        c.close()
-        return content
+        with tarfile.open(mode="w:gz", fileobj=c) as tar:
+            tar.add(base_path_active)
+        return c
 
-    def move_to_collected(content):
-        fd = io.BytesIO()
-        fd.write(content)
-        fd.seek(0)
-        with tarfile.open(mode="r", fileobj=fd) as tar:
+    def move_to_collected(tar):
+        tar.seek(0)
+        with tarfile.open(mode="r:gz", fileobj=tar) as tar:
             for f in tar.getmembers():
                 if f.name.endswith(".bin"):
                     accountid, year, month, day, hour, name = re.findall(
@@ -58,15 +51,10 @@ def action():
                             raise err
                     os.rename(os.path.join(base_path_active, accountid, year, month, day, hour, name),
                               os.path.join(base_path_collected, accountid, year, month, day, hour, name))
-        fd.close()
-    content = create_hour_tar()
-    move_to_collected(content)
-    return base64.encodestring(content)
+    tar = create_hour_tar()
+    move_to_collected(tar)
+    tar.seek(0)
+    return base64.encodestring(tar.getvalue())
 
 if __name__ == '__main__':
-    fd = cStringIO .StringIO()
-    fd.write(action())
-    fd.seek(0)
-    with tarfile.open(mode="r", fileobj=fd) as tar:
-        for member in tar.getmembers():
-            print(member.name)
+    action()
