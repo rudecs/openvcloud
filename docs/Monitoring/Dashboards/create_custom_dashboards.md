@@ -14,15 +14,15 @@ From the hamburger menu on the left of the row select **Add Panel > Graph**:
 
 ![](AddPanel.png)
 
-On **Metrics** tab of the Graph panel select **Influxdb_controller** as the **Panel data source**:
+On **Metrics** tab of the Graph panel select **Influxdb_controller** as the value for **Panel data source**:
 
 ![](PanelDataSource.png)
 
-Still in the **Metrics** tab select **disk.iops.read** for the measurement of the first query:
+Still in the **Metrics** tab select **disk.iops.read** as the measurement of the first query:
 
 ![](QueryAFromMeasurement.png)
 
-Next specify that you only want to READ IOPS values of the virtual disks:
+Next specify that you only want the values of the virtual disks:
 
 ![](QueryAWhereVirtual.png)
 
@@ -38,7 +38,7 @@ Change the aliases of both queries:
 
 ![](ChangeAliases.png)
 
-In **General** tab change the **Title** to **Average IOPS of Virtual Disks**:
+In the **General** tab change the **Title** to **Average IOPS of Virtual Disks**:
 
 ![](ChangePanelTitle.png)
 
