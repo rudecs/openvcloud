@@ -1,0 +1,47 @@
+## Create Custom Dashboards
+
+If you are completely new to Grafana, start here: http://docs.grafana.org/guides/gettingstarted/
+
+In what follows all steps are documented in order to create a simple dashboard visualizing the average read and write IOPS of all virtual machines.
+
+The very first step is selecting **+ New** from the **Dashboard** menu:
+
+![](NewDashboard.png)
+
+You'll get an empty dashboard, with one row.
+
+From the hamburger menu on the left of the row select **Add Panel > Graph**:
+
+![](AddPanel.png)
+
+On **Metrics** tab of the Graph panel select **Influxdb_controller** as the **Panel data source**:
+
+![](PanelDataSource.png)
+
+Still in the **Metrics** tab select **disk.iops.read** for the measurement of the first query:
+
+![](QueryAFromMeasurement.png)
+
+Next specify that you only want to READ IOPS values of the virtual disks:
+
+![](QueryAWhereVirtual.png)
+
+Add a second query by clicking **+ Add query**:
+
+![](AddQuery.png)
+
+For the second query select **disk.iops.write** as the measurement, and again for the virtual disks:
+
+![](QueryB.png)
+
+Change the aliases of both queries:
+
+![](ChangeAliases.png)
+
+In **General** tab change the **Title** to **Average IOPS of Virtual Disks**:
+
+![](ChangePanelTitle.png)
+
+Hit **Save** and see the result:
+
+![Result.png]
