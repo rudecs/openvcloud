@@ -22,15 +22,17 @@ root_path = "/opt/jumpscale7/var/resourcetracking"
 accounts = listdir(root_path)
 
 book = xlwt.Workbook(encoding='utf-8')
+nosheets = True
 for account in accounts:
     file_path = os.path.join(root_path, str(account), str(year), str(month), str(day), str(hour), 'account_capnp.bin')
     if not os.path.exists(file_path):
         continue
+    nosheets = False
     sheet = book.add_sheet("account %s" % account)
-    sheet.write(0, 0, 'cs_id')
-    sheet.write(0, 1, 'machines')
-    sheet.write(0, 2, 'mem')
-    sheet.write(0, 3, 'vcpus')
+    sheet.write(0, 0, 'Cloud Space ID')
+    sheet.write(0, 1, 'Machine Count')
+    sheet.write(0, 2, 'Total Memory')
+    sheet.write(0, 3, 'Total VCPUs')
     sheet.write(0, 4, 'Disk IOPS Read')
     sheet.write(0, 5, 'Disk IOPS Write')
     sheet.write(0, 6, 'NICs TX')
@@ -68,4 +70,7 @@ for account in accounts:
     except Exception as e:
         print(e)
 
-book.save('example.xls')
+if nosheets is False:
+    book.save('example.xls')
+else:
+    print('No data found')
