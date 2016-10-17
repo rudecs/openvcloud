@@ -44,4 +44,4 @@ In **General** tab change the **Title** to **Average IOPS of Virtual Disks**:
 
 Hit **Save** and see the result:
 
-![Result.png]
+![](Result.png)
