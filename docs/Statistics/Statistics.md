@@ -18,13 +18,24 @@ The **Cloud Broker Operator Portal** comes out of the box with the **Overall Sys
 - [Context Switches](#context-switches)
 
 
-
 <a id="total-iops"></a>
 #### Total IOPS
 
 This panel show the total READ and WRITE IOPS of all virtual disks combined.
 
 ![](Total-IOPS.png)
+
+- Panel type: Graph
+- Panel data source: influxdb_controller
+- Metrics:
+  - Query A, Total amount of IOPS READ:
+    - FROM **disk.iops.read|m** WHERE type = virtual
+    - SELECT field(value) sum()
+    - GROUP BY time(auto)
+  - Query B, Total amount of IOPS WRITE:
+    - FROM **disk.iops.write|m** WHERE type = virtual
+    - SELECT field(value) sum()
+    - GROUP BY time(auto)
 
 
 <a id="cpu-utilization"></a>
@@ -34,9 +45,34 @@ The first panel shows the average, minimum and maximum CPU time for all physical
 
 ![](CPU-Utilization.png)
 
+- Panel type: Graph
+- Panel data source: influxdb_controller
+- Metrics:
+  - Queries A, Average CPU utilization (all physical nodes):
+    - FROM default **machine.CPU.utilization|m** WHERE type = physical
+    - SELECT field(value) **mean()**
+  - Queries B, Minimum CPU utilization (all physical nodes):
+    - FROM default **machine.CPU.utilization|m** WHERE type = physical
+    - SELECT field(value) **min()**
+  - Queries C, Maximum CPU utilization (all physical nodes):
+    - FROM default **machine.CPU.utilization|m** WHERE type = physical
+    - SELECT field(value) **max()**
+
 The second panel shows the minimum, average, maximum and current CPU time for each physical node:
 
 ![](CPU-Utilization-Table.png)
+
+- Panel type: Table
+- Panel data source: influxdb_controller
+- Metrics:
+  - Query A:
+    - FROM **machine.CPU.utilization|m** WHERE type = physical
+    - SELECT field(value)
+    - GROUP BY tag(nid)
+    - ALIAS BY: node: $tag_nid
+- Options:
+  - To Table Transform: **Time series to aggregations**
+  - Columns: Min, Avg, Max, Current
 
 
 <a id="cpu-percentage"></a>
