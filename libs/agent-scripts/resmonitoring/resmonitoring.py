@@ -123,20 +123,20 @@ def action():
             cloudspace.accountId = account_id
             cloudspace.cloudSpaceId = cloudspace_id
             cs = cscl.get(cloudspace_id)
-            net = vcl.virtualfirewall.get("%s_%s" % (cs.gid, cs.networkId))
-            nid = net.nid
-            node = nodecl.get("%s_%s" % (net.gid, net.nid))
-            redis = get_node_redis(node)
-            publicTX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            publicRX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            spaceRX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
-            spaceTX = get_last_hour_val(redis,
-                'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            vfwguid = "%s_%s" % (cs.gid, cs.networkId)
+            if cs.status == 'DEPLOYED' and vcl.virtualfirewall.exists(vfwguid):
+                net = vcl.virtualfirewall.get(vfwguid)
+                nid = net.nid
+                node = nodecl.get("%s_%s" % (net.gid, net.nid))
+                redis = get_node_redis(node)
+                publicTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                publicRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                spaceRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+                spaceTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=hex(cs.networkId)))
+            else:
+                publicTX = publicRX = spaceRX = spaceTX = 0
 
-            machines = cloudspace.init('machines', len(vms)+1)
+            machines = cloudspace.init('machines', len(vms) + 1)
             m = machines[0]
             m.type = 'routeros'
             nics = m.init('networks', 2)
@@ -146,6 +146,7 @@ def action():
             nic2 = nics[1]
             nic2.tx = spaceTX
             nic2.rx = spaceRX
+
             for idx, (vm_id, machine_dict) in enumerate(vms.items()):
                 m = machines[idx + 1]
                 m.type = 'vm'
