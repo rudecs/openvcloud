@@ -19,12 +19,6 @@ def main(j, args, params, tags, tasklet):
         args.doc.applyTemplate({'gid': None}, True)
         return params
 
-    unused_sizes = list()
-    for size in cbclient.size.search({})[1:]:
-        if cbclient.vmachine.count({"sizeId": size["id"]}) == 0:
-            unused_sizes.append(size["id"])
-
-    locations[0]["unused_sizes"] = unused_sizes
     obj = locations[0]
     args.doc.applyTemplate(obj, True)
     return params
