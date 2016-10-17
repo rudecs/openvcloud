@@ -24,7 +24,7 @@ Still in the **Metrics** tab select **disk.iops.read** as the measurement of the
 
 Next specify that you only want the values of the virtual disks:
 
-![](QueryAWhereVirtual.png)
+![](QueryAFromType.png)
 
 Add a second query by clicking **+ Add query**:
 
