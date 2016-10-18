@@ -151,7 +151,8 @@ class cloudbroker_iaas(BaseActor):
         size['name'] = name
         self.models.size.set(size)
         for disk in disks:
-            self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus})
+            name = '%s-%s-%s' % (vcpus, memory, disk)
+            self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus, 'name': name})
         return True
 
     @auth(['level1', 'level2', 'level3'])
