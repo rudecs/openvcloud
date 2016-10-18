@@ -126,7 +126,7 @@ data_controller = {
     'instance.param.grid.id': options.gid or configure.getInt('instance.grid.id'),
 }
 
-notice('installing cpu node')
+notice('installing controller node')
 temp = j.atyourservice.new(name='cb_controller', args=data_controller, parent=node)
 temp.consume('node', node.instance)
 temp.install(deps=True)
