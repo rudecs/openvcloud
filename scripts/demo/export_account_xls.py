@@ -26,6 +26,9 @@ def main(options):
     nosheets = True
     for account in accounts:
         file_path = os.path.join(root_path, str(account), str(year), str(month), str(day), str(hour), 'account_capnp.bin')
+        while not os.path.exists(file_path) and hour != 0:
+            hour -= 1
+            file_path = os.path.join(root_path, str(account), str(year), str(month), str(day), str(hour), 'account_capnp.bin')
         if not os.path.exists(file_path):
             continue
         nosheets = False
