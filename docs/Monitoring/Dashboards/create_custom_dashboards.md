@@ -2,6 +2,26 @@
 
 If you are completely new to Grafana, start here: http://docs.grafana.org/guides/gettingstarted/
 
+Following measurements are available:
+- disk.iops.read
+- disk.iops.write
+- disk.throughput.read
+- disk.throughput.write
+- machine.CPU.utilisation
+- network.packages.rx
+- network.packages.tx
+- network.throughput.incoming
+- network.throughput.outgoing
+- network.vfw.packets.rx
+- network.vfw.packets.tx
+- network.vfw.throughput.incoming
+- network.vfw.throughput.outgoing
+
+For each of them three variants exist:
+- h: values collected per hour
+- m: values collected per 5 minutes
+- t: total aggregated value 
+
 In what follows all steps are documented in order to create a simple dashboard visualizing the average read and write IOPS of all virtual machines.
 
 The very first step is selecting **+ New** from the **Dashboard** menu:
