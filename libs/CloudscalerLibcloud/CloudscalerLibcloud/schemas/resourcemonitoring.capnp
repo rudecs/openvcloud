@@ -15,13 +15,13 @@ struct CloudSpace {
     imageName @7 :Text;
     status @8 :Text;
     struct Nic {
-      id @0 :Float32;
+      id @0 :Int32;
       type @1 :Text;
       tx @2 :Float32;
       rx @3 :Float32;
     }
     struct Disk {
-        id @0 :Float32;
+        id @0 :Int32;
         size @1 :Float32;
         iopsRead  @2 :Float32;
         iopsWrite  @3 :Float32;

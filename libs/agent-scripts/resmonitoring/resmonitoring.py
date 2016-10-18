@@ -178,7 +178,7 @@ def action():
             nic2 = nics[1]
             nic2.tx = spaceTX
             nic2.rx = spaceRX
-            nic1.type = 'space'
+            nic2.type = 'space'
 
             for idx, machine_dict in enumerate(vms):
                 vm_id = machine_dict['id']
