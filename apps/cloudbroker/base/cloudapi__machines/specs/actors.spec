@@ -139,7 +139,7 @@
         """
         var:machineId int,, id of the machine
         var:epoch int,, epoch time of snapshot
-        result:str
+        result:bool
 
     method:rollbackSnapshot
         """
