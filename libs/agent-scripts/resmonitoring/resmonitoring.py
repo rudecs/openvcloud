@@ -23,6 +23,13 @@ log = False
 roles = ['controller']
 
 
+def groupby(items, key):
+    result = {}
+    for item in items:
+        result.setdefault(item[key], []).append(item)
+    return result
+
+
 def get_cached_accounts():
     cached_accounts = {}
     accl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "account")
@@ -33,7 +40,7 @@ def get_cached_accounts():
     def get_ids(obj):
         return obj['id']
 
-    accounts_ids = map(get_ids, accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']})[1:])
+    accounts_ids = map(get_ids, accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']}, size=0)[1:])
     cloudspaces = cscl.search({'$query': {'accountId': {'$in': accounts_ids}, 'status': {'$ne': 'DESTROYED'}, 'gid': j.application.whoAmI.gid},
                                '$fields': ['id', 'accountId', 'status', 'gid', 'networkId']}, size=0)[1:]
     vms = vmcl.search({'$query': {'cloudspaceId': {'$in': map(get_ids, cloudspaces)},
@@ -42,12 +49,12 @@ def get_cached_accounts():
     diskids = []
     for vm in vms:
         diskids.extend(vm['disks'])
-    disks = {disk['id']: disk['sizeMax'] for disk in dcl.search({'$query': {'id': {'$in': [diskids]}},
-                                                                 '$fields': ['id', 'sizeMax']},
-                                                                size=0)[1:]}
-    spacesperaccount = itertools.groupby(cloudspaces, lambda space: space['accountId'])
-    vmsperspace = dict(itertools.groupby(vms, lambda vm: vm['cloudspaceId']))
-    for accountid, spaces in spacesperaccount:
+    disks = {disk['id']: disk for disk in dcl.search({'$query': {'id': {'$in': diskids}},
+                                                      '$fields': ['id', 'sizeMax']},
+                                                     size=0)[1:]}
+    spacesperaccount = groupby(cloudspaces, 'accountId')
+    vmsperspace = dict(groupby(vms, 'cloudspaceId'))
+    for accountid, spaces in spacesperaccount.iteritems():
         for space in spaces:
             space = cached_accounts.setdefault(accountid, {}).setdefault(space['id'], space)
             space['vms'] = []
@@ -167,14 +174,17 @@ def action():
             nic1 = nics[0]
             nic1.tx = publicTX
             nic1.tx = publicRX
+            nic1.type = 'external'
             nic2 = nics[1]
             nic2.tx = spaceTX
             nic2.rx = spaceRX
+            nic1.type = 'space'
 
             for idx, machine_dict in enumerate(vms):
                 vm_id = machine_dict['id']
                 m = machines[idx + 1]
                 m.type = 'vm'
+                m.id = vm_id
                 stack_id = machine_dict.get('stackId', None)
                 # get Image name
                 image_name = images_dict.get(machine_dict['imageId'], "")
@@ -199,9 +209,9 @@ def action():
                 # calculate iops
                 for index, disk in enumerate(machine_dict['disks']):
                     disk_id = disk['id']
-                    disk_size = disk['sizeMax']
                     disk_capnp = disks_capnp[index]
-                    disk_capnp.size = disk_size
+                    disk_capnp.id = disk_id
+                    disk_capnp.size = disk['sizeMax']
                     disk_iops_read_key = "stats:{gid}_{nid}:disk.iops.read@virt.{disk_id}" .format(gid=gid, nid=nid, disk_id=disk_id)
                     val = get_val(redis, disk_iops_read_key)
                     disk_capnp.iopsRead = val.get('h_last', 0)
@@ -212,10 +222,11 @@ def action():
                     disk_capnp.iopsWriteMax = val.get('h_last_max', 0)
 
                 # Calculate Network tx and rx
-                nics = m.init("networks", len(machine_dict))
+                nics = m.init("networks", len(machine_dict['nics']))
                 for index, nic in enumerate(machine_dict['nics']):
                     mac = nic['macAddress']
                     nic_capnp = nics[index]
+                    nic_capnp.type = 'external' if nic['type'] == 'PUBLIC' else 'space'
                     tx_key = "stats:{gid}_{nid}:network.packets.tx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
                     rx_key = "stats:{gid}_{nid}:network.packets.rx@virt.{mac}".format(gid=gid, nid=nid, mac=mac)
                     nic_capnp.tx = get_last_hour_val(redis, tx_key)

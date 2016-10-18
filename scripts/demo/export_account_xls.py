@@ -25,11 +25,13 @@ def main(options):
     book = xlwt.Workbook(encoding='utf-8')
     nosheets = True
     for account in accounts:
+        hour = now.hour
         file_path = os.path.join(root_path, str(account), str(year), str(month), str(day), str(hour), 'account_capnp.bin')
         while not os.path.exists(file_path) and hour != 0:
             hour -= 1
             file_path = os.path.join(root_path, str(account), str(year), str(month), str(day), str(hour), 'account_capnp.bin')
         if not os.path.exists(file_path):
+            print('Skipping %s' % file_path)
             continue
         nosheets = False
         sheet = book.add_sheet("account %s" % account)

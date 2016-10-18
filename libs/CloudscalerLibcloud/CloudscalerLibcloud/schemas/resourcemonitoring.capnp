@@ -16,8 +16,9 @@ struct CloudSpace {
     status @8 :Text;
     struct Nic {
       id @0 :Float32;
-      tx @1 :Float32;
-      rx @2 :Float32;
+      type @1 :Text;
+      tx @2 :Float32;
+      rx @3 :Float32;
     }
     struct Disk {
         id @0 :Float32;
