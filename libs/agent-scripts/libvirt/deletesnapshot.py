@@ -50,3 +50,14 @@ def action(ovs_connection, diskguids, timestamp):
     for job in jobs:
         job.get()  # Reraises exception
     return
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--diskguid')
+    parser.add_argument('-t', '--timestamp', type=int)
+    options = parser.parse_args()
+    scl = j.clients.osis.getNamespace('system')
+    ovs_credentials = scl.grid.get(j.application.whoAmI.gid).settings['ovs_credentials']
+    print(action(ovs_credentials, [options.diskguid], options.timestamp))

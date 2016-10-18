@@ -138,7 +138,7 @@
         Delete a snapshot of the machine
         """
         var:machineId int,, id of the machine
-        var:epoch str,, epoch time of snapshot
+        var:epoch int,, epoch time of snapshot
         result:str
 
     method:rollbackSnapshot

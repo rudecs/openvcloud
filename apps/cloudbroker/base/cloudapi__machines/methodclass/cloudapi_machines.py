@@ -681,7 +681,7 @@ class cloudapi_machines(BaseActor):
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
-        return provider.client.ex_delete_snapshot(node, epoch)
+        return provider.client.ex_delete_snapshot(node, epoch)['state'] == 'OK'
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()
