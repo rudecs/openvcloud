@@ -1,4 +1,3 @@
-
 from xml.etree import ElementTree
 
 from jinja2 import Environment, FunctionLoader
@@ -22,10 +21,17 @@ namespaces = {
 }
 
 
+def _findsubitem(obj, itemname):
+    """Finds item in object if itemname is obj.tag
+    Mainly to neglect searching with namespaces
+    """
+    return [x for x in obj.getchildren() if itemname in x.tag][0]
+
+
 def ovf_to_model(ovf):
     envelope = ElementTree.fromstring(ovf)
     files = dict((file.get('{%(ovf)s}id' % namespaces), file.get('{%(ovf)s}href' % namespaces))
-        for file in envelope.findall('ovf:References/ovf:File', namespaces))
+                 for file in envelope.findall('ovf:References/ovf:File', namespaces))
     disksobjs = (ds.find('ovf:Disk', namespaces) for ds in envelope.findall('ovf:DiskSection', namespaces))
     disks = dict((obj.get('{%(ovf)s}diskId' % namespaces), {
         'size': int(obj.get('{%(ovf)s}capacity' % namespaces)),
@@ -38,23 +44,22 @@ def ovf_to_model(ovf):
     for item in itemobjs:
         addressnode = item.find('rasd:Address', namespaces)
         address = addressnode.text if addressnode is not None else None
-        instanceid = item.find('rasd:InstanceID', namespaces).text
-        resourcetype = item.find('rasd:ResourceType', namespaces).text
+        instanceid = _findsubitem(item, 'InstanceID').text
+        resourcetype = _findsubitem(item, 'ResourceType').text
         itemobjsdict[instanceid] = (address, resourcetype)
     storageitemobjs = hw.findall('ovf:StorageItem', namespaces)
     diskitems = map(lambda x: x[1], sorted(((itemobjsdict[i.find('sasd:Parent', namespaces).text][0], i.find('sasd:AddressOnParent', namespaces).text),
-                                            disks[i.find('sasd:HostResource', namespaces).text.split('/')[-1]])
-                                            for i in storageitemobjs if i.find('sasd:ResourceType', namespaces).text == '17'))
+                                           disks[i.find('sasd:HostResource', namespaces).text.split('/')[-1]])
+                                           for i in storageitemobjs if i.find('sasd:ResourceType', namespaces).text == '17'))
 
     namesection = envelope.find('ovf:VirtualSystem/ovf:Name', namespaces)
     name = namesection.text if namesection is not None else ''
     infosection = envelope.find('ovf:VirtualSystem/ovf:Info', namespaces)
     description = infosection.text if infosection is not None else ''
 
-    cpus = [int(i.find('rasd:VirtualQuantity', namespaces).text) for i in itemobjs if i.find('rasd:ResourceType', namespaces).text == '3'][0]
-    mem = [int(i.find('rasd:VirtualQuantity', namespaces).text) * SIZES[i.find('rasd:AllocationUnits', namespaces).text.lower()]
-                for i in itemobjs if i.find('rasd:ResourceType', namespaces).text == '4'][0]
-
+    cpus = [int(_findsubitem(i, 'VirtualQuantity').text) for i in itemobjs if _findsubitem(i, 'ResourceType').text == '3'][0]
+    mem = [int(_findsubitem(i, 'VirtualQuantity').text) * SIZES[_findsubitem(i, 'AllocationUnits').text.lower()]
+           for i in itemobjs if _findsubitem(i, 'ResourceType').text == '4'][0]
     return {
         'name': name,
         'description': description,
@@ -62,6 +67,7 @@ def ovf_to_model(ovf):
         'mem': mem,
         'disks': diskitems
     }
+
 
 def template(name):
     return ("""<?xml version="1.0"?>
@@ -183,6 +189,7 @@ def template(name):
     </VirtualHardwareSection>
   </VirtualSystem>
 </Envelope>""")
+
 
 def model_to_ovf(model):
     env = Environment(loader=FunctionLoader(template))
