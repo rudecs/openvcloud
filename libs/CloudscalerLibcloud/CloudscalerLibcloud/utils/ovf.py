@@ -173,7 +173,7 @@ def template(name):
         <epasd:Connection>NAT</epasd:Connection>
         <epasd:InstanceID>10</epasd:InstanceID>
         <epasd:ResourceSubType>E1000</epasd:ResourceSubType>
-        <epasd:ResourceType>8</epasd:ResourceType>
+        <epasd:ResourceType>10</epasd:ResourceType>
       </EthernetPortItem>
       {% for disk in disks %}
       <StorageItem>
