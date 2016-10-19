@@ -14,6 +14,7 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Start IP Address', 'startip', required=True)
     popup.addText('End IP Address', 'endip', required=True)
     popup.addNumber('VLAN Tag (leave empty if its the standard public bridge)', 'vlan', required=False)
+    popup.addNumber('AccountId (make external network exclusive to this accountId otherwise leave empty)', 'accountId', required=False)
     popup.addDropdown('Choose Location', 'gid', [(location['name'], location['gid']) for location in locations])
     popup.write_html(page)
 

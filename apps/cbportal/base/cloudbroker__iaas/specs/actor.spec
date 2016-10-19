@@ -19,6 +19,8 @@
         var:endip str,, Last IP Address from the range to add
         var:gid int,, id of grid
         var:vlan int,,VLAN Tag @optional
+        var:accountId int,,accountId that has exclusive access to this network Tag @optional
+        result:int
 
     method:addExternalIPS
         """

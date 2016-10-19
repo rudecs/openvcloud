@@ -21,7 +21,7 @@ class cloudbroker_iaas(BaseActor):
         super(cloudbroker_iaas, self).__init__()
         self.lcl = j.clients.osis.getNamespace('libvirt')
 
-    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, **kwargs):
+    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
@@ -46,9 +46,10 @@ class cloudbroker_iaas(BaseActor):
         pool.vlan = vlan
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
+        pool.accountId = accountId
         pool.ips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
-        self.models.externalnetwork.set(pool)
-        return subnet
+        pool.id, _, _ = self.models.externalnetwork.set(pool)
+        return pool.id
 
     def getUsedIPInfo(self, pool):
         network = {'spaces': [], 'vms': []}
