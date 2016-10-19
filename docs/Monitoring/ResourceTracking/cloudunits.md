@@ -1,160 +1,95 @@
 ## Cloud Units
 
-On the **ovc_master** virtual machine of your environment every half hour the system will generate a snapshot of the actual used cloud units.
+On the **ovc_master** virtual machine of your environment every hour the system will generate **Cap’n Proto** (capnp) file with following schema:
 
-This will be done in the directory `/opt/jumpscale7/var/log/cloudunits`
-
-In order to access these records go through following steps:
-
-- Get to your admin environment with your SSH keys loaded, can be skipped is already on it:
-
-```shell
-ssh yves@my-machine -p 7122 -A
 ```
+@0x934efea7f327fff0;
+struct CloudSpace {
+  cloudSpaceId @0 :Int32;
+  accountId @1 :Int32;
+  machines @2 :List(VMachine);
+  state @3 :Text;
+  struct VMachine {
+    id @0 :Int32;
+    type @1 :Text;
+    vcpus @2 :Int8;
+    cpuMinutes @3 :Float32;
+    mem @4 :Float32;
+    networks @5 :List(Nic);
+    disks @6 :List(Disk);
+    imageName @7 :Text;
+    status @8 :Text;
+    struct Nic {
+      id @0 :Int32;
+      type @1 :Text;
+      tx @2 :Float32;
+      rx @3 :Float32;
+    }
+    struct Disk {
+        id @0 :Int32;
+        size @1 :Float32;
+        iopsRead  @2 :Float32;
+        iopsWrite  @3 :Float32;
+        iopsReadMax @4 :Float32;
+        iopsWriteMax @5 :Float32;
+    }
+  }
+}
 
-- Clone the environment repository:
-
-```shell
-cd /opt/code/github/0-complexity
-git clone %address-of-the-master-copy-of-your-environment-repository%
-```
-
-- Get the public IP address of **ovc_git** from `openvcloud__git_vm__main/service.hrd`
-
-
-- Get to the **ovc_git** machine:
-
-```shell
-ssh root@%ovc-git-address% -A -i keys/git_root
-```
-
-Get the	private IP address of **ovc_master** from `jumpscale__docker_client__main/service.hrd`
-
-- Get to the **ovc_master** machine via the private network of the master cloud space:
-
-```shell
-ssh %ovc-vm-address% -A
-````
-
-- Get to the cloud unit records:
-
-```shell
-cd /opt/jumpscale7/var/log/cloudunits/%account-ID%
-```
-
-For each account there will be a subdirectory, for instance for the account with ID 6 this is `/opt/jumpscale7/var/log/cloudunits/6`
-
-In there you'll find further subdirectories structured as `year/month/day`:
-
-Here's an example of an actual JSON record:
-
-```shell
-ls -tr 1
-cat 2016_7_19_14_8.json | python -m json.tool`
-```
-
-```yaml
-{
-    "CU_A": 0,
-    "CU_C": 2,
-    "CU_D": 50,
-    "CU_I": 1,
-    "CU_M": 2.0,
-    "CU_NO": 0,
-    "CU_NP": 0,
-    "CU_S": 0,
-    "account": 7,
-    "cloudspaces": [
-        {
-            "9": {
-                "CU_C": 0,
-                "CU_D": 0,
-                "CU_I": 0,
-                "CU_M": 0.0,
-                "cloudspaceId": 9,
-                "machines": [],
-                "name": "testje"
-            }
-        },
-        {
-            "23": {
-                "CU_C": 0,
-                "CU_D": 0,
-                "CU_I": 0,
-                "CU_M": 0.0,
-                "cloudspaceId": 23,
-                "machines": [],
-                "name": "test2"
-            }
-        },
-        {
-            "24": {
-                "CU_C": 0,
-                "CU_D": 0,
-                "CU_I": 0,
-                "CU_M": 0.0,
-                "cloudspaceId": 24,
-                "machines": [],
-                "name": "anothertest"
-            }
-        },
-        {
-            "28": {
-                "CU_C": 0,
-                "CU_D": 0,
-                "CU_I": 0,
-                "CU_M": 0.0,
-                "cloudspaceId": 28,
-                "machines": [],
-                "name": "4real3"
-            }
-        },
-        {
-            "29": {
-                "CU_C": 2,
-                "CU_D": 50,
-                "CU_I": 1,
-                "CU_M": 2.0,
-                "cloudspaceId": 29,
-                "machines": [
-                    {
-                        "1054": {
-                            "CU_C": 2,
-                            "CU_D": 50,
-                            "CU_I": 0,
-                            "CU_M": 2048,
-                            "id": 1054,
-                            "imagename": "Ubuntu 14.04 x64"
-                            "name": "Test machine"
-                        }
-                    }
-                ],
-                "name": "4real4"
-            }
-        }
-    ],
-    "name": "Account of Moehaha.com"
+struct Account {
+  accountId @0  :UInt32;
+  cloudspaces @1 :List(CloudSpace);
 }
 ```
 
-This shows both an aggregated and per cloud space snapshot of the used cloud units, using following labels:
+For the most actual schema you'll need access to the [0-complexity/openvcloud] repository:
+https://github.com/0-complexity/openvcloud/blob/2.1.5/libs/CloudscalerLibcloud/CloudscalerLibcloud/schemas/resourcemonitoring.capnp
 
-- **CU_C**: Virtual CPUs
-- **CU_D**: Boot disk, expressed in GB
-- **CU_S**: Primary storage capacity (NAS)
-- **CU_A**: Secondary storage capacity (Archive)
-- **CU_I**: Number of public IP addresses
-- **CU_M**: Memory, expressed in GB
-- **CU_NO**: Network transfer in operator, expressed in GB send/received
-- **CU_NP**: Network transfer peering, expressed in GB send/received
+This will be done in the directory `/opt/jumpscale7/var/resourcetracking`
 
-At the machine-level notice following fields:
-- **id**: ID of the virtual machine, in the above example check the virtual machine with `"id": 1054`
-- **imagename**: Name of the OS image used by the virtual machine, in the above example: `"imagename": "Ubuntu 14.04 x64"``
-- **name**: Name of the virtual machine, in the above example: `"name": "Test machine"`
+In order to access these records go through following steps:
 
-These records are generated every 30 minutes. You can also trigger the creation process using the following Rest API:
+- Make sure your private SSH key is loaded:
+  ```shell
+  ssh-add -l
+  ```
 
-https://%address-of-your-environment%/system/ActorApi?group=cloudapi#!/cloudapi__logs/post_cloudapi_logs_logCloudUnits
+- Clone the environment repository:
 
-![](log-cloud-units.png)
+  ```shell
+  cd /opt/code/github/0-complexity
+  git clone %address-of-the-master-copy-of-your-environment-repository%
+  ```
+
+- Get the public IP address of **ovc_git** from `services/openvcloud__git_vm__main/service.hrd`
+
+- Make sure the git_root private key is protected:
+
+  ```shell
+  chmod 600 keys/git_root
+  ```
+
+- Get to the **ovc_git** machine:
+
+  ```shell
+  ssh root@%ovc-git-address% -A -i keys/git_root
+  ```
+
+- From there it is simple to get on **ovc_master**:
+
+  ```shell
+  ssh master
+  ```  
+
+- Get to the resource tracking records:
+
+  ```shell
+  cd /opt/jumpscale7/var/resourcetracking/%account-ID%
+  ```
+
+For each account there will be a subdirectory, for instance for the account with ID 60 this is `/opt/jumpscale7/var/resourcetracking/6`
+
+In there you'll find further subdirectories structured as `year/month/day/hour`.
+
+Using for instance the **export_accounts_xls.py** tool you can convert the capnp file to Excel:
+https://github.com/0-complexity/openvcloud/blob/2.1.5/scripts/demo/export_account_xls.py
