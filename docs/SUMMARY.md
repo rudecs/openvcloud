@@ -70,7 +70,7 @@
    * [System Health](Monitoring/Health/Health.md)
    * [Gathering of Statistics](Monitoring/Statistics/Statistics.md)
    * [Create Custom Dashboards](Monitoring/Dashboards/create_custom_dashboards.md)
-   * [External Network Addresses](Network/Network.md)
+   * [External Network Addresses](Monitoring/Network/Network.md)
    * [Storage Utilization](Monitoring/Storage/Storage.md)
    * [Resource Tracking](Monitoring/ResourceTracking/ResourceTracking.md)
    * [Review Logs for User Operations & Automated Tasks](Monitoring/Logs/Logs.md)
