@@ -57,13 +57,12 @@ In order to access these records go through following steps:
 - Clone the environment repository:
 
   ```shell
-  cd /opt/code/github/0-complexity
   git clone %address-of-the-master-copy-of-your-environment-repository%
   ```
 
 - Get the public IP address of **ovc_git** from `services/openvcloud__git_vm__main/service.hrd`
 
-- Make sure the git_root private key is protected:
+- Make sure **git_root**, the file holding the private key of **ovc_git** is protected:
 
   ```shell
   chmod 600 keys/git_root
