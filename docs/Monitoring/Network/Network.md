@@ -10,7 +10,7 @@ From there you can click through to the **External Network Details** page:
 
 Under the section **Free IPs** all free IP addresses are listed:
 
-![](FreeIPS.png)
+![](FreeIPs.png)
 
 Next all **cloud spaces** are listed that use one of the external network IP addresses:
 
