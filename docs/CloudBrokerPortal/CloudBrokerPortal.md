@@ -14,7 +14,7 @@
 
 * [Private Networks](PrivateNetworks/PrivateNetworks.md)
 
-* [Public Networks](PublicNetworks/PublicNetworks.md)
+* [External Networks](ExternalNetworks/ExternalNetworks.md)
 
 * [Stacks](Stacks/Stacks.md)
 

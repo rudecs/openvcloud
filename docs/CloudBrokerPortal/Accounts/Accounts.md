@@ -58,15 +58,15 @@ A user can have **read**, **write** or **admin** privileges. See the [End User P
 
 ### Cloud Spaces
 
-All virtual data centers (cloud spaces) created in your account are listed here:
+All virtual datacenters (cloud spaces) created in your account are listed here:
 
-![[]](CloudSpaces.png)
+![](CloudSpaces.png)
 
 The **+ Add Cloud Space** link allows you to add more cloud spaces to the account:
 
-![[]](AddCloudSpace.png)
+![](AddCloudSpace.png)
 
-Again here you can specify limits for capacity that is available to the new cloud space.
+Also here you can specify capacity limits, this time specific only to the new cloud space.
 
 From the list with cloud spaces you can navigate to the **Cloud Space Details** pages.
 
