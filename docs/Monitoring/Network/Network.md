@@ -18,4 +18,4 @@ Next all **cloud spaces** are listed that use one of the external network IP add
 
 Also all **virtual machines** are listed that are directly connected to one of the external network IP addresses.
 
-See [External Networks](../../CloudBrokerPortal/ExternalNetworks/ExternalNetworks.png) for more details.
+See [External Networks](../../CloudBrokerPortal/ExternalNetworks/ExternalNetworks.md) for more details.
