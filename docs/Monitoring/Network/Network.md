@@ -1,4 +1,4 @@
-## Monitor Used External Network Addresses
+## Monitoring of the Used External Network Addresses
 
 In the **Cloud Broker Portal** on the **External Networks** page you get an overview of the number of available ("free") IP addresses per external network:
 
@@ -12,11 +12,10 @@ Under the section **Free IPs** all free IP addresses are listed:
 
 ![](FreeIPs.png)
 
-Next all **cloud spaces** are listed that use one of the external network IP addresses:
+Next all **cloud spaces** are listed that use one of the external network IP addresses :
 
 ![](CloudSpaces.png)
 
 Also all **virtual machines** are listed that are directly connected to one of the external network IP addresses.
 
-
-See the [External Networks](../../CloudBrokerPortal/PublicNetworks/PublicNetworks.png) for more details.
+See [External Networks](../../CloudBrokerPortal/ExternalNetworks/ExternalNetworks.png) for more details.
