@@ -16,7 +16,7 @@ Next all **cloud spaces** are listed that use one of the external network IP add
 
 ![](CloudSpaces.png)
 
-Also all **virtual machines** are listed that have been connected directly to one of the external network IP address.
+Also all **virtual machines** are listed that are directly connected to one of the external network IP addresses.
 
 
 See the [External Networks](../../CloudBrokerPortal/PublicNetworks/PublicNetworks.png) for more details.
