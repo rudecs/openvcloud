@@ -9,15 +9,34 @@ def main(j, args, params, tags, tasklet):
     if userGroupId:
         filters['acl.userGroupId'] = userGroupId
 
-
-    fieldnames = ['ID', 'Name', 'Status', 'Access Control List']
-
     def makeACL(row, field):
         return str('<br>'.join(['%s:%s' % (acl['userGroupId'], acl['right']) for acl in row[field]]))
 
-    fieldids = ['id', 'name', 'status', 'acl']
-    fieldvalues = ['[%(id)s|/CBGrid/account?id=%(id)s]', 'name', 'status', makeACL]
-    tableid = modifier.addTableForModel('cloudbroker', 'account', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+        {
+            'name': 'ID',
+            'value': '[%(id)s|/CBGrid/account?id=%(id)s]',
+            'id': 'id'
+        },
+        {
+            'name': 'Name',
+            'value': 'name',
+            'id': 'name'
+        },
+        {
+            'name': 'Status',
+            'value': 'status',
+            'id': 'status'
+        },
+        {
+            'name': 'Access Controler List',
+            'value': makeACL,
+            'sortable': False,
+            'filterable': False,
+            'id': 'acl'
+        },
+    ]
+    tableid = modifier.addTableFromModel('cloudbroker', 'account', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
