@@ -24,7 +24,7 @@ class cloudbroker_qos(BaseActor):
         """
         Limit IO done on a certain disk
         param:diskId Id of the disk to limit
-        param:iops Max IO per second, 0 mean unlimited
+        param:iops Max IO per second, 0 means unlimited
         result bool
         """
         return self.actors.disks.limitIO(diskId, iops)

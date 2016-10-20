@@ -21,11 +21,11 @@
 
     method:limitIO
         """
-        Get disk details
+        Limit IO done on a certain disk
         """
-        var:diskId int,, id of the disk
-        var:iops int,, IO per second to limit the disk to
-        result:dict, dict with the disk details
+        var:diskId int,, Id of the disk to limit
+        var:iops int,, Max IO per second, 0 means unlimited
+        result:bool
 
     method:delete
         """
