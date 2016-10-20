@@ -170,7 +170,7 @@ h3. Details
 |*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|[${networkId}|private network?id=${networkId}&gid=${gid}]|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
-|*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
+|*End User Portal*| [View Cloud Space|/g8vdc/#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
 |*Location Code*|${location}|
 |*Description*|${descr}|
