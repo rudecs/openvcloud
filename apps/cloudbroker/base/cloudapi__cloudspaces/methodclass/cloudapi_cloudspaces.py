@@ -367,6 +367,7 @@ class cloudapi_cloudspaces(BaseActor):
                               cloudspace_acl.iteritems()],
                       "description": cloudspaceObject.descr,
                       "id": cloudspaceObject.id,
+                      "gid": cloudspaceObject.gid,
                       "name": cloudspaceObject.name,
                       "resourceLimits": cloudspaceObject.resourceLimits,
                       "publicipaddress": getIP(cloudspaceObject.externalnetworkip),
@@ -438,7 +439,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId', 'acl', 'externalnetworkip',
-                  'location']
+                  'location', 'gid']
         q = {"$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)}}],
              "status": {"$ne": "DESTROYED"}}
