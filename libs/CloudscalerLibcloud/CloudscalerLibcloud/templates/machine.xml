@@ -1,10 +1,10 @@
- <domain type='kvm'>
+ <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
         <name>{{machinename}}</name>
         <memory unit='MB'>{{memory}}</memory>
         <currentMemory unit='MB'>{{memory}}</currentMemory>
         <vcpu placement='static'>{{nrcpu}}</vcpu>
         <os>
-            <type arch='x86_64'>hvm</type>
+            <type arch='x86_64' machine='pc-1.3'>hvm</type>
             <boot dev='hd'/>
         </os>
         <features>
@@ -19,19 +19,8 @@
         <devices>
             <emulator>/usr/bin/qemu-system-x86_64</emulator>
             {% for volume in volumes %}
-            <disk type='file' device='disk'>
-                <driver name='qemu' type='raw' cache='none' io='threads'/>
-                <source file='{{volume.id}}'/>
-                <target dev='{{volume.dev}}' bus='virtio'/>
-            </disk>
+            {{volume}}
             {% endfor %}
-            {% if isoname %}
-            <disk type='file' device='cdrom'>
-                <driver name='qemu' type='raw'/>
-                <source file='{{poolpath}}/{{isoname}}'/>
-                <target dev='hdc' bus='ide'/>
-            </disk>
-            {% endif %}
             <controller type='usb' index='0'>
                 <alias name='usb0'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
@@ -46,6 +35,10 @@
                 <target dev='{{machinename}}-{{vxlan}}' />
                 <model type='virtio'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+                <bandwidth>
+                  <inbound average='134218' peak='134218' burst='134218'/>
+                  <outbound average='134218' peak='134218' burst='134218'/>
+                </bandwidth>
             </interface>
             <serial type='pty'>
                 <source path='/dev/pts/1'/>
@@ -72,4 +65,9 @@
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
             </memballoon>
         </devices>
+        <qemu:commandline>
+			<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_TIME' value='60'/>
+			<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_INTVL' value='20'/>
+			<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_PROBES' value='3'/>
+        </qemu:commandline>
  </domain>

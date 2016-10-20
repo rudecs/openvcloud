@@ -20,7 +20,7 @@ For more details on a specific private network you click the network **ID**, bri
 
 On the **Private Network Details** page you now also see the ID of the firewall node (**FW Node**) on which the RouterOS (virtual firewall + DHCP server) for this cloud space is running.
 
-Also listed on the **Private Network Details** page are the port forwardings for this cloud space:
+Also listed on the **Private Network Details** page are the Port Forwards for this cloud space:
 
 ![[]](PortForwardings.png)
 

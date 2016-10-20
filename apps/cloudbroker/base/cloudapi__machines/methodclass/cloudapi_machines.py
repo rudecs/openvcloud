@@ -1,11 +1,14 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator, enums
+from cloudbrokerlib import authenticator, enums, network
 from cloudbrokerlib.baseactor import BaseActor
-from cloudbrokerlib import authenticator, network
+from CloudscalerLibcloud.utils import ovf
 import time
 import itertools
+import re
+import requests
+import gevent
 
 
 class RequireState(object):
@@ -50,7 +53,7 @@ class cloudapi_machines(BaseActor):
 
         """
         with self.models.vmachine.lock(machineId):
-            provider, node, machine = self._getProviderAndNode(machineId)
+            provider, node, machine = self.cb.getProviderAndNode(machineId)
             if node.extra.get('locked', False):
                 raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
             actionname = "%s_node" % actiontype.lower()
@@ -145,14 +148,15 @@ class cloudapi_machines(BaseActor):
         :return int, id of the disk
 
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         if len(machine.disks) >= 25:
             raise exceptions.BadRequest("Cannot create more than 25 disk on a machine")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         # Validate that enough resources are available in the CU limits to add the disk
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
-                                    name=diskName, description=description, size=size, type=type, **kwargs)
+                                                     name=diskName, description=description, size=size,
+                                                     type=type, **kwargs)
         try:
             provider.client.attach_volume(node, volume)
         except:
@@ -171,7 +175,7 @@ class cloudapi_machines(BaseActor):
         :param diskId: id of disk to detach
         :return: True if disk was detached successfully
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         diskId = int(diskId)
         if diskId not in machine.disks:
             return True
@@ -192,7 +196,7 @@ class cloudapi_machines(BaseActor):
         :param diskId: id of disk to attach
         :return: True if disk was attached successfully
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         diskId = int(diskId)
         if diskId in machine.disks:
             return True
@@ -229,12 +233,14 @@ class cloudapi_machines(BaseActor):
         origimage = self.models.image.get(machine.imageId)
         if origimage.accountId:
             raise exceptions.Conflict("Can not make template from a machine which was created from a custom template.")
-        node = self._getNode(machine.referenceId)
-        provider = self._getProvider(machine)
+        node = self.cb.getNode(machine.referenceId)
+        provider = self.cb.getProvider(machine)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
         image.name = templatename
         image.type = 'Custom Templates'
+        image.username = machine.accounts[0].login
+        image.password = machine.accounts[0].login
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
@@ -245,11 +251,203 @@ class cloudapi_machines(BaseActor):
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
-        stack = self.models.stack.get(machine.stackId)
-        stack.images.append(imageid)
-        self.models.stack.set(stack)
-        template = provider.client.ex_create_template(node, templatename, imageid, basename)
-        return True
+        image.id = imageid
+        imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
+        try:
+            referenceId = provider.client.ex_create_template(node, templatename, imagename)
+        except:
+            image = self.models.image.get(imageid)
+            if image.status == 'CREATING':
+                image.status = 'ERROR'
+                self.models.image.set(image)
+            raise
+        image.referenceId = referenceId
+        image.status = 'CREATED'
+        self.models.image.set(image)
+        for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
+            stack['images'].append(imageid)
+            self.models.stack.set(stack)
+
+        return imageid
+
+    def _sendImportCompletionMail(self, emailaddress, link, success=True):
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs = [emailaddress]
+
+        args = {
+            'email': emailaddress,
+            'link': link,
+        }
+
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/import_completion.html', **args)
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/import_completion.subject.txt', **args)
+
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
+
+    def _sendExportCompletionMail(self, emailaddress, success=True):
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs = [emailaddress]
+
+        args = {
+            'email': emailaddress,
+        }
+
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.html', **args)
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.subject.txt', **args)
+
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
+
+    def syncImportOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user):
+        try:
+
+            userobj = j.core.portal.active.auth.getUserInfo(user)
+            cloudspace = self.models.cloudspace.get(cloudspaceId)
+
+            vm = self.models.vmachine.new()
+            vm.cloudspaceId = cloudspaceId
+
+            envelope = self.acl.execute('greenitglobe', 'cloudbroker_getenvelope',
+                                   gid=cloudspace.gid, role='storagedriver',
+                                   args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
+
+            machine = ovf.ovf_to_model(envelope)
+
+            vm.name = name
+            vm.descr = description
+            vm.sizeId = sizeId
+            vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Unknown').id
+            vm.creationTime = int(time.time())
+
+            totaldisksize = 0
+            bootdisk = None
+            for i, diskobj in enumerate(machine['disks']):
+                disk = self.models.disk.new()
+                disk.gid = cloudspace.gid
+                disk.order = i
+                disk.accountId = cloudspace.accountId
+                disk.type = 'B' if i == 0 else 'D'
+                disk.sizeMax = diskobj['size'] / 1024 / 1024 / 1024
+                totaldisksize += disk.sizeMax
+                diskid = self.models.disk.set(disk)[0]
+                disk.id = diskid
+                if i == 0:
+                    bootdisk = disk
+                vm.disks.append(diskid)
+                diskobj['id'] = diskid
+                diskobj['path'] = 'disk-%i.vmdk' % i
+            # Validate that enough resources are available in the CU limits to clone the machine
+            size = self.models.size.get(vm.sizeId)
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                       size.memory / 1024.0, totaldisksize)
+
+            vm.id = self.models.vmachine.set(vm)[0]
+            stack = self.cb.getBestProvider(cloudspace.gid, vm.imageId)
+            provider = self.cb.getProviderByStackId(stack['id'])
+
+            machine['id'] = vm.id
+
+            machine = self.acl.execute('greenitglobe', 'cloudbroker_import',
+                                       gid=cloudspace.gid, role='storagedriver',
+                                       timeout=3600,
+                                       args={'link': link,
+                                             'username': username,
+                                             'passwd': passwd,
+                                             'path': path,
+                                             'machine': machine})
+            try:
+                # TODO: custom disk sizes doesn't work
+                sizeobj = provider.getSize(size, bootdisk)
+                node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
+                self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
+            except:
+                self.cb.machine.cleanup(vm)
+                raise
+            if not callbackUrl:
+                url = j.apps.cloudapi.locations.getUrl() + '/g8vdc/#/edit/%s' % vm.id
+                [self._sendImportCompletionMail(email, url, success=True) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+        except:
+            if not callbackUrl:
+                [self._sendImportCompletionMail(email, '', success=False) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+            raise
+
+    def syncExportOVF(self, link, username, passwd, path, machineId, user, callbackUrl):
+        try:
+            userobj = j.core.portal.active.auth.getUserInfo(user)
+            provider, node, vm = self.cb.getProviderAndNode(machineId)
+            cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
+            disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
+            disknames = [disk['referenceId'].split('@')[0] for disk in disks]
+            size = self.models.size.get(vm.sizeId)
+            osname = self.models.image.get(vm.imageId).name
+            os = re.match('^[a-zA-Z]+', osname).group(0).lower()
+            envelope = ovf.model_to_ovf({
+                'name': vm.name,
+                'description': vm.descr,
+                'cpus': size.vcpus,
+                'mem': size.memory,
+                'os': os,
+                'osname': osname,
+                'disks': [{
+                    'name': 'disk-%i.vmdk' % i,
+                    'size': disk['sizeMax'] * 1024 * 1024 * 1024
+                } for i, disk in enumerate(disks)]
+            })
+            self.acl.execute('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
+                             args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
+            # TODO: the url to be sent to the user
+
+            if not callbackUrl:
+                [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+        except:
+            if not callbackUrl:
+                [self._sendExportCompletionMail(email, success=False) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
+            raise
+
+    def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, **kwargs):
+        """
+        Import a machine from owncloud(ovf)
+        param:link WebDav link to owncloud
+        param:username WebDav Username
+        param:passwd WebDav Password
+        param:path Path to ovf file in WebDav share
+        param:cloudspaceId id of the cloudspace in which the vm should be created
+        param:name name of machine
+        param:description optional description
+        param:sizeId the size id of the machine
+        param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
+        """
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+
+        gevent.spawn(self.syncImportOVF, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user)
+
+    def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
+        """
+        Export a machine with it's disks to owncloud(ovf)
+        param:link WebDav link to owncloud
+        param:username WebDav Username
+        param:passwd WebDav Password
+        param:path Path to ovf file in WebDav share
+        param:machineId id of the machine to export
+        param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
+        """
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        gevent.spawn(self.syncExportOVF, link, username, passwd, path, machineId, user, callbackUrl)
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()
@@ -266,11 +464,6 @@ class cloudapi_machines(BaseActor):
                              'mdbucketname': 'mdvmbackup'}
 
         return self._export(machineId, backupName, storageparameters)
-
-    def _getProvider(self, machine):
-        if machine.referenceId and machine.stackId:
-            return self.cb.getProviderByStackId(machine.stackId)
-        return None
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @audit()
@@ -296,7 +489,7 @@ class cloudapi_machines(BaseActor):
         size = self.models.size.get(sizeId)
         totaldisksize = sum(datadisks + [disksize])
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
@@ -310,14 +503,14 @@ class cloudapi_machines(BaseActor):
         :return True if machine was deleted successfully
 
         """
-        provider, node, vmachinemodel = self._getProviderAndNode(machineId)
+        provider, node, vmachinemodel = self.cb.getProviderAndNode(machineId)
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
         vms = self.models.vmachine.search({'cloneReference': machineId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if vms:
             clonenames = ['  * %s' % vm['name'] for vm in vms]
             raise exceptions.Conflict("Can not delete a Virtual Machine which has clones.\nExisting Clones Are:\n%s" % '\n'.join(clonenames))
-        self. _detachPublicNetworkFromModel(vmachinemodel)
+        self. _detachExternalNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
             vmachinemodel.status = 'DESTROYED'
@@ -327,16 +520,15 @@ class cloudapi_machines(BaseActor):
         j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         try:
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
-        except Exception, e:
+        except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
-
+        except exceptions.BaseError as berror:
+            j.errorconditionhandler.processPythonExceptionObject(berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
-            for pnode in provider.client.list_nodes():
-                if node.id == pnode.id:
-                    provider.client.destroy_node(pnode)
-                    break
-        for disk in vmachinemodel.disks:
-            j.apps.cloudapi.disks.delete(diskId=disk, detach=True)
+            provider.client.destroy_node(node)
+        for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
+            disk['status'] = 'DESTROYED'
+            self.models.disk.set(disk)
 
         # delete leases
         cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
@@ -348,8 +540,8 @@ class cloudapi_machines(BaseActor):
         if macs:
             try:
                 self.netmgr.fw_remove_lease(fwid, macs)
-            except exceptions.ServiceUnavailable:
-                pass  # vfw is not deployed yet
+            except exceptions.ServiceUnavailable as e:
+                j.errorconditionhandler.processPythonExceptionObject(e, message="vfw is not deployed yet")
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -362,7 +554,7 @@ class cloudapi_machines(BaseActor):
         result
 
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         locked = False
@@ -384,7 +576,7 @@ class cloudapi_machines(BaseActor):
                         machine.nics[0].ipAddress = ipaddress
                         self.models.vmachine.set(machine)
                 except exceptions.ServiceUnavailable:
-                    pass # VFW not deployed yet
+                    pass  # VFW not deployed yet
         if node:
             locked = node.extra.get('locked', False)
 
@@ -438,28 +630,6 @@ class cloudapi_machines(BaseActor):
         machineId = int(machineId)
         return self.models.vmachine.get(machineId)
 
-    def _getNode(self, referenceId):
-        return self.cb.Dummy(id=referenceId)
-
-    def _getProviderAndNode(self, machineId):
-        machineId = int(machineId)
-        machine = self._getMachine(machineId)
-        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
-            return None, None, machine
-        provider = self._getProvider(machine)
-        if provider:
-            node = provider.client.ex_get_node_details(machine.referenceId)
-        else:
-            return provider, None, machine
-
-        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
-        if realstatus != machine.status:
-            if realstatus == 'DESTROYED':
-                realstatus = 'HALTED'
-            machine.status = realstatus
-            self.models.vmachine.set(machine)
-        return provider, node, machine
-
     @authenticator.auth(acl={'machine': set('C')})
     @audit()
     def snapshot(self, machineId, name, **kwargs):
@@ -470,14 +640,14 @@ class cloudapi_machines(BaseActor):
         :param name: name to give snapshot
         :return the snapshot name
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         node = provider.client.ex_get_node_details(node.id)
         if node.extra.get('locked', False):
             raise exceptions.Conflict('Cannot create snapshot on a locked machine')
         tags = str(machineId)
         j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
-        return snapshot['name']
+        return snapshot
 
     @authenticator.auth(acl={'machine': set('R')})
     @audit()
@@ -488,7 +658,7 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :return: list with the available snapshots
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         node.name = 'vm-%s' % machineId
@@ -508,10 +678,11 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :param epoch: epoch time of snapshot
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
-        return provider.client.ex_delete_snapshot(node, epoch)
+        provider.client.ex_delete_snapshot(node, epoch)['state']
+        return True
 
     @authenticator.auth(acl={'machine': set('X')})
     @audit()
@@ -523,7 +694,7 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :param epoch: epoch time of snapshot
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         tags = str(machineId)
         j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_rollback_snapshot(node, epoch)
@@ -557,7 +728,7 @@ class cloudapi_machines(BaseActor):
         :return one time url used to connect ot console
 
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         if machine.status != enums.MachineStatus.RUNNING:
@@ -590,8 +761,18 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        for account in machine.accounts:
+            newaccount = clone.new_account()
+            newaccount.login = account.login
+            newaccount.password = account.password
+        clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
+
+        _, node, machine = self.cb.getProviderAndNode(machineId)
+        stack = self.cb.getBestProvider(cloudspace.gid, machine.imageId)
+        provider = self.cb.getProviderByStackId(stack['id'])
+
         totaldisksize = 0
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
@@ -605,19 +786,25 @@ class cloudapi_machines(BaseActor):
             clonedisk.sizeMax = origdisk.sizeMax
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
-            diskmapping.append({'origId': diskId, 'cloneId': clonediskId,
-                                'size': origdisk.sizeMax, 'type': clonedisk.type,
-                                'diskpath': origdisk.referenceId})
+            volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
+            if clonedisk.type == 'B':
+                name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
+            else:
+                name = 'volumes/volume_{}'.format(clonediskId)
+            diskmapping.append((volume, name))
             totaldisksize += clonedisk.sizeMax
         # Validate that enough resources are available in the CU limits to clone the machine
         size = self.models.size.get(clone.sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         clone.id = self.models.vmachine.set(clone)[0]
-        provider, node, machine = self._getProviderAndNode(machineId)
         size = self.cb.machine.getSize(provider, clone)
-        node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
-        self.cb.machine.updateMachineFromNode(clone, node, machine.stackId, size)
+        try:
+            node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
+            self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
+        except:
+            self.cb.machine.cleanup(clone)
+            raise
         tags = str(machineId)
         j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
@@ -632,130 +819,12 @@ class cloudapi_machines(BaseActor):
         :param size: number of entries to return
         :return: list of the history of the machine
         """
-        provider, node, machine = self._getProviderAndNode(machineId)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         tags = str(machineId)
         query = {'category': 'machine_history_ui', 'tags': tags}
         return self.osis_logs.search(query, size=size)[1:]
-
-    @authenticator.auth(acl={'machine': set('C')})
-    @audit()
-    def export(self, machineId, name, host, aws_access_key, aws_secret_key, bucket, **kwargs):
-        """
-        Create an export/backup of the machine
-
-        :param machineId: id of the machine to backup
-        :param name: useful name for this backup
-        :param host: host to export(if s3)
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :param bucket: s3 bucket name
-        :return: jobid
-        """
-        storageparameters = {}
-        if not aws_access_key or not aws_secret_key or not host:
-            raise exceptions.BadRequest('S3 parameters are not provided')
-        storageparameters['aws_access_key'] = aws_access_key
-        storageparameters['aws_secret_key'] = aws_secret_key
-        storageparameters['host'] = host
-        storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = 'S3'
-        storageparameters['backup_type'] = 'condensed'
-        storageparameters['bucket'] = bucket
-        storageparameters['mdbucketname'] = bucket
-        return self._export(machineId, name, host, storageparameters)
-
-    def _export(self, machineId, name, storageparameters, **kwargs):
-        """
-        Create a export/backup of a machine
-
-        :param machineId: id of the machine to backup
-        :param name: useful name for this backup
-        :param backuptype: Type e.g raw, condensed
-        :param host: host to export(if s3)
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :return jobid
-        """
-        system_cl = j.clients.osis.getNamespace('system')
-        machine = self.models.vmachine.get(machineId)
-        if not machine:
-            raise exceptions.NotFound('Machine %s not found' % machineId)
-        stack = self.models.stack.get(machine.stackId)
-
-        storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nid = int(stack.referenceId)
-        args = {'path':storagepath, 'name':name, 'machineId':machineId, 'storageparameters': storageparameters,'nid':nid, 'backup_type':'condensed'}
-        agentcontroller = j.clients.agentcontroller.get()
-        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, args=args, wait=False)['id']
-        return id
-
-    @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
-    def importToNewMachine(self, name, cloudspaceId, vmexportId, sizeId, description, aws_access_key, aws_secret_key, **kwargs):
-        """
-        Restore export to a new machine
-
-        :param name: name of the machine
-        :param cloudspaceId: id of the export to backup
-        :param sizeId: id of the specific size
-        :param description: optional description
-        :param aws_access_key: s3 access key
-        :param aws_secret_key: s3 secret key
-        :return jobid
-        """
-        vmexport = self.models.vmexport.get(vmexportId)
-        if not vmexport:
-            raise exceptions.NotFound('Export definition with id %s not found' % vmexportId)
-        host = vmexport.server
-        bucket = vmexport.bucket
-        import_name = vmexport.name
-
-        storageparameters = {}
-
-        if not aws_access_key or not aws_secret_key:
-            raise exceptions.BadRequest('S3 parameters are not provided')
-
-        storageparameters['aws_access_key'] = aws_access_key
-        storageparameters['aws_secret_key'] = aws_secret_key
-        storageparameters['host'] = host
-        storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = 'S3'
-        storageparameters['backup_type'] = 'condensed'
-        storageparameters['bucket'] = bucket
-        storageparameters['mdbucketname'] = bucket
-        storageparameters['import_name'] = import_name
-
-        args = {'name':name, 'cloudspaceId':cloudspaceId, 'vmexportId':vmexportId, 'sizeId':sizeId, 'description':description, 'storageparameters': storageparameters}
-
-        agentcontroller = j.clients.agentcontroller.get()
-
-        id = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_tonewmachine', j.application.whoAmI.nid, args=args, wait=False)['id']
-        return id
-
-    @authenticator.auth(acl={'machine': set('R')})
-    @audit()
-    def listExports(self, machineId, status, **kwargs):
-        """
-        List exported images
-
-        :param machineId: id of the machine
-        :param status: filter on specific status
-        :return list of exports, each as a dict
-        """
-        query = {}
-        if status:
-            query['status'] = status
-        if machineId:
-            query['machineId'] = machineId
-        exports = self.models.vmexport.search(query)[1:]
-        exportresult = []
-        for exp in exports:
-            exportresult.append({'status':exp['status'], 'type':exp['type'], 'storagetype':exp['storagetype'], 'machineId': exp['machineId'], 'id':exp['id'], 'name':exp['name'],'timestamp':exp['timestamp']})
-        return exportresult
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     @audit()
@@ -926,33 +995,33 @@ class cloudapi_machines(BaseActor):
         return self._updateACE(machineId, userId, accesstype, userstatus)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def attachPublicNetwork(self, machineId, **kwargs):
+    def attachExternalNetwork(self, machineId, **kwargs):
         """
-         Attach a public network to the machine
+         Attach a external network to the machine
 
         :param machineId: id of the machine
-        :return: True if a public network was attached to the machine
+        :return: True if a external network was attached to the machine
         """
-        provider, node, vmachine = self._getProviderAndNode(machineId)
+        provider, node, vmachine = self.cb.getProviderAndNode(machineId)
         for nic in vmachine.nics:
             if nic.type == 'PUBLIC':
                 return True
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        # Check that attaching a public network will not exceed the allowed CU limits
+        # Check that attaching a external network will not exceed the allowed CU limits
         j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(vmachine.cloudspaceId, 1)
         networkid = cloudspace.networkId
-        netinfo = self.network.getPublicIpAddress(cloudspace.gid)
+        netinfo = self.network.getExternalIpAddress(cloudspace.gid, cloudspace.externalnetworkId)
         if netinfo is None:
-            raise RuntimeError("No available public IPAddresses")
-        pool, publicipaddress = netinfo
-        if not publicipaddress:
-            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+            raise RuntimeError("No available externalnetwork IPAddresses")
+        pool, externalnetworkip = netinfo
+        if not externalnetworkip:
+            raise RuntimeError("Failed to get externalnetworkip for networkid %s" % networkid)
         nic = vmachine.new_nic()
-        nic.ipAddress = str(publicipaddress)
-        nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway})
+        nic.ipAddress = str(externalnetworkip)
+        nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway, 'externalnetworkId': str(pool.id)})
         nic.type = 'PUBLIC'
         self.models.vmachine.set(vmachine)
-        iface = provider.client.attach_public_network(node)
+        iface = provider.client.attach_public_network(node, pool.vlan)
         nic.deviceName = iface.target
         nic.macAddress = iface.mac
         self.models.vmachine.set(vmachine)
@@ -962,7 +1031,7 @@ class cloudapi_machines(BaseActor):
     @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
     @audit()
     def resize(self, machineId, sizeId, **kwargs):
-        provider, node, vmachine = self._getProviderAndNode(machineId)
+        provider, node, vmachine = self.cb.getProviderAndNode(machineId)
         bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
         if len(bootdisks) != 1:
             raise exceptions.Error('Failed to retreive first disk')
@@ -974,7 +1043,7 @@ class cloudapi_machines(BaseActor):
         oldsize = self.models.size.get(vmachine.sizeId)
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
         deltacpu = max(size.vcpus - oldsize.vcpus, 0)
-        deltamemory = max((size.memory - oldsize.memory)/1024.0, 0)
+        deltamemory = max((size.memory - oldsize.memory) / 1024.0, 0)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
                                                                    numcpus=deltacpu,
                                                                    memorysize=deltamemory)
@@ -984,32 +1053,31 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def detachPublicNetwork(self, machineId, **kwargs):
+    def detachExternalNetwork(self, machineId, **kwargs):
         """
-        Detach the public network from the machine
+        Detach the external network from the machine
 
         :param machineId: id of the machine
-        :return: True if public network was detached from the machine
+        :return: True if external network was detached from the machine
         """
 
-        provider, node, vmachine = self._getProviderAndNode(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        networkid = cloudspace.networkId
+        provider, node, vmachine = self.cb.getProviderAndNode(machineId)
 
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
 
-            provider.client.detach_public_network(node, networkid)
-        self._detachPublicNetworkFromModel(vmachine)
+            provider.client.detach_public_network(node)
+        self._detachExternalNetworkFromModel(vmachine)
         return True
 
-    def _detachPublicNetworkFromModel(self, vmachine):
+    def _detachExternalNetworkFromModel(self, vmachine):
         for nic in vmachine.nics:
             nicdict = nic.obj2dict()
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
             vmachine.nics.remove(nic)
             self.models.vmachine.set(vmachine)
-            self.network.releasePublicIpAddress(nic.ipAddress)
+            tags = j.core.tags.getObject(nic.params)
+            self.network.releaseExternalIpAddress(int(tags.tags.get('externalnetworkId')), nic.ipAddress)

@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     total = ac.count()
     query = {'active': True}
     if gid:
-      query['gid'] = int(gid)
+        query['gid'] = int(gid)
     active = ac.count(query)
     result = result % {'height': height,
                        'width': width,
@@ -19,6 +19,7 @@ def main(j, args, params, tags, tasklet):
                        'total': total}
     params.result = (result, doc)
     return params
+
 
 def match(j, args, params, tags, tasklet):
     return True

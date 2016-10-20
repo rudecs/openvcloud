@@ -1,7 +1,7 @@
 [actor] @dbtype:mem,osis
     """
     API Actor api for managing cloudspaces, this actor is the final api a enduser uses to manage cloudspaces
-    """    
+    """
     method:create
         """
         Create an extra cloudspace
@@ -19,6 +19,7 @@
         var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
+        var:externalnetworkId str,, id of externalnetwork to connect to @optional
         result:int, id of created cloudspace
 
     method:deploy

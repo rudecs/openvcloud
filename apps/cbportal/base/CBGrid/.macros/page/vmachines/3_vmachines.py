@@ -44,7 +44,7 @@ def main(j, args, params, tags, tasklet):
     fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
     tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
 

@@ -22,4 +22,7 @@ def action(fwobject, macaddress):
     password = fwobject['password']
 
     ro = RouterOS(host, username, password)
-    return ro.getIpaddress(macaddress, 'cloudspace-bridge')
+    ip = ro.getIpaddress(macaddress, 'cloudspace-bridge')
+    if ip is not None:
+        ro.makeStaticLease(macaddress)
+    return ip

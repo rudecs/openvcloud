@@ -6,7 +6,7 @@ Libvirt script to ge the domain
 
 name = "attach_device"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com"
 license = "bsd"
 version = "1.0"
@@ -27,6 +27,3 @@ def action(xml, machineid):
         flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_LIVE
     domain.attachDeviceFlags(xml, flags)
     return domain.XMLDesc()
-
-
-

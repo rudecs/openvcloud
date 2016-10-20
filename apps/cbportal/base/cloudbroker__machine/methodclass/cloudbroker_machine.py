@@ -131,10 +131,15 @@ class cloudbroker_machine(BaseActor):
                             error='Failed to stop machines')
 
     def _stopMachines(self, machineIds, reason, ctx):
-        for idx, machineId in enumerate(machineIds):
+        runningMachineIds = []
+        for machineId in machineIds:
+            vmachine = self._validateMachineRequest(machineId)
+            if vmachine.status in ['RUNNING', 'PAUSED']:
+                runningMachineIds.append(machineId)
+        for idx, machineId in enumerate(runningMachineIds):
             ctx.events.sendMessage("Stopping Machine", 'Stopping Machine %s/%s' %
-                                   (idx+1, len(machineIds)))
-            self.stop(machineId, reason)
+                                   (idx+1, len(runningMachineIds)))
+            self.actors.machines.stop(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -153,6 +158,9 @@ class cloudbroker_machine(BaseActor):
     def reboot(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         self.actors.machines.reboot(machineId)
+
+    def get(self, machineId):
+        return self.actors.machines.get(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -179,15 +187,15 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def rollbackSnapshot(self, machineId, snapshotName, reason, **kwargs):
+    def rollbackSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.rollbackSnapshot(machineId, snapshotName)
+        self.actors.machines.rollbackSnapshot(machineId, epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def deleteSnapshot(self, machineId, snapshotName, reason, **kwargs):
+    def deleteSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.deleteSnapshot(machineId, snapshotName)
+        self.actors.machines.deleteSnapshot(machineId, epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -211,7 +219,7 @@ class cloudbroker_machine(BaseActor):
 
         if vmachine.status != 'HALTED':
             # create network on target node
-            self.acl.executeJumpscript('cloudscalers', 'createnetwork', args={'networkid': cloudspace.networkId},
+            self.acl.executeJumpscript('greenitglobe', 'createnetwork', args={'networkid': cloudspace.networkId},
                                        gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
 
             node = self.cb.Dummy(id=vmachine.referenceId)
@@ -392,13 +400,9 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
 
         stack = self.models.stack.get(vmachine.stackId)
-        subject = 'Stopping vmachine "%s" for abusive resources usage' % vmachine.name
-        msg = 'Account: %s\nMachine: %s\nReason: %s' % (accountId, vmachine.name, reason)
-#        ticketId =self.whmcs.tickets.create_ticket(subject, msg, "High")
         args = {'machineId': vmachine.id, 'nodeId': vmachine.referenceId}
         self.acl.executeJumpscript(
             'cloudscalers', 'vm_stop_for_abusive_usage', gid=stack.gid, nid=stack.referenceId, args=args, wait=False)
-#        self.whmcs.tickets.close_ticket(ticketId)
 
     @auth(['level1', 'level2', 'level3'])
     def backupAndDestroy(self, accountId, machineId, reason, **kwargs):
@@ -409,7 +413,6 @@ class cloudbroker_machine(BaseActor):
         * Close the ticket
         """
         vmachine = self._validateMachineRequest(machineId)
-        stack = self.models.stack.get(vmachine.stackId)
         args = {'accountId': accountId, 'machineId': machineId, 'reason': reason,
                 'vmachineName': vmachine.name, 'cloudspaceId': vmachine.cloudspaceId}
         self.acl.executeJumpscript(
@@ -449,7 +452,7 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         self.actors.portforwarding.create(
-            cloudspace.id, cloudspace.publicipaddress, str(destPort), vmachine.id, str(localPort), proto)
+            cloudspace.id, cloudspace.externalnetworkip, str(destPort), vmachine.id, str(localPort), proto)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -457,7 +460,6 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         self.actors.portforwarding.deleteByPort(cloudspace.id, publicIp, publicPort, proto)
-
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -486,13 +488,13 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def attachPublicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.attachPublicNetwork(machineId)
+    def attachExternalNetwork(self, machineId, **kwargs):
+        return self.actors.machines.attachExternalNetwork(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def detachPublicNetwork(self, machineId, **kwargs):
-        return self.actors.machines.detachPublicNetwork(machineId)
+    def detachExternalNetwork(self, machineId, **kwargs):
+        return self.actors.machines.detachExternalNetwork(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

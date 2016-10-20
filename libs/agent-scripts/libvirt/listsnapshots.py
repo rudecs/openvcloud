@@ -1,44 +1,42 @@
 from JumpScale import j
+import itertools
+import gevent
 
 descr = """
-List snapshot of specific machine
+List snapshots of a specific machine
 """
 
 name = "listsnapshots"
 category = "libvirt"
-organization = "cloudscalers"
-author = "deboeckj@incubaid.com"
+organization = "greenitglobe"
+author = "geert@greenitglobe.com"
 license = "bsd"
-version = "1.0"
+version = "2.0"
 roles = []
 async = True
 
 
-def action(diskpaths):
-    import sys
-    sys.path.append('/opt/OpenvStorage')
-    from ovs.lib.vdisk import VDiskController
-    from ovs.dal.lists.vdisklist import VDiskList
-    from ovs.dal.lists.vpoollist import VPoolList
+def action(ovs_connection, diskguids):
+    # Lists snapshots
+    #
+    # ovs_connection: dict holding connection info for ovs restapi
+    #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
+    # diskguids: array of guids of the disks to delete
+    #
+    # returns list of dicts with name snapshot combinations
+    #  eg: [{'name': 'ultimate', 'timestamp': 1368774635484}, ...]
 
+    ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
+                                     credentials=(ovs_connection['client_id'],
+                                                  ovs_connection['client_secret']))
+    path = '/vdisks/{}'
+
+    jobs = [gevent.spawn(ovs.get, path.format(diskguid)) for diskguid in diskguids]
+    gevent.joinall(jobs)
     snapshots = set()
-    pool = VPoolList.get_vpool_by_name('vmstor')
-    for diskpath in diskpaths:
-        diskpath = diskpath.replace('/mnt/vmstor/', '')
-        disk = VDiskList.get_by_devicename_and_vpool(diskpath, pool)
-        if disk:
-            for snap in disk.snapshots:
-                if not snap['is_automatic']:
-                    snapshots.add((snap['label'], int(snap['timestamp'])))
-    snaps = list()
-    for snap in snapshots:
-        snaps.append({'name': snap[0], 'epoch':snap[1]})
-    return snaps
+    for snapshot in itertools.chain(*(job.get()['snapshots'] for job in jobs)):
+        if snapshot['is_automatic']:
+            continue
+        snapshots.add((snapshot['label'], int(snapshot['timestamp'])))
 
-
-if __name__ == '__main__':
-    from JumpScale.baselib import cmdutils
-    parser = cmdutils.ArgumentParser()
-    parser.add_argument('-p', '--path', help='Volume Path')
-    options = parser.parse_args()
-    print action([options.path])
+    return [dict(name=snapshot[0], epoch=snapshot[1]) for snapshot in snapshots]

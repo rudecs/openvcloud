@@ -3,11 +3,13 @@ import random
 import string
 import sys
 import time
+sys.path.append('/opt/OpenvStorage')
 
 from ovs.dal.hybrids.user import User
 from ovs.dal.hybrids.client import Client
 from ovs.dal.hybrids.j_roleclient import RoleClient
 from ovs.dal.lists.userlist import UserList
+from ovs.dal.lists.storagerouterlist import StorageRouterList
 
 """
 Add credentials for alba oauth2
@@ -30,7 +32,7 @@ def user():
     if alba_client is None:
         print '[+] adding "alba" oauth2 client'
         choice = string.ascii_letters + string.digits
-        
+
         # Creating user
         alclient = Client()
         alclient.ovs_type = 'USER'
@@ -39,21 +41,45 @@ def user():
         alclient.client_secret = ''.join(random.choice(choice) for _ in range(64))
         alclient.user = admin
         alclient.save()
-        
+
         # Adding roles
         for junction in admin.group.roles:
             roleclient = RoleClient()
             roleclient.client = alclient
             roleclient.role = junction.role
             roleclient.save()
-        
+
         alba_client = alclient.client_id
         alba_secret = alclient.client_secret
 
-    return {'client': alba_client, 'secret': alba_secret}
+    return {'client_id': alba_client, 'client_secret': alba_secret}
 
-print '[+] managing users'
 
-credentials = user()
-print '[+] alba client id: %s' % credentials['client']
-print '[+] alba secret: %s' % credentials['secret']
+def get_management_ip():
+    localips = j.system.net.getIpAddresses()
+    for storagerouter in StorageRouterList.get_storagerouters():
+        if storagerouter.ip in localips:
+            return storagerouter.ip
+
+
+if __name__ == '__main__':
+    print '[+] managing users'
+
+    scl = j.clients.osis.getNamespace('system')
+    grid = scl.grid.get(j.application.whoAmI.gid)
+    credentials = grid.settings.get('ovs_credentials')
+    ips = set()
+    ovscreds = user()
+    if credentials is None:
+        credentials = ovscreds
+    else:
+        credentials.update(ovscreds)
+        ips = set(credentials.get('ips', []))
+
+    ips.add(get_management_ip())
+    credentials['ips'] = list(ips)
+    grid.settings['ovs_credentials'] = credentials
+    scl.grid.set(grid)
+
+    print '[+] alba client id: %s' % credentials['client_id']
+    print '[+] alba secret: %s' % credentials['client_secret']

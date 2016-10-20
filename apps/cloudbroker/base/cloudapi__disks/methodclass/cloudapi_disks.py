@@ -3,7 +3,7 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-from libcloud.compute.base import StorageVolume
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume
 
 
 class cloudapi_disks(BaseActor):
@@ -22,7 +22,7 @@ class cloudapi_disks(BaseActor):
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):
             disk = disk.dump()
-        return StorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node})
+        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
     @audit()
@@ -65,6 +65,21 @@ class cloudapi_disks(BaseActor):
             raise
         self.models.disk.set(disk)
         return disk, volume
+
+    @authenticator.auth(acl={'account': set('C')})
+    def limitIO(self, diskId, iops, **kwargs):
+        disk = self.models.disk.get(diskId)
+        if disk.status == 'DESTROYED':
+            raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
+
+        machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
+        if not machine:
+            raise exceptions.NotFound("Could not find virtual machine beloning to disk")
+        disk.iops = iops
+        self.models.disk.set(disk)
+        provider, node, machine = self.cb.getProviderAndNode(machine['id'])
+        volume = self.getStorageVolume(disk, provider, node)
+        return provider.client.ex_limitio(volume, iops)
 
     @authenticator.auth(acl={'account': set('R')})
     @audit()

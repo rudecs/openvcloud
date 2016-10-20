@@ -1,6 +1,6 @@
 def main(j, args, params, tags, tasklet):
     acl = j.clients.agentcontroller.get()
-    jobinfo = acl.executeJumpscript('cloudscalers', 'ovspackages', role='storagenode', gid=j.application.whoAmI.gid)
+    jobinfo = acl.executeJumpscript('cloudscalers', 'ovspackages', role='storagedriver', gid=j.application.whoAmI.gid)
     wiki = []
     if jobinfo['state'] == 'NOWORK':
         wiki.append("Not installed")

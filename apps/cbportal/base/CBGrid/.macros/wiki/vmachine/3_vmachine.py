@@ -4,6 +4,7 @@ except Exception:
     import json
 from JumpScale.portal.portal import exceptions
 
+
 def generateUsersList(sclient, vmachinedict):
     """
     Generate the list of users that have ACEs on the account
@@ -32,6 +33,7 @@ def generateUsersList(sclient, vmachinedict):
             user['acl'] = acl['right']
             users.append(user)
     return users
+
 
 def main(j, args, params, tags, tasklet):
     import gevent
@@ -88,12 +90,12 @@ def main(j, args, params, tags, tasklet):
     try:
         size = cbosis.size.get(obj.sizeId).dump()
     except Exception:
-        size = {'vcpus': 'N/A', 'memory': 'N/A', 'description':'N/A'}
+        size = {'vcpus': 'N/A', 'memory': 'N/A', 'description': 'N/A'}
     try:
         stack = cbosis.stack.get(obj.stackId).dump()
     except Exception:
         stack = {'name': 'N/A', 'referenceId': 'N/A', 'type': 'UNKNOWN'}
-    try: 
+    try:
         image = cbosis.image.get(obj.imageId).dump()
     except Exception:
         image = {'name': 'N/A', 'referenceId': ''}
@@ -116,14 +118,24 @@ def main(j, args, params, tags, tasklet):
         data[field] = getattr(obj, field, 'N/A')
 
     try:
-        data['nics'] = '||Name||MAC Address||IP Address||Gateway||Delete||\n'
+        data['nics'] = []
+        if [nic for nic in obj.nics if nic.ipAddress == 'Undefined']:
+            # reload machine details
+            j.apps.cloudbroker.machine.get(obj.id)
+            obj = cbosis.vmachine.get(obj.id)
+
         for nic in obj.nics:
             action = ""
-            if nic.deviceName.endswith('pub'):
-                action = "{{action id:'action-DetachFromPublicNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
-            gateway = j.core.tags.getObject(nic.params or '').tags.get('gateway', 'N/A')
-            data['nics'] += "|%s |%s |%s |%s |%s|\n" % (nic.deviceName or 'N/A', nic.macAddress, nic.ipAddress, gateway, action)
-    except Exception, e:
+            if nic.deviceName.endswith('ext'):
+                action = "{{action id:'action-DetachFromExternalNetwork' deleterow:true class:'glyphicon glyphicon-remove''}}"
+            tagObj = j.core.tags.getObject(nic.params or '')
+            gateway = tagObj.tags.get('gateway', 'N/A')
+            if 'externalnetworkId' in tagObj.tags:
+                nic.ipAddress = '[%s|External Network?networkid=%s]' % (nic.ipAddress, tagObj.tags['externalnetworkId'])
+            nic.gateway = gateway
+            nic.action = action
+            data['nics'].append(nic)
+    except Exception as e:
         data['nics'] = 'NIC information is not available %s' % e
 
     data['disks'] = cbosis.disk.search({'id': {'$in': obj.disks}})[1:]
@@ -169,6 +181,7 @@ def main(j, args, params, tags, tasklet):
     data['referenceId'] = data['referenceId'].replace('-', '%2d')
     args.doc.applyTemplate(data, True)
     return params
+
 
 def match(j, args, params, tags, tasklet):
     return True

@@ -15,10 +15,10 @@
     If no resourceid is provided, all the images are listed.
     resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
 	"""
-        var:resourceid str,, optional resourceproviderid. @tags: optional 
+        var:resourceid str,, optional resourceproviderid. @tags: optional
         result: list of images supported by the stack(e.g libvirt)
 
-  
+
     method: getFreeMacAddress
         """
         Get a free macaddres in this libvirt environment
@@ -29,14 +29,14 @@
     method: getFreeIpaddress
     """
     Get a free Ipaddress from one of ipadress ranges
-    """ 
+    """
         var:networkid int,, id representing the network
         result: free ipaddress composed as string
 
     method: releaseIpaddress
     """
     Release a ipaddress.
-    """ 
+    """
         var:networkid int,, id representing the network
         var:ipaddress str,,string representing the ipaddres to release
         result:bool
@@ -76,13 +76,34 @@
 
     method: registerNode
     """
-    Register some basic node information E.g ipaddress 
-    """ 
+    Register some basic node information E.g ipaddress
+    """
         var:id str,,id of the node
         var:macaddress str,,macaddress of the node
         var:networkid str,, id of the network
         result:str
-    
+
+
+    method: registerImage
+    """
+    Register image in model
+    """
+        var:name str,,name of the image
+        var:category str,,catergory of the image
+        var:imageid str,, id of the image
+        var:size int,,size of the image
+        var:gid int,,grid id
+        result:str
+
+
+    method: removeImage
+    """
+    remove image from model
+    """
+        var:imageid str,,id of the image
+        var:gid int,,grid id
+        result:str
+
     method: getNode
     """
     Get a node
@@ -158,4 +179,3 @@
         var:key str,, key of data
         var:reset bool,, reset info
         result:dict if key valid otherwise None
-

@@ -9,7 +9,7 @@ category = "cloudbroker"
 organization = "cloudscalers"
 async = True
 period = 1800  # 0.5 hrs
-role = 'master'
+roles = ['master']
 
 
 def action():

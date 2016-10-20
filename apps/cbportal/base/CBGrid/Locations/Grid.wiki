@@ -31,52 +31,90 @@ h3. Location: ${name}
   input:
    - age
 
-- display: Sync Available Images to CloudBroker
+- display: Sync Available Images
   action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
   data:
    gid: $$gid
-   
-- display: Sync Available Sizes to CloudBroker
+
+- display: Sync Available Sizes
   action: /restmachine/cloudbroker/iaas/syncAvailableSizesToCloudbroker
   data:
    gid: $$gid
 
+
+- display: Add New VM Size
+  action: /restmachine/cloudbroker/iaas/addSize
+  data:
+   gid: $$gid
+  input:
+  - label: Name of the size
+    name: name
+    type: text
+    placeholder: required
+    required: true
+
+  - label: Number of vcpus
+    name: vcpus
+    type: number
+    placeholder: required
+    required: true
+
+
+  - label: Memory in MB
+    name: memory
+    type: number
+    placeholder: required
+    required: true
+
+
+  - label: Sizes of bootdisk in GB
+    name: disksize
+    type: text
+    placeholder: comma , sperated, ints
+    required: true
+
+
+- display: Delete Unused VM Size
+  action: "#deletesize"
+
 }}
 
+{{ deletesize }}
+
 @row
 
 @col 4
-h5. No. of Active Accounts
+h5. Active Accounts
 {{nraccountgauge id:1 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 
 @col 4
-h5. No. of Free IPs
+h5. Free IPs
 {{nrfreeipsgauge id:5 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
-h5. No. of Running Virtual Machines
+h5. Running Virtual Machines
 #*From Total Deployed:45*
 {{nrvmgauge: id:3 gid:$$gid width:100 height:100}}
-@colend 
-@rowend 
+@colend
+@rowend
 
 @row
 
 @col 4
-h5. No. of Active Cloud Spaces
+h5. Active Cloud Spaces
 {{nrcloudspacegauge id:4 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
-h5. No. of Free Network IDs
+h5. Free Network IDs
 {{nrfreenwidsgauge: id:6 gid:$$gid width:100 height:100}}
-@colend 
+@colend
 
 @col 4
-h5. No. of Windows Vmachines Running 
+h5. Running Windows VMs
 {{nrwinvmgauge id:2 gid:$$gid width:100 height:100}}
 @colend
 @rowend
@@ -85,8 +123,8 @@ h5. No. of Windows Vmachines Running
 h3. Stacks
 {{stacks gid:$$gid}}
 
-h3. Public Networks
-{{publicnetworks gid:$$gid}}
+h3. External Networks
+{{externalnetworks gid:$$gid}}
 
 h3. Firewall Nodes
 {{fwnodes gid:$$gid roles:fw}}

@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
     fieldvalues = ['[%(id)s|/CBGrid/account?id=%(id)s]', 'name', 'status', makeACL]
     tableid = modifier.addTableForModel('cloudbroker', 'account', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
 

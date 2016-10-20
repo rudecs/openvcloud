@@ -3,7 +3,7 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
@@ -15,11 +15,14 @@ import re
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
+
 def removeConfusingChars(input):
     return input.replace('0', '').replace('O', '').replace('l', '').replace('I', '')
 
+
 class Dummy(object):
     def __init__(self, **kwargs):
+        self.extra = {}
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
@@ -83,6 +86,7 @@ class CloudBroker(object):
         self.cloudspace = CloudSpace(self)
         self.syscl = j.clients.osis.getNamespace('system')
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
+        self.agentcontroller = j.clients.agentcontroller.get()
 
     @property
     def actors(self):
@@ -136,8 +140,35 @@ class CloudBroker(object):
         if not capacityinfo:
             return -1
 
-        provider = capacityinfo[0] # is sorted by least used
+        provider = capacityinfo[0]  # is sorted by least used
         return provider
+
+    def getNode(self, referenceId):
+        return self.Dummy(id=referenceId)
+
+    def getProvider(self, machine):
+        if machine.referenceId and machine.stackId:
+            return self.getProviderByStackId(machine.stackId)
+        return None
+
+    def getProviderAndNode(self, machineId):
+        machineId = int(machineId)
+        machine = models.vmachine.get(machineId)
+        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
+            return None, None, machine
+        provider = self.getProvider(machine)
+        if provider:
+            node = provider.client.ex_get_node_details(machine.referenceId)
+        else:
+            return provider, None, machine
+
+        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
+        if realstatus != machine.status:
+            if realstatus == 'DESTROYED':
+                realstatus = 'HALTED'
+            machine.status = realstatus
+            models.vmachine.set(machine)
+        return provider, node, machine
 
     def chooseProvider(self, machine):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
@@ -148,25 +179,18 @@ class CloudBroker(object):
         models.vmachine.set(machine)
         return True
 
+    def getActiveSessionsKeys(self):
+        return self.agentcontroller.listActiveSessions().keys()
+
     def getCapacityInfo(self, gid, imageId):
         resourcesdata = list()
-        activesessions = []
-        for gidnid, session in j.clients.agentcontroller.get().listSessions().iteritems():
-            # skip nodes that didnt respond in last 60 seconds
-            if session[0] < time.time() - 60:
-                continue
-            gridid, nid = gidnid.split('_')
-            gridid, nid = int(gridid), int(nid)
-            activesessions.append((gridid, nid))
-
+        activesessions = self.getActiveSessionsKeys()
         stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
-                nodekey = (stack['gid'], int(stack['referenceId']))
-                if nodekey not in activesessions:
+                if (stack['gid'], int(stack['referenceId'])) not in activesessions:
                     continue
-
                 # search for all vms running on the stacks
                 usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                   '$query': {'stackId': stack['id'],
@@ -392,6 +416,10 @@ class CloudBroker(object):
                 resource_limits[limit_type] = resource_limits[limit_type] and float(resource_limits[limit_type])
             else:
                 resource_limits[limit_type] = resource_limits[limit_type] and int(resource_limits[limit_type])
+        maxVDiskCapacity = resource_limits['CU_D']
+        if maxVDiskCapacity is not None and maxVDiskCapacity != -1 and maxVDiskCapacity < 10:
+            raise exceptions.BadRequest("Minimum disk capacity for cloudspace is 10GB.")
+
 
 class CloudSpace(object):
     def __init__(self, cb):
@@ -399,7 +427,6 @@ class CloudSpace(object):
         self.netmgr = j.apps.jumpscale.netmgr
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.network = network.Network(models)
-
 
     def release_resources(self, cloudspace, releasenetwork=True):
         #  delete routeros
@@ -419,10 +446,11 @@ class CloudSpace(object):
         if cloudspace.networkId and releasenetwork:
             self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
             cloudspace.networkId = None
-        if cloudspace.publicipaddress:
-            self.network.releasePublicIpAddress(cloudspace.publicipaddress)
-            cloudspace.publicipaddress = None
+        if cloudspace.externalnetworkip:
+            self.network.releaseExternalIpAddress(cloudspace.externalnetworkId, cloudspace.externalnetworkip)
+            cloudspace.externalnetworkip = None
         return cloudspace
+
 
 class Machine(object):
     def __init__(self, cb):
@@ -449,6 +477,8 @@ class Machine(object):
         image = models.image.get(imageId)
         if disksize < image.size:
             raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
+        if image.status != "CREATED":
+            raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
         size = models.size.get(sizeId)
         if disksize not in size.disks:
@@ -464,7 +494,7 @@ class Machine(object):
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
 
-        #create a public ip and virtual firewall on the cloudspace if needed
+        # create a public ip and virtual firewall on the cloudspace if needed
         if cloudspace.status != 'DEPLOYED':
             args = {'cloudspaceId': cloudspace.id}
             self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
@@ -498,18 +528,22 @@ class Machine(object):
             diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
-        if image.type == 'Custom Templates':
+        if hasattr(image, 'username') and image.username:
+            account.login = image.username
+        elif image.type != 'Custom Templates':
+            account.login = 'cloudscalers'
+        else:
             account.login = 'Custom login'
             account.password = 'Custom password'
-        else:
-            if hasattr(image, 'username') and image.username:
-                account.login = image.username
-            else:
-                account.login = 'cloudscalers'
+
+        if hasattr(image, 'password') and image.password:
+            account.password = image.password
+
+        if not account.password:
             length = 6
             chars = removeConfusingChars(string.letters + string.digits)
             letters = [removeConfusingChars(string.ascii_lowercase), removeConfusingChars(string.ascii_uppercase)]
-            passwd = ''.join(random.choice(chars) for _ in xrange(length))
+            passwd = ''.join(random.choice(chars) for _ in range(length))
             passwd = passwd + random.choice(string.digits) + random.choice(letters[0]) + random.choice(letters[1])
             account.password = passwd
         auth = NodeAuthPassword(account.password)
@@ -539,10 +573,13 @@ class Machine(object):
                 nic.ipAddress = ipaddress
         models.vmachine.set(machine)
 
+        # filter out iso volumes
+        volumes = filter(lambda v: v.type == 'disk', node.extra['volumes'])
+
         for order, diskid in enumerate(machine.disks):
             disk = models.disk.get(diskid)
             disk.stackId = stackId
-            disk.referenceId = node.extra['volumes'][order].id
+            disk.referenceId = volumes[order].id
             models.disk.set(disk)
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
@@ -551,22 +588,27 @@ class Machine(object):
         newstackId = stackId
 
         def getStackAndProvider(newstackId):
+            provider = None
             try:
                 if not newstackId:
                     stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-                    newstackId = stack['id']
-                provider = self.cb.getProviderByStackId(newstackId)
+                    provider = self.cb.getProviderByStackId(stack['id'])
+                else:
+                    activesessions = self.cb.getActiveSessionsKeys()
+                    provider = self.cb.getProviderByStackId(newstackId)
+                    if (provider.client.gid, int(provider.client.id)) not in activesessions:
+                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except:
                 self.cleanup(machine)
                 raise
-            return provider, newstackId
+            return provider
 
         node = -1
         while node == -1:
-            provider, newstackId = getStackAndProvider(newstackId)
+            provider = getStackAndProvider(newstackId)
             image, pimage = provider.getImage(machine.imageId)
             if not image:
                 self.cleanup(machine)
@@ -576,23 +618,27 @@ class Machine(object):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+            except StorageException as e:
+                eco = j.errorconditionhandler.processPythonExceptionObject(e)
+                self.cleanup(machine)
+                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cb.markProvider(newstackId, eco)
+                self.cb.markProvider(provider.stackId, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
             if node == -1 and stackId:
+                self.cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             elif node == -1:
-                excludelist.append(newstackId)
+                excludelist.append(provider.stackId)
                 newstackId = 0
-        self.cb.clearProvider(newstackId)
-        self.updateMachineFromNode(machine, node, newstackId, psize)
+        self.cb.clearProvider(provider.stackId)
+        self.updateMachineFromNode(machine, node, provider.stackId, psize)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
-
 
     def getSize(self, provider, machine):
         brokersize = models.size.get(machine.sizeId)

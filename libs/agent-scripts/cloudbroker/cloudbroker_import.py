@@ -1,29 +1,52 @@
 from JumpScale import j
 
 descr = """
-Follow up import of export
+Follow up creation of import
 """
 
 name = "cloudbroker_import"
 category = "cloudbroker"
-organization = "cloudscalers"
-author = "hendrik@mothership1.com"
+organization = "greenitglobe"
+author = "elawadim@greenitglobe.com"
 license = "bsd"
 version = "1.0"
-roles = []
-queue = "default"
+roles = ['storagedriver']
+queue = 'io'
 async = True
+timeout = 60 * 60
 
 
+def action(link, username, passwd, path, machine):
+    from CloudscalerLibcloud import openvstorage
+    from CloudscalerLibcloud.utils import webdav
+    import tempfile
+    tmpdir = tempfile.mkdtemp()
+    try:
+        filename = '%s/ovf.tar.gz' % tmpdir
+        webdav.download_file(link, username, passwd, path, filename)
+        ovfpath = '%s/ovf' % tmpdir
 
-def action(path, metadata ,storageparameters,nid):
-    import JumpScale.grid.osis
-    import JumpScale.grid.agentcontroller
-    import ujson
-    agentcontroller = j.clients.agentcontroller.get()
+        j.system.fs.targzUncompress(filename, ovfpath)
 
-    args = {'path':path, 'metadata':metadata, 'storageparameters': storageparameters, 'qcow_only':False, 'filename': None}
+        bootdisk = '%s/%s' % (ovfpath, machine['disks'][0]['path'])
+        datadisks = map(lambda x: '%s/%s' % (ovfpath, x['path']), machine['disks'][1:])
 
-    result = agentcontroller.executeJumpscript('cloudscalers', 'cloudbroker_import_onnode', args=args, nid=nid, wait=True)['result']
+        bootres = [openvstorage.importVolume(bootdisk, "vm-%d/bootdisk-vm-%d.raw" % (machine['id'], machine['id']), False)]
+        datares = [openvstorage.importVolume(disk,
+                    "volumes/volume_%d.raw" % (disk['id']), True) for disk in datadisks]
+        res = bootres + datares
+        for disk, job in zip(machine['disks'], res):
+            disk['guid'], disk['path'] = job
+        return machine
+    finally:
+        j.system.fs.removeDirTree(tmpdir)
+        # TODO: remove imported disks in case of falure
 
-    return True
+if __name__ == "__main__":
+    print(action('a', 'a', 'a', 'a', {
+        'id': 5555,
+        'disks': [{
+            'id': '6666',
+            'path': 'disk-0.vmdk'
+        }]
+    }))

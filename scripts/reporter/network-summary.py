@@ -65,7 +65,8 @@ class NetworkSummary():
     def markdown(self):
         print("# Interfaces")
         print("| Name | Address |")
-        
+        print("| ---- | ------- |")
+
         for intf in self._intf:
             print("| %s | %s |" % (intf, self._intf[intf]))
         
@@ -73,6 +74,7 @@ class NetworkSummary():
         
         print("# Nodes configured")
         print("| Name | MAC Address | IP Address | ")
+        print("| ---- | ----------- | ---------- | ")
         
         for node in self._nodes:
             print("| %s | `%s` | `%s` |" % (node['name'], node['mac'], node['address']))

@@ -6,7 +6,7 @@ Prepares a live-migration action for a vm by creating disks
 
 name = "vm_livemigrate"
 category = "cloudbroker"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "deboeckj@codescalers.com, muhamad.azmy@codescalers.com"
 license = "bsd"
 version = "1.0"
@@ -25,7 +25,7 @@ def action(vm_id, sourceurl, domainxml, force):
 
     if source_con:
         domain = source_con.lookupByUUIDString(vm_id)
-        newdomain = target_con.defineXML(domain.XMLDesc())
+        newdomain = target_con.defineXML(domainxml)
 
         if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
             flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE

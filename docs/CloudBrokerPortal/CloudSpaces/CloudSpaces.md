@@ -46,13 +46,13 @@ By clicking the **+ Grant User Access** link you can grant other users to the cl
 A user can have **read**, **write** or **admin** privileges. See the [End User Portal Authorization Model](../../EndUserPortal/Authorization/AuthorizationModel.md) documentation for all details on this.
 
 
-#### Port Forwardings
+#### Port Forwards
 
 In order to make virtual machines on the cloud space publicly accessible you will need to set-up port forwards from the public network to the private network.
 
 ![](PortForwardings.png)
 
-Clicking **+ Add Port Forward** allows you to add port forwardings:
+Clicking **+ Add Port Forward** allows you to add Port Forwards:
 
 ![](CreatePortForwardings.png)
 

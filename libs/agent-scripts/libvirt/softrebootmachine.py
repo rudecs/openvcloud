@@ -6,7 +6,7 @@ Libvirt script to stop a virtual machine
 
 name = "softrebootmachine"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "hamdy.farag@codescalers.com"
 license = "bsd"
 version = "1.0"

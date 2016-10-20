@@ -6,7 +6,7 @@ Libvirt script to copy (TGZ) a virtual machine to Ceph Filesystem
 
 name = "machinetgztocephfs"
 category = "libvirt"
-organization = "cloudscalers"
+organization = "greenitglobe"
 author = "jan@mothership1.com"
 license = "bsd"
 version = "1.0"

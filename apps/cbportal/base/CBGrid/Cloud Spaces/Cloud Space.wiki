@@ -15,8 +15,10 @@ h2. Cloud Space: ${name}
 
 {{actions:
 
+
 - display: Edit
   action: /restmachine/cloudbroker/cloudspace/update
+  clearform: false
   input:
   - name: name
     label: Name
@@ -160,6 +162,7 @@ h2. Cloud Space: ${name}
 {% endif %}
 
 {{createmachine: cloudspaceId:$$id}}
+{{importmachine: cloudspaceId:$$id}}
 {{createportforwarding: cloudspaceId:$$id}}
 
 h3. Details
@@ -169,9 +172,9 @@ h3. Details
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
-|*Location*|${location}|
+|*Location Code*|${location}|
 |*Description*|${descr}|
-|*Public IP Adress*|${publicipaddress}|
+|*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|
 
 h3. Cloud Resource Limits
 
@@ -191,7 +194,7 @@ h3. Users Access
     | {%if user.userstatus!='INVITED' %} [${user.id}|/CBGrid/user?id=${user.id}] {%else%} ${user.id} {% endif %} |${", ".join(user.emails)}|${user.acl}|${user.userstatus if user.userstatus else 'N/A'}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
 {% endfor %}
 
-h3. Port Forwardings
+h3. Port Forwards
 {{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
 
 ||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
@@ -203,6 +206,7 @@ h3. Port Forwardings
 
 h3. Virtual Machines
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
+{{action id:'importmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Import Virtual Machine'}}
 
 {{actions: gridbinding:'table_cloudbroker_vmachine machineIds'
 - display: Start Machines

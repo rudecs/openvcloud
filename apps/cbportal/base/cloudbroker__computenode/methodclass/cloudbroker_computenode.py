@@ -6,10 +6,10 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import random
 import urlparse
 
+
 class cloudbroker_computenode(BaseActor):
     """
     Operator actions for handling interventsions on a computenode
-    
     """
     def __init__(self):
         super(cloudbroker_computenode, self).__init__()
@@ -17,9 +17,8 @@ class cloudbroker_computenode(BaseActor):
         self._vcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'vfw', 'virtualfirewall')
         self.acl = j.clients.agentcontroller.get()
 
-
     def _getStack(self, id, gid):
-        stacks = self.models.stack.search({'id':int(id), 'gid': int(gid)})[1:]
+        stacks = self.models.stack.search({'id': int(id), 'gid': int(gid)})[1:]
         if not stacks:
             raise exceptions.NotFound('ComputeNode with id %s not found' % id)
         return stacks[0]
@@ -30,7 +29,7 @@ class cloudbroker_computenode(BaseActor):
         Set different stack statusses, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'OFFLINE(Machine is not available'
         param:statckid id of the stack to update
         param:status status e.g ENABLED, DISABLED, or OFFLINE
-        result 
+        result
         """
         statusses = ['ENABLED', 'DECOMMISSIONED', 'MAINTENANCE']
         stack = self._getStack(id, gid)
@@ -54,7 +53,7 @@ class cloudbroker_computenode(BaseActor):
             stack['eco'] = None
         self.models.stack.set(stack)
         if status in ['ENABLED', 'MAINTENANCE', 'DECOMMISSIONED', 'ERROR']:
-            nodes = self.scl.node.search({'id':int(stack['referenceId']), 'gid': stack['gid']})[1:]
+            nodes = self.scl.node.search({'id': int(stack['referenceId']), 'gid': stack['gid']})[1:]
             if len(nodes) > 0:
                 node = nodes[0]
                 node['active'] = True if status == 'ENABLED' else False
@@ -65,6 +64,20 @@ class cloudbroker_computenode(BaseActor):
         stack['status'] = 'ERROR'
         stack['eco'] = eco.guid
         self.models.stack.set(stack)
+
+    @auth(['level2', 'level3'], True)
+    def enableStacks(self, ids, **kwargs):
+        kwargs['ctx'].events.runAsync(self._enableStacks,
+                                      args=(ids, ),
+                                      kwargs=kwargs,
+                                      title='Enabling Stacks',
+                                      success='Successfully Scheduled Stacks Enablement',
+                                      error='Failed to Enable Stacks')
+
+    def _enableStacks(self, ids, **kwargs):
+        for stackid in ids:
+            stack = self.models.stack.get(stackid)
+            self.enable(stack.id, stack.gid, '', **kwargs)
 
     @auth(['level2', 'level3'], True)
     def enable(self, id, gid, message, **kwargs):
@@ -98,7 +111,6 @@ class cloudbroker_computenode(BaseActor):
         querybuilder['$query'] = {'stackId': stackId, 'status': {'$nin': ['DESTROYED', 'ERROR']}}
         machines = self.models.vmachine.search(querybuilder)[1:]
         return machines
-
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
@@ -161,7 +173,7 @@ class cloudbroker_computenode(BaseActor):
         machines_actor = j.apps.cloudbroker.machine
         stackmachines = self.models.vmachine.search({'stackId': stack['id'],
                                                      'status': {'$nin': ['DESTROYED', 'ERROR']}
-                                                    })[1:]
+                                                     })[1:]
         othernodes = self.scl.node.search({'gid': stack['gid'], 'active': True, 'roles': 'fw'})[1:]
         if not othernodes:
             raise exceptions.ServiceUnavailable('There is no other Firewall node available to move the Virtual Firewall to')
@@ -181,20 +193,10 @@ class cloudbroker_computenode(BaseActor):
     @wrap_remote
     def decommission(self, id, gid, message, **kwargs):
         stack = self._getStack(id, gid)
-        status = stack['status']
         stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
         if not stacks:
             raise exceptions.PreconditionFailed("Decommissioning stack not possible when there are no other enabled stacks")
         self._changeStackStatus(stack, 'DECOMMISSIONED')
-        otherstack = random.choice(filter(lambda x: x['id'] != id, stacks))
-        args = {'storageip': urlparse.urlparse(stack['apiUrl']).hostname}
-        job = self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline',
-                                         nid=int(otherstack['referenceId']), gid=otherstack['gid'],
-                                         args=args)
-        if job['state'] != 'OK':
-            self._changeStackStatus(stack, status)
-            raise exceptions.Error("Failed to put storage node offline")
-
         ctx = kwargs['ctx']
         title = 'Decommissioning Node'
         errorcb = functools.partial(self._errorcb, stack)

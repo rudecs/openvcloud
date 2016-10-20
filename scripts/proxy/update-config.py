@@ -1,18 +1,50 @@
 from JumpScale import j
 
-locations = {}
-for service in j.atyourservice.findServices(name='autossh', instance='http_proxy'):
-    location = service.parent.parent.instance
-    host = service.hrd.getStr('instance.remote.bind')
-    port = service.hrd.getStr('instance.remote.port')
-    locations.setdefault(location, []).append('%s:%s' % (host, port))
+upstreams = {}
+locations = set()
 
+refsrv = j.atyourservice.findServices(name='node.ssh', instance='ovc_reflector')
+if len(refsrv) == 0:
+    for service in j.atyourservice.findServices(name='node.ssh'):
+        if service.parent is None:
+            # skip nodes that dont have parents
+            continue
+        nginxservices = service.execute('ls /opt/nginx/cfg/sites-enabled/; exit 0')
+        ovsservice = 'storagedriver_aio' in nginxservices
+        cpuservice = 'cpunode_aio' in nginxservices
+        envname = service.parent.instance
+
+        if ovsservice or cpuservice:
+            host = service.hrd.getStr('instance.ip')
+            port = "2001"  # assume there is no reflector
+            locations.add(envname)
+            if ovsservice:
+                print '[+] Adding ovs {} {}'.format(service.instance, envname)
+                upstreams.setdefault('ovs-' + envname, []).append('%s:%s' % (host, port))
+            if cpuservice:
+                print '[+] Adding cpu {} {}'.format(service.instance, envname)
+                upstreams.setdefault(envname, []).append('%s:%s' % (host, port))
+
+else:
+    for service in j.atyourservice.findServices(name='autossh', instance='http_proxy'):
+        location = service.parent.parent.instance
+        host = service.hrd.getStr('instance.remote.bind')
+        port = service.hrd.getStr('instance.remote.port')
+        upstreams.setdefault(location, []).append('%s:%s' % (host, port))
+        locations.add(location)
+
+    for service in j.atyourservice.findServices(name='autossh', instance='http_proxy_ovs'):
+        location = service.parent.parent.instance
+        host = service.hrd.getStr('instance.remote.bind')
+        port = service.hrd.getStr('instance.remote.port')
+        upstreams.setdefault('ovs-' + location, []).append('%s:%s' % (host, port))
+        locations.add(location)
 
 # updating proxy service
 proxy = j.atyourservice.get(name='node.ssh', instance='ovc_proxy')
 
 offloader = j.atyourservice.get(name='ssloffloader', parent=proxy)
-for location, hosts in locations.iteritems():
+for location, hosts in upstreams.iteritems():
     offloader.hrd.set('instance.generated.%s' % location, hosts)
 offloader.hrd.save()
 
@@ -31,7 +63,7 @@ ovs['children'] = 'instance.ovslinks'
 ovs['baseurl'] = ovs.get('url') or ovs.get('baseurl')
 ovs['url'] = ''
 ovslinks = {}
-for location in locations.keys():
+for location in locations:
     ovslinks[location] = ovs['baseurl'] + '/ovcinit/%s' % location
 
 portal.hrd.set('instance.navigationlinks.ovs', ovs)
