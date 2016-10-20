@@ -49,7 +49,7 @@ class cloudbroker_machine(BaseActor):
         totaldisksize = sum(datadisks + [disksize])
         size = self.models.size.get(sizeId)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory/1024.0, totaldisksize)
+                                                                   size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
 
@@ -85,8 +85,11 @@ class cloudbroker_machine(BaseActor):
     def _destroyMachines(self, machineIds, reason, ctx):
         for idx, machineId in enumerate(machineIds):
             ctx.events.sendMessage("Destroying Machine", 'Destroying Machine %s/%s' %
-                                   (idx+1, len(machineIds)))
-            self.destroy(machineId, reason)
+                                   (idx + 1, len(machineIds)))
+            try:  # BULK ACTION
+                self.destroy(machineId, reason)
+            except exceptions.BadRequest:
+                pass
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -110,8 +113,11 @@ class cloudbroker_machine(BaseActor):
     def _startMachines(self, machineIds, reason, ctx):
         for idx, machineId in enumerate(machineIds):
             ctx.events.sendMessage("Starting", 'Starting Machine %s/%s' %
-                                   (idx+1, len(machineIds)))
-            self.start(machineId, reason)
+                                   (idx + 1, len(machineIds)))
+            try:  # BULK ACTION
+                self.start(machineId, reason)
+            except exceptions.BadRequest:
+                pass
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -131,14 +137,19 @@ class cloudbroker_machine(BaseActor):
                             error='Failed to stop machines')
 
     def _stopMachines(self, machineIds, reason, ctx):
+
         runningMachineIds = []
         for machineId in machineIds:
-            vmachine = self._validateMachineRequest(machineId)
-            if vmachine.status in ['RUNNING', 'PAUSED']:
-                runningMachineIds.append(machineId)
+            try:  # BULK ACTION
+                vmachine = self._validateMachineRequest(machineId)
+                if vmachine.status in ['RUNNING', 'PAUSED']:
+                    runningMachineIds.append(machineId)
+            except exceptions.BadRequest:
+                pass
+
         for idx, machineId in enumerate(runningMachineIds):
             ctx.events.sendMessage("Stopping Machine", 'Stopping Machine %s/%s' %
-                                   (idx+1, len(runningMachineIds)))
+                                   (idx + 1, len(runningMachineIds)))
             self.actors.machines.stop(machineId)
 
     @auth(['level1', 'level2', 'level3'])
@@ -176,8 +187,11 @@ class cloudbroker_machine(BaseActor):
     def _rebootMachines(self, machineIds, reason, ctx):
         for idx, machineId in enumerate(machineIds):
             ctx.events.sendMessage("Rebooting Machine", 'Rebooting Machine %s/%s' %
-                                  (idx+1, len(machineIds)))
-            self.reboot(machineId, reason)
+                                   (idx + 1, len(machineIds)))
+            try:   # BULK ACTION
+                self.reboot(machineId, reason)
+            except exceptions.BadRequest:
+                pass
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -538,7 +552,7 @@ class cloudbroker_machine(BaseActor):
         if user:
             userId = user['id']
         else:
-            #external user, delete ACE that was added using emailaddress
+            # external user, delete ACE that was added using emailaddress
             userId = username
         self.actors.machines.deleteUser(machineId, userId)
         return True
