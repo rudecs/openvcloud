@@ -14,7 +14,7 @@ Here three gauges report about the number of active accounts, the number of runn
 
 The **Actions** dropdown menu provides access to the frequently used actions **Add User** and **Add Account**:
 
-![](!Actions.png)
+![](Actions.png)
 
 Also a link to the [Status Overview](../../GridPortal/StatusOverview/StatusOverview.md) page is included.
 
