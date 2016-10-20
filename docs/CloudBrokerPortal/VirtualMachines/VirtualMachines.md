@@ -44,13 +44,13 @@ Here all the snapshots are listed:
 Creating snapshots is straight forward, and rolling back or deleting a snapshot is done by clicking on one of the icons in the **Actions** column.
 
 
-### Port Forwardings
+### Port Forwards
 
-Here all port forwardings are listed:
+Here all Port Forwards are listed:
 
 ![](PortForwardings.png)
 
-Adding more port forwardings and removing existing ones is easy.
+Adding more Port Forwards and removing existing ones is easy.
 
 
 ### Jobs

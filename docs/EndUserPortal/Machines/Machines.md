@@ -114,7 +114,7 @@ A user can either have Read, Read/Write or Admin privileges.
 
 ### Port Forwards
 
-On the **Port Forwards** tab all the port forwardings for your virtual machine are listed:
+On the **Port Forwards** tab all the Port Forwards for your virtual machine are listed:
 
 ![](PortForwards.png)
 

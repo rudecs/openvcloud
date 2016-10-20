@@ -19,7 +19,10 @@ def action(networkid, sourceip):
     BACKPLANE = 'vxbackend'
     nc = j.system.ovsnetconfig
     target_con = libvirt.open()
-    source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
+    try:
+        source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
+    except:
+        source_con = None
 
     networkidHex = '%04x' % int(networkid)
     networkname = "space_%s" % networkidHex
@@ -40,23 +43,33 @@ def action(networkid, sourceip):
         private.create()
         private.setAutostart(True)
 
-    domain = source_con.lookupByName(name)
-    target_con.defineXML(domain.XMLDesc())
-
-    if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-        flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
-        try:
-            domain.migrate2(target_con, flags=flags)
-        except:
+    if source_con:
+        domain = source_con.lookupByName(name)
+        target_con.defineXML(domain.XMLDesc())
+        if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
             try:
-                target_domain = target_con.lookupByName(name)
-                target_domain.undefine()
+                domain.migrate2(target_con, flags=flags)
             except:
-                pass  # vm wasn't created on target
-            raise
+                try:
+                    target_domain = target_con.lookupByName(name)
+                    target_domain.undefine()
+                except:
+                    pass  # vm wasn't created on target
+                raise
+        else:
+            domain.undefine()
     else:
-        domain.undefine()
+        import jinja2
+        acl = j.clients.agentcontroller.get()
+        devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
+        edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
+        imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
+        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
+        xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
+                                       edgehost=edgeip, edgeport=edgeport,
+                                       edgetransport=edgetransport)
+        dom = target_con.defineXML(xmlsource)
+        dom.create()
 
     return True
-
-

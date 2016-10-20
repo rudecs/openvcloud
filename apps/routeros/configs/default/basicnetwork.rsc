@@ -28,7 +28,8 @@ add address=192.168.103.0/24 gateway=192.168.103.1 netmask=255.255.255.0 dns-ser
 
 /ip dhcp-server
 remove [/ip dhcp-server find name=server1]
-add address-pool=dhcp disabled=no interface=cloudspace-bridge name=server1
+add address-pool=dhcp disabled=no interface=cloudspace-bridge name=server1 lease-time=5200w
+config set store-leases-disk=immediately
 
 /ip address
 remove numbers=[/ip address find interface=public]

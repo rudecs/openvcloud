@@ -4,9 +4,11 @@ from jinja2 import Environment, PackageLoader
 import os
 import time
 import shutil
+import urlparse
+from multiprocessing import cpu_count
+from psutil import virtual_memory
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
-from JumpScale.lib.btrfs import *
 from JumpScale.lib.ovsnetconfig.VXNet import netclasses
 
 
@@ -14,6 +16,24 @@ LOCKCREATED = 1
 LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
+
+# for thin provisioning
+TOTAL_MEM = int(virtual_memory().total >> 30)
+if TOTAL_MEM <= 64:
+    RESERVED_MEM = 1024  # 1 GB
+elif 64 < TOTAL_MEM < 196:
+    RESERVED_MEM = 2048  # 2 GB
+else:
+    RESERVED_MEM = 4096  # 4 GB
+
+CPU_COUNT = cpu_count()
+if CPU_COUNT <= 16:
+    RESERVED_CPUS = 1
+elif 16 < CPU_COUNT < 32:
+    RESERVED_CPUS = 2
+else:
+    RESERVED_CPUS = 4
+
 
 class TimeoutError(Exception):
     pass
@@ -79,12 +99,24 @@ class LibvirtUtil(object):
                 return None
         return domain
 
+    def defineXML(self, xml):
+        root = ElementTree.fromstring(xml)
+        vcpu = root.find("vcpu")
+        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=CPU_COUNT - 1))
+        xml = ElementTree.tostring(root)
+        return self.connection.defineXML(xml)
+
     def create(self, id, xml):
+        for bridge in self._get_domain_bridges(xml):
+            if bridge.startswith('ext'):
+                vlan = int(bridge.partition('-')[-1], 16)
+                jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+                bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
         if isLocked(id):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
         if not domain and xml:
-            domain = self.connection.defineXML(xml)
+            domain = self.defineXML(xml)
         state = domain.state(0)[0]
         if state == libvirt.VIR_DOMAIN_RUNNING:
             return domain.XMLDesc()
@@ -101,6 +133,7 @@ class LibvirtUtil(object):
         domain = self._get_domain(id)
         if domain:
             networkid = self._get_domain_networkid(domain)
+            bridges = list(self._get_domain_bridges(domain))
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 if not domain.shutdown() == 0:
                     return False
@@ -110,8 +143,8 @@ class LibvirtUtil(object):
                     j.errorconditionhandler.processPythonExceptionObject(e)
                     domain.destroy()
             domain.undefine()
-            if networkid:
-                self.cleanupNetwork(networkid)
+            if networkid or bridges:
+                self.cleanupNetwork(networkid, bridges)
         return True
 
     def waitForAction(self, domid, timeout=None, events=None):
@@ -132,9 +165,9 @@ class LibvirtUtil(object):
         if timeout:
             libvirt.virEventAddTimeout(timeout, timecb, None)
         rocon.domainEventRegisterAny(None,
-                                    libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
-                                    callback,
-                                    rocon)
+                                     libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
+                                     callback,
+                                     rocon)
         while run['state']:
             libvirt.virEventRunDefaultImpl()
 
@@ -169,28 +202,6 @@ class LibvirtUtil(object):
             return True
         return domain.resume() == 0
 
-    def backup_machine_to_filesystem(self, machineid, backuppath):
-        if isLocked(id):
-            raise Exception("Can't backup a locked machine")
-        from shutil import make_archive
-        domain = self.connection.lookupByUUIDString(machineid)
-        diskfiles = self._get_domain_disk_file_names(domain)
-        if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            domain.destroy()
-        for diskfile in diskfiles:
-            if os.path.exists(diskfile):
-                try:
-                    self.connection.storageVolLookupByPath(diskfile)
-                except:
-                    continue
-                poolpath = os.path.join(self.basepath, domain.name())
-                if os.path.exists(poolpath):
-                    archive_name = os.path.join(
-                        backuppath, 'vm-%04x' % machineid)
-                    root_dir = poolpath
-                    make_archive(archive_name, gztar, root_dir)
-        return True
-
     def delete_machine(self, machineid, machinexml):
         if isLocked(id):
             raise Exception("Can't delete a locked machine")
@@ -202,6 +213,7 @@ class LibvirtUtil(object):
             xml = ElementTree.fromstring(machinexml)
         diskfiles = self._get_domain_disk_file_names(xml)
         networkid = self._get_domain_networkid(xml)
+        bridges = self._get_domain_bridges(xml)
         if domain:
             if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
@@ -209,15 +221,17 @@ class LibvirtUtil(object):
                 domain.undefine()
             except:
                 pass  # none persistant vms dont need to be undefined
-        if networkid:
-            self.cleanupNetwork(networkid)
+        if networkid or bridges:
+            self.cleanupNetwork(networkid, bridges)
         for diskfile in diskfiles:
             if os.path.exists(diskfile):
                 try:
                     vol = self.connection.storageVolLookupByPath(diskfile)
+                    vol.delete(0)
                 except:
                     continue
-                vol.delete(0)
+            if os.path.exists(diskfile):
+                os.remove(diskfile)
         name = xml.find('name').text
         poolpath = os.path.join(self.basepath, name)
         try:
@@ -229,39 +243,69 @@ class LibvirtUtil(object):
             shutil.rmtree(poolpath)
         return True
 
-    def _get_domain_disk_file_names(self, dom):
+    def get_domain_disks(self, dom):
         if isinstance(dom, ElementTree.Element):
             xml = dom
+        elif isinstance(dom, basestring):
+            xml = ElementTree.fromstring(dom)
         else:
             xml = ElementTree.fromstring(dom.XMLDesc(0))
         disks = xml.findall('devices/disk')
-        diskfiles = list()
         for disk in disks:
-            if disk.attrib['device'] == 'disk' or disk.attrib['device'] == 'cdrom':
-                source = disk.find('source')
-                if source != None:
-                    if disk.attrib['device'] == 'disk':
-                        if 'dev' in source.attrib:
-                            diskfiles.append(source.attrib['dev'])
-                        if 'file' in source.attrib:
-                            diskfiles.append(source.attrib['file'])
-                    if disk.attrib['device'] == 'cdrom':
+            if disk.attrib['device'] in ('disk', 'cdrom'):
+                yield disk
+
+    def get_domain_disk(self, referenceId, domaindisks):
+        url = urlparse.urlparse(referenceId)
+        name = url.path.split('@')[0].strip('/')
+        for disk in domaindisks:
+            source = disk.find('source')
+            if source is not None:
+                if source.attrib['name'].strip('/') == name:
+                    target = disk.find('target')
+                    return target.attrib['dev']
+
+    def get_domain_nics(self, dom):
+        xml = self._get_xml_dom(dom)
+        for target in xml.findall('devices/interface/target'):
+            yield target.attrib['dev']
+
+    def _get_xml_dom(self, dom):
+        if isinstance(dom, ElementTree.Element):
+            return dom
+        elif isinstance(dom, basestring):
+            return ElementTree.fromstring(dom)
+        else:
+            return ElementTree.fromstring(dom.XMLDesc(0))
+
+    def _get_domain_disk_file_names(self, dom):
+        diskfiles = list()
+        for disk in self.get_domain_disks(dom):
+            source = disk.find('source')
+            if source is not None:
+                if source.attrib.get('protocol') == 'openvstorage':
+                    diskfiles.append(os.path.join(self.basepath, source.attrib['name'] + '.raw'))
+                else:
+                    if 'dev' in source.attrib:
+                        diskfiles.append(source.attrib['dev'])
+                    if 'file' in source.attrib:
                         diskfiles.append(source.attrib['file'])
         return diskfiles
 
-    def _get_domain_networkid(self, dom):
-        if isinstance(dom, ElementTree.Element):
-            xml = dom
-        else:
-            xml = ElementTree.fromstring(dom.XMLDesc(0))
+    def _get_domain_bridges(self, dom):
+        xml = self._get_xml_dom(dom)
         interfaces = xml.findall('devices/interface/source')
         for interface in interfaces:
             for network_key in ['bridge', 'network']:
-                if interface.attrib.get(network_key, '').startswith('space_'):
-                    bridgename = interface.attrib[network_key].partition('_')[-1]
-                    return int(bridgename, 16)
-        return None
+                if network_key in interface.attrib:
+                    yield interface.attrib[network_key]
 
+    def _get_domain_networkid(self, dom):
+        for bridge in self._get_domain_bridges(dom):
+            if bridge.startswith('space_'):
+                networkid = bridge.partition('_')[-1]
+                return int(networkid, 16)
+        return None
 
     def check_disk(self, diskxml):
         return True
@@ -279,11 +323,11 @@ class LibvirtUtil(object):
                 totalrunningmax += maxmem / 1000
         return (hostmem, totalmax, totalrunningmax)
 
-    def check_machine(self, machinexml):
+    def check_machine(self, machinexml, reserved_mem=RESERVED_MEM):
         xml = ElementTree.fromstring(machinexml)
         memory = int(xml.find('memory').text)
         hostmem, totalmax, totalrunningmax = self.memory_usage()
-        if (totalrunningmax + memory) > (hostmem - 1024):
+        if (totalrunningmax + memory) > (hostmem - reserved_mem):
             return False
         return True
 
@@ -315,7 +359,7 @@ class LibvirtUtil(object):
         return {'name': snap.getName(), 'epoch': snap.getXMLDesc()}
 
     def _isRootVolume(self, domain, file):
-        diskfiles = self._getDomainDiskFiles(domain)
+        diskfiles = self._get_domain_disk_file_names(domain)
         if file in diskfiles:
             return True
         return False
@@ -347,8 +391,8 @@ class LibvirtUtil(object):
                 domain, snapshotfile['file'].path)
             if not is_root_volume:
                 print 'Blockcommit from %s to %s' % (snapshotfile['file'].path, snapshotfile['file'].backing_file_path)
-                result = domain.blockCommit(snapshotfile['name'], snapshotfile[
-                                            'file'].backing_file_path, snapshotfile['file'].path)
+                domain.blockCommit(snapshotfile['name'], snapshotfile[
+                                   'file'].backing_file_path, snapshotfile['file'].path)
                 todelete.append(snapshotfile['file'].path)
                 volumes.append(snapshotfile['name'])
             else:
@@ -405,7 +449,7 @@ class LibvirtUtil(object):
         snapshotdomainxml = ElementTree.fromstring(snapshot.getXMLDesc(0))
         domainxml = snapshotdomainxml.find('domain')
         newxml = ElementTree.tostring(domainxml)
-        self.connection.defineXML(newxml)
+        self.defineXML(newxml)
         if deletechildren:
             children = snapshot.listAllChildren(1)
             for child in children:
@@ -444,7 +488,7 @@ class LibvirtUtil(object):
                 while not rebasedone:
                     rebasedone = self._block_job_info(domain, clonefrom)
             finally:
-                self.connection.defineXML(domainconfig)
+                self.defineXML(domainconfig)
         return destination_path
 
     def exportToTemplate(self, id, name, clonefrom, filename):
@@ -452,7 +496,7 @@ class LibvirtUtil(object):
             raise Exception("Can't export a locked machine")
         domain = self.connection.lookupByUUIDString(id)
         if not clonefrom:
-            domaindisks = self._getDomainDiskFiles(domain)
+            domaindisks = self._get_domain_disk_file_names(domain)
             if len(domaindisks) > 0:
                 clonefrom = domaindisks[0]
             else:
@@ -502,7 +546,7 @@ class LibvirtUtil(object):
         return True
 
     def create_machine(self, machinexml):
-        domain = self.connection.defineXML(machinexml)
+        domain = self.defineXML(machinexml)
         domain.create()
         return self._to_node(domain)
 
@@ -532,20 +576,6 @@ class LibvirtUtil(object):
             nodes.append(self._to_node_list(x))
         return nodes
 
-    def _getDomainDiskFiles(self, domain):
-        xml = ElementTree.fromstring(domain.XMLDesc(0))
-        disks = xml.findall('devices/disk')
-        diskfiles = list()
-        for disk in disks:
-            if disk.attrib['device'] == 'disk':
-                source = disk.find('source')
-                if source != None:
-                    if 'dev' in source.attrib:
-                        diskfiles.append(source.attrib['dev'])
-                    if 'file' in source.attrib:
-                        diskfiles.append(source.attrib['file'])
-        return diskfiles
-
     def _getPool(self, domain):
         # poolname is by definition the machine name
         return self.readonly.storagePoolLookupByName(domain.name())
@@ -562,9 +592,11 @@ class LibvirtUtil(object):
         network.create()
         network.setAutostart(True)
 
-    def cleanupNetwork(self, networkid):
-        if j.system.ovsnetconfig.cleanupIfUnused(networkid):
-            networkname = netclasses.VXBridge(networkid).name
+    def checkNetwork(self, networkname):
+        return networkname in self.connection.listNetworks()
+
+    def cleanupNetwork(self, networkid, bridges):
+        def destroyNetwork(name):
             try:
                 network = self.connection.networkLookupByName(networkname)
                 try:
@@ -578,6 +610,16 @@ class LibvirtUtil(object):
             except:
                 # network does not exists
                 pass
+
+        if networkid and j.system.ovsnetconfig.cleanupIfUnused(networkid):
+            networkname = netclasses.VXBridge(networkid).name
+            destroyNetwork(networkname)
+
+        for bridge in bridges:
+            if not bridge.startswith('ext-'):
+                continue
+            if j.system.ovsnetconfig.cleanupIfUnusedVlanBridge(bridge):
+                destroyNetwork(bridge)
 
     def createVMStorSnapshot(self, name):
         vmstor_snapshot_path = j.system.fs.joinPaths(

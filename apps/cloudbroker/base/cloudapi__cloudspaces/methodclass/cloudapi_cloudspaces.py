@@ -182,7 +182,8 @@ class cloudapi_cloudspaces(BaseActor):
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1,
-               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
+               maxNetworkPeerTransfer=-1, maxNumPublicIP=-1,
+               externalnetworkId=None, **kwargs):
         """
         Create an extra cloudspace
 
@@ -198,6 +199,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
+        :param externalnetworkId: Id of externalnetwork
         :return: True if update was successful
         :return int with id of created cloudspace
         """
@@ -209,16 +211,22 @@ class cloudapi_cloudspaces(BaseActor):
         if not locations:
             raise exceptions.BadRequest('Location %s does not exists' % location)
         location = locations[0]
+        if externalnetworkId:
+            if self.models.externalnetwork.count({'id': externalnetworkId,
+                                                  'gid': location['gid'],
+                                                  'accountId': {'$in': [accountId, 0]}}) == 0:
+                raise exceptions.BadRequest('Could not find externalnetwork with id %s' % externalnetworkId)
 
         active_cloudspaces = self._listActiveCloudSpaces(accountId)
         # Extra cloudspaces require a payment and a credit check
 
-        if name in [ space['name'] for space in active_cloudspaces ]:
+        if name in [space['name'] for space in active_cloudspaces]:
             raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
 
         cs = self.models.cloudspace.new()
         cs.name = name
         cs.accountId = accountId
+        cs.externalnetworkId = externalnetworkId
         cs.location = location['locationCode']
         cs.gid = location['gid']
         ace = cs.new_acl()
@@ -241,7 +249,6 @@ class cloudapi_cloudspaces(BaseActor):
             raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
                                         "address for its VFW")
 
-
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
@@ -259,7 +266,6 @@ class cloudapi_cloudspaces(BaseActor):
                                                 maxNumPublicIP)
         cloudspace_id = self.models.cloudspace.set(cs)[0]
         return cloudspace_id
-
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def deploy(self, cloudspaceId, **kwargs):
@@ -280,28 +286,26 @@ class cloudapi_cloudspaces(BaseActor):
             cs.status = 'DEPLOYING'
             self.models.cloudspace.set(cs)
         networkid = cs.networkId
-        netinfo = self.network.getPublicIpAddress(cs.gid)
+        netinfo = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
         if netinfo is None:
             cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
             raise RuntimeError("No available public IPAddresses")
-        pool, publicipaddress = netinfo
+        pool, externalipaddress = netinfo
+        cs.externalnetworkId = pool.id
         publicgw = pool.gateway
-        network = netaddr.IPNetwork(pool.id)
-        publiccidr = network.prefixlen
-        if not publicipaddress:
-            raise RuntimeError("Failed to get publicip for networkid %s" % networkid)
+        publiccidr = externalipaddress.prefixlen
 
-        cs.publicipaddress = str(publicipaddress)
+        cs.externalnetworkip = str(externalipaddress)
         self.models.cloudspace.set(cs)
         password = str(uuid.uuid4())
         try:
             self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password,
-                                  str(publicipaddress.ip),
-                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr)
+                                  str(externalipaddress.ip),
+                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
         except:
-            self.network.releasePublicIpAddress(str(publicipaddress))
-            cs.publicipaddress = None
+            self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
+            cs.externalnetworkip = None
             cs.status = 'VIRTUAL'
             self.models.cloudspace.set(cs)
             raise
@@ -330,13 +334,6 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspace = self.models.cloudspace.get(cloudspaceId)
             if cloudspace.status == 'DEPLOYING':
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
-
-        query = {'accountId': cloudspace.accountId,
-                 'status': {'$ne': 'DESTROYED'},
-                 'id': {'$ne': cloudspaceId}}
-        results = self.models.cloudspace.search(query)[1:]
-        if len(results) == 0:
-            raise exceptions.Conflict('The last CloudSpace of an account can not be deleted.')
 
         cloudspace.status = "DESTROYING"
         self.models.cloudspace.set(cloudspace)
@@ -372,7 +369,8 @@ class cloudapi_cloudspaces(BaseActor):
                       "id": cloudspaceObject.id,
                       "name": cloudspaceObject.name,
                       "resourceLimits": cloudspaceObject.resourceLimits,
-                      "publicipaddress": getIP(cloudspaceObject.publicipaddress),
+                      "publicipaddress": getIP(cloudspaceObject.externalnetworkip),
+                      "externalnetworkip": getIP(cloudspaceObject.externalnetworkip),
                       "status": cloudspaceObject.status,
                       "location": cloudspaceObject.location,
                       "secret": cloudspaceObject.secret}
@@ -439,7 +437,7 @@ class cloudapi_cloudspaces(BaseActor):
         query = {'$query': q, '$fields': ['cloudspaceId']}
         cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
-        fields = ['id', 'name', 'descr', 'status', 'accountId', 'acl', 'publicipaddress',
+        fields = ['id', 'name', 'descr', 'status', 'accountId', 'acl', 'externalnetworkip',
                   'location']
         q = {"$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)}}],
@@ -449,7 +447,8 @@ class cloudapi_cloudspaces(BaseActor):
 
         for cloudspace in cloudspaces:
             account = self.models.account.get(cloudspace['accountId'])
-            cloudspace['publicipaddress'] = getIP(cloudspace['publicipaddress'])
+            cloudspace['publicipaddress'] = getIP(cloudspace['externalnetworkip'])
+            cloudspace['externalnetworkip'] = cloudspace['publicipaddress']
             cloudspace['accountName'] = account.name
             cloudspace_acl = authenticator.auth({}).getCloudspaceAcl(cloudspace['id'])
             cloudspace['acl'] = [{"right": ''.join(sorted(ace['right'])), "type": ace['type'],
@@ -550,7 +549,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceobj = self.models.cloudspace.get(cloudspaceId)
 
         # Add the public IP directly attached to the cloudspace
-        if cloudspaceobj.publicipaddress:
+        if cloudspaceobj.externalnetworkip:
             numpublicips += 1
 
         # Add the number of machines in cloudspace that have public IPs attached to them
@@ -723,6 +722,11 @@ class cloudapi_cloudspaces(BaseActor):
         :return: True if update was successful
         """
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+        active_cloudspaces = self._listActiveCloudSpaces(cloudspace.accountId)
+
+        if name in [ space['name'] for space in active_cloudspaces ]:
+            raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
+
         if name:
             cloudspace.name = name
 

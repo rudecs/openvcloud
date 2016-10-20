@@ -24,7 +24,7 @@ def main(j, args, params, tags, tasklet):
                    ]
     tableid = modifier.addTableForModel('vfw', 'virtualfirewall', fieldids, fieldnames, fieldvalues, filters)
     modifier.addSearchOptions('#%s' % tableid)
-    modifier.addSorting('#%s' % tableid, 0, 'desc')
+    modifier.addSorting('#%s' % tableid, 1, 'desc')
 
     params.result = page
 

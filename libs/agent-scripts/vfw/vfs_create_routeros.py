@@ -15,7 +15,7 @@ queue = 'default'
 docleanup = True
 
 
-def cleanup(name, networkid, destinationdir):
+def cleanup(name, networkid):
     import libvirt
     from CloudscalerLibcloud.utils import libvirtutil
     con = libvirt.open()
@@ -26,17 +26,7 @@ def cleanup(name, networkid, destinationdir):
         dom.undefine()
     except libvirt.libvirtError:
         pass
-    j.system.fs.removeDirTree(destinationdir)
 
-    def deleteNet(net):
-        try:
-            net.destroy()
-        except:
-            pass
-        try:
-            net.undefine()
-        except:
-            pass
     try:
         libvirtutil.LibvirtUtil().cleanupNetwork(networkid)
     except:
@@ -50,18 +40,14 @@ def createVM(xml):
     dom.create()
 
 
-def createNetwork(xml):
-    import libvirt
-    con = libvirt.open()
-    private = con.networkDefineXML(xml)
-    private.create()
-    private.setAutostart(True)
-
-def action(networkid, publicip, publicgwip, publiccidr, password):
+def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     import pexpect
     import netaddr
+    import jinja2
     import time
     import os
+    acl = j.clients.agentcontroller.get()
+    edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
     DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
@@ -69,6 +55,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     defaultpasswd = hrd.get("instance.vfw.admin.passwd")
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
+    destinationfile = None
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -76,13 +63,15 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             'password': newpassword
             }
 
+    jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+    bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
+
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
     name = 'routeros_%s' % networkidHex
-    destinationdir = '/mnt/vmstor/routeros/%s' % networkidHex
 
     j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
-                                       networkid=networkid, destinationdir=destinationdir)
+                                       networkid=networkid)
     print 'Testing network'
     if not j.system.net.tcpPortConnectionTest(internalip, 22, 1):
         print "OK no other router found."
@@ -92,22 +81,22 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     try:
         # setup network vxlan
         print 'Creating network'
-        createnetwork = j.clients.redisworker.getJumpscriptFromName('cloudscalers', 'createnetwork')
+        createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
         j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
 
-        j.system.fs.createDir(destinationdir)
-        destinationfile = 'routeros-small-%s.raw' % networkidHex
-        destinationfile = j.system.fs.joinPaths(destinationdir, destinationfile)
+        devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
+        destinationfile = 'openvstorage+%s://%s:%s/%s' % (
+            edgetransport, edgeip, edgeport, devicename
+        )
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         imagefile = j.system.fs.joinPaths(imagedir, 'routeros-small-NETWORK-ID.qcow2')
-        xmlsource = j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml'))
-        xmlsource = xmlsource.replace('NETWORK-ID', networkidHex)
-        print 'Converting image'
-        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile, 'raw')
-        size = int(j.system.platform.qemu_img.info(destinationfile)['virtual size'] * 1024)
-        fd = os.open(destinationfile, os.O_RDWR|os.O_CREAT)
-        os.ftruncate(fd, size)
-        os.close(fd)
+        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
+        print 'Converting image %s -> %s' % (imagefile, destinationfile)
+        j.system.platform.qemu_img.convert(imagefile, 'qcow2', destinationfile.replace('://', ':'), 'raw')
+
+        xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
+                                       edgehost=edgeip, edgeport=edgeport,
+                                       edgetransport=edgetransport, publicbridge=bridgename)
 
         print 'Starting VM'
         try:
@@ -118,22 +107,22 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
         data['internalip'] = internalip
 
         try:
-            run = pexpect.spawn("virsh console %s" % name)
+            run = pexpect.spawn("virsh console %s" % name, timeout=300)
             print "Waiting to attach to console"
             run.expect("Connected to domain", timeout=10)
             run.sendline() #first enter to clear welcome message of kvm console
             print 'Waiting for Login'
-            run.expect("Login:", timeout=60)
+            run.expect("Login:", timeout=120)
             run.sendline(username)
-            run.expect("Password:", timeout=2)
+            run.expect("Password:", timeout=10)
             run.sendline(defaultpasswd)
             print 'waiting for prompt'
-            run.expect("\] >", timeout=60) # wait for primpt
+            run.expect("\] >", timeout=120) # wait for primpt
             run.send("/ip addr add address=%s/22 interface=internal\r\n" % internalip)
             print 'waiting for end of command'
-            run.expect("\] >", timeout=2) # wait for primpt
+            run.expect("\] >", timeout=10) # wait for primpt
             run.send("/quit\r\n")
-            run.expect("Login:", timeout=2)
+            run.expect("Login:", timeout=10)
             run.close()
         except Exception, e:
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
@@ -149,7 +138,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
             ro.ipaddr_remove(DEFAULTGWIP)
             ro.resetMac("internal")
         except Exception,e:
-            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e)) 
+            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         ro.do("/system/identity/set",{"name":"%s/%s"%(networkid,networkidHex)})
         ro.executeScript('/file remove numbers=[/file find]')
@@ -209,7 +198,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password):
     except:
         if docleanup:
             j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
-                                               networkid=networkid, destinationdir=destinationdir)
+                                               networkid=networkid)
         raise
 
     return data
@@ -222,8 +211,9 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--public-ip', dest='publicip', required=True)
     parser.add_argument('-pg', '--public-gw', dest='publicgw', required=True)
     parser.add_argument('-pc', '--public-cidr', dest='publiccidr', required=True, type=int)
-    parser.add_argument('-pw', '--password', required=True)
+    parser.add_argument('-v', '--vlan', dest='vlan', required=True, type=int)
+    parser.add_argument('-pw', '--password', default='rooter')
     parser.add_argument('-c', '--cleanup', action='store_true', default=False, help='Cleanup in case of failure')
     options = parser.parse_args()
     docleanup = options.cleanup
-    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password)
+    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password, options.vlan)

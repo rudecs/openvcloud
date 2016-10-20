@@ -214,6 +214,7 @@ class vfw_virtualfirewall_osismodelbase(j.code.classGetJSRootModelBase()):
         self._P_version=0
         self._P_state=""
         self._P_moddate=0
+        self._P_deployment_jobguid=""
         self._P_guid=""
         self._P__meta=list()
         self._P__meta=["osismodel","vfw","virtualfirewall",1] #@todo version not implemented now, just already foreseen
@@ -578,6 +579,25 @@ class vfw_virtualfirewall_osismodelbase(j.code.classGetJSRootModelBase()):
     @moddate.deleter
     def moddate(self):
         del self._P_moddate
+
+    @property
+    def deployment_jobguid(self):
+        return self._P_deployment_jobguid
+
+    @deployment_jobguid.setter
+    def deployment_jobguid(self, value):
+        if not isinstance(value, str) and value is not None:
+            if isinstance(value, basestring) and j.basetype.string.checkString(value):
+                value = j.basetype.string.fromString(value)
+            else:
+                msg="property deployment_jobguid input error, needs to be str, specfile: /opt/jumpscale7/apps/osis/logic/vfw/model.spec, name model: virtualfirewall, value was:" + str(value)
+                raise TypeError(msg)
+
+        self._P_deployment_jobguid=value
+
+    @deployment_jobguid.deleter
+    def deployment_jobguid(self):
+        del self._P_deployment_jobguid
 
     @property
     def guid(self):

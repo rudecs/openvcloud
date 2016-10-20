@@ -115,6 +115,19 @@ class libcloud_libvirt(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listVNC")
 
+    def registerImage(self, name, category, imageid, size, gid, **kwargs):
+        """
+        Register image in model
+        param:name name of the image
+        param:category catergory of the image
+        param:imageid id of the image
+        param:size size of the image
+        param:gid grid id
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method registerImage")
+
     def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
         Add a new network idrange
@@ -166,6 +179,16 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseNetworkId")
+
+    def removeImage(self, imageid, gid, **kwargs):
+        """
+        remove image from model
+        param:imageid id of the image
+        param:gid grid id
+        result str
+        """
+        #put your code here to implement this method
+        raise NotImplementedError ("not implemented method removeImage")
 
     def retreiveInfo(self, key, reset, **kwargs):
         """

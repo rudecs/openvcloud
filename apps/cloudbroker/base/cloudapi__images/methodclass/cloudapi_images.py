@@ -1,8 +1,8 @@
-from JumpScale import j
 from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
+
 
 class cloudapi_images(BaseActor):
     """
@@ -14,11 +14,11 @@ class cloudapi_images(BaseActor):
         """
         List the available images, filtering can be based on the cloudspace and the user which is doing the request
         """
-        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        fields = ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         if accountId:
-            q = {'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
+            q = {'referenceId': {'$ne': None}, 'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
         else:
-            q = {'status': 'CREATED', 'accountId': 0}
+            q = {'referenceId': {'$ne': None}, 'status': 'CREATED', 'accountId': 0}
         query = {'$query': q, '$fields': fields}
 
         if cloudspaceId:
@@ -27,7 +27,7 @@ class cloudapi_images(BaseActor):
                 stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
                 imageids = set()
                 for stack in stacks:
-                    imageids.update(stack['images'])
+                    imageids.update(stack.get('images', []))
                 if len(imageids) > 0:
                     q['id'] = {'$in': list(imageids)}
 
@@ -64,22 +64,44 @@ class cloudapi_images(BaseActor):
         if image.status != 'CREATED':
             raise exceptions.Forbidden("Can not delete an image which is not created yet.")
 
-
         stacks = self.models.stack.search({'images': imageId})[1:]
         gid = None
+        provider = None
         if stacks:
             gid = stacks[0]['gid']
+            provider = self.cb.getProviderByStackId(stacks[1]['id'])
         if not gid:
             raise exceptions.Error("Could not find image template")
 
-        acc = j.clients.agentcontroller.get()
-        args = {'imageId': image.referenceId}
-        job = acc.executeJumpscript('cloudscalers', 'deletetemplate', gid=gid, role='storagenode', args=args)
-        if job['state'] != 'OK':
-            raise exceptions.Error("Something unexpected went wrong, please try again later")
-        elif job['result'] == -1:
-            raise exceptions.Conflict("Can not delete an image which is still used")
+        provider.client.ex_delete_template(image.referenceId)
+
+        for stack in stacks:
+            if imageId in stack['images']:
+                stack['images'].remove(imageId)
+                self.models.stack.set(stack)
 
         self.models.image.delete(imageId)
         return True
 
+    def get_or_create_by_name(self, name, add_to_all_stacks=True):
+        images = self.models.image.search({'name': name})
+        if images[0]:
+            image = self.models.image.new()
+            image.load(images[1])
+            return image
+        else:
+            image = self.models.image.new()
+            image.name = name
+            image.provider_name = 'libvirt'
+            image.size = 0
+            image.status = 'CREATED'
+            image.type = 'Linux'
+            imageid = self.models.image.set(image)[0]
+            image.id = imageid
+            if add_to_all_stacks:
+                # TODO: enhance
+                for stackid in self.models.stack.list():
+                    stack = self.models.stack.get(stackid)
+                    stack.images.append(imageid)
+                    self.models.stack.set(stack)
+            return image

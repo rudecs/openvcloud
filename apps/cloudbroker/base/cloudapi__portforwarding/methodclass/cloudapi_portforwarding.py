@@ -3,7 +3,6 @@ from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-from JumpScale.portal.portal import exceptions
 import netaddr
 
 
@@ -20,7 +19,7 @@ class cloudapi_portforwarding(BaseActor):
         self.netmgr = j.apps.jumpscale.netmgr
 
     def _getLocalIp(self, machine):
-        for nic in  machine['interfaces']:
+        for nic in machine['interfaces']:
             if nic.ipAddress != 'Undefined':
                 return nic.ipAddress
         return None
@@ -60,13 +59,13 @@ class cloudapi_portforwarding(BaseActor):
         except netaddr.AddrFormatError:
             raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
-        if cloudspace.publicipaddress.split('/')[0] != publicIp:
+        if cloudspace.externalnetworkip.split('/')[0] != publicIp:
             raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
         machine = j.apps.cloudapi.machines.get(machineId)
         localIp = self._getLocalIp(machine)
         if localIp is None:
-            raise exceptions.NotFound('No correct ipaddress found for this machine')
+            raise exceptions.NotFound('Cannot create a portforward during cloudspace deployment.')
 
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
             raise exceptions.Conflict("Forward to %s with port %s already exists" % (publicIp, publicPort))
@@ -157,7 +156,7 @@ class cloudapi_portforwarding(BaseActor):
         :param proto: port forwarding protocol
         """
         try:
-            result = self._deleteByPort(int(cloudspaceId), publicIp, publicPort, proto)
+            self._deleteByPort(int(cloudspaceId), publicIp, publicPort, proto)
         except exceptions.BaseError:
             raise
         except:
@@ -166,7 +165,7 @@ class cloudapi_portforwarding(BaseActor):
 
     def _deleteByPort(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
         fw_id, fw_gid = self._getFirewallId(cloudspaceId)
-        if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort,proto):
+        if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort, proto):
             raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceId)
@@ -216,6 +215,7 @@ class cloudapi_portforwarding(BaseActor):
         result = list()
         query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
         machines = self.models.vmachine.search(query)[1:]
+
         def getMachineByIP(ip):
             for machine in machines:
                 for nic in machine['nics']:
@@ -248,6 +248,7 @@ class cloudapi_portforwarding(BaseActor):
         if machineId:
             machineId = int(machineId)
             machine = self.models.vmachine.get(machineId)
+
         def getIP():
             if machine:
                 for nic in machine.nics:

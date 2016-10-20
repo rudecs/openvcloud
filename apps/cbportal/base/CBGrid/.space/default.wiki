@@ -1,6 +1,6 @@
 
 
-{{title:CBGrid}}
+{{title:CBGrid - $$page}}
 {{ApplyFlatTheme}}
 
 {{find}}

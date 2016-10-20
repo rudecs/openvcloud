@@ -43,6 +43,8 @@ def update(nodessh):
     print '[+] updating host: %s' % nodessh.instance
     nodessh.execute(_get_update_cmd('jumpscale7', '*', options.branch_js, options.tag_js))
     nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
+    nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc, options.tag_ovc))
+    nodessh.execute(_get_update_cmd('0-complexity', 'g8vdc', options.branch_ovc, options.tag_ovc))
     nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
 
 def restart(nodessh):
@@ -77,21 +79,21 @@ Markdown stuff
 def parse(content):
     hosts = []
     versions = {}
-    
+
     # first: building hosts/repo list
     for host, lines in content.items():
         hosts.append(host)
-        
+
         for index, line in enumerate(lines):
             if line == '':
                 del content[host][index]
                 continue
-            
+
             item = line.split(',')
             repo = '%s/%s' % (item[0], item[1])
-            
+
             versions[repo] = {}
-    
+
     # building version list
     for host, lines in content.items():
         for line in lines:
@@ -100,56 +102,56 @@ def parse(content):
                 continue
             repo = '%s/%s' % (item[0], item[1])
             commit = item[2][:8]
-            
+
             versions[repo][host] = {'name': commit, 'valid': True}
-    
+
     # checking if version are valid or not
-    for version in versions:        
+    for version in versions:
         for hostname in versions[version]:
             for hostmatch in versions[version]:
                 # no version for this host
                 if hostmatch not in versions[version]:
                     continue
-                
+
                 # version mismatch
                 if versions[version][hostmatch]['name'] != versions[version][hostname]['name']:
                     versions[version][hostname]['valid'] = False
-            
-    
+
+
     # sorting hosts alphabeticaly
     hosts.sort()
-    
+
     return hosts, versions
 
 def addCellString(value):
     return value + ' | '
-    
+
 def addCell(item):
     if not item['valid']:
         return addCellString('**' + item['name'] + '**')
-        
+
     return addCellString(item['name'])
 
 def build(content):
     hosts, versions = parse(content)
-    
+
     # building header
     data  = "# Updated on %s\n\n" % time.strftime("%Y-%m-%d, %H:%M:%S")
-    
+
     data += "| Repository | " + ' | '.join(hosts) + " |\n"
     data += "|" + ("----|" * (len(hosts) + 1)) + "\n"
-    
+
     for repo in versions:
         data += '| ' + addCellString(repo)
-        
+
         for host in hosts:
             if host in versions[repo]:
                 data += addCell(versions[repo][host])
             else:
                 data += addCellString('')
-        
+
         data += "\n"
-    
+
     return data
 
 """
@@ -183,7 +185,7 @@ def updateNodes():
 def updateOpenvcloud(repository):
     print '[+] Updating local openvcloud repository'
     j.do.execute("cd %s; git pull" % repository)
-    
+
 def updateCloudspace():
     print ''
     print '[+] updating cloudspace'
@@ -249,15 +251,15 @@ def versionBuilder():
         data += "## %s\n\n" % host
         data += "| Repository | Version (commit) |\n"
         data += "|----|----|\n"
-        
-        
+
+
         for line in lines:
             items = line.split(',')
             if len(items) < 2:
                 continue
             repo = '%s/%s' % (items[0], items[1])
             data += "| %s | %s |\n" % (repo, items[2])
-        
+
         data += "\n\n"
 
     with open(versionfile, 'w') as f:
@@ -273,7 +275,7 @@ def updateGit():
     # get our local repository path
     settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
     repopath = settings.getStr('instance.ovc.path')
-    
+
     output = j.system.process.run("cd %s; git add ." % repopath, True, False)
     output = j.system.process.run("cd %s; git commit -m 'environement updated (update script)'" % repopath, True, False)
     output = j.system.process.run("cd %s; git push" % repopath, True, False)
@@ -287,20 +289,20 @@ allStep = True
 
 if options.self:
     allStep = False
-    
+
     print '[+] starting self-update'
-    
+
     updateOpenvcloud(openvcloud)
-    
+
     print '[ ]'
     print '[+] self-update successful'
     print '[ ]'
 
 if options.update:
     allStep = False
-    
+
     print '[+] updating cloudspace and nodes'
-    
+
     updateLocal()
     updateCloudspace()
     updateNodes()
@@ -311,74 +313,74 @@ if options.update:
 
 if options.updateNodes:
     allStep = False
-    
+
     print '[+] updating all nodes'
-    
+
     updateNodes()
-    
+
     print '[ ]'
     print '[+] all nodes updated'
     print '[ ]'
-    
+
 if options.updateCloud:
     allStep = False
-    
+
     print '[+] updating cloudspace'
-    
+
     updateLocal()
     updateCloudspace()
-    
+
     print '[ ]'
     print '[+] cloudspace updated'
     print '[ ]'
 
 if options.restartCloud or options.restart:
     allStep = False
-    
+
     print '[+] restarting cloudspace'
-    
+
     restartCloudspace()
-    
+
     print '[ ]'
     print '[+] cloudspace restarted'
     print '[ ]'
 
 if options.restartNodes or options.restart:
     allStep = False
-    
+
     print '[+] restarting nodes'
-    
+
     restartNodes()
-    
+
     print '[ ]'
     print '[+] node restarted'
     print '[ ]'
 
 if options.report:
     allStep = False
-    
+
     print '[+] reporting installed versions'
-    
+
     versionBuilder()
-    
+
     print '[ ]'
     print '[+] reporting done'
     print '[ ]'
 
 if options.commit:
     allStep = False
-    
+
     print '[+] updating ovcgit repository'
-    
+
     updateGit()
-    
+
     print '[ ]'
     print '[+] repository up-to-date'
     print '[ ]'
-    
+
 if allStep:
     print '[+] processing complete upgrade'
-    
+
     updateLocal()
     updateCloudspace()
     updateNodes()
@@ -386,7 +388,7 @@ if allStep:
     restartCloudspace()
     startNodes()
     versionBuilder()
-    
+
     print '[ ]'
     print '[+] everything done'
     print '[ ]'

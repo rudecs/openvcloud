@@ -1,6 +1,5 @@
 from JumpScale import j
 import time
-import re
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
@@ -105,7 +104,7 @@ class cloudbroker_account(BaseActor):
                           'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
-                          'CU_I':  maxNumPublicIP}
+                          'CU_I': maxNumPublicIP}
         self.cb.fillResourceLimits(resourcelimits)
         account.resourceLimits = resourcelimits
 
@@ -185,8 +184,8 @@ class cloudbroker_account(BaseActor):
                           'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
-                          'CU_I':  maxNumPublicIP}
-        self.cb.fillResourceLimits(resourcelimits, preserve_none=True)
+                          'CU_I': maxNumPublicIP}
+        self.cb.fillResourceLimits(resourcelimits)
         maxMemoryCapacity = resourcelimits['CU_M']
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
@@ -280,7 +279,7 @@ class cloudbroker_account(BaseActor):
         if user:
             userId = user['id']
         else:
-            #external user, delete ACE that was added using emailaddress
+            # external user, delete ACE that was added using emailaddress
             userId = username
         self.cloudapi.accounts.deleteUser(accountId, userId, recursivedelete)
         return True

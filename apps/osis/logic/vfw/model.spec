@@ -1,7 +1,7 @@
 #IS EXAMPLE, COPY  to category
 
 [rootmodel:virtualfirewall] #@index
-    prop:id int,,is unique id 
+    prop:id int,,is unique id
     prop:gid int,,grid on which firewall is running
     prop:nid int,,node on which firewall is running
     prop:name str,,
@@ -20,6 +20,7 @@
     prop:version int,2,
     prop:state str,, OK;ERROR;INIT;DELETED
     prop:moddate int,,
+    prop:deployment_jobguid str,, jobs excecutedin deployment guid
 
 
 [model:tcpForwardRule] #@index
@@ -34,4 +35,3 @@
 [model:wsForwardRule] #@index
     prop:url str,,url domain name e.g. www.incubaid.com
     prop:toUrls str,,e.g. [192.168.1.20:3000/test/...]   #so can be port; ip; url part; when more than 1 then loadbalancing
-
