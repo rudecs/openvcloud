@@ -6,29 +6,27 @@
 
 The core of an OpenvCloud environment is the **master cloud space**, which consist of the following virtual machines or Docker containers:
 - **ovc_git** holding all configuration of your environment
-- **ovc_master** controlling the environment based on information from ovc\_git
+- **ovc_master** controlling the environment based on information from **ovc_git**
 - **ovc_reflector** provides [reverse SSH connections](https://en.wikipedia.org/wiki/Reverse_connection) to the physical nodes
-- **ovc_proxy** running nginx as a proxy for all port 80 and port 443 communications
+- **ovc_proxy** running NGINX as a proxy for all port 80 and port 443 communications
 
 The master cloud space and its containers/virtual machines can run locally, close to the actual OpenvCloud physical nodes it controls or remotely, for instance in another OpenvCloud environment, such as at Mothership1.com.
 
-When installed locally, Green IT Globe typically uses a mini PC such as the [Shuttle XPC nano NC01U5](http://www.shuttle.eu/products/nano/nc01u5/).
+For each environment managed by Green IT Globe a master repository is maintained in the [github.com/0-complexity](https://github.com/0-complexity) or [github.com/gig-projects](https://github.com/gig-projects) GitHub organization. Access is of course restricted.As a partner or customer of Green IT Globe you might want to setup your own master repository, only accessible to your organization.
 
-For each environment managed by Green IT Globe a master repository is maintained in the [github.com/0-complexity](https://github.com/0-complexity) or [github.com/gig-projects](https://github.com/gig-projects) GitHub organization. Access is of course restricted.As a partner or customer of Green IT Globe you might want to setup your own master repository, only accesible to your organization.
+On **ovc_git** the master repository is cloned, holding all configuration information, including all the keys in order to access all other Docker containers and/or virtual machines of the master cloud space of your OpenvCloud environment.
 
-On ovc_git the master repository is cloned, holding all configuration information, including all the keys in order to access all other Docker containers and/or virtual machines of the master cloud space of your OpenvCloud environment.
-
-So in order to access your OpenvCloud environment your GitHub user account should be granted access to the master repository in order to first clone the Git repository of your local machine, providing you the keys to access ovc\_git and all other Docker containers and/or virtual machines in the master cloud space, and update the configuration, which you will be pushing back to the central GitHub repository, from where it gets in turn pulled to ovc\_git, making your changes effective.
+So in order to access your OpenvCloud environment your GitHub user account should be granted access to the master repository in order to first clone the Git repository of your local machine, providing you the keys to access **ovc_git** and all other Docker containers and/or virtual machines in the master cloud space, and update the configuration, which you will be pushing back to the central GitHub repository, from where it gets in turn pulled to **ovc_git**, making your changes effective.
 
 
 ### Accessing ovc_git
 
-There are some prerequisites, all documented [here](preparing_for_indirect_access.md), explaining:
+There are some prerequisites, all documented [here](preparing_before_connecting.md), explaining:
 - How to get access to GitHub
 - How to configure your GitHub accounts to use your personal SSH keys for authentication
 - How to install and configure git on your personal computer
 
-From a well prepared computer, as documented [here](preparing_for_indirect_access.md), your first step will be to clone the repository from GitHub to your local (virtual) machine:
+Your first step will be to clone the repository from GitHub to your local (virtual) machine:
 
 ```
 git clone git@github.com:0-complexity/be-scale-1.git
@@ -40,7 +38,7 @@ If the repository was already cloned previously on your machines, pull the lates
 git pull
 ```
 
-Make sure the cloned keys file is protected, not accessible to other users, it should be "-rw --- ---" (600), not "rw- r-- r--" (644) for instance:
+Make sure the cloned keys file is protected, not accessible to other users, it should be ``-rw --- ---`` (600), not ``rw- r-- r--`` (644) for instance:
 
 ```
 chmod 600 be-scale-1/keys/git_root

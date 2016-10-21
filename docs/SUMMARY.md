@@ -78,7 +78,7 @@
 * [System Administration](Sysadmin/sysadmin.md)
    * [User Management](Sysadmin/UserManagement/user_management.md)
    * [Connect to an Environment](Sysadmin/Connect/connect.md)
-   * [Preparing for Indirect Access to ovc_git](Sysadmin/Connect/preparing_for_indirect_access.md)
+   * [Preparing Before Connection](Sysadmin/Connect/preparing_before_connecting.md)
    * [OpenvCloud File Locations](Sysadmin/FileLocations/file_locations.md)
    * [Create a New Windows Image](Sysadmin/Images/Creating_new_Windwos_Image.md)
    * [Deploy a New Image](Sysadmin/Images/deploy_new_image.md)
