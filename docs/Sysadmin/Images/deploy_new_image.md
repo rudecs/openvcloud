@@ -2,36 +2,37 @@
 
 ### Concept
 
-When a virtual machine is created, some actions need to be done within the guest like resizing of the filesystem, creation of users,...
-To accomplish this, [cloudinit](https://cloudinit.readthedocs.io/en/latest/index.html) is used. For most Linux distributions, downloads of 'cloud images' with cloudinit preinstalled are readily available for download. The rest of this page assumes you have have an OS image with cloudinit available. There is a guide on [how to create a windows base image with cloudinit](Creating_new_Windwos_Image.md). 
+When a virtual machine is created, some actions need to be done within the guest like resizing of the filesystem, creation of users,... To accomplish this, [cloud-init](https://cloudinit.readthedocs.io/en/latest/index.html) is used. For most Linux distributions OS cloud images with cloud-init preinstalled are readily available for download. The rest of this page assumes you have such an OS image with cloud-init available. There is a guide on [how to create a windows base image with cloudinit](Creating_new_Windwos_Image.md).
 
 
 ### Clone the repository of your environment
 
-From a well prepared computer, as documented [here](preparing_for_indirect_access.md), your first step will be to clone the repository of your environment from AYDO to your local (virtual) machine:
-```
-git clone https://git.aydo.com/openvcloudEnvironments/$name-of-your-env$
-```
+From a well prepared computer, as documented [here](../Connect/preparing_before_connecting.md), your first step will be to clone the repository of your environment from GitHub:
 
+```
+git clone git@github.com:gig-projects/$name-of-your-env-repository$
+```
 
 ### Create a new image directory and the AYS service recipe for your new image
 
-For each image there is a directory under `/opt/code/git/openvcloudEnvironments/$name-of-your-env$/servicetemplates`
+For each service you want to add to your environment you need to create a new subdirectory under `$name-of-your-env-repository$/servicetemplates`, so also for adding a new image you need to create a subdirectory there:
+
 ```
-cd /opt/code/git/openvcloudEnvironments/$name-of-your-env$/servicetemplates
+cd $name-of-your-env-repository$/servicetemplates
 ```
 
-Let's create an sub directory for the image available from https://cloud-images.ubuntu.com/wily/current/wily-server-cloudimg-amd64-uefi1.img:
+Let's create an subdirectory for the image available from https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-uefi1.img:
+
 ```
-mkdir image_wily-server
+mkdir image_xenial-server
 ```
 
 Each directory contains 3 files:
 
 - **services.hrd** contains the all required information about ftp server that holds your image
 
-  - **url**: address of your ftp server from where the image is available, e.g. `ftp://pub:pub1234@ftp.aydo.com`
-  - **source**: exact location on the ftp server from where the image can be downloaded, e.g. `/images/image_windows2012`
+  - **url**: address of your FTP server from where the image is available, e.g. `ftp://pub:pub1234@ftp.aydo.com`
+  - **source**: exact location on the FTP server from where the image can be downloaded, e.g. `/images/image_windows2012`
   - **checkmd5**: whether the MD5 checksum needs to be checked, typically 'true'
   - **dest**: directory where the image needs to be downloaded, e.g. `/opt/jumpscale7/var/tmp/templates/image_windows2012.qcow2`
 
@@ -49,98 +50,85 @@ We actually only need to create 2 files, representing the AYS service recipe for
 - service.hrd
 - actions.py
 
-Staring with `service.hrd`:
+Starting with **service.hrd**:
+
 ```
 vi service.hrd
 ```
 
-Provide following service description, hit `i` to go in edit mode:
+Provide following service description:
+
 ```
 platform.supported             = 'generic'
 
 web.export.1                   =
     checkmd5:'false',
-    dest:'/opt/jumpscale7/var/tmp/templates/wily-server-cloudimg-amd64-uefi1.qcow2',
-    source:'/wily/current/wily-server-cloudimg-amd64-uefi1.img',
+    dest:'/opt/jumpscale7/var/tmp/templates/xenial-server-cloudimg-amd64-uefi1.qcow2',
+    source:'/xenial/current/xenial-server-cloudimg-amd64-uefi1.img',
     url:'https://cloud-images.ubuntu.com',
 ```
 
-Save and close the new file by first pressing `esc`, typing `:wq` and hitting `enter`.
+Save and close the new file by first pressing **esc**, typing **:wq** and hitting **enter**.
 
-And now let's create the `actions.py` file:
+And now let's create the **actions.py** file:
+
 ```
 vi actions.py
 ```
 
-We only need to implement the `configure` method:
+We only need to implement the **configure()** method:
+
 ```
 from JumpScale import j
 
 ActionsBase=j.atyourservice.getActionsBaseClass()
 
 class Actions(ActionsBase):
-    """
-    process for install
-    -------------------
-    step1: prepare actions
-    step2: check_requirements action
-    step3: download files & copy on right location (hrd info is used)
-    step4: configure action
-    step5: check_uptime_local to see if process stops  (uses timeout $process.stop.timeout)
-    step5b: if check uptime was true will do stop action and retry the check_uptime_local check
-    step5c: if check uptime was true even after stop will do halt action and retry the check_uptime_local check
-    step6: use the info in the hrd to start the application
-    step7: do check_uptime_local to see if process starts
-    step7b: do monitor_local to see if package healthy installed & running
-    step7c: do monitor_remote to see if package healthy installed & running, but this time test is done from central location
-    """
-
-
     def configure(self, serviceObj):
         from CloudscalerLibcloud.imageutil import registerImage
-        name = 'Wily Server 15.10 amd64'
-        imagename = 'wily-server-cloudimg-amd64-uefi1.qcow2'
+        name = 'Xenial Server 16.04 amd64'
+        imagename = 'xenial-server-cloudimg-amd64-uefi1.qcow2'
         registerImage(serviceObj, name, imagename, 'Linux', 10)
 ```
 
 ### Save, commit and push your changes to the repo
 
-Add the newly created directory and sub folders to the local git repository:
+Commit and push the newly created subdirectory and files to GitHub:
+
 ```
-cd /opt/code/git/openvcloudEnvironments/$name-of-your-env$
+cd $name-of-your-env-repository$
 git config --global push.default simple
-git add image_wily-server
+git add servicetemplates/image_xenial-server
 git commit -m "new image"
 git push
 ```
 
 ### Install the image
 
-From your well prepared computer, as documented [here](preparing_for_indirect_access.md), open an SSH session on the ovc_git machine, don't forget the -A option in order to have the ssh agent forwarding to work:
-
-```
-ssh -A -p 2202 root@$ip-address
-```
+Connect to **ovc_master** as documented [here](../Connect/Connect.md).
 
 Update the repository:
 ```
-cd /opt/code/git/openvcloudEnvironments/$name-of-your-env
+cd /opt/code/github/gig-projects/$name-of-your-env-repository$
 git pull
 ```
 
-Make the updated servicetemplates directory current:
+Make the updated **servicetemplates** directory current:
+
 ```
-cd /opt/code/git/openvcloudEnvironments/$name-of-your-env$/servicetemplates
+cd /opt/code/github/gig-projects/$name-of-your-env-repository$/servicetemplates
 ```
 
 And finally install the image, make sure to specify the name of one/any of the physical nodes (last option argument):
+
 ```
-ays install -n image_wily-server --targettype node.ssh --targetname $name-of-a-node-in-your-env$
+ays install -n image_xenial-server --targettype node.ssh --targetname $name-of-a-node-in-your-env$
 ```
 
 In case you're updating an already previously installed image, use the -r option:
+
 ```
-ays install -r -n image_wily-server --targettype node.ssh --targetname $name-of-a-node-in-your-env$
+ays install -r -n image_xenial-server --targettype node.ssh --targetname $name-of-a-node-in-your-env$
 ```
 
 
