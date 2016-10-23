@@ -96,7 +96,6 @@ h2. Account: ${name}
 
 - display: Enable
   action: /restmachine/cloudbroker/account/enable
-  reload: false
   data:
    accountId: $$id
   input:
