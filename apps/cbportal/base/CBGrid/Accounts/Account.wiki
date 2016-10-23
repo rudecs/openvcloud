@@ -85,7 +85,7 @@ h2. Account: ${name}
     type: hidden
     value: $$id
 
-
+{% if status != "DISABLED" %}
 - display: Disable
   action: /restmachine/cloudbroker/account/disable
   data:
@@ -93,14 +93,14 @@ h2. Account: ${name}
    async: true
   input:
   - reason
-
+{% else %}
 - display: Enable
   action: /restmachine/cloudbroker/account/enable
   data:
    accountId: $$id
   input:
   - reason
-
+{% endif %}
 - display: Delete
   action: /restmachine/cloudbroker/account/delete
   data:
