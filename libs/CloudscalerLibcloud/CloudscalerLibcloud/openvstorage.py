@@ -189,6 +189,7 @@ class TempStorage(object):
         path = self.path
         os.system('umount "%s"' % path)
         j.system.fs.removeDirTree(path)
+        time.sleep(10)
         j.system.fs.remove(raw)
 
 

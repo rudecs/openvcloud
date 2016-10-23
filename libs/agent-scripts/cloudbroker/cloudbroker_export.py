@@ -17,28 +17,14 @@ timeout = 60 * 60
 
 
 def action(link, username, passwd, path, envelope, disks):
-    import requests
     from io import BytesIO
     import tarfile
-    import os
-    import threading
+    import subprocess
     from CloudscalerLibcloud import openvstorage
 
-    red, wed = os.pipe()
     try:
-        re, we = os.fdopen(red, 'r'), os.fdopen(wed, 'w')
-        # FIXME: a quick hack until this PR (https://github.com/kennethreitz/requests/pull/3625) is merged in
-        requests.utils.super_len = lambda x: 0
-        requests.models.super_len = lambda x: 0
-
-        def prepare_content_length(self, body):
-            pass
-
-        requests.models.prepare_content_length = prepare_content_length
-
-        th = threading.Thread(target=requests.put, kwargs=dict(url='%s/%s' % (link.rstrip('/'), path.lstrip('/')), data=re, auth=(username, passwd)))
-        th.start()
-        with tarfile.open(mode='w|', fileobj=we) as tf:
+        pr = subprocess.Popen(['curl', '%s/%s' % (link.rstrip('/'), path.lstrip('/')), '--user', '%s:%s' % (username, passwd), '--upload-file', '-'], stdin=subprocess.PIPE)
+        with tarfile.open(mode='w|', fileobj=pr.stdin) as tf:
             ti = tarfile.TarInfo('descriptor.ovf')
             ti.size = len(envelope)
             tf.addfile(ti, BytesIO(envelope))
@@ -50,9 +36,8 @@ def action(link, username, passwd, path, envelope, disks):
                     j.system.fs.remove('%s/disk.vmdk' % ts.path)
 
     finally:
-        we.close()
-        th.join()
-        re.close()
+        pr.stdin.close()
+        pr.wait()
 
 
 if __name__ == "__main__":
@@ -173,4 +158,4 @@ if __name__ == "__main__":
 
         </VirtualHardwareSection>
       </VirtualSystem>
-    </Envelope>""", [u'openvstorage+tcp://10.112.1.14:26203/vm-677/bootdisk-vm-677']))
+    </Envelope>""", [u'openvstorage+tcp://10.112.1.14:26203/vm-2272/bootdisk-vm-2272']))
