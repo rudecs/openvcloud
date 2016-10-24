@@ -104,10 +104,20 @@ class cloudapi_disks(BaseActor):
         :param type: type of type of the disks
         :return: list with every element containing details of a disk as a dict
         """
-        query = {'accountId': accountId}
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         if type:
             query['type'] = type
-        return self.models.disk.search(query)[1:]
+        disks = self.models.disk.search(query)[1:]
+        diskids = [disk['id'] for disk in disks]
+        query = {'disks': {'$in': diskids}}
+        vms = self.models.vmachine.search({'$query': query, '$fields': ['disks', 'id']})[1:]
+        vmbydiskid = dict()
+        for vm in vms:
+            for diskid in vm['disks']:
+                vmbydiskid[diskid] = vm['id']
+        for disk in disks:
+            disk['machineId'] = vmbydiskid.get(disk['id'])
+        return disks
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     @audit()
