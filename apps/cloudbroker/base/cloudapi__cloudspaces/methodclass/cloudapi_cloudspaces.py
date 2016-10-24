@@ -6,7 +6,7 @@ from cloudbrokerlib.baseactor import BaseActor
 import netaddr
 import uuid
 import time
-
+import gevent
 
 def getIP(network):
     if not network:
@@ -264,8 +264,25 @@ class cloudapi_cloudspaces(BaseActor):
                                                 maxCPUCapacity, maxNASCapacity, maxArchiveCapacity,
                                                 maxNetworkOptTransfer, maxNetworkPeerTransfer,
                                                 maxNumPublicIP)
-        cloudspace_id = self.models.cloudspace.set(cs)[0]
-        return cloudspace_id
+        cs.id = self.models.cloudspace.set(cs)[0]
+
+        networkid = cs.networkId
+        netinfo = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
+        if netinfo is None:
+            self.models.cloudspace.delete(cs.id)
+            raise exceptions.ServiceUnavailable("No available external IP Addresses")
+
+        pool, externalipaddress = netinfo
+
+        cs.externalnetworkId = pool.id
+
+        cs.externalnetworkip = str(externalipaddress)
+        self.models.cloudspace.set(cs)
+
+        # deploy async.
+        gevent.spawn(self.deploy, cs.id, **kwargs)
+
+        return cs.id
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def deploy(self, cloudspaceId, **kwargs):
@@ -275,43 +292,40 @@ class cloudapi_cloudspaces(BaseActor):
         :param cloudspaceId: id of the cloudspace
         :return: status of deployment
         """
-        # Validate that there is at least 1 public IP is available within the CU limits to reserve
-        # for deploying the VFW
-        with self.models.cloudspace.lock(cloudspaceId):
-            self.checkAvailablePublicIPs(cloudspaceId, 1)
+        try:
+            password = str(uuid.uuid4())
             cs = self.models.cloudspace.get(cloudspaceId)
-            if cs.status != 'VIRTUAL':
-                return cs.status
-
             cs.status = 'DEPLOYING'
             self.models.cloudspace.set(cs)
-        networkid = cs.networkId
-        netinfo = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
-        if netinfo is None:
-            cs.status = 'VIRTUAL'
-            self.models.cloudspace.set(cs)
-            raise RuntimeError("No available public IPAddresses")
-        pool, externalipaddress = netinfo
-        cs.externalnetworkId = pool.id
-        publicgw = pool.gateway
-        publiccidr = externalipaddress.prefixlen
+            pool = self.models.externalnetwork.get(cs.externalnetworkId)
 
-        cs.externalnetworkip = str(externalipaddress)
-        self.models.cloudspace.set(cs)
-        password = str(uuid.uuid4())
-        try:
-            self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password,
-                                  str(externalipaddress.ip),
-                                  'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
-        except:
-            self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
-            cs.externalnetworkip = None
-            cs.status = 'VIRTUAL'
+            if cs.externalnetworkip is None:
+                pool, externalipaddress = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
+                cs.externalnetworkip = str(externalipaddress)
+                self.models.cloudspace.set(cs)
+
+            externalipaddress = netaddr.IPNetwork(cs.externalnetworkip)
+            networkid = cs.networkId
+            publicgw = pool.gateway
+            publiccidr = externalipaddress.prefixlen
+
+            try:
+                self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password,
+                                      str(externalipaddress.ip),
+                                      'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+            except:
+                self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
+                cs.externalnetworkip = None
+                cs.status = 'VIRTUAL'
+                self.models.cloudspace.set(cs)
+                raise
+            cs.status = 'DEPLOYED'
             self.models.cloudspace.set(cs)
+            return cs.status
+        except Exception as e:
+            j.errorconditionhandler.processPythonExceptionObject(e, message="Cloudspace deploy aysnc call exception.")
             raise
-        cs.status = 'DEPLOYED'
-        self.models.cloudspace.set(cs)
-        return cs.status
+
 
     @authenticator.auth(acl={'cloudspace': set('D')})
     @audit()

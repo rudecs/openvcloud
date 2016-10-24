@@ -494,11 +494,6 @@ class Machine(object):
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
 
-        # create a public ip and virtual firewall on the cloudspace if needed
-        if cloudspace.status != 'DEPLOYED':
-            args = {'cloudspaceId': cloudspace.id}
-            self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
-
         image = models.image.get(imageId)
         machine = models.vmachine.new()
         machine.cloudspaceId = cloudspace.id
