@@ -147,13 +147,23 @@ class cloudbroker_iaas(BaseActor):
         size['disks'] = disks
         size['memory'] = memory
         size['vcpus'] = vcpus
-        if self.lcl.size.count(size) >= 1:
-            raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
-        size['name'] = name
-        self.models.size.set(size)
+        locations = self.models.location.search({"$query": {}, "$fields": ['gid']})
+        size['gids'] = [location['gid'] for location in locations[1:]]
         for disk in disks:
-            name = '%s-%s-%s' % (vcpus, memory, disk)
-            self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus, 'name': name})
+            if self.lcl.size.count({"vcpus": vcpus, "memory": memory, "disk": disk}) >= 1:
+                raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
+            for gid in size['gids']:
+                name = '%s-%s-%s-%s' % (vcpus, memory, disk, gid)
+                self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus, 'name': name, "gid": gid})
+        size['name'] = name
+        cloudbroker_size = next(iter(self.models.size.search({"vcpus": vcpus, "memory": memory})[1:]), None)
+
+        if not cloudbroker_size:
+            self.models.size.set(size)
+        else:
+            cloudbroker_size['disks'].extend(disks)
+            self.models.size.set(cloudbroker_size)
+
         return True
 
     @auth(['level1', 'level2', 'level3'])
