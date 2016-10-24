@@ -95,6 +95,11 @@ def getVDisk(path, vpool=None, timeout=None):
     path = '/' + url.path.strip('/')
     if not path.endswith('.raw'):
         path += '.raw'
+    elif not url.scheme:
+        parts = url.path.split('/')[2:]  # remove first slash and mnt
+        vpool = parts[0]
+        path = '/' + '/'.join(parts[1:])
+
     vpool = _getVPoolByUrl(url, vpool)
     disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
     if timeout is not None:
@@ -176,11 +181,13 @@ class TempStorage(object):
         truncate(raw, 2 * 1024 * 1024 * 1024 * 1024)
         res = os.system('mkfs -t btrfs "%s"' % raw)
         if res:
+            self.__exit__()
             raise RuntimeError('Cannot make file system for the raw device')
         path = j.system.fs.getTmpDirPath()
         self.path = path
         res = os.system('mount -t btrfs -o loop "%s" "%s"' % (raw, path))
         if res:
+            self.__exit__()
             raise RuntimeError('Cannot mount loop device')
         return self
 
@@ -189,7 +196,7 @@ class TempStorage(object):
         path = self.path
         os.system('umount "%s"' % path)
         j.system.fs.removeDirTree(path)
-        time.sleep(10)
+        getVDisk(self.path, timeout=10)
         j.system.fs.remove(raw)
 
 
