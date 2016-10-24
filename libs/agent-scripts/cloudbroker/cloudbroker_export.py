@@ -22,6 +22,7 @@ def action(link, username, passwd, path, envelope, disks):
     import subprocess
     from CloudscalerLibcloud import openvstorage
 
+    envelope = j.tools.text.toStr(envelope)
     try:
         pr = subprocess.Popen(['curl', '%s/%s' % (link.rstrip('/'), path.lstrip('/')), '--user', '%s:%s' % (username, passwd), '--upload-file', '-'], stdin=subprocess.PIPE)
         with tarfile.open(mode='w|', fileobj=pr.stdin) as tf:
