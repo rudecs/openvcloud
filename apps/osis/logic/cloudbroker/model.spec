@@ -10,7 +10,6 @@
     prop:dedicatedCU bool,False,if true the compute capacity will be dedicated
     prop:disks list(int),,List of id of Disk objects
     prop:nics list(Nic),,List of id Nic objects (network interfaces) attached to this vmachine
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:accounts list(VMAccount),,list of machine accounts on the virtual machine
     prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT;DESTROYED)
@@ -92,7 +91,6 @@
     prop:apiUrl str,,URL to communicate to the stack
     prop:type str,,Type of the stack, (OPENSTACK|CLOUDFRAMES|XEN SOURCE)
     prop:appId str,,application id if applicable
-    prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
     prop:error int,,Track amount of errors happened
@@ -109,7 +107,6 @@
     prop:descr str,,
     prop:sizeMax int,,provisioned size of disk in MB
     prop:sizeUsed int,,used capacity of disk in MB
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:realityDeviceNumber int,, Number a device gets after connect
     prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
@@ -144,7 +141,6 @@
 [model:Nic] @dbtype:osis
     """
     """
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:networkId int,,id of Network object
     prop:status str,,status of the vm (ACTIVE;INIT;DOWN)
