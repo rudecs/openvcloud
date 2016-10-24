@@ -118,6 +118,7 @@ class libcloud_libvirt(object):
         image.type = category
         image.size = size
         image.id = imageid
+        image.gid = gid
         image.guid = imageid
         imageid = self._models.image.set(image)[0]
         for resourceprovider in self._models.resourceprovider.search({'gid': gid})[1:]:

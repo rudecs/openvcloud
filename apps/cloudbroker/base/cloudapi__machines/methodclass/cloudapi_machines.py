@@ -252,6 +252,7 @@ class cloudapi_machines(BaseActor):
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
         image.id = imageid
+        image.gid = cloudspace.gid
         imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
         try:
             referenceId = provider.client.ex_create_template(node, templatename, imagename)

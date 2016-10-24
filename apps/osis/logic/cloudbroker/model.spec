@@ -64,6 +64,7 @@
     """
     """
     prop:id int,,
+    prop:gid int,,
     prop:name str,,name of the image
     prop:description str,,extra description of the image
     prop:UNCPath str,,location of the image (uncpath like used in pylabs); includes the login/passwd info

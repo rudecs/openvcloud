@@ -14,7 +14,7 @@ class cloudapi_images(BaseActor):
         """
         List the available images, filtering can be based on the cloudspace and the user which is doing the request
         """
-        fields = ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        fields = ['id', 'name', 'description', 'type', 'size', 'username', 'accountId', 'status']
         if accountId:
             q = {'referenceId': {'$ne': None}, 'status': 'CREATED', 'accountId': {"$in": [0, int(accountId)]}}
         else:
@@ -22,14 +22,8 @@ class cloudapi_images(BaseActor):
         query = {'$query': q, '$fields': fields}
 
         if cloudspaceId:
-            cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-            if cloudspace:
-                stacks = self.models.stack.search({'gid': cloudspace.gid, '$fields': ['images']})[1:]
-                imageids = set()
-                for stack in stacks:
-                    imageids.update(stack.get('images', []))
-                if len(imageids) > 0:
-                    q['id'] = {'$in': list(imageids)}
+            cloudspace = self.models.cloudspace.get(cloudspaceId)
+            q['gid'] = cloudspace.gid
 
         results = self.models.image.search(query)[1:]
 

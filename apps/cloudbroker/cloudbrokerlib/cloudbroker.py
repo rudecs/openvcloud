@@ -269,8 +269,8 @@ class CloudBroker(object):
         stack.images = list()
 
         pimages = {}
-        for p in provider.client.ex_list_images():
-            pimages[p.id] = p
+        for image in provider.client.ex_list_images():
+            pimages[image.id] = image
         pimages_ids = set(pimages.keys())
 
         images_current = models.image.search({'provider_name': pname})[1:]
@@ -286,6 +286,7 @@ class CloudBroker(object):
             image.provider_name = pname
             image.name = pimage.name
             image.referenceId = pimage.id
+            image.gid = stack.gid
             image.type = pimage.extra.get('imagetype', 'Unknown')
             image.size = pimage.extra.get('size', 0)
             image.username = pimage.extra.get('username', 'cloudscalers')
