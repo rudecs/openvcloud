@@ -21,7 +21,7 @@ class cloudbroker_ovsnode(BaseActor):
         ipaddress = None
         for nic in node.netaddr:
             if nic["name"] == "backplane1":
-                ipaddress = node["ip"][0]
+                ipaddress = nic["ip"][0]
                 break
 
         if ipaddress is None:
