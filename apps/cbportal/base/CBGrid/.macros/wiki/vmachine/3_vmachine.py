@@ -38,12 +38,14 @@ def generateUsersList(sclient, vmachinedict):
 def main(j, args, params, tags, tasklet):
     import gevent
     params.result = (args.doc, args.doc)
-    id = args.getTag('id')
-    if not id or not id.isdigit():
+    try:
+        id = int(id)
+    except:
+        pass
+    if not isinstance(id, int):
         args.doc.applyTemplate({})
         return params
 
-    id = int(id)
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
     sosis = j.clients.osis.getNamespace('system')

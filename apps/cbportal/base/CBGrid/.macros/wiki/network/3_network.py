@@ -1,14 +1,14 @@
-try:
-    import ujson as json
-except:
-    import json
-
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
     id = args.getTag('id')
     gid = args.getTag('gid')
-    if not id or not gid or not id.isdigit() or not gid.isdigit():
+    try:
+        id = int(id)
+        gid = int(gid)
+    except:
+        pass
+    if not isinstance(gid, int) or not isinstance(id, int):
         args.doc.applyTemplate({})
         return params
 
@@ -40,6 +40,7 @@ def main(j, args, params, tags, tasklet):
 
     args.doc.applyTemplate(obj, True)
     return params
+
 
 def match(j, args, params, tags, tasklet):
     return True
