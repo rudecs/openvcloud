@@ -375,7 +375,7 @@ class cloudapi_machines(BaseActor):
                     raise exceptions.Error("Failed to import Virtual Machine")
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
-                machine = import_job['result'][1]
+                machine = import_job['result']
                 node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
                 self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
             except:
