@@ -311,7 +311,7 @@ class cloudapi_machines(BaseActor):
 
     def syncImportOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user):
         try:
-            error = None
+            error = False
             userobj = j.core.portal.active.auth.getUserInfo(user)
             cloudspace = self.models.cloudspace.get(cloudspaceId)
 
@@ -371,6 +371,7 @@ class cloudapi_machines(BaseActor):
                                              'machine': machine})
             try:
                 if import_job["state"] == 'ERROR':
+                    error = True
                     raise exceptions.Error("Failed to import Virtual Machine")
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
@@ -394,6 +395,7 @@ class cloudapi_machines(BaseActor):
 
     def syncExportOVF(self, link, username, passwd, path, machineId, user, callbackUrl):
         try:
+            error = False
             diskmapping = list()
             userobj = j.core.portal.active.auth.getUserInfo(user)
             provider, node, vm = self.cb.getProviderAndNode(machineId)
@@ -425,6 +427,7 @@ class cloudapi_machines(BaseActor):
             # TODO: the url to be sent to the user
             provider.client.ex_delete_disks(diskguids)
             if export_job['state'] == 'ERROR':
+                error = True
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
                 [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
