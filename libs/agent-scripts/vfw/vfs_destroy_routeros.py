@@ -30,6 +30,9 @@ def action(networkid):
         dom = con.lookupByName(name)
         bridges = list(connection._get_domain_bridges(dom))
         dom.destroy()
+    except libvirt.libvirtError:
+        pass
+    try:
         dom.undefine()
     except libvirt.libvirtError:
         pass
