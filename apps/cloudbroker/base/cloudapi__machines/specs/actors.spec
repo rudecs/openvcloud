@@ -254,12 +254,3 @@
         """
         var:machineId int,, id of the machine
         result:bool, True if public network was detached from the machine
-
-    method:addExternalUser
-        """
-        Give an unregistered user access rights by sending an invite email
-        """
-        var:machineId int,, id of the machine
-        var:emailaddress str,, emailaddress of the unregistered user that will be invited
-        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        result:bool, True if user was added successfully

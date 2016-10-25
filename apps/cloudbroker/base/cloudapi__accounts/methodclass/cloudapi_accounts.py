@@ -39,29 +39,6 @@ class cloudapi_accounts(BaseActor):
             self.deleteUser(accountId, userId, recursivedelete=False)
             raise
 
-    @authenticator.auth(acl={'account': set('U')})
-    @audit()
-    def addExternalUser(self, accountId, emailaddress, accesstype, **kwargs):
-        """
-        Give an unregistered user access rights by sending an invite email
-
-        :param accountId: id of the account
-        :param emailaddress: emailaddress of the unregistered user that will be invited
-        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        :return True if user was added successfully
-        """
-        if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.BadRequest('User is already registered on the system, please add as '
-                                        'a normal user')
-
-        self._addACE(accountId, emailaddress, accesstype, userstatus='INVITED')
-        try:
-            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'account', accountId, accesstype)
-            return True
-        except:
-            self.deleteUser(accountId, emailaddress, recursivedelete=False)
-            raise
-
     def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the account

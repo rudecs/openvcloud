@@ -89,15 +89,6 @@
         var:accountId int,, id of the account
         result:dict, dict with the template images for the given account
 
-    method:addExternalUser
-        """
-        Give an unregistered user access rights by sending an invite email
-        """
-        var:accountId int,, id of the account
-        var:emailaddress str,, emailaddress of the unregistered user that will be invited
-        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        result:bool, True if user was added successfully
-
     method:getConsumedCloudUnits
         """
         Calculate the currently consumed cloud units for all cloudspaces in the account.

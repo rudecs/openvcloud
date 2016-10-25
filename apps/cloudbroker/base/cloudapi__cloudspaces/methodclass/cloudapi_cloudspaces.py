@@ -55,30 +55,6 @@ class cloudapi_cloudspaces(BaseActor):
             self.deleteUser(cloudspaceId, userId, recursivedelete=False)
             raise
 
-    @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
-    def addExternalUser(self, cloudspaceId, emailaddress, accesstype, **kwargs):
-        """
-        Give an unregistered user access rights by sending an invite email
-
-        :param cloudspaceId: id of the cloudspace
-        :param emailaddress: emailaddress of the unregistered user that will be invited
-        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        :return True if user was added successfully
-        """
-        if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.BadRequest('User is already registered on the system, please add as '
-                                        'a normal user')
-
-        self._addACE(cloudspaceId, emailaddress, accesstype, userstatus='INVITED')
-        try:
-            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'cloudspace', cloudspaceId,
-                                                 accesstype)
-            return True
-        except:
-            self.deleteUser(cloudspaceId, emailaddress, recursivedelete=False)
-            raise
-
     def _addACE(self, cloudspaceId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the cloudspace

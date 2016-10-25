@@ -100,15 +100,6 @@
         var:cloudspaceId int,, id of the cloudspace
         result: dict, dict with defense shield details
 
-    method:addExternalUser
-        """
-        Give an unregistered user access rights by sending an invite email
-        """
-        var:cloudspaceId int,, id of the cloudspace
-        var:emailaddress str,, emailaddress of the unregistered user that will be invited
-        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        result:bool, True if user was added successfully
-
     method:getOpenvpnConfig @method:get,post
         """
         Get OpenVPN config file (in zip format) for specified cloudspace

@@ -853,29 +853,6 @@ class cloudapi_machines(BaseActor):
             self.deleteUser(machineId, userId, recursivedelete=False)
             raise
 
-    @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
-    @audit()
-    def addExternalUser(self, machineId, emailaddress, accesstype, **kwargs):
-        """
-        Give an unregistered user access rights by sending an invite email
-
-        :param machineId: id of the machine
-        :param emailaddress: emailaddress of the unregistered user that will be invited
-        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        :return True if user was added successfully
-        """
-        if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.BadRequest('User is already registered on the system, please add as '
-                                        'a normal user')
-
-        self._addACE(machineId, emailaddress, accesstype, userstatus='INVITED')
-        try:
-            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'machine', machineId, accesstype)
-            return True
-        except:
-            self.deleteUser(machineId, emailaddress)
-            raise
-
     def _addACE(self, machineId, userId, accesstype, userstatus='CONFIRMED'):
         """
         Add a new ACE to the ACL of the vmachine
