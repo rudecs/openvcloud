@@ -693,8 +693,7 @@ class CSLibvirtNodeDriver(object):
             volumes.append(volume)
         return self._create_node(name, size, networkid=networkid, volumes=volumes)
 
-    def ex_clone(self, node, size, vmid, networkid, diskmapping):
-        name = 'vm-%s' % vmid
+    def ex_clone_disks(self, diskmapping):
         disks = []
         diskvpool = {}
         for volume, diskname in diskmapping:
@@ -716,6 +715,17 @@ class CSLibvirtNodeDriver(object):
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
             volumes.append(volume)
+        return volumes
+
+    def ex_delete_disks(self, volumeguids):
+        self._execute_agent_job('deletedisks',
+                                role='storagedriver',
+                                ovs_connection=self.ovs_connection,
+                                diskguids=volumeguids)
+
+    def ex_clone(self, node, size, vmid, networkid, diskmapping):
+        name = 'vm-%s' % vmid
+        volumes = self.ex_clone_disks(diskmapping)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_export(self, node, exportname, uncpath, emailaddress):
