@@ -715,7 +715,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         active_cloudspaces = self._listActiveCloudSpaces(cloudspace.accountId)
 
-        if name in [ space['name'] for space in active_cloudspaces ]:
+        if name in [space['name'] for space in active_cloudspaces] and name != cloudspace.name:
             raise exceptions.Conflict('Cloud Space with name %s already exists.' % name)
 
         if name:
