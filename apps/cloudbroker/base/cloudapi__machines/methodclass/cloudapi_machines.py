@@ -321,7 +321,7 @@ class cloudapi_machines(BaseActor):
             job_envelope = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_getenvelope',
                                    gid=cloudspace.gid, role='storagedriver',
                                    args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
-
+            envelope = job_envelope['result']
             if job_envelope['state'] == 'ERROR':
                 error = job_envelope['errorreport']
                 raise
