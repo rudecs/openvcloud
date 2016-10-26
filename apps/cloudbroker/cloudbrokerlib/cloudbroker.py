@@ -62,11 +62,16 @@ class CloudProvider(object):
         self.stackId = stackId
 
     def getSize(self, brokersize, firstdisk):
+        biggerdisk = None
         providersizes = self.client.list_sizes()
         for s in providersizes:
-            if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk and s.extra['vcpus'] == brokersize.vcpus:
-                return s
-        return None
+            if s.ram == brokersize.memory and s.extra['vcpus'] == brokersize.vcpus:
+                if firstdisk.sizeMax == s.disk:
+                    return s
+                elif firstdisk.sizeMax < s.disk and (biggerdisk is None or biggerdisk.disk > s.disk):
+                    biggerdisk = s
+        return biggerdisk
+
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)

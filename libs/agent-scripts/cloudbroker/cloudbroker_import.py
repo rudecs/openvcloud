@@ -17,33 +17,36 @@ timeout = 60 * 60
 
 
 def action(link, username, passwd, path, machine):
+    import tarfile
+    import subprocess
     from CloudscalerLibcloud import openvstorage
-    from CloudscalerLibcloud.utils import webdav
-    import tempfile
-    tmpdir = tempfile.mkdtemp()
+
     try:
-        filename = '%s/ovf.tar.gz' % tmpdir
-        webdav.download_file(link, username, passwd, path, filename)
-        ovfpath = '%s/ovf' % tmpdir
-
-        j.system.fs.targzUncompress(filename, ovfpath)
-
-        bootdisk = '%s/%s' % (ovfpath, machine['disks'][0]['path'])
-        datadisks = map(lambda x: '%s/%s' % (ovfpath, x['path']), machine['disks'][1:])
-
-        bootres = [openvstorage.importVolume(bootdisk, "vm-%d/bootdisk-vm-%d.raw" % (machine['id'], machine['id']), False)]
-        datares = [openvstorage.importVolume(disk,
-                    "volumes/volume_%d.raw" % (disk['id']), True) for disk in datadisks]
-        res = bootres + datares
-        for disk, job in zip(machine['disks'], res):
-            disk['guid'], disk['path'] = job
+        pr = subprocess.Popen(['curl', '%s/%s' % (link.rstrip('/'), path.lstrip('/')), '--user', '%s:%s' % (username, passwd)], stdout=subprocess.PIPE)
+        with tarfile.open(mode='r|*', fileobj=pr.stdout) as tf:
+            with openvstorage.TempStorage() as ts:
+                disks = [disk['path'] for disk in machine['disks']]
+                for member in tf:
+                    if member.name in disks:
+                        ind = disks.index(member.name)
+                        disk = machine['disks'][ind]
+                        if member.name == disks[0]:
+                            isdata = False
+                            path = "vm-%d/bootdisk-vm-%d.raw" % (machine['id'], machine['id'])
+                        else:
+                            isdata = True
+                            path = "volumes/volume_%d.raw" % (disk['id'])
+                        tf.extract(member, ts.path)
+                        disk['guid'], disk['path'] = openvstorage.importVolume('%s/%s' % (ts.path, member.name), path, isdata)
+                        j.system.fs.remove('%s/%s' % (ts.path, member.name))
         return machine
+
     finally:
-        j.system.fs.removeDirTree(tmpdir)
-        # TODO: remove imported disks in case of falure
+        pr.wait()
+
 
 if __name__ == "__main__":
-    print(action('a', 'a', 'a', 'a', {
+    print(action('http://192.168.27.152/owncloud/remote.php/webdav', 'myuser', 'rooter', '/images/mie.tar.gz', {
         'id': 5555,
         'disks': [{
             'id': '6666',

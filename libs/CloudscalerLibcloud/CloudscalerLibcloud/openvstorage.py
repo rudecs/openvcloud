@@ -4,7 +4,7 @@ import random
 import os
 import time
 import urlparse
-import json
+import tempfile
 
 sys.path.append('/opt/OpenvStorage')
 from ovs.lib.vdisk import VDiskController
@@ -95,6 +95,11 @@ def getVDisk(path, vpool=None, timeout=None):
     path = '/' + url.path.strip('/')
     if not path.endswith('.raw'):
         path += '.raw'
+    elif not url.scheme:
+        parts = url.path.split('/')[2:]  # remove first slash and mnt
+        vpool = parts[0]
+        path = '/' + '/'.join(parts[1:])
+
     vpool = _getVPoolByUrl(url, vpool)
     disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
     if timeout is not None:
@@ -163,6 +168,36 @@ def importVolume(srcpath, destpath, data=False):
 def exportVolume(srcpath, destpath):
     j.system.platform.qemu_img.convert(srcpath.replace('://', ':', 1), None, destpath, 'vmdk')
     return destpath
+
+
+class TempStorage(object):
+
+    BASE = '/mnt/%s/tmp' % VPOOLNAME
+
+    def __enter__(self):
+        j.system.fs.createDir(self.BASE)
+        raw = tempfile.mktemp('.raw', dir=self.BASE)
+        self.raw = raw
+        truncate(raw, 2 * 1024 * 1024 * 1024 * 1024)
+        res = os.system('mkfs -t btrfs "%s"' % raw)
+        if res:
+            self.__exit__()
+            raise RuntimeError('Cannot make file system for the raw device')
+        path = j.system.fs.getTmpDirPath()
+        self.path = path
+        res = os.system('mount -t btrfs -o loop "%s" "%s"' % (raw, path))
+        if res:
+            self.__exit__()
+            raise RuntimeError('Cannot mount loop device')
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        raw = self.raw
+        path = self.path
+        os.system('umount "%s"' % path)
+        j.system.fs.removeDirTree(path)
+        getVDisk(self.path, timeout=10)
+        j.system.fs.remove(raw)
 
 
 def truncate(filepath, size=None):

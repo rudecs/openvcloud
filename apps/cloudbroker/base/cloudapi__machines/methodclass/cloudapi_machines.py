@@ -271,14 +271,17 @@ class cloudapi_machines(BaseActor):
 
         return imageid
 
-    def _sendImportCompletionMail(self, emailaddress, link, success=True):
+    def _sendImportCompletionMail(self, emailaddress, link, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
         else:
             toaddrs = [emailaddress]
 
+        success = "successfully" if success else "not successfully"
         args = {
+            'error': error,
+            'success': success,
             'email': emailaddress,
             'link': link,
         }
@@ -288,14 +291,17 @@ class cloudapi_machines(BaseActor):
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
-    def _sendExportCompletionMail(self, emailaddress, success=True):
+    def _sendExportCompletionMail(self, emailaddress, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
         else:
             toaddrs = [emailaddress]
 
+        success = "successfully" if success else "not successfully"
         args = {
+            'error': error,
+            'success': success,
             'email': emailaddress,
         }
 
@@ -306,7 +312,7 @@ class cloudapi_machines(BaseActor):
 
     def syncImportOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user):
         try:
-
+            error = False
             userobj = j.core.portal.active.auth.getUserInfo(user)
             cloudspace = self.models.cloudspace.get(cloudspaceId)
 
@@ -353,6 +359,7 @@ class cloudapi_machines(BaseActor):
 
             machine['id'] = vm.id
 
+            # the disk objects in the machine gets changed in the jumpscript and a guid is added to them
             machine = self.acl.execute('greenitglobe', 'cloudbroker_import',
                                        gid=cloudspace.gid, role='storagedriver',
                                        timeout=3600,
@@ -364,6 +371,7 @@ class cloudapi_machines(BaseActor):
             try:
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
+                provider.client.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk, cloudspace.gid)
                 node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
                 self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
             except:
@@ -375,19 +383,27 @@ class cloudapi_machines(BaseActor):
             else:
                 requests.get(callbackUrl)
         except:
+            error = True
             if not callbackUrl:
-                [self._sendImportCompletionMail(email, '', success=False) for email in userobj.emails]
+                [self._sendImportCompletionMail(email, '', success=False, error=error) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
             raise
 
     def syncExportOVF(self, link, username, passwd, path, machineId, user, callbackUrl):
         try:
+            error = False
+            diskmapping = list()
             userobj = j.core.portal.active.auth.getUserInfo(user)
             provider, node, vm = self.cb.getProviderAndNode(machineId)
             cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
             disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
-            disknames = [disk['referenceId'].split('@')[0] for disk in disks]
+            for disk in disks:
+                diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
+                               "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
+            volumes = provider.client.ex_clone_disks(diskmapping)
+            diskguids = [volume.vdiskguid for volume in volumes]
+            disknames = [volume.id.split('@')[0] for volume in volumes]
             size = self.models.size.get(vm.sizeId)
             osname = self.models.image.get(vm.imageId).name
             os = re.match('^[a-zA-Z]+', osname).group(0).lower()
@@ -403,17 +419,20 @@ class cloudapi_machines(BaseActor):
                     'size': disk['sizeMax'] * 1024 * 1024 * 1024
                 } for i, disk in enumerate(disks)]
             })
-            self.acl.execute('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
+            export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
                              args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
             # TODO: the url to be sent to the user
-
+            provider.client.ex_delete_disks(diskguids)
+            if export_job['state'] == 'ERROR':
+                raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
                 [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
         except:
+            error = True
             if not callbackUrl:
-                [self._sendExportCompletionMail(email, success=False) for email in userobj.emails]
+                [self._sendExportCompletionMail(email, success=False, error=error) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
             raise
