@@ -8,7 +8,7 @@ The master cloud space is a collection of 4 virtual machines - or Docker contain
 - **ovc_git** holding all configuration of your environment
 - **ovc_master** controlling the environment based on information from ovc\_git
 - **ovc_reflector** provides [reverse SSH connections](https://en.wikipedia.org/wiki/Reverse_connection) to the physical nodes
-- **ovc_proxy** running nginx as a proxy for all port 80 and port 443 communications
+- **ovc_proxy** running NGINX as a proxy for all port 80 and port 443 communications
 
 
 The master cloud space can either be installed on
@@ -31,26 +31,44 @@ There are actually three steps:
 #### Bootstrap the installation (step 1)
 To bootstrap the installation of the master cloud space, a temporary Docker container with all required components pre-installed is used. This container can be deleted afterwards.
 
-Get access to one of **Controllers** of your environment in order to run the temporary Docker container,
+Get access to one of the **Controllers** of your environment in order to run the temporary Docker container:
 
 ```
 mkdir /opt/master_var
 docker pull jumpscale/ubuntu1404
-docker run -d name=jumpscale jumpscale/ubuntu1404
+docker run -d --name=jumpscale jumpscale/ubuntu1404
 ```
 
+(docker run -d -i -t --net=pxeboot --ip=10.21.2.124 --name=jumpscale jumpscale/ubuntu1404)
+
 Use the `docker inspect` command in order to get the IP address of the Docker container:
+
 ```
 docker ps
-docker inspect e350390fd549
+docker inspect jumpscale
 ```
 
 Now start an SSH session using the IP address, e.g. `172.17.0.2`:
+
 ```
 ssh root@172.17.0.2
 ```
 
-In the container download the **01-scratch-openvloud.sh** script from the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository and run it:
+In the container clone the [0-complexity/OpenvCloud](https://github.com/0-complexity/openvcloud) GitHub repository, here version/branch 2.1.5:
+
+```
+git clone -b 2.1.5 git@github.com:0-complexity/openvcloud.git
+```
+
+Before running the script you first need to update the version info that is hardcoded in the script:
+
+```
+JSBRANCH="7.1.5"
+AYSBRANCH="7.1.5"
+OVCBRANCH="2.1.5"
+```
+
+Run the **01-scratch-openvloud.sh** script:
 
 ```
 cd openvcloud/scripts/install/
@@ -81,19 +99,24 @@ You need to change content with your credentials:
 - `environment` is the environment name (e.g.: be-conv-1, be-stor-1, du-conv-3, ...)
 - `git-user` is your GitHub username
 - `git-pass` is your GitHub password
-- `domain` is optionally the domain name you will use, if omitted, demo.greenitglobe.com will be used
+- `domain` (optionally) is the domain name you will use, if omitted, demo.greenitglobe.com will be used
 - `[ms1] user` is your Mothership1 username
 - `[ms1] pass` is your Mothership1 password
 - `[ms1] location` is the Mothership1 location of your cloud space (eu1, eu2, ...)
-- `[ms1] cloudspace` is the name of the master cloud space at Mothership1, this is where ovc_git and all the other virtual machines will be created (useably, it's the same name of the environment)
-- `[docker] remote` is the remote ip where docker daemon is reachable
-- `[docker] port` is the remote port where docker daemon is reachable
-- `[docker] public` is the public ip from where the docker is reachable (host ip)
+- `[ms1] cloudspace` is the name of the master cloud space at Mothership1, this is where **ovc_git** and all the other virtual machines will be created (useably, it's the same name of the environment)
+- `[docker] remote` is the remote ip where Docker daemon is reachable
+- `[docker] port` is the remote port where Docker daemon is reachable
+- `[docker] public` is the public IP address from where the Docker container is reachable (host IP address)
 
-init.py -b  docker -e be-g8-1 -r 172.17.0.1 -o
+Before actually executing the script make sure you've created a GitHub repository for your environment.
 
+Once done, execute the script, here for instance for the environment uk-g8-1:
 
-When this script has executed successfully, your **ovc_git** Docker container is ready. You can now ssh it, as mentioned in the output of the script:
+```
+jspython 02-scratch-init.py --environment uk-g8-1 --backend docker --remote 172.17.0.1 --public 10.101.111.254
+```
+
+When this script has executed successfully, your **ovc_git** Docker container is ready. You can now ssh it, as mentioned in the output of the script.
 
 
 <a id="other-containers"></a>
