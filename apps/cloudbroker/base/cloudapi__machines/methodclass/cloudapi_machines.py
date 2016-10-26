@@ -270,7 +270,7 @@ class cloudapi_machines(BaseActor):
 
         return imageid
 
-    def _sendImportCompletionMail(self, emailaddress, link, success=True, error=None):
+    def _sendImportCompletionMail(self, emailaddress, link, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
@@ -290,7 +290,7 @@ class cloudapi_machines(BaseActor):
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
-    def _sendExportCompletionMail(self, emailaddress, success=True, error=None):
+    def _sendExportCompletionMail(self, emailaddress, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
@@ -318,13 +318,10 @@ class cloudapi_machines(BaseActor):
             vm = self.models.vmachine.new()
             vm.cloudspaceId = cloudspaceId
 
-            job_envelope = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_getenvelope',
+            envelope = self.acl.execute('greenitglobe', 'cloudbroker_getenvelope',
                                    gid=cloudspace.gid, role='storagedriver',
                                    args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
-            envelope = job_envelope['result']
-            if job_envelope['state'] == 'ERROR':
-                error = job_envelope['errorreport']
-                raise
+
             machine = ovf.ovf_to_model(envelope)
 
             vm.name = name
@@ -361,7 +358,8 @@ class cloudapi_machines(BaseActor):
 
             machine['id'] = vm.id
 
-            import_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_import',
+            # the disk objects in the machine gets changed in the jumpscript and a guid is added to them
+            machine = self.acl.execute('greenitglobe', 'cloudbroker_import',
                                        gid=cloudspace.gid, role='storagedriver',
                                        timeout=3600,
                                        args={'link': link,
@@ -370,12 +368,9 @@ class cloudapi_machines(BaseActor):
                                              'path': path,
                                              'machine': machine})
             try:
-                if import_job["state"] == 'ERROR':
-                    error = True
-                    raise exceptions.Error("Failed to import Virtual Machine")
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
-                machine = import_job['result']
+                provider.client.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk, cloudspace.gid)
                 node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
                 self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
             except:
@@ -387,6 +382,7 @@ class cloudapi_machines(BaseActor):
             else:
                 requests.get(callbackUrl)
         except:
+            error = True
             if not callbackUrl:
                 [self._sendImportCompletionMail(email, '', success=False, error=error) for email in userobj.emails]
             else:
@@ -427,13 +423,13 @@ class cloudapi_machines(BaseActor):
             # TODO: the url to be sent to the user
             provider.client.ex_delete_disks(diskguids)
             if export_job['state'] == 'ERROR':
-                error = True
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
                 [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
         except:
+            error = True
             if not callbackUrl:
                 [self._sendExportCompletionMail(email, success=False, error=error) for email in userobj.emails]
             else:

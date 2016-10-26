@@ -728,6 +728,13 @@ class CSLibvirtNodeDriver(object):
         volumes = self.ex_clone_disks(diskmapping)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
+    def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
+        self._execute_agent_job('extend_disk',
+                                role='storagedriver',
+                                ovs_connection=self.ovs_connection,
+                                size=newsize,
+                                diskguid=diskguid)
+
     def ex_export(self, node, exportname, uncpath, emailaddress):
         machineid = node.id
         return self._execute_agent_job('backupmachine', wait=False, machineid=machineid, backupname=exportname, location=uncpath, emailaddress=emailaddress)
