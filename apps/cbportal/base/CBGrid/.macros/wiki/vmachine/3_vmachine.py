@@ -38,6 +38,7 @@ def generateUsersList(sclient, vmachinedict):
 def main(j, args, params, tags, tasklet):
     import gevent
     params.result = (args.doc, args.doc)
+    id = args.getTag('id')
     try:
         id = int(id)
     except:
