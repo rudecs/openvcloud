@@ -1,19 +1,59 @@
 ## Connect Node to ovc_git
 
+Repeat the below on every single CPU and storage node.
+
 Connecting a node to **ovc_git** is done using **06-node-connect.sh**.
 
-> **Note**: Do not run this script in parallel in case of a remote (not Docker) node.
-
-First make sure that you have the version tag environment variables set, specifying the versions of JS, AYS and OVC:
+From the controller ssh into the physical node:
 
 ```
-export JSBRANCH="7.0.2a"; export AYSBRANCH="7.0.2a" ; export OVCBRANCH="2.0.2a" ;
+ssh -A root@$IP-ADDRESS-OF-THE-NODE$
+```
+
+The IP addresses of all nodes can be found in **/opt/g8-pxeboot/pxeboot/conf/hosts**.
+
+Once you are connected to the node, go to the **/tmp** directory and create the **branch.sh** file:
+
+```
+cd /tmp
+vi branch.sh
+```
+
+In **branch.sh** you have to set the environment version variables, specifying the versions for JS, AYS and OVC, like this:
+
+```
+export JSBRANCH="7.1.5"
+export AYSBRANCH="7.1.5"
+export OVCBRANCH="2.1.5"
+```
+
+In order to make sure that you can reach the outside from node you might need to update the ***resolv.conf*** file:
+
+```
+vi /etc/resolv.conf
+```
+
+Add the Google DNS to it:
+
+```
+nameserver 8.8.8.8
+```
+
+Next you need to get the **06-node-connect.sh** script on the node:
+
+```
+wget https://raw.githubusercontent.com/0-complexity/openvcloud/2.1.5/scripts/install/06-node-connect.sh?token=AH6Oj867ydVQOHUgTJzuXMve6p--gqtfks5YGwcowA%3D%3D -O connect.sh
+```
+
+Or:
+
+```
+curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/06-node-connect.sh > /tmp/06-node-connect.sh
 ```
 
 Then run the **06-node-connect.sh** script:
 
 ```
-curl https://github.com/0-complexity/openvcloud/raw/master/scripts/install/06-node-connect.sh > /tmp/06-node-connect.sh
 bash /tmp/06-node-connect.sh $REMOTEHOST
 ```
 
@@ -21,6 +61,19 @@ bash /tmp/06-node-connect.sh $REMOTEHOST
 
 - In case of using Docker containers instead of virtual machines you have to specify the IP address of the machine (typically a Controller) hosting the master cloud space.
 - In case the master cloud space is hosted at mothership1.com you have to specify the public IP address of the master cloud space.
+
+
+In order verify all went well, you can check on **ovc_git** the services directory:
+
+```
+/opt/code/github/gig-projects/env_uk-g8-1/services/jumpscale__location__uk-g8-1
+```
+
+For each node you'll find a subdirectory, here for instance for the first CPU node with hostname **cpu-01.cl-g8-uk1**:
+
+```
+jumpscale__node.ssh__cpu-01.cl-g8-uk1
+```
 
 When the script is done, your node should be ready for the next step: [Setup of Open vStorage](4-SetupOfOVS.md)
 
