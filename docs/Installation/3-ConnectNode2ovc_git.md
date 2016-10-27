@@ -76,5 +76,3 @@ jumpscale__node.ssh__cpu-01.cl-g8-uk1
 ```
 
 When the script is done, your node should be ready for the next step: [Setup of Open vStorage](4-SetupOfOVS.md)
-
-> **Note:** The scripts in what follows depend on the `service.hrd` files located at ```/opt/code/git/openvcloudEnvironments/$ENVIRONMENT/services/```. So, if you are re-using a repository, make sure that your reflector and other ip addresses and are in place and correct, or else you will not be able to connect to the tunnels.
