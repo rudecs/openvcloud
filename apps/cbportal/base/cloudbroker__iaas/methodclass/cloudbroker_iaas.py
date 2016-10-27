@@ -46,7 +46,7 @@ class cloudbroker_iaas(BaseActor):
         pool.vlan = vlan
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
-        pool.accountId = accountId
+        pool.accountId = accountId or 0
         pool.ips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
         pool.id, _, _ = self.models.externalnetwork.set(pool)
         return pool.id
