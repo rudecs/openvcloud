@@ -35,7 +35,7 @@ def registerImage(service, name, type, disksize, username=None):
         image.type = type
         image.size = disksize
         image.username = username
-        image['gid'] = j.application.whoAmI.gid
+        image.gid = j.application.whoAmI.gid
         image.provider_name = 'libvirt'
         image.status = 'CREATED'
         ccl.image.set(image)

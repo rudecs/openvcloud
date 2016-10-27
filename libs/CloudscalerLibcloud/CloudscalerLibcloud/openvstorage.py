@@ -96,9 +96,10 @@ def getVDisk(path, vpool=None, timeout=None):
     if not path.endswith('.raw'):
         path += '.raw'
     elif not url.scheme:
-        parts = url.path.split('/')[2:]  # remove first slash and mnt
-        vpool = parts[0]
-        path = '/' + '/'.join(parts[1:])
+        parts = url.path.split('/')[1:]  # remove first slash
+        if parts[0] == 'mnt':
+            vpool = parts[1]
+            path = '/' + '/'.join(parts[2:])
 
     vpool = _getVPoolByUrl(url, vpool)
     disk = VDiskList.get_by_devicename_and_vpool(path, vpool)
