@@ -19,7 +19,7 @@ class cloudapi_s3storage(BaseActor):
         return s3storagebuckets[0]
 
     @authenticator.auth(acl={'cloudspace': set('R')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def get(self, cloudspaceId, **kwargs):
         """
         Gets the S3 details for a specific cloudspace
@@ -34,7 +34,7 @@ class cloudapi_s3storage(BaseActor):
         return connectiondetails
 
     @authenticator.auth(acl={'cloudspace': set('R')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def listbuckets(self, cloudspaceId, **kwargs):
         """
         List the storage buckets in a space.

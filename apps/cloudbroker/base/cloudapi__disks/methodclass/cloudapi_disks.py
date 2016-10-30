@@ -25,7 +25,7 @@ class cloudapi_disks(BaseActor):
         return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit()
+    @audit(accountId="accountId")
     def create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
         """
         Create a disk
@@ -95,7 +95,7 @@ class cloudapi_disks(BaseActor):
         return self.models.disk.get(diskId).dump()
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
+    @audit(accountId="accountId")
     def list(self, accountId, type, **kwargs):
         """
         List the created disks belonging to an account

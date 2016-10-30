@@ -30,7 +30,7 @@ class cloudapi_cloudspaces(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -127,7 +127,7 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Update user access rights. Returns True only if an actual update has happened.
@@ -154,7 +154,7 @@ class cloudapi_cloudspaces(BaseActor):
         return results
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1,
@@ -304,7 +304,7 @@ class cloudapi_cloudspaces(BaseActor):
 
 
     @authenticator.auth(acl={'cloudspace': set('D')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def delete(self, cloudspaceId, **kwargs):
         """
         Delete the cloudspace
@@ -334,7 +334,7 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('R')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def get(self, cloudspaceId, **kwargs):
         """
         Get cloudspace details
@@ -368,7 +368,7 @@ class cloudapi_cloudspaces(BaseActor):
         return cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the cloudspace
@@ -692,7 +692,7 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('A')})
-    @audit()
+    @audit(cloudspaceId="cloudspaceId")
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
