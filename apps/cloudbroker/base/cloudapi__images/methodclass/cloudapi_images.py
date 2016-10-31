@@ -1,4 +1,3 @@
-from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
@@ -9,7 +8,7 @@ class cloudapi_images(BaseActor):
     Lists all the images. A image is a template which can be used to deploy machines.
 
     """
-    @audit()
+    
     def list(self, accountId, cloudspaceId, **kwargs):
         """
         List the available images, filtering can be based on the cloudspace and the user which is doing the request
@@ -35,7 +34,7 @@ class cloudapi_images(BaseActor):
 
         return sorted(results, cmp=imagesort)
 
-    @audit()
+
     def delete(self, imageId, **kwargs):
         """
         Delete an image

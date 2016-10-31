@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
@@ -25,7 +24,6 @@ class cloudapi_disks(BaseActor):
         return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit()
     def create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
         """
         Create a disk
@@ -82,7 +80,6 @@ class cloudapi_disks(BaseActor):
         return provider.client.ex_limitio(volume, iops)
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def get(self, diskId, **kwargs):
         """
         Get disk details
@@ -95,7 +92,6 @@ class cloudapi_disks(BaseActor):
         return self.models.disk.get(diskId).dump()
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def list(self, accountId, type, **kwargs):
         """
         List the created disks belonging to an account
@@ -120,7 +116,6 @@ class cloudapi_disks(BaseActor):
         return disks
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
     def delete(self, diskId, detach, **kwargs):
         """
         Delete a disk
