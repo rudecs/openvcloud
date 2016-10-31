@@ -52,7 +52,7 @@ In order to get access to **ovc_master** you first need to get access to one of 
   ssh-add -l
   ```
 
-- In case your private key is not loaded, let's add them by first making sure ssh-agent is running, and then actually adding them:
+- In case your private key is not loaded, let's add it by first making sure **ssh-agent** is running, and then actually adding the key:
 
   ```shell
   eval $(ssh-agent)
@@ -87,13 +87,13 @@ In order to get access to **ovc_master** you first need to get access to one of 
 
 Now that you are connected to one of the controllers, you will access the **ovc_master** Docker container:
 
-- On the controller you list all running Docker containers:
+- On the controller you might first want to list all running Docker containers:
 
   ```shell
   docker ps
   ```
 
-- The **ovc_master** Docker container will be listed as one of the running container, start an interactive sessions:
+- The **ovc_master** Docker container will be listed as one of the running containers, start an interactive session with it:
 
   ```shell
   docker exec -i -t ovcmaster /bin/bash
@@ -102,7 +102,7 @@ Now that you are connected to one of the controllers, you will access the **ovc_
 - Get to the resource tracking records:
 
   ```shell
-  cd /opt/jumpscale7/var/resourcetracking/%account-ID%
+  cd /opt/jumpscale7/var/resourcetracking
   ```
 
 For each account there will be a subdirectory, for instance for the account with ID 60 this is `/opt/jumpscale7/var/resourcetracking/6`
