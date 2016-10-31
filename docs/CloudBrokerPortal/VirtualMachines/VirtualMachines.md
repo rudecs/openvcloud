@@ -21,7 +21,7 @@ From the **Actions** dropdown menu you can:
 
 All users with access right for the virtual machine are listed here:
 
-![](UsersAccess)
+![](UsersAccess.png)
 
 Clicking **+ Grant User Access** allows you to add users:
 
@@ -59,11 +59,11 @@ Creating snapshots is straight forward, and rolling back or deleting a snapshot 
 
 ### Port Forwards
 
-Here all Port Forwards are listed:
+Here all port forwards are listed:
 
 ![](PortForwardings.png)
 
-Adding more Port Forwards and removing existing ones is easy.
+Adding more port forwards and removing existing ones is easy.
 
 
 ### Jobs
