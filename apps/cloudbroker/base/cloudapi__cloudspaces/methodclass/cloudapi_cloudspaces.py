@@ -303,7 +303,11 @@ class cloudapi_cloudspaces(BaseActor):
 
 
     @authenticator.auth(acl={'cloudspace': set('D')})
+<<<<<<< HEAD
     
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def delete(self, cloudspaceId, **kwargs):
         """
         Delete the cloudspace
@@ -333,7 +337,11 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('R')})
+<<<<<<< HEAD
     
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def get(self, cloudspaceId, **kwargs):
         """
         Get cloudspace details
@@ -367,7 +375,11 @@ class cloudapi_cloudspaces(BaseActor):
         return cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('U')})
+<<<<<<< HEAD
     
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the cloudspace
