@@ -37,8 +37,7 @@ def action(link, username, passwd, path, envelope, disks):
                     j.system.fs.remove('%s/disk.vmdk' % ts.path)
 
     finally:
-        pr.stdin.close()
-        pr.wait()
+        pr.communicate()
 
 
 if __name__ == "__main__":

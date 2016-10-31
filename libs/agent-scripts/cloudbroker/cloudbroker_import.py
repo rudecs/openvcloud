@@ -42,7 +42,7 @@ def action(link, username, passwd, path, machine):
         return machine
 
     finally:
-        pr.wait()
+        pr.communicate()
 
 
 if __name__ == "__main__":
