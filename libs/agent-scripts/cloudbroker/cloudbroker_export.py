@@ -20,6 +20,7 @@ def action(link, username, passwd, path, envelope, disks):
     from io import BytesIO
     import tarfile
     import subprocess
+    import sys
     from CloudscalerLibcloud import openvstorage
 
     envelope = j.tools.text.toStr(envelope)
@@ -37,7 +38,8 @@ def action(link, username, passwd, path, envelope, disks):
                     j.system.fs.remove('%s/disk.vmdk' % ts.path)
 
     finally:
-        pr.communicate()
+        stdout, _ = pr.communicate()
+        sys.stderr.write(stdout)
 
 
 if __name__ == "__main__":

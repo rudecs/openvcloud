@@ -19,6 +19,7 @@ timeout = 60 * 60
 def action(link, username, passwd, path, machine):
     import tarfile
     import subprocess
+    import sys
     from CloudscalerLibcloud import openvstorage
 
     try:
@@ -42,7 +43,8 @@ def action(link, username, passwd, path, machine):
         return machine
 
     finally:
-        pr.communicate()
+        stdout, _ = pr.communicate()
+        sys.stderr.write(stdout)
 
 
 if __name__ == "__main__":
