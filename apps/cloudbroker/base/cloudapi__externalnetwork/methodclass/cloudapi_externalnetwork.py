@@ -5,7 +5,7 @@ from cloudbrokerlib.baseactor import BaseActor
 
 class cloudapi_externalnetwork(BaseActor):
 
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def list(self, accountId, **kwargs):
         """
         result 

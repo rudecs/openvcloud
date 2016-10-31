@@ -25,7 +25,7 @@ class cloudapi_portforwarding(BaseActor):
         return None
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit(cloudspaceId="cloudspaceId", machineId="machineId")
+    @audit(cloudspaceid="cloudspaceId", machineId="machineId")
     def create(self, cloudspaceId, publicIp, publicPort, machineId, localPort, protocol=None, **kwargs):
         """
         Create a port forwarding rule
@@ -115,7 +115,7 @@ class cloudapi_portforwarding(BaseActor):
         return fw[0]['guid'], fw[0]['gid']
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit(cloudspaceId="cloudspaceId")
+    @audit(cloudspaceid="cloudspaceId")
     def delete(self, cloudspaceId, id, **kwargs):
         """
         Delete a specific port forwarding rule
@@ -145,7 +145,7 @@ class cloudapi_portforwarding(BaseActor):
         return self._process_list(forwards, cloudspaceId)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit(cloudspaceId="cloudspaceId")
+    @audit(cloudspaceid="cloudspaceId")
     def deleteByPort(self, cloudspaceId, publicIp, publicPort, proto=None, **kwargs):
         """
         Delete a specific port forwarding rule by public port details
@@ -171,7 +171,7 @@ class cloudapi_portforwarding(BaseActor):
         return self._process_list(forwards, cloudspaceId)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit(cloudspaceId="cloudspaceId", machineId="machineId" )
+    @audit(cloudspaceid="cloudspaceId", machineId="machineId" )
     def update(self, cloudspaceId, id, publicIp, publicPort, machineId, localPort, protocol, **kwargs):
         """
         Update a port forwarding rule
@@ -236,7 +236,7 @@ class cloudapi_portforwarding(BaseActor):
         return result
 
     @authenticator.auth(acl={'cloudspace': set('R'), 'machine': set('R')})
-    @audit(cloudspaceId="cloudspaceId", machineId="machineId")
+    @audit(cloudspaceid="cloudspaceId", machineId="machineId")
     def list(self, cloudspaceId, machineId=None, **kwargs):
         """
         List all port forwarding rules in a cloudspace or machine

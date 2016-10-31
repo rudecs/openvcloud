@@ -70,7 +70,7 @@ class cloudapi_machines(BaseActor):
             return method(node)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def start(self, machineId, **kwargs):
         """
         Start the machine
@@ -85,7 +85,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def stop(self, machineId, **kwargs):
         """
         Stop the machine
@@ -95,7 +95,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def reboot(self, machineId, **kwargs):
         """
         Reboot the machine
@@ -105,7 +105,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def reset(self, machineId, **kwargs):
         """
         Reset the machine, force reboot
@@ -115,7 +115,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def pause(self, machineId, **kwargs):
         """
         Pause the machine
@@ -125,7 +125,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'pause', enums.MachineStatus.PAUSED)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def resume(self, machineId, **kwargs):
         """
         Resume the machine
@@ -135,7 +135,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
         """
         Create and attach a disk to the machine
@@ -166,7 +166,7 @@ class cloudapi_machines(BaseActor):
         return disk.id
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def detachDisk(self, machineId, diskId, **kwargs):
         """
         Detach a disk from the machine
@@ -187,7 +187,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def attachDisk(self, machineId, diskId, **kwargs):
         """
         Attach a disk to the machine
@@ -219,7 +219,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def createTemplate(self, machineId, templatename, basename, **kwargs):
         """
         Create a template from the active machine
@@ -470,7 +470,7 @@ class cloudapi_machines(BaseActor):
         gevent.spawn(self.syncExportOVF, link, username, passwd, path, machineId, user, callbackUrl)
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def backup(self, machineId, backupName, **kwargs):
         """
         backup is in fact an export of the machine to a cloud system close to the IAAS system on which the machine is running
@@ -486,7 +486,7 @@ class cloudapi_machines(BaseActor):
         return self._export(machineId, backupName, storageparameters)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit(cloudspaceId="cloudspaceId")
+    @audit(cloudspaceid="cloudspaceId")
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
         """
         Create a machine based on the available sizes, in a certain cloud space
@@ -514,7 +514,7 @@ class cloudapi_machines(BaseActor):
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def delete(self, machineId, **kwargs):
         """
         Delete the machine
@@ -565,7 +565,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def get(self, machineId, **kwargs):
         """
         Get information from a certain object.
@@ -610,7 +610,7 @@ class cloudapi_machines(BaseActor):
                 'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': locked}
 
     # Authentication (permissions) are checked while retrieving the machines
-    @audit(cloudspaceId="cloudspaceId")
+    @audit(cloudspaceid="cloudspaceId")
     def list(self, cloudspaceId, **kwargs):
         """
         List the deployed machines in a space. Filtering based on status is possible
@@ -651,7 +651,7 @@ class cloudapi_machines(BaseActor):
         return self.models.vmachine.get(machineId)
 
     @authenticator.auth(acl={'machine': set('C')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def snapshot(self, machineId, name, **kwargs):
         """
         Take a snapshot of the machine
@@ -670,7 +670,7 @@ class cloudapi_machines(BaseActor):
         return snapshot
 
     @authenticator.auth(acl={'machine': set('R')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def listSnapshots(self, machineId, **kwargs):
         """
         List the snapshots of the machine
@@ -690,7 +690,7 @@ class cloudapi_machines(BaseActor):
         return result
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def deleteSnapshot(self, machineId, epoch, **kwargs):
         """
         Delete a snapshot of the machine
@@ -705,7 +705,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'machine': set('X')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     @RequireState(enums.MachineStatus.HALTED, 'A snapshot can only be rolled back to a stopped Machine')
     def rollbackSnapshot(self, machineId, epoch, **kwargs):
         """
@@ -720,7 +720,7 @@ class cloudapi_machines(BaseActor):
         return provider.client.ex_rollback_snapshot(node, epoch)
 
     @authenticator.auth(acl={'machine': set('C')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def update(self, machineId, name=None, description=None, **kwargs):
         """
         Change basic properties of a machine
@@ -739,7 +739,7 @@ class cloudapi_machines(BaseActor):
         return self.models.vmachine.set(machine)[0]
 
     @authenticator.auth(acl={'machine': set('R')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def getConsoleUrl(self, machineId, **kwargs):
         """
         Get url to connect to console
@@ -756,7 +756,7 @@ class cloudapi_machines(BaseActor):
         return provider.client.ex_get_console_url(node)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
     def clone(self, machineId, name, **kwargs):
         """
@@ -830,7 +830,7 @@ class cloudapi_machines(BaseActor):
         return clone.id
 
     @authenticator.auth(acl={'machine': set('R')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def getHistory(self, machineId, size, **kwargs):
         """
         Get machine history
@@ -847,7 +847,7 @@ class cloudapi_machines(BaseActor):
         return self.osis_logs.search(query, size=size)[1:]
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def addUser(self, machineId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -952,7 +952,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def deleteUser(self, machineId, userId, **kwargs):
         """
         Revoke user access from the vmachine
@@ -973,7 +973,7 @@ class cloudapi_machines(BaseActor):
             raise exceptions.NotFound('User "%s" does not have access on the machine' % userId)
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def updateUser(self, machineId, userId, accesstype, **kwargs):
         """
         Update user access rights. Returns True only if an actual update has happened.
@@ -1026,7 +1026,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
-    @audit(machineId="machineId")
+    @audit(machineid="machineId")
     def resize(self, machineId, sizeId, **kwargs):
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
         bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]

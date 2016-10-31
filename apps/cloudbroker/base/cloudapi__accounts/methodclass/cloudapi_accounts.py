@@ -14,7 +14,7 @@ class cloudapi_accounts(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -68,7 +68,7 @@ class cloudapi_accounts(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
         Update user access rights
@@ -121,7 +121,7 @@ class cloudapi_accounts(BaseActor):
         raise NotImplementedError("Not implemented method create")
 
     @authenticator.auth(acl={'account': set('D')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def delete(self, accountId, **kwargs):
         """
         Delete an account (Method not implemented)
@@ -132,7 +132,7 @@ class cloudapi_accounts(BaseActor):
         raise NotImplementedError("Not implemented method delete")
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def get(self, accountId, **kwargs):
         """
         Get account details
@@ -154,7 +154,7 @@ class cloudapi_accounts(BaseActor):
         return account
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -169,7 +169,7 @@ class cloudapi_accounts(BaseActor):
         return results
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the account
@@ -235,7 +235,7 @@ class cloudapi_accounts(BaseActor):
         return accounts
 
     @authenticator.auth(acl={'account': set('A')})
-    @audit(accountId="accountId")
+    @audit(accountid="accountId")
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):

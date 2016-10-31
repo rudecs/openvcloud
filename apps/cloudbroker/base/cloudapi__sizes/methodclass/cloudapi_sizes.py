@@ -7,7 +7,7 @@ class cloudapi_sizes(BaseActor):
     Lists all the configured flavors available.
     A flavor is a combination of amount of compute capacity(CU) and disk capacity(GB).
     """
-    @audit(cloudspaceId="cloudspaceId")
+    @audit(cloudspaceid="cloudspaceId")
     def list(self, cloudspaceId, **kwargs):
         """
         List the available flavors, filtering based on the cloudspace
