@@ -7,6 +7,7 @@ import uuid
 import time
 import gevent
 
+
 def getIP(network):
     if not network:
         return network
@@ -29,7 +30,6 @@ class cloudapi_cloudspaces(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -126,7 +126,6 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Update user access rights. Returns True only if an actual update has happened.
@@ -153,7 +152,6 @@ class cloudapi_cloudspaces(BaseActor):
         return results
 
     @authenticator.auth(acl={'account': set('C')})
-    
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1,
@@ -301,13 +299,7 @@ class cloudapi_cloudspaces(BaseActor):
             j.errorconditionhandler.processPythonExceptionObject(e, message="Cloudspace deploy aysnc call exception.")
             raise
 
-
     @authenticator.auth(acl={'cloudspace': set('D')})
-<<<<<<< HEAD
-    
-=======
-    @audit(cloudspaceid="cloudspaceId")
->>>>>>> ovc_issue_409
     def delete(self, cloudspaceId, **kwargs):
         """
         Delete the cloudspace
@@ -337,11 +329,6 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('R')})
-<<<<<<< HEAD
-    
-=======
-    @audit(cloudspaceid="cloudspaceId")
->>>>>>> ovc_issue_409
     def get(self, cloudspaceId, **kwargs):
         """
         Get cloudspace details
@@ -375,11 +362,6 @@ class cloudapi_cloudspaces(BaseActor):
         return cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-<<<<<<< HEAD
-    
-=======
-    @audit(cloudspaceid="cloudspaceId")
->>>>>>> ovc_issue_409
     def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the cloudspace
@@ -415,7 +397,6 @@ class cloudapi_cloudspaces(BaseActor):
 
         return update
 
-    
     def list(self, **kwargs):
         """
         List all cloudspaces the user has access to
@@ -641,68 +622,60 @@ class cloudapi_cloudspaces(BaseActor):
 
         if maxMemoryCapacity:
             avaliablememorycapacity = accountcus['CU_M'] - reservedcus['CU_M']
-            if maxMemoryCapacity != -1 and accountcus['CU_M'] != -1 and \
-                            maxMemoryCapacity > avaliablememorycapacity:
+            if maxMemoryCapacity != -1 and accountcus['CU_M'] != -1 and maxMemoryCapacity > avaliablememorycapacity:
                 raise exceptions.BadRequest("Owning account has only %s GB of unreserved memory, "
                                             "cannot reserve %s GB for this cloudspace" %
                                             (avaliablememorycapacity, maxMemoryCapacity))
 
         if maxVDiskCapacity:
             avaliablevdiskcapacity = accountcus['CU_D'] - reservedcus['CU_D']
-            if maxVDiskCapacity != -1 and accountcus[
-                'CU_D'] != -1 and maxVDiskCapacity > avaliablevdiskcapacity:
+            if maxVDiskCapacity != -1 and accountcus['CU_D'] != -1 and maxVDiskCapacity > avaliablevdiskcapacity:
                 raise exceptions.BadRequest("Owning account has only %s GB of unreserved vdisk "
                                             "storage, cannot reserve %s GB for this cloudspace" %
                                             (avaliablevdiskcapacity, maxVDiskCapacity))
 
         if maxCPUCapacity:
             avaliablecpucapacity = accountcus['CU_C'] - reservedcus['CU_C']
-            if maxCPUCapacity != -1 and accountcus[
-                'CU_C'] != -1 and maxCPUCapacity > avaliablecpucapacity:
+            if maxCPUCapacity != -1 and accountcus['CU_C'] != -1 and maxCPUCapacity > avaliablecpucapacity:
                 raise exceptions.BadRequest("Owning account has only %s unreserved CPU cores,  "
                                             "cannot reserve %s cores for this cloudspace" %
                                             (avaliablecpucapacity, maxCPUCapacity))
 
         if maxNASCapacity:
             avaliablenascapacity = accountcus['CU_S'] - reservedcus['CU_S']
-            if maxNASCapacity != -1 and accountcus[
-                'CU_S'] != -1 and maxNASCapacity > avaliablenascapacity:
+            if maxNASCapacity != -1 and accountcus['CU_S'] != -1 and maxNASCapacity > avaliablenascapacity:
                 raise exceptions.BadRequest("Owning account has only %s TB of unreserved primary "
                                             "storage capacity, cannot reserve %s TB for this cloudspace" %
                                             (avaliablenascapacity, maxNASCapacity))
 
         if maxArchiveCapacity:
             avaliablearchivecapacity = accountcus['CU_A'] - reservedcus['CU_A']
-            if maxArchiveCapacity != -1 and accountcus[
-                'CU_A'] != -1 and maxArchiveCapacity > avaliablearchivecapacity:
+            if maxArchiveCapacity != -1 and accountcus['CU_A'] != -1 and maxArchiveCapacity > avaliablearchivecapacity:
                 raise exceptions.BadRequest("Owning account has only %s TB of unreserved secondary "
                                             "storage capacity, cannot reserve %s TB for this cloudspace" %
                                             (avaliablearchivecapacity, maxArchiveCapacity))
 
         if maxNetworkOptTransfer:
             avaliablenetworkopttransfer = accountcus['CU_NO'] - reservedcus['CU_NO']
-            if maxNetworkOptTransfer != -1 and accountcus[
-                'CU_NO'] != -1 and maxNetworkOptTransfer > avaliablenetworkopttransfer:
+            if maxNetworkOptTransfer != -1 and accountcus['CU_NO'] != -1 and maxNetworkOptTransfer > avaliablenetworkopttransfer:
                 raise exceptions.BadRequest("Owning account has only %s GB of unreserved network "
                                             "transfer in operator, cannot reserve %s GB for this cloudspace" %
                                             (avaliablenetworkopttransfer, maxNetworkOptTransfer))
         if maxNetworkPeerTransfer:
             avaliablenetworkpeertransfer = accountcus['CU_NP'] - reservedcus['CU_NP']
-            if maxNetworkPeerTransfer != -1 and accountcus[
-                'CU_NP'] != -1 and maxNetworkPeerTransfer > avaliablenetworkpeertransfer:
+            if maxNetworkPeerTransfer != -1 and accountcus['CU_NP'] != -1 and maxNetworkPeerTransfer > avaliablenetworkpeertransfer:
                 raise exceptions.BadRequest("Owning account has only %s GB of unreserved network "
                                             "transfer, cannot reserve %s GB for this cloudspace" %
                                             (avaliablenetworkpeertransfer, maxNetworkPeerTransfer))
         if maxNumPublicIP:
             avaliablepublicips = accountcus['CU_I'] - reservedcus['CU_I']
-            if maxNumPublicIP != -1 and accountcus[
-                'CU_I'] != -1 and maxNumPublicIP > avaliablepublicips:
+            if maxNumPublicIP != -1 and accountcus['CU_I'] != -1 and maxNumPublicIP > avaliablepublicips:
                 raise exceptions.BadRequest("Owning account has only %s unreserved public IPs, "
                                             "cannot reserve %s for this cloudspace" %
                                             (avaliablepublicips, maxNumPublicIP))
         return True
 
-    @authenticator.auth(acl={'cloudspace': set('A')})    
+    @authenticator.auth(acl={'cloudspace': set('A')})
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
@@ -962,13 +935,12 @@ class cloudapi_cloudspaces(BaseActor):
         consumedcudict['CU_M'] = self.getConsumedMemoryInCloudspaces(cloudspacesIds)
         consumedcudict['CU_C'] = self.getConsumedCPUCoresInCloudspaces(cloudspacesIds)
         consumedcudict['CU_D'] = 0
-        #for calculating consumed ips we should consider only deployed cloudspaces
+        # for calculating consumed ips we should consider only deployed cloudspaces
         consumedcudict['CU_I'] = self.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
 
         return consumedcudict
 
-
-    #unexposed actor
+    # unexposed actor
     def getConsumedMemoryInCloudspaces(self, cloudspacesIds):
         """
         Calculate the total number of consumed memory by the machines in a given cloudspaces list
@@ -979,7 +951,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         consumedmemcapacity = 0
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
-                                                '$query': {'cloudspaceId': {'$in':cloudspacesIds},
+                                                '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
                                                                '$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
@@ -991,7 +963,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         return consumedmemcapacity / 1024.0
 
-    #unexposed actor
+    # unexposed actor
     def getConsumedCPUCoresInCloudspaces(self, cloudspacesIds):
         """
         Calculate the total number of consumed cpu cores by the machines in a given cloudspaces list
@@ -1001,7 +973,7 @@ class cloudapi_cloudspaces(BaseActor):
         """
         numcpus = 0
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
-                                                '$query': {'cloudspaceId': {'$in':cloudspacesIds},
+                                                '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
                                                                '$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
@@ -1012,7 +984,7 @@ class cloudapi_cloudspaces(BaseActor):
         numcpus = sum([cpusizes[x] for x in machinessizeids])
         return numcpus
 
-    #unexposed actor
+    # unexposed actor
     def getConsumedPublicIPsInCloudspaces(self, cloudspacesIds):
         """
         Calculate the total number of consumed public IPs by the machines in a given cloudspaces list
@@ -1021,16 +993,15 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total number of consumed public IPs
         """
         numpublicips = 0
-        # cloudspaceobj = self.models.cloudspace.get(cloudspaceId)
-        cloudspaces = self.models.cloudspace.search({'id':{'$in':cloudspacesIds}})[1:]
+        cloudspaces = self.models.cloudspace.search({'id': {'$in': cloudspacesIds}})[1:]
 
         # Add the public IP directly attached to the cloudspace
         for cloudspace in cloudspaces:
-            if cloudspace.get('publicipaddress'):
+            if cloudspace.get('externalnetworkip'):
                 numpublicips += 1
 
         # Add the number of machines in cloudspace that have public IPs attached to them
-        numpublicips += self.models.vmachine.count({'cloudspaceId': {'$in':cloudspacesIds},
+        numpublicips += self.models.vmachine.count({'cloudspaceId': {'$in': cloudspacesIds},
                                                     'nics.type': 'PUBLIC',
                                                     'status': {'$nin': ['DESTROYED', 'ERROR']}})
         return numpublicips
