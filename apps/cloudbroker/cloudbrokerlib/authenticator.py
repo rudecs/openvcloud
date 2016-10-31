@@ -102,6 +102,8 @@ class auth(object):
                 # call is not performed over rest let it pass
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
+            ctx.env['JS_AUDIT'] = True
+            tags = j.core.tags.getObject()
             user = ctx.env['beaker.session']['user']
             account = None
             cloudspace = None
@@ -125,6 +127,11 @@ class auth(object):
                 elif 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(int(kwargs['accountId']))
 
+            for key, value in (('accountId': account), ('cloudspaceId': cloudspace), ('machineId': machine)):
+                if value is not None:
+                    tags.tagSet(key, str(value.id))
+
+            ctx.env['beaker.session']['tags'] = str(tags)
             if self.isAuthorized(user, account, cloudspace, machine):
                 return func(*args, **kwargs)
             else:

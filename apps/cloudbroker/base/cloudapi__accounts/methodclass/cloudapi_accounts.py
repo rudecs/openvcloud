@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
@@ -14,7 +13,6 @@ class cloudapi_accounts(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -68,7 +66,6 @@ class cloudapi_accounts(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit()
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
         Update user access rights
@@ -98,7 +95,7 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(account)
         return True
 
-    @audit()
+    
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
@@ -120,8 +117,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method create")
 
-    @authenticator.auth(acl={'account': set('D')})
-    @audit()
+    @authenticator.auth(acl={'account': set('D')}) 
     def delete(self, accountId, **kwargs):
         """
         Delete an account (Method not implemented)
@@ -131,8 +127,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method delete")
 
-    @authenticator.auth(acl={'account': set('R')})
-    @audit()
+    @authenticator.auth(acl={'account': set('R')})    
     def get(self, accountId, **kwargs):
         """
         Get account details
@@ -153,8 +148,7 @@ class cloudapi_accounts(BaseActor):
                 ace['canBeDeleted'] = True
         return account
 
-    @authenticator.auth(acl={'account': set('R')})
-    @audit()
+    @authenticator.auth(acl={'account': set('R')})    
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -168,8 +162,7 @@ class cloudapi_accounts(BaseActor):
         results = self.models.image.search(query)[1:]
         return results
 
-    @authenticator.auth(acl={'account': set('U')})
-    @audit()
+    @authenticator.auth(acl={'account': set('U')})    
     def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the account
@@ -218,8 +211,7 @@ class cloudapi_accounts(BaseActor):
                         self.models.vmachine.set(vmachineobj)
 
         return True
-
-    @audit()
+    
     def list(self, **kwargs):
         """
         List all accounts the user has access to
@@ -234,8 +226,7 @@ class cloudapi_accounts(BaseActor):
         accounts = self.models.account.search(query)[1:]
         return accounts
 
-    @authenticator.auth(acl={'account': set('A')})
-    @audit()
+    @authenticator.auth(acl={'account': set('A')})    
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):

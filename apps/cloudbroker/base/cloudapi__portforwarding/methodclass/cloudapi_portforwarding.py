@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
@@ -25,7 +24,6 @@ class cloudapi_portforwarding(BaseActor):
         return None
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit()
     def create(self, cloudspaceId, publicIp, publicPort, machineId, localPort, protocol=None, **kwargs):
         """
         Create a port forwarding rule
@@ -115,7 +113,6 @@ class cloudapi_portforwarding(BaseActor):
         return fw[0]['guid'], fw[0]['gid']
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
     def delete(self, cloudspaceId, id, **kwargs):
         """
         Delete a specific port forwarding rule
@@ -145,7 +142,6 @@ class cloudapi_portforwarding(BaseActor):
         return self._process_list(forwards, cloudspaceId)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
     def deleteByPort(self, cloudspaceId, publicIp, publicPort, proto=None, **kwargs):
         """
         Delete a specific port forwarding rule by public port details
@@ -171,7 +167,6 @@ class cloudapi_portforwarding(BaseActor):
         return self._process_list(forwards, cloudspaceId)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    @audit()
     def update(self, cloudspaceId, id, publicIp, publicPort, machineId, localPort, protocol, **kwargs):
         """
         Update a port forwarding rule
@@ -236,7 +231,6 @@ class cloudapi_portforwarding(BaseActor):
         return result
 
     @authenticator.auth(acl={'cloudspace': set('R'), 'machine': set('R')})
-    @audit()
     def list(self, cloudspaceId, machineId=None, **kwargs):
         """
         List all port forwarding rules in a cloudspace or machine
@@ -266,7 +260,7 @@ class cloudapi_portforwarding(BaseActor):
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid, localip)
         return self._process_list(forwards, cloudspaceId)
 
-    @audit()
+    
     def listcommonports(self, **kwargs):
         """
         List a range of predifined ports

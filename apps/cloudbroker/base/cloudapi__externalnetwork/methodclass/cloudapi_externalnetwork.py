@@ -1,11 +1,10 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib.baseactor import BaseActor
 
 
 class cloudapi_externalnetwork(BaseActor):
 
-    @audit()
+
     def list(self, accountId, **kwargs):
         """
         result 

@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, network
 from cloudbrokerlib.baseactor import BaseActor
@@ -30,7 +29,7 @@ class cloudapi_cloudspaces(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+    
     def addUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -127,7 +126,7 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+    
     def updateUser(self, cloudspaceId, userId, accesstype, **kwargs):
         """
         Update user access rights. Returns True only if an actual update has happened.
@@ -154,7 +153,7 @@ class cloudapi_cloudspaces(BaseActor):
         return results
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit()
+    
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
                maxNetworkOptTransfer=-1,
@@ -304,7 +303,11 @@ class cloudapi_cloudspaces(BaseActor):
 
 
     @authenticator.auth(acl={'cloudspace': set('D')})
-    @audit()
+<<<<<<< HEAD
+    
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def delete(self, cloudspaceId, **kwargs):
         """
         Delete the cloudspace
@@ -334,7 +337,11 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('R')})
-    @audit()
+<<<<<<< HEAD
+    
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def get(self, cloudspaceId, **kwargs):
         """
         Get cloudspace details
@@ -368,7 +375,11 @@ class cloudapi_cloudspaces(BaseActor):
         return cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('U')})
-    @audit()
+<<<<<<< HEAD
+    
+=======
+    @audit(cloudspaceid="cloudspaceId")
+>>>>>>> ovc_issue_409
     def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the cloudspace
@@ -404,7 +415,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         return update
 
-    @audit()
+    
     def list(self, **kwargs):
         """
         List all cloudspaces the user has access to
@@ -691,8 +702,7 @@ class cloudapi_cloudspaces(BaseActor):
                                             (avaliablepublicips, maxNumPublicIP))
         return True
 
-    @authenticator.auth(acl={'cloudspace': set('A')})
-    @audit()
+    @authenticator.auth(acl={'cloudspace': set('A')})    
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
