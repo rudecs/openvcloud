@@ -111,11 +111,27 @@ In there you'll find further subdirectories structured as `year/month/day/hour`.
 
 Using for instance the **export_accounts_xls.py** demo script you can convert the cpnp files to an Excel document:
 
-```shell
-cd /opt/code/github/0-complexity/openvcloud/scripts/demo
-python3 export_accounts_xls.py
-```
+- First make sure you have the **python-xlwt** package insalled:
+
+  ```shell
+  sudo apt-get update
+  sudo apt-get install python-xlwt
+  ```  
+
+- Then execute the script:
+
+  ```shell
+  cd /opt/code/github/0-complexity/openvcloud/scripts/demo
+  jspython export_accounts_xls.py
+  ```
 
 This will generate an Excel document containing a tab for each account with the resource tracking details per cloud space:
 
 ![](xls.png)
+
+In order to copy the file from the Docker container to the controller:
+
+```shell
+exit
+docker cp ovcmaster:/opt/code/github/0-complexity/openvcloud/scripts/demo/example.xls .
+```
