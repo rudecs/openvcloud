@@ -1,6 +1,6 @@
 ## Resource Tracking
 
-On the **ovc_master** virtual machine of your environment every hour the system will generate **Cap’n Proto** (capnp) file with following schema:
+On the **ovc_master** Docker container a **Cap’n Proto** (capnp) file with following schema will be generated every hour:
 
 ```
 @0x934efea7f327fff0;
@@ -42,16 +42,21 @@ struct Account {
 }
 ```
 
-For the most actual schema you'll need access to the [0-complexity/openvcloud] repository:
-https://github.com/0-complexity/openvcloud/blob/2.1.5/libs/CloudscalerLibcloud/CloudscalerLibcloud/schemas/resourcemonitoring.capnp
+Get access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud/blob/2.1.5/libs/CloudscalerLibcloud/CloudscalerLibcloud/schemas/resourcemonitoring.capnp) repository for the most up to date schema.
 
-This will be done in the directory `/opt/jumpscale7/var/resourcetracking`
+In order to get access to **ovc_master** you first need to get access to one of the controllers of your G8 environment:
 
-In order to access these records go through following steps:
+- Check whether your private SSH key is loaded:
 
-- Make sure your private SSH key is loaded:
   ```shell
   ssh-add -l
+  ```
+
+- In case your private key is not loaded, let's add them by first making sure ssh-agent is running, and then actually adding them:
+
+  ```shell
+  eval $(ssh-agent)
+  ssh-add ~/.ssh/id_rsa
   ```
 
 - Clone the environment repository:
@@ -60,25 +65,39 @@ In order to access these records go through following steps:
   git clone %address-of-the-master-copy-of-your-environment-repository%
   ```
 
-- Get the public IP address of **ovc_git** from `services/openvcloud__git_vm__main/service.hrd`
+- Get the (public) IP address of one of the controllers from **service.hrd** in **services/openvcloud__ovc_setup__main**:
 
-- Make sure **git_root**, the file holding the private key of **ovc_git** is protected:
+  ```shell
+  cat services/services/openvcloud__ovc_setup__main/service.hrd
+  ```
+
+- The IP address will be found as a value for **instance.ovc.cloudip**
+
+- Make sure **master_root**, the file holding the private key for accessing the controller is protected:
 
   ```shell
   chmod 600 keys/git_root
   ```
 
-- Get to the **ovc_git** machine:
+- Get to the controller over SSH:
 
   ```shell
   ssh root@%ovc-git-address% -A -i keys/git_root
   ```
 
-- From there it is simple to get on **ovc_master**:
+Now that you are connected to one of the controllers, you will access the **ovc_master** Docker container:
+
+- On the controller you list all running Docker containers:
 
   ```shell
-  ssh master
-  ```  
+  docker ps
+  ```
+
+- The **ovc_master** Docker container will be listed as one of the running container, start an interactive sessions:
+
+  ```shell
+  docker exec -i -t ovcmaster /bin/bash
+  ```
 
 - Get to the resource tracking records:
 
@@ -90,5 +109,13 @@ For each account there will be a subdirectory, for instance for the account with
 
 In there you'll find further subdirectories structured as `year/month/day/hour`.
 
-Using for instance the **export_accounts_xls.py** tool you can convert the capnp file to Excel:
-https://github.com/0-complexity/openvcloud/blob/2.1.5/scripts/demo/export_account_xls.py
+Using for instance the **export_accounts_xls.py** demo script you can convert the cpnp files to an Excel document:
+
+```shell
+cd /opt/code/github/0-complexity/openvcloud/scripts/demo
+python3 export_accounts_xls.py
+```
+
+This will generate an Excel document containing a tab for each account with the resource tracking details per cloud space:
+
+![](xls.png)
