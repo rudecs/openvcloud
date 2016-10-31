@@ -10,18 +10,31 @@ From here you can go to the **Virtual Machine Details** page for a virtual machi
 
 From the **Actions** dropdown menu you can:
 - Start, stop, reboot, pause, delete and clone a virtual machine
-- Create a template from the vurtual machine
+- Create a template from the virtual machine
 - Update the virtual machine
 - Check image chain
 - [Move to another CPU node](Actions/MoveVM2AnotherCPUNode.md)
 - Add and remove tag
 
 
+### Users Access
+
+All users with access right for the virtual machine are listed here:
+
+![](UsersAccess)
+
+Clicking **+ Grant User Access** allows you to add users:
+
+![](ConfirmGrantUserAccess.png)
+
+
 ### NICs
 
 This table lists the virtual network interface cards (NIC) in the virtual machine, showing the MAC addresses and IP address on the private network:
 
-![](NIC.png)
+![](NICs.png)
+
+Clicking **+ Attach To External** allows you to attach the VM directory to the external network. Be aware that you will have to assign the IP address yourself in the operating system.
 
 
 ### Disks
