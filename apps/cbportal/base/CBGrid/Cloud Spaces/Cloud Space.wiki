@@ -240,6 +240,6 @@ h3. Virtual Machines
 {% endif %}
 {{vmachines cloudspaceid:$$id}}
 
-h4. Audits
-{{grid.audits cloudspaceid:$$id}}
+h3. Audits
+{{grid.audits cloudspaceId:$$id}}
 {% endif %}
