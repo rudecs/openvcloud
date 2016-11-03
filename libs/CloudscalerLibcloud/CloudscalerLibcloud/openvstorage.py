@@ -29,6 +29,8 @@ def listEdgeclients():
     edgeclients = []
     protocol = getEdgeProtocol()
     for storagerouter in StorageRouterList.get_storagerouters():
+        if storagerouter.status == 'FAILURE':
+            continue
         for storagedriver in storagerouter.storagedrivers:
             edgeclient = {'vpool': storagedriver.vpool.name,
                           'protocol': protocol,
