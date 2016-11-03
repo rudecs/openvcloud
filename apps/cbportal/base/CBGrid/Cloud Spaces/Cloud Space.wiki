@@ -172,6 +172,8 @@ h3. Details
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
 |*End User Portal*| [View Cloud Space|/g8vdc/#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
+|*Creation Time*|{{ts: ${creationTime}}}|
+|*Update Time*|{{ts: ${updateTime}}}|
 |*Location Code*|${location}|
 |*Description*|${descr}|
 |*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|

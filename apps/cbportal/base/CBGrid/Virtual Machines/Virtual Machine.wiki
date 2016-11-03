@@ -23,7 +23,8 @@ h2. Virtual Machine: ${name}
 |*Stack*| [${stackname}|stack?id=${stackId}]|
 |*Account*| [${accountName}|account?id=${accountId}]|
 |*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
-|*Created at*| ${createdat}|
+|*Creation Time*|{{ts: ${creationTime}}}|
+|*Update Time*|{{ts: ${updateTime}}}|
 {% if accounts -%}
 |*Initial Credentials*| {{html: <span class="margin-right-xlarge"><strong>Login:</strong> ${accounts[0].login}</span> <strong>Password:</strong> ${accounts[0].password}}}|
 {% endif -%}

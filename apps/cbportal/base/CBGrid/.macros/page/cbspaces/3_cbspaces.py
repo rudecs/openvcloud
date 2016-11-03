@@ -47,16 +47,6 @@ def main(j, args, params, tags, tasklet):
             'name': 'External IP Address',
             'value': makeExternalNetworkLink,
             'id': 'externalnetworkip'
-        }, {
-            'name': 'creationTime',
-            'value': modifier.makeTime,
-            'id': 'creationTime',
-            'type': 'date'
-        }, {
-            'name': 'updateTime',
-            'value': modifier.makeTime,
-            'id': 'updateTime',
-            'type': 'date'
         }
     ]
     tableid = modifier.addTableFromModel('cloudbroker', 'cloudspace', fields, filters, selectable='rows')

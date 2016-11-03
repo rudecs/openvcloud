@@ -45,35 +45,25 @@ def main(j, args, params, tags, tasklet):
 
     fields = [
         {
-            'name': 'name',
+            'name': 'Name',
             'value': nameLinkify,
             'id': 'id'
         }, {
-            'name': 'hostName',
+            'name': 'Hostname',
             'value': 'name',
             'id': 'hostName'
         }, {
-            'name': 'status',
+            'name': 'Status',
             'value': 'status',
             'id': 'status'
         }, {
-            'name': 'cloudspaceId',
+            'name': 'Cloud Space',
             'value': spaceLinkify,
             'id': 'cloudspaceId'
         }, {
-            'name': 'stackId',
+            'name': 'Stack ID',
             'value': stackLinkify,
             'id': 'stackId'
-        }, {
-            'name': 'creationTime',
-            'value': modifier.makeTime,
-            'id': 'creationTime',
-            'type': 'date'
-        }, {
-            'name': 'updateTime',
-            'value': modifier.makeTime,
-            'id': 'updateTime',
-            'type': 'date'
         }
     ]
 

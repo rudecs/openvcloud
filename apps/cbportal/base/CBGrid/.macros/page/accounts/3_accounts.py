@@ -36,15 +36,15 @@ def main(j, args, params, tags, tasklet):
             'id': 'acl'
         },
         {
-            'name': 'creationTime',
+            'name': 'Creation Time',
             'value': modifier.makeTime,
             'id': 'creationTime',
             'type': 'date'
         },
         {
-            'name': 'updateTime',
+            'name': 'Creation Time',
             'value': modifier.makeTime,
-            'id': 'updateTime', 
+            'id': 'updateTime',
             'type': 'date'
         }
     ]
