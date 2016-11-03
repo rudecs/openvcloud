@@ -120,3 +120,12 @@
         var:accountId int,, id of the account consumption should be calculated for
         var:cutype str,, cloud unit resource type
         result:float, float/int for the consumed cloud unit of the specified type
+
+    method: getConsumption @method:get
+        """
+        download the resources traking files for an account within a given period
+        """
+        var:accountId int,, id of the account
+        var:start float,, epoch represents the start time
+        var:end float,, epoch represents the end time
+        result:str, binary zip file

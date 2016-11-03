@@ -95,7 +95,7 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(account)
         return True
 
-    
+
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
@@ -117,7 +117,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method create")
 
-    @authenticator.auth(acl={'account': set('D')}) 
+    @authenticator.auth(acl={'account': set('D')})
     def delete(self, accountId, **kwargs):
         """
         Delete an account (Method not implemented)
@@ -127,7 +127,7 @@ class cloudapi_accounts(BaseActor):
         """
         raise NotImplementedError("Not implemented method delete")
 
-    @authenticator.auth(acl={'account': set('R')})    
+    @authenticator.auth(acl={'account': set('R')})
     def get(self, accountId, **kwargs):
         """
         Get account details
@@ -148,7 +148,7 @@ class cloudapi_accounts(BaseActor):
                 ace['canBeDeleted'] = True
         return account
 
-    @authenticator.auth(acl={'account': set('R')})    
+    @authenticator.auth(acl={'account': set('R')})
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -162,7 +162,7 @@ class cloudapi_accounts(BaseActor):
         results = self.models.image.search(query)[1:]
         return results
 
-    @authenticator.auth(acl={'account': set('U')})    
+    @authenticator.auth(acl={'account': set('U')})
     def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the account
@@ -211,7 +211,7 @@ class cloudapi_accounts(BaseActor):
                         self.models.vmachine.set(vmachineobj)
 
         return True
-    
+
     def list(self, **kwargs):
         """
         List all accounts the user has access to
@@ -226,7 +226,7 @@ class cloudapi_accounts(BaseActor):
         accounts = self.models.account.search(query)[1:]
         return accounts
 
-    @authenticator.auth(acl={'account': set('A')})    
+    @authenticator.auth(acl={'account': set('A')})
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
@@ -588,3 +588,33 @@ class cloudapi_accounts(BaseActor):
                                                 "free vdisk space." % (vdisksize, availablecus))
 
         return True
+
+    @authenticator.auth(acl={'account': set('R')})
+    def getConsumption(self, accountId, start, end, **kwargs):
+        import datetime
+        import zipfile
+        from cStringIO import StringIO
+        import os
+        import glob
+
+        ctx = kwargs['ctx']
+        start_time = datetime.datetime.utcfromtimestamp(start)
+        end_time = datetime.datetime.utcfromtimestamp(end)
+        root_path = "/opt/jumpscale7/var/resourcetracking/"
+        account_path = os.path.join(root_path, str(accountId))
+        pathes = glob.glob(os.path.join(account_path, '*/*/*/*'))
+        pathes_in_range = list()
+        for path in pathes:
+            path_list = path.split("/")
+            path_date = datetime.datetime(int(path_list[-4]), int(path_list[-3]), int(path_list[-2]), int(path_list[-1]))
+            if path_date >= start_time and path_date <= end_time:
+                pathes_in_range.append(path)
+        ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
+                                      ('content-disposition', "inline; filename = account.zip")])
+        fp = StringIO()
+        zip = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
+        for path in pathes_in_range:
+            file_path = os.path.join(path, 'account_capnp.bin')
+            zip.write(file_path, file_path.replace(root_path, ''))
+        zip.close()
+        return fp.getvalue()
