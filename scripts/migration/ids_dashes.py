@@ -18,8 +18,7 @@ for domain in domains.find():
         domain['guid'] = "%s-%s-%s-%s-%s" % (domain['guid'][0:15], domain['guid'][15:19], domain['guid'][19:23], domain['guid'][23:27], domain['guid'][27:])
         domain['_id'] = domain['guid']
         domains.save(domain)
-        domains.delete_one({'_id': id})
 
-client.cloudbroker.account.update({"updateTime": None}, {"$set": {"updateTime": "N/A"}})
-client.cloudbroker.vmachine.update({"updateTime": None}, {"$set": {"updateTime": "N/A"}})
-client.cloudbroker.cloudspace.update({"updateTime": None}, {"$set": {"updateTime": "N/A"}})
+client.cloudbroker.account.update({"updateTime": None}, {"$set": {"updateTime": 0}})
+client.cloudbroker.vmachine.update({"updateTime": None}, {"$set": {"updateTime": 0}})
+client.cloudbroker.cloudspace.update({"updateTime": None}, {"$set": {"updateTime": 0}})
