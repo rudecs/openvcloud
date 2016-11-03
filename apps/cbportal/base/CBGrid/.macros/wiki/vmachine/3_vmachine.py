@@ -154,6 +154,9 @@ def main(j, args, params, tags, tasklet):
 
     if hasattr(obj, 'creationTime'):
         data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
+
+    if hasattr(obj, 'updateTime'):
+        data['updatedat'] = j.base.time.epoch2HRDateTime(obj.updateTime) if obj.updateTime else 'N/A'
     if hasattr(obj, 'deletionTime'):
         data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
     data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])

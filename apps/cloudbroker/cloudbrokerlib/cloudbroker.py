@@ -508,6 +508,7 @@ class Machine(object):
         machine.sizeId = sizeId
         machine.imageId = imageId
         machine.creationTime = int(time.time())
+        machine.updateTime = int(time.time())
 
         def addDisk(order, size, type, name=None):
             disk = models.disk.new()
@@ -572,6 +573,7 @@ class Machine(object):
             for ipaddress in node.public_ips:
                 nic = machine.new_nic()
                 nic.ipAddress = ipaddress
+        machine.updateTime = int(time.time())
         models.vmachine.set(machine)
 
         # filter out iso volumes

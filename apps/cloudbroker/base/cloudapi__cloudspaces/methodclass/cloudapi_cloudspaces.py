@@ -230,6 +230,7 @@ class cloudapi_cloudspaces(BaseActor):
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
         cs.creationTime = int(time.time())
+        cs.updateTime = int(time.time())
         # Validate that the specified CU limits can be reserved on account, since there is a
         # validation earlier that maxNumPublicIP > 0 (or -1 meaning unlimited), this check will
         # make sure that 1 Public IP address will be reserved for this cloudspace
@@ -292,6 +293,7 @@ class cloudapi_cloudspaces(BaseActor):
                 cs.status = 'VIRTUAL'
                 self.models.cloudspace.set(cs)
                 raise
+            cs.updateTime = int(time.time())
             cs.status = 'DEPLOYED'
             self.models.cloudspace.set(cs)
             return cs.status
@@ -325,6 +327,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace = self.cb.cloudspace.release_resources(cloudspace)
         cloudspace.status = 'DESTROYED'
         cloudspace.deletionTime = int(time.time())
+        cloudspace.updateTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
         return True
 
@@ -350,6 +353,8 @@ class cloudapi_cloudspaces(BaseActor):
                                "canBeDeleted": ace['canBeDeleted']} for _, ace in
                               cloudspace_acl.iteritems()],
                       "description": cloudspaceObject.descr,
+                      'updateTime': cloudspaceObject.updateTime,
+                      'creationTime': cloudspaceObject.creationTime,
                       "id": cloudspaceObject.id,
                       "gid": cloudspaceObject.gid,
                       "name": cloudspaceObject.name,
@@ -381,6 +386,7 @@ class cloudapi_cloudspaces(BaseActor):
         if not update:
             raise exceptions.NotFound('User "%s" does not have access on the cloudspace' % userId)
 
+        cloudspace.updateTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
 
         if recursivedelete:
@@ -421,7 +427,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceaccess.update(vm['cloudspaceId'] for vm in self.models.vmachine.search(query)[1:])
 
         fields = ['id', 'name', 'descr', 'status', 'accountId', 'acl', 'externalnetworkip',
-                  'location', 'gid']
+                  'location', 'gid', 'creationTime', 'updateTime']
         q = {"$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)}}],
              "status": {"$ne": "DESTROYED"}}
@@ -786,7 +792,7 @@ class cloudapi_cloudspaces(BaseActor):
                                             "assigned %s." % assingedpublicip)
             else:
                 cloudspace.resourceLimits['CU_I'] = maxNumPublicIP
-
+        cloudspace.updateTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
         return True
 

@@ -25,6 +25,7 @@
     prop:cloneReference int,, id to the machine on which this machine is based
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of update, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
     prop:tags str,, A tags string
 
@@ -44,6 +45,7 @@
     prop:acl list(ACE),, access control list
     prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED)
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of update, in seconds
     prop:deactivationTime int,, epoch time of the deactivation, in seconds
     prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
     prop:company str,, Company holding the account
@@ -169,6 +171,7 @@
     prop:gid int,, Grid ID
     prop:secret str,, used to identify a space through the cloud robot
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
 
 [rootmodel:externalnetwork] @dbtype:osis

@@ -93,6 +93,7 @@ class cloudbroker_account(BaseActor):
         account = self.models.account.new()
         account.name = name
         account.creationTime = now
+        account.updateTime = now 
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'

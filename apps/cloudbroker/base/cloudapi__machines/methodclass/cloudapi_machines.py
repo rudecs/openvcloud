@@ -318,6 +318,7 @@ class cloudapi_machines(BaseActor):
             vm.sizeId = sizeId
             vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Unknown').id
             vm.creationTime = int(time.time())
+            vm.updateTime = int(time.time())
 
             totaldisksize = 0
             bootdisk = None
@@ -584,6 +585,8 @@ class cloudapi_machines(BaseActor):
         if node:
             locked = node.extra.get('locked', False)
 
+        updateTime = machine.updateTime if machine.updateTime else None
+        creationTime = machine.creationTime if machine.creationTime else None
         acl = list()
         machine_acl = authenticator.auth().getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
@@ -591,7 +594,7 @@ class cloudapi_machines(BaseActor):
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': locked}
+                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': locked, 'updateTime': updateTime, 'creationTime': creationTime}
 
     # Authentication (permissions) are checked while retrieving the machines
     def list(self, cloudspaceId, **kwargs):
@@ -605,7 +608,7 @@ class cloudapi_machines(BaseActor):
         if not cloudspaceId:
             raise exceptions.BadRequest('Please specify a cloudsapce ID.')
         cloudspaceId = int(cloudspaceId)
-        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks']
+        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks', 'creationTime', 'updateTime']
 
         user = ctx.env['beaker.session']['user']
         userobj = j.core.portal.active.auth.getUserInfo(user)

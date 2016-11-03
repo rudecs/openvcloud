@@ -29,20 +29,55 @@ def main(j, args, params, tags, tasklet):
         stacksids = [stack['id'] for stack in stacks]
         filters['stackId'] = {'$in':stacksids}
 
-    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Cloud Space ID', 'Stack ID']
+    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Updated at', 'Cloud Space ID', 'Stack ID']
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
 
     def nameLinkify(row, field):
-        return '[%s|Virtual Machine?id=%s]' % (cgi.escape(row[field]), row['id'])
+        val = row[field]
+        if not isinstance(row[field], int):
+            val  = cgi.escape(row[field])
+        return '[%s|Virtual Machine?id=%s]' % (val, row['id'])
 
     def spaceLinkify(row, field):
         return '[%s|cloud space?id=%s]' % (row[field], row[field])
 
-    fieldids = ['name', 'hostName', 'status', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
+    fields = [
+        {
+            'name': 'name',
+            'value': nameLinkify,
+            'id': 'id'
+        }, {
+            'name': 'hostName',
+            'value': 'name',
+            'id': 'hostName'
+        }, {
+            'name': 'status',
+            'value': 'status',
+            'id': 'status'
+        }, {
+            'name': 'cloudspaceId',
+            'value': spaceLinkify,
+            'id': 'cloudspaceId'
+        }, {
+            'name': 'stackId',
+            'value': stackLinkify,
+            'id': 'stackId'
+        }, {
+            'name': 'creationTime',
+            'value': modifier.makeTime,
+            'id': 'creationTime',
+            'type': 'date'
+        }, {
+            'name': 'updateTime',
+            'value': modifier.makeTime,
+            'id': 'updateTime',
+            'type': 'date'
+        }
+    ]
+
+    tableid = modifier.addTableFromModel('cloudbroker', 'vmachine', fields, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
