@@ -10,7 +10,6 @@ def registerImage(service, name, type, disksize, username=None):
         raise RuntimeError("No image export defined in service")
 
     templateguid, imagepath = openvstorage.copyImage(imagepath)
-    templateguid = templateguid.replace('-', '')  # osis strips dashes
     # register image on cloudbroker
     lcl = j.clients.osis.getNamespace('libvirt')
     ccl = j.clients.osis.getNamespace('cloudbroker')

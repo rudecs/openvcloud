@@ -51,7 +51,7 @@ def main(j, args, params, tags, tasklet):
     vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
-        args.doc.applyTemplate({'id': None}, True)
+        args.doc.applyTemplate({'id': None}, False)
         return params
 
     cloudspaceobj = cbclient.cloudspace.get(id)
@@ -79,7 +79,7 @@ def main(j, args, params, tags, tasklet):
         cloudspacedict['network'] = {'tcpForwardRules': []}
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
-    args.doc.applyTemplate(cloudspacedict, True)
+    args.doc.applyTemplate(cloudspacedict, False)
     return params
 
 def match(j, args, params, tags, tasklet):

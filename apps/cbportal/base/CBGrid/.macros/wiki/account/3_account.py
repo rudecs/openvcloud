@@ -50,7 +50,7 @@ def main(j, args, params, tags, tasklet):
     sclient = j.clients.osis.getNamespace('system')
 
     if not cbclient.account.exists(id):
-        args.doc.applyTemplate({'id': None}, True)
+        args.doc.applyTemplate({'id': None}, False)
         return params
 
     accountobj = cbclient.account.get(id)
@@ -60,7 +60,7 @@ def main(j, args, params, tags, tasklet):
     j.apps.cloudbroker.account.cb.fillResourceLimits(accountobj.resourceLimits)
     accountdict['reslimits'] = accountobj.resourceLimits
 
-    args.doc.applyTemplate(accountdict, True)
+    args.doc.applyTemplate(accountdict, False)
     return params
 
 def match(j, args, params, tags, tasklet):

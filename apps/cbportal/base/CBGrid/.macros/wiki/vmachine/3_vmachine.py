@@ -185,7 +185,7 @@ def main(j, args, params, tags, tasklet):
     data['users'] = generateUsersList(sosis, data)
 
     data['referenceId'] = data['referenceId'].replace('-', '%2d')
-    args.doc.applyTemplate(data, True)
+    args.doc.applyTemplate(data, False)
     return params
 
 

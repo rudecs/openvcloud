@@ -19,7 +19,6 @@ def main(j, args, params, tags, tasklet):
         return params
 
     stack = ccl.stack.get(stackId).dump()
-    stack['eco'] = stack['eco'] and stack['eco'].replace('-', '')
     args.doc.applyTemplate(stack, True)
 
     return params
