@@ -1,4 +1,4 @@
-from pymongo import  MongoClient
+from pymongo import MongoClient
 client = MongoClient('localhost')
 db = client['libvirt']
 nodes = db['node']
@@ -19,6 +19,6 @@ for domain in domains.find():
         domain['_id'] = domain['guid']
         domains.save(domain)
 
-client.cloudbroker.account.update({"updateTime": None}, {"$set": {"updateTime": 0}})
-client.cloudbroker.vmachine.update({"updateTime": None}, {"$set": {"updateTime": 0}})
-client.cloudbroker.cloudspace.update({"updateTime": None}, {"$set": {"updateTime": 0}})
+client.cloudbroker.account.update({"updateTime": None}, {"$set": {"updateTime": 0}}, multi=True)
+client.cloudbroker.vmachine.update({"updateTime": None}, {"$set": {"updateTime": 0}}, multi=True)
+client.cloudbroker.cloudspace.update({"updateTime": None}, {"$set": {"updateTime": 0}}, multi=True)
