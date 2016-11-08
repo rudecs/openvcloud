@@ -10,7 +10,6 @@
     prop:dedicatedCU bool,False,if true the compute capacity will be dedicated
     prop:disks list(int),,List of id of Disk objects
     prop:nics list(Nic),,List of id Nic objects (network interfaces) attached to this vmachine
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:accounts list(VMAccount),,list of machine accounts on the virtual machine
     prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT;DESTROYED)
@@ -26,6 +25,7 @@
     prop:cloneReference int,, id to the machine on which this machine is based
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of update, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
     prop:tags str,, A tags string
 
@@ -45,6 +45,7 @@
     prop:acl list(ACE),, access control list
     prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED)
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of update, in seconds
     prop:deactivationTime int,, epoch time of the deactivation, in seconds
     prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
     prop:company str,, Company holding the account
@@ -65,6 +66,7 @@
     """
     """
     prop:id int,,
+    prop:gid int,,
     prop:name str,,name of the image
     prop:description str,,extra description of the image
     prop:UNCPath str,,location of the image (uncpath like used in pylabs); includes the login/passwd info
@@ -92,7 +94,6 @@
     prop:apiUrl str,,URL to communicate to the stack
     prop:type str,,Type of the stack, (OPENSTACK|CLOUDFRAMES|XEN SOURCE)
     prop:appId str,,application id if applicable
-    prop:realityUpdateEpoch int,,in epoch last time this stack has been completely read out & our
     prop:images list(int),,list of images ids supported by this resource model updated
     prop:referenceId str,,Optional reference id.
     prop:error int,,Track amount of errors happened
@@ -109,7 +110,6 @@
     prop:descr str,,
     prop:sizeMax int,,provisioned size of disk in MB
     prop:sizeUsed int,,used capacity of disk in MB
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:realityDeviceNumber int,, Number a device gets after connect
     prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
@@ -144,7 +144,6 @@
 [model:Nic] @dbtype:osis
     """
     """
-    prop:realityUpdateEpoch int,,in epoch last time this object has been updated from reality
     prop:referenceId str,,name as used in hypervisor
     prop:networkId int,,id of Network object
     prop:status str,,status of the vm (ACTIVE;INIT;DOWN)
@@ -172,6 +171,7 @@
     prop:gid int,, Grid ID
     prop:secret str,, used to identify a space through the cloud robot
     prop:creationTime int,, epoch time of creation, in seconds
+    prop:updateTime int,, epoch time of creation, in seconds
     prop:deletionTime int,, epoch time of destruction, in seconds
 
 [rootmodel:externalnetwork] @dbtype:osis

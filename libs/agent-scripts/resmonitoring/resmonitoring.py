@@ -1,8 +1,6 @@
 from JumpScale import j
 from datetime import datetime
 import json
-import urlparse
-import itertools
 
 descr = """
 Collects resources
@@ -40,12 +38,16 @@ def get_cached_accounts():
     def get_ids(obj):
         return obj['id']
 
-    accounts_ids = map(get_ids, accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']}, size=0)[1:])
-    cloudspaces = cscl.search({'$query': {'accountId': {'$in': accounts_ids}, 'status': {'$ne': 'DESTROYED'}, 'gid': j.application.whoAmI.gid},
+    accounts_ids = map(get_ids, accl.search({'$query': {'status': {'$ne': 'DESTROYED'}}, '$fields': ['id']},
+                                            size=0)[1:])
+    cloudspaces = cscl.search({'$query': {'accountId': {'$in': accounts_ids},
+                                          'status': {'$ne': 'DESTROYED'},
+                                          'gid': j.application.whoAmI.gid},
                                '$fields': ['id', 'accountId', 'status', 'gid', 'networkId']}, size=0)[1:]
     vms = vmcl.search({'$query': {'cloudspaceId': {'$in': map(get_ids, cloudspaces)},
                                   'status': {'$ne': "DESTROYED"}},
-                       '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId', 'cloudspaceId']}, size=0)[1:]
+                       '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId', 'cloudspaceId']},
+                      size=0)[1:]
     diskids = []
     for vm in vms:
         diskids.extend(vm['disks'])
@@ -70,15 +72,6 @@ def get_cached_accounts():
     return cached_accounts
 
 
-def get_redis_instance(stack, redisstacks, port=9999):
-    stackId = stack['id']
-    if stackId not in redisstacks:
-        ip = urlparse.urlparse(stack['apiUrl']).hostname
-        redis = j.clients.redis.getRedisClient(ip, port)
-        redisstacks[stackId] = redis
-    return redisstacks[stackId]
-
-
 def get_last_hour_val(redis, key, property='h_last'):
     return get_val(redis, key).get(property, 0)
 
@@ -96,22 +89,15 @@ def get_val(redis, key):
     return {}
 
 
-def get_node_redis(node, port=9999):
-    for nicinfo in node['netaddr']:
-        if nicinfo['name'] == 'backplane1':
-            ip = nicinfo['ip'][0]
-            break
-    else:
-        return None
-    redis = j.clients.redis.getRedisClient(ip, port)
-    return redis
-
-
 def action():
     import CloudscalerLibcloud
     import os
     import capnp
-    redisstacks = {}
+    import netaddr
+    redises = {}
+
+    mgmtip = j.system.net.getIpAddress('mgmt')[0]
+    mgmtnet = netaddr.IPNetwork('{0}/{1}'.format(*mgmtip))
 
     now = datetime.utcnow()
     month = now.month
@@ -126,8 +112,8 @@ def action():
     stackcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "stack")
     sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
     vcl = j.clients.osis.getNamespace('vfw')
-    virtualfirewalls = {'{gid}_{id}'.format(**vfw): vfw for vfw in vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid})[1:]}
-    nodes = {(node['gid'], node['id']): node for node in nodecl.search({'gid': j.application.whoAmI.gid})[1:]}
+    virtualfirewalls = {vfw['id']: vfw for vfw in vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid})[1:]}
+    nodes = {node['id']: node for node in nodecl.search({'gid': j.application.whoAmI.gid})[1:]}
     stacks = {stack['id']: stack for stack in stackcl.search({'gid': j.application.whoAmI.gid})[1:]}
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
     sizes_list = sizescl.search({'$fields': ['id', 'memory', 'vcpus']})[1:]
@@ -144,8 +130,22 @@ def action():
     # nid = j.application.whoAmI.nid
     cached_accounts = get_cached_accounts()
 
+    def get_node_redis(node, port=9999):
+        redis = redises.get(node['id'])
+        if redis is not None:
+            for nicinfo in node['netaddr']:
+                if nicinfo['ip'][0] in mgmtnet:
+                    ip = nicinfo['ip'][0]
+                    break
+            else:
+                return None
+            redis = j.clients.redis.getRedisClient(ip, port)
+            redises[node['id']] = redis
+        return redis
+
     for account_id, cloudspaces_dict in cached_accounts.items():
-        folder_name = "/opt/jumpscale7/var/resourcetracking/active/%s/%s/%s/%s/%s" % (account_id, year, month, day, hour)
+        folder_name = "/opt/jumpscale7/var/resourcetracking/active/%s/%s/%s/%s/%s" % \
+                        (account_id, year, month, day, hour)
         j.do.createDir(folder_name)
 
         for cloudspace_id, cs in cloudspaces_dict.items():
@@ -153,17 +153,21 @@ def action():
             cloudspace = cloudspace_capnp.CloudSpace.new_message()
             cloudspace.accountId = account_id
             cloudspace.cloudSpaceId = cloudspace_id
-            vfwguid = "%(gid)s_%(networkId)s" % (cs)
-            if cs['status'] == 'DEPLOYED' and vfwguid in virtualfirewalls:
+            if cs['status'] == 'DEPLOYED' and cs['networkId'] in virtualfirewalls:
                 networkId = hex(cs['networkId'])
-                net = virtualfirewalls[vfwguid]
+                net = virtualfirewalls[cs['networkId']]
                 nid = net['nid']
-                node = nodes[(net['gid'], net['nid'])]
+                node = nodes[nid]
                 redis = get_node_redis(node)
-                publicTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(gid=gid, nid=nid, id=networkId))
-                publicRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.pub-{id}'.format(gid=gid, nid=nid, id=networkId))
-                spaceRX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(gid=gid, nid=nid, id=networkId))
-                spaceTX = get_last_hour_val(redis, 'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(gid=gid, nid=nid, id=networkId))
+                data = dict(gid=gid, nid=nid, id=networkId)
+                publicTX = get_last_hour_val(redis,
+                                             'stats:{gid}_{nid}:network.vfw.packets.rx@virt.pub-{id}'.format(**data))
+                publicRX = get_last_hour_val(redis,
+                                             'stats:{gid}_{nid}:network.vfw.packets.tx@virt.pub-{id}'.format(**data))
+                spaceRX = get_last_hour_val(redis,
+                                            'stats:{gid}_{nid}:network.vfw.packets.rx@virt.spc-{id}'.format(**data))
+                spaceTX = get_last_hour_val(redis,
+                                            'stats:{gid}_{nid}:network.vfw.packets.tx@virt.spc-{id}'.format(**data))
             else:
                 publicTX = publicRX = spaceRX = spaceTX = 0
 
@@ -195,8 +199,8 @@ def action():
                 if has_stack:
                     # get redis for this stack
                     stack = stacks[stack_id]
-                    redis = get_redis_instance(stack, redisstacks)
-                    nid = stack['referenceId']
+                    nid = int(stack['referenceId'])
+                    redis = get_node_redis(nodes[nid])
                     # get CPU
                     cpu_key = 'stats:{gid}_{nid}:machine.CPU.utilisation@virt.{vm_id}'.format(gid=gid, nid=nid, vm_id=vm_id)
                     cpu_seconds = get_last_hour_val(redis, cpu_key)

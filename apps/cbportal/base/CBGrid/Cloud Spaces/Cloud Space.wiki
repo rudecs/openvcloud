@@ -170,8 +170,10 @@ h3. Details
 |*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|[${networkId}|private network?id=${networkId}&gid=${gid}]|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
-|*End User Portal*| [View Cloud Space|/wiki_gcb/MachineDeck#/list?cloudspaceId=${id}] |
+|*End User Portal*| [View Cloud Space|/g8vdc/#/list?cloudspaceId=${id}] |
 |*Status*|${status}|
+|*Creation Time*|{{ts: ${creationTime}}}|
+|*Update Time*|{{ts: ${updateTime}}}|
 |*Location Code*|${location}|
 |*Description*|${descr}|
 |*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|
@@ -195,8 +197,9 @@ h3. Users Access
 {% endfor %}
 
 h3. Port Forwards
+{% if status != "DESTROYED" %}
 {{action id:'createportforwarding' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Port Forward'}}
-
+{% endif %}
 ||Public IP||Public Port||VM IP||VM Port||Protocol||Delete||
 {% for rule in network.tcpForwardRules -%}
 |${rule.fromAddr}|${rule.fromPort}|${rule.toAddr}|${rule.toPort}|${rule.protocol.upper()}|{{action: id:'action-DeletePortforwarding' deleterow:true class:'glyphicon glyphicon-remove' data-publicIp:'${rule.fromAddr}' data-publicPort:'${rule.fromPort}' data-proto:'${rule.protocol}'}}|
@@ -204,7 +207,10 @@ h3. Port Forwards
 | | | | | | |
 {% endfor %}
 
+
 h3. Virtual Machines
+
+{% if status != "DESTROYED" %}
 {{action id:'createmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add Virtual Machine'}}
 {{action id:'importmachine' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Import Virtual Machine'}}
 
@@ -233,9 +239,9 @@ h3. Virtual Machines
   input:
   - reason
  }}
-
+{% endif %}
 {{vmachines cloudspaceid:$$id}}
 
-{% else %}
-Invalid Cloud Space provided
+h3. Audits
+{{grid.audits cloudspaceId:$$id}}
 {% endif %}

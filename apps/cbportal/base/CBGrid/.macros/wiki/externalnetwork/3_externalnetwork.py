@@ -2,13 +2,15 @@ def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
     networkid = args.getTag('networkid')
-    if not networkid:
+    try:
+        networkid = int(networkid)
+    except:
+        pass
+    if not isinstance(networkid, int):
         args.doc.applyTemplate({})
         return params
 
     cbclient = j.clients.osis.getNamespace('cloudbroker')
-    networkid = int(networkid)
-
     if not cbclient.externalnetwork.exists(networkid):
         args.doc.applyTemplate({id: None}, True)
         return params

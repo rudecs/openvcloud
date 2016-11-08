@@ -29,20 +29,45 @@ def main(j, args, params, tags, tasklet):
         stacksids = [stack['id'] for stack in stacks]
         filters['stackId'] = {'$in':stacksids}
 
-    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Cloud Space ID', 'Stack ID']
+    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Updated at', 'Cloud Space ID', 'Stack ID']
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
 
     def nameLinkify(row, field):
-        return '[%s|Virtual Machine?id=%s]' % (cgi.escape(row[field]), row['id'])
+        val = row[field]
+        if not isinstance(row[field], int):
+            val  = cgi.escape(row[field])
+        return '[%s|Virtual Machine?id=%s]' % (val, row['id'])
 
     def spaceLinkify(row, field):
         return '[%s|cloud space?id=%s]' % (row[field], row[field])
 
-    fieldids = ['name', 'hostName', 'status', 'creationTime', 'cloudspaceId', 'stackId']
-    fieldvalues = [nameLinkify, 'hostName', 'status', modifier.makeTime, spaceLinkify, stackLinkify]
-    tableid = modifier.addTableForModel('cloudbroker', 'vmachine', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
+    fields = [
+        {
+            'name': 'Name',
+            'value': nameLinkify,
+            'id': 'id'
+        }, {
+            'name': 'Hostname',
+            'value': 'name',
+            'id': 'hostName'
+        }, {
+            'name': 'Status',
+            'value': 'status',
+            'id': 'status'
+        }, {
+            'name': 'Cloud Space',
+            'value': spaceLinkify,
+            'id': 'cloudspaceId'
+        }, {
+            'name': 'Stack ID',
+            'value': stackLinkify,
+            'id': 'stackId'
+        }
+    ]
+
+    tableid = modifier.addTableFromModel('cloudbroker', 'vmachine', fields, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 

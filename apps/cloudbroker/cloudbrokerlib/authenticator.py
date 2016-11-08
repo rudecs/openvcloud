@@ -1,7 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from .cloudbroker import models
-import json
 
 
 class auth(object):
@@ -22,7 +21,8 @@ class auth(object):
             return result
         for ace in account.acl:
             if ace.type == 'U':
-                ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right),
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
                 result[ace.userGroupId] = ace_dict
         return result
 
@@ -33,7 +33,8 @@ class auth(object):
             return result
         for ace in cloudspace.acl:
             if ace.type == 'U':
-                ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right), right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right),
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
@@ -52,7 +53,8 @@ class auth(object):
 
         for ace in machine.acl:
             if ace.type == 'U':
-                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                ace_dict = dict(userGroupId=ace.userGroupId, right=set(ace.right),
+                                type='U', canBeDeleted=True, status=ace.status)
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getCloudspaceAcl(machine.cloudspaceId).iteritems():
@@ -102,6 +104,8 @@ class auth(object):
                 # call is not performed over rest let it pass
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
+            ctx.env['JS_AUDIT'] = True
+            tags = j.core.tags.getObject()
             user = ctx.env['beaker.session']['user']
             account = None
             cloudspace = None
@@ -125,6 +129,11 @@ class auth(object):
                 elif 'accountId' in kwargs and kwargs['accountId']:
                     account = self.models.account.get(int(kwargs['accountId']))
 
+            for key, value in (('accountId', account), ('cloudspaceId', cloudspace), ('machineId', machine)):
+                if value is not None:
+                    tags.tagSet(key, str(value.id))
+
+            ctx.env['beaker.session']['tags'] = str(tags)
             if self.isAuthorized(user, account, cloudspace, machine):
                 return func(*args, **kwargs)
             else:

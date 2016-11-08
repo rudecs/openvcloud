@@ -33,33 +33,36 @@
 h3. External Network
 
 |*Network*|${network}|
-|*Subnetmask*|${subnetmask}|
+|*Subnet Mask*|${subnetmask}|
 |*Gateway*|${gateway} {{action: id:'action-ChangeGateway' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}} |
 
 @HR
 
-{% if ips %}
 h4. Free IPs
 {{action: id:'action-AddExternalIPAddresses' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add External IP Addresses'}}
-||External IP||
+||Free IP Address||
 {% for freeip in ips -%}
 |${freeip}|
+{% else -%}
+| |
 {% endfor %}
-@HR
-{% endif %}
 
-h4. External IPs Used by CloudSpace
-||External IP||Cloud Space||
+@HR
+
+h4. External IP Addresses Used by Cloud Spaces
+||External IP Address||Cloud Space||
 {% for space in spaces -%}
 |${space.externalnetworkip}|[${space.name} (${space.id})|cloud space?id=${space.id}]|
 {% endfor %}
 
 @HR
 
-h4. External IPs Used by Virtual Machines
-||Public IP||Virtual Machine||Cloud Space||
+h4. External IP Addresses Used by Virtual Machines
+||Public IP Address||Virtual Machine||Cloud Space||
 {% for vm in vms -%}
 |${vm.externalnetworkip}|[${vm.name}|virtual machine?id=${vm.id}]|[${vm.cloudspaceId}|cloud space?id=${vm.cloudspaceId}]|
+{% else -%}
+| | | |
 {% endfor %}
 
 {% else %}

@@ -85,7 +85,7 @@ h2. Account: ${name}
     type: hidden
     value: $$id
 
-
+{% if status != "DISABLED" %}
 - display: Disable
   action: /restmachine/cloudbroker/account/disable
   data:
@@ -93,15 +93,14 @@ h2. Account: ${name}
    async: true
   input:
   - reason
-
+{% else %}
 - display: Enable
   action: /restmachine/cloudbroker/account/enable
-  reload: false
   data:
    accountId: $$id
   input:
   - reason
-
+{% endif %}
 - display: Delete
   action: /restmachine/cloudbroker/account/delete
   data:
@@ -151,6 +150,8 @@ h2. Account: ${name}
 h3. Details
 |*Account ID*|$$id|
 |*Status*|${status}|
+|*Creation Time*|{{ts: ${creationTime}}}|
+|*Update Time*|{{ts: ${updateTime}}}|
 
 h3. Cloud Resource Limits
 |*Memory Capacity*|${'Unlimited' if reslimits.CU_M ==  -1  else '%r GB'%(reslimits.CU_M)}|
@@ -181,6 +182,8 @@ h3. Cloud Spaces
  }}
 {{cbspaces: accountId:$$id}}
 
+h3. Audits
+{{grid.audits accountId:$$id}}
 {% else %}
 No account provided
 {% endif %}

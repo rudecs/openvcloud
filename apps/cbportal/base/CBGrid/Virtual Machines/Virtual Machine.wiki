@@ -23,11 +23,12 @@ h2. Virtual Machine: ${name}
 |*Stack*| [${stackname}|stack?id=${stackId}]|
 |*Account*| [${accountName}|account?id=${accountId}]|
 |*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
-|*Created at*| ${createdat}|
+|*Creation Time*|{{ts: ${creationTime}}}|
+|*Update Time*|{{ts: ${updateTime}}}|
+|*Deletion Time*| ${deleteTime}|
 {% if accounts -%}
 |*Initial Credentials*| {{html: <span class="margin-right-xlarge"><strong>Login:</strong> ${accounts[0].login}</span> <strong>Password:</strong> ${accounts[0].password}}}|
 {% endif -%}
-|*Deleted at*| ${deletedat}|
 |*Size*| ${size}|
 |*Image*| [${image.name}|image?id=${image.referenceId}]|
 |*Status*| ${status}|
@@ -81,8 +82,8 @@ h3. Port Forwards
 | | | | | | |
 {% endfor %}
 
-h3. Jobs
-{{grid.jobs: filter:%7B%22args%22%3A%20%7B%22%24regex%22%3A%20%22${referenceId}%22%7D%7D}}
+h3. Audits
+{{grid.audits machineId:$$id}}
 
 {% else %}
 No Virtual Machine found

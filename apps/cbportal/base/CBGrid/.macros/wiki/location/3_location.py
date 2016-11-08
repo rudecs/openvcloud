@@ -1,13 +1,12 @@
-try:
-    import ujson as json
-except:
-    import json
-
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
     gid = args.getTag('gid')
-    if not gid or not gid.isdigit():
+    try:
+        gid = int(gid)  # check like this to prevent long conversion error
+    except:
+        pass
+    if not isinstance(gid, int):
         args.doc.applyTemplate({})
         return params
 
@@ -22,6 +21,7 @@ def main(j, args, params, tags, tasklet):
     obj = locations[0]
     args.doc.applyTemplate(obj, True)
     return params
+
 
 def match(j, args, params, tags, tasklet):
     return True

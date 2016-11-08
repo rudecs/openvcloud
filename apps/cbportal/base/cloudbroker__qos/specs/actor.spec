@@ -30,7 +30,7 @@
         Limit IO done on a certain disk
         """
         var:diskId int,, Id of the disk to limit
-        var:iops int,, Max IO per second, 0 mean unlimited
+        var:iops int,, Max IO per second, 0 means unlimited
         result:bool
 
 

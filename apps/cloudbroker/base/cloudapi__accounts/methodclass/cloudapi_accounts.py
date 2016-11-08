@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
@@ -14,7 +13,6 @@ class cloudapi_accounts(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit()
     def addUser(self, accountId, userId, accesstype, **kwargs):
         """
         Give a registered user access rights
@@ -37,29 +35,6 @@ class cloudapi_accounts(BaseActor):
             return True
         except:
             self.deleteUser(accountId, userId, recursivedelete=False)
-            raise
-
-    @authenticator.auth(acl={'account': set('U')})
-    @audit()
-    def addExternalUser(self, accountId, emailaddress, accesstype, **kwargs):
-        """
-        Give an unregistered user access rights by sending an invite email
-
-        :param accountId: id of the account
-        :param emailaddress: emailaddress of the unregistered user that will be invited
-        :param accesstype: 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        :return True if user was added successfully
-        """
-        if self.systemodel.user.search({'emails': emailaddress})[1:]:
-            raise exceptions.BadRequest('User is already registered on the system, please add as '
-                                        'a normal user')
-
-        self._addACE(accountId, emailaddress, accesstype, userstatus='INVITED')
-        try:
-            j.apps.cloudapi.users.sendInviteLink(emailaddress, 'account', accountId, accesstype)
-            return True
-        except:
-            self.deleteUser(accountId, emailaddress, recursivedelete=False)
             raise
 
     def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED'):
@@ -91,7 +66,6 @@ class cloudapi_accounts(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit()
     def updateUser(self, accountId, userId, accesstype, **kwargs):
         """
         Update user access rights
@@ -121,7 +95,7 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(account)
         return True
 
-    @audit()
+
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
@@ -144,7 +118,6 @@ class cloudapi_accounts(BaseActor):
         raise NotImplementedError("Not implemented method create")
 
     @authenticator.auth(acl={'account': set('D')})
-    @audit()
     def delete(self, accountId, **kwargs):
         """
         Delete an account (Method not implemented)
@@ -155,7 +128,6 @@ class cloudapi_accounts(BaseActor):
         raise NotImplementedError("Not implemented method delete")
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def get(self, accountId, **kwargs):
         """
         Get account details
@@ -177,7 +149,6 @@ class cloudapi_accounts(BaseActor):
         return account
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def listTemplates(self, accountId, **kwargs):
         """
         List templates which can be managed by this account
@@ -192,7 +163,6 @@ class cloudapi_accounts(BaseActor):
         return results
 
     @authenticator.auth(acl={'account': set('U')})
-    @audit()
     def deleteUser(self, accountId, userId, recursivedelete=False, **kwargs):
         """
         Revoke user access from the account
@@ -242,7 +212,6 @@ class cloudapi_accounts(BaseActor):
 
         return True
 
-    @audit()
     def list(self, **kwargs):
         """
         List all accounts the user has access to
@@ -251,14 +220,13 @@ class cloudapi_accounts(BaseActor):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        fields = ['id', 'name', 'acl']
+        fields = ['id', 'name', 'acl', 'creationTime', 'updateTime']
         q = {'acl.userGroupId': user, 'status': {'$in': ['DISABLED', 'CONFIRMED']}}
         query = {'$query': q, '$fields': fields}
         accounts = self.models.account.search(query)[1:]
         return accounts
 
     @authenticator.auth(acl={'account': set('A')})
-    @audit()
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
                maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
                maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
@@ -620,3 +588,33 @@ class cloudapi_accounts(BaseActor):
                                                 "free vdisk space." % (vdisksize, availablecus))
 
         return True
+
+    @authenticator.auth(acl={'account': set('R')})
+    def getConsumption(self, accountId, start, end, **kwargs):
+        import datetime
+        import zipfile
+        from cStringIO import StringIO
+        import os
+        import glob
+
+        ctx = kwargs['ctx']
+        start_time = datetime.datetime.utcfromtimestamp(start)
+        end_time = datetime.datetime.utcfromtimestamp(end)
+        root_path = "/opt/jumpscale7/var/resourcetracking/"
+        account_path = os.path.join(root_path, str(accountId))
+        pathes = glob.glob(os.path.join(account_path, '*/*/*/*'))
+        pathes_in_range = list()
+        for path in pathes:
+            path_list = path.split("/")
+            path_date = datetime.datetime(int(path_list[-4]), int(path_list[-3]), int(path_list[-2]), int(path_list[-1]))
+            if path_date >= start_time and path_date <= end_time:
+                pathes_in_range.append(path)
+        ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
+                                      ('content-disposition', "inline; filename = account.zip")])
+        fp = StringIO()
+        zip = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
+        for path in pathes_in_range:
+            file_path = os.path.join(path, 'account_capnp.bin')
+            zip.write(file_path, file_path.replace(root_path, ''))
+        zip.close()
+        return fp.getvalue()

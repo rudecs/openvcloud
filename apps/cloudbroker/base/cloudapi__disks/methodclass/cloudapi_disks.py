@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
@@ -25,7 +24,6 @@ class cloudapi_disks(BaseActor):
         return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
-    @audit()
     def create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
         """
         Create a disk
@@ -82,7 +80,6 @@ class cloudapi_disks(BaseActor):
         return provider.client.ex_limitio(volume, iops)
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def get(self, diskId, **kwargs):
         """
         Get disk details
@@ -95,7 +92,6 @@ class cloudapi_disks(BaseActor):
         return self.models.disk.get(diskId).dump()
 
     @authenticator.auth(acl={'account': set('R')})
-    @audit()
     def list(self, accountId, type, **kwargs):
         """
         List the created disks belonging to an account
@@ -104,13 +100,22 @@ class cloudapi_disks(BaseActor):
         :param type: type of type of the disks
         :return: list with every element containing details of a disk as a dict
         """
-        query = {'accountId': accountId}
+        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
         if type:
             query['type'] = type
-        return self.models.disk.search(query)[1:]
+        disks = self.models.disk.search(query)[1:]
+        diskids = [disk['id'] for disk in disks]
+        query = {'disks': {'$in': diskids}}
+        vms = self.models.vmachine.search({'$query': query, '$fields': ['disks', 'id']})[1:]
+        vmbydiskid = dict()
+        for vm in vms:
+            for diskid in vm['disks']:
+                vmbydiskid[diskid] = vm['id']
+        for disk in disks:
+            disk['machineId'] = vmbydiskid.get(disk['id'])
+        return disks
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @audit()
     def delete(self, diskId, detach, **kwargs):
         """
         Delete a disk

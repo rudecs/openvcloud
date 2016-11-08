@@ -39,11 +39,14 @@ def main(j, args, params, tags, tasklet):
     import gevent
     params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id or not id.isdigit():
+    try:
+        id = int(id)
+    except:
+        pass
+    if not isinstance(id, int):
         args.doc.applyTemplate({})
         return params
 
-    id = int(id)
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
     sosis = j.clients.osis.getNamespace('system')
@@ -149,10 +152,6 @@ def main(j, args, params, tags, tasklet):
                 disk['footprint'] = '%.2f' % j.tools.units.bytes.toSize(disk['footprint'], output='G')
                 break
 
-    if hasattr(obj, 'creationTime'):
-        data['createdat'] = j.base.time.epoch2HRDateTime(obj.creationTime)
-    if hasattr(obj, 'deletionTime'):
-        data['deletedat'] = j.base.time.epoch2HRDateTime(obj.deletionTime) if obj.deletionTime else 'N/A'
     data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
     data['image'] = image
     data['stackname'] = stack['name']
@@ -179,7 +178,7 @@ def main(j, args, params, tags, tasklet):
     data['users'] = generateUsersList(sosis, data)
 
     data['referenceId'] = data['referenceId'].replace('-', '%2d')
-    args.doc.applyTemplate(data, True)
+    args.doc.applyTemplate(data, False)
     return params
 
 

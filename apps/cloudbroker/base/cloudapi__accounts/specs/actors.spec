@@ -89,15 +89,6 @@
         var:accountId int,, id of the account
         result:dict, dict with the template images for the given account
 
-    method:addExternalUser
-        """
-        Give an unregistered user access rights by sending an invite email
-        """
-        var:accountId int,, id of the account
-        var:emailaddress str,, emailaddress of the unregistered user that will be invited
-        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
-        result:bool, True if user was added successfully
-
     method:getConsumedCloudUnits
         """
         Calculate the currently consumed cloud units for all cloudspaces in the account.
@@ -129,3 +120,12 @@
         var:accountId int,, id of the account consumption should be calculated for
         var:cutype str,, cloud unit resource type
         result:float, float/int for the consumed cloud unit of the specified type
+
+    method: getConsumption @method:get
+        """
+        download the resources traking files for an account within a given period
+        """
+        var:accountId int,, id of the account
+        var:start float,, epoch represents the start time
+        var:end float,, epoch represents the end time
+        result:str, binary zip file

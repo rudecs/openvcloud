@@ -1,26 +1,28 @@
 
 def main(j, args, params, tags, tasklet):
-    import JumpScale.baselib.units
-
     params.result = (args.doc, args.doc)
-    stid = args.getTag('id')
-    if not stid or not stid.isdigit():
+    stackId = args.getTag('id')
+    try:
+        stackId = int(stackId)
+    except:
+        pass
+
+    if not isinstance(stackId, int):
         args.doc.applyTemplate({})
         return params
 
-    stid = int(stid)
+    stackId = int(stackId)
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
-    if not ccl.stack.exists(stid):
+    if not ccl.stack.exists(stackId):
         args.doc.applyTemplate({'id': None}, True)
         return params
 
-
-    stack = ccl.stack.get(stid).dump()
-    stack['eco'] = stack['eco'] and stack['eco'].replace('-', '')
+    stack = ccl.stack.get(stackId).dump()
     args.doc.applyTemplate(stack, True)
 
     return params
+
 
 def match(j, args, params, tags, tasklet):
     return True

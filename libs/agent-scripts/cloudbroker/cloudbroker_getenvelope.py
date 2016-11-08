@@ -1,7 +1,7 @@
 from JumpScale import j
 
 descr = """
-Follow up creation of export
+get the envelope of an ova
 """
 
 category = "cloudbroker"
@@ -16,5 +16,15 @@ timeout = 60 * 60
 
 
 def action(link, username, passwd, path):
-    from CloudscalerLibcloud.utils import webdav
-    return webdav.get_tar_first_file(link, username, passwd, path)
+    import requests
+    import tarfile
+
+    r = requests.get('%s/%s' % (link.rstrip('/'), path.lstrip('/')), stream=True, auth=(username, passwd))
+    tf = tarfile.open(mode='r|*', fileobj=r.raw)
+    for member in tf:
+        if member.name.endswith('.ovf'):
+            return tf.extractfile(member).read()
+    return None
+
+if __name__ == "__main__":
+    print(action('http://192.168.27.152/owncloud/remote.php/webdav', 'myuser', 'rooter', '/images/mie.tar.gz'))

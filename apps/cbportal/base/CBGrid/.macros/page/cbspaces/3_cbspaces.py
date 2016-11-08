@@ -7,8 +7,6 @@ def main(j, args, params, tags, tasklet):
     if accountId:
         filters['accountId'] = int(accountId)
 
-    fieldnames = ['ID', 'Name', 'Account ID', 'Network ID', 'Location Code', 'Status', 'External IP Address']
-
     def makeNetworkLink(row, field):
         if row[field]:
             return '[%(networkId)s|/CBGrid/private network?id=%(networkId)s&gid=%(gid)s]' % row
@@ -20,13 +18,38 @@ def main(j, args, params, tags, tasklet):
             return '[%(externalnetworkip)s|/CBGrid/External Network?networkid=%(externalnetworkId)s]' % row
         else:
             return ''
-
-    fieldids = ['id', 'name', 'accountId', 'networkId', 'location', 'status', 'externalnetworkip']
-    fieldvalues = ['[%(id)s|/CBGrid/Cloud Space?id=%(id)s]', 'name',
-                   '[%(accountId)s|/CBGrid/account?id=%(accountId)s]',
-                   makeNetworkLink, 'location', 'status',
-                   makeExternalNetworkLink]
-    tableid = modifier.addTableForModel('cloudbroker', 'cloudspace', fieldids, fieldnames, fieldvalues, filters, selectable='rows')
+    fields = [
+        {
+            'name': 'ID',
+            'value': '[%(id)s|/CBGrid/Cloud Space?id=%(id)s]',
+            'id': 'id'
+        }, {
+            'name': 'Name',
+            'value': 'name',
+            'id': 'name'
+        }, {
+            'name': 'Account ID',
+            'value': '[%(accountId)s|/CBGrid/account?id=%(accountId)s]',
+            'id': 'accountId'
+        }, {
+            'name': 'Network ID',
+            'value': makeNetworkLink,
+            'id': 'networkId'
+        }, {
+            'name': 'Location Code',
+            'value': 'location',
+            'id': 'location'
+        }, {
+            'name': 'Status',
+            'value': 'status',
+            'id': 'status'
+        }, {
+            'name': 'External IP Address',
+            'value': makeExternalNetworkLink,
+            'id': 'externalnetworkip'
+        }
+    ]
+    tableid = modifier.addTableFromModel('cloudbroker', 'cloudspace', fields, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 

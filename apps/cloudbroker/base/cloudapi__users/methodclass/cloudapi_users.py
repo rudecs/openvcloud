@@ -1,5 +1,4 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth as audit
 from JumpScale.portal.portal import exceptions
 import JumpScale.grid.agentcontroller
 import JumpScale.baselib.mailclient
@@ -47,7 +46,7 @@ class cloudapi_users(BaseActor):
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
-    @audit()
+    
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
@@ -71,7 +70,7 @@ class cloudapi_users(BaseActor):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
-    @audit()
+    
     def setData(self, data, **kwargs):
         """
         Set user data

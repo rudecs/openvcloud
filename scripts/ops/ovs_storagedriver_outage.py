@@ -56,7 +56,7 @@ def main(ipaddress):
             disk = ccl.disk.get(diskid)
             disk.referenceId = disk.referenceId.replace(ipaddress, storagedriverip)
             ccl.disk.set(disk)
-        domainkey = 'domain_%s' % (vm['referenceId'].replace('-', ''))
+        domainkey = 'domain_%s' % (vm['referenceId'])
         xml = lcl.libvirtdomain.get(domainkey)
         xml = xml.replace(ipaddress, storagedriverip)
         lcl.libvirtdomain.set(xml, domainkey)

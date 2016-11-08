@@ -1,6 +1,7 @@
 from JumpScale import j
 from CloudscalerLibcloud import openvstorage
 
+
 def registerImage(service, name, type, disksize, username=None):
     imagepath = None
     for export in service.hrd.getListFromPrefix('service.web.export'):
@@ -9,8 +10,7 @@ def registerImage(service, name, type, disksize, username=None):
         raise RuntimeError("No image export defined in service")
 
     templateguid, imagepath = openvstorage.copyImage(imagepath)
-    templateguid = templateguid.replace('-', '') # osis strips dashes
-    #register image on cloudbroker
+    # register image on cloudbroker
     lcl = j.clients.osis.getNamespace('libvirt')
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
@@ -19,6 +19,7 @@ def registerImage(service, name, type, disksize, username=None):
         image = dict()
         image['name'] = name
         image['id'] = templateguid
+        image['gid'] = j.application.whoAmI.gid
         image['UNCPath'] = imagepath
         image['type'] = type
         image['size'] = disksize
@@ -33,6 +34,7 @@ def registerImage(service, name, type, disksize, username=None):
         image.type = type
         image.size = disksize
         image.username = username
+        image.gid = j.application.whoAmI.gid
         image.provider_name = 'libvirt'
         image.status = 'CREATED'
         ccl.image.set(image)

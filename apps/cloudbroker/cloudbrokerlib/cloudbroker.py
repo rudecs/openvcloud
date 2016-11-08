@@ -62,11 +62,16 @@ class CloudProvider(object):
         self.stackId = stackId
 
     def getSize(self, brokersize, firstdisk):
+        biggerdisk = None
         providersizes = self.client.list_sizes()
         for s in providersizes:
-            if s.ram == brokersize.memory and firstdisk.sizeMax == s.disk and s.extra['vcpus'] == brokersize.vcpus:
-                return s
-        return None
+            if s.ram == brokersize.memory and s.extra['vcpus'] == brokersize.vcpus:
+                if firstdisk.sizeMax == s.disk:
+                    return s
+                elif firstdisk.sizeMax < s.disk and (biggerdisk is None or biggerdisk.disk > s.disk):
+                    biggerdisk = s
+        return biggerdisk
+
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
@@ -269,8 +274,8 @@ class CloudBroker(object):
         stack.images = list()
 
         pimages = {}
-        for p in provider.client.ex_list_images():
-            pimages[p.id] = p
+        for image in provider.client.ex_list_images():
+            pimages[image.id] = image
         pimages_ids = set(pimages.keys())
 
         images_current = models.image.search({'provider_name': pname})[1:]
@@ -286,6 +291,7 @@ class CloudBroker(object):
             image.provider_name = pname
             image.name = pimage.name
             image.referenceId = pimage.id
+            image.gid = stack.gid
             image.type = pimage.extra.get('imagetype', 'Unknown')
             image.size = pimage.extra.get('size', 0)
             image.username = pimage.extra.get('username', 'cloudscalers')
@@ -494,11 +500,6 @@ class Machine(object):
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
         datadisks = datadisks or []
 
-        # create a public ip and virtual firewall on the cloudspace if needed
-        if cloudspace.status != 'DEPLOYED':
-            args = {'cloudspaceId': cloudspace.id}
-            self.acl.executeJumpscript('cloudscalers', 'cloudbroker_deploycloudspace', args=args, nid=j.application.whoAmI.nid, wait=False)
-
         image = models.image.get(imageId)
         machine = models.vmachine.new()
         machine.cloudspaceId = cloudspace.id
@@ -507,6 +508,7 @@ class Machine(object):
         machine.sizeId = sizeId
         machine.imageId = imageId
         machine.creationTime = int(time.time())
+        machine.updateTime = int(time.time())
 
         def addDisk(order, size, type, name=None):
             disk = models.disk.new()
@@ -571,6 +573,7 @@ class Machine(object):
             for ipaddress in node.public_ips:
                 nic = machine.new_nic()
                 nic.ipAddress = ipaddress
+        machine.updateTime = int(time.time())
         models.vmachine.set(machine)
 
         # filter out iso volumes

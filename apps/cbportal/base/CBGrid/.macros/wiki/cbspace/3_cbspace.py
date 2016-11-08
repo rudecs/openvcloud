@@ -38,17 +38,20 @@ def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
     id = args.getTag('id')
-    if not id or not id.isdigit():
+    try:
+        id = int(id)
+    except:
+        pass
+    if not isinstance(id, int):
         args.doc.applyTemplate({})
         return params
 
-    id = int(id)
     cbclient = j.clients.osis.getNamespace('cloudbroker')
     sclient = j.clients.osis.getNamespace('system')
     vcl = j.clients.osis.getNamespace('vfw')
 
     if not cbclient.cloudspace.exists(id):
-        args.doc.applyTemplate({'id': None}, True)
+        args.doc.applyTemplate({'id': None}, False)
         return params
 
     cloudspaceobj = cbclient.cloudspace.get(id)
@@ -76,7 +79,7 @@ def main(j, args, params, tags, tasklet):
         cloudspacedict['network'] = {'tcpForwardRules': []}
 
     cloudspacedict['users'] = generateUsersList(sclient, cloudspacedict)
-    args.doc.applyTemplate(cloudspacedict, True)
+    args.doc.applyTemplate(cloudspacedict, False)
     return params
 
 def match(j, args, params, tags, tasklet):

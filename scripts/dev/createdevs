@@ -69,3 +69,5 @@ sudo udevadm trigger
 rexec udevadm trigger
 rexec chmod 777 /dev/kvm
 rexec ip l s vxbackend mtu 2000
+rexec ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0      
+rexec ovs-vsctl add-port public backplane1-0 -- set Interface backplane1-0 type=patch options:peer=public-0

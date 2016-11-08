@@ -22,7 +22,7 @@ class mainclass(OSISStoreMongo):
             changed = False
             new = True
         if isinstance(id, basestring):
-            id = id.replace('-', '')
+#            id = id.replace('-', '')
             value['id'] = id
         value['guid'] = id
         db.save(value)
