@@ -27,9 +27,7 @@ def main(j, args, params, tags, tasklet):
         gid = int(gid)
         stacks = ccl.stack.simpleSearch({'gid': gid})
         stacksids = [stack['id'] for stack in stacks]
-        filters['stackId'] = {'$in':stacksids}
-
-    fieldnames = ['Name', 'Host Name', 'Status', 'Created at', 'Updated at', 'Cloud Space ID', 'Stack ID']
+        filters['stackId'] = {'$in': stacksids}
 
     def stackLinkify(row, field):
         return '[%s|stack?id=%s]' % (row[field], row[field])
@@ -37,7 +35,7 @@ def main(j, args, params, tags, tasklet):
     def nameLinkify(row, field):
         val = row[field]
         if not isinstance(row[field], int):
-            val  = cgi.escape(row[field])
+            val = cgi.escape(row[field])
         return '[%s|Virtual Machine?id=%s]' % (val, row['id'])
 
     def spaceLinkify(row, field):
