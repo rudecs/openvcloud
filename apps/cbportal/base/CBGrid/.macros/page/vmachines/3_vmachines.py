@@ -50,7 +50,7 @@ def main(j, args, params, tags, tasklet):
             'id': 'name'
         }, {
             'name': 'Hostname',
-            'value': 'name',
+            'value': 'hostName',
             'id': 'hostName'
         }, {
             'name': 'Status',
