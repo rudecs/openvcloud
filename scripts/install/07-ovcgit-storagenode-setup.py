@@ -1,9 +1,6 @@
 from JumpScale import j
 from optparse import OptionParser
-import json
-import urllib
 import sys
-import time
 
 """ FIXME: Move me """
 
@@ -100,7 +97,7 @@ if len(refsrv) > 0:
     refaddress = reflector.hrd.getStr('instance.ip')
     refport = reflector.hrd.getStr('instance.ssh.publicport')
 
-    if refport == None:
+    if refport is None:
         print '[-] cannot find reflector public ssh port'
         sys.exit(1)
 
@@ -153,7 +150,7 @@ for storagetype in options.type:
 
 if 'storagedriver' in options.type:
     client = nodeService.actions.getSSHClient(nodeService)
-    if client.file_exists('/etc/init/ovs-webapp-api.conf'):
+    if 'MASTER' in nodeService.execute('ovs config get "ovs/framework/hosts/$(cat /etc/openvstorage_id)/type"'):
         if autossh:
             temp = j.atyourservice.new(name='autossh', instance='http_proxy_ovs', args=data_autossh, parent=nodeService)
             temp.consume('node', nodeService.instance)
@@ -165,7 +162,8 @@ if 'storagedriver' in options.type:
         oauthfile = '/tmp/oauthserver.hrd'
 
         oauthService = j.atyourservice.get(name='node.ssh', instance='ovc_master')
-        oauthService.actions.download(oauthService, '/opt/jumpscale7/hrd/apps/openvcloud__oauthserver__main/service.hrd', oauthfile)
+        oauthService.actions.download(oauthService, '/opt/jumpscale7/hrd/apps/openvcloud__oauthserver__main/service.hrd',
+                                      oauthfile)
 
         info('building oauth configuration')
 
@@ -189,7 +187,7 @@ if 'storagedriver' in options.type:
                       'instance.oauth.secret': oauth_ovs_secret,
                       'instance.oauth.authorize_uri': oauth_authorize_uri,
                       'instance.oauth.token_uri': oauth_token_uri}
-                                                                                                            
+
         temp = j.atyourservice.new(name='openvstorage_oauth', instance='main', args=data_oauth, parent=nodeService)
         temp.consume('node', nodeService.instance)
         temp.install(deps=True)
