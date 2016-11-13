@@ -50,9 +50,18 @@ function setupdev() {
     devname=$(createdev "${node}_${name}" $size)
     dupdev "${devname}"
     dupdev "${devname}p1"
+    rexec udevadm test "/sys/block/${devname}/${devname}p1"
 
     rexec mkdir /mnt/$name
     rexec mount "${devname}p1" /mnt/$name
+}
+
+function setupdevnomount() {
+    name=$1
+    size=$2
+    devname=$(createdev "${node}_${name}" $size)
+    dupdev "${devname}"
+    dupdev "${devname}p1"
 }
 
 
@@ -64,10 +73,9 @@ dupdev /dev/kvm
 
 setupdev cache 4GB
 setupdev db 4GB
+setupdevnomount adb 200GB
 
-sudo udevadm trigger
-rexec udevadm trigger
 rexec chmod 777 /dev/kvm
 rexec ip l s vxbackend mtu 2000
-rexec ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0      
+rexec ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0
 rexec ovs-vsctl add-port public backplane1-0 -- set Interface backplane1-0 type=patch options:peer=public-0
