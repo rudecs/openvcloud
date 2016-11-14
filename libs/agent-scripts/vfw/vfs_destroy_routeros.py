@@ -26,16 +26,18 @@ def action(networkid):
     name = 'routeros_%s' % networkidHex
 
     print("CLEANUP: %s/%s" % (networkid, networkidHex))
+    dom = None
     try:
         dom = con.lookupByName(name)
         bridges = list(connection._get_domain_bridges(dom))
         dom.destroy()
     except libvirt.libvirtError:
         pass
-    try:
-        dom.undefine()
-    except libvirt.libvirtError:
-        pass
+    if dom is not None:
+        try:
+            dom.undefine()
+        except libvirt.libvirtError:
+            pass
     connection.cleanupNetwork(networkid, bridges)
 
 if __name__ == '__main__':
