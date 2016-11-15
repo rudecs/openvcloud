@@ -4,22 +4,6 @@ import sys
 import time
 
 
-def info(text):
-    print('\033[1;36m[*] %s\033[0m' % text)
-
-
-def notice(text):
-    print('\033[1;34m[+] %s\033[0m' % text)
-
-
-def warning(text):
-    print('\033[1;33m[-] %s\033[0m' % text)
-
-
-def success(text):
-    print('\033[1;32m[+] %s\033[0m' % text)
-
-
 def enableQuiet():
     j.remote.cuisine.api.fabric.state.output['stdout'] = False
     j.remote.cuisine.api.fabric.state.output['running'] = False
@@ -34,31 +18,18 @@ parser.add_option("-n", "--node", dest="node", help="node id")
 parser.add_option("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
 (options, args) = parser.parse_args()
 
-print('[+] loading nodes list')
-
-openvcloud = j.clients.openvcloud.get()
-nodes = openvcloud.getRemoteNodes()
-node = None
-
-print('[+] found: %d nodes' % len(nodes))
-print('[+] searching for node: %s' % options.node)
-
-for service in nodes:
-    if service.instance == options.node:
-        node = service
-        print('[+] node found')
-        break
-else:
-    print('[-] node not found')
+try:
+    node = j.clients.openvcloud.getRemoteNode(options.node)
+except KeyError as e:
+    j.console.warning(e)
     sys.exit(1)
 
 nodename = options.node
 
-
-print('[+] setup will start... warm-up.')
+j.console.info('setup will start... warm-up.')
 time.sleep(3)
 
-print('[+] loading configuration for node: %s' % node)
+j.console.info('loading configuration for node: %s' % node)
 
 # loading settings
 settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
@@ -72,8 +43,7 @@ environment = settings.getStr('instance.ovc.environment')
 repopath = settings.getStr('instance.ovc.path')
 password = settings.getStr('instance.ovc.password')
 
-print('[+] node name: %s' % nodename)
-print('[+] building reverse ssh tunnel settings')
+j.console.info('building reverse ssh tunnel settings')
 refsrv = j.atyourservice.findServices(name='node.ssh', instance='ovc_reflector')
 
 if len(refsrv) > 0:
@@ -84,7 +54,7 @@ if len(refsrv) > 0:
     refport = reflector.hrd.getStr('instance.ssh.publicport')
 
     if refport is None:
-        print('[-] cannot find reflector public ssh port')
+        j.console.warning('cannot find reflector public ssh port')
         sys.exit(1)
 
     # find autossh of this node
@@ -126,19 +96,19 @@ data_controller = {
     'instance.param.grid.id': options.gid or configure.getInt('instance.grid.id'),
 }
 
-notice('installing controller node')
+j.console.notice('installing controller node')
 temp = j.atyourservice.new(name='cb_controller', args=data_controller, parent=node)
 temp.consume('node', node.instance)
 temp.install(deps=True)
 
-notice('installing dashboards for controller')
+j.console.notice('installing dashboards for controller')
 location = node.parent.instance
 temp = j.atyourservice.new(name='controller_dashboards', args=dashboard_data, parent=ovcmaster, instance=location)
 temp.consume('node', ovcmaster.instance)
 temp.install(deps=True)
 
 
-notice('commit changes')
+j.console.notice('commit changes')
 j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/update-ays.py --commit')
 
-success('controller node installed.')
+j.console.success('controller node installed.')
