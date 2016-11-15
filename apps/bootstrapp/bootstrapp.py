@@ -87,9 +87,9 @@ class bootstrap(Resource):
             'autossh.remote.port': 0, # IMPORTANT: this says we don't use reflector
             'autossh.node.port': 0,
         }
-        
+
         return resp
-            
+
     def post(self):
         j.system.fs.changeDir(args.gitpath)
         data = request.get_json()
@@ -194,7 +194,7 @@ class bootstrap(Resource):
             'instance.remote.port': resp['autossh.remote.port'],
             'instance.local.address': 'localhost',
             'instance.local.port': 22}
-        autossh = j.atyourservice.new(name='autossh', instance=hostname, args=data)
+        autossh = j.atyourservice.new(name='autossh', instance=hostname, args=data, parent=node)
         autossh.consume('node', node.instance)
 
         return resp
@@ -218,8 +218,8 @@ if __name__ == '__main__':
         j.events.inputerror_critical('need to provice path to hrd, use --hrd')
 
     hrd = j.core.hrd.get(path=args.hrd, prefixWithName=False)
-    sshMngr = SSHMngr(hrd)    
-    
+    sshMngr = SSHMngr(hrd)
+
     if hrd.getStr('instance.reflector.name') == '':
         print '[+] no reflector, we will exchange ssh-keys only'
 
