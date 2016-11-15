@@ -116,4 +116,3 @@ Stage 5: installing stuff
 """
 ovc.initAYSGitVM(machine, gitlink, options.gituser, options.gitpass,
                  vmpassword, domain, options.environment, delete=True)
-

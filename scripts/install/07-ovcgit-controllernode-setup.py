@@ -18,8 +18,10 @@ parser.add_option("-n", "--node", dest="node", help="node id")
 parser.add_option("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
 (options, args) = parser.parse_args()
 
+openvcloud = j.clients.openvcloud.get()
+
 try:
-    node = j.clients.openvcloud.getRemoteNode(options.node)
+    node = openvcloud.getRemoteNode(options.node)
 except KeyError as e:
     j.console.warning(e)
     sys.exit(1)

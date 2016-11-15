@@ -7,7 +7,7 @@ parser = ArgumentParser()
 parser.add_argument("-q", "--quiet", dest="quiet", action="store_true", help="supress ssh output", default=False)
 parser.add_argument("-R", "--no-reflector", dest="noreflector", action="store_true", help="do not use reflector")
 parser.add_argument("-r", "--reflector", dest="reflector", action="store_true", help="force reflector installation")
-(options, args) = parser.parse_args()
+options = parser.parse_args()
 
 if options.noreflector is None and options.reflector is None:
     clients = j.atyourservice.findServices(name='ms1_client', instance='main')

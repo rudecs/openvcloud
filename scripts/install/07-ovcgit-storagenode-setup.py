@@ -1,24 +1,6 @@
 from JumpScale import j
-from optparse import OptionParser
+from argparse import ArgumentParser
 import sys
-
-""" FIXME: Move me """
-
-
-def info(text):
-    print '\033[1;36m[*] %s\033[0m' % text
-
-
-def notice(text):
-    print '\033[1;34m[+] %s\033[0m' % text
-
-
-def warning(text):
-    print '\033[1;33m[-] %s\033[0m' % text
-
-
-def success(text):
-    print '\033[1;32m[+] %s\033[0m' % text
 
 
 def enableQuiet():
@@ -30,38 +12,21 @@ def disableQuiet():
     j.remote.cuisine.api.fabric.state.output['stdout'] = True
     j.remote.cuisine.api.fabric.state.output['running'] = True
 
-parser = OptionParser()
-parser.add_option("-n", "--node", dest="node", help="node id")
-parser.add_option("-t", "--type", dest="type", default="storagenode", help="Node type storagenode or storagerouter")
-(options, args) = parser.parse_args()
+parser = ArgumentParser()
+parser.add_argument("-n", "--node", dest="node", help="node id", required=True)
+parser.add_argument("-t", "--type", dest="type", default="storagenode", help="Node type storagenode or storagerouter")
+options = parser.parse_args()
 
 options.type = options.type.split(',')
 
-print '[+] loading nodes list'
-
 openvcloud = j.clients.openvcloud.get()
-nodes = openvcloud.getRemoteNodes()
-
-print '[+] found: %d nodes' % len(nodes)
-
-if options.node is None:
-    print '[-] no node available found'
+try:
+    node = openvcloud.getRemoteNode(options.node)
+except KeyError as e:
+    j.console.warning(e)
     sys.exit(1)
 
-print '[+] searching for node: %s' % options.node
-
-for service in nodes:
-    if service.instance == options.node:
-        break
-else:
-    print '[-] node not found'
-    sys.exit(1)
-
-nodename = options.node
-
-master = ''
-
-print '[+] loading configuration for node: %s' % nodename
+j.console.info('loading configuration for node: %s' % options.node)
 
 # loading settings
 settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
@@ -69,12 +34,10 @@ configure = j.application.getAppInstanceHRD(name='ovc_configure_aio', instance='
 
 password = settings.getStr('instance.ovc.password')
 
-print '[+] node name: %s' % nodename
-
 """
 storagenode all-in-one data configuration
 """
-info('building storagenode configuration')
+j.console.info('building storagenode configuration')
 
 data_cpu = {
     'instance.param.rootpasswd': password,
@@ -82,81 +45,27 @@ data_cpu = {
     'instance.param.grid.id': configure.getInt('instance.grid.id'),
 }
 
-print '[+] building reverse ssh tunnel settings'
 
-refsrv = j.atyourservice.findServices(name='node.ssh', instance='ovc_reflector')
-
-print '[+] building reverse ssh tunnel settings'
-
-refsrv = j.atyourservice.findServices(name='node.ssh', instance='ovc_reflector')
-
-if len(refsrv) > 0:
-    autossh = True
-    reflector = refsrv[0]
-
-    refaddress = reflector.hrd.getStr('instance.ip')
-    refport = reflector.hrd.getStr('instance.ssh.publicport')
-
-    if refport is None:
-        print '[-] cannot find reflector public ssh port'
-        sys.exit(1)
-
-    # find autossh of this node
-    autossh = next(iter(j.atyourservice.findServices(name='autossh', instance=nodename)), None)
-    if not autossh:
-        print '[-] cannot find auto ssh of node'
-        sys.exit(1)
-
-    remoteport = autossh.hrd.getInt('instance.remote.port') - 21000 + 2000
-    data_autossh = {
-            'instance.local.address': 'localhost',
-            'instance.local.port': '2001',
-            'instance.remote.address': settings.getStr('instance.ovc.cloudip'),
-            'instance.remote.bind': refaddress,
-            'instance.remote.connection.port': refport,
-            'instance.remote.login': 'guest',
-            'instance.remote.port': remoteport,
-    }
-
-    print '[+] autossh tunnel port: %s' % data_autossh['instance.remote.port']
-    print '[+] cpunode reflector address: %s, %s' % (refaddress, refport)
-
-else:
-    autossh = False
-    print '[-] reflector not found, skipping autossh'
-
-
-print '[+]'
-print '[+] storagenode cloudspace       : %s' % data_cpu['instance.param.master.addr']
-print '[+] storagenode grid id          : %s' % data_cpu['instance.param.grid.id']
-print '[+]'
-
-print '[+] building remote host connection'
-
-nodeService = j.atyourservice.get(name='node.ssh', instance=nodename)
-
-raw_input("Press key to continue.")
+j.console.info('storagenode cloudspace       : %s' % data_cpu['instance.param.master.addr'])
+j.console.info('storagenode grid id          : %s' % data_cpu['instance.param.grid.id'])
+j.console.info('building remote host connection')
 
 #
 # checking if openvstorage is correctly installed
 #
 
-notice('installing storage node: %s' % options.type)
+j.console.notice('installing storage node: %s' % options.type)
 for storagetype in options.type:
     packagename = 'cb_storagenode_aio' if storagetype == 'storagenode' else 'cb_storagedriver_aio'
-    temp = j.atyourservice.new(name=packagename, args=data_cpu, parent=nodeService)
-    temp.consume('node', nodeService.instance)
+    temp = j.atyourservice.new(name=packagename, args=data_cpu, parent=node)
+    temp.consume('node', node.instance)
     temp.install(deps=True)
 
 if 'storagedriver' in options.type:
-    client = nodeService.actions.getSSHClient(nodeService)
-    if 'MASTER' in nodeService.execute('ovs config get "ovs/framework/hosts/$(cat /etc/openvstorage_id)/type"'):
-        if autossh:
-            temp = j.atyourservice.new(name='autossh', instance='http_proxy_ovs', args=data_autossh, parent=nodeService)
-            temp.consume('node', nodeService.instance)
-            temp.install(deps=True)
-
-        nodeService.execute("python /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py")
+    client = node.actions.getSSHClient(node)
+    if 'MASTER' in node.execute('ovs config get "ovs/framework/hosts/$(cat /etc/openvstorage_id)/type"'):
+        openvcloud.configureNginxProxy(node, settings)
+        node.execute("python /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py")
 
         # loading ovc_master oauth server keys
         oauthfile = '/tmp/oauthserver.hrd'
@@ -165,7 +74,7 @@ if 'storagedriver' in options.type:
         oauthService.actions.download(oauthService, '/opt/jumpscale7/hrd/apps/openvcloud__oauthserver__main/service.hrd',
                                       oauthfile)
 
-        info('building oauth configuration')
+        j.console.info('building oauth configuration')
 
         oauth = j.core.hrd.get(oauthfile, prefixWithName=True)
         oauth_url = oauth.get('instance.oauth.url')
@@ -177,24 +86,24 @@ if 'storagedriver' in options.type:
         oauth_ovs_id = oauth.get('instance.oauth.clients.ovs.id')
         oauth_ovs_secret = oauth.get('instance.oauth.clients.ovs.secret')
 
-        print '[+] oauth url      : %s' % oauth_url
-        print '[+] oauth authorize: %s' % oauth_authorize_uri
-        print '[+] oauth token    : %s' % oauth_token_uri
-        print '[+] oauth id       : %s' % oauth_ovs_id
-        print '[+] oauth secret   : %s' % oauth_ovs_secret
+        j.console.info('oauth url      : %s' % oauth_url)
+        j.console.info('oauth authorize: %s' % oauth_authorize_uri)
+        j.console.info('oauth token    : %s' % oauth_token_uri)
+        j.console.info('oauth id       : %s' % oauth_ovs_id)
+        j.console.info('oauth secret   : %s' % oauth_ovs_secret)
 
         data_oauth = {'instance.oauth.id': oauth_ovs_id,
                       'instance.oauth.secret': oauth_ovs_secret,
                       'instance.oauth.authorize_uri': oauth_authorize_uri,
                       'instance.oauth.token_uri': oauth_token_uri}
 
-        temp = j.atyourservice.new(name='openvstorage_oauth', instance='main', args=data_oauth, parent=nodeService)
-        temp.consume('node', nodeService.instance)
+        temp = j.atyourservice.new(name='openvstorage_oauth', instance='main', args=data_oauth, parent=node)
+        temp.consume('node', node.instance)
         temp.install(deps=True)
 
 
-notice('updating proxy')
+j.console.notice('updating proxy')
 j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/proxy/update-config.py', True, True)
 
-notice('commit changes')
+j.console.notice('commit changes')
 j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/update-ays.py --commit')
