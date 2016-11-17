@@ -17,34 +17,34 @@ timeout = 60 * 60
 
 
 def action(link, username, passwd, path, machine):
+    import requests
+    import os
     import tarfile
-    import subprocess
-    import sys
     from CloudscalerLibcloud import openvstorage
 
-    try:
-        pr = subprocess.Popen(['curl', '%s/%s' % (link.rstrip('/'), path.lstrip('/')), '--user', '%s:%s' % (username, passwd)], stdout=subprocess.PIPE)
-        with tarfile.open(mode='r|*', fileobj=pr.stdout) as tf:
-            with openvstorage.TempStorage() as ts:
-                disks = [disk['path'] for disk in machine['disks']]
-                for member in tf:
-                    if member.name in disks:
-                        ind = disks.index(member.name)
-                        disk = machine['disks'][ind]
-                        if member.name == disks[0]:
-                            isdata = False
-                            path = "vm-%d/bootdisk-vm-%d.raw" % (machine['id'], machine['id'])
-                        else:
-                            isdata = True
-                            path = "volumes/volume_%d.raw" % (disk['id'])
-                        tf.extract(member, ts.path)
-                        disk['guid'], disk['path'] = openvstorage.importVolume('%s/%s' % (ts.path, member.name), path, isdata)
-                        j.system.fs.remove('%s/%s' % (ts.path, member.name))
-        return machine
-
-    finally:
-        stdout, _ = pr.communicate()
-        sys.stderr.write(stdout)
+    with openvstorage.TempStorage() as ts:
+        res = requests.get(os.path.join(link, path.strip('/')), auth=(username, passwd), stream=True)
+        with tarfile.open(mode='r|*', fileobj=res.raw) as tar:
+            disks = [disk['path'] for disk in machine['disks']]
+            for member in tar:
+                print('Iterating %s' % member.name)
+                if member.name in disks:
+                    print('Processing %s' % member.name)
+                    ind = disks.index(member.name)
+                    disk = machine['disks'][ind]
+                    if member.name == disks[0]:
+                        isdata = False
+                        path = "vm-%d/bootdisk-vm-%d.raw" % (machine['id'], machine['id'])
+                    else:
+                        isdata = True
+                        path = "volumes/volume_%d.raw" % (disk['id'])
+                    print('Extracting')
+                    tar.extract(member, ts.path)
+                    print('Converting')
+                    disk['guid'], disk['path'] = openvstorage.importVolume(
+                        '%s/%s' % (ts.path, member.name), path, isdata)
+                    j.system.fs.remove('%s/%s' % (ts.path, member.name))
+    return machine
 
 
 if __name__ == "__main__":

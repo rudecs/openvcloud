@@ -4,6 +4,7 @@ import random
 import os
 import time
 import urlparse
+import subprocess
 import tempfile
 
 sys.path.append('/opt/OpenvStorage')
@@ -177,30 +178,37 @@ class TempStorage(object):
 
     BASE = '/mnt/%s/tmp' % VPOOLNAME
 
+    def __init__(self):
+        self.path = None
+        self.raw = None
+
     def __enter__(self):
         j.system.fs.createDir(self.BASE)
         raw = tempfile.mktemp('.raw', dir=self.BASE)
         self.raw = raw
         truncate(raw, 2 * 1024 * 1024 * 1024 * 1024)
-        res = os.system('mkfs -t btrfs "%s"' % raw)
-        if res:
+        proc = subprocess.Popen(['mkfs.btrfs', raw], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+        if proc.returncode != 0:
             self.__exit__()
-            raise RuntimeError('Cannot make file system for the raw device')
+            raise RuntimeError('Cannot make file system for the raw device: %s / %s' % (stdout, stderr))
         path = j.system.fs.getTmpDirPath()
         self.path = path
-        res = os.system('mount -t btrfs -o loop "%s" "%s"' % (raw, path))
-        if res:
+        proc = subprocess.Popen(['mount', '-t', 'btrfs', '-o', 'loop', self.raw, self.path],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.communicate()
+        if proc.returncode != 0:
             self.__exit__()
             raise RuntimeError('Cannot mount loop device')
         return self
 
     def __exit__(self, *args, **kwargs):
-        raw = self.raw
-        path = self.path
-        os.system('umount "%s"' % path)
-        j.system.fs.removeDirTree(path)
-        getVDisk(self.path, timeout=10)
-        j.system.fs.remove(raw)
+        if self.path is not None and os.path.exists(self.path):
+            os.system('umount "%s"' % self.path)
+            j.system.fs.removeDirTree(self.path)
+            getVDisk(self.path, timeout=10)
+        if self.raw is not None and os.path.exists(self.raw):
+            j.system.fs.remove(self.raw)
 
 
 def truncate(filepath, size=None):
