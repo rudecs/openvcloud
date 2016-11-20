@@ -10,7 +10,10 @@ parser.add_argument("-e", "--end", dest="ipend", help="public env ip address", r
 parser.add_argument("-n", "--netmask", dest="netmask",
                     help="public env ip netmask (default 255.255.255.0)", default="255.255.255.0")
 parser.add_argument("-G", "--gid", dest="gid", help="grid id", required=True, type=int)
-parser.add_argument("-S", "--ssl", dest="ssl", help="set ssl keys method: wildcard or split")
+parser.add_argument("-S", "--ssl", dest="ssl", help="set ssl keys method: wildcard or split", required=True)
+parser.add_argument("-c", "--client_id", dest="client_id", help="Itsyouonline organization", required=True)
+parser.add_argument("-cs", "--client_secret", dest="client_secret",
+                    help="Itsyouonline organization api secret", required=True)
 options = parser.parse_args()
 
 # options
@@ -66,6 +69,10 @@ data = {
     'instance.defense.servername': 'auto',
     'instance.novnc.servername': 'auto',
     'instance.grafana.servername': 'auto',
+
+    # itsyouonline param
+    'instance.itsyouonline.client_id': options.client_id,
+    'instance.itsyouonline.client_secret': options.client_secret,
 
     # ssl keys
     'instance.ssl.root': ssl['root'],
