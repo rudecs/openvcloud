@@ -153,8 +153,7 @@ class cloudapi_cloudspaces(BaseActor):
 
     @authenticator.auth(acl={'account': set('C')})
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
-               maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
-               maxNetworkOptTransfer=-1,
+               maxCPUCapacity=-1, maxNASCapacity=-1, maxNetworkOptTransfer=-1,
                maxNetworkPeerTransfer=-1, maxNumPublicIP=-1,
                externalnetworkId=None, **kwargs):
         """
@@ -168,7 +167,6 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -212,7 +210,6 @@ class cloudapi_cloudspaces(BaseActor):
                              'CU_D': maxVDiskCapacity,
                              'CU_C': maxCPUCapacity,
                              'CU_S': maxNASCapacity,
-                             'CU_A': maxArchiveCapacity,
                              'CU_NO': maxNetworkOptTransfer,
                              'CU_NP': maxNetworkPeerTransfer,
                              'CU_I': maxNumPublicIP}
@@ -235,9 +232,8 @@ class cloudapi_cloudspaces(BaseActor):
         # validation earlier that maxNumPublicIP > 0 (or -1 meaning unlimited), this check will
         # make sure that 1 Public IP address will be reserved for this cloudspace
         self._validateAvaliableAccountResources(cs, maxMemoryCapacity, maxVDiskCapacity,
-                                                maxCPUCapacity, maxNASCapacity, maxArchiveCapacity,
-                                                maxNetworkOptTransfer, maxNetworkPeerTransfer,
-                                                maxNumPublicIP)
+                                                maxCPUCapacity, maxNASCapacity, maxNetworkOptTransfer,
+                                                maxNetworkPeerTransfer, maxNumPublicIP)
         cs.id = self.models.cloudspace.set(cs)[0]
 
         networkid = cs.networkId
@@ -562,16 +558,6 @@ class cloudapi_cloudspaces(BaseActor):
 
         # Unexposed actor
 
-    def getConsumedArchiveCapacity(self, cloudspaceId):
-        """
-        Calculate the total consumed secondary disk storage (Archive) by the machines in the
-        cloudspace in TB
-
-        :param cloudspaceId: id of the cloudspace that should be checked
-        :return: the total consumed secondary disk storage (Archive)
-        """
-        return 0
-
     # Unexposed actor
     def getConsumedNetworkOptTransfer(self, cloudspaceId):
         """
@@ -596,8 +582,7 @@ class cloudapi_cloudspaces(BaseActor):
 
     def _validateAvaliableAccountResources(self, cloudspace, maxMemoryCapacity=None,
                                            maxVDiskCapacity=None, maxCPUCapacity=None,
-                                           maxNASCapacity=None, maxArchiveCapacity=None,
-                                           maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None,
+                                           maxNASCapacity=None, maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None,
                                            maxNumPublicIP=None, excludecloudspace=True):
         """
         Validate that the required CU limits to be reserved for the cloudspace are available in
@@ -608,7 +593,6 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -654,13 +638,6 @@ class cloudapi_cloudspaces(BaseActor):
                                             "storage capacity, cannot reserve %s TB for this cloudspace" %
                                             (avaliablenascapacity, maxNASCapacity))
 
-        if maxArchiveCapacity:
-            avaliablearchivecapacity = accountcus['CU_A'] - reservedcus['CU_A']
-            if maxArchiveCapacity != -1 and accountcus['CU_A'] != -1 and maxArchiveCapacity > avaliablearchivecapacity:
-                raise exceptions.BadRequest("Owning account has only %s TB of unreserved secondary "
-                                            "storage capacity, cannot reserve %s TB for this cloudspace" %
-                                            (avaliablearchivecapacity, maxArchiveCapacity))
-
         if maxNetworkOptTransfer:
             avaliablenetworkopttransfer = accountcus['CU_NO'] - reservedcus['CU_NO']
             if maxNetworkOptTransfer != -1 and accountcus['CU_NO'] != -1 and maxNetworkOptTransfer > avaliablenetworkopttransfer:
@@ -683,9 +660,8 @@ class cloudapi_cloudspaces(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('A')})
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
-               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
-               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
-               **kwargs):
+               maxCPUCapacity=None, maxNASCapacity=None, maxNetworkOptTransfer=None,
+               maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
         Update the cloudspace name and capacity parameters
 
@@ -695,7 +671,6 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -711,11 +686,11 @@ class cloudapi_cloudspaces(BaseActor):
             cloudspace.name = name
 
         if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNASCapacity or \
-                maxArchiveCapacity or maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
+                maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
             self._validateAvaliableAccountResources(cloudspace, maxMemoryCapacity,
                                                     maxVDiskCapacity, maxCPUCapacity,
                                                     maxNASCapacity,
-                                                    maxArchiveCapacity, maxNetworkOptTransfer,
+                                                    maxNetworkOptTransfer,
                                                     maxNetworkPeerTransfer, maxNumPublicIP)
 
         if maxMemoryCapacity is not None:
@@ -753,15 +728,6 @@ class cloudapi_cloudspaces(BaseActor):
                                             "%s TB." % consumednascapacity)
             else:
                 cloudspace.resourceLimits['CU_S'] = maxNASCapacity
-
-        if maxArchiveCapacity is not None:
-            consumedarchivecapacity = self.getConsumedArchiveCapacity(cloudspaceId)
-            if maxArchiveCapacity != -1 and maxArchiveCapacity < consumedarchivecapacity:
-                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
-                                            "a value that is less than the current consumed "
-                                            "capacity %s TB." % consumedarchivecapacity)
-            else:
-                cloudspace.resourceLimits['CU_A'] = maxArchiveCapacity
 
         if maxNetworkOptTransfer is not None:
             transferednewtopt = self.getConsumedNetworkOptTransfer(cloudspaceId)

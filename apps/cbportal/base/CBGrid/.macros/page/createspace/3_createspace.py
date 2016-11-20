@@ -20,7 +20,8 @@ def main(j, args, params, tags, tasklet):
 
     # Placeholder that -1 means no limits are set on the cloud unit
     culimitplaceholder = 'leave empty if no limits should be set'
-    popup = Popup(id='create_space', header='Create Cloud Space', submit_url='/restmachine/cloudbroker/cloudspace/create')
+    popup = Popup(id='create_space', header='Create Cloud Space',
+                  submit_url='/restmachine/cloudbroker/cloudspace/create')
     popup.addText('Name', 'name', required=True)
     popup.addText('Username to grant access', 'access', required=True)
     popup.addDropdown('Choose Location', 'location', locations)
@@ -28,10 +29,12 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Max Memory Capacity (GB)', 'maxMemoryCapacity', placeholder=culimitplaceholder, type='float')
     popup.addText('Max VDisk Capacity (GB)', 'maxVDiskCapacity', placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of CPU Cores', 'maxCPUCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Primary Storage(NAS) Capacity (TB)', 'maxNASCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Secondary Storage(Archive) Capacity (TB)', 'maxArchiveCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Network Transfer In Operator (GB)', 'maxNetworkOptTransfer', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Network Transfer Peering (GB)', 'maxNetworkPeerTransfer', placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Primary Storage(NAS) Capacity (TB)', 'maxNASCapacity',
+                  placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Network Transfer In Operator (GB)', 'maxNetworkOptTransfer',
+                  placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Network Transfer Peering (GB)', 'maxNetworkPeerTransfer',
+                  placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of Public IP Addresses', 'maxNumPublicIP', placeholder=culimitplaceholder, type='number')
     popup.addHiddenField('accountId', accountId)
     popup.write_html(page)

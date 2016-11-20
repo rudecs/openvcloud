@@ -22,6 +22,7 @@ def _send_signup_mail(hrd, **kwargs):
 
 
 class cloudbroker_account(BaseActor):
+
     def __init__(self):
         super(cloudbroker_account, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
@@ -63,7 +64,7 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
-               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1,
+               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNASCapacity=-1,
                maxNetworkOptTransfer=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
 
         accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
@@ -93,7 +94,7 @@ class cloudbroker_account(BaseActor):
         account = self.models.account.new()
         account.name = name
         account.creationTime = now
-        account.updateTime = now 
+        account.updateTime = now
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'
@@ -102,7 +103,6 @@ class cloudbroker_account(BaseActor):
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
                           'CU_S': maxNASCapacity,
-                          'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
@@ -159,8 +159,7 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
-               maxNASCapacity, maxArchiveCapacity, maxNetworkOptTransfer,
-               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+               maxNASCapacity, maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
         """
         Update an account name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -171,7 +170,6 @@ class cloudbroker_account(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -182,7 +180,6 @@ class cloudbroker_account(BaseActor):
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
                           'CU_S': maxNASCapacity,
-                          'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
@@ -191,15 +188,13 @@ class cloudbroker_account(BaseActor):
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
         maxNASCapacity = resourcelimits['CU_S']
-        maxArchiveCapacity = resourcelimits['CU_A']
         maxNetworkOptTransfer = resourcelimits['CU_NO']
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudapi.accounts.update(accountId, name, maxMemoryCapacity,
                                              maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
-                                             maxArchiveCapacity, maxNetworkOptTransfer,
-                                             maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):

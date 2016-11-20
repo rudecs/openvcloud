@@ -21,6 +21,7 @@ def removeConfusingChars(input):
 
 
 class Dummy(object):
+
     def __init__(self, **kwargs):
         self.extra = {}
         for key, value in kwargs.iteritems():
@@ -71,7 +72,6 @@ class CloudProvider(object):
                 elif firstdisk.sizeMax < s.disk and (biggerdisk is None or biggerdisk.disk > s.disk):
                     biggerdisk = s
         return biggerdisk
-
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
@@ -413,7 +413,7 @@ class CloudBroker(object):
                                         'access.' % accessrights)
 
     def fillResourceLimits(self, resource_limits, preserve_none=False):
-        for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_A', 'CU_NO', 'CU_NP', 'CU_I']:
+        for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_NO', 'CU_NP', 'CU_I']:
             if limit_type not in resource_limits or resource_limits[limit_type] is None:
                 resource_limits[limit_type] = None if preserve_none else -1
             elif resource_limits[limit_type] < -1 or resource_limits[limit_type] == 0:
@@ -428,6 +428,7 @@ class CloudBroker(object):
 
 
 class CloudSpace(object):
+
     def __init__(self, cb):
         self.cb = cb
         self.netmgr = j.apps.jumpscale.netmgr
@@ -459,6 +460,7 @@ class CloudSpace(object):
 
 
 class Machine(object):
+
     def __init__(self, cb):
         self.cb = cb
         self.acl = j.clients.agentcontroller.get()
@@ -482,7 +484,8 @@ class Machine(object):
 
         image = models.image.get(imageId)
         if disksize < image.size:
-            raise exceptions.BadRequest("Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
+            raise exceptions.BadRequest(
+                "Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
@@ -493,7 +496,8 @@ class Machine(object):
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
-        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
+        results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name,
+                                          'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
@@ -597,13 +601,15 @@ class Machine(object):
                     stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
                     if stack == -1:
                         self.cleanup(machine)
-                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                        raise exceptions.ServiceUnavailable(
+                            'Not enough resources available to provision the requested machine')
                     provider = self.cb.getProviderByStackId(stack['id'])
                 else:
                     activesessions = self.cb.getActiveSessionsKeys()
                     provider = self.cb.getProviderByStackId(newstackId)
                     if (provider.client.gid, int(provider.client.id)) not in activesessions:
-                        raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                        raise exceptions.ServiceUnavailable(
+                            'Not enough resources available to provision the requested machine')
             except:
                 self.cleanup(machine)
                 raise
@@ -620,7 +626,8 @@ class Machine(object):
             psize = self.getSize(provider, machine)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
-                node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+                node = provider.client.create_node(name=name, image=pimage, size=psize,
+                                                   auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
             except StorageException as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cleanup(machine)

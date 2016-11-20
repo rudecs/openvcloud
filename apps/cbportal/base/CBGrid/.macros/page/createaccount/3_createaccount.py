@@ -3,7 +3,6 @@ from JumpScale.portal.docgenerator.popup import Popup
 
 def main(j, args, params, tags, tasklet):
     params.result = page = args.page
-    ccl = j.clients.osis.getNamespace('cloudbroker')
 
     # Placeholder that -1 means no limits are set on the cloud unit
     culimitplaceholder = 'leave empty if no limits should be set'
@@ -16,10 +15,12 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Max Memory Capacity (GB)', 'maxMemoryCapacity', placeholder=culimitplaceholder, type='float')
     popup.addText('Max VDisk Capacity (GB)', 'maxVDiskCapacity', placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of CPU Cores', 'maxCPUCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Primary Storage(NAS) Capacity (TB)', 'maxNASCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Secondary Storage(Archive) Capacity (TB)', 'maxArchiveCapacity', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Network Transfer In Operator (GB)', 'maxNetworkOptTransfer', placeholder=culimitplaceholder, type='number')
-    popup.addText('Max Network Transfer Peering (GB)', 'maxNetworkPeerTransfer', placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Primary Storage(NAS) Capacity (TB)', 'maxNASCapacity',
+                  placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Network Transfer In Operator (GB)', 'maxNetworkOptTransfer',
+                  placeholder=culimitplaceholder, type='number')
+    popup.addText('Max Network Transfer Peering (GB)', 'maxNetworkPeerTransfer',
+                  placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of Public IP Addresses', 'maxNumPublicIP', placeholder=culimitplaceholder, type='number')
     popup.write_html(page)
     return params

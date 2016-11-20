@@ -3,11 +3,13 @@ from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
 
+
 class cloudapi_accounts(BaseActor):
     """
     API Actor api for managing account
 
     """
+
     def __init__(self):
         super(cloudapi_accounts, self).__init__()
         self.systemodel = j.clients.osis.getNamespace('system')
@@ -95,11 +97,9 @@ class cloudapi_accounts(BaseActor):
         self.models.account.set(account)
         return True
 
-
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
-               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
-               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None,
-               **kwargs):
+               maxCPUCapacity=None, maxNASCapacity=None, maxNetworkOptTransfer=None,
+               maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
         Create a extra an account (Method not implemented)
 
@@ -109,7 +109,6 @@ class cloudapi_accounts(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -156,7 +155,7 @@ class cloudapi_accounts(BaseActor):
         :param accountId: id of the account
         :return dict with the template images for the given account
         """
-        fields = ['id', 'name','description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
+        fields = ['id', 'name', 'description', 'type', 'UNCPath', 'size', 'username', 'accountId', 'status']
         q = {'accountId': int(accountId)}
         query = {'$query': q, '$fields': fields}
         results = self.models.image.search(query)[1:]
@@ -228,8 +227,8 @@ class cloudapi_accounts(BaseActor):
 
     @authenticator.auth(acl={'account': set('A')})
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
-               maxCPUCapacity=None, maxNASCapacity=None, maxArchiveCapacity=None,
-               maxNetworkOptTransfer=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
+               maxCPUCapacity=None, maxNASCapacity=None, maxNetworkOptTransfer=None,
+               maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
         """
         Update an account name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -240,7 +239,6 @@ class cloudapi_accounts(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -253,7 +251,7 @@ class cloudapi_accounts(BaseActor):
             accountobj.name = name
 
         if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNASCapacity or \
-                maxArchiveCapacity or maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
+                maxNetworkOptTransfer or maxNetworkPeerTransfer or maxNumPublicIP:
             reservedcloudunits = self.getReservedCloudUnits(accountId)
 
         if maxMemoryCapacity is not None:
@@ -311,20 +309,6 @@ class cloudapi_accounts(BaseActor):
                                             reservedcloudunits['CU_S'])
             else:
                 accountobj.resourceLimits['CU_S'] = maxNASCapacity
-
-        if maxArchiveCapacity is not None:
-            consumedarchivecapacity = self.getConsumedCloudUnitsByType(accountId, 'CU_A')
-            if maxArchiveCapacity != -1 and maxArchiveCapacity < consumedarchivecapacity:
-                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
-                                            "a value that is less than the current consumed "
-                                            "capacity %s TB." % consumedarchivecapacity)
-            elif maxArchiveCapacity != -1 and maxArchiveCapacity < reservedcloudunits['CU_A']:
-                raise exceptions.BadRequest("Cannot set the maximum secondary storage capacity to "
-                                            "a value that is less than the current reserved "
-                                            "capacity %s TB by account's cloudspaces." %
-                                            reservedcloudunits['CU_A'])
-            else:
-                accountobj.resourceLimits['CU_A'] = maxArchiveCapacity
 
         if maxNetworkOptTransfer is not None:
             transferednewtopt = self.getConsumedCloudUnitsByType(accountId, 'CU_NO')
@@ -409,12 +393,12 @@ class cloudapi_accounts(BaseActor):
         unimplementedcu = {'CU_S': 0, 'CU_A': 0, 'CU_NO': 0, 'CU_NP': 0}
 
         cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
-        deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
-                                                         'status': 'DEPLOYED'}})[1:]
+        deployedcloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId,
+                                                                                           'status': 'DEPLOYED'}})[1:]
         cloudspacesIds = [x['id'] for x in cloudspaces]
         deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
-        consumedcudict = j.apps.cloudapi.cloudspaces.getConsumedCloudUnitsInCloudspaces(cloudspacesIds, deployedcloudspacesIds)
-
+        consumedcudict = j.apps.cloudapi.cloudspaces.getConsumedCloudUnitsInCloudspaces(
+            cloudspacesIds, deployedcloudspacesIds)
 
         consumedcudict.update(unimplementedcu)
         # Calculate disks on account level so as not to miss unattached disks
@@ -442,7 +426,7 @@ class cloudapi_accounts(BaseActor):
         :return: float/int for the consumed cloud unit of the specified type
         """
         consumedamount = 0
-        #get all cloudspaces in this account
+        # get all cloudspaces in this account
         cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
         cloudspacesIds = [x['id'] for x in cloudspaces]
 
@@ -463,9 +447,9 @@ class cloudapi_accounts(BaseActor):
         elif cutype == 'CU_NP':
             return 0
         elif cutype == 'CU_I':
-            #for calculating consumed ips we should consider only deployed cloudspaces
-            deployedcloudspaces = self.models.cloudspace.search({'@fields':['id'], '$query' :{'accountId': accountId,
-                                                         'status': 'DEPLOYED'}})[1:]
+            # for calculating consumed ips we should consider only deployed cloudspaces
+            deployedcloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId,
+                                                                                               'status': 'DEPLOYED'}})[1:]
             deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
             consumedamount = j.apps.cloudapi.cloudspaces.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
         else:
@@ -514,7 +498,7 @@ class cloudapi_accounts(BaseActor):
 
         return reservedcudict
 
-    #Unexposed actor
+    # Unexposed actor
     def checkAvailablePublicIPs(self, accountId, numips=1):
         """
         Check that the required number of ip addresses are available in the given account
@@ -606,7 +590,8 @@ class cloudapi_accounts(BaseActor):
         pathes_in_range = list()
         for path in pathes:
             path_list = path.split("/")
-            path_date = datetime.datetime(int(path_list[-4]), int(path_list[-3]), int(path_list[-2]), int(path_list[-1]))
+            path_date = datetime.datetime(int(path_list[-4]), int(path_list[-3]),
+                                          int(path_list[-2]), int(path_list[-1]))
             if path_date >= start_time and path_date <= end_time:
                 pathes_in_range.append(path)
         ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),

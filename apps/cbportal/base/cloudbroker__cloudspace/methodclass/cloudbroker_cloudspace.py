@@ -8,6 +8,7 @@ from JumpScale.portal.portal import exceptions
 
 
 class cloudbroker_cloudspace(BaseActor):
+
     def __init__(self):
         super(cloudbroker_cloudspace, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
@@ -55,7 +56,8 @@ class cloudbroker_cloudspace(BaseActor):
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             # delete machines
-            machines = self.models.vmachine.search({'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+            machines = self.models.vmachine.search(
+                {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
             for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
                 machineId = machine['id']
                 if machine['status'] != 'DESTROYED':
@@ -202,8 +204,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
-               maxNASCapacity, maxArchiveCapacity, maxNetworkOptTransfer,
-               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+               maxNASCapacity, maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
         """
         Update a cloudspace name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -214,7 +215,6 @@ class cloudbroker_cloudspace(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -225,7 +225,6 @@ class cloudbroker_cloudspace(BaseActor):
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
                           'CU_S': maxNASCapacity,
-                          'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
@@ -234,20 +233,18 @@ class cloudbroker_cloudspace(BaseActor):
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
         maxNASCapacity = resourcelimits['CU_S']
-        maxArchiveCapacity = resourcelimits['CU_A']
         maxNetworkOptTransfer = resourcelimits['CU_NO']
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudspaces_actor.update(cloudspaceId, name, maxMemoryCapacity,
                                              maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
-                                             maxArchiveCapacity, maxNetworkOptTransfer,
-                                             maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
-               maxCPUCapacity=-1, maxNASCapacity=-1, maxArchiveCapacity=-1, maxNetworkOptTransfer=-1,
+               maxCPUCapacity=-1, maxNASCapacity=-1, maxNetworkOptTransfer=-1,
                maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, **kwargs):
         """
         Create a cloudspace
@@ -258,7 +255,6 @@ class cloudbroker_cloudspace(BaseActor):
         :param maxVDiskCapacity: max size of aggregated vdisks in GB
         :param maxCPUCapacity: max number of cpu cores
         :param maxNASCapacity: max size of primary(NAS) storage in TB
-        :param maxArchiveCapacity: max size of secondary(Archive) storage in TB
         :param maxNetworkOptTransfer: max sent/received network transfer in operator
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
@@ -272,7 +268,6 @@ class cloudbroker_cloudspace(BaseActor):
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
                           'CU_S': maxNASCapacity,
-                          'CU_A': maxArchiveCapacity,
                           'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
@@ -281,15 +276,14 @@ class cloudbroker_cloudspace(BaseActor):
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
         maxNASCapacity = resourcelimits['CU_S']
-        maxArchiveCapacity = resourcelimits['CU_A']
         maxNetworkOptTransfer = resourcelimits['CU_NO']
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
                                              maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
-                                             maxArchiveCapacity, maxNetworkOptTransfer,
-                                             maxNetworkPeerTransfer, maxNumPublicIP, externalnetworkId)
+                                             maxNetworkOptTransfer, maxNetworkPeerTransfer,
+                                             maxNumPublicIP, externalnetworkId)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
