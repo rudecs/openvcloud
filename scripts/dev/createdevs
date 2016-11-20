@@ -62,6 +62,7 @@ function setupdevnomount() {
     devname=$(createdev "${node}_${name}" $size)
     dupdev "${devname}"
     dupdev "${devname}p1"
+    rexec udevadm test "/sys/block/${devname}p1"
 }
 
 

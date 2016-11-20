@@ -19,7 +19,7 @@ group.add_option("-c", "--cloudspace", dest="cloudspace", help="cloudspace name"
 group.add_option("-l", "--location", dest="location", help="cloudspace location")
 parser.add_option_group(group)
 
-group = OptionGroup(parser, "mothership1 backend")
+group = OptionGroup(parser, "docker backend")
 group.add_option("-r", "--remote", dest="remote", help="daemon remote ip")
 group.add_option("-o", "--port", dest="port", help="daemon remote port")
 group.add_option("-i", "--public", dest="public", help="public host ip address")
@@ -37,15 +37,15 @@ optlist = {
 }
 
 for item in optlist:
-    if optlist[item] == None:
-        print '[-] missing global argument: %s' % item
+    if optlist[item] is None:
+        j.console.warning('missing global argument: %s' % item)
         j.application.stop()
 
-if options.gituser == None:
-    print("[+] no git user given, github will be used")
+if options.gituser is None:
+    j.console.notice("no git user given, github will be used")
 
 if options.backend not in targets:
-    print '[-] unknown or missing backend'
+    j.console.warning('unknown or missing backend')
     j.application.stop()
 
 domain = options.domain if options.domain else 'demo.greenitglobe.com'
@@ -54,18 +54,18 @@ domain = options.domain if options.domain else 'demo.greenitglobe.com'
 Stage 2: settings hardcoded values
 """
 # Settings
-if options.gituser == None:
+if options.gituser is None:
     gitlink = 'git@github.com:gig-projects/env_%s' % options.environment
 
 else:
     gitlink = 'https://git.aydo.com/openvcloudEnvironments/%s' % options.environment
 
-choice     = string.ascii_letters + string.digits
+choice = string.ascii_letters + string.digits
 vmpassword = ''.join(random.choice(choice) for _ in range(12))
 
-print '[+] installing environement: %s' % options.environment
-print '[+] master password generated: %s' % vmpassword
-print '[+] domain name: %s' % domain
+j.console.info('installing environement: %s' % options.environment)
+j.console.info('master password generated: %s' % vmpassword)
+j.console.info('domain name: %s' % domain)
 
 
 """
@@ -87,8 +87,8 @@ if options.backend == 'ms1':
     }
 
     for item in optlist:
-        if optlist[item] == None:
-            print '[-] missing mothiership1 argument: %s' % item
+        if optlist[item] is None:
+            j.console.warning('missing mothirship1 argument: %s' % item)
             j.application.stop()
 
     machine = ovc.initMothership(options.user, options.passwd, options.location, options.cloudspace)
@@ -103,8 +103,8 @@ if options.backend == 'docker':
     }
 
     for item in optlist:
-        if optlist[item] == None:
-            print '[-] missing docker argument: %s' % item
+        if optlist[item] is None:
+            j.console.warning('missing docker argument: %s' % item)
             j.application.stop()
 
     machine = ovc.initDocker(options.remote, options.port, options.public)

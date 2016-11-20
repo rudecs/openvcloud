@@ -7,10 +7,11 @@ parser = ArgumentParser()
 parser.add_argument("-g", "--gateway", dest="gateway", help="gateway ip address", required=True)
 parser.add_argument("-s", "--start", dest="ipstart", help="public start ip address", required=True)
 parser.add_argument("-e", "--end", dest="ipend", help="public env ip address", required=True)
-parser.add_argument("-n", "--netmask", dest="netmask", help="public env ip netmask (default 255.255.255.0)", default="255.255.255.0")
+parser.add_argument("-n", "--netmask", dest="netmask",
+                    help="public env ip netmask (default 255.255.255.0)", default="255.255.255.0")
 parser.add_argument("-G", "--gid", dest="gid", help="grid id", required=True, type=int)
 parser.add_argument("-S", "--ssl", dest="ssl", help="set ssl keys method: wildcard or split")
-(options, args) = parser.parse_args()
+options = parser.parse_args()
 
 # options
 if options.ssl is None or (options.ssl != 'wildcard' and options.ssl != 'split'):
@@ -55,10 +56,6 @@ data = {
 
     'instance.host': 'auto',
 
-    # FIXME: dcpm part
-    'instance.dcpm.ipadress': '192.168.103.252',  # Note: not used later ? autodetected
-    'instance.dcpm.port': 80,
-
     'instance.bootstrapp.ipadress': settings.getStr('instance.ovc.bootstrap.host'),
     'instance.bootstrapp.port': settings.getStr('instance.ovc.bootstrap.port'),
 
@@ -69,7 +66,6 @@ data = {
     'instance.defense.servername': 'auto',
     'instance.novnc.servername': 'auto',
     'instance.grafana.servername': 'auto',
-    'instance.safekeeper.servername': 'auto',
 
     # ssl keys
     'instance.ssl.root': ssl['root'],
