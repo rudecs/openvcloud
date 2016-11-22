@@ -4,15 +4,6 @@ import sys
 import time
 
 
-def enableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = False
-    j.remote.cuisine.api.fabric.state.output['running'] = False
-
-
-def disableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = True
-    j.remote.cuisine.api.fabric.state.output['running'] = True
-
 parser = OptionParser()
 parser.add_option("-n", "--node", dest="node", help="node id")
 parser.add_option("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
