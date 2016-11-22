@@ -12,7 +12,7 @@
     type: text
     name: gateway
   data:
-    subnet: ${id}
+    externalnetworkId: ${id}
 
 - display: Add External IP Addresses
   action: /restmachine/cloudbroker/iaas/addExternalIPS

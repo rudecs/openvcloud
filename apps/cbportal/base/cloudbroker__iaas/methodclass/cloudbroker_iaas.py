@@ -101,36 +101,37 @@ class cloudbroker_iaas(BaseActor):
         self.models.externalnetwork.set(pool)
         return True
 
-    def changeIPv4Gateway(self, subnet, gateway, **kwargs):
-        if not self.models.publicipv4pool.exists(subnet):
-            raise exceptions.NotFound("Could not find PublicIPv4Pool with subnet %s" % subnet)
+    def changeIPv4Gateway(self, externalnetworkId, gateway, **kwargs):
+        if not self.models.externalnetwork.exists(externalnetworkId):
+            raise exceptions.NotFound("Could not find externalnetwork with id %s" % externalnetworkId)
+
+        pool = self.models.externalnetwork.get(externalnetworkId)
         try:
-            net = netaddr.IPNetwork(subnet)
+            net = netaddr.IPNetwork("{}/{}".format(pool.network, pool.subnetmask))
             if not checkIPS(net, [gateway]):
-                raise exceptions.BadRequest("Gateway Address %s is not in subnet %s" % (gateway, subnet))
+                raise exceptions.BadRequest("Gateway Address %s is not in subnet %s" % (gateway, net))
         except netaddr.AddrFormatError as e:
             raise exceptions.BadRequest(e.message)
 
-        pool = self.models.publicipv4pool.get(subnet)
         pool.gateway = gateway
-        self.models.publicipv4pool.set(pool)
+        self.models.externalnetwork.set(pool)
 
-    def removePublicIPv4IPS(self, subnet, freeips, **kwargs):
+    def removeExternalIPs(self, externalnetworkId, freeips, **kwargs):
         """
         Remove public ips from an existing range
         """
         ctx = kwargs["ctx"]
-        if not self.models.publicipv4pool.exists(subnet):
+        if not self.models.externalnetworkId.exists(externalnetworkId):
             ctx.start_response("404 Not Found")
-            return "Could not find PublicIPv4Pool with subnet %s" % subnet
-        net = netaddr.IPNetwork(subnet)
+            return "Could not find externalnetwork with subnet %s" % externalnetworkId
+        pool = self.models.externalnetwork.get(externalnetworkId)
+        net = netaddr.IPNetwork("{}/{}".format(pool.network, pool.subnetmask))
         if not checkIPS(net, freeips):
             ctx.start_response("400 Bad Request")
-            return "One or more IP Addresses %s is not in subnet %s" % (subnet)
-        pool = self.models.publicipv4pool.get(subnet)
+            return "One or more IP Addresses %s is not in subnet %s" % (net)
         pool.pubips = list(set(pool.pubips) - set(freeips))
-        self.models.publicipv4pool.set(pool)
-        return subnet
+        self.models.externalnetwork.set(pool)
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     def addSize(self, name, vcpus, memory, disksize, **kwargs):

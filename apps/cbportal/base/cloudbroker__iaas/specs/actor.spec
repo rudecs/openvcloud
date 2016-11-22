@@ -34,7 +34,7 @@
         """
         Updates the gateway of the pool
         """
-        var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
+        var:externalnetworkId int,, the id of the external network
         var:gateway str,, Gateway of the pool
 
 
@@ -53,11 +53,11 @@
         """
         var:size_id int,, Id of size to be deleted
 
-    method:removePublicIPv4IPS
+    method:removeExternalIPs
         """
         Adds a public network range to be used for cloudspaces
         """
-        var:subnet str,, the subnet to add in CIDR notation (x.x.x.x/y)
+        var:externalnetworkId int,, the id of the external network
         var:freeips list,, list of ips to mark as free in the subnet
 
     method:syncAvailableSizesToCloudbroker
