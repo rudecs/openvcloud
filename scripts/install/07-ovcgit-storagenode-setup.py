@@ -63,8 +63,8 @@ if 'storagedriver' in options.type:
 
         # loading ovc_master oauth server keys
         oauthfile = '/tmp/oauthserver.hrd'
-        ovc_iyo = j.atyourservice.get(name='ovc_itsyouonline').actions
-        ovc_iyo.prepare()
+        ovc_iyo = j.atyourservice.get(name='ovc_itsyouonline')
+        ovc_iyo.actions.prepare(ovc_iyo)
         environment = settings.get('ovc.environment')
         location = node.parent.instance
         apikeyname = 'ovs-{}-{}'.format(environment, location)
@@ -74,7 +74,7 @@ if 'storagedriver' in options.type:
                   'clientCredentialsGrantType': False,
                   'label': apikeyname
                   }
-        apikey = ovc_iyo.configure_api_key(apikey)
+        apikey = ovc_iyo.actions.configure_api_key(apikey)
 
         j.console.info('building oauth configuration')
         oauth_token_uri = os.path.join(ovc_iyo.baseurl, 'v1/oauth/access_token')
