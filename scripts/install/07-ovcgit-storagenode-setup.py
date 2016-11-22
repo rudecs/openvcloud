@@ -1,20 +1,13 @@
 from JumpScale import j
+import os
 from argparse import ArgumentParser
 import sys
 
 
-def enableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = False
-    j.remote.cuisine.api.fabric.state.output['running'] = False
-
-
-def disableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = True
-    j.remote.cuisine.api.fabric.state.output['running'] = True
-
 parser = ArgumentParser()
 parser.add_argument("-n", "--node", dest="node", help="node id", required=True)
 parser.add_argument("-t", "--type", dest="type", default="storagenode", help="Node type storagenode or storagerouter")
+parser.add_argument("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
 options = parser.parse_args()
 
 options.type = options.type.split(',')
@@ -39,10 +32,11 @@ storagenode all-in-one data configuration
 """
 j.console.info('building storagenode configuration')
 
+gid = options.gid or configure.getInt('instance.grid.id')
 data_cpu = {
     'instance.param.rootpasswd': password,
     'instance.param.master.addr': settings.getStr('instance.ovc.cloudip'),
-    'instance.param.grid.id': configure.getInt('instance.grid.id'),
+    'instance.param.grid.id': gid,
 }
 
 
@@ -69,31 +63,25 @@ if 'storagedriver' in options.type:
 
         # loading ovc_master oauth server keys
         oauthfile = '/tmp/oauthserver.hrd'
-
-        oauthService = j.atyourservice.get(name='node.ssh', instance='ovc_master')
-        oauthService.actions.download(oauthService, '/opt/jumpscale7/hrd/apps/openvcloud__oauthserver__main/service.hrd',
-                                      oauthfile)
+        ovc_iyo = j.atyourservice.get(name='ovc_itsyouonline').actions
+        ovc_iyo.prepare()
+        environment = settings.get('ovc.environment')
+        location = node.parent.instance
+        apikeyname = 'ovs-{}-{}'.format(environment, location)
+        domain = configure.hrd.get('instance.param.domain')
+        ovscallbackurl = 'https://ovs-{}.{}/api/oauth2/redirect/'.format(location, domain)
+        apikey = {'callbackURL': ovscallbackurl,
+                  'clientCredentialsGrantType': False,
+                  'label': apikeyname
+                  }
+        apikey = ovc_iyo.configure_api_key(apikey)
 
         j.console.info('building oauth configuration')
+        oauth_token_uri = os.path.join(ovc_iyo.baseurl, 'v1/oauth/access_token')
+        oauth_authorize_uri = os.path.join(ovc_iyo.baseurl, 'v1/oauth/authorize')
 
-        oauth = j.core.hrd.get(oauthfile, prefixWithName=True)
-        oauth_url = oauth.get('instance.oauth.url')
-        oauth_url = oauth_url.strip('/')
-
-        oauth_authorize_uri = '%s/login/oauth/authorize' % oauth_url
-        oauth_token_uri = '%s/login/oauth/access_token' % oauth_url
-
-        oauth_ovs_id = oauth.get('instance.oauth.clients.ovs.id')
-        oauth_ovs_secret = oauth.get('instance.oauth.clients.ovs.secret')
-
-        j.console.info('oauth url      : %s' % oauth_url)
-        j.console.info('oauth authorize: %s' % oauth_authorize_uri)
-        j.console.info('oauth token    : %s' % oauth_token_uri)
-        j.console.info('oauth id       : %s' % oauth_ovs_id)
-        j.console.info('oauth secret   : %s' % oauth_ovs_secret)
-
-        data_oauth = {'instance.oauth.id': oauth_ovs_id,
-                      'instance.oauth.secret': oauth_ovs_secret,
+        data_oauth = {'instance.oauth.id': ovc_iyo.client_id,
+                      'instance.oauth.secret': apikey['secret'],
                       'instance.oauth.authorize_uri': oauth_authorize_uri,
                       'instance.oauth.token_uri': oauth_token_uri}
 

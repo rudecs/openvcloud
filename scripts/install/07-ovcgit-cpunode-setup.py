@@ -4,15 +4,6 @@ import sys
 import time
 
 
-def enableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = False
-    j.remote.cuisine.api.fabric.state.output['running'] = False
-
-
-def disableQuiet():
-    j.remote.cuisine.api.fabric.state.output['stdout'] = True
-    j.remote.cuisine.api.fabric.state.output['running'] = True
-
 parser = ArgumentParser()
 parser.add_argument("-n", "--node", dest="node", help="node id", required=True)
 parser.add_argument("-v", "--vlan", dest="vlan", help="public vlan id", default='2312')
@@ -43,7 +34,7 @@ environment = settings.getStr('instance.ovc.environment')
 repopath = settings.getStr('instance.ovc.path')
 password = settings.getStr('instance.ovc.password')
 
-enableQuiet()
+j.remote.cuisine.enableQuiet()
 
 backplane1 = node.execute("ip -4 -o addr show dev backplane1 | awk '{ print $4 }' | cut -d'/' -f 1")
 lastipbyte = backplane1.split('.')[-1]
