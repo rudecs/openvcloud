@@ -264,11 +264,12 @@ class cloudapi_cloudspaces(BaseActor):
         """
         try:
             password = str(uuid.uuid4())
-            cs = self.models.cloudspace.get(cloudspaceId)
-            if cs.status != 'VIRTUAL':
-                return
-            cs.status = 'DEPLOYING'
-            self.models.cloudspace.set(cs)
+            with self.models.cloudspace.lock(cloudspaceId):
+                cs = self.models.cloudspace.get(cloudspaceId)
+                if cs.status != 'VIRTUAL':
+                    return
+                cs.status = 'DEPLOYING'
+                self.models.cloudspace.set(cs)
             pool = self.models.externalnetwork.get(cs.externalnetworkId)
 
             if cs.externalnetworkip is None:

@@ -11,7 +11,7 @@
         var:password str,, Admin password to the firewall
         var:publicip str,, Public IP of the firewall
         var:type str,, Type of the firewall, e.g routeros, ...
-        var:networkid str,, Network ID
+        var:networkid int,, Network ID
         var:publicgwip str,, Gateway of the public network
         var:publiccidr str,, CIDR of public network
         var:vlan int,,vlan tag
