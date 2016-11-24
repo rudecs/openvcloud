@@ -41,12 +41,6 @@ def main(j, args, params, tags, tasklet):
             'id': 'creationTime',
             'type': 'date'
         },
-        {
-            'name': 'Creation Time',
-            'value': modifier.makeTime,
-            'id': 'updateTime',
-            'type': 'date'
-        }
     ]
 
     tableid = modifier.addTableFromModel('cloudbroker', 'account', fields, filters)
