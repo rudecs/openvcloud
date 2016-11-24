@@ -254,7 +254,7 @@ class cloudapi_cloudspaces(BaseActor):
 
         return cs.id
 
-    @authenticator.auth(acl={'cloudspace': set('X')})
+    @authenticator.auth(acl={'cloudspace': set('C')})
     def deploy(self, cloudspaceId, **kwargs):
         """
         Create VFW for cloudspace

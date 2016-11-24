@@ -88,6 +88,8 @@ temp = j.atyourservice.new(name='cb_cpunode_aio', args=data_cpu, parent=node)
 temp.consume('node', node.instance)
 temp.install(deps=True)
 
+openvcloud.configureNginxProxy(node, settings)
+
 j.console.notice('restarting some services')
 node.execute('ays restart -n nginx')
 

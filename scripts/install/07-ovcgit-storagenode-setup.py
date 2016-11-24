@@ -65,10 +65,10 @@ if 'storagedriver' in options.type:
         oauthfile = '/tmp/oauthserver.hrd'
         ovc_iyo = j.atyourservice.get(name='ovc_itsyouonline')
         ovc_iyo.actions.prepare(ovc_iyo)
-        environment = settings.get('ovc.environment')
+        environment = settings.get('instance.ovc.environment')
         location = node.parent.instance
         apikeyname = 'ovs-{}-{}'.format(environment, location)
-        domain = configure.hrd.get('instance.param.domain')
+        domain = configure.get('instance.param.domain')
         ovscallbackurl = 'https://ovs-{}.{}/api/oauth2/redirect/'.format(location, domain)
         apikey = {'callbackURL': ovscallbackurl,
                   'clientCredentialsGrantType': False,
@@ -77,10 +77,10 @@ if 'storagedriver' in options.type:
         apikey = ovc_iyo.actions.configure_api_key(apikey)
 
         j.console.info('building oauth configuration')
-        oauth_token_uri = os.path.join(ovc_iyo.baseurl, 'v1/oauth/access_token')
-        oauth_authorize_uri = os.path.join(ovc_iyo.baseurl, 'v1/oauth/authorize')
+        oauth_token_uri = os.path.join(ovc_iyo.actions.baseurl, 'v1/oauth/access_token')
+        oauth_authorize_uri = os.path.join(ovc_iyo.actions.baseurl, 'v1/oauth/authorize')
 
-        data_oauth = {'instance.oauth.id': ovc_iyo.client_id,
+        data_oauth = {'instance.oauth.id': ovc_iyo.actions.client_id,
                       'instance.oauth.secret': apikey['secret'],
                       'instance.oauth.authorize_uri': oauth_authorize_uri,
                       'instance.oauth.token_uri': oauth_token_uri}
