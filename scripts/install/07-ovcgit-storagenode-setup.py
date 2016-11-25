@@ -58,7 +58,7 @@ for storagetype in options.type:
 if 'storagedriver' in options.type:
     client = node.actions.getSSHClient(node)
     if 'MASTER' in node.execute('ovs config get "ovs/framework/hosts/$(cat /etc/openvstorage_id)/type"'):
-        openvcloud.configureNginxProxy(node, settings)
+        openvcloud.configureNginxProxy(node, settings, 'http_proxy_ovs')
         node.execute("python /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py")
 
         # loading ovc_master oauth server keys
