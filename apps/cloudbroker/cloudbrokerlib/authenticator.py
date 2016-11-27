@@ -138,7 +138,7 @@ class auth(object):
                 return func(*args, **kwargs)
             else:
                 raise exceptions.Forbidden(
-                        '''User: "%s" isn't allowed to execute this action.
+                    '''User: "%s" isn't allowed to execute this action.
                         Not enough permissions''' % user)
         return wrapper
 

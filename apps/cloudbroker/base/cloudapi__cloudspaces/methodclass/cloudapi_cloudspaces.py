@@ -250,7 +250,7 @@ class cloudapi_cloudspaces(BaseActor):
         self.models.cloudspace.set(cs)
 
         # deploy async.
-        gevent.spawn(self.deploy, cs.id, **kwargs)
+        gevent.spawn(self.deploy, cloudspaceId=cs.id, **kwargs)
 
         return cs.id
 
