@@ -3,31 +3,31 @@
     """
     """
     prop:id int,,
-    prop:name str,,name as given by customer
+    prop:name str,,name as given by customer @index
     prop:descr str,,
-    prop:sizeId int,,id of size used by machine, size is the cloudbroker size.
-    prop:imageId int,,id of image used to create machine
+    prop:sizeId int,,id of size used by machine, size is the cloudbroker size. @index
+    prop:imageId int,,id of image used to create machine @index
     prop:dedicatedCU bool,False,if true the compute capacity will be dedicated
     prop:disks list(int),,List of id of Disk objects
     prop:nics list(Nic),,List of id Nic objects (network interfaces) attached to this vmachine
-    prop:referenceId str,,name as used in hypervisor
+    prop:referenceId str,,name as used in hypervisor @index
     prop:accounts list(VMAccount),,list of machine accounts on the virtual machine
-    prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT;DESTROYED)
-    prop:hostName str,,hostname of the machine as specified by OS; is name in case no hostname is provided
+    prop:status str,,status of the vm (HALTED;INIT;RUNNING;TODELETE;SNAPSHOT;EXPORT;DESTROYED) @index
+    prop:hostName str,,hostname of the machine as specified by OS; is name in case no hostname is provided @index
     prop:cpus int,1,number of cpu assigned to the vm
     prop:boot bool,True,indicates if the virtual machine must automatically start upon boot of host machine
     prop:hypervisorType str,VMWARE,hypervisor running this vmachine (VMWARE;HYPERV;KVM)
     prop:stackId int,,ID of the stack
-    prop:acl list(ACE),,access control list
-    prop:cloudspaceId int,,id of space which holds this vmachine
+    prop:acl list(ACE),,access control list @index
+    prop:cloudspaceId int,,id of space which holds this vmachine @index
     prop:networkGatewayIPv4 str,,IP address of the gateway for this vmachine
     prop:referenceSizeId str,, reference to the size used on the stack
     prop:cloneReference int,, id to the machine on which this machine is based
     prop:clone int,, id of the clone
-    prop:creationTime int,, epoch time of creation, in seconds
-    prop:updateTime int,, epoch time of update, in seconds
-    prop:deletionTime int,, epoch time of destruction, in seconds
-    prop:tags str,, A tags string
+    prop:creationTime int,, epoch time of creation, in seconds @index
+    prop:updateTime int,, epoch time of update, in seconds @index
+    prop:deletionTime int,, epoch time of destruction, in seconds @index
+    prop:tags str,, A tags string @index
 
 [model:VMAccount] @dbtype:osis
     """
@@ -41,11 +41,11 @@
     Account owner of cloudspaces
     """
     prop:id int,,
-    prop:name str,,Name of account
-    prop:acl list(ACE),, access control list
-    prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED)
-    prop:creationTime int,, epoch time of creation, in seconds
-    prop:updateTime int,, epoch time of update, in seconds
+    prop:name str,,Name of account @index
+    prop:acl list(ACE),, access control list @index
+    prop:status str,, status of the account (UNCONFIRMED, CONFIRMED, DISABLED) @index
+    prop:creationTime int,, epoch time of creation, in seconds @index
+    prop:updateTime int,, epoch time of update, in seconds @index
     prop:deactivationTime int,, epoch time of the deactivation, in seconds
     prop:DCLocation str,, The preferred Datacenter Location for new cloudspaces
     prop:company str,, Company holding the account
@@ -67,14 +67,14 @@
     """
     prop:id int,,
     prop:gid int,,
-    prop:name str,,name of the image
+    prop:name str,,name of the image @index
     prop:description str,,extra description of the image
     prop:UNCPath str,,location of the image (uncpath like used in pylabs); includes the login/passwd info
-    prop:size int,, minimal disk size in Gigabyte
-    prop:type str,, dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas)
+    prop:size int,, minimal disk size in Gigabyte @index
+    prop:type str,, dot separated list of independant terms known terms are: tar;gz;sso e.g. sso dump inn tar.gz format would be sso.tar.gz  (always in lcas) @index
     prop:referenceId str,,Name of the image on stack
-    prop:status str,, status of the image, e.g DISABLED/ENABLED/CREATING/DELETING
-    prop:accountId int,,id of account to which this image belongs
+    prop:status str,, status of the image, e.g DISABLED/ENABLED/CREATING/DELETING @index
+    prop:accountId int,,id of account to which this image belongs @index
     prop:acl list(ACE),,access control list
     prop:username str,, specific username for this image
     prop:password str,, specific password for this image
@@ -86,20 +86,20 @@
     """
     """
     prop:id int,,
-    prop:name str,,name as given by customer
+    prop:name str,,name as given by customer @index
     prop:descr str,,
     prop:login str,,login name if applicable
     prop:passwd str,,passwd if applicable
     prop:apikey str,,apikey if applicable
     prop:apiUrl str,,URL to communicate to the stack
-    prop:type str,,Type of the stack, (OPENSTACK|CLOUDFRAMES|XEN SOURCE)
+    prop:type str,,Type of the stack, (OPENSTACK|CLOUDFRAMES|XEN SOURCE) @index
     prop:appId str,,application id if applicable
     prop:images list(int),,list of images ids supported by this resource model updated
-    prop:referenceId str,,Optional reference id.
+    prop:referenceId str,,Optional reference id. @index
     prop:error int,,Track amount of errors happened
     prop:eco str,,ECO which put stack in error
-    prop:gid int,,Grid id.
-    prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE
+    prop:gid int,,Grid id. @index
+    prop:status str,,Indicates the current status of the stack. e.g DISABLED/ENABLED/MAINTENANCE @index
 	prop:type str,,Indicates the type of stack [libvirt/openstack]
 
 [rootmodel:Disk] @dbtype:osis
@@ -108,17 +108,17 @@
     prop:id int,,
     prop:name str,,name as given by customer
     prop:descr str,,
-    prop:sizeMax int,,provisioned size of disk in MB
+    prop:sizeMax int,,provisioned size of disk in MB @index
     prop:sizeUsed int,,used capacity of disk in MB
-    prop:referenceId str,,name as used in hypervisor
+    prop:referenceId str,,name as used in hypervisor @index
     prop:realityDeviceNumber int,, Number a device gets after connect
-    prop:status str,,status of the vm (ACTIVE;INIT;IMAGE)
+    prop:status str,,status of the vm (ACTIVE;INIT;IMAGE) @index
     prop:type str,,(RAW,ISCSI)
-    prop:gid int,,ID of the grid
+    prop:gid int,,ID of the grid @index
     prop:iops int,,Limited IOPS
-    prop:accountId int,,ID of the account
+    prop:accountId int,,ID of the account @index
     prop:acl dict(ACE),,access control list
-    prop:role str,,role of disk (BOOT; DATA; TEMP)
+    prop:role str,,role of disk (BOOT; DATA; TEMP) @index
     prop:order int,,order of the disk (as will be shown in OS)
     prop:iqn str,,location of iscsi backend e.g. iqn.2009-11.com.aserver:b6d2aa75-d5ae-4e5a-a38a-12c64c787be6
     prop:diskPath str,, Holds the path of the disk
@@ -157,35 +157,35 @@
     """
     """
     prop:id int,,
-    prop:name str,,name as given by customer
+    prop:name str,,name as given by customer @index
     prop:descr str,,
-    prop:acl list(ACE),,access control list
-    prop:accountId int,, Id of account this cloudspace belongs to
+    prop:acl list(ACE),,access control list @index
+    prop:accountId int,, Id of account this cloudspace belongs to @index
     prop:resourceLimits dict(int),,key:$stackid_$cloudunittype value:int amount of max nr of units which can be used there
-    prop:networkId int,, Id of the used network
+    prop:networkId int,, Id of the used network @index
     prop:resourceProviderStacks list(int),,Not used anymore here for backwardscompatibility
-    prop:externalnetworkip str,, externalnetwork ip linked to the cloudspace
-    prop:externalnetworkId int,, externalnetwork poold id
-    prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED
+    prop:externalnetworkip str,, externalnetwork ip linked to the cloudspace @index
+    prop:externalnetworkId int,, externalnetwork poold id @index
+    prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED @index
     prop:location str,, datacenterlocation
-    prop:gid int,, Grid ID
+    prop:gid int,, Grid ID @index
     prop:secret str,, used to identify a space through the cloud robot
-    prop:creationTime int,, epoch time of creation, in seconds
-    prop:updateTime int,, epoch time of creation, in seconds
-    prop:deletionTime int,, epoch time of destruction, in seconds
+    prop:creationTime int,, epoch time of creation, in seconds @index
+    prop:updateTime int,, epoch time of creation, in seconds @index
+    prop:deletionTime int,, epoch time of destruction, in seconds @index
 
 [rootmodel:externalnetwork] @dbtype:osis
     """
     externalnetwork pool
     """
     prop:id int,,incremental id of network pool
-    prop:gid int,, Grid id
-    prop:network str,,Network of the pool
-    prop:subnetmask str,,Subnetmask of the pool
+    prop:gid int,, Grid id @index
+    prop:network str,,Network of the pool @index
+    prop:subnetmask str,,Subnetmask of the pool @index
     prop:gateway str,,Gateway of th
     prop:vlan int,,VLAN Tag of the network
     prop:name str,,Name of public network
-    prop:accountId int,,Account which can use this network
+    prop:accountId int,,Account which can use this network @index
     prop:ips list(str),,list of ips
 
 [rootmodel:Size] @dbtype:osis
@@ -196,10 +196,10 @@
     """
     prop:id int, 0,id of the size
     prop:name str,,Public name of the size
-    prop:memory int,, Memory in Mb
-    prop:vcpus int,, Number of vcpus assigned to the machine
+    prop:memory int,, Memory in Mb @index
+    prop:vcpus int,, Number of vcpus assigned to the machine @index
     prop:description str,,Description of the size
-	prop:gids list(int),,Grid IDS
+	prop:gids list(int),,Grid IDS @index
 	prop:disks list(int),, DISK SIZES
 
 [rootmodel:S3user]
@@ -238,17 +238,17 @@
     A token emailed to a user to reset his/her password
     """
     prop:id str,, The actual reset password token
-    prop:username str,, User this token is for
+    prop:username str,, User this token is for @index
     prop:creationTime int,, epoch time of creation, in seconds
-    prop:userguid str,, Actual id of the user this token is for
+    prop:userguid str,, Actual id of the user this token is for @index
 
 [rootmodel:Location] @dbtype:osis
     """
     """
     prop:id int,,id of location
-    prop:gid int,, Grid id
-    prop:name str,,Name of location
-    prop:locationCode str,,Internal code for location
+    prop:gid int,, Grid id @index
+    prop:name str,,Name of location @index
+    prop:locationCode str,,Internal code for location @index
     prop:flag str,,Flag to use for this location
 
 [rootmodel:inviteusertoken]
@@ -256,5 +256,5 @@
     A token emailed to a user for sharing machine, cloudspace, accounts management
     """
     prop:id str,, the generated invite token
-    prop:email str,, Email of the user that has been invited
+    prop:email str,, Email of the user that has been invited @index
     prop:lastInvitationTime int,,epoch time of last invitation sent, in seconds (can be later used if we want tokens to expire)
