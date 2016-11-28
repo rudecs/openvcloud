@@ -11,6 +11,7 @@ import gevent
 
 
 class RequireState(object):
+
     def __init__(self, state, msg):
         self.state = state
         self.msg = msg
@@ -34,6 +35,7 @@ class cloudapi_machines(BaseActor):
     API Actor api, this actor is the final api a enduser uses to manage his resources
 
     """
+
     def __init__(self):
         super(cloudapi_machines, self).__init__()
         self.osisclient = j.core.portal.active.osis
@@ -196,11 +198,13 @@ class cloudapi_machines(BaseActor):
         if vmachines:
             if vmachines[0]["cloudspaceId"] != machine.cloudspaceId:
                 # Validate that enough resources are available in the CU limits of the new cloudspace to add the disk
-                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
+                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
+                    machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
             self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
         else:
             # the disk was not attached to any machines so check if there is enough resources in the cloudspace
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
+                machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
@@ -228,14 +232,13 @@ class cloudapi_machines(BaseActor):
         image.name = templatename
         image.type = 'Custom Templates'
         image.username = machine.accounts[0].login
-        image.password = machine.accounts[0].login
+        image.password = machine.accounts[0].password
         m = {}
         m['stackId'] = machine.stackId
         m['disks'] = machine.disks
         m['sizeId'] = machine.sizeId
         firstdisk = self.models.disk.get(machine.disks[0])
         image.size = firstdisk.sizeMax
-        image.username = ""
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
         imageid = self.models.image.set(image)[0]
@@ -308,8 +311,8 @@ class cloudapi_machines(BaseActor):
             vm.cloudspaceId = cloudspaceId
 
             envelope = self.acl.execute('greenitglobe', 'cloudbroker_getenvelope',
-                                   gid=cloudspace.gid, role='storagedriver',
-                                   args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
+                                        gid=cloudspace.gid, role='storagedriver',
+                                        args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
 
             machine = ovf.ovf_to_model(envelope)
 
@@ -389,7 +392,7 @@ class cloudapi_machines(BaseActor):
             disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
-                               "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
+                                    "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
             volumes = provider.client.ex_clone_disks(diskmapping)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
@@ -409,7 +412,7 @@ class cloudapi_machines(BaseActor):
                 } for i, disk in enumerate(disks)]
             })
             export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
-                             args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
+                                                    args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
             # TODO: the url to be sent to the user
             provider.client.ex_delete_disks(diskguids)
             if export_job['state'] == 'ERROR':
@@ -442,7 +445,8 @@ class cloudapi_machines(BaseActor):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
 
-        gevent.spawn(self.syncImportOVF, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user)
+        gevent.spawn(self.syncImportOVF, link, username, passwd, path,
+                     cloudspaceId, name, description, sizeId, callbackUrl, user)
 
     def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
         """
@@ -497,7 +501,8 @@ class cloudapi_machines(BaseActor):
         totaldisksize = sum(datadisks + [disksize])
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
                                                                    size.memory / 1024.0, totaldisksize)
-        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
+        machine, auth, diskinfo = self.cb.machine.createModel(
+            name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
 
     @authenticator.auth(acl={'cloudspace': set('X')})
@@ -515,7 +520,8 @@ class cloudapi_machines(BaseActor):
         vms = self.models.vmachine.search({'cloneReference': machineId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if vms:
             clonenames = ['  * %s' % vm['name'] for vm in vms]
-            raise exceptions.Conflict("Can not delete a Virtual Machine which has clones.\nExisting Clones Are:\n%s" % '\n'.join(clonenames))
+            raise exceptions.Conflict(
+                "Can not delete a Virtual Machine which has clones.\nExisting Clones Are:\n%s" % '\n'.join(clonenames))
         self. _detachExternalNetworkFromModel(vmachinemodel)
         if not vmachinemodel.status == 'DESTROYED':
             vmachinemodel.deletionTime = int(time.time())
@@ -527,9 +533,11 @@ class cloudapi_machines(BaseActor):
         try:
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
         except Exception as e:
-            j.errorconditionhandler.processPythonExceptionObject(e, message="Failed to delete portforwardings for vm with id %s" % machineId)
+            j.errorconditionhandler.processPythonExceptionObject(
+                e, message="Failed to delete portforwardings for vm with id %s" % machineId)
         except exceptions.BaseError as berror:
-            j.errorconditionhandler.processPythonExceptionObject(berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
+            j.errorconditionhandler.processPythonExceptionObject(
+                berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
             provider.client.destroy_node(node)
         for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
@@ -590,7 +598,8 @@ class cloudapi_machines(BaseActor):
         acl = list()
         machine_acl = authenticator.auth().getVMachineAcl(machine.id)
         for _, ace in machine_acl.iteritems():
-            acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace['canBeDeleted'], 'right': ''.join(sorted(ace['right'])), 'status': ace['status']})
+            acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace[
+                       'canBeDeleted'], 'right': ''.join(sorted(ace['right'])), 'status': ace['status']})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
@@ -608,7 +617,8 @@ class cloudapi_machines(BaseActor):
         if not cloudspaceId:
             raise exceptions.BadRequest('Please specify a cloudsapce ID.')
         cloudspaceId = int(cloudspaceId)
-        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name', 'nics', 'sizeId', 'status', 'stackId', 'disks', 'creationTime', 'updateTime']
+        fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name',
+                  'nics', 'sizeId', 'status', 'stackId', 'disks', 'creationTime', 'updateTime']
 
         user = ctx.env['beaker.session']['user']
         userobj = j.core.portal.active.auth.getUserInfo(user)
