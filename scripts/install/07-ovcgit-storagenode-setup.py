@@ -6,11 +6,15 @@ import sys
 
 parser = ArgumentParser()
 parser.add_argument("-n", "--node", dest="node", help="node id", required=True)
-parser.add_argument("-t", "--type", dest="type", default="storagenode", help="Node type storagenode or storagerouter")
+parser.add_argument("-t", "--type", dest="type", default="storagenode", help="Node type storagenode or storagedriver")
 parser.add_argument("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
 options = parser.parse_args()
 
 options.type = options.type.split(',')
+for type in options.type:
+    if type not in ['storagenode', 'storagedriver']:
+        j.console.warning('Invalid option {} for type'.format(type))
+        sys.exit(1)
 
 openvcloud = j.clients.openvcloud.get()
 try:
