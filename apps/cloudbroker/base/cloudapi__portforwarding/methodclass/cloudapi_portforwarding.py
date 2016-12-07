@@ -46,6 +46,8 @@ class cloudapi_portforwarding(BaseActor):
             raise exceptions.BadRequest("Local port should be between 1 and 65535")
         if protocol and protocol not in ('tcp', 'udp'):
             raise exceptions.BadRequest("Protocol should be either tcp or udp")
+        if cloudspace.status != 'DEPLOYED':
+            raise exceptions.BadRequest("Cannot create a portforwarding during cloudspace deployment.")
 
         if len(fw) == 0:
             raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
@@ -63,7 +65,7 @@ class cloudapi_portforwarding(BaseActor):
         machine = j.apps.cloudapi.machines.get(machineId)
         localIp = self._getLocalIp(machine)
         if localIp is None:
-            raise exceptions.NotFound('Cannot create a portforward during cloudspace deployment.')
+            raise exceptions.NotFound('Cannot create portforwarding when Virtual Machine did not acquire an IP Address.')
 
         if self._selfcheckduplicate(fw_id, publicIp, publicPort, protocol, cloudspace.gid):
             raise exceptions.Conflict("Forward to %s with port %s already exists" % (publicIp, publicPort))
@@ -260,7 +262,7 @@ class cloudapi_portforwarding(BaseActor):
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid, localip)
         return self._process_list(forwards, cloudspaceId)
 
-    
+
     def listcommonports(self, **kwargs):
         """
         List a range of predifined ports
