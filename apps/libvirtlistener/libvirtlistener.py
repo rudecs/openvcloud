@@ -20,7 +20,8 @@ def main():
                 newstate = 'HALTED'
             if newstate is not None:
                 print('Updating state for vm {} to {}'.format(name, newstate))
-                ccl.vmachine.updateSearch({'id': vm['id']}, {'$set': {'status': newstate}})
+                # update the state if its not destroyed already
+                ccl.vmachine.updateSearch({'id': vm['id'], 'status': {'$ne': 'DESTROYED'}}, {'$set': {'status': newstate}})
 
     rocon.domainEventRegisterAny(None, libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
                                  callback, rocon)
