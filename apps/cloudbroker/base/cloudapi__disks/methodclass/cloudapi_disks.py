@@ -10,12 +10,14 @@ class cloudapi_disks(BaseActor):
     API Actor api, this actor is the final api a enduser uses to manage his resources
 
     """
+
     def __init__(self):
         super(cloudapi_disks, self).__init__()
         self.osisclient = j.core.portal.active.osis
         self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
-        self._minimum_days_of_credit_required = float(self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
+        self._minimum_days_of_credit_required = float(self.hrd.get(
+            "instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
         self.netmgr = j.apps.jumpscale.netmgr
 
     def getStorageVolume(self, disk, provider, node=None):
@@ -24,7 +26,7 @@ class cloudapi_disks(BaseActor):
         return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
 
     @authenticator.auth(acl={'account': set('C')})
-    def create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
+    def create(self, accountId, gid, name, description, size=10, type='D', ssdSize=0, **kwargs):
         """
         Create a disk
 

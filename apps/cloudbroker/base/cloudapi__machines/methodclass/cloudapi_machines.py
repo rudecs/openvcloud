@@ -129,7 +129,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    def addDisk(self, machineId, diskName, description, size=10, type='D', **kwargs):
+    def addDisk(self, machineId, diskName, description, size=10, type='D', ssdSize=0, **kwargs):
         """
         Create and attach a disk to the machine
 
