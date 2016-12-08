@@ -210,8 +210,10 @@ class cloudapi_portforwarding(BaseActor):
 
     def _process_list(self, forwards, cloudspaceId):
         result = list()
-        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
-        machines = self.models.vmachine.search(query)[1:]
+        query = {'$query': {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}},
+                 '$fields': ['id', 'nics.ipAddress', 'name']}
+
+        machines = self.models.vmachine.search(query, size=0)[1:]
 
         def getMachineByIP(ip):
             for machine in machines:
@@ -261,7 +263,6 @@ class cloudapi_portforwarding(BaseActor):
         fw_gid = fw[0]['gid']
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid, localip)
         return self._process_list(forwards, cloudspaceId)
-
 
     def listcommonports(self, **kwargs):
         """
