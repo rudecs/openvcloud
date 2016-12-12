@@ -8,16 +8,21 @@ parser = OptionParser()
 parser.add_option("-s", "--self", action="store_true", dest="self", help="only update the update script")
 parser.add_option("-r", "--restart", action="store_true", dest="restart", help="only restart everything")
 parser.add_option("-R", "--restart-nodes", action="store_true", dest="restartNodes", help="only restart all the nodes")
-parser.add_option("-N", "--restart-cloud", action="store_true", dest="restartCloud", help="only restart all the cloudspace vm")
-parser.add_option("-u", "--update", action="store_true", dest="update", help="only update git repository, do not restart services")
+parser.add_option("-N", "--restart-cloud", action="store_true",
+                  dest="restartCloud", help="only restart all the cloudspace vm")
+parser.add_option("-u", "--update", action="store_true", dest="update",
+                  help="only update git repository, do not restart services")
 group = parser.add_option_group('Update version')
 group.add_option("--tag-js", dest="tag_js", help="Tag to update JumpScale to")
 group.add_option("--tag-ovc", dest="tag_ovc", help="Tag to update OpenvCloud to")
 group.add_option("--branch-js", dest="branch_js", help="Branch to update JumpScale to")
 group.add_option("--branch-ovc", dest="branch_ovc", help="Branch to update OpenvCloud to")
-parser.add_option("-U", "--update-nodes", action="store_true", dest="updateNodes", help="only update node git repository, do not restart services")
-parser.add_option("-C", "--update-cloud", action="store_true", dest="updateCloud", help="only update cloudspace git repository, do not restart services")
-parser.add_option("-p", "--report", action="store_true", dest="report", help="build a versions log and update git version.md")
+parser.add_option("-U", "--update-nodes", action="store_true", dest="updateNodes",
+                  help="only update node git repository, do not restart services")
+parser.add_option("-C", "--update-cloud", action="store_true", dest="updateCloud",
+                  help="only update cloudspace git repository, do not restart services")
+parser.add_option("-p", "--report", action="store_true", dest="report",
+                  help="build a versions log and update git version.md")
 parser.add_option("-c", "--commit", action="store_true", dest="commit", help="commit the ovcgit repository")
 (options, args) = parser.parse_args()
 
@@ -27,9 +32,10 @@ nodeprocs = ['redis', 'statsd-collector', 'nginx', 'vncproxy']
 
 # Loading nodes list
 sshservices = j.atyourservice.findServices(name='node.ssh')
-sshservices.sort(key = lambda x: x.instance)
-nodeservices = filter(lambda x:x.instance not in hosts, sshservices)
-cloudservices = filter(lambda x:x.instance in hosts, sshservices)
+sshservices.sort(key=lambda x: x.instance)
+nodeservices = filter(lambda x: x.instance not in hosts, sshservices)
+cloudservices = filter(lambda x: x.instance in hosts, sshservices)
+
 
 def _get_update_cmd(account, repo, branch, tag):
     cmd = "jscode update -a '%s' -n '%s' -d " % (account, repo)
@@ -39,35 +45,49 @@ def _get_update_cmd(account, repo, branch, tag):
         cmd += "-b %s" % branch
     return cmd
 
+
 def update(nodessh):
-    print '[+] updating host: %s' % nodessh.instance
-    nodessh.execute(_get_update_cmd('jumpscale7', '*', options.branch_js, options.tag_js))
-    nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
-    nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc, options.tag_ovc))
-    nodessh.execute(_get_update_cmd('0-complexity', 'g8vdc', options.branch_ovc, options.tag_ovc))
-    nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
+    j.console.info('updating host: %s' % nodessh.instance)
+    j.remote.cuisine.enableQuiet()
+    try:
+        nodessh.execute(_get_update_cmd('jumpscale7', '*', options.branch_js, options.tag_js))
+        nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
+        nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc, options.tag_ovc))
+        nodessh.execute(_get_update_cmd('0-complexity', 'g8vdc', options.branch_ovc, options.tag_ovc))
+        nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
+    except Exception as e:
+        j.console.warning('Failed updating host: %s\n%s' % (nodessh.instance, e))
+        sys.exit(1)
+
 
 def restart(nodessh):
-    print '[+] restarting host\'s services: %s' % nodessh.instance
+    j.console.info('restarting host\'s services: %s' % nodessh.instance)
+    j.remote.cuisine.enableQuiet()
     nodessh.execute('ays stop')
     nodessh.execute('fuser -k 4446/tcp || true')
     nodessh.execute('ays start')
 
+
 def restartNode(nodessh):
-    print '[+] restarting (node) host\'s services: %s' % nodessh.instance
+    j.console.info('restarting (node) host\'s services: %s' % nodessh.instance)
+    j.remote.cuisine.enableQuiet()
     for service in nodeprocs:
         nodessh.execute('ays restart -n %s' % service)
     nodessh.execute('fuser -k 4446/tcp || true')
     nodessh.execute('ays start -n jsagent')
 
+
 def stopNode(nodessh):
-    print '[+] stopping (node) host\'s services: %s' % nodessh.instance
+    j.console.info('stopping (node) host\'s services: %s' % nodessh.instance)
+    j.remote.cuisine.enableQuiet()
     for service in nodeprocs:
         nodessh.execute('ays stop -n %s' % service)
     nodessh.execute('fuser -k 4446/tcp || true')
 
+
 def startNode(nodessh):
-    print '[+] starting (node) host\'s services: %s' % nodessh.instance
+    j.console.info('starting (node) host\'s services: %s' % nodessh.instance)
+    j.remote.cuisine.enableQuiet()
     for service in nodeprocs:
         nodessh.execute('ays start -n %s' % service)
     nodessh.execute('ays start -n jsagent')
@@ -76,6 +96,8 @@ def startNode(nodessh):
 """
 Markdown stuff
 """
+
+
 def parse(content):
     hosts = []
     versions = {}
@@ -117,14 +139,15 @@ def parse(content):
                 if versions[version][hostmatch]['name'] != versions[version][hostname]['name']:
                     versions[version][hostname]['valid'] = False
 
-
     # sorting hosts alphabeticaly
     hosts.sort()
 
     return hosts, versions
 
+
 def addCellString(value):
     return value + ' | '
+
 
 def addCell(item):
     if not item['valid']:
@@ -132,11 +155,12 @@ def addCell(item):
 
     return addCellString(item['name'])
 
+
 def build(content):
     hosts, versions = parse(content)
 
     # building header
-    data  = "# Updated on %s\n\n" % time.strftime("%Y-%m-%d, %H:%M:%S")
+    data = "# Updated on %s\n\n" % time.strftime("%Y-%m-%d, %H:%M:%S")
 
     data += "| Repository | " + ' | '.join(hosts) + " |\n"
     data += "|" + ("----|" * (len(hosts) + 1)) + "\n"
@@ -157,6 +181,8 @@ def build(content):
 """
 Updater stuff
 """
+
+
 def applyOnServices(services, func, kwargs=None):
     procs = list()
     for service in services:
@@ -170,55 +196,55 @@ def applyOnServices(services, func, kwargs=None):
         if proc.exitcode:
             error = True
     if error:
-        print 'Failed to execute on nodes'
+        j.console.warning('Failed to execute on nodes')
         sys.exit(1)
 
+
 def updateLocal():
-    print '[+] Updating local system'
+    j.console.notice('Updating local system')
     j.do.execute(_get_update_cmd('jumpscale', '*', options.branch_js, options.tag_js))
     j.do.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
     j.do.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
 
+
 def updateNodes():
     applyOnServices(nodeservices, update)
 
+
 def updateOpenvcloud(repository):
-    print '[+] Updating local openvcloud repository'
+    j.console.info('Updating local openvcloud repository')
     j.do.execute("cd %s; git pull" % repository)
 
+
 def updateCloudspace():
-    print ''
-    print '[+] updating cloudspace'
-    print ''
+    j.console.notice('Updating cloudspace')
     applyOnServices(cloudservices, update)
 
+
 def restartNodes():
-    print ''
-    print '[+] restarting nodes'
-    print ''
+    j.console.notice('restarting nodes')
     applyOnServices(nodeservices, restartNode)
 
+
 def stopNodes():
-    print ''
-    print '[+] stopping nodes'
-    print ''
+    j.console.notice('stopping nodes')
     applyOnServices(nodeservices, stopNode)
 
+
 def startNodes():
-    print ''
-    print '[+] starting nodes'
-    print ''
+    j.console.notice('starting nodes')
     applyOnServices(nodeservices, startNode)
 
+
 def restartCloudspace():
-    print ''
-    print '[+] restarting cloudspace'
-    print ''
+    j.console.notice('restarting cloudspace')
     applyOnServices(cloudservices, restart)
+
 
 def versionBuilder():
     # Updating version file
-    print '[+] grabbing version'
+    j.console.notice('grabbing version')
+    j.remote.cuisine.enableQuiet()
 
     # get our local repository path
     settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
@@ -252,7 +278,6 @@ def versionBuilder():
         data += "| Repository | Version (commit) |\n"
         data += "|----|----|\n"
 
-
         for line in lines:
             items = line.split(',')
             if len(items) < 2:
@@ -270,6 +295,7 @@ def versionBuilder():
     output = j.system.process.run("cd %s; git push" % repopath, True, False)
 
     print '[+] version committed'
+
 
 def updateGit():
     # get our local repository path
