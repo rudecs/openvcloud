@@ -15,6 +15,7 @@ async = True
 
 
 def action(ovs_connection):
+    from CloudscalerLibcloud import openvstorage
     # Lists edge clients
     #
     # ovs_connection: dict holding connection info for ovs restapi
@@ -29,19 +30,7 @@ def action(ovs_connection):
     #         'protocol': 'tcp'
     #        }, ...]
 
-
-    # TODO: This information should come from the OVS restapi's.
-    rdma = None
-    for ip in ovs_connection['ips']:
-        con = j.remote.cuisine.connect(ip, 22)
-        try:
-            rdma = con.run("python -c \"import sys; sys.path.append('/opt/OpenvStorage'); from ovs.extensions.generic.configuration import Configuration; print Configuration.get('/ovs/framework/rdma')\"") == 'True'
-            break
-        except Exception, e:
-            j.logger.log("Failed to get storage transport protocol:\n\n{}".format(str(e)))
-    protocol = "rdma" if rdma else "tcp"
-
-
+    protocol = openvstorage.getEdgeProtocol()
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))

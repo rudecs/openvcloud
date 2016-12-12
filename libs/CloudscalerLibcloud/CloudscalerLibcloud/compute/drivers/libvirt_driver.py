@@ -23,6 +23,7 @@ class LibvirtState:
 
 
 class StorageException(Exception):
+
     def __init__(self, msg, e):
         super(StorageException, self).__init__(msg)
         self.origexception = e
@@ -54,6 +55,7 @@ def convertchar(word):
 
 
 class NetworkInterface(object):
+
     def __init__(self, mac, target, type):
         self.mac = mac
         self.target = target
@@ -61,6 +63,7 @@ class NetworkInterface(object):
 
 
 class OpenvStorageVolume(StorageVolume):
+
     def __init__(self, *args, **kwargs):
         self.iops = kwargs.pop('iops', 0)
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
@@ -80,6 +83,7 @@ class OpenvStorageVolume(StorageVolume):
 
 
 class OpenvStorageISO(OpenvStorageVolume):
+
     def __init__(self, *args, **kwargs):
         super(OpenvStorageISO, self).__init__(*args, **kwargs)
         self.dev = 'hdc'
@@ -165,7 +169,8 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def edgeclients(self):
-        edgeclients = self._execute_agent_job('listedgeclients', role='storagedriver', ovs_connection=self.ovs_connection)
+        edgeclients = self._execute_agent_job('listedgeclients', role='storagemaster',
+                                              ovs_connection=self.ovs_connection)
 
         activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
 
@@ -199,7 +204,8 @@ class CSLibvirtNodeDriver(object):
         edgeclients = self.edgeclients[:]
         diskspervpool = {}
         for edgeclient in edgeclients:
-            diskspervpool[edgeclient['vpool']] = diskspervpool.setdefault(edgeclient['vpool'], 0) + edgeclient['vdiskcount']
+            diskspervpool[edgeclient['vpool']] = diskspervpool.setdefault(
+                edgeclient['vpool'], 0) + edgeclient['vdiskcount']
         if len(diskspervpool) > 1:
             diskspervpool.pop('vmstor', None)
         # get vpool with least vdiskcount
@@ -272,7 +278,8 @@ class CSLibvirtNodeDriver(object):
             id = 0
         else:
             id = id and int(id)
-        job = self.backendconnection.agentcontroller_client.executeJumpscript('greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
+        job = self.backendconnection.agentcontroller_client.executeJumpscript(
+            'greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
                 raise RuntimeError('Could not find agent with nid:%s' % id)
@@ -385,7 +392,8 @@ class CSLibvirtNodeDriver(object):
         return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
-        volumeid = self._execute_agent_job('createmetaiso', role='storagedriver', name=name, metadata=metadata, userdata=userdata, type=type)
+        volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
+                                           name=name, metadata=metadata, userdata=userdata, type=type)
         return OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
 
     def generate_password_hash(self, password):
@@ -486,7 +494,8 @@ class CSLibvirtNodeDriver(object):
         # 0 means default behaviour, e.g machine is auto started.
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
         if not result or result == -1:
-            # Agent is not registered to agentcontroller or we can't provision the machine(e.g not enough resources, delete machine)
+            # Agent is not registered to agentcontroller or we can't provision the
+            # machine(e.g not enough resources, delete machine)
             if result == -1:
                 self._execute_agent_job('deletemachine', queue='hypervisor', machineid=None, machinexml=machinexml)
             return -1
@@ -605,7 +614,8 @@ class CSLibvirtNodeDriver(object):
         try:
             self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
         except RuntimeError as rError:
-            j.errorconditionhandler.processPythonExceptionObject(rError, message="Failed to delete disks may be they are deleted from the storage node")
+            j.errorconditionhandler.processPythonExceptionObject(
+                rError, message="Failed to delete disks may be they are deleted from the storage node")
 
     def ex_get_console_url(self, node):
         urls = self.backendconnection.listVNC(self.gid)
@@ -688,7 +698,8 @@ class CSLibvirtNodeDriver(object):
         name = 'vm-%s' % vmid
         volumes = []
         for i, disk in enumerate(disks):
-            volume = OpenvStorageVolume(id='%s@%s' % (disk['path'], disk['guid']), name='N/A', size=disk['size'], driver=self)
+            volume = OpenvStorageVolume(id='%s@%s' % (
+                disk['path'], disk['guid']), name='N/A', size=disk['size'], driver=self)
             volume.dev = 'vd%s' % convertnumber(i + 1)
             volumes.append(volume)
         return self._create_node(name, size, networkid=networkid, volumes=volumes)
