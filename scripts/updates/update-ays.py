@@ -1,5 +1,6 @@
 from JumpScale import j
 from optparse import OptionParser
+from itertools import ifilter
 import multiprocessing
 import time
 import sys
@@ -178,6 +179,7 @@ def build(content):
 
     return data
 
+
 """
 Updater stuff
 """
@@ -294,7 +296,7 @@ def versionBuilder():
     output = j.system.process.run("cd %s; git commit -m 'environement updated'" % repopath, True, False)
     output = j.system.process.run("cd %s; git push" % repopath, True, False)
 
-    print '[+] version committed'
+    j.console.notice('version committed')
 
 
 def updateGit():
@@ -302,9 +304,9 @@ def updateGit():
     settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
     repopath = settings.getStr('instance.ovc.path')
 
-    output = j.system.process.run("cd %s; git add ." % repopath, True, False)
-    output = j.system.process.run("cd %s; git commit -m 'environement updated (update script)'" % repopath, True, False)
-    output = j.system.process.run("cd %s; git push" % repopath, True, False)
+    j.system.process.run("cd %s; git add ." % repopath, True, False)
+    j.system.process.run("cd %s; git commit -m 'environement updated (update script)'" % repopath, True, False)
+    j.system.process.run("cd %s; git push" % repopath, True, False)
 
 
 """
@@ -315,97 +317,76 @@ allStep = True
 
 if options.self:
     allStep = False
-
-    print '[+] starting self-update'
-
+    j.console.notice('starting self-update')
     updateOpenvcloud(openvcloud)
-
-    print '[ ]'
-    print '[+] self-update successful'
-    print '[ ]'
+    j.console.notice('self-update successful')
 
 if options.update:
     allStep = False
-
-    print '[+] updating cloudspace and nodes'
+    j.console.notice('updating cloudspace and nodes')
 
     updateLocal()
     updateCloudspace()
     updateNodes()
 
-    print '[ ]'
-    print '[+] node and cloudspace updated'
-    print '[ ]'
+    j.console.notice('node and cloudspace updated')
 
 if options.updateNodes:
     allStep = False
 
-    print '[+] updating all nodes'
-
+    j.console.notice('updating all nodes')
     updateNodes()
-
-    print '[ ]'
-    print '[+] all nodes updated'
-    print '[ ]'
+    j.console.notice('all nodes updated')
 
 if options.updateCloud:
     allStep = False
 
-    print '[+] updating cloudspace'
+    j.console.notice('updating cloudspace')
 
     updateLocal()
     updateCloudspace()
 
-    print '[ ]'
-    print '[+] cloudspace updated'
-    print '[ ]'
+    j.console.notice('cloudspace updated')
 
 if options.restartCloud or options.restart:
     allStep = False
 
-    print '[+] restarting cloudspace'
-
+    j.console.notice('restarting cloudspace')
     restartCloudspace()
 
-    print '[ ]'
-    print '[+] cloudspace restarted'
-    print '[ ]'
+    j.console.notice('cloudspace restarted')
 
 if options.restartNodes or options.restart:
     allStep = False
 
-    print '[+] restarting nodes'
+    j.console.notice('restarting nodes')
 
     restartNodes()
 
-    print '[ ]'
-    print '[+] node restarted'
-    print '[ ]'
+    j.console.notice('node restarted')
 
 if options.report:
     allStep = False
 
-    print '[+] reporting installed versions'
+    j.console.notice('reporting installed versions')
 
     versionBuilder()
 
-    print '[ ]'
-    print '[+] reporting done'
-    print '[ ]'
+    j.console.notice('reporting done')
 
 if options.commit:
     allStep = False
 
-    print '[+] updating ovcgit repository'
+    j.console.notice('updating ovcgit repository')
 
     updateGit()
 
-    print '[ ]'
-    print '[+] repository up-to-date'
-    print '[ ]'
+    j.console.notice('repository up-to-date')
 
 if allStep:
-    print '[+] processing complete upgrade'
+    j.remote.cuisine.enableQuiet()
+    j.console.notice('processing complete upgrade')
+    starttime = int(time.time())
 
     updateLocal()
     updateCloudspace()
@@ -413,11 +394,13 @@ if allStep:
     stopNodes()
     restartCloudspace()
     startNodes()
+    j.console.notice('Cleaning logs')
+    master = next(ifilter(lambda x: x.instance == 'ovc_master', cloudservices))
+    master.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/cleanlogs.py -s {}'.format(starttime))
+
     versionBuilder()
 
-    print '[ ]'
-    print '[+] everything done'
-    print '[ ]'
+    j.console.notice('everything done')
 
 
 j.application.stop()
