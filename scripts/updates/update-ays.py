@@ -27,7 +27,7 @@ parser.add_option("-p", "--report", action="store_true", dest="report",
 parser.add_option("-c", "--commit", action="store_true", dest="commit", help="commit the ovcgit repository")
 (options, args) = parser.parse_args()
 
-openvcloud = '/opt/code/git/0-complexity/openvcloud'
+openvcloud = '/opt/code/github/0-complexity/openvcloud'
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
 nodeprocs = ['redis', 'statsd-collector', 'nginx', 'vncproxy']
 
