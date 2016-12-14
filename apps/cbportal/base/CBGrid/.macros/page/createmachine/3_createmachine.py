@@ -45,7 +45,7 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Machine Description', 'description', required=True)
     popup.addDropdown('Choose CPU Node', 'stackid', dropstacks)
     popup.addDropdown('Choose Image', 'imageId', dropimages)
-    popup.addDropdown('Choose Memory', 'sizeId', dropsizes)
+    popup.addDropdown('Choose Size', 'sizeId', dropsizes)
     popup.addDropdown('Choose Disk Size', 'disksize', dropdisksizes)
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)
