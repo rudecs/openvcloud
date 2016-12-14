@@ -3,7 +3,7 @@
 {{datatables_use}}
 {% if id %}
 
-h2. Private Network: $$id
+h2. Private Network: $$id (${'%04x' % id})
 
 {{actions:
 
