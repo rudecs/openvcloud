@@ -14,6 +14,7 @@ enable = True
 async = True
 queue = 'hypervisor'
 
+
 def action(networkid, sourceip):
     import libvirt
     BACKPLANE = 'vxbackend'
@@ -63,9 +64,11 @@ def action(networkid, sourceip):
         import jinja2
         acl = j.clients.agentcontroller.get()
         devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
-        edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
+        edgeip, edgeport, edgetransport = acl.execute(
+            'greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
-        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
+        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(
+            j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
         xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
                                        edgehost=edgeip, edgeport=edgeport,
                                        edgetransport=edgetransport)
@@ -73,3 +76,12 @@ def action(networkid, sourceip):
         dom.create()
 
     return True
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', '--networkid')
+    parser.add_argument('-s', '--sourceip')
+    options = parser.parse_args()
+    action(options.networkid, options.sourceip)
