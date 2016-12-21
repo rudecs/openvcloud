@@ -1,14 +1,35 @@
 ## Get the Node into the 911 Mode
 
-This is the first step in order to have an OpenvCloud environment set-up from scratch.
+ The "911 mode" gets a system in a state where the whole OS is loaded into memory, with all tools available for install/recovery purposes. Once the node is booted in "911 mode" it is running Ubuntu 16.04 fully from memory, with SSH access enabled, and allowing you to use `apt-get` to install missing packages if needed.
 
-1. Prepare a **Controller** with the **OpenvCloud PXE boot server**.
+On the controller you first need to start a Docker container running the **OpenvCloud PXE boot server**, which is available from the GitHub [0-complexity/G8OS_boot](https://github.com/0-complexity/G8OS_boot) repository; also the installation and usage documentation is there.
 
-   **OpenvCloud PXE boot server** is available from the GitHub [0-complexity/G8OS_boot](https://github.com/0-complexity/G8OS_boot) repository; also the installation and usage documentation is there.
+From the controller you will then enable the node to boot in "911 mode":
+```
+cd /opt/g8-pxeboot/pxeboot/scripts
+enable-pxe $IP-address-of-the-node$  
+```
 
-2. Use the **Controller** to get the physical nodes boot in 911 mode.
+OR hostnames from `/opt/g8-pxeboot/pxeboot/conf/hosts`?
 
-   This mode gets a system in an OS-booted state where the whole OS is loaded into memory, with all tools available for install/recovery purposes. Once node is booted in 911 mode it is running Ubuntu 15.04 fully from memory, with SSH access enabled, and allowing you to use `apt-get` to install missing packages if needed.
+
+Reboot:
+```
+ipmi-request $hostname chassis power cycle
+```
+
+....
+
+
+If all done:
+
+```
+disable-pxe...
+```
+
+
+
+LEGACY:
 
    In `$PXEPATH/pxeboot/tftpboot/pxelinux.cfg/`, symlink the file `911boot` to `01-ma-ca-dd-re-ss-ss`.  
 
