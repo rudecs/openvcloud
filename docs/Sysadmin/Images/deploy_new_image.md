@@ -105,9 +105,10 @@ git push
 
 ### Install the image
 
-Connect to **ovc_master** as documented [here](../Connect/Connect.md).
+Connect to **ovc_git** as documented [here](../Connect/connect.md).
 
 Update the repository:
+
 ```
 cd /opt/code/github/gig-projects/$name-of-your-env-repository$
 git pull

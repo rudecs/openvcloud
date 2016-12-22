@@ -1,4 +1,4 @@
-## Connect Node to ovc_git
+## Connect Nodes to the ovc_git Container
 
 Repeat the below on every single CPU and storage node.
 

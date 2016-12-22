@@ -17,29 +17,29 @@ Follow these steps to prepare the installation:
 
 ### Now you are ready for creating the image
 
-  - First start virt-manager 
-  
+  - First start virt-manager
+
   ![](win-cloud-image-01.png)
-  
+
   ![](win-cloud-image-02.png)
-  
+
   - Then choose memory and CPU settings that suits you then hit **Forward**
-  
+
   - For the storage browse and choose the windows-2012.qcow2 image your created earlier, then click **Forward**
-  
+
   ![](win-cloud-image-03.png)
-  
-  - Then clcick **Finish** and start installing the image 
+
+  - Then click **Finish** and start installing the image
 
 
 ### After finishing the installation of the image, and shutting the machine down
 
 From Add Hardware:
-  
-* First add **New Storage** and make sure that the Bus type is VirtIO 
+
+* First add **New Storage** and make sure that the Bus type is VirtIO
 
   ![](win-cloud-image-04.png)
-  
+
 * Second add **Network** device and make sure that the device model is VirtIO
 
   ![](win-cloud-image-05.png)
@@ -51,16 +51,16 @@ From Add Hardware:
 
 ### Now you can start your machine
 
-From **Server Manager** on Tools choose computer management and from it 
+From **Server Manager** on Tools choose computer management and from it
 
   * Go to **Device Kanager** and try to install the new drivers you added before with the VirtIO image you connected the virtual machine with:
-  
+
   ![](win-cloud-image-07.png)
-  
+
   * Choose **Browse my computer for driver software**:
-  
+
   ![](win-cloud-image-08.png)
-  
+
   * Then browse for the virtio image that you will find loaded on CD Drive (D:), hit **Next**, and then **Install**
 
 
@@ -88,17 +88,17 @@ While installing add Cloudscalers as a new user:
 * The second file is in `C:\Program Files\Cloudbase Solutions\Cloudbase-Init\Python\Lib\site-packages\cloudbaseinit\plugins\common`
 
   - Edit `setuserpassword.py` and change:
-  
+
     ```
     cfg.StrOpt('first_logon_behaviour', default=CLEAR_TEXT_INJECTED_ONLY,
     ```
-    To: 
+    To:
     ```
     cfg.StrOpt('first_logon_behaviour', default=NEVER_CHANGE,
     ```
-  
+
 ### Then go to services and start the Cloud Initialization Service service
-  
+
 Shutdown the virtual machine.
-  
+
 ### You are now good to go
