@@ -46,8 +46,8 @@ The actual installation is done using the `Install` script:
 > **Note**: The installer will use the hostname the machine received to deduct the environment name, so make sure your `$PXEPATH/conf/*` files are all correctly edited.
 
 
-<a id="disable-PXE)e"></a>
-### Install the OS on the node
+<a id="disable-PXE"></a>
+### Disable PXE boot
 
 In order to make sure the node doesn't boot again in "911 mode" when restarting, you need to disable PXE booting:
 
