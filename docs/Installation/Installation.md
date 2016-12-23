@@ -6,7 +6,7 @@ The installation is done through the usage of following installation scripts:
 - 02-scratch-init.py
 - 03-ovcgit-master-spawn.py
 - 04-ovcgit-master-configure.py
-- 05-node-initializer.sh
+- 05-node-initializer.sh (not used anymore)
 - 06-node-connect.sh
 - 07-ovcgit-cpunode-setup.py
 - 07-ovcgit-storagenode-setup.py
@@ -26,11 +26,10 @@ There are three possibilities for [where-to-run]:
 
 
 
-The actual installation process takes 7 steps:
+The actual installation process takes 6 steps:
 
-- [Installation of the Master Cloud Space](0-MasterSpace.md)
-- [Have your nodes booted from an OpenvCloud PXE boot server](1-GetNodeInto911-mode.md)
-- [Setup the OS on all the nodes](2-SetupOS.md)
+- [Installation of the Master Containers](0-MasterContainers.md)
+- [Install the OS on the physical nodes](1-InstallOS.md)
 - [Connect all the nodes to ovc_git](3-ConnectNode2ovc_git.md)
 - [Setup Open vStorage](4-SetupOfOVS.md)
 - [Configuration of Open vStorage](5-OVSConfiguration.md)
