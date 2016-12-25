@@ -17,6 +17,7 @@ license = "bsd"
 version = "1.0"
 category = "account.monitoring"
 enable = True
+timeout = 60
 async = True
 queue = 'process'
 log = False
@@ -34,7 +35,8 @@ def action():
     def create_hour_tar():
         c = io.BytesIO()
         with tarfile.open(mode="w:gz", fileobj=c) as tar:
-            tar.add(base_path_active)
+            if j.system.fs.exists(base_path_active):
+                tar.add(base_path_active)
         return c
 
     def move_to_collected(tar):
@@ -55,6 +57,7 @@ def action():
     move_to_collected(tar)
     tar.seek(0)
     return base64.encodestring(tar.getvalue())
+
 
 if __name__ == '__main__':
     action()

@@ -45,6 +45,7 @@ def action(gid=None):
         jobs.append(agentcontroller.scheduleCmd(cmdcategory="greenitglobe",
                                                 cmdname="collect_account_data",
                                                 nid=None,
+                                                timeout=60,
                                                 roles=['controller'],
                                                 gid=location["gid"],
                                                 wait=True))
@@ -56,8 +57,8 @@ def action(gid=None):
 
         # read the tar.
         c = io.BytesIO()
-        if result['state'] == 'ERROR':
-            raise RuntimeError("%s\n%s" % (result['result']['errormessage'], result['result']['errormessage']))
+        if result['state'] != 'OK':
+            raise RuntimeError("Failed to collect account data from grid %s" % (job['gid']))
         result_decoded = base64.decodestring(result['result'])
         c.write(result_decoded)
         c.seek(0)
