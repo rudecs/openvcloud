@@ -1,6 +1,6 @@
 @usedefaults
 @@title External Network: ${network} / ${subnetmask}
-{{externalnetwork: networkid:$$networkid}}
+{{externalnetwork}}
 {% if id %}
 
 {{actions:

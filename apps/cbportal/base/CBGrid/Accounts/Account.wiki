@@ -1,6 +1,6 @@
 @usedefault
 @@title Account: ${name}
-{{Account id:$$id}}
+{{Account}}
 {% if id %}
 h2. Account: ${name}
 

@@ -1,8 +1,8 @@
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
-    id = args.getTag('id')
-    gid = args.getTag('gid')
+    id = args.requestContext.params.get('id')
+    gid = args.requestContext.params.get('gid')
     try:
         id = int(id)
         gid = int(gid)

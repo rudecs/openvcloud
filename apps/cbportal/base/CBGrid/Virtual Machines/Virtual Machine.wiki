@@ -1,6 +1,6 @@
 @usedefaults
 @@title Virtual Machine: ${name}
-{{vmachine: id:$$id}}
+{{vmachine}}
 {% if id %}
 
 {% if status != "DESTROYED" %}
@@ -17,7 +17,7 @@ h2. Virtual Machine: ${name}
 }}
 {% endif %}
 
-|*ID*| $$id|
+|*ID*| ${id}|
 |*Description*| ${descr}|
 |*Tags*| ${tags}|
 |*Stack*| [${stackname}|stack?id=${stackId}]|
@@ -83,7 +83,7 @@ h3. Port Forwards
 {% endfor %}
 
 h3. Audits
-{{grid.audits machineId:$$id}}
+{{grid.audits machineId:${id}}}
 
 {% else %}
 No Virtual Machine found

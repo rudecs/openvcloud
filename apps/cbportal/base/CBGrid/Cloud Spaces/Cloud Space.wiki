@@ -2,7 +2,7 @@
 
 @@title Cloud Space: ${name}
 
-{{cbspace id:$$id}}
+{{cbspace}}
 {{datatables_use}}
 {% if id %}
 

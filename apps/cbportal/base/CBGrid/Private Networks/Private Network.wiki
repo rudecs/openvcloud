@@ -1,9 +1,9 @@
 @usedefault
-{{network id:$$id gid:$$gid}}
+{{network}}
 {{datatables_use}}
 {% if id %}
 
-h2. Private Network: $$id (${'%04x' % id})
+h2. Private Network: ${id} (${'%04x' % id})
 
 {{actions:
 

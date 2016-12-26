@@ -1,6 +1,6 @@
 @usedefault
 @@title Stack: ${name}
-{{stack_data: id:$$id}}
+{{stack_data}}
 {% if id %}
 
 h3. Stack: ${name}
@@ -26,7 +26,7 @@ h3. Stack: ${name}
   action: /restmachine/cloudbroker/computenode/maintenance
   reload: false
   data:
-   id: $$id
+   id: ${id}
    gid: ${gid}
   input:
    - type: message
@@ -52,7 +52,7 @@ h3. Stack: ${name}
 - display: Decommission
   action: /restmachine/cloudbroker/computenode/decommission
   data:
-   id: $$id
+   id: ${id}
    gid: ${gid}
   input:
    - type: message
@@ -79,7 +79,7 @@ h3. Stack: ${name}
 
 h3. Images:
 
-{{images: stackid:$$id}}
+{{images: stackid:${id}}}
 
 h3. Virtual Firewalls:
 
@@ -87,7 +87,7 @@ h3. Virtual Firewalls:
 
 h3. Virtual Machines:
 
-{{vmachines: stackid:$$id}}
+{{vmachines: stackid:${id}}}
 
 {% else %}
 No Stack provided

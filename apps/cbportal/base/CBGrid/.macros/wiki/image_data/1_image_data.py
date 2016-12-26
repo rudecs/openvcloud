@@ -1,16 +1,16 @@
 def main(j, args, params, tags, tasklet):
     params.result = (args.doc, args.doc)
-    imageid = args.getTag('id')
+    imageid = args.requestContext.params.get('id')
     if not imageid:
         args.doc.applyTemplate({})
         return params
-    ccl = j.clients.osis.getNamespace('libvirt')
+    lcl = j.clients.osis.getNamespace('libvirt')
 
-    if not ccl.image.exists(imageid):
+    if not lcl.image.exists(imageid):
         args.doc.applyTemplate({'imageid': None}, True)
         return params
 
-    imageobj = ccl.image.get(imageid)
+    imageobj = lcl.image.get(imageid)
     image = imageobj.dump()
 
     args.doc.applyTemplate(image, True)

@@ -1,7 +1,7 @@
 
 def main(j, args, params, tags, tasklet):
     params.result = (args.doc, args.doc)
-    stackId = args.getTag('id')
+    stackId = args.requestContext.params.get('id')
     try:
         stackId = int(stackId)
     except:

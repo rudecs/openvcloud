@@ -1,6 +1,6 @@
 @usedefault
 @@title Image: ${name}
-{{image_data id:$$id}}
+{{image_data}}
 {% if id %}
 h3. Image: ${name}
 

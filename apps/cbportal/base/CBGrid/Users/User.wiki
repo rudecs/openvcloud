@@ -3,7 +3,7 @@
 
 {{timestamp}}
 
-{{user_info: guid:$$id}}
+{{user_info}}
 {% if id %}
 h2. User: ${id}
 
@@ -33,7 +33,7 @@ h3. Accounts
 {{accounts: acl.userGroupId:${id}}}
 
 h3. Cloud Spaces
-{{cbspacesusers: userId:$$id}}
+{{cbspacesusers: userId:${id}}}
 
 {% else %}
 No user found with id $$id

@@ -37,7 +37,7 @@ def generateUsersList(sclient, cloudspacedict):
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
-    id = args.getTag('id')
+    id = args.requestContext.params.get('id')
     try:
         id = int(id)
     except:

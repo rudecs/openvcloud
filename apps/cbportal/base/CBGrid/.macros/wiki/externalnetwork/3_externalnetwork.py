@@ -1,7 +1,7 @@
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
-    networkid = args.getTag('networkid')
+    networkid = args.requestContext.params.get('networkid')
     try:
         networkid = int(networkid)
     except:

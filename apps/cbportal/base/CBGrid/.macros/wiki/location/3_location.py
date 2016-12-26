@@ -1,7 +1,7 @@
 def main(j, args, params, tags, tasklet):
 
     params.result = (args.doc, args.doc)
-    gid = args.getTag('gid')
+    gid = args.requestContext.params.get('gid')
     try:
         gid = int(gid)  # check like this to prevent long conversion error
     except:
