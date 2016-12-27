@@ -10,8 +10,8 @@ Clicking the **ID** of a compute node brings you to the **Stack Details** page f
 
 From the **Actions** dropdown menu you can:
 
-- [Put the node in Maintenance Mode](docs//Sysadmin/Maintenance/putting_node_in_maintenance_mode.md)
-- [Decommission the node](docs/Sysadmin/Decommission/decommission_node.md)
+- [Put the node in Maintenance Mode](/Sysadmin/Maintenance/putting_node_in_maintenance_mode.md)
+- [Decommission the node](/Sysadmin/Decommission/decommission_node.md)
 
 The **Status** of a node is one of the following:
 
@@ -20,7 +20,7 @@ The **Status** of a node is one of the following:
 - **Decommissioned**
 - **Error** with a hyperlink to an error condition
 
-> **Note**: a node will only show to be in **Error** state as a result of a failing action or when a virtual machine deployment fails on that node. Any other problem with the compute node, such as for example when the network got disconnected, will not change the status to **Error**. For the actual state of the node always check the [Status Overview](docs/GridPortal/StatusOverview/StatusOverview.md) page for that node in the **Grid Portal**, since the **Cloud Broker Portal** rather shows the desired state, not the actual condition (reality) as the  **Grid Portal** does.
+> **Note**: a node will only show to be in **Error** state as a result of a failing action or when a virtual machine deployment fails on that node. Any other problem with the compute node, such as for example when the network got disconnected, will not change the status to **Error**. For the actual state of the node always check the [Status Overview](/GridPortal/StatusOverview/StatusOverview.md) page for that node in the **Grid Portal**, since the **Cloud Broker Portal** rather shows the desired state, not the actual condition (reality) as the  **Grid Portal** does.
 
 Under **Images** all OS images available on the compute node are listed:
 
