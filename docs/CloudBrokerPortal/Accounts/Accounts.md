@@ -9,24 +9,18 @@ The **Accounts** page lists all existing accounts:
 
 ### Creating Accounts
 
-Creating a new account is simple. Just click on the **+ Add Account** link which will pop-up the **Create Account** window:
+Clicking the **+ Add Account** link allows you to create a new account:
 
-![(CreateAccount.png)
+![](CreateAccount.png)
 
-If the username you specify in the **Create Account** dialog doesn't exist yet, a new user will be created, and an activation email will be send to the email address you specify, allowing the user to set his password.
+If the username you specify doesn't exist yet, a new user will be created, and an activation e-mail will be send to the e-mail address you specify, allowing the user to set his password. In case the user already exists, you can leave the e-mail address field empty.
 
-In case the username already exists, you can leave the e-mail address field empty, no activation e-mail will be send anyway.
-
-The **Choose Location** (only shown in earlier versions) can be ignored, since accounts are always created cross-location.
-
-All the next fields are related to maximum capacity available for the new account:
+All the other fields are for setting limits on the total available capacity for the new account:
 
 - **Memory Capacity** for limiting the total amount of memory (GB) that can be used by all cloud spaces in the account
 - **Virtual Disk Capacity** for limiting the total (boot + data) disk capacity (GB) used by all virtual machines created in the account
-- **Number of CPU Cores** for limiting the total number of CPU cores used by all virtual machines created in the account
-- **Network Transfer In Operator** for limiting the total internal network traffic (GB)
-- **Network Transfer In Peering** for limiting the total public network traffic (GB)
-- **Number of Public IP Address** for limiting the total number of cloud spaces that get a public IP address assigned
+- **Number of Virtual CPU Cores** for limiting the total number of virtual CPU cores used by all virtual machines created in the account
+- **Number of Public IP Address** for limiting the total number public IP address assigned available for assigning to cloud spaces and virtual machines
 
 ### Account Details
 
@@ -68,7 +62,7 @@ In addition here you to set the external network to which the cloud space needs 
 
 From the list with cloud spaces you can navigate to the **Cloud Space Details** pages.
 
-For more information on **Cloud Spaces** go to the [Cloud Spaces](CloudBrokerPortal/CloudSpaces/CloudSpaces.md) documentation.
+For more information on **Cloud Spaces** go to the [Cloud Spaces](/CloudBrokerPortal/CloudSpaces/CloudSpaces.md) documentation.
 
 And finally under **Audits** all REST API calls for the account are listed:
 
