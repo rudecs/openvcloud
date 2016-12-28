@@ -204,7 +204,8 @@ class TempStorage(object):
 
     def __exit__(self, *args, **kwargs):
         if self.path is not None and os.path.exists(self.path):
-            os.system('umount "%s"' % self.path)
+            time.sleep(2)
+            j.system.process.execute('umount "%s"' % self.path)
             j.system.fs.removeDirTree(self.path)
             getVDisk(self.path, timeout=10)
         if self.raw is not None and os.path.exists(self.raw):

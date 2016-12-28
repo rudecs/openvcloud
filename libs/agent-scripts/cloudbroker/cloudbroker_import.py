@@ -17,14 +17,21 @@ timeout = 60 * 60
 
 
 def action(link, username, passwd, path, machine):
-    import requests
-    import os
     import tarfile
     from CloudscalerLibcloud import openvstorage
+    from CloudscalerLibcloud.utils.webdav import WebDav, join, find_ova_files
+    from JumpScale.core.system.streamchunker import StreamUnifier
+
+    url = join(link, path)
+    connection = WebDav(url, username, passwd)
+    ovafiles = find_ova_files(connection)
+
+    def get_ova_streams():
+        for ovafile in ovafiles:
+            yield connection.get(ovafile, stream=True).raw
 
     with openvstorage.TempStorage() as ts:
-        res = requests.get(os.path.join(link, path.strip('/')), auth=(username, passwd), stream=True)
-        with tarfile.open(mode='r|*', fileobj=res.raw) as tar:
+        with tarfile.open(mode='r|*', fileobj=StreamUnifier(get_ova_streams())) as tar:
             disks = [disk['path'] for disk in machine['disks']]
             for member in tar:
                 print('Iterating %s' % member.name)

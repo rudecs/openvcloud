@@ -301,18 +301,13 @@ class cloudapi_machines(BaseActor):
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
-    def syncImportOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, user):
+    def syncImportOVF(self, uploaddata, envelope, cloudspace, name, description, sizeId, callbackUrl, user):
         try:
             error = False
             userobj = j.core.portal.active.auth.getUserInfo(user)
-            cloudspace = self.models.cloudspace.get(cloudspaceId)
 
             vm = self.models.vmachine.new()
-            vm.cloudspaceId = cloudspaceId
-
-            envelope = self.acl.execute('greenitglobe', 'cloudbroker_getenvelope',
-                                        gid=cloudspace.gid, role='storagedriver',
-                                        args={'link': link, 'username': username, 'passwd': passwd, 'path': path})
+            vm.cloudspaceId = cloudspace.id
 
             machine = ovf.ovf_to_model(envelope)
 
@@ -352,14 +347,12 @@ class cloudapi_machines(BaseActor):
             machine['id'] = vm.id
 
             # the disk objects in the machine gets changed in the jumpscript and a guid is added to them
+            jobargs = uploaddata.copy()
+            jobargs['machine'] = machine
             machine = self.acl.execute('greenitglobe', 'cloudbroker_import',
                                        gid=cloudspace.gid, role='storagedriver',
                                        timeout=3600,
-                                       args={'link': link,
-                                             'username': username,
-                                             'passwd': passwd,
-                                             'path': path,
-                                             'machine': machine})
+                                       args=jobargs)
             try:
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
@@ -382,13 +375,11 @@ class cloudapi_machines(BaseActor):
                 requests.get(callbackUrl)
             raise
 
-    def syncExportOVF(self, link, username, passwd, path, machineId, user, callbackUrl):
+    def syncExportOVF(self, uploaddata, vm, provider, cloudspace, user, callbackUrl):
         try:
             error = False
             diskmapping = list()
             userobj = j.core.portal.active.auth.getUserInfo(user)
-            provider, node, vm = self.cb.getProviderAndNode(machineId)
-            cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
             disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
@@ -411,8 +402,10 @@ class cloudapi_machines(BaseActor):
                     'size': disk['sizeMax'] * 1024 * 1024 * 1024
                 } for i, disk in enumerate(disks)]
             })
-            export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid, role='storagedriver', timeout=3600,
-                                                    args={'link': link, 'username': username, 'passwd': passwd, 'path': path, 'envelope': envelope, 'disks': disknames})
+            jobargs = uploaddata.copy()
+            jobargs.update({'envelope': envelope, 'disks': disknames})
+            export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid,
+                                                    role='storagedriver', timeout=3600, args=jobargs)
             # TODO: the url to be sent to the user
             provider.client.ex_delete_disks(diskguids)
             if export_job['state'] == 'ERROR':
@@ -429,6 +422,7 @@ class cloudapi_machines(BaseActor):
                 requests.get(callbackUrl)
             raise
 
+    @authenticator.auth(acl={'cloudspace': set('C')})
     def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, **kwargs):
         """
         Import a machine from owncloud(ovf)
@@ -444,10 +438,21 @@ class cloudapi_machines(BaseActor):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
+        uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_getenvelope', gid=cloudspace.gid,
+                                         role='storagedriver', args=uploaddata)
+        if job['state'] == 'ERROR':
+            import json
+            try:
+                msg = json.loads(job['result']['exceptioninfo'])['message']
+            except:
+                msg = 'Failed to retreive envelope'
+            raise exceptions.BadRequest(msg)
 
-        gevent.spawn(self.syncImportOVF, link, username, passwd, path,
-                     cloudspaceId, name, description, sizeId, callbackUrl, user)
+        gevent.spawn(self.syncImportOVF, uploaddata, job['result'], cloudspace, name, description, sizeId, callbackUrl, user)
 
+    @authenticator.auth(acl={'machine': set('X')})
     def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
         """
         Export a machine with it's disks to owncloud(ovf)
@@ -460,7 +465,20 @@ class cloudapi_machines(BaseActor):
         """
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        gevent.spawn(self.syncExportOVF, link, username, passwd, path, machineId, user, callbackUrl)
+        provider, node, vm = self.cb.getProviderAndNode(machineId)
+        cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
+        uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
+        job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export_readme', gid=cloudspace.gid,
+                                         role='storagedriver', timeout=3600, args=uploaddata)
+        if job['state'] == 'ERROR':
+            import json
+            try:
+                msg = json.loads(job['result']['exceptioninfo'])['message']
+            except:
+                msg = 'Failed to upload to link'
+            raise exceptions.BadRequest(msg)
+        gevent.spawn(self.syncExportOVF, uploaddata, vm, provider, cloudspace, user, callbackUrl)
+        return True
 
     @authenticator.auth(acl={'machine': set('X')})
     def backup(self, machineId, backupName, **kwargs):

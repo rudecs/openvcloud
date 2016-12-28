@@ -21,30 +21,47 @@ def action(link, username, passwd, path, envelope, disks):
     import os
     import tarfile
     import requests
+    import threading
     from CloudscalerLibcloud import openvstorage
+    from JumpScale.core.system.streamchunker import StreamChunker
+    basepath = os.path.join(link, path.strip('/'))
+    blocksize = 1024 * 1024
+
+    def upload(rfd):
+        for idx, chunk in enumerate(StreamChunker(os.fdopen(rfd), chunksize=100 * 1024 ** 2)):
+            print('Adding chunk', idx)
+            url = '{}/export.ova.gz.{:09d}'.format(basepath, idx)
+            requests.put(url, data=chunk, auth=(username, passwd))
+        print('Reached end')
 
     def reset(tarinfo):
         tarinfo.name = os.path.basename(tarinfo.name)
         return tarinfo
 
     with openvstorage.TempStorage() as ts:
-        tarpath = os.path.join(ts.path, 'export.ova')
-        with tarfile.open(tarpath, 'w') as tar:
-            ti = tarfile.TarInfo('descriptor.ovf')
-            ti.size = len(envelope)
-            tar.addfile(ti, BytesIO(j.tools.text.toStr(envelope)))
-            j.system.fs.writeFile(filename=os.path.join(ts.path, 'descriptor.ovf'), contents=envelope)
-            tmpvolname = 'disk-%i.vmdk'
-            for i, disk in enumerate(disks):
-                print('Converting %s' % disk)
-                vmdk = os.path.join(ts.path, tmpvolname % i)
-                openvstorage.exportVolume(disk, vmdk)
-                tar.add(vmdk, filter=reset)
-        print('Uploading tar')
-        with open(tarpath, 'rb') as tar:
-            res = requests.put(os.path.join(link, path.strip('/')), data=tar, auth=(username, passwd))
-            if res.status_code >= 300:
-                raise RuntimeError("Failed to upload error %s" % res.text)
+        vmdks = []
+        tmpvolname = 'disk-%i.vmdk'
+        for i, disk in enumerate(disks):
+            print('Converting %s' % disk)
+            vmdk = os.path.join(ts.path, tmpvolname % i)
+            openvstorage.exportVolume(disk, vmdk)
+            vmdks.append(vmdk)
+
+        rfd, wfd = os.pipe()
+        uploadthread = threading.Thread(target=upload, args=(rfd,))
+        uploadthread.start()
+
+        wfile = os.fdopen(wfd, 'w', blocksize)
+        tar = tarfile.open(mode='w|gz', fileobj=wfile, bufsize=blocksize)
+
+        ti = tarfile.TarInfo('descriptor.ovf')
+        ti.size = len(envelope)
+        tar.addfile(ti, BytesIO(j.tools.text.toStr(envelope)))
+        for vmdk in vmdks:
+            tar.add(vmdk, filter=reset)
+        tar.close()
+        wfile.close()
+        uploadthread.join()
 
 
 if __name__ == "__main__":
