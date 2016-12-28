@@ -257,7 +257,7 @@ class cloudapi_machines(BaseActor):
         image.status = 'CREATED'
         self.models.image.set(image)
         for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
-            stack['images'].append(imageid)
+            stack.setdefault('images', []).append(imageid)
             self.models.stack.set(stack)
 
         return imageid
