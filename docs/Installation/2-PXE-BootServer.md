@@ -23,7 +23,7 @@ mkdir $WORKDIR
 wget http://some.where.org/jumpscale/OVC/pxebootbinaries.tgz -O - | tar zxvf - -C ${WORKDIR}
 ```
 
-We know have add a network for properly connecting to the management backend.
+We now have to add a network for properly connecting to the management backend.
 
 First, following commands create an Open vSwitch bridge named `pxeboot` and connects it to `backplane1` (optionally with a tag):
 
@@ -33,7 +33,7 @@ ovs-vsctl add-port backplane1 pxeboot [tag=2311]
 ip l set pxeboot up
 ```
 
-Then, create a Docker network with our Docker binary:
+Then create a Docker network:
 
 ```bash
 docker network create -d macvlan  --subnet=192.168.0.0/24 --gateway=192.168.0.1 -o parent=pxeboot pxeboot
@@ -41,8 +41,8 @@ docker network create -d macvlan  --subnet=192.168.0.0/24 --gateway=192.168.0.1 
 
 What it does:
 
-- use MACVLAN driver to create a network definition in Docker with name pxeboot
-- and define gateway and network/mask
+- Use the MACVLAN driver to create a network definition in Docker with the name `pxeboot`
+- Define gateway and network/mask
 
 Run the Docker container:
 
@@ -58,26 +58,27 @@ docker run -it --rm --net=pxeboot --name=pxeboot -v $(pwd)/tftpboot:/tftpboot \
 
 What is does:
 
-- bind-mount directory $tftpboot in docker /tftpboot
-- same for conf
-- bind-mount file $images/vmlinuz-4 as file in /tftpboot/vmlinuz-4
-- same for initrd.gz
+- Bind-mount directory `$(pwd)/tftpboot` to `/tftpboot` in Docker container
+- Same for `conf`
+- Bind-mount file `$(pwd)/images//vmlinuz-4` as file in `/tftpboot/vmlinuz-4` in Docker container
+- Same for `initrd.gz`
 
 Further configuration is required:
 
-- add a line `ip fqdn hostname` to `$(pwd)/hosts`
-- add a line `ma:ca:dd:re-ss,hostname,infinite` to `$(pwd)/dhcphosts`
-- configure `$(pwd)/conf/dnsmasq.conf` to reflect your network
-  - changes to dnsmasq.conf need a restart of the docker
-  - changes to hosts or dhcphosts needs just a SigHUP to the dnsmasq process
+- Add a line `ip fqdn hostname` to `$(pwd)/conf/hosts`
+- Add a line `ma:ca:dd:re:ss:ss,hostname,infinite` to `$(pwd)/conf/dhcphosts`
+- Configure `$(pwd)/conf/dnsmasq.conf` to reflect your network
+  - Changes to `dnsmasq.conf` need a restart of the Docker container
+  - Changes to `hosts` or `dhcphosts` just need a "SIGHUP" to the `dnsmasq` process:
+
+    ```bash
+    PID=$(docker inspect --format '{{ .State.Pid}}' pxeboot)
+    kill -HUP $PID
+    ```
+- Make sure you have `$(pwd)/images` exposed as `ftp` or as `http`, where `$(pwd)/tftpboot/pxelinux.cfg/911boot` refers to the correct URL
+- To boot a machine in 911, make a (sym)link from `$(pwd)/tftpboot/pxelinux.cfg/911boot` to `01-ma-ca-dd-re-ss`:
 
   ```bash
-  PID=$(docker inspect --format '{{ .State.Pid}}' pxeboot)
-  kill -HUP $PID
-  ```
-- make sure you have $(pwd)/images exposed as ftp or as http, where `$(pwd)/tftpboot/pxelinux.cfg/911boot` refers to the correct URL
-- to boot a machine in 911, make a (sym)link from `$(pwd)/tftpboot/pxelinux.cfg/911boot` to `01-ma-ca-dd-re-ss-ss`:
-  ```bash
   cd $(pwd)/tftpboot/pxelinux.cfg
-  ln 911boot 01-ma-ca-dd-re-ss-ss
+  ln 911boot 01-ma-ca-dd-re-ss
   ```
