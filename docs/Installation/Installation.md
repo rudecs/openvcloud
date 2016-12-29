@@ -23,11 +23,11 @@ There are three possibilities for [where-to-run]:
 - **ovcgit** for scripts that need to be run on **ovcgit**, with your current directory set to the environment repository
 - **node** for scripts that need to be run on a CPU or storage node
 
-The actual installation process takes 7 steps:
+The actual installation process takes 8 steps:
 
 - [Setup the Controllers](0-Controllers.md)
 - [Installation of the Master containers](1-MasterContainers.md)
-- [Setup the OpenvCloud PXE boot server](2-PXE-BootServer.md)
+- [Setup of the OpenvCloud PXE boot server](2-PXE-BootServer.md)
 - [Install the OS on the physical nodes](3-InstallOS.md)
 - [Connect all the nodes to ovc_git](4-ConnectNode2ovc_git.md)
 - [Setup Open vStorage](4-SetupOVS.md)

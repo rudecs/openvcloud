@@ -1,4 +1,4 @@
-## Setup of the controllers
+## Setup of the Controllers
 
 An OpenvCloud environment has 3 controllers, which are actually three physical server nodes, mounted in the same G8 rack of the compute nodes and storage nodes. For a functional installation only one of the three controllers is needed. Below steps document how to setup one controller.
 
@@ -8,12 +8,6 @@ Setting up an environment with one controller is done in following steps:
 - [Step 3: Install Open vSwitch](#install-openvswitch)
 - [Step 4: Configure Open vSwitch](#configure-openvswitch)
 - [Step 5: Install Docker](#install-docker)
-
-? PXE Boot server -> other
-
-Also see https://github.com/0-complexity/G8OS_boot for 
-
-
 
 <a id="install-OS"></a>
 #### Step 2: Install OS (step 1)
@@ -177,7 +171,7 @@ iface backplane1 inet static
 auto backplane1
 ```
 
-Reboot the controller to verify that network connectivity still is ok.
+Reboot the Controller to verify that network connectivity still is ok.
 
 <a id="install-docker"></a>
 #### Install Docker (step 5)

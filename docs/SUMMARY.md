@@ -45,7 +45,7 @@
 * [Installation of an OpenvCloud Environment](Installation/Installation.md)
    * [Setup the Controllers](Installation/0-Controllers.md)
    * [Installation of the Master Containers](Installation/1-MasterContainers.md)
-   * [Setup the OpenvCloud PXE Boot Server](2-PXE-BootServer.md)
+   * [Setup the OpenvCloud PXE Boot Server](Installation/2-PXE-BootServer.md)
    * [Install the OS on the Physical Nodes](Installation/3-InstallOS.md)
    * [Connect All the Nodes to ovc_git](Installation/4-ConnectNode2ovc_git.md)
    * [Setup Open vStorage](Installation/4-SetupOVS.md)
