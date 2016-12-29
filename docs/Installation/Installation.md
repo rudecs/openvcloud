@@ -27,7 +27,7 @@ The actual installation process takes 8 steps:
 
 - [Setup the Controllers](0-Controllers.md)
 - [Installation of the Master containers](1-MasterContainers.md)
-- [Setup of the OpenvCloud PXE boot server](2-PXE-BootServer.md)
+- [Setup of the OpenvCloud PXE boot server](2-PXE-Boot-Server.md)
 - [Install the OS on the physical nodes](3-InstallOS.md)
 - [Connect all the nodes to ovc_git](4-ConnectNode2ovc_git.md)
 - [Setup Open vStorage](4-SetupOVS.md)
