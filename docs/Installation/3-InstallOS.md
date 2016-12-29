@@ -1,14 +1,15 @@
 ## Install the OS on the Physical Nodes
 
-On the controller you first need to start a Docker container running the **OpenvCloud PXE boot server**, which is available from the [0-complexity/G8OS_boot](https://github.com/0-complexity/G8OS_boot) GitHub repository; also the installation and usage documentation is there.
+Before you continue, make sure that you installed and started on the controller a Docker container running the **OpenvCloud PXE boot server**, as documented in the [here](/Installation/2-PXE-BootServer.md).
 
 For each of the physical nodes you need to execute the following three steps:
-- [Boot node from the OpenvCloud PXE Boot Server](#911-mode)
+
+- [Boot node from the OpenvCloud PXE boot server](#911-mode)
 - [Install the OS on the node](#install-os)
 - [Disable PXE boot](#disable-PXE)
 
 <a id="911-mode"></a>
-### Boot node from the OpenvCloud PXE Boot Server
+### Boot node from the OpenvCloud PXE boot server
 
 The "911 mode" gets a system in a state where the whole OS is loaded into memory, with all tools available for install/recovery purposes. Once the node is booted in "911 mode" it is running Ubuntu 16.04 fully from memory, with SSH access enabled, and allowing you to use `apt-get` to install missing packages if needed.
 

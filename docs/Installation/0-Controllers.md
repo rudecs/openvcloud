@@ -11,7 +11,7 @@ Setting up an environment with one controller is done in following steps:
 
 ? PXE Boot server -> other
 
-https://github.com/0-complexity/G8OS_boot
+Also see https://github.com/0-complexity/G8OS_boot for 
 
 
 
@@ -22,7 +22,7 @@ https://github.com/0-complexity/G8OS_boot
 2. Make sure a monitor and keyboard are connected to the Controller
 3. Plug in the USB drive
 4. Boot the Controller
-5. During Startup the GOOXI logo will show up, press **F7** to op the Boot Device Popup
+5. During startup the GOOXI logo will show up, press **F7** in the Boot Device Popup
 6. Select the **USB Flash Disk**
 7. Select **English** language
 8. Select **Install Ubuntu Server**
@@ -33,8 +33,8 @@ https://github.com/0-complexity/G8OS_boot
 13. Select the primary NIC
 14. If network config failed: **Select Do Not Configure The Network At This Time**
 15. Enter the correct hostname (i.e. US-G8-2-CTR-01)
-16. When asked to enter a username use **gig**
-17. When asked for a password use **rooter**
+16. When asked to enter a **username** use **gig**
+17. When asked for a **password** use **rooter**
 18. Confirm the **use of a weak password**
 19. **Encrypt home directory**: **No**
 20. Select the correct time zone
@@ -61,7 +61,7 @@ https://github.com/0-complexity/G8OS_boot
 36. Select **Beginning**
 37. Select **Use As** and change to **Swap Area**
 38. Select **Done Setting Up The Partition**
-39. Select the *FREE SPACE** line below the 'sda' disk yet again
+39. Select the *FREE SPACE* line below the 'sda' disk yet again
 40. Select **Create a New Partition**
 41. Don’t change disk size value already entered (should be all remaining space on disk)
 42. Select **Primary**
@@ -106,10 +106,8 @@ https://github.com/0-complexity/G8OS_boot
 71. Select **Done Setting Up The Partition**
 72. Select **Finish Up Partitioning And Write The Changes To Disk**
 73. Select **Yes to Write The Changes To Disk**
-
-[installing… will take some time]
-
-74. When asked how to manage updates on this system select **No Automatic Updates**
+74. Wait while the actual installation takes place
+75. When asked how to manage updates on this system select **No Automatic Updates**
 76. When asked which software to install: select **OpenSSH Server (keep standard system utilities selected)** with the **Space** bar and press **Enter** to confirm
 77. On the **Installation Complete** dialog: disconnect the USB Drive and select **Continue to reboot the system**
 

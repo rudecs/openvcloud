@@ -1,14 +1,14 @@
 ## Installation of the Master Containers
 
-The first step to deploy an OpenvCloud environment is to setup the master containers.
+The master containers are actually 4 Docker containers:
 
-The master containers a are actually 4 Docker containers:
 - **ovc_git** holding all configuration of your environment
 - **ovc_master** controlling the environment based on information from ovc\_git
-- **ovc_reflector** provides [reverse SSH connections](https://en.wikipedia.org/wiki/Reverse_connection) to the physical nodes
+- **ovc_reflector** providing [reverse SSH connections](https://en.wikipedia.org/wiki/Reverse_connection) to the physical nodes
 - **ovc_proxy** running NGINX as a proxy for all port 80 and port 443 communications
 
 The master containers are typically installed on one of the controllers, which takes four steps:
+
 - [Step 1: Bootstrap the installation](#bootstrap)
 - [Step 2: Create the ovc_git container](#git-container)
 - [Step 3: Create all other containers](#other-containers)
