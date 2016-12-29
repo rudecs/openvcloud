@@ -43,6 +43,7 @@
    * [Machine API](EndUserPortal/MachineAPI/MachineAPI.md)
    * [Knowledge Base](EndUserPortal/KnowledgeBase/KnowledgeBase.md)
 * [Installation of an OpenvCloud Environment](Installation/Installation.md)
+   * [Setup the Controllers](Installation/0-Controllers.md)
    * [Installation of the Master Containers](Installation/0-MasterContainers.md)
    * [Install the OS on the Physical Nodes](Installation/1-InstallOS.md)
    * [Connect All the Nodes to ovc_git](Installation/3-ConnectNode2ovc_git.md)
