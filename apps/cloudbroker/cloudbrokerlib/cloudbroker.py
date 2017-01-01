@@ -413,7 +413,7 @@ class CloudBroker(object):
                                         'access.' % accessrights)
 
     def fillResourceLimits(self, resource_limits, preserve_none=False):
-        for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_S', 'CU_NO', 'CU_NP', 'CU_I']:
+        for limit_type in ['CU_M', 'CU_D', 'CU_C', 'CU_NP', 'CU_I']:
             if limit_type not in resource_limits or resource_limits[limit_type] is None:
                 resource_limits[limit_type] = None if preserve_none else -1
             elif resource_limits[limit_type] < -1 or resource_limits[limit_type] == 0:

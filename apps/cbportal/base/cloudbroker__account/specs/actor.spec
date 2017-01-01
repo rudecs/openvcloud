@@ -52,8 +52,6 @@
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
         var:maxVDiskCapacity int,-1, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
-        var:maxNASCapacity int,-1, max size of primary(NAS) storage in TB @optional
-        var:maxNetworkOptTransfer int,-1, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
 
@@ -67,7 +65,5 @@
         var:maxMemoryCapacity float,, max size of memory in GB @optional
         var:maxVDiskCapacity int,, max size of aggregated vdisks in GB @optional
         var:maxCPUCapacity int,, max number of cpu cores @optional
-        var:maxNASCapacity int,, max size of primary(NAS) storage in TB @optional
-        var:maxNetworkOptTransfer int,, max sent/received network transfer in operator @optional
         var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,, max number of assigned public IPs @optional

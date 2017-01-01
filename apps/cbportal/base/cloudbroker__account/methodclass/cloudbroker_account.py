@@ -64,8 +64,7 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
-               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNASCapacity=-1,
-               maxNetworkOptTransfer=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
+               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
 
         accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
         if accounts:
@@ -102,8 +101,6 @@ class cloudbroker_account(BaseActor):
         resourcelimits = {'CU_M': maxMemoryCapacity,
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
-                          'CU_S': maxNASCapacity,
-                          'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
         self.cb.fillResourceLimits(resourcelimits)
@@ -159,7 +156,7 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
-               maxNASCapacity, maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
         """
         Update an account name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -179,22 +176,17 @@ class cloudbroker_account(BaseActor):
         resourcelimits = {'CU_M': maxMemoryCapacity,
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
-                          'CU_S': maxNASCapacity,
-                          'CU_NO': maxNetworkOptTransfer,
                           'CU_NP': maxNetworkPeerTransfer,
                           'CU_I': maxNumPublicIP}
         self.cb.fillResourceLimits(resourcelimits)
         maxMemoryCapacity = resourcelimits['CU_M']
         maxVDiskCapacity = resourcelimits['CU_D']
         maxCPUCapacity = resourcelimits['CU_C']
-        maxNASCapacity = resourcelimits['CU_S']
-        maxNetworkOptTransfer = resourcelimits['CU_NO']
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudapi.accounts.update(accountId, name, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNASCapacity,
-                                             maxNetworkOptTransfer, maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):
