@@ -56,12 +56,11 @@ The above screenshot shows the **Actions** tab of you newly created machine.
 
 Here you can:
 
-- **Pause** the virtual machine
+- **Pause**
 - **Stop** and **Start**
 - **Reboot**
 - **Reset**
-- **Take a snapshot**
-- **Create a template**
+- **Take Snapshot**
 - **Destroy**
 
 
@@ -109,7 +108,7 @@ In the **Sharing** tab you can manage who has access to your virtual machine:
 
 ![](Sharing.png)
 
-A user can either have Read, Read/Write or Admin privileges. 
+A user can either have Read, Read/Write or Admin privileges.
 
 
 ### Port Forwards
