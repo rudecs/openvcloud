@@ -72,7 +72,7 @@ Further configuration is required:
   - Changes to `hosts` or `dhcphosts` just need a "SIGHUP" to the `dnsmasq` process:
 
     ```
-    PID=$(docker inspect --format '{{.State.Pid}}' pxeboot)
+    PID=$(docker inspect --format "{{ .State.Pid}}" pxeboot)
     kill -HUP $PID
     ```
 
