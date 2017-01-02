@@ -10,7 +10,7 @@ From here you can go to the **Virtual Machine Details** page for a virtual machi
 
 From the **Actions** dropdown menu you can:
 - Start, stop, reboot, pause, delete and clone a virtual machine
-- Create a template from the virtual machine
+- Create a template from the virtual machine (which are saved to `/mnt/vmstor/templates/`)
 - Update the virtual machine
 - Check image chain
 - [Move to another CPU node](Actions/MoveVM2AnotherCPUNode.md)
