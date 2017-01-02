@@ -71,10 +71,6 @@ Further configuration is required:
   - Changes to `dnsmasq.conf` need a restart of the Docker container
   - Changes to `hosts` or `dhcphosts` just need a "SIGHUP" to the `dnsmasq` process:
 
-    ```
-    PID=$(docker inspect --format "{{ .State.Pid}}" pxeboot)
-    kill -HUP $PID
-    ```
 
 - Make sure you have `$(pwd)/images` exposed as `ftp` or as `http`, where `$(pwd)/tftpboot/pxelinux.cfg/911boot` refers to the correct URL
 - To boot a machine in 911, make a (sym)link from `$(pwd)/tftpboot/pxelinux.cfg/911boot` to `01-ma-ca-dd-re-ss`:
