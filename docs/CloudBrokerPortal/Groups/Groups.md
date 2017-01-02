@@ -24,7 +24,7 @@ By clicking the **ID** of a group you navigate to the **User Details** page of t
 
 The **Action** drop down menu allows you to **edit** group properties or **delete** the group.
 
-> Note that on the **Group** page you can also select **Add Group** from the **Actions** menu, allowing you to add/create your own groups. currently however you can't do much with this...
+> Note that you can also select **Add Group** from the **Action** menu on the **Group** page, allowing you to add/create your own groups. Currently you can't do much however with this...
 
 <a id="end-user"></a>
 ### End User Portal
@@ -140,7 +140,7 @@ Within the **Operator Portals** specific user rights are further defined by memb
 
 
 <a id="level2"></a>
-**leve2** members can only use the "level 2" **Cloud Broker Portal** actions, which are currently only the following stack actions, available in the **Stack Details** page:
+Members of the **leve2** group can only use the "level 2" **Cloud Broker Portal** actions, which are currently only the following stack actions, available in the **Stack Details** page:
 
 - **Enable**
 - **Put in Maintenance**
@@ -148,9 +148,7 @@ Within the **Operator Portals** specific user rights are further defined by memb
 
 
 <a id="level3"></a>
-**level3** members can only use the "level 3" **Cloud Broker Portal** actions
-
-> Currently no "level 3" functions have been defined yet, so **level 3** membership will not yield any additional privileges to a user with **admin** group membership.
+Members of the **level3** group can only use the "level 3" **Cloud Broker Portal** actions. Currently there are however no "level 3" functions defined yet. So **level 3** membership will not yield any additional privileges to a user with **admin** group membership.
 
 <a id="storage"></a>
 ### Storage Portal
