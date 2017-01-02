@@ -48,9 +48,10 @@ function setupdev() {
     name=$1
     size=$2
     devname=$(createdev "${node}_${name}" $size)
+    devbasename=$(basename ${devname})
     dupdev "${devname}"
     dupdev "${devname}p1"
-    rexec udevadm test "/sys/block/${devname}/${devname}p1"
+    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1"
 
     rexec mkdir /mnt/$name
     rexec mount "${devname}p1" /mnt/$name
@@ -60,9 +61,10 @@ function setupdevnomount() {
     name=$1
     size=$2
     devname=$(createdev "${node}_${name}" $size)
+    devbasename=$(basename ${devname})
     dupdev "${devname}"
     dupdev "${devname}p1"
-    rexec udevadm test "/sys/block/${devname}p1"
+    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1"
 }
 
 
