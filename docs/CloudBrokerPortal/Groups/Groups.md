@@ -29,7 +29,7 @@ The **Action** drop down menu allows you to **edit** group properties or **delet
 <a id="end-user"></a>
 ### End User Portal
 
-Within the **End User Portal** specific user rights are further defined by the end user authorization model, discussed [here](/EndUSerPortal/Authorization/AuthorizationModel.md)
+Within the **End User Portal** specific user rights are further defined by the end user authorization model, discussed [here](/EndUserPortal/Authorization/AuthorizationModel.md)
 
 The **finance** group is a legacy "sub" group of the **user** group. Membership of the **finance** group was required to access the **Consumption** page in the **End User Portal**; this page got however depreciated.
 
@@ -47,7 +47,7 @@ Within the **Operator Portals** specific user rights are further defined by memb
 > Note that membership of the **level1**, **level2** and **level3** groups also requires explicit membership of the **admin** group
 
 <a id="level1"></a>
-Following **Cloud Broker Portal** actions requires **level1** group membership in addition to **admin** group membership: 
+Following **Cloud Broker Portal** actions requires **level1** group membership in addition to **admin** group membership:
 
 | **Accounts**                                             |
 |:---------------------------------------------------------|
