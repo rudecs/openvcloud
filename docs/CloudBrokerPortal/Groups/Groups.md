@@ -36,18 +36,18 @@ The **finance** group is a legacy "sub" group of the **user** group. Membership 
 <a id="operator"></a>
 ### Operator Portals
 
-The **Operator Portals** include the **At Your Service Portal**, **Cloud Broker Portal**, **Statistics Portal**, **Grid Portal** and **System Portal**.
+The **Operator Portals** include the **At Your Service Portal**, **Cloud Broker Portal**, **Statistics Portal**, **Grid Portal** and the **System Portal**.
 
 Within the **Operator Portals** specific user rights are further defined by membership of one of the following "sub" groups:
 
 - [level1](#level1)
 - [level2](#level2)
-- [level3](#level3) (not used yet)
+- [level3](#level3)
 
-> Note that membership of the **level1**, **level2** and **level3** groups also require explicit membership of the **admin** group
+> Note that membership of the **level1**, **level2** and **level3** groups also requires explicit membership of the **admin** group
 
 <a id="level1"></a>
-**level1** members can only use the "level 1" **Cloud Broker Portal** actions:
+Following **Cloud Broker Portal** actions requires **level1** group membership in addition to **admin** group membership: 
 
 | **Accounts**                                             |
 |:---------------------------------------------------------|
@@ -140,7 +140,7 @@ Within the **Operator Portals** specific user rights are further defined by memb
 
 
 <a id="level2"></a>
-Members of the **leve2** group can only use the "level 2" **Cloud Broker Portal** actions, which are currently only the following stack actions, available in the **Stack Details** page:
+Following **Stack Details** page actions require **level2** group membership:
 
 - **Enable**
 - **Put in Maintenance**
@@ -148,7 +148,7 @@ Members of the **leve2** group can only use the "level 2" **Cloud Broker Portal*
 
 
 <a id="level3"></a>
-Members of the **level3** group can only use the "level 3" **Cloud Broker Portal** actions. Currently there are however no "level 3" functions defined yet. So **level 3** membership will not yield any additional privileges to a user with **admin** group membership.
+Currently there is no functionality that requires **level 3** membership. So **level 3** membership will not yield any additional privileges to a user with **admin** group membership.
 
 <a id="storage"></a>
 ### Storage Portal
