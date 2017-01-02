@@ -2,41 +2,19 @@
 from JumpScale import j
 from argparse import ArgumentParser
 from pkg_resources import parse_version
-import itertools
+import sys
+import yaml
 import fnmatch
 import os
+from collections import namedtuple
+
+RepoInfo = namedtuple('RepoInfo', 'domain type account reponame path url')
+VersionInfo = namedtuple('VersionInfo', 'type name')
 
 
-help = """jspython makerelease --release-version <version>
-
-This script makes some assumptions
-
-We always release a x.y.z version which is a tag based on branch x.y
-
-7.0 on JumpScale -> 2.0 on OpenvCloud they move together.
-"""
-
-parser = ArgumentParser(help)
-
-parser.add_argument("-r", "--release-version", dest="version", help="Version to make release for")
-parser.add_argument("-d", "--delete-release", dest="delete", action='store_true', help="Delete release")
-parser.add_argument("-dry", "--dry-run", dest="dry", action='store_true', default=False, help="Make a dry run")
-parser.add_argument("-f", "--force-version", action='store_true', default=False, dest="force", help="Force recreation of version")
-options = parser.parse_args()
-
-REPOS = {'openvcloud': ['/opt/code/github/0-complexity/openvcloud',
-                        '/opt/code/github/0-complexity/selfhealing',
-                        '/opt/code/github/0-complexity/g8vdc'],
-         'jumpscale': ['/opt/code/github/jumpscale7/jumpscale_core7',
-                       '/opt/code/github/jumpscale7/jumpscale_portal']
-         }
-AYS = {'openvcloud': '/opt/code/github/0-complexity/openvcloud_ays',
-       'jumpscale': '/opt/code/github/jumpscale7/ays_jumpscale7'}
-
-
-def getRepoInfo(url):
+def get_repo_info(url):
     domain, type_, account, repo, localpath, url = j.do.getGitRepoArgs(url)
-    return type_, account.lower(), repo.rstrip('.git').lower()
+    return RepoInfo(domain, type_, account.lower(), repo.rstrip('.git').lower(), localpath, url)
 
 
 def getServicesFiles(path):
@@ -49,58 +27,53 @@ def getServicesFiles(path):
 
 
 def freeze(export, target):
-    for key, value in target.iteritems():
-        if export.get(key):
-            export.pop(key)
+    changed = False
+    for type_ in ('branch', 'tag', 'revision'):
+        if type_ != target.type:
+            if export.pop(type_, None) is not None:
+                changed = True
 
-        if value:
-            export[key] = value
+    if export.get(target.type) != target.name:
+        changed = True
+        export[target.type] = target.name
 
-    return export
+    return changed
 
 
-def changeversion(aysrepo, targets):
-    repoinfo = (repo.type, repo.account, repo.name)
-    services = getServicesFiles(repo.baseDir)
-
-    for service in services:
+def changeversion(aysrepo, repos):
+    changes = False
+    repos = {repo['info'].path: repo for repo in repos}
+    for service in getServicesFiles(aysrepo['info'].path):
         hrd = j.core.hrd.get(service)
         exports = hrd.getDictFromPrefix('git.export')
-
         for index in exports:
             export = exports[index]
-            repoinfo = getRepoInfo(export['url'])
-            target = targets.get(repoinfo)
+            repoinfo = get_repo_info(export['url'])
+            target = repos.get(repoinfo.path)
             if target:
-                export = freeze(export, target)
+                changes |= freeze(export, target['target'])
                 hrd.set('git.export.%s' % index, export)
                 hrd.save()
+    return changes
 
 
-def getVersions(type):
-    major, minor, release = options.version.split('.')
-    if type == 'jumpscale':
-        branch, tag = (str(int(major) + 5), minor), (str(int(major) + 5), minor, release)
-    else:
-        branch, tag = (major, minor), (major, minor, release)
-    return '.'.join(branch), '.'.join(tag)
+def get_versions(repo):
+    def parse_entry(entry, name):
+        if len(entry) != 1:
+            j.console.warning('Invalid {} entry {} in repo {}'.format(name, entry, repo['name']))
+        return VersionInfo(*entry.items()[0])
+
+    try:
+        return parse_entry(repo['source'], 'source'), parse_entry(repo['target'], 'target')
+    except KeyError:
+        j.console.warning('Repo {} has invalid source/target data'.format(repo['name']))
+        sys.exit(1)
 
 
-def getTagTargets():
-    targets = {}
-    for type, repos in REPOS.iteritems():
-        for path in repos:
-            _, tagname = getVersions(type)
-            repo = j.clients.git.get(path)
-            targets[repo.type, repo.account, repo.name] = {'tag': tagname, 'revision': '', 'branch': ''}
-    return targets
-
-
-def make_tag(repo, tagname):
-    print('[+]   Making tag %s on %s' % (tagname, '/'.join((repo.account, repo.name))))
+def make_tag(repo, tagname, force):
     for tag in repo.repo.tags:
         if tag.name == tagname:
-            if options.force:
+            if force:
                 repo.repo.git.tag('-d', tagname)
                 break
             else:
@@ -109,7 +82,7 @@ def make_tag(repo, tagname):
     return True
 
 
-def tag_exists(repo, tag):
+def tag_exists(repo, tagname):
     for tag in repo.repo.tags:
         if tag.name == tagname:
             return True
@@ -124,56 +97,114 @@ def get_branch(repo, tag):
     return branchnames[-1]
 
 
-if not options.delete:
-    # validate version
-    for type, path in AYS.iteritems():
-        branchname, tagname = getVersions(type)
-        repo = j.clients.git.get(path)
-        if tag_exists(repo, tagname) and not options.force:
-            print('[-] Release with tag %s already exists on repo %s' % (tagname, '/'.join((repo.account, repo.name))))
-            j.application.stop(1)
+def prepare_source(repo, force, push_target=True):
+    source = repo['source']
+    target = repo['target']
+    client = repo['client']
+    if target.type == 'tag':
+        j.console.info('Creating tag {} on {}'.format(target.name, repo['name']))
+        client.repo.checkout('-B', source.name, 'origin/{0}'.format(source.name))
+        if push_target:
+            make_tag(client, target.name, force)
+            client.repo.git.push('tags/{}'.format(target.name))
+    elif target.type == 'branch':
+        remote = client.repo.remote()
+        for ref in remote.refs:
+            if ref.remote_head == target.name:
+                j.console.info('Switching to existing branch {} on repo {}'.format(target.name, repo['name']))
+                client.repo.git.checkout('-B', target.name, 'origin/{}'.format(target.name))
+                break
+        else:
+            j.console.info('Creathing branch {} on repo {}'.format(target.name, repo['name']))
+            client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
+        if push_target:
+            client.repo.git.push('origin', target.name)
 
-    for type, repos in REPOS.iteritems():
-        for path in repos:
-            branchname, tagname = getVersions(type)
-            repo = j.clients.git.get(path)
-            branchname = get_branch(repo, tagname)
-            print('[+] Updating branch %s on %s' % (branchname, '/'.join((repo.account, repo.name))))
-            if not options.dry:
-                repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
-                repo.repo.git.checkout('-f', '-B', branchname, 'origin/%s' % branchname)
-                make_tag(repo, tagname)
-            print('[+] Pushing tag %s' % tagname)
-            if not options.dry:
-                repo.repo.git.push('--tags')
 
-    for type, path in AYS.iteritems():
-        branchname, tagname = getVersions(type)
-        repo = j.clients.git.get(path)
-        branchname = get_branch(repo, tagname)
-        print('[+] Making release on repo %s/%s:%s' % (repo.account, repo.name, branchname))
-        if not options.dry:
-            repo.repo.git.fetch('origin', '%s:remotes/origin/%s' % (branchname, branchname))
-            repo.repo.git.checkout('-f', '-B', branchname, 'origin/%s' % branchname)
-            changeversion(repo, getTagTargets())
-            repo.commit('Tagging %s' % tagname)
-            make_tag(repo, tagname)
-            repo.repo.git.reset('--hard', 'origin/%s' % branchname)
-        print('[+]   Pushing')
-        if not options.dry:
-            repo.repo.git.push('--tags')
-else:
-    for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
-        if isinstance(repos, basestring):
-            repos = [repos]
-        for path in repos:
-            branchname, tagname = getVersions(type)
-            repo = j.clients.git.get(path)
-            print('[+] Change repo %s/%s' % (repo.account, repo.name))
-            print('[+]   Deleting local tag %s' % tagname)
-            if tag_exists(repo, tagname):
-                if not options.dry:
-                    repo.repo.git.tag('-d', tagname)
-            print('[+]   Deleting remote tag %s' % tagname)
-            if not options.dry:
-                repo.repo.git.push('origin', ':refs/tags/%s' % tagname)
+def main(manifest, force):
+    aysrepos = filter(lambda repo: repo.get('ays', False), manifest)
+    repos = filter(lambda repo: not repo.get('ays', False), manifest)
+    # fill repo
+    j.console.notice('Switching to source')
+    for repo in manifest:
+        source, target = get_versions(repo)
+        repo['source'] = source
+        repo['target'] = target
+        j.console.info('Switching to source {}/{} on {}'.format(source.type, source.name, repo['name']))
+        repo['info'] = get_repo_info(repo['url'])
+        if j.system.fs.exists(repo['info'].path):
+            repo['client'] = j.clients.git.get(repo['info'].path)
+            repo['client'].repo.git.fetch('origin', '{0}:remotes/origin/{0}'.format(source.name))
+        else:
+            j.console.info('Cloning {}/{}'.format(repo['info'].account, repo['info'].reponame))
+            j.do.pullGitRepo(repo['url'], **{target.type: target.name})
+            repo['client'] = j.clients.git.get(repo['info'].path)
+        # validate tag and branch
+        if target.type == 'tag':
+            if tag_exists(repo['client'], target.name):
+                j.console.warning('Tag {} already exists for repo {}'.format(target.name, repo['name']))
+                sys.exit(1)
+
+    j.console.notice('Creating targets')
+    for repo in repos:
+        prepare_source(repo, force, True)
+
+    j.console.notice('Updating AYS repos')
+    for repo in aysrepos:
+        prepare_source(repo, force, False)
+        source = repo['source']
+        target = repo['target']
+        client = repo['client']
+        j.console.info('Switching versions on ays {}'.format(repo['name']))
+        if changeversion(repo, repos):
+            client.commit('Tagging %s' % target.name)
+            j.console.info('Commiting version changes on ays {}'.format(repo['name']))
+            if target.type == 'tag':
+                make_tag(repo, target.name)
+                client.repo.git.push('tags/{}'.format(target.name))
+                client.repo.git.reset('--hard', 'origin/%s' % source.name)
+            else:
+                client.repo.git.push('origin', target.name)
+
+
+if __name__ == '__main__':
+    help = """jspython makerelease --release-version <version>
+    """
+
+    parser = ArgumentParser(help)
+    parser.add_argument("-dry", "--dry-run", dest="dry", action='store_true', default=False, help="Make a dry run")
+    parser.add_argument("-f", "--force-version", action='store_true', default=False,
+                        dest="force", help="Force recreation of version")
+    parser.add_argument("-m", "--manifest", help="Version Manifest", required=True)
+    options = parser.parse_args()
+    if not j.system.fs.exists(options.manifest):
+        j.console.warning('File {} does not exist.'.format(options.manifest))
+        sys.exit(1)
+    with open(options.manifest) as manifestfd:
+        manifest = yaml.load(manifestfd)
+    j.console.warning('''\
+WARNING: This command will reset all your repos.
+    Do NOT continue if you have uncommited code.
+''')
+
+    try:
+        if j.console.askYesNo("Are you sure you want to continue? "):
+            main(manifest, options.force)
+    except KeyboardInterrupt:
+        sys.exit(1)
+
+# else:
+#     for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
+#         if isinstance(repos, basestring):
+#             repos = [repos]
+#         for path in repos:
+#             branchname, tagname = getVersions(type)
+#             repo = j.clients.git.get(path)
+#             print('[+] Change repo %s/%s' % (repo.account, repo.name))
+#             print('[+]   Deleting local tag %s' % tagname)
+#             if tag_exists(repo, tagname):
+#                 if not options.dry:
+#                     repo.repo.git.tag('-d', tagname)
+#             print('[+]   Deleting remote tag %s' % tagname)
+#             if not options.dry:
+#                 repo.repo.git.push('origin', ':refs/tags/%s' % tagname)
