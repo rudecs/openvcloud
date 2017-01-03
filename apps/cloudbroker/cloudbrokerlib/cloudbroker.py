@@ -489,6 +489,9 @@ class Machine(object):
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
+        if models.vmachine.count({'status': {'$ne': 'DESTROYED'}, 'cloudspaceId': cloudspace.id}) >= 250:
+            raise exceptions.BadRequest("Can not create more then 250 Virtual Machines per Cloud Space")
+
         size = models.size.get(sizeId)
         if disksize not in size.disks:
             raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))
