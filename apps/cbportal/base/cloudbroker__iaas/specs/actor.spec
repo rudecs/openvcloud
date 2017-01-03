@@ -45,7 +45,7 @@
         var:name str,, Name of the size
         var:vcpus int,,Number of vcpus
         var:memory int,,Memory in MB
-        var:disksize str,,Size of bootdisk in GB
+        var:disksize str,,Size of bootdisk in GB comma seperated digits
 
     method:deleteSize
         """
