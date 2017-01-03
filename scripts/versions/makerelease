@@ -121,7 +121,7 @@ def prepare_source(repo, force, push_target=True):
             client.repo.git.push('origin', target.name)
 
 
-def main(manifest, force):
+def main(manifest, force, dry):
     aysrepos = filter(lambda repo: repo.get('ays', False), manifest)
     repos = filter(lambda repo: not repo.get('ays', False), manifest)
     # fill repo
@@ -147,7 +147,7 @@ def main(manifest, force):
 
     j.console.notice('Creating targets')
     for repo in repos:
-        prepare_source(repo, force, True)
+        prepare_source(repo, force, not dry)
 
     j.console.notice('Updating AYS repos')
     for repo in aysrepos:
@@ -160,11 +160,13 @@ def main(manifest, force):
             client.commit('Tagging %s' % target.name)
             j.console.info('Commiting version changes on ays {}'.format(repo['name']))
             if target.type == 'tag':
-                make_tag(repo, target.name)
-                client.repo.git.push('tags/{}'.format(target.name))
-                client.repo.git.reset('--hard', 'origin/%s' % source.name)
+                if not dry:
+                    make_tag(repo, target.name)
+                    client.repo.git.push('tags/{}'.format(target.name))
+                    client.repo.git.reset('--hard', 'origin/%s' % source.name)
             else:
-                client.repo.git.push('origin', target.name)
+                if not dry:
+                    client.repo.git.push('origin', target.name)
 
 
 if __name__ == '__main__':
@@ -189,7 +191,7 @@ WARNING: This command will reset all your repos.
 
     try:
         if j.console.askYesNo("Are you sure you want to continue? "):
-            main(manifest, options.force)
+            main(manifest, options.force, options.dry)
     except KeyboardInterrupt:
         sys.exit(1)
 
