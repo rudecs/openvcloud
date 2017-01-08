@@ -3,7 +3,6 @@
 {{title:CBGrid - $$page}}
 {{ApplyFlatTheme}}
 
-{{find}}
 {{logo:/system/.files/img/green.png}}
 {{PortalsHamburgerMenu}}
 {{menu:
