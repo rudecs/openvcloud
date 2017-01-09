@@ -220,10 +220,7 @@
 #   input:
 #   - exportName
 
-- display: Check Image Chain
-  action: /restmachine/cloudbroker/machine/checkImageChain
-  data:
-   machineId: $$id
+
 
 - display: Move to another CPU node
   action: "#movemachine"
