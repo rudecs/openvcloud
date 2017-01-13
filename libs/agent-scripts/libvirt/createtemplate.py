@@ -24,6 +24,8 @@ def action(ovs_connection, diskguid, storagerouterguid, name):
     #
     # returns diskguid of the created template
 
+    raise Exception("This method is disabled until OVS fixes bug. See https://github.com/0-complexity/openvstorage/issues/67.")
+
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
