@@ -16,7 +16,7 @@ roles = []
 async = True
 
 
-def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
+def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size, pagecache_ratio):
     # Creates a new blank disk
     #
     # ovs_connection: dict holding connection info for ovs restapi
@@ -25,12 +25,13 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size):
     # storagerouterguid: guid of the storagerouter on wich we create the disk
     # diskname: name for the disk
     # size: size of the disk in GB
+    # pagecache_ratio: amount of metadata the volumedriver should hold in memory cache
     #
     # returns diskguid of the created disk
 
     path = "/vdisks/"
     data = dict(name=diskname, size=size * 1024**3, storagerouter_guid=storagerouterguid,
-                vpool_guid=vpoolguid)
+                vpool_guid=vpoolguid, pagecache_ratio=pagecache_ratio / 100.0)
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],

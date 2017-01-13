@@ -15,7 +15,7 @@ roles = []
 async = True
 
 
-def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
+def action(ovs_connection, storagerouterguid, diskname, size, templateguid, pagecache_ratio):
     # Creates a disk from a disk template
     #
     # ovs_connection: dict holding connection info for ovs restapi
@@ -25,6 +25,7 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
     # size: size of the disk in GB
     # templateguid: guid of the template that needs to be used to create
     #   the volume. If omitted a blank vdisk is created.
+    # pagecache_ratio: amount of metadata the volumedriver should hold in memory cache
 
     # returns diskguid of the created disk
 
@@ -34,7 +35,8 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid):
 
     # First create the disk
     path = "/vdisks/{}/create_from_template".format(templateguid)
-    params = dict(name=diskname, storagerouter_guid=storagerouterguid)
+    params = dict(name=diskname, storagerouter_guid=storagerouterguid,
+                  pagecache_ratio=pagecache_ratio / 100.0)
     taskguid = ovs.post(path, params=params)
     success, result = ovs.wait_for_task(taskguid)
 
