@@ -162,6 +162,7 @@ class CSLibvirtNodeDriver(object):
     def ovs_settings(self):
         cachekey = 'ovs_settings_{}'.format(self.gid)
         if cachekey not in self._ovsdata:
+            grid = self.scl.grid.get(self.gid)
             grid_settings = grid.settings.get('ovs_settings', dict())
             settings = dict(vpool_vmstor_metadatacache=grid_settings.get('vpool_vmstor_metadatacache', 20),
                             vpool_data_metadatacache=grid_settings.get('vpool_data_metadatacache', 20))
@@ -311,7 +312,6 @@ class CSLibvirtNodeDriver(object):
                   'size': size.disk,
                   'templateguid': templateguid,
                   'diskname': diskname,
-                  'ovs_settings': self.ovs_settings,
                   'pagecache_ratio': self.ovs_settings['vpool_vmstor_metadatacache']}
         vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
