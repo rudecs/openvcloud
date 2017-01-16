@@ -781,7 +781,7 @@ class cloudapi_machines(BaseActor):
             if not arg_cloudspace:
                 raise exceptions.NotFound("Cloudspace %s not found" % cloudspaceId)
             vm_cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-            if arg_cloudspace.accoundId != vm_cloudspace.accoundId:
+            if arg_cloudspace.accountId != vm_cloudspace.accountId:
                 raise exceptions.MethodNotAllowed('Cannot clone a machine from a different account.')
             cloudspace = arg_cloudspace
 
