@@ -717,7 +717,7 @@ class CSLibvirtNodeDriver(object):
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
             if not snapshotTimestamp is None:
-                diskinfo['snapshottimestamp'] = snapshottimestamp
+                diskinfo['snapshottimestamp'] = snapshotTimestamp
             diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
 
