@@ -41,7 +41,7 @@ def action(ovs_connection, disks):
     gevent.joinall(jobs)
     for disk, job in jobs:
         for snapshot in job.get()['snapshots']:
-            if snapshot['timestamp'] == disk['snapshottimestamp']:
+            if int(snapshot['timestamp']) == int(disk['snapshottimestamp']):
                 disk['snapshotguid'] = snapshot['id']
                 break
         else:
