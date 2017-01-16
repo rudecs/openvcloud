@@ -11,6 +11,7 @@ import uuid
 import crypt
 import random
 import string
+import time
 
 baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
@@ -312,7 +313,7 @@ class CSLibvirtNodeDriver(object):
                   'templateguid': templateguid,
                   'diskname': diskname,
                   'pagecache_ratio': self.ovs_settings['vpool_vmstor_metadatacache']}
-        vdiskguid = self._execute_agent_job('creatediskfromtemplate', queu='hypervisor', role='controller', **kwargs)
+        vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
 
@@ -332,7 +333,7 @@ class CSLibvirtNodeDriver(object):
                       'diskname': diskname,
                       'size': volume['size'],
                       'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
-            vdiskguid = self._execute_agent_job('createdisk', queue='hypervisor', role='controller', **kwargs)
+            vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
             volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
             stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
             stvol.dev = volume['dev']
@@ -547,22 +548,22 @@ class CSLibvirtNodeDriver(object):
     def ex_create_snapshot(self, node, name):
         diskguids = self._get_volume_paths(node)
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'name': name}
-        return self._execute_agent_job('createsnapshots', queue='hypervisor', role='controller', **kwargs)
+        return self._execute_agent_job('createsnapshots', role='storagedriver', **kwargs)
 
     def ex_list_snapshots(self, node):
         diskguids = self._get_volume_paths(node)
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
-        return self._execute_agent_job('listsnapshots', queue='hypervisor', role='controller', **kwargs)
+        return self._execute_agent_job('listsnapshots', role='storagedriver', **kwargs)
 
     def ex_delete_snapshot(self, node, timestamp):
         diskguids = self._get_volume_paths(node)
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp}
-        return self._execute_agent_job('deletesnapshot', wait=False, queue='hypervisor', role='controller', **kwargs)
+        return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
     def ex_rollback_snapshot(self, node, timestamp):
         diskguids = self._get_volume_paths(node)
         kwargs = {'diskguids': diskguids, 'timestamp': timestamp, 'ovs_connection': self.ovs_connection}
-        return self._execute_agent_job('rollbacksnapshot', queue='hypervisor', role='controller', **kwargs)
+        return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
         if isinstance(dom, ElementTree.Element):
@@ -614,7 +615,7 @@ class CSLibvirtNodeDriver(object):
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
         try:
-            self._execute_agent_job('deletedisks', queue='hypervisor', role='controller', **kwargs)
+            self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
         except RuntimeError as rError:
             j.errorconditionhandler.processPythonExceptionObject(
                 rError, message="Failed to delete disks may be they are deleted from the storage node")
@@ -719,7 +720,7 @@ class CSLibvirtNodeDriver(object):
             disks.append(diskinfo)
 
         kwargs = {'ovs_connection': self.ovs_connection, 'disks': disks}
-        newdisks = self._execute_agent_job('clonedisks', queue='hypervisor', role='controller', **kwargs)
+        newdisks = self._execute_agent_job('clonedisks', role='storagedriver', **kwargs)
         volumes = []
         for idx, diskinfo in enumerate(disks):
             newdiskguid, vpoolguid = newdisks[idx]
@@ -732,8 +733,7 @@ class CSLibvirtNodeDriver(object):
 
     def ex_delete_disks(self, volumeguids):
         self._execute_agent_job('deletedisks',
-                                role='controller',
-                                queue='hypervisor',
+                                role='storagedriver',
                                 ovs_connection=self.ovs_connection,
                                 diskguids=volumeguids)
 
@@ -744,8 +744,7 @@ class CSLibvirtNodeDriver(object):
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
         self._execute_agent_job('extend_disk',
-                                role='controller',
-                                queue='hypervisor',
+                                role='storagedriver',
                                 ovs_connection=self.ovs_connection,
                                 size=newsize,
                                 diskguid=diskguid)
