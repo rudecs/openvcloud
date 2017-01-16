@@ -42,7 +42,7 @@ def action(ovs_connection, disks):
     for disk, job in jobs:
         for snapshot in job.get()['snapshots']:
             if int(snapshot['timestamp']) == int(disk['snapshottimestamp']):
-                disk['snapshotguid'] = snapshot['id']
+                disk['snapshotguid'] = snapshot['guid']
                 break
         else:
             raise Exception("Could not find snapshot with timestamp %(snapshottimestamp)s for disk %(diskguid)s" % disk)
