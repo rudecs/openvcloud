@@ -22,8 +22,8 @@ def action(ovs_connection, disks):
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
     # disks: array of dicts containing diskguid, new name and storagerouterguid
-    #   eg: [ {'diskguid': '3333', 'clone_name': 'volume/volume-45', 'storagerouterguid': '65446'}]
-    # storagerouterguids: list of storage routers equaly sized as list of diskguids
+    #   eg: [ {'diskguid': '3333', 'clone_name': 'volume/volume-45', 'storagerouterguid': '65446',
+    #          'snapshottimestamp': '4444'}]
     #
     # returns list of diskguids of cloned disks corresponding to the diskguids parameter
 
@@ -35,24 +35,38 @@ def action(ovs_connection, disks):
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
+    path = '/vdisks/{}'
+
+    jobs = [(disk, gevent.spawn(ovs.get, path.format(disk['diskguid']))) for disk in disks if disk['snapshottimestamp']]
+    gevent.joinall(jobs)
+    for disk, job in jobs:
+        for snapshot in job.get()['snapshots']:
+            if snapshot['timestamp'] == disk['snapshottimestamp']:
+                disk['snapshotguid'] = snapshot['id']
+                break
+        else:
+            raise Exception("Could not find snapshot with timestamp %(snapshottimestamp)s for disk %(diskguid)s" % disk)
+
     def clone(disk):
         diskguid = disk['diskguid']
         clone_name = disk['clone_name']
         storagerouterguid = disk['storagerouterguid']
+        snapshotguid = disk.get('snapshotguid', None)
 
         # First create snapshot
-        params = dict(name=snapshot_name.format(clone_name), timestamp=timestamp, sticky=True)
-        taskguid = ovs.post(snapshot_path.format(diskguid), params=params)
-        success, result = ovs.wait_for_task(taskguid)
-        if not success:
-            raise Exception("Could not create snapshot:\n{}".format(result))
-        snapshot_guid = result
+        if snapshotguid is None:
+            params = dict(name=snapshot_name.format(clone_name), timestamp=timestamp, sticky=True)
+            taskguid = ovs.post(snapshot_path.format(diskguid), params=params)
+            success, result = ovs.wait_for_task(taskguid)
+            if not success:
+                raise Exception("Could not create snapshot:\n{}".format(result))
+            snapshotguid = result
 
         # Create clone
         taskguid = ovs.post(clone_path.format(diskguid),
                             params=dict(name=clone_name,
                                         storagerouter_guid=storagerouterguid,
-                                        snapshot_id=snapshot_guid))
+                                        snapshot_id=snapshotguid))
         success, result = ovs.wait_for_task(taskguid)
         if not success:
             raise Exception("Could not create clone:\n{}".format(result))

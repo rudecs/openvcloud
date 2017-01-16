@@ -765,7 +765,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
-    def clone(self, machineId, name, **kwargs):
+    def clone(self, machineId, name, cloudspaceId=None, snapshotTimestamp=None, **kwargs):
         """
         Clone the machine
 
@@ -774,13 +774,23 @@ class cloudapi_machines(BaseActor):
         :return id of the new cloned machine
         """
         machine = self._getMachine(machineId)
-        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        if cloudspaceId is None:
+            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        else:
+            arg_cloudspace = self.models.cloudspace.get(cloudspaceId)
+            if not arg_cloudspace:
+                raise exceptions.NotFound("Cloudspace %s not found" % cloudspaceId)
+            vm_cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+            if arg_cloudspace.accoundId != vm_cloudspace.accoundId:
+                raise exceptions.MethodNotAllowed('Cannot clone a machine from a different account.')
+            cloudspace = arg_cloudspace
+
         if machine.cloneReference:
             raise exceptions.MethodNotAllowed('Cannot clone a cloned machine.')
 
         self.cb.machine.assertName(machine.cloudspaceId, name)
         clone = self.models.vmachine.new()
-        clone.cloudspaceId = machine.cloudspaceId
+        clone.cloudspaceId = cloudspace.id
         clone.name = name
         clone.descr = machine.descr
         clone.sizeId = machine.sizeId
@@ -827,7 +837,7 @@ class cloudapi_machines(BaseActor):
         clone.id = self.models.vmachine.set(clone)[0]
         size = self.cb.machine.getSize(provider, clone)
         try:
-            node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping)
+            node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
         except:
             self.cb.machine.cleanup(clone)

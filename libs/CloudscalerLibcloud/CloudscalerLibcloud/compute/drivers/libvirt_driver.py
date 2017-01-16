@@ -707,7 +707,7 @@ class CSLibvirtNodeDriver(object):
             volumes.append(volume)
         return self._create_node(name, size, networkid=networkid, volumes=volumes)
 
-    def ex_clone_disks(self, diskmapping):
+    def ex_clone_disks(self, diskmapping, snapshotTimestamp=None):
         disks = []
         diskvpool = {}
         for volume, diskname in diskmapping:
@@ -716,6 +716,8 @@ class CSLibvirtNodeDriver(object):
             diskinfo = {'clone_name': diskname,
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
+            if not snapshotTimestamp is None:
+                diskinfo['snapshottimestamp'] = snapshottimestamp
             diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
 
@@ -737,9 +739,9 @@ class CSLibvirtNodeDriver(object):
                                 ovs_connection=self.ovs_connection,
                                 diskguids=volumeguids)
 
-    def ex_clone(self, node, size, vmid, networkid, diskmapping):
+    def ex_clone(self, node, size, vmid, networkid, diskmapping, snapshotTimestamp=None):
         name = 'vm-%s' % vmid
-        volumes = self.ex_clone_disks(diskmapping)
+        volumes = self.ex_clone_disks(diskmapping, snapshotTimestamp)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
