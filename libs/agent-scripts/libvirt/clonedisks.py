@@ -38,7 +38,7 @@ def action(ovs_connection, disks):
     path = '/vdisks/{}'
 
     jobs = [(disk, gevent.spawn(ovs.get, path.format(disk['diskguid']))) for disk in disks if disk['snapshottimestamp']]
-    gevent.joinall(jobs)
+    gevent.joinall([job for _, job in jobs])
     for disk, job in jobs:
         for snapshot in job.get()['snapshots']:
             if int(snapshot['timestamp']) == int(disk['snapshottimestamp']):
