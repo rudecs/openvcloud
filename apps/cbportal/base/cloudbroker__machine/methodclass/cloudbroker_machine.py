@@ -383,23 +383,6 @@ class cloudbroker_machine(BaseActor):
         query['status'] = {'$ne': 'destroyed'}
         return self.models.vmachine.search(query)[1:]
 
-    @auth(['level1', 'level2', 'level3'])
-    def checkImageChain(self, machineId, **kwargs):
-        """
-        Checks on the computenode the vm is on if the vm image is there
-        Check the chain of the vmimage to see if parents are there (the template starting from)
-        (executes the vm.hdcheck jumpscript)
-        param:machineId id of the machine
-        result dict,,
-        """
-        # put your code here to implement this method
-        vmachine = self.models.vmachine.get(int(machineId))
-        stack = self.models.stack.get(vmachine.stackId)
-        job = self.acl.executeJumpscript('cloudscalers', 'vm_livemigrate_getdisksinfo', args={
-                                         'vmId': vmachine.id, 'chain': True}, gid=stack.gid, nid=int(stack.referenceId), wait=True)
-        if job['state'] != 'OK':
-            raise exceptions.Error('Something wrong with image or node see job %s' % job['guid'])
-        return job['result']
 
     @auth(['level1', 'level2', 'level3'])
     def stopForAbusiveResourceUsage(self, accountId, machineId, reason, **kwargs):
