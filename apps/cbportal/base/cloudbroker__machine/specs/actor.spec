@@ -171,14 +171,6 @@
         var:computeNode str,, name of a specific computenode @optional
         var:cloudspaceId int,, specific cloudspace @optional
 
-    method:checkImageChain
-        """
-        Checks on the computenode the vm is on if the vm image is there
-        Check the chain of the vmimage to see if parents are there (the template starting from)
-        (executes the vm.hdcheck jumpscript)
-        """
-        var:machineId int,, id of the machine
-        result:dict,, location of all files & their size
 
 #    method:stopForAbusiveResourceUsage
 #        """

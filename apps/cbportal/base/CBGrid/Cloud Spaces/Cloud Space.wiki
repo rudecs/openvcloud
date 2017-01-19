@@ -223,4 +223,6 @@ h3. Virtual Machines
 
 h3. Audits
 {{grid.audits cloudspaceId:$$id}}
+{% else %}
+No Cloud Space found.
 {% endif %}
