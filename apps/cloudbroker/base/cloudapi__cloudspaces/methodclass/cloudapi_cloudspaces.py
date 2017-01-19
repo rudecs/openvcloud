@@ -290,7 +290,7 @@ class cloudapi_cloudspaces(BaseActor):
             self.modles.cloudspace.updateSearch({'id': cs.id},
                                                 {'$set': {'updateTime': int(time.time()),
                                                           'status': 'DEPLOYED'}})
-            return 'DEPLYED'
+            return 'DEPLOYED'
         except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Cloudspace deploy aysnc call exception.")
             raise
