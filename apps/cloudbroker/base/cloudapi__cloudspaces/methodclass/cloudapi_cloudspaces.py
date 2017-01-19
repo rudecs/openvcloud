@@ -268,7 +268,7 @@ class cloudapi_cloudspaces(BaseActor):
 
             if cs.externalnetworkip is None:
                 pool, externalipaddress = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
-                self.modles.cloudspace.updateSearch({'id': cs.id},
+                self.models.cloudspace.updateSearch({'id': cs.id},
                                                     {'$set': {'externalnetworkip': str(externalipaddress)}})
 
             externalipaddress = netaddr.IPNetwork(cs.externalnetworkip)
@@ -282,12 +282,12 @@ class cloudapi_cloudspaces(BaseActor):
                                       'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
             except:
                 self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
-                self.modles.cloudspace.updateSearch({'id': cs.id},
+                self.models.cloudspace.updateSearch({'id': cs.id},
                                                     {'$set': {'externalnetworkip': None,
                                                               'status': 'VIRTUAL'}})
                 raise
 
-            self.modles.cloudspace.updateSearch({'id': cs.id},
+            self.models.cloudspace.updateSearch({'id': cs.id},
                                                 {'$set': {'updateTime': int(time.time()),
                                                           'status': 'DEPLOYED'}})
             return 'DEPLOYED'
