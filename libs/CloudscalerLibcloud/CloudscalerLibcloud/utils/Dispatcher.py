@@ -35,7 +35,7 @@ class Dispatcher(object):
 
     @staticmethod
     def get_quarantined_vm_pins(vmname):
-        _, out = j.system.process.execute('virsh vcpupin "%s" --live' % (vmname))
+        _, out = j.system.process.execute('virsh vcpupin "%s"' % (vmname))
         vals = [map(lambda y: y.strip(), x.split(':')) for x in out.split('\n')[2:] if x]
         if '-' in vals[0][1]:
             # the first cpu has a range, so domain not quarantined
