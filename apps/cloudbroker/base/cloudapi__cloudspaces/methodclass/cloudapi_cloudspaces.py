@@ -268,8 +268,8 @@ class cloudapi_cloudspaces(BaseActor):
 
             if cs.externalnetworkip is None:
                 pool, externalipaddress = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
-                cs.externalnetworkip = str(externalipaddress)
-                self.models.cloudspace.set(cs)
+                self.models.cloudspace.updateSearch({'id': cs.id},
+                                                    {'$set': {'externalnetworkip': str(externalipaddress)}})
 
             externalipaddress = netaddr.IPNetwork(cs.externalnetworkip)
             networkid = cs.networkId
@@ -282,14 +282,15 @@ class cloudapi_cloudspaces(BaseActor):
                                       'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
             except:
                 self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
-                cs.externalnetworkip = None
-                cs.status = 'VIRTUAL'
-                self.models.cloudspace.set(cs)
+                self.models.cloudspace.updateSearch({'id': cs.id},
+                                                    {'$set': {'externalnetworkip': None,
+                                                              'status': 'VIRTUAL'}})
                 raise
-            cs.updateTime = int(time.time())
-            cs.status = 'DEPLOYED'
-            self.models.cloudspace.set(cs)
-            return cs.status
+
+            self.models.cloudspace.updateSearch({'id': cs.id},
+                                                {'$set': {'updateTime': int(time.time()),
+                                                          'status': 'DEPLOYED'}})
+            return 'DEPLOYED'
         except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Cloudspace deploy aysnc call exception.")
             raise
