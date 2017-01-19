@@ -93,7 +93,7 @@ class Dispatcher(object):
             res = cpu.dealloc(vmid)
             if res:
                 removed.append(i)
-        self.defrag_quarantine(removed)
+        self.defrag_quarantine()
 
     def defrag_quarantine(self):
         i = 0
