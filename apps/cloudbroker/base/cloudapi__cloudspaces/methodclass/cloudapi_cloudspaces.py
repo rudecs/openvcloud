@@ -76,7 +76,8 @@ class cloudapi_cloudspaces(BaseActor):
         ace.type = 'U'
         ace.right = accesstype
         ace.status = userstatus
-        self.models.cloudspace.set(cloudspace)
+        self.models.cloudspace.updateSearch({'id': cloudspace.id},
+                                            {'$push': {'acl': ace.obj2dict()}})
         return True
 
     def _updateACE(self, cloudspaceId, userId, accesstype, userstatus):
@@ -101,28 +102,23 @@ class cloudapi_cloudspaces(BaseActor):
         if 'account_right' in useracl and set(accesstype) == set(useracl['account_right']):
             # No need to add any access rights as same rights are inherited
             # Remove cloudspace level access rights if present, cleanup for backwards comparability
-            for ace in cloudspace.acl:
-                if ace.userGroupId == userId and ace.type == 'U':
-                    cloudspace.acl.remove(ace)
-                    self.models.cloudspace.set(cloudspace)
-                    break
+            self.models.cloudspace.updateSearch({'id': cloudspace.id},
+                                                {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
             return False
         # If user has higher access rights on owning account level, then do not update
         elif 'account_right' in useracl and set(accesstype).issubset(set(useracl['account_right'])):
             raise exceptions.Conflict('User already has a higher access level to owning account')
         else:
             # grant higher access level
-            for ace in cloudspace.acl:
-                if ace.userGroupId == userId and ace.type == 'U':
-                    ace.right = accesstype
-                    break
-            else:
-                ace = cloudspace.new_acl()
-                ace.userGroupId = userId
-                ace.type = 'U'
-                ace.right = accesstype
-                ace.status = userstatus
-            self.models.cloudspace.set(cloudspace)
+            ace = cloudspace.new_acl()
+            ace.userGroupId = userId
+            ace.type = 'U'
+            ace.right = accesstype
+            ace.status = userstatus
+            self.models.cloudspace.updateSearch({'id': cloudspace.id},
+                                                {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+            self.models.cloudspace.updateSearch({'id': cloudspace.id},
+                                                {'$push': {'acl': ace.obj2dict()}})
         return True
 
     @authenticator.auth(acl={'cloudspace': set('U')})
@@ -371,31 +367,19 @@ class cloudapi_cloudspaces(BaseActor):
                                 and machines
         :return True if user access was revoked from cloudspace
         """
-        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        update = False
-        for ace in cloudspace.acl:
-            if ace.userGroupId == userId:
-                cloudspace.acl.remove(ace)
-                update = True
-        if not update:
+        result = self.models.cloudspace.updateSearch({'id': cloudspaceId},
+                                                     {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+        if result['nModified'] == 0:
             raise exceptions.NotFound('User "%s" does not have access on the cloudspace' % userId)
 
-        cloudspace.updateTime = int(time.time())
-        self.models.cloudspace.set(cloudspace)
+        result = self.models.cloudspace.updateSearch({'id': cloudspaceId},
+                                                     {'$set': {'updateTime': int(time.time())}})
 
         if recursivedelete:
             # Delete user accessrights from related machines (part of owned cloudspaces)
-            for vmachine in self.models.vmachine.search({'cloudspaceId': cloudspaceId})[1:]:
-                vmachineupdate = False
-                vmachineobj = self.models.vmachine.get(vmachine['id'])
-                for ace in vmachineobj.acl:
-                    if ace.userGroupId == userId:
-                        vmachineobj.acl.remove(ace)
-                        vmachineupdate = True
-                if vmachineupdate:
-                    self.models.vmachine.set(vmachineobj)
-
-        return update
+            self.models.vmachine.updateSearch({'cloudspaceId': cloudspaceId},
+                                              {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+        return True
 
     def list(self, **kwargs):
         """

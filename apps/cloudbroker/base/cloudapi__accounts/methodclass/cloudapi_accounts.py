@@ -64,7 +64,8 @@ class cloudapi_accounts(BaseActor):
         acl.type = 'U'
         acl.right = accesstype
         acl.status = userstatus
-        self.models.account.set(account)
+        self.models.account.updateSearch({'id': accountId},
+                                         {'$push': {'acl': acl.obj2dict()}})
         return True
 
     @authenticator.auth(acl={'account': set('U')})
@@ -85,16 +86,15 @@ class cloudapi_accounts(BaseActor):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                if self.cb.isaccountuserdeletable(ace, account.acl):
-                    ace.right = accesstype
-                else:
+                if not self.cb.isaccountuserdeletable(ace, account.acl):
                     raise exceptions.BadRequest('User is last admin on the account, cannot change '
                                                 'user\'s access rights')
                 break
         else:
             raise exceptions.NotFound('User does not have any access rights to update')
 
-        self.models.account.set(account)
+        self.models.account.updateSearch({'id': accountId, 'acl.userGroupId': userId},
+                                         {'$set': {'acl.$.right': accesstype}})
         return True
 
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,
@@ -173,39 +173,24 @@ class cloudapi_accounts(BaseActor):
         account = self.models.account.get(accountId)
         for ace in account.acl:
             if ace.userGroupId == userId:
-                if self.cb.isaccountuserdeletable(ace, account.acl):
-                    account.acl.remove(ace)
-                    self.models.account.set(account)
-                else:
+                if not self.cb.isaccountuserdeletable(ace, account.acl):
                     raise exceptions.BadRequest("User '%s' is the last admin on the account '%s'" %
                                                 (userId, account.name))
                 break
         else:
             raise exceptions.NotFound('User "%s" does not have access on the account' % userId)
 
+        self.models.account.updateSearch({'id': accountId},
+                                         {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+
         if recursivedelete:
             # Delete user accessrights from owned cloudspaces
+            self.models.cloudspace.updateSearch({'accountId': accountId},
+                                                {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
             for cloudspace in self.models.cloudspace.search({'accountId': accountId})[1:]:
-                cloudspaceupdate = False
-                cloudspaceobj = self.models.cloudspace.get(cloudspace['id'])
-                for ace in cloudspaceobj.acl:
-                    if ace.userGroupId == userId:
-                        cloudspaceobj.acl.remove(ace)
-                        cloudspaceupdate = True
-                if cloudspaceupdate:
-                    self.models.cloudspace.set(cloudspaceobj)
-
                 # Delete user accessrights from related machines (part of owned cloudspaces)
-                for vmachine in self.models.vmachine.search({'cloudspaceId': cloudspaceobj.id})[1:]:
-                    vmachineupdate = False
-                    vmachineobj = self.models.vmachine.get(vmachine['id'])
-                    for ace in vmachineobj.acl:
-                        if ace.userGroupId == userId:
-                            vmachineobj.acl.remove(ace)
-                            vmachineupdate = True
-                    if vmachineupdate:
-                        self.models.vmachine.set(vmachineobj)
-
+                self.models.vmachine.updateSearch({'cloudspaceId': cloudspace['id']},
+                                                  {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
         return True
 
     def list(self, **kwargs):

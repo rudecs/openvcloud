@@ -909,7 +909,8 @@ class cloudapi_machines(BaseActor):
         ace.type = 'U'
         ace.right = accesstype
         ace.status = userstatus
-        self.models.vmachine.set(vmachine)
+        self.models.vmachine.updateSearch({'id': machineId},
+                                          {'$push': {'acl': ace.obj2dict()}})
         return True
 
     def _updateACE(self, machineId, userId, accesstype, userstatus):
@@ -945,25 +946,20 @@ class cloudapi_machines(BaseActor):
                 ('cloudspace_right' in useracl and
                     set(accesstype) == set(useracl['cloudspace_right'])):
             # Remove machine level access rights if present, cleanup for backwards comparability
-            for ace in vmachine.acl:
-                if ace.userGroupId == userId and ace.type == 'U':
-                    vmachine.acl.remove(ace)
-                    self.models.vmachine.set(vmachine)
-                    break
+            self.models.vmachine.updateSearch({'id': machineId},
+                                              {'$pull': {'userGroupId': userId, 'type': 'U'}})
             return False
         else:
             # grant higher access level
-            for ace in vmachine.acl:
-                if ace.userGroupId == userId and ace.type == 'U':
-                    ace.right = accesstype
-                    break
-            else:
-                ace = vmachine.new_acl()
-                ace.userGroupId = userId
-                ace.type = 'U'
-                ace.right = accesstype
-                ace.status = userstatus
-            self.models.vmachine.set(vmachine)
+            ace = vmachine.new_acl()
+            ace.userGroupId = userId
+            ace.type = 'U'
+            ace.right = accesstype
+            ace.status = userstatus
+            self.models.vmachine.updateSearch({'id': machineId},
+                                              {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+            self.models.vmachine.updateSearch({'id': machineId},
+                                              {'$push': {'acl': ace.obj2dict()}})
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
@@ -975,16 +971,13 @@ class cloudapi_machines(BaseActor):
         :param userId: id or emailaddress of the user to remove
         :return True if user access was revoked from machine
         """
-        machineId = int(machineId)
-        vmachine = self.models.vmachine.get(machineId)
-        for ace in vmachine.acl[:]:
-            if ace.userGroupId == userId:
-                vmachine.acl.remove(ace)
-                self.models.vmachine.set(vmachine)
-                return True
-        else:
+
+        result = self.models.vmachine.updateSearch({'id': machineId},
+                                                   {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+        if result['nModified'] == 0:
             # User was not found in access rights
             raise exceptions.NotFound('User "%s" does not have access on the machine' % userId)
+        return True
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     def updateUser(self, machineId, userId, accesstype, **kwargs):
