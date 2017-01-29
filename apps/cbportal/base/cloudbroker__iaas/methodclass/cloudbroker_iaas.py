@@ -75,12 +75,22 @@ class cloudbroker_iaas(BaseActor):
             usedips.add(ip)
         return usedips
 
+    def deleteExternalNetwork(self, externalnetworkId, **kwargs):
+        if not self.models.externalnetwork.exists(externalnetworkId):
+            raise exceptions.NotFound("Could not find external network with id %s" % externalnetworkId)
+        cloudCount = self.models.cloudspace.count({'externalnetworkId': externalnetworkId, 'status': {'$ne': 'DESTROYED'}})
+        if cloudCount == 0:
+            self.models.externalnetwork.delete(externalnetworkId)
+        else:
+            raise exceptions.Conflict("Cannot delete, external network in use")
+        return True
+
     def addExternalIPS(self, externalnetworkId, startip, endip, **kwargs):
         """
         Add public ips to an existing range
         """
         if not self.models.externalnetwork.exists(externalnetworkId):
-            raise exceptions.NotFound("Could not find externel network with id %s" % externalnetworkId)
+            raise exceptions.NotFound("Could not find external network with id %s" % externalnetworkId)
         pool = self.models.externalnetwork.get(externalnetworkId)
         try:
             net = netaddr.IPNetwork("{}/{}".format(pool.network, pool.subnetmask))
@@ -131,6 +141,15 @@ class cloudbroker_iaas(BaseActor):
             return "One or more IP Addresses %s is not in subnet %s" % (net)
         pool.pubips = list(set(pool.pubips) - set(freeips))
         self.models.externalnetwork.set(pool)
+        return True
+
+    def removeExternalIP(self, externalnetworkId, ip, **kwargs):
+        """
+        Remove External IP Addresses
+        """
+        if not self.models.externalnetwork.exists(externalnetworkId):
+            raise exceptions.NotFound("Could not find externalnetwork with id %s" % externalnetworkId)
+        self.models.externalnetwork.updateSearch({'id': externalnetworkId}, {'$pull': {'ips': ip}})
         return True
 
     @auth(['level1', 'level2', 'level3'])

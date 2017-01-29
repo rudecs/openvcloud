@@ -22,6 +22,13 @@
         var:accountId int,,accountId that has exclusive access to this network Tag @optional
         result:int
 
+    method:deleteExternalNetwork
+        """
+        Deletes external network
+        """
+        var:externalnetworkId int,, the id of the external network
+        result:boolean
+
     method:addExternalIPS
         """
         Adds a public network range to be used for cloudspaces
@@ -37,7 +44,14 @@
         var:externalnetworkId int,, the id of the external network
         var:gateway str,, Gateway of the pool
 
-
+    method:removeExternalIP
+        """
+        Removes External IP address
+        """
+        var:externalnetworkId int,,
+        var:ip str,,
+        result:boolean
+        
     method:addSize
         """
         Add size to location

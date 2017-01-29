@@ -26,6 +26,18 @@
     name: endip
   data:
     externalnetworkId: ${id}
+
+- display: Delete external network
+  action: /restmachine/cloudbroker/iaas/deleteExternalNetwork
+  data:
+    externalnetworkId: ${id}
+
+- display: Remove External IP
+  action: /restmachine/cloudbroker/iaas/removeExternalIP
+  refresh: flase
+  hide: true
+  data:
+    externalnetworkId: ${id}
 }}
 
 {{datatables_use}}
@@ -40,11 +52,11 @@ h3. External Network
 
 h4. Free IPs
 {{action: id:'action-AddExternalIPAddresses' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Add External IP Addresses'}}
-||Free IP Address||
+||Free IP Address||Remove||
 {% for freeip in ips -%}
-|${freeip}|
+|${freeip}|{{ action: id:'action-RemoveExternalIP' deleterow:true class:'glyphicon glyphicon-remove' data-ip:'${freeip}' }}|
 {% else -%}
-| |
+| | |
 {% endfor %}
 
 @HR
@@ -53,6 +65,8 @@ h4. External IP Addresses Used by Cloud Spaces
 ||External IP Address||Cloud Space||
 {% for space in spaces -%}
 |${space.externalnetworkip}|[${space.name} (${space.id})|cloud space?id=${space.id}]|
+{% else -%}
+| | |
 {% endfor %}
 
 @HR
