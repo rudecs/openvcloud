@@ -31,11 +31,15 @@ def main(j, args, params, tags, tasklet):
          },
         {'name': 'Name',
          'id': 'name',
-         'value': "<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>"
+         'value': "<a href='/cbgrid/image?id=%(referenceId)s'>%(name)s</a>"
          },
         {'name': 'Type',
          'id': 'type',
          'value': 'type'
+         },
+        {'name': 'Status',
+         'id': 'status',
+         'value': 'status'
          },
         {'name': 'Size',
          'id': 'size',
@@ -43,7 +47,7 @@ def main(j, args, params, tags, tasklet):
          'value': '%(size)s GiB'
          },
     ]
-    tableid = modifier.addTableFromModel('libvirt', 'image', fields, filters)
+    tableid = modifier.addTableFromModel('cloudbroker', 'image', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page
