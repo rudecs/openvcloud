@@ -188,8 +188,8 @@
         """
         Get url to connect to console
         """
-        var:machineId str,, id of the machine to connect to console
-        result:str, one time url used to connect ot console
+        var:machineId str,, id of the machine to connect to the console
+        result:str, one time url used to connect to the console
 
 
     method:resize
@@ -206,6 +206,8 @@
         """
         var:machineId int,,id of the machine to clone
         var:name str,, name of the cloned machine @tags validator:name
+        var:cloudspaceId int,, optional id of the cloudspace in which the machine should be put @optional
+        var:snapshotTimestamp int,, optional snapshot to base the clone upon @optional
         result:int, id of the new cloned machine
 
     method:getHistory

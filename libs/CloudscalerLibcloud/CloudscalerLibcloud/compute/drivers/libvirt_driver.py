@@ -158,6 +158,17 @@ class CSLibvirtNodeDriver(object):
             self._ovsdata[cachekey] = connection
         return self._ovsdata[cachekey]
 
+    @property
+    def ovs_settings(self):
+        cachekey = 'ovs_settings_{}'.format(self.gid)
+        if cachekey not in self._ovsdata:
+            grid = self.scl.grid.get(self.gid)
+            grid_settings = grid.settings.get('ovs_settings', dict())
+            settings = dict(vpool_vmstor_metadatacache=grid_settings.get('vpool_vmstor_metadatacache', 20),
+                            vpool_data_metadatacache=grid_settings.get('vpool_data_metadatacache', 20))
+            self._ovsdata[cachekey] = settings
+        return self._ovsdata[cachekey]
+
     def getVolumeId(self, vdiskguid, edgeclient, name):
         return "openvstorage+{protocol}://{ip}:{port}/{name}@{vdiskguid}".format(
             protocol=edgeclient.get('protocol', 'tcp'),
@@ -300,7 +311,8 @@ class CSLibvirtNodeDriver(object):
                   'storagerouterguid': edgeclient['storagerouterguid'],
                   'size': size.disk,
                   'templateguid': templateguid,
-                  'diskname': diskname}
+                  'diskname': diskname,
+                  'pagecache_ratio': self.ovs_settings['vpool_vmstor_metadatacache']}
         vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
@@ -319,7 +331,8 @@ class CSLibvirtNodeDriver(object):
                       'vpoolguid': edgeclient['vpoolguid'],
                       'storagerouterguid': edgeclient['storagerouterguid'],
                       'diskname': diskname,
-                      'size': volume['size']}
+                      'size': volume['size'],
+                      'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
             vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
             volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
             stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
@@ -380,16 +393,6 @@ class CSLibvirtNodeDriver(object):
         if domxml:
             return self._update_node(node, domxml)
         return node
-
-    def _create_clone_disk(self, vm_id, size, clone_disk, disk_role='base'):
-        disktemplate = self.env.get_template("disk.xml")
-        diskname = vm_id + '-' + disk_role + '.raw'
-        diskbasevolume = clone_disk
-        diskxml = disktemplate.render({'diskname': diskname, 'diskbasevolume':
-                                       diskbasevolume, 'disksize': size.disk})
-        poolname = vm_id
-        self._execute_agent_job('createdisk', diskxml=diskxml, role='storagedriver', poolname=poolname)
-        return diskname
 
     def _create_metadata_iso(self, name, userdata, metadata, type):
         volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
@@ -704,7 +707,7 @@ class CSLibvirtNodeDriver(object):
             volumes.append(volume)
         return self._create_node(name, size, networkid=networkid, volumes=volumes)
 
-    def ex_clone_disks(self, diskmapping):
+    def ex_clone_disks(self, diskmapping, snapshotTimestamp=None):
         disks = []
         diskvpool = {}
         for volume, diskname in diskmapping:
@@ -713,6 +716,8 @@ class CSLibvirtNodeDriver(object):
             diskinfo = {'clone_name': diskname,
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
+            if not snapshotTimestamp is None:
+                diskinfo['snapshottimestamp'] = snapshotTimestamp
             diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
 
@@ -734,9 +739,9 @@ class CSLibvirtNodeDriver(object):
                                 ovs_connection=self.ovs_connection,
                                 diskguids=volumeguids)
 
-    def ex_clone(self, node, size, vmid, networkid, diskmapping):
+    def ex_clone(self, node, size, vmid, networkid, diskmapping, snapshotTimestamp=None):
         name = 'vm-%s' % vmid
-        volumes = self.ex_clone_disks(diskmapping)
+        volumes = self.ex_clone_disks(diskmapping, snapshotTimestamp)
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):

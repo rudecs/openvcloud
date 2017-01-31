@@ -473,6 +473,8 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def createTemplate(self, machineId, templateName, reason, **kwargs):
+        raise exceptions.BadRequest("This method is disabled until OVS fixes bug. See https://github.com/0-complexity/openvstorage/issues/67.")
+
         self._validateMachineRequest(machineId)
         self.actors.machines.createTemplate(machineId, templateName, None)
 

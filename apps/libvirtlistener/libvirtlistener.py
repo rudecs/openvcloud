@@ -6,13 +6,35 @@ def main():
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
     libvirt.virEventRegisterDefaultImpl()
-    rocon = libvirt.openReadOnly()
+    rocon = libvirt.open()
 
     def callback(con, domain, event, detail, opaque):
         name = domain.name()
         print('State change for {}'.format(name))
         vm = next(iter(ccl.vmachine.search({'referenceId': domain.UUIDString()})[1:]), None)
         if vm:
+            domainstate, reason = domain.state()
+            if domainstate == libvirt.VIR_DOMAIN_SHUTOFF and reason == libvirt.VIR_DOMAIN_SHUTOFF_CRASHED:
+                name = domain.name()
+                tags = ''
+                msg = ''
+                if name.startswith('vm-'):
+                    machineId = int(domain.name().split('-')[-1])
+                    msg = "VM {} has crashed".format(machineId)
+                    vm = ccl.vmachine.get(machineId)
+                    cloudspace = ccl.cloudspace.get(vm.cloudspaceId)
+                    tags = 'machineId:{} cloudspaceId:{} accountId:{}'.format(machineId, cloudspace.id, cloudspace.accountId)
+                elif name.startswith('routeros_'):
+                    networkid = int(name.split('_')[-1], 16)
+                    cloudspaces = ccl.cloudspace.search({'networkId': networkid})[1:]
+                    if not cloudspaces:
+                        return  # orphan vm we dont care
+                    tags = 'cloudspaceId:{}'.format(cloudspaces[0]['id'])
+
+                print('VM crashed, starting it again')
+                domain.create()
+                j.errorconditionhandler.raiseOperationalWarning(msg, 'selfhealing', tags=tags)
+                return
             newstate = None
             if event == libvirt.VIR_DOMAIN_EVENT_STARTED:
                 newstate = 'RUNNING'
