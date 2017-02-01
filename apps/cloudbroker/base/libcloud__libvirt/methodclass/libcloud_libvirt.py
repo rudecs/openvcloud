@@ -27,7 +27,7 @@ class libcloud_libvirt(object):
         self._client = j.clients.osis.getByInstance('main')
         self.cache = j.clients.redis.getByInstance('system')
         self.blobdb = self._getKeyValueStore()
-        self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc', 'macaddress'])
+        self._models = Models(self._client, 'libvirt', ['node', 'image', 'size', 'resourceprovider', 'vnc', 'macaddress', 'networkids'])
         self.cbmodel = j.clients.osis.getNamespace('cloudbroker')
 
     def _getKeyValueStore(self):
@@ -139,7 +139,7 @@ class libcloud_libvirt(object):
         param:ipaddress string representing the ipaddres to release
         result bool
         """
-        key = 'freeipaddresses_%s'% networkid
+        key = 'freeipaddresses_%s' % networkid
         ipaddresses = self.blobdb.get(key)
         ipaddresses.append(ipaddress)
         self.blobdb.set(key=key, obj=ujson.dumps(ipaddresses))
@@ -154,24 +154,20 @@ class libcloud_libvirt(object):
         """
         key = 'networkids_%s' % gid
         newrange = set(range(int(start), int(end) + 1))
-        with self.blobdb.lock(key):
-            if self.blobdb.exists(key):
-                networkids = set(ujson.loads(self.blobdb.get(key)))
-                cloudspaces = self.cbmodel.cloudspace.search({'$fields': ['networkId'],
-                                                              '$query': {'status': {'$in': ['DEPLOYED', 'VIRTUAL']},
-                                                                         'gid': gid}
-                                                              })[1:]
-                usednetworkids = {space['networkId'] for space in cloudspaces}
-                if usednetworkids.intersection(newrange):
-                    raise exceptions.Conflict("Atleast one networkId conflicts with deployed networkids")
-            else:
-                #  no list yet
-                networkids = set()
-
-            networkids.update(newrange)
-            self.blobdb.set(key=key, obj=ujson.dumps(list(networkids)))
+        if self._models.networkids.exists(gid):
+            cloudspaces = self.cbmodel.cloudspace.search({'$fields': ['networkId'],
+                                                          '$query': {'status': {'$in': ['DEPLOYED', 'VIRTUAL']},
+                                                                     'gid': gid}
+                                                          })[1:]
+            usednetworkids = {space['networkId'] for space in cloudspaces}
+            if usednetworkids.intersection(newrange):
+                raise exceptions.Conflict("Atleast one networkId conflicts with deployed networkids")
+            self._models.networkids.updateSearch({'id': gid},
+                                                 {'$addToSet': {'networkids': {'$each': newrange}}})
+        else:
+            networkids = {'id': gid, 'networkids': newrange}
+            self._models.networkids.set(networkids)
         return True
-
 
     def getFreeNetworkId(self, gid, **kwargs):
         """
@@ -179,16 +175,11 @@ class libcloud_libvirt(object):
         result
         """
         key = 'networkids_%s' % gid
-        with self.blobdb.lock(key):
-            networkids = ujson.loads(self.blobdb.get(key))
-            if networkids:
-                networkid = networkids.pop(0)
-            else:
-                networkid = None
-            self.blobdb.set(key=key, obj=ujson.dumps(networkids))
-        return networkid
-
-
+        for netid in self._models.networkids.get(gid).networkids:
+            res = self._models.networkids.updateSearch({'id': gid},
+                                                       {'$pull': {'networkids': netid}})
+            if res['nModified'] == 1:
+                return netid
 
     def releaseNetworkId(self, gid, networkid, **kwargs):
         """
@@ -196,12 +187,8 @@ class libcloud_libvirt(object):
         param:networkid int representing the netowrkid to release
         result bool
         """
-        key = 'networkids_%s' % gid
-        with self.blobdb.lock(key):
-            networkids = ujson.loads(self.blobdb.get(key))
-            if int(networkid) not in networkids:
-                networkids.insert(0,int(networkid))
-            self.blobdb.set(key=key, obj=ujson.dumps(networkids))
+        self._models.networkids.updateSearch({'id': gid},
+                                             {'$addToSet': {'networkids': networkid}})
         return True
 
     def registerNode(self, id, macaddress, networkid, **kwargs):
