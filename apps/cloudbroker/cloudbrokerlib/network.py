@@ -14,7 +14,8 @@ class Network(object):
                 res = self.models.externalnetwork.updateSearch({'id': pool['id']},
                                                                {'$pull': {'ips': ip}})
                 if res['nModified'] == 1:
-                    return pool, netaddr.IPNetwork("%s/%s" % (ip, pool['subnetmask']))
+                    pool = self.models.externalnetwork.get(pool['id'])
+                    return pool, netaddr.IPNetwork("%s/%s" % (ip, pool.subnetmask))
 
     def releaseExternalIpAddress(self, externalnetworkId, ip):
         net = netaddr.IPNetwork(ip)
