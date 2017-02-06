@@ -2,19 +2,17 @@
 def main(j, args, params, tags, tasklet):
     doc = args.doc
     id = args.getTag('id')
-    gid = args.getTag('gid')
+    gid = int(args.getTag('gid'))
     width = args.getTag('width')
     height = args.getTag('height')
     result = "{{jgauge width:%(width)s id:%(id)s height:%(height)s val:%(running)s start:0 end:%(total)s}}"
-    ac = j.clients.osis.getCategory(j.core.portal.active.osis, 'libcloud', 'libvirtdomain')
-    key = 'networkids_%s' % gid
-    if ac.exists(key):
-        networkids = ac.get(key)
+    ac = j.clients.osis.getCategory(j.core.portal.active.osis, 'libvirt', 'networkids')
+    if ac.exists(gid):
+        networkids = ac.get(gid).networkids
     else:
         networkids = []
-    allkeys = ac.list()
     allnetworkids = list()
-    [allnetworkids.extend(ac.get(key)) for key in allkeys if key.startswith('networkids_')]
+    [allnetworkids.extend(network['networkids'] for network in ac.search({})[1:])]
     total = len(allnetworkids)
     running = len(networkids)
     if running < 10:

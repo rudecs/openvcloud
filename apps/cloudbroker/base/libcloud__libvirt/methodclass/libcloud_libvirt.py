@@ -152,7 +152,6 @@ class libcloud_libvirt(object):
         param:end end of the range
         result
         """
-        key = 'networkids_%s' % gid
         newrange = set(range(int(start), int(end) + 1))
         if self._models.networkids.exists(gid):
             cloudspaces = self.cbmodel.cloudspace.search({'$fields': ['networkId'],
@@ -174,7 +173,6 @@ class libcloud_libvirt(object):
         Get a free NetworkId
         result
         """
-        key = 'networkids_%s' % gid
         for netid in self._models.networkids.get(gid).networkids:
             res = self._models.networkids.updateSearch({'id': gid},
                                                        {'$pull': {'networkids': netid}})
