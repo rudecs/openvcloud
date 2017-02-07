@@ -1,6 +1,6 @@
 def main(j, args, params, tags, tasklet):
     params.result = (args.doc, args.doc)
-    guid = args.requestContext.params.get('guid')
+    guid = args.requestContext.params.get('id')
     if not guid:
         args.doc.applyTemplate({})
         return params
