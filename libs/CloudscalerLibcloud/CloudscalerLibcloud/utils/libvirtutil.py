@@ -111,7 +111,7 @@ class LibvirtUtil(object):
             if bridge.startswith('ext'):
                 vlan = int(bridge.partition('-')[-1], 16)
                 jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-                bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
+                j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
         if isLocked(id):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
@@ -547,7 +547,11 @@ class LibvirtUtil(object):
 
     def create_machine(self, machinexml):
         domain = self.defineXML(machinexml)
-        domain.create()
+        try:
+            domain.create()
+        except:
+            domain.undefine()
+            raise
         return self._to_node(domain)
 
     def _to_node(self, domain):
