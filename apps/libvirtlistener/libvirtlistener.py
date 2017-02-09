@@ -13,9 +13,13 @@ def main():
         print('State change for {}'.format(name))
         vm = next(iter(ccl.vmachine.search({'referenceId': domain.UUIDString()})[1:]), None)
         if vm:
-            domainstate, reason = domain.state()
-            if domainstate == libvirt.VIR_DOMAIN_SHUTOFF and reason == libvirt.VIR_DOMAIN_SHUTOFF_CRASHED:
+            try:
+                domainstate, reason = domain.state()
                 name = domain.name()
+            except libvirt.libvirtError:
+                # vm was removed
+                return
+            if domainstate == libvirt.VIR_DOMAIN_SHUTOFF and reason == libvirt.VIR_DOMAIN_SHUTOFF_CRASHED:
                 tags = ''
                 msg = ''
                 if name.startswith('vm-'):
