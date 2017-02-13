@@ -788,6 +788,15 @@ class cloudapi_machines(BaseActor):
         if machine.cloneReference:
             raise exceptions.MethodNotAllowed('Cannot clone a cloned machine.')
 
+        # validate capacity of the vm
+        size = self.models.size.get(machine.sizeId)
+        query = {'$fields': ['id', 'sizeMax'],
+                 '$query': {'id': {'$in': machine.disks}}}
+        totaldisksize = sum([disk['sizeMax'] for disk in self.models.disk.search(query)[1:]])
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
+                                                                   size.memory / 1024.0, totaldisksize)
+
+        # clone vm model
         self.cb.machine.assertName(machine.cloudspaceId, name)
         clone = self.models.vmachine.new()
         clone.cloudspaceId = cloudspace.id
@@ -830,10 +839,7 @@ class cloudapi_machines(BaseActor):
                 name = 'volumes/volume_{}'.format(clonediskId)
             diskmapping.append((volume, name))
             totaldisksize += clonedisk.sizeMax
-        # Validate that enough resources are available in the CU limits to clone the machine
-        size = self.models.size.get(clone.sizeId)
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory / 1024.0, totaldisksize)
+
         clone.id = self.models.vmachine.set(clone)[0]
         size = self.cb.machine.getSize(provider, clone)
         try:
