@@ -425,7 +425,7 @@ class cloudapi_cloudspaces(BaseActor):
                                  cloudspace_acl.iteritems()]
             for acl in account.acl:
                 if acl.userGroupId == user.lower() and acl.type == 'U':
-                    cloudspace['accountAcl'] = acl
+                    cloudspace['accountAcl'] = acl.obj2dict()
 
         return cloudspaces
 
