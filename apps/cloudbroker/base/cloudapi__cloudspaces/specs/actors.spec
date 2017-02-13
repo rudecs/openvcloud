@@ -16,7 +16,7 @@
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
-        var:externalnetworkId str,, id of externalnetwork to connect to @optional
+        var:externalnetworkId int,, id of externalnetwork to connect to @optional
         result:int, id of created cloudspace
 
     method:deploy
