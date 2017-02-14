@@ -69,9 +69,4 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
     </memballoon>
   </devices>
-  <qemu:commandline>
-	<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_TIME' value='60'/>
-	<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_INTVL' value='20'/>
-	<qemu:env name='LIBOVSVOLUMEDRIVER_XIO_KEEPALIVE_PROBES' value='3'/>
-  </qemu:commandline>
 </domain>
