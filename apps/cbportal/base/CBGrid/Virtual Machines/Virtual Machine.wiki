@@ -22,7 +22,7 @@ h2. Virtual Machine: ${name}
 |*Tags*| ${tags}|
 |*Stack*| [${stackname}|stack?id=${stackId}]|
 |*Account*| [${accountName}|account?id=${accountId}]|
-|*Cloudspace*| [${spacename}|cloud space?id=${cloudspaceId}]|
+|*Cloud Space*| [${spacename}|cloud space?id=${cloudspaceId}]|
 |*Creation Time*|{{ts: ${creationTime}}}|
 |*Update Time*|{{ts: ${updateTime}}}|
 |*Deletion Time*| ${deleteTime}|
@@ -34,9 +34,9 @@ h2. Virtual Machine: ${name}
 |*Status*| ${status}|
 |*Host Name*| ${hostName}|
 |*Hypervisor Type*| ${hypervisortype}|
-|*Status check*|${stats_state}|
+|*Status Check*|${stats_state}|
 |*Ping*|${stats_ping}|
-|*HardDrive Test*|${stats_hdtest}|
+|*Hard Drive Test*|${stats_hdtest}|
 |*Last Checked*|${stats_epoch}|
 
 h3. Users Access

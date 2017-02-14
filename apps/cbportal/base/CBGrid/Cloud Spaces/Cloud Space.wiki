@@ -148,7 +148,7 @@ h2. Cloud Space: ${name}
 {{createportforwarding: cloudspaceId:$$id}}
 
 h3. Details
-|*CloudSpace ID*|$$id|
+|*Cloud Space ID*|$$id|
 |*Account*|[${accountname}|account?id=${accountId}]|
 |*Network ID*|[${networkId}|private network?id=${networkId}&gid=${gid}]|
 |*Defense Shield*| {{defenseshield: cloudspaceId:$$id}} |
@@ -163,8 +163,8 @@ h3. Details
 h3. Cloud Resource Limits
 
 |*Memory Capacity*|${'Unlimited' if reslimits.CU_M == -1  else '%r GB'%(reslimits.CU_M)}|
-|*VDisk Capacity*|${'Unlimited' if reslimits.CU_D == -1  else '%i GB'%(reslimits.CU_D)}|
-|*Number of CPU Cores*|${'Unlimited' if reslimits.CU_C == -1  else reslimits.CU_C}|
+|*Virtual Disk Capacity*|${'Unlimited' if reslimits.CU_D == -1  else '%i GB'%(reslimits.CU_D)}|
+|*Number of Virtual CPU Cores*|${'Unlimited' if reslimits.CU_C == -1  else reslimits.CU_C}|
 |*External Network Transfer*|${'Unlimited' if reslimits.CU_NP == -1  else '%i GB'%(reslimits.CU_NP)}|
 |*Number of Public IP Addresses*|${'Unlimited' if reslimits.CU_I == -1  else reslimits.CU_I}|
 
