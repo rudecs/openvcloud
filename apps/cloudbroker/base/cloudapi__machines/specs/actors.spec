@@ -61,7 +61,7 @@
         Stop the machine
         """
         var:machineId int,, id of the machine
-        var:force bool,False,force machine shutdown
+        var:force bool,False,force machine shutdown @optional
         result:bool
 
     method:reboot
