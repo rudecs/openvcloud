@@ -127,7 +127,7 @@ class LibvirtUtil(object):
                 raise Exception("Failed to start machine")
         return domain.XMLDesc()
 
-    def shutdown(self, id):
+    def shutdown(self, id, force=False):
         if isLocked(id):
             raise Exception("Can't stop a locked machine")
         domain = self._get_domain(id)
@@ -135,13 +135,16 @@ class LibvirtUtil(object):
             networkid = self._get_domain_networkid(domain)
             bridges = list(self._get_domain_bridges(domain))
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
-                if not domain.shutdown() == 0:
-                    return False
-                try:
-                    self.waitForAction(id, timeout=30000, events=[libvirt.VIR_DOMAIN_EVENT_STOPPED])
-                except TimeoutError, e:
-                    j.errorconditionhandler.processPythonExceptionObject(e)
+                if force:
                     domain.destroy()
+                else:
+                    if not domain.shutdown() == 0:
+                        return False
+                    try:
+                        self.waitForAction(id, timeout=30000, events=[libvirt.VIR_DOMAIN_EVENT_STOPPED])
+                    except TimeoutError, e:
+                        j.errorconditionhandler.processPythonExceptionObject(e)
+                        domain.destroy()
             domain.undefine()
             if networkid or bridges:
                 self.cleanupNetwork(networkid, bridges)

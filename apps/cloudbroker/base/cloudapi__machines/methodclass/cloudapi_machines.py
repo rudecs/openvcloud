@@ -67,7 +67,7 @@ class cloudapi_machines(BaseActor):
                 self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'status': newstatus}})
             tags = str(machineId)
             j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
-            return method(node)
+            return method(node, **kwargs)
 
     @authenticator.auth(acl={'machine': set('X')})
     def start(self, machineId, **kwargs):
@@ -84,13 +84,13 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
-    def stop(self, machineId, **kwargs):
+    def stop(self, machineId, force=False, **kwargs):
         """
         Stop the machine
 
         :param machineId: id of the machine
         """
-        return self._action(machineId, 'stop', enums.MachineStatus.HALTED)
+        return self._action(machineId, 'stop', enums.MachineStatus.HALTED, force=force)
 
     @authenticator.auth(acl={'machine': set('X')})
     def reboot(self, machineId, **kwargs):

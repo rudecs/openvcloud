@@ -640,9 +640,9 @@ class CSLibvirtNodeDriver(object):
             noderesult.append(self._from_agent_to_node(x, ipaddress))
         return noderesult
 
-    def ex_stop_node(self, node):
+    def ex_stop_node(self, node, force=False):
         machineid = node.id
-        return self._execute_agent_job('stopmachine', queue='hypervisor', machineid=machineid)
+        return self._execute_agent_job('stopmachine', queue='hypervisor', machineid=machineid, force=force)
 
     def ex_suspend_node(self, node):
         machineid = node.id
