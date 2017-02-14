@@ -13,7 +13,10 @@ enable = True
 async = True
 queue = 'hypervisor'
 
+
 def action(networkid):
+    createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
+    createnetwork.executeInProcess(networkid=networkid)
     import libvirt
     con = libvirt.open()
     try:
@@ -31,5 +34,3 @@ def action(networkid):
     finally:
         con.close()
     return True
-
-
