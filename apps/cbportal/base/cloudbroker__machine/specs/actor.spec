@@ -263,6 +263,7 @@
         Updates machine description
         """
         var:machineId int,, ID of machine
+        var:name str,, new name
         var:description str,, new description
         var:reason str,,Reason
 

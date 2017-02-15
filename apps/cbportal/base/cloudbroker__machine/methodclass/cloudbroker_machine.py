@@ -480,10 +480,9 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def updateMachine(self, machineId, description, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId)
-        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.actors.machines.update(machineId, description=description)
+    def updateMachine(self, machineId, description, name, reason, **kwargs):
+        self._validateMachineRequest(machineId)
+        self.actors.machines.update(machineId, description=description, name=name)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

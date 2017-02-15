@@ -184,8 +184,15 @@
   data:
    machineId: $$id
   input:
-  - description
-  - reason
+  - name: name
+    label: Name
+    type: text
+  - name: description
+    label: description
+    type: text
+  - name: reason
+    label: Reason
+    type: text
 
 {% if status == 'HALTED' %}
 - display: Resize Machine
