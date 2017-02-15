@@ -23,6 +23,14 @@
         var:accountId int,,ID of account to delete
         var:reason str,,reason for deleting the account
 
+
+    method:deleteAccounts
+        """
+        Complete delete accounts from the system
+        """"
+        var:accountIds list(int),, list of account ids to delete
+        var:reason str,,reason for deleting the account
+
     method:addUser
         """
         Give a user access rights.

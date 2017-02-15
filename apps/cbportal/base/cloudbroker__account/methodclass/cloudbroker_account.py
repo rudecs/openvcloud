@@ -189,6 +189,11 @@ class cloudbroker_account(BaseActor):
                                              maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
 
     @auth(['level1', 'level2', 'level3'])
+    def deleteAccounts(self, accountIds, reason, **kwargs):
+        for accountId in accountIds:
+            self.delete(accountId, reason, **kwargs)
+
+    @auth(['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):
         """
         Complete delete an account from the system
