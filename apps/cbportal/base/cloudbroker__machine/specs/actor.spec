@@ -283,11 +283,10 @@
     method:addUser
         """
         Give a user access rights.
-        Access rights can be 'R' or 'W'
         """"
         var:machineId int,,Id of the machine
         var:username str,,name of the user to be given rights
-        var:accesstype str,, R or W
+        var:accesstype str,, 'R' for read only access, 'RCX' for Write and 'ARCXDU' for Admin
 
     method:deleteUser
         """
