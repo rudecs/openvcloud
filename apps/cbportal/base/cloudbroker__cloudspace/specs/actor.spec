@@ -71,6 +71,7 @@
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
         var:externalnetworkId int,, Id of external network to connect to @optional
+        var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
 
     method:update
         """
@@ -84,6 +85,7 @@
         var:maxCPUCapacity int,, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,, max number of assigned public IPs @optional
+        var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
 
     method:destroyVFW
         """

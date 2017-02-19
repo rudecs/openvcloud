@@ -16,7 +16,8 @@
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
-        var:externalnetworkId int,, id of externalnetwork to connect to @optional
+        var:externalnetworkId str,, id of externalnetwork to connect to @optional
+        var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
         result:int, id of created cloudspace
 
     method:deploy
@@ -46,6 +47,22 @@
         var:cloudspaceId int,, id of the cloudspace
         result:dict, dict with cloudspace details
 
+    method:addAllowedSize
+        """
+        Add allowed size for a cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:sizeId int,, id of the required size to be added
+        result:bool, True if size is added
+        
+    method:removeAllowedSize
+        """
+        Remove allowed size for a cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:sizeId int,, id of the required size to be removed
+        result:bool, True if size is removed
+
     method:update
         """
         Update the cloudspace name and capacity parameters
@@ -58,6 +75,7 @@
         var:maxCPUCapacity int,, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,, max number of assigned public IPs @optional
+        var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
         result:bool, True if cloudspace was updated
 
     method:addUser
