@@ -171,8 +171,8 @@
   hide: true
   data:
    machineId: $$id
-- display: Create Template
-  action: /restmachine/cloudbroker/machine/createTemplate
+- display: Convert To Template
+  action: /restmachine/cloudbroker/machine/convertToTemplate
   data:
    machineId: $$id
   input:

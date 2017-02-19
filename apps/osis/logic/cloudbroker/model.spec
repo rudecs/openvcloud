@@ -27,6 +27,7 @@
     prop:creationTime int,, epoch time of creation, in seconds @index
     prop:updateTime int,, epoch time of update, in seconds @index
     prop:deletionTime int,, epoch time of destruction, in seconds @index
+    prop:type str,,Type of machine @index
     prop:tags str,, A tags string @index
 
 [model:VMAccount] @dbtype:osis

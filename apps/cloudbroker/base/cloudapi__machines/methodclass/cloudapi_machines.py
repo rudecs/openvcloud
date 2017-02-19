@@ -55,6 +55,8 @@ class cloudapi_machines(BaseActor):
         """
         with self.models.vmachine.lock(machineId):
             provider, node, machine = self.cb.getProviderAndNode(machineId)
+            if machine.type != 'VIRTUAL':
+                raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             if node.extra.get('locked', False):
                 raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
             actionname = "%s_node" % actiontype.lower()
@@ -62,7 +64,7 @@ class cloudapi_machines(BaseActor):
             if not method:
                 method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
                 if not method:
-                    raise RuntimeError("Action %s is not support on machine %s" % (actiontype, machineId))
+                    raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             if newstatus and newstatus != machine.status:
                 self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'status': newstatus}})
             tags = str(machineId)
@@ -212,7 +214,8 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('C')})
-    def createTemplate(self, machineId, templatename, basename, **kwargs):
+    @RequireState(enums.MachineStatus.HALTED, 'Can only convert a stopped machine.')
+    def convertToTemplate(self, machineId, templatename, **kwargs):
         """
         Create a template from the active machine
 
@@ -244,9 +247,8 @@ class cloudapi_machines(BaseActor):
         imageid = self.models.image.set(image)[0]
         image.id = imageid
         image.gid = cloudspace.gid
-        imagename = "customer_template_{}_{}".format(cloudspace.accountId, imageid)
         try:
-            referenceId = provider.client.ex_create_template(node, templatename, imagename)
+            referenceId = provider.client.ex_create_template(node, templatename)
         except:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
@@ -259,6 +261,8 @@ class cloudapi_machines(BaseActor):
         for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
             stack.setdefault('images', []).append(imageid)
             self.models.stack.set(stack)
+        machine.type = 'TEMPLATE'
+        self.models.vmachine.set(machine)
 
         return imageid
 
@@ -644,7 +648,9 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         auth = authenticator.auth()
         acl = auth.expandAclFromCloudspace(user, groups, cloudspace)
-        q = {"cloudspaceId": cloudspaceId, "status": {"$nin": ["DESTROYED", "ERROR", ""]}}
+        q = {"cloudspaceId": cloudspaceId,
+             "status": {"$nin": ["DESTROYED", "ERROR", ""]},
+             "type": "VIRTUAL"}
         if 'R' not in acl and 'A' not in acl:
             q['acl.userGroupId'] = user
 
@@ -807,6 +813,7 @@ class cloudapi_machines(BaseActor):
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
+        clone.type = 'VIRTUAL'
         for account in machine.accounts:
             newaccount = clone.new_account()
             newaccount.login = account.login

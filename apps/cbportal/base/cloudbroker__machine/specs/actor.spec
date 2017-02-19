@@ -250,9 +250,9 @@
         var:machineId int,, ID of machine
         var:diskId int,, ID of disk
 
-    method:createTemplate
+    method:convertToTemplate
         """
-        Creates a template from a deployed machine
+        Convert a machien to template
         """
         var:machineId int,, ID of machine
         var:templateName str,, Name of the template @tags validator:name

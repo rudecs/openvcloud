@@ -15,8 +15,8 @@ roles = []
 async = True
 
 
-def action(ovs_connection, diskguid, storagerouterguid, name):
-    # Creates a clone of diskguid, and sets the clone as a template
+def action(ovs_connection, diskguid):
+    # Creates sets vdisk as a template
     #
     # ovs_connection: dict holding connection info for ovs restapi
     #   eg: { ips: ['ip1', 'ip2', 'ip3'], client_id: 'dsfgfs', client_secret: 'sadfafsdf'}
@@ -28,22 +28,11 @@ def action(ovs_connection, diskguid, storagerouterguid, name):
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
-    # Create clone
-    path = '/vdisks/{}/clone'.format(diskguid)
-    devicename = 'templates/{}'.format(name)
-    taskguid = ovs.post(path,
-                        params=dict(name=devicename,
-                                    storagerouter_guid=storagerouterguid))
-    success, result = ovs.wait_for_task(taskguid)
-    if not success:
-        raise Exception("Could not create clone:\n{}".format(result))
-    clone_diskguid = result['vdisk_guid']
-
     # Set the clone as templatename
-    path = '/vdisks/{}/set_as_template'.format(clone_diskguid)
+    path = '/vdisks/{}/set_as_template'.format(diskguid)
     taskguid = ovs.post(path)
     success, result = ovs.wait_for_task(taskguid)
     if not success:
         raise Exception("Could not disk as template:\n{}".format(result))
 
-    return clone_diskguid
+    return diskguid

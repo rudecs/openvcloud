@@ -509,15 +509,12 @@ class CSLibvirtNodeDriver(object):
         self._set_persistent_xml(node, machinexml)
         return node
 
-    def ex_create_template(self, node, name, filename):
+    def ex_create_template(self, node, name):
         xml = self._get_persistent_xml(node)
         node = self._from_xml_to_node(xml, node)
         bootvolume = node.extra['volumes'][0]
-        edgeclient = self.getNextEdgeClient('vmstor')
         kwargs = {'ovs_connection': self.ovs_connection,
-                  'storagerouterguid': edgeclient['storagerouterguid'],
-                  'diskguid': bootvolume.vdiskguid,
-                  'name': filename}
+                  'diskguid': bootvolume.vdiskguid}
         templateguid = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
         return self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
 

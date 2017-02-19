@@ -516,6 +516,7 @@ class Machine(object):
         machine.imageId = imageId
         machine.creationTime = int(time.time())
         machine.updateTime = int(time.time())
+        machine.type = 'VIRTUAL'
 
         def addDisk(order, size, type, name=None):
             disk = models.disk.new()

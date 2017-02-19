@@ -151,13 +151,12 @@
         var:epoch str,, epoch time of snapshot
         result:str
 
-    method:createTemplate
+    method:convertToTemplate
         """
-        Create a template from the active machine
+        Convert a machine to a template
         """
         var:machineId int,, id of the machine
         var:templatename str,, name of the template
-        var:basename str,, snapshot id on which the template is based @tags: optional
         result:bool, True if template was created
 
     method:importOVF
