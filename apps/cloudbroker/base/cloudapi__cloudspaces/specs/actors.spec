@@ -8,7 +8,7 @@
         Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
         """
         var:accountId int,,id of acount this cloudspace belongs to
-        var:location str,, name of cloudspace to create
+        var:location str,, location code for the cloudspace
         var:name str,,name of space to create @tags validator:name
         var:access str,,username of a user which has full access to this space @tags validator:name
         var:maxMemoryCapacity float,-1, max size of memory in GB @optional
