@@ -16,7 +16,7 @@
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
-        var:externalnetworkId str,, id of externalnetwork to connect to @optional
+        var:externalnetworkId int,, id of externalnetwork to connect to @optional
         var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
         result:int, id of created cloudspace
 
@@ -54,7 +54,7 @@
         var:cloudspaceId int,, id of the cloudspace
         var:sizeId int,, id of the required size to be added
         result:bool, True if size is added
-        
+
     method:removeAllowedSize
         """
         Remove allowed size for a cloudspace
