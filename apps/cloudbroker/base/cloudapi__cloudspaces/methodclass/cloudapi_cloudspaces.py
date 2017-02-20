@@ -150,7 +150,7 @@ class cloudapi_cloudspaces(BaseActor):
     @authenticator.auth(acl={'account': set('C')})
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1,
-               externalnetworkId=None, **kwargs):
+               externalnetworkId=None, allowedVMSizes=[], **kwargs):
         """
         Create an extra cloudspace
 
@@ -191,6 +191,7 @@ class cloudapi_cloudspaces(BaseActor):
         cs.name = name
         cs.accountId = accountId
         cs.externalnetworkId = externalnetworkId
+        cs.allowedVMSizes = allowedVMSizes
         cs.location = location['locationCode']
         cs.gid = location['gid']
         ace = cs.new_acl()
@@ -625,8 +626,36 @@ class cloudapi_cloudspaces(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('A')})
+    def addAllowedSize(self, cloudspaceId, sizeId, **kwargs):
+        """
+        Adds size to the allowed set of sizes
+        :param cloudspaceId: id of the cloudspace
+        :param sizeId: id of the required size
+        """
+        if not self.models.size.exists(sizeId):
+            raise exceptions.BadRequest("Please select a valid size")
+        self.models.cloudspace.updateSearch({'id': cloudspaceId},
+                                                     {'$addToSet': {'allowedVMSizes': sizeId}})
+        return True
+
+    @authenticator.auth(acl={'cloudspace': set('A')})
+    def removeAllowedSize(self, cloudspaceId, sizeId, **kwargs):
+        """
+        removes size to the allowed set of sizes
+        :param cloudspaceId: id of the cloudspace
+        :param sizeId: id of the required size
+        """
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if sizeId in cloudspace.allowedVMSizes:
+            self.models.cloudspace.updateSearch({'id': cloudspaceId},
+                                                             {'$pull': {'allowedVMSizes': sizeId}})
+        else:
+            raise exceptions.BadRequest("Specified size isn't included in the allowed sizes")
+        return True
+
+    @authenticator.auth(acl={'cloudspace': set('A')})
     def update(self, cloudspaceId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
-               maxCPUCapacity=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
+               maxCPUCapacity=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, allowedVMSizes=None, **kwargs):
         """
         Update the cloudspace name and capacity parameters
 
@@ -647,6 +676,9 @@ class cloudapi_cloudspaces(BaseActor):
 
         if name:
             cloudspace.name = name
+
+        if allowedVMSizes:
+            cloudspace.allowedVMSizes = allowedVMSizes
 
         if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNetworkPeerTransfer or maxNumPublicIP:
             self._validateAvaliableAccountResources(cloudspace, maxMemoryCapacity,

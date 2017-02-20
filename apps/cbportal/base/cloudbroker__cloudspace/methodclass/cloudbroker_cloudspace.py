@@ -204,7 +204,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
-               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+               maxNetworkPeerTransfer, maxNumPublicIP, allowedVMSizes, **kwargs):
         """
         Update a cloudspace name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -232,12 +232,12 @@ class cloudbroker_cloudspace(BaseActor):
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudspaces_actor.update(cloudspaceId, name, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP, allowedVMSizes)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
-               maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, **kwargs):
+               maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, allowedVMSizes=[], **kwargs):
         """
         Create a cloudspace
 
@@ -248,6 +248,7 @@ class cloudbroker_cloudspace(BaseActor):
         :param maxCPUCapacity: max number of cpu cores
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
+        :param allowedVMSizes: alowed sizes for a cloudspace
         :return: True if update was successful
         """
         user = self.syscl.user.search({'id': access})[1:]
@@ -268,7 +269,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
                                              maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer,
-                                             maxNumPublicIP, externalnetworkId)
+                                             maxNumPublicIP, externalnetworkId, allowedVMSizes)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]

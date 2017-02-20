@@ -492,6 +492,10 @@ class Machine(object):
         if models.vmachine.count({'status': {'$ne': 'DESTROYED'}, 'cloudspaceId': cloudspace.id}) >= 250:
             raise exceptions.BadRequest("Can not create more than 250 Virtual Machines per Cloud Space")
 
+        sizes = j.apps.cloudapi.sizes.list(cloudspace.id)
+        if sizeId not in [s['id'] for s in sizes]:
+            raise exceptions.BadRequest("Cannot create machine with specified size on this cloudspace")
+
         size = models.size.get(sizeId)
         if disksize not in size.disks:
             raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))

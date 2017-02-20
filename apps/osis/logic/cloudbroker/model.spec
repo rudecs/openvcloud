@@ -167,6 +167,7 @@
     prop:resourceProviderStacks list(int),,Not used anymore here for backwardscompatibility
     prop:externalnetworkip str,, externalnetwork ip linked to the cloudspace @index
     prop:externalnetworkId int,, externalnetwork poold id @index
+    prop:allowedVMSizes list(int),, list of allowed sizes
     prop:status str,, status of the cloudspace, e.g VIRTUAL/DEPLOYED/DESTROYED @index
     prop:location str,, datacenterlocation
     prop:gid int,, Grid ID @index
