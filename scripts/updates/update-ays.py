@@ -191,14 +191,15 @@ def applyOnServices(services, func, kwargs=None):
         kwargs = kwargs or {}
         proc = multiprocessing.Process(target=func, args=(service,), kwargs=kwargs)
         proc.start()
-        procs.append(proc)
+        procs.append((service, proc))
     error = False
-    for proc in procs:
+    for service, proc in procs:
         proc.join()
         if proc.exitcode:
+            funcname = getattr(func, 'func_name', default=str(func))
+            j.console.warning('Failed to execute {} on {}'.format(funcname, service))
             error = True
     if error:
-        j.console.warning('Failed to execute on nodes')
         sys.exit(1)
 
 
