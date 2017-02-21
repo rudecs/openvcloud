@@ -6,6 +6,7 @@ from JumpScale.baselib.http_client.HttpClient import HTTPError
 import hashlib
 import time
 
+
 class cloudbroker_user(BaseActor):
     """
     Operator actions for interventions specific to a user
@@ -34,7 +35,7 @@ class cloudbroker_user(BaseActor):
         user['passwd'] = hashlib.md5(password).hexdigest()
         self.syscl.user.set(user)
         return True
-    
+
     @auth(['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, groups, **kwargs):
         groups = groups or []
@@ -102,11 +103,12 @@ class cloudbroker_user(BaseActor):
         # Set the user to inactive
         userobj.active = False
         gid, uid = userobj.guid.split('_')
-        userobj.id = 'DELETED_%i_%s'%(time.time(), uid)
-        userobj.guid = '%s_DELETED_%i_%s'%(gid, time.time(), uid)
+        userobj.id = 'DELETED_%i_%s' % (time.time(), uid)
+        userobj.guid = '%s_DELETED_%i_%s' % (gid, time.time(), uid)
         userobj.protected = False
         self.syscl.user.delete(uid)
         self.syscl.user.set(userobj)
+        self.syscl.sessioncache.deleteSearch({'user': uid})
 
         return True
 
