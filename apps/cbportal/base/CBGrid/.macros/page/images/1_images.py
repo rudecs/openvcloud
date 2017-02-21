@@ -25,13 +25,14 @@ def main(j, args, params, tags, tasklet):
         return "[{name} ({gid})|/cbgrid/grid?gid={gid}]".format(gid=gid, name=name)
 
     fields = [
-        {'name': 'Location',
-         'id': 'gid',
-         'value': getLocation
-         },
         {'name': 'Name',
          'id': 'name',
          'value': "<a href='/cbgrid/image?id=%(referenceId)s'>%(name)s</a>"
+         },
+        {'name': 'Location',
+         'id': 'gid',
+         'filterable': False,
+         'value': getLocation
          },
         {'name': 'Type',
          'id': 'type',
