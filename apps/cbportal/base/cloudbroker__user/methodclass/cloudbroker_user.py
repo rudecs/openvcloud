@@ -57,6 +57,25 @@ class cloudbroker_user(BaseActor):
         return self.users_actor.sendResetPasswordLink(email)
 
     @auth(['level1', 'level2', 'level3'])
+    def deleteUsers(self, userIds, **kwargs):
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._deleteUsers,
+                            args=(userIds, ctx),
+                            kwargs={},
+                            title='Deleting Users',
+                            success='Users deleted successfully',
+                            error='Failed to delete users')
+
+    def _deleteUsers(self, userIds, ctx):
+        for idx, username in enumerate(userIds):
+            ctx.events.sendMessage("Deleting Users", 'Deleting User %s/%s' %
+                                   (idx + 1, len(userIds)))
+            try:  # BULK ACTION
+                self.delete(username)
+            except exceptions.BadRequest:
+                pass
+
+    @auth(['level1', 'level2', 'level3'])
     def delete(self, username, **kwargs):
         """
         Delete the user from all ACLs and set user status to inactive

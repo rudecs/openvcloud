@@ -1,6 +1,4 @@
 
-import datetime
-
 def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
@@ -10,7 +8,6 @@ def main(j, args, params, tags, tasklet):
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
         if tag == 'userdetails':
-            userdetails = val
             continue
         if isinstance(val, list):
             val = ', '.join(val)
@@ -29,7 +26,7 @@ def main(j, args, params, tags, tasklet):
          'sortable': False}
     ]
 
-    tableid = modifier.addTableFromModel('system', 'user', fields, filters)
+    tableid = modifier.addTableFromModel('system', 'user', fields, filters, selectable='rows')
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 

@@ -26,9 +26,16 @@
 
     method:delete
         """
-        Delete a user 
+        Delete a user
         """
         var:username str,, id of user
+        result:bool
+
+    method:deleteUsers
+        """
+        Bulk delete a list of users
+        """
+        var:userIds list(id),, List of user ids
         result:bool
 
     method:deleteByGuid
