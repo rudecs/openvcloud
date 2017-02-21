@@ -6,25 +6,16 @@ import time
 import shutil
 import urlparse
 from multiprocessing import cpu_count
-from psutil import virtual_memory
 from CloudscalerLibcloud.utils.qcow2 import Qcow2
 from JumpScale import j
 from JumpScale.lib.ovsnetconfig.VXNet import netclasses
+from CloudscalerLibcloud.utils.gridconfig import GridConfig
 
 
 LOCKCREATED = 1
 LOCKREMOVED = 2
 NOLOCK = 3
 LOCKEXIST = 4
-
-# for thin provisioning
-TOTAL_MEM = int(virtual_memory().total >> 30)
-if TOTAL_MEM <= 64:
-    RESERVED_MEM = 1024  # 1 GB
-elif 64 < TOTAL_MEM < 196:
-    RESERVED_MEM = 2048  # 2 GB
-else:
-    RESERVED_MEM = 4096  # 4 GB
 
 CPU_COUNT = cpu_count()
 if CPU_COUNT <= 16:
@@ -90,6 +81,7 @@ class LibvirtUtil(object):
         self.templatepath = '/mnt/vmstor/templates'
         self.env = Environment(loader=PackageLoader(
             'CloudscalerLibcloud', 'templates'))
+        self.config = GridConfig()
 
     def _get_domain(self, id):
         try:
@@ -326,7 +318,9 @@ class LibvirtUtil(object):
                 totalrunningmax += maxmem / 1000
         return (hostmem, totalmax, totalrunningmax)
 
-    def check_machine(self, machinexml, reserved_mem=RESERVED_MEM):
+    def check_machine(self, machinexml, reserved_mem=None):
+        if reserved_mem is None:
+            reserved_mem = self.config.get("reserved_mem")
         xml = ElementTree.fromstring(machinexml)
         memory = int(xml.find('memory').text)
         hostmem, totalmax, totalrunningmax = self.memory_usage()
