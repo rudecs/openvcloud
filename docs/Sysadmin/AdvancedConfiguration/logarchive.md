@@ -1,14 +1,16 @@
-# Log Archive
+## Log Archive
 
-Due to the limited root partition of the cpu nodes and the storagenodes our logrotation is configured rather small.
-To prevent you from lossing `valuable` log files one can configure a log archive.
+Due to the limited root partition of the CPU and the storage nodes, the log rotation is configured rather small.
 
-A log archive server is can be any server reachable via ssh (`sftp`) from the cpu and storage nodes
+To prevent losing **valuable** log files, one can configure a log archive.
 
-configuration key: `log_server`
-configuration value: `{'host': 'somehost', 'password': 'xxxxx', 'username': 'gig'}`
+A log archive server can be any server reachable via ssh (`sftp`) from the CPU and storage nodes.
 
-## Default values
+Configuration key: `log_server`
+Configuration value: `{'host': 'some host', 'password': 'xxxxx', 'username': 'gig'}`
+
+### Default values
 
 No default values are provided for these settings.
-When these settings are missing the log files will be truncated withouth any extra actions.
+
+When these settings are missing the log files will be truncated without any extra actions.

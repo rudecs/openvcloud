@@ -88,6 +88,7 @@
   * [Moving Virtual Machines to Another CPU Node](Sysadmin/MovingVM/moving_vms.md)
   * [Configure Network Devices](Sysadmin/ConfigureNetworkDevices/configure_network_devices.md)
   * [Backend Encryption](Sysadmin/BackendEncryption/backend_encryption.md)
+  * [Advanced Configuration](Sysadmin/AdvancedConfiguration/AdvancedConfiguration.md)
 * [Testing](Testing/Testing.md)
 * [Branding](Branding/Branding.md)
   * [How to Change Logo on Portals](Branding/change_logo.md)
