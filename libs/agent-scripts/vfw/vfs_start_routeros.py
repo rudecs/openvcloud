@@ -14,9 +14,11 @@ async = True
 queue = 'hypervisor'
 
 
-def action(networkid):
+def action(networkid, vlan):
     createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
-    createnetwork.executeInProcess(networkid=networkid)
+    createnetwork.executeLocal(networkid=networkid)
+    create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+    create_external_network.executeLocal(vlan=vlan)
     import libvirt
     con = libvirt.open()
     try:

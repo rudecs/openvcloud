@@ -18,6 +18,7 @@
     prop:internalip str,,
     prop:pubips list(str),,
     prop:version int,2,
+    prop:vlan int,,VLAN of the public network
     prop:state str,, OK;ERROR;INIT;DELETED
     prop:moddate int,,
     prop:deployment_jobguid str,, jobs excecutedin deployment guid

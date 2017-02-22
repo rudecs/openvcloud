@@ -58,6 +58,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         fwobj.domain = domain
         fwobj.id = networkid
         fwobj.gid = gid
+        fwobj.vlan = vlan
         fwobj.pubips.append(publicip)
         fwobj.type = type
         key = self.osisvfw.set(fwobj)[0]
@@ -109,6 +110,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     return nicinfo['ip'][0]
         srcip = get_backplane_ip(srcnode)
         args = {'networkid': fwobj.id,
+                'vlan': fwobj.vlan,
                 'sourceip': srcip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
@@ -289,7 +291,8 @@ class jumpscale_netmgr(j.code.classGetBase()):
         param:gid grid id
         """
         fwobj = self._getVFWObject(fwid)
-        args = {'networkid': fwobj.id}
+        args = {'networkid': fwobj.id,
+                'vlan': fwobj.vlan}
         if fwobj.type == 'routeros':
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         else:

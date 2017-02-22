@@ -15,34 +15,19 @@ async = True
 queue = 'hypervisor'
 
 
-def action(networkid, sourceip):
+def action(networkid, sourceip, vlan):
     import libvirt
-    BACKPLANE = 'vxbackend'
-    nc = j.system.ovsnetconfig
     target_con = libvirt.open()
     try:
         source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
     except:
         source_con = None
 
-    networkidHex = '%04x' % int(networkid)
-    networkname = "space_%s" % networkidHex
-    name = 'routeros_%s' % networkidHex
-
-    # setup network vxlan
-    nc.ensureVXNet(int(networkid), BACKPLANE)
-    xml = '''  <network>
-    <name>%(networkname)s</name>
-    <forward mode="bridge"/>
-    <bridge name='%(networkname)s'/>
-     <virtualport type='openvswitch'/>
- </network>''' % {'networkname': networkname}
-    try:
-        target_con.networkLookupByName(networkname)
-    except:
-        private = target_con.networkDefineXML(xml)
-        private.create()
-        private.setAutostart(True)
+    createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
+    createnetwork.executeLocal(networkid=networkid)
+    create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
+    create_external_network.executeLocal(vlan=vlan)
+    name = 'routeros_%04x' % networkid
 
     if source_con:
         domain = source_con.lookupByName(name)
@@ -81,7 +66,8 @@ def action(networkid, sourceip):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--networkid')
+    parser.add_argument('-n', '--networkid', type=int)
     parser.add_argument('-s', '--sourceip')
+    parser.add_argument('-v', '--vlan', type=int, default=0)
     options = parser.parse_args()
-    action(options.networkid, options.sourceip)
+    action(options.networkid, options.sourceip, options.vlan)
