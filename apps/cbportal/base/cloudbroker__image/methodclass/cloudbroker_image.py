@@ -29,6 +29,9 @@ class cloudbroker_image(BaseActor):
         cbimage, libvirtimage = self._checkimage(imageId)
         cbimage['status'] = 'DESTROYED'
         self.models.image.set(cbimage)
+        images = self.models.image.search({'referenceId': imageId})[1:]
+        for image in images:
+            self.models.stack.updateSearch({'images': image['id']}, {'$pull': {'images': image['id']}})
         if libvirtimage:
             libvirtimage.status = 'DESTROYED'
             self.libvirtcl.image.set(libvirtimage)
