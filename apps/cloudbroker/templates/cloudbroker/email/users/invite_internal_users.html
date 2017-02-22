@@ -4,11 +4,11 @@
     Dear {{ username }},<br>
     <br>
     {% if resourcetype == 'machine' %}
-    You are invited to access the machine <a href="{{ portalurl }}wiki_gcb/MachineDeck#/edit/{{ resourceid }}">{{ resourcename }}</a> on the <a href="{{ portalurl }}/wiki_gcb">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
+    You are invited to access the machine <a href="{{ portalurl }}/g8vdc/#/edit/{{ resourceid }}">{{ resourcename }}</a> on the <a href="{{ portalurl }}/g8vdc">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
     {% elif resourcetype == 'cloudspace' %}
-    You are invited to access the cloudspace <a href="{{ portalurl }}/wiki_gcb/MachineDeck#/list?cloudspaceId={{ resourceid }}">{{ resourcename }}</a> on the <a href="{{ portalurl }}/wiki_gcb">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
+    You are invited to access the cloudspace <a href="{{ portalurl }}/g8vdc/#/list?cloudspaceId={{ resourceid }}">{{ resourcename }}</a> on the <a href="{{ portalurl }}/g8vdc">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
     {% else %}
-    You are invited to access the {{ resourcetype }} {{ resourcename }} on the <a href="{{ portalurl }}/wiki_gcb">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
+    You are invited to access the {{ resourcetype }} {{ resourcename }} on the <a href="{{ portalurl }}/g8vdc">OpenvCloud</a> service with the access permissions: {{ accessrole }}.
     {% endif %}
     <br>
     {% if not activated %}
