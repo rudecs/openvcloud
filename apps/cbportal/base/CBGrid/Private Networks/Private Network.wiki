@@ -34,6 +34,11 @@ h2. Private Network: ${id} (${'%04x' % id})
    async: True
    cloudspaceId: ${domain}
   input:
+  - type: message
+    messagetype: warning
+    message: Resetting VFW has major consequences!</br>
+             Be aware that the external IP address of the network might change.</br>
+             All existing port forwards and IP adresses asigned to virtual machines will be broken.
   - reason
 
 - display: Remove VFW

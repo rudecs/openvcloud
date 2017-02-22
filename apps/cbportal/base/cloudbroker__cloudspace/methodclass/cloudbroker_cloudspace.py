@@ -71,6 +71,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         # delete routeros
         ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
+        self._destroyVFW(cloudspace.gid, cloudspace.id)
         cloudspace = self.models.cloudspace.get(cloudspace['id'])
         cloudspace.status = 'DESTROYED'
         self.cb.cloudspace.release_resources(cloudspace)
@@ -196,10 +197,18 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+        self._destroyVFW(cloudspace.gid, cloudspaceId)
         self.cb.cloudspace.release_resources(cloudspace, False)
         cloudspace.status = 'VIRTUAL'
         self.models.cloudspace.set(cloudspace)
         return True
+
+    def _destroyVFW(self, gid, cloudspaceId):
+        fws = self.netmgr.fw_list(int(gid), str(cloudspaceId))
+        if fws:
+            self.netmgr.fw_delete(fws[0]['guid'], gid)
+            return True
+        return False
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
