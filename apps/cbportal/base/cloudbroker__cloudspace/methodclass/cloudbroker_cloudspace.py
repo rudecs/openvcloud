@@ -71,7 +71,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         # delete routeros
         ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
-        self._destroyVFW(cloudspace.gid, cloudspace.id)
+        self._destroyVFW(cloudspace['gid'], cloudspace['id'])
         cloudspace = self.models.cloudspace.get(cloudspace['id'])
         cloudspace.status = 'DESTROYED'
         self.cb.cloudspace.release_resources(cloudspace)
