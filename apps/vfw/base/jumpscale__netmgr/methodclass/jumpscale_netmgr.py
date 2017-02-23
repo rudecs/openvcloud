@@ -15,7 +15,13 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
         self._ovsdata = {}
-        self.cb = cloudbroker.CloudBroker()
+        self._cb = None
+
+    @property
+    def cb(self):
+        if self._cb is None:
+            self._cb = cloudbroker.CloudBroker()
+        return self._cb
 
     def get_ovs_credentials(self, gid):
         cachekey = 'credentials_{}'.format(gid)
