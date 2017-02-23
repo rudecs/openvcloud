@@ -137,7 +137,7 @@ class CloudBroker(object):
         else:
             return None
 
-    def getBestProvider(self, gid, imageId, excludelist=[]):
+    def getBestProvider(self, gid, imageId=None, excludelist=[]):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
             return -1
@@ -187,10 +187,13 @@ class CloudBroker(object):
     def getActiveSessionsKeys(self):
         return self.agentcontroller.listActiveSessions().keys()
 
-    def getCapacityInfo(self, gid, imageId):
+    def getCapacityInfo(self, gid, imageId=None):
         resourcesdata = list()
         activesessions = self.getActiveSessionsKeys()
-        stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
+        if imageId:
+            stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
+        else:
+            stacks = models.stack.search({'gid': gid})[1:]
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':

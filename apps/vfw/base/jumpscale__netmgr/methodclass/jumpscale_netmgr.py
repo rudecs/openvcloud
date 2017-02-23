@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-
+from cloudbrokerlib import cloudbroker
 
 class jumpscale_netmgr(j.code.classGetBase()):
     """
@@ -15,6 +15,7 @@ class jumpscale_netmgr(j.code.classGetBase()):
         self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
         self._ovsdata = {}
+        self.cb = cloudbroker.CloudBroker()
 
     def get_ovs_credentials(self, gid):
         cachekey = 'credentials_{}'.format(gid)
@@ -71,7 +72,8 @@ class jumpscale_netmgr(j.code.classGetBase()):
                     'vlan': vlan,
                     'publiccidr': publiccidr,
                     }
-            job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_create_routeros', roles=['fw'], gid=gid, args=args, queue='default', wait=True)
+            nid = int(self.cb.getBestProvider(gid)['referenceId'])
+            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, queue='default', wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
             result = self.agentcontroller.waitJumpscript(job=job)
