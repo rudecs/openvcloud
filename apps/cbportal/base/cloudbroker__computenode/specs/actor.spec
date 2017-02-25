@@ -38,6 +38,13 @@
         var:ids list(int),,ids of stacks to enable
         result:bool
 
+    method:list
+        """
+        List stacks
+        """
+        var:gid int,,filter on gid @optional
+        result:list
+
     method:maintenance
         """
         Migrates or stop all vms

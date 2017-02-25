@@ -65,6 +65,13 @@ class cloudbroker_computenode(BaseActor):
         stack['eco'] = eco.guid
         self.models.stack.set(stack)
 
+    @auth(['level1', 'level2', 'level3'], True)
+    def list(self, gid=None, **kwargs):
+        query = {}
+        if gid:
+            query['gid'] = gid
+        return self.models.stack.search(query)[1:]
+
     @auth(['level2', 'level3'], True)
     def enableStacks(self, ids, **kwargs):
         kwargs['ctx'].events.runAsync(self._enableStacks,
