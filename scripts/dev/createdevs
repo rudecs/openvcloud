@@ -21,16 +21,16 @@ function createdev() {
     dev=$(losetup -a | grep $devname | cut -d ':' -f 1)
     if [ ! -e "${dev}p1" ]; then
         echoerr Create partitions
-        sudo parted -s -a optimal $dev mklabel msdos -- mkpart primary ext4 1 -1 >&2
+        sudo parted -s -a optimal $dev mklabel msdos -- mkpart primary ext4 1 -1 &> /dev/null
         echoerr Create fs
-        sudo mkfs.ext4 "${dev}p1" >&2
+        sudo mkfs.ext4 "${dev}p1" &> /dev/null
     fi
     echo $dev
 
 }
 
 function rexec () {
-    ssh "root@${node}" $@
+    ssh "root@${node}" $@ 2> /dev/null
 }
 
 #make nodes on
@@ -51,7 +51,7 @@ function setupdev() {
     devbasename=$(basename ${devname})
     dupdev "${devname}"
     dupdev "${devname}p1"
-    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1"
+    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1" &> /dev/null
 
     rexec mkdir /mnt/$name
     rexec mount "${devname}p1" /mnt/$name
@@ -64,11 +64,10 @@ function setupdevnomount() {
     devbasename=$(basename ${devname})
     dupdev "${devname}"
     dupdev "${devname}p1"
-    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1"
+    rexec udevadm test "/sys/block/${devbasename}/${devbasename}p1" &> /dev/null
 }
 
 
-echo mknod
 rexec mkdir /dev/net
 dupdev /dev/net/tun
 dupdev /dev/fuse
