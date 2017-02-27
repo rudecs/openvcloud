@@ -19,5 +19,5 @@ def action(machinexml):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     if not connection.check_machine(machinexml):
-    	return -1
+        return -1
     return connection.create_machine(machinexml)

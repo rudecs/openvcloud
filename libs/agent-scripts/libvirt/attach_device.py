@@ -14,9 +14,10 @@ roles = []
 async = True
 
 
-def action(xml, machineid):
+def action(xml, machineid, ipcidr=None):
     import libvirt
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    from CloudscalerLibcloud.utils.network import Network
     connection = LibvirtUtil()
     try:
         domain = connection.connection.lookupByUUIDString(machineid)
@@ -29,4 +30,7 @@ def action(xml, machineid):
         flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
     if flags != 0:
         domain.attachDeviceFlags(xml, flags)
+    if ipcidr:
+        network = Network(connection)
+        network.protect_external(domain, ipcidr)
     return domain.XMLDesc()

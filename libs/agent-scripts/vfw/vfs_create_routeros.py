@@ -43,9 +43,12 @@ def createVM(xml):
     con = libvirt.open()
     dom = con.defineXML(xml)
     dom.create()
+    return dom.UUIDString()
 
 
 def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
+    from CloudscalerLibcloud.utils import libvirtutil
+    from CloudscalerLibcloud.utils.network import Network
     import pexpect
     import netaddr
     import jinja2
@@ -58,6 +61,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
     destinationfile = None
+    connection = libvirtutil.LibvirtUtil()
+    network = Network(connection)
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -100,9 +105,13 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
 
         print 'Starting VM'
         try:
-            j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource)
+            domuuid = j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource)
         except Exception, e:
             raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s" % (networkid, networkidHex, e))
+        print 'Protect network'
+        domain = connection.get_domain_obj(domuuid)
+        network.protect_external(domain, '{}/{}'.format(publicip, publiccidr))
+        network.protect_gwmgmt(domain, '{}/22'.format(internalip))
 
         data['internalip'] = internalip
 

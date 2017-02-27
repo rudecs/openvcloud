@@ -273,6 +273,16 @@ class LibvirtUtil(object):
         for target in xml.findall('devices/interface/target'):
             yield target.attrib['dev']
 
+    def get_domain_nics_info(self, dom):
+        xml = self._get_xml_dom(dom)
+        for interface in xml.findall('devices/interface'):
+            nic = {}
+            nic['mac'] = interface.find('mac').attrib['address']
+            nic['name'] = interface.find('target').attrib['dev']
+            nic['bridge'] = interface.find('source').attrib['bridge']
+            yield nic
+
+
     def _get_xml_dom(self, dom):
         if isinstance(dom, ElementTree.Element):
             return dom

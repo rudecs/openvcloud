@@ -1051,7 +1051,7 @@ class cloudapi_machines(BaseActor):
         nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway, 'externalnetworkId': str(pool.id)})
         nic.type = 'PUBLIC'
         self.models.vmachine.set(vmachine)
-        iface = provider.client.attach_public_network(node, pool.vlan)
+        iface = provider.client.attach_public_network(node, pool.vlan, nic.ipAddress)
         nic.deviceName = iface.target
         nic.macAddress = iface.mac
         self.models.vmachine.set(vmachine)

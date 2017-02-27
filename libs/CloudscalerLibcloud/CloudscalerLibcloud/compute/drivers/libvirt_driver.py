@@ -903,7 +903,7 @@ class CSLibvirtNodeDriver(object):
         """
         return False
 
-    def attach_public_network(self, node, vlan):
+    def attach_public_network(self, node, vlan, ipcidr):
         """
         Attach Virtual machine to the cpu node public network
         """
@@ -917,7 +917,7 @@ class CSLibvirtNodeDriver(object):
         ElementTree.SubElement(iface, 'model').attrib = {'type': 'virtio'}
         ElementTree.SubElement(iface, 'target').attrib = {'dev': target}
         ifacexml = ElementTree.tostring(iface)
-        self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id)
+        self._execute_agent_job('attach_device', queue='hypervisor', xml=ifacexml, machineid=node.id, ipcidr=ipcidr)
         xml = self._get_persistent_xml(node)
         dom = ElementTree.fromstring(xml)
         devices = dom.find('devices')
