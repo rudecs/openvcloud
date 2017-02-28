@@ -13,7 +13,6 @@ class cloudbroker_machine(BaseActor):
         super(cloudbroker_machine, self).__init__()
         self.libvirtcl = j.clients.osis.getNamespace('libvirt')
         self.vfwcl = j.clients.osis.getNamespace('vfw')
-        self.actors = self.cb.actors.cloudapi
         self.acl = j.clients.agentcontroller.get()
 
     def _checkMachine(self, machineId):
@@ -26,7 +25,9 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
-        return self.actors.machines.create(cloudspaceId, name, description, sizeId, imageId, disksize, datadisks)
+        return self.cb.actors.cloudapi.machines.create(cloudspaceId=cloudspaceId, name=name,
+                                                       description=description, sizeId=sizeId,
+                                                       imageId=imageId, disksize=disksize, datadisks=datadisks)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -68,7 +69,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def destroy(self, machineId, reason, **kwargs):
-        self.actors.machines.delete(int(machineId))
+        self.cb.actors.cloudapi.machines.delete(machineId=int(machineId))
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -97,7 +98,7 @@ class cloudbroker_machine(BaseActor):
         vmachine = self._validateMachineRequest(machineId)
         if "start" in vmachine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(vmachine.id, "start")
-        self.actors.machines.start(machineId)
+        self.cb.actors.cloudapi.machines.start(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -123,7 +124,7 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def stop(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.stop(machineId)
+        self.cb.actors.cloudapi.machines.stop(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -150,28 +151,28 @@ class cloudbroker_machine(BaseActor):
         for idx, machineId in enumerate(runningMachineIds):
             ctx.events.sendMessage("Stopping Machine", 'Stopping Machine %s/%s' %
                                    (idx + 1, len(runningMachineIds)))
-            self.actors.machines.stop(machineId)
+            self.cb.actors.cloudapi.machines.stop(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def pause(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.pause(machineId)
+        self.cb.actors.cloudapi.machines.pause(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resume(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.resume(machineId)
+        self.cb.actors.cloudapi.machines.resume(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def reboot(self, machineId, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.reboot(machineId)
+        self.cb.actors.cloudapi.machines.reboot(machineId=machineId)
 
     def get(self, machineId):
-        return self.actors.machines.get(machineId)
+        return self.cb.actors.cloudapi.machines.get(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -197,25 +198,25 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def snapshot(self, machineId, snapshotName, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.snapshot(machineId, snapshotName)
+        self.cb.actors.cloudapi.machines.snapshot(machineId=machineId, name=snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rollbackSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.rollbackSnapshot(machineId, epoch)
+        self.cb.actors.cloudapi.machines.rollbackSnapshot(machineId=machineId, epoch=epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteSnapshot(self, machineId, epoch, reason, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
-        self.actors.machines.deleteSnapshot(machineId, epoch)
+        self.cb.actors.cloudapi.machines.deleteSnapshot(machineId=machineId, epoch=epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def clone(self, machineId, cloneName, reason, **kwargs):
         self._validateMachineRequest(machineId)
-        self.actors.machines.clone(machineId, cloneName)
+        self.cb.actors.cloudapi.machines.clone(machineId=machineId, name=cloneName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -419,13 +420,13 @@ class cloudbroker_machine(BaseActor):
     @wrap_remote
     def listSnapshots(self, machineId, **kwargs):
         self._validateMachineRequest(machineId)
-        return self.actors.machines.listSnapshots(machineId)
+        return self.cb.actors.cloudapi.machines.listSnapshots(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def getHistory(self, machineId, **kwargs):
         self._validateMachineRequest(machineId)
-        return self.actors.machines.getHistory(machineId)
+        return self.cb.actors.cloudapi.machines.getHistory(machineId=machineId, size=10)
 
     @auth(['level1', 'level2', 'level3'])
     def listPortForwards(self, machineId, **kwargs):
@@ -448,49 +449,53 @@ class cloudbroker_machine(BaseActor):
         machineId = int(machineId)
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.actors.portforwarding.create(
-            cloudspace.id, cloudspace.externalnetworkip, str(destPort), vmachine.id, str(localPort), proto)
+        self.cb.actors.cloudapi.portforwarding.create(cloudspaceId=cloudspace.id, publicIp=cloudspace.externalnetworkip,
+                                                      publicPort=str(destPort), machineId=vmachine.id,
+                                                      localPort=str(localPort), protocol=proto)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deletePortForward(self, machineId, publicIp, publicPort, proto, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
-        self.actors.portforwarding.deleteByPort(cloudspace.id, publicIp, publicPort, proto)
+        self.cb.actors.cloudapi.portforwarding.deleteByPort(cloudspaceId=cloudspace.id, publicIp=publicIp,
+                                                            publicPort=publicPort, proto=proto)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def addDisk(self, machineId, diskName, description, size=10, **kwargs):
         self._validateMachineRequest(machineId)
-        self.actors.machines.addDisk(machineId, diskName, description, size=size, type='D')
+        self.cb.actors.cloudapi.machines.addDisk(machineId=machineId, diskName=diskName,
+                                                 description=description, size=size, type='D')
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteDisk(self, machineId, diskId, **kwargs):
         self._validateMachineRequest(machineId)
-        return self.actors.disks.delete(diskId=diskId, detach=True)
+        return self.cb.actors.cloudapi.disks.delete(diskId=diskId, detach=True)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def convertToTemplate(self, machineId, templateName, reason, **kwargs):
         self._validateMachineRequest(machineId)
-        self.actors.machines.convertToTemplate(machineId, templateName)
+        self.cb.actors.cloudapi.machines.convertToTemplate(machineId=machineId, templatename=templateName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def updateMachine(self, machineId, description, name, reason, **kwargs):
         self._validateMachineRequest(machineId)
-        self.actors.machines.update(machineId, description=description, name=name)
+        self.cb.actors.cloudapi.machines.update(machineId=machineId, description=description, name=name)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def attachExternalNetwork(self, machineId, **kwargs):
-        return self.actors.machines.attachExternalNetwork(machineId)
+        # FIXME: requires name parameter.
+        return self.cb.actors.cloudapi.machines.attachExternalNetwork(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def detachExternalNetwork(self, machineId, **kwargs):
-        return self.actors.machines.detachExternalNetwork(machineId)
+        return self.cb.actors.cloudapi.machines.detachExternalNetwork(machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -509,14 +514,14 @@ class cloudbroker_machine(BaseActor):
 
         vmachineacl = authenticator.auth().getVMachineAcl(machineId)
         if username in vmachineacl:
-            updated = self.actors.machines.updateUser(machineId, username, accesstype)
+            updated = self.cb.actors.cloudapi.machines.updateUser(machineId=machineId, userId=username, accesstype=accesstype)
             if not updated:
                 raise exceptions.PreconditionFailed('User already has same access level to owning '
                                                     'account or cloudspace')
         if user:
-            self.actors.machines.addUser(machineId, username, accesstype)
+            self.cb.actors.cloudapi.machines.addUser(machineId=machineId, userId=username, accesstype=accesstype)
         elif self.cb.isValidEmailAddress(username):
-            self.actors.machines.addExternalUser(machineId, username, accesstype)
+            self.cb.actors.cloudapi.machines.addExternalUser(machineId=machineId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
@@ -536,10 +541,10 @@ class cloudbroker_machine(BaseActor):
         else:
             # external user, delete ACE that was added using emailaddress
             userId = username
-        self.actors.machines.deleteUser(machineId, userId)
+        self.cb.actors.cloudapi.machines.deleteUser(machineId=machineId, userId=userId)
         return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resize(self, machineId, sizeId, **kwargs):
-        return self.actors.machines.resize(machineId, sizeId)
+        return self.cb.actors.cloudapi.machines.resize(machineId=machineId, sizeId=sizeId)

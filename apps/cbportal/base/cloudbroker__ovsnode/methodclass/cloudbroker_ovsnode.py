@@ -42,10 +42,10 @@ class cloudbroker_ovsnode(BaseActor):
         vms = self.ccl.vmachine.search(query)[1:]
         runningvms = []
         for idx, vm in enumerate(vms):
-            vmdata = self.cb.actors.cloudapi.machines.get(vm['id'])
+            vmdata = self.cb.actors.cloudapi.machines.get(machineId=vm['id'])
             if vmdata['status'] == 'RUNNING':
                 ctx.events.sendMessage("Decomission OVS Node", 'Stopping Virtual Machine %s/%s' % (idx + 1, len(vms)))
-                self.cb.actors.cloudapi.machines.stop(vm['id'])
+                self.cb.actors.cloudapi.machines.stop(machineId=vm['id'])
                 runningvms.append(vm['id'])
 
         storagedrivers = self.scl.node.search({'roles': 'storagedriver',
@@ -73,4 +73,4 @@ class cloudbroker_ovsnode(BaseActor):
         vmcount = len(runningvms)
         for idx, vmid in enumerate(runningvms):
             print("Starting vm %s/%s" % (idx + 1, vmcount))
-            self.cb.actors.cloudapi.machines.start(vmid)
+            self.cb.actors.cloudapi.machines.start(machineId=vmid)

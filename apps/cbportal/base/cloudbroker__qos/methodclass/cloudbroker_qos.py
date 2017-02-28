@@ -10,7 +10,6 @@ class cloudbroker_qos(BaseActor):
         self.acl = j.clients.agentcontroller.get()
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.vcl = j.clients.osis.getNamespace('vfw')
-        self.actors = self.cb.actors.cloudapi
 
     def limitCPU(self, machineId, **kwargs):
         """
@@ -27,7 +26,7 @@ class cloudbroker_qos(BaseActor):
         param:iops Max IO per second, 0 means unlimited
         result bool
         """
-        return self.actors.disks.limitIO(diskId, iops)
+        return self.cb.actors.cloudapi.disks.limitIO(diskId=diskId, iops=iops)
 
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """

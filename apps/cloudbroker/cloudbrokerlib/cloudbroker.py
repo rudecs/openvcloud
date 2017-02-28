@@ -95,10 +95,20 @@ class CloudBroker(object):
 
     @property
     def actors(self):
-        if not self._actors:
-            cl = j.clients.portal.getByInstance('cloudbroker')
-            self._actors = cl.actors
-        return self._actors
+        ctx = j.core.portal.active.requestContext
+        hrd = j.application.getAppInstanceHRD(name="portal_client", instance='cloudbroker')
+        addr = hrd.get('instance.param.addr')
+        port = hrd.getInt('instance.param.port')
+        secret = hrd.getStr('instance.param.secret')
+        cl = j.clients.portal.get2(ip=addr, port=port, secret=secret)
+        oldauth = ctx.env.get('HTTP_AUTHORIZATION', None)
+        if oldauth is not None:
+            cl._session.headers.update({'Authorization': oldauth})
+        else:
+            cookie = ctx.env.get('HTTP_COOKIE', None)
+            if cookie is not None:
+                cl._session.headers.update({'Cookie': cookie})
+        return cl
 
     def getProviderByStackId(self, stackId):
         return CloudProvider(stackId)

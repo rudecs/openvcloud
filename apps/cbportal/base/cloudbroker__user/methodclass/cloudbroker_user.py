@@ -101,7 +101,7 @@ class cloudbroker_user(BaseActor):
                 self.models.account.set(accountobj)
             else:
                 try:
-                    self.cb.actors.cloudbroker.account.deleteUser(account['id'], username,
+                    j.apps.cloudbroker.account.deleteUser(accountId=account['id'], userId=username,
                                                                   recursivedelete=True)
                 except HTTPError as ex:
                     if ex.status_code == 400 and ex.msg.count('is the last admin on the account'):
@@ -112,12 +112,12 @@ class cloudbroker_user(BaseActor):
         # Delete user from cloudspaces
         cloudspaceswiththisuser = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaceswiththisuser:
-            self.cb.actors.cloudbroker.cloudspace.deleteUser(cloudspace['id'], username,
-                                                             recursivedelete=True)
+            j.apps.cloudbroker.cloudspace.deleteUser(cloudspaceId=cloudspace['id'],
+                                                     username=username, recursivedelete=True)
         # Delete user from vmachines
         machineswiththisuser = self.models.vmachine.search(query)[1:]
         for machine in machineswiththisuser:
-            self.cb.actors.cloudbroker.machine.deleteUser(machine['id'], username)
+            j.apps.cloudbroker.machine.deleteUser(machineId=machine['id'], username=username)
 
         # Set the user to inactive
         userobj.active = False

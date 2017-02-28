@@ -199,14 +199,14 @@
         list snapshots of a machine
         """
         var:machineId int,, ID of machine
-        var:result json,,
+        result:bool
 
     method:getHistory
         """
         get history of a machine
         """
         var:machineId int,, ID of machine
-        var:result json,,
+        result:bool
 
     method:listPortForwards
         """

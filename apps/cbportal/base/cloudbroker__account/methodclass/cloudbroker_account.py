@@ -88,7 +88,7 @@ class cloudbroker_account(BaseActor):
             Validators.EMAIL(emailaddress)
 
             password = j.base.idgenerator.generateGUID()
-            j.apps.cloudbroker.user.create(username, [emailaddress], password, ['user'])
+            j.apps.cloudbroker.user.create(username=username, emailaddress=[emailaddress], password=password, groups=['user'])
             created = True
 
         now = int(time.time())

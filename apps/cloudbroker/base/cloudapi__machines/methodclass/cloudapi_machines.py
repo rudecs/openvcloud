@@ -80,7 +80,7 @@ class cloudapi_machines(BaseActor):
         """
         machine = self._getMachine(machineId)
         if "start" in machine.tags.split(" "):
-            j.apps.cloudbroker.machine.untag(machine.id, "start")
+            j.apps.cloudbroker.machine.untag(machineId=machine.id, tagName="start")
         if machine.status not in ['RUNNING', 'PAUSED']:
             self.cb.chooseProvider(machine)
         return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
