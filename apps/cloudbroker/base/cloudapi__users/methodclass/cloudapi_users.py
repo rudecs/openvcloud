@@ -46,7 +46,7 @@ class cloudapi_users(BaseActor):
         ctx.start_response('401 Unauthorized', [])
         return 'Unauthorized'
 
-    
+
     def get(self, username, **kwargs):
         """
         Get information of a existing username based on username id
@@ -70,7 +70,7 @@ class cloudapi_users(BaseActor):
             ctx.start_response('404 Not Found', [])
             return 'User not found'
 
-    
+
     def setData(self, data, **kwargs):
         """
         Set user data
@@ -319,8 +319,24 @@ class cloudapi_users(BaseActor):
                              cloudspace, vmachine)
         :param resourceid: the id of the resource that will be shared
         :param accesstype: 'R' for read only access, 'RCX' for Write access, 'ARCXDU' for admin
-        :return True if email was was successfully sent
+        :return True if email was successfully sent
         """
+        sendAccessEmails = True
+        if resourcetype.lower() == 'account':
+            account = self.models.account.get(resourceid)
+            sendAccessEmails = account.sendAccessEmails
+        elif resourcetype.lower() == 'cloudspace':
+            cloudspace = self.models.cloudspace.get(resourceid)
+            account = self.models.account.get(cloudspace.accountId)
+            sendAccessEmails = account.sendAccessEmails
+        elif resourcetype.lower() == 'machine':
+            machine = self.models.vmachine.get(resourceid)
+            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+            account = self.models.account.get(cloudspace.accountId)
+            sendAccessEmails = account.sendAccessEmails
+
+        if not sendAccessEmails:
+            return False
         templatename = 'invite_internal_users'
         extratemplateargs = {'username': user['id'], 'activated': user['active']}
         if user['emails']:
@@ -348,7 +364,7 @@ class cloudapi_users(BaseActor):
 
         if resourcetype.lower() == 'account':
             accountobj = self.models.account.get(resourceid)
-            resourcename =  accountobj.name
+            resourcename = accountobj.name
         elif resourcetype.lower() == 'cloudspace':
             cloudspaceobj = self.models.cloudspace.get(resourceid)
             resourcename = cloudspaceobj.name

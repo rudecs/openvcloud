@@ -1,4 +1,5 @@
 from JumpScale.portal.docgenerator.popup import Popup
+from collections import OrderedDict
 
 
 def main(j, args, params, tags, tasklet):
@@ -6,6 +7,10 @@ def main(j, args, params, tags, tasklet):
 
     # Placeholder that -1 means no limits are set on the cloud unit
     culimitplaceholder = 'leave empty if no limits should be set'
+    options = OrderedDict({
+        'Yes': 1,
+        'No': 0
+    })
     popup = Popup(id='createaccount', header='Create Account', submit_url='/restmachine/cloudbroker/account/create')
     popup.addText('Name', 'name', required=True, placeholder='Account Name')
     popup.addText('Username', 'username', required=True,
@@ -18,6 +23,7 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Max External Network Transfer (GB)', 'maxNetworkPeerTransfer',
                   placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of Public IP Addresses', 'maxNumPublicIP', placeholder=culimitplaceholder, type='number')
+    popup.addDropdown('Email is sent when a user is granted access to a resource', 'sendAccessEmails', options.iteritems())
     popup.write_html(page)
     return params
 

@@ -209,7 +209,7 @@ class cloudapi_accounts(BaseActor):
 
     @authenticator.auth(acl={'account': set('A')})
     def update(self, accountId, name=None, maxMemoryCapacity=None, maxVDiskCapacity=None,
-               maxCPUCapacity=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, **kwargs):
+               maxCPUCapacity=None, maxNetworkPeerTransfer=None, maxNumPublicIP=None, sendAccessEmails=None, **kwargs):
         """
         Update an account name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -224,10 +224,18 @@ class cloudapi_accounts(BaseActor):
         :return: True if update was successful
         """
 
+        if sendAccessEmails == 1:
+            sendAccessEmails = True
+        elif sendAccessEmails == 0:
+            sendAccessEmails = False
+            
         accountobj = self.models.account.get(accountId)
 
         if name:
             accountobj.name = name
+
+        if sendAccessEmails is not None:
+            accountobj.sendAccessEmails = sendAccessEmails
 
         if maxMemoryCapacity or maxVDiskCapacity or maxCPUCapacity or maxNetworkPeerTransfer or maxNumPublicIP:
             reservedcloudunits = self.getReservedCloudUnits(accountId)

@@ -57,6 +57,15 @@ h2. Account: ${name}
     default: '${reslimits["CU_I"]}'
     {% endif %}
 
+  - name: sendAccessEmails
+    label: Email is sent when a user is granted access to a resource
+    type: dropdown
+    values:
+     - label: Yes
+       value: 1
+     - label: No
+       value: 0
+
   - name: accountId
     type: hidden
     value: $$id

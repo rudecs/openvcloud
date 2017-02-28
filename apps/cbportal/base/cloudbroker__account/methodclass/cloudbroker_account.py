@@ -64,8 +64,12 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
-               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, **kwargs):
+               maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, sendAccessEmails=True, **kwargs):
 
+        if sendAccessEmails == 1:
+            sendAccessEmails = True
+        elif sendAccessEmails == 0:
+            sendAccessEmails = False
         accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
         if accounts:
             raise exceptions.Conflict('Account name is already in use.')
@@ -97,6 +101,7 @@ class cloudbroker_account(BaseActor):
         account.company = ''
         account.companyurl = ''
         account.status = 'CONFIRMED'
+        account.sendAccessEmails = sendAccessEmails
 
         resourcelimits = {'CU_M': maxMemoryCapacity,
                           'CU_D': maxVDiskCapacity,
@@ -156,7 +161,7 @@ class cloudbroker_account(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
-               maxNetworkPeerTransfer, maxNumPublicIP, **kwargs):
+               maxNetworkPeerTransfer, maxNumPublicIP, sendAccessEmails, **kwargs):
         """
         Update an account name or the maximum cloud units set on it
         Setting a cloud unit maximum to -1 will not put any restrictions on the resource
@@ -173,6 +178,11 @@ class cloudbroker_account(BaseActor):
         :return: True if update was successful
         """
 
+        if sendAccessEmails == 1:
+            sendAccessEmails = True
+        elif sendAccessEmails == 0:
+            sendAccessEmails = False
+
         resourcelimits = {'CU_M': maxMemoryCapacity,
                           'CU_D': maxVDiskCapacity,
                           'CU_C': maxCPUCapacity,
@@ -186,7 +196,8 @@ class cloudbroker_account(BaseActor):
         maxNumPublicIP = resourcelimits['CU_I']
 
         return self.cloudapi.accounts.update(accountId, name, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
+                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP,
+                                             sendAccessEmails)
 
     @auth(['level1', 'level2', 'level3'])
     def deleteAccounts(self, accountIds, reason, **kwargs):
@@ -254,8 +265,6 @@ class cloudbroker_account(BaseActor):
         user = self.cb.checkUser(username, activeonly=False)
         if user:
             self.cloudapi.accounts.addUser(accountId, username, accesstype)
-        elif self.cb.isValidEmailAddress(username):
-            self.cloudapi.accounts.addExternalUser(accountId, username, accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
         return True

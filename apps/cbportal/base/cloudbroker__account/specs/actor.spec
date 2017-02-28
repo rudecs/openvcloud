@@ -61,6 +61,7 @@
         var:maxCPUCapacity int,-1, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,-1, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
+        var:sendAccessEmails bool,True, if true send emails when a user is granted access to resources @optional
 
     method:update
         """
@@ -74,3 +75,4 @@
         var:maxCPUCapacity int,, max number of cpu cores @optional
         var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,, max number of assigned public IPs @optional
+        var:sendAccessEmails bool,True, if true send emails when a user is granted access to resources @optional
