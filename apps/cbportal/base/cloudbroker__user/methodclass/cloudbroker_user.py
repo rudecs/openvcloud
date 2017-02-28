@@ -14,7 +14,6 @@ class cloudbroker_user(BaseActor):
     def __init__(self):
         super(cloudbroker_user, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
-        self.users_actor = self.cb.actors.cloudapi.users
 
     def generateAuthorizationKey(self, username, **kwargs):
         """
@@ -25,7 +24,7 @@ class cloudbroker_user(BaseActor):
         user = self.cb.checkUser(username)
         if not user:
             raise exceptions.NotFound("User with name %s does not exists" % username)
-        return self.users_actor.authenticate(username, user['passwd'])
+        return self.cb.actors.cloudapi.users.authenticate(username=username, password=user['passwd'])
 
     @auth(['level1', 'level2', 'level3'])
     def updatePassword(self, username, password, **kwargs):
@@ -54,7 +53,7 @@ class cloudbroker_user(BaseActor):
         if not user:
             raise exceptions.NotFound("User with name %s does not exists" % username)
         email = user['emails']
-        return self.users_actor.sendResetPasswordLink(email)
+        return self.cb.actors.cloudapi.users.sendResetPasswordLink(emailaddress=email)
 
     @auth(['level1', 'level2', 'level3'])
     def deleteUsers(self, userIds, **kwargs):

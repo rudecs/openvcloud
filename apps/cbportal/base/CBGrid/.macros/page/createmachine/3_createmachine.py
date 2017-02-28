@@ -10,7 +10,7 @@ def main(j, args, params, tags, tasklet):
     stacks = scl.stack.search({'gid': cloudspace.gid, 'status': 'ENABLED'})[1:]
 
     sizes = scl.size.search({})[1:]
-    images = actors.images.list(cloudspace.accountId, cloudspace.id)
+    images = actors.images.list(accountId=cloudspace.accountId, cloudspaceId=cloudspace.id)
     dropsizes = list()
     dropdisksizes = list()
     dropimages = list()

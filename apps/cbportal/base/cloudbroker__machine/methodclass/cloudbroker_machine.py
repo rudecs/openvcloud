@@ -520,8 +520,6 @@ class cloudbroker_machine(BaseActor):
                                                     'account or cloudspace')
         if user:
             self.cb.actors.cloudapi.machines.addUser(machineId=machineId, userId=username, accesstype=accesstype)
-        elif self.cb.isValidEmailAddress(username):
-            self.cb.actors.cloudapi.machines.addExternalUser(machineId=machineId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 

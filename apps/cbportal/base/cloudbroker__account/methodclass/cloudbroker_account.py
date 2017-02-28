@@ -26,7 +26,6 @@ class cloudbroker_account(BaseActor):
     def __init__(self):
         super(cloudbroker_account, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
-        self.cloudapi = self.cb.actors.cloudapi
 
     def _checkAccount(self, accountId):
         account = self.models.account.search({'id': accountId, 'status': {'$ne': 'DESTROYED'}})[1:]
@@ -58,7 +57,7 @@ class cloudbroker_account(BaseActor):
                                                      'status': {'$in': ['RUNNING', 'PAUSED']}
                                                      })[1:]
             for vmachine in vmachines:
-                self.cloudapi.machines.stop(vmachine['id'])
+                self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -92,7 +91,7 @@ class cloudbroker_account(BaseActor):
             created = True
 
         now = int(time.time())
-        locationurl = self.cloudapi.locations.getUrl().strip('/')
+        locationurl = self.cb.actors.cloudapi.locations.getUrl().strip('/')
 
         account = self.models.account.new()
         account.name = name
@@ -195,9 +194,9 @@ class cloudbroker_account(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cloudapi.accounts.update(accountId, name, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP,
-                                             sendAccessEmails)
+        return self.cb.actors.cloudapi.accounts.update(accountId=accountId, name=name, maxMemoryCapacity=maxMemoryCapacity,
+                                                       maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity, maxNetworkPeerTransfer=maxNetworkPeerTransfer,
+                                                       maxNumPublicIP=maxNumPublicIP, sendAccessEmails=sendAccessEmails)
 
     @auth(['level1', 'level2', 'level3'])
     def deleteAccounts(self, accountIds, reason, **kwargs):
@@ -241,7 +240,7 @@ class cloudbroker_account(BaseActor):
             for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': 'DESTROYED'}})[1:]:
                 ctx.events.sendMessage(title, 'Deleting dependant Virtual Machine %(name)s' % image)
                 j.apps.cloudbroker.machine.destroy(vm['id'], reason)
-            self.cloudapi.images.delete(image['id'])
+            self.cb.actors.cloudapi.images.delete(imageId=image['id'])
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
             j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
@@ -264,7 +263,7 @@ class cloudbroker_account(BaseActor):
         self._checkAccount(accountId)
         user = self.cb.checkUser(username, activeonly=False)
         if user:
-            self.cloudapi.accounts.addUser(accountId, username, accesstype)
+            self.cb.actors.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
         return True
@@ -283,5 +282,5 @@ class cloudbroker_account(BaseActor):
         else:
             # external user, delete ACE that was added using emailaddress
             userId = username
-        self.cloudapi.accounts.deleteUser(accountId, userId, recursivedelete)
+        self.cb.actors.cloudapi.accounts.deleteUser(accountId=accountId, userId=userId, recursivedelete=recursivedelete)
         return True

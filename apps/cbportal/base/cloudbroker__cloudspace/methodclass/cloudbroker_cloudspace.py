@@ -14,9 +14,6 @@ class cloudbroker_cloudspace(BaseActor):
         self.syscl = j.clients.osis.getNamespace('system')
         self.network = network.Network(self.models)
         self.vfwcl = j.clients.osis.getNamespace('vfw')
-        self.netmgr = self.cb.actors.jumpscale.netmgr
-        self.libvirt_actor = self.cb.actors.libcloud.libvirt
-        self.cloudspaces_actor = self.cb.actors.cloudapi.cloudspaces
 
     def _getCloudSpace(self, cloudspaceId):
         cloudspaceId = int(cloudspaceId)
@@ -110,7 +107,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-        self.netmgr.fw_move(fwid, int(targetNid))
+        self.cb.actors.jumpscale.netmgr.fw_move(fwid, int(targetNid))
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -143,7 +140,7 @@ class cloudbroker_cloudspace(BaseActor):
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
-        return self.cloudspaces_actor.deploy(cloudspaceId)
+        return self.cb.actors.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -158,7 +155,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
         self.destroyVFW(cloudspaceId, **kwargs)
-        self.cloudspaces_actor.deploy(cloudspaceId)
+        self.cb.actors.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -203,9 +200,9 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     def _destroyVFW(self, gid, cloudspaceId):
-        fws = self.netmgr.fw_list(int(gid), str(cloudspaceId))
+        fws = self.cb.actors.jumpscale.netmgr.fw_list(int(gid), str(cloudspaceId))
         if fws:
-            self.netmgr.fw_delete(fws[0]['guid'], gid)
+            self.cb.actors.jumpscale.netmgr.fw_delete(fws[0]['guid'], gid)
             return True
         return False
 
@@ -239,8 +236,9 @@ class cloudbroker_cloudspace(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cloudspaces_actor.update(cloudspaceId, name, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP, allowedVMSizes)
+        return self.cb.actors.cloudapi.cloudspaces.update(cloudspaceId=cloudspaceId, name=name, maxMemoryCapacity=maxMemoryCapacity,
+                                             maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
+                                             maxNetworkPeerTransfer=maxNetworkPeerTransfer, maxNumPublicIP=maxNumPublicIP, allowedVMSizes=allowedVMSizes)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -275,9 +273,12 @@ class cloudbroker_cloudspace(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cloudspaces_actor.create(accountId, location, name, access, maxMemoryCapacity,
-                                             maxVDiskCapacity, maxCPUCapacity, maxNetworkPeerTransfer,
-                                             maxNumPublicIP, externalnetworkId, allowedVMSizes)
+        return self.cb.actors.cloudapi.cloudspaces.create(accountId=accountId, location=location, name=name,
+                                                          access=access, maxMemoryCapacity=maxMemoryCapacity,
+                                                          maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
+                                                          maxNetworkPeerTransfer=maxNetworkPeerTransfer,
+                                                          maxNumPublicIP=maxNumPublicIP, externalnetworkId=externalnetworkId,
+                                                          allowedVMSizes=allowedVMSizes)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
@@ -303,14 +304,12 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
         if username in cloudspaceacl:
-            updated = self.cloudspaces_actor.updateUser(cloudspaceId, username, accesstype)
+            updated = self.cb.actors.cloudapi.cloudspaces.updateUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
             if not updated:
                 raise exceptions.PreconditionFailed('User already has same access level to owning '
                                                     'account')
         elif user:
-            self.cloudspaces_actor.addUser(cloudspaceId, username, accesstype)
-        elif self.cb.isValidEmailAddress(username):
-            self.cloudspaces_actor.addExternalUser(cloudspaceId, username, accesstype)
+            self.cb.actors.cloudapi.cloudspaces.addUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
@@ -330,7 +329,7 @@ class cloudbroker_cloudspace(BaseActor):
         else:
             # external user, delete ACE that was added using emailaddress
             userId = username
-        self.cloudspaces_actor.deleteUser(cloudspaceId, userId, recursivedelete)
+        self.cb.actors.cloudapi.cloudspaces.deleteUser(cloudspaceId=cloudspaceId, userId=userId, recursivedelete=recursivedelete)
         return True
 
     @auth(['level1', 'level2', 'level3'])
