@@ -8,7 +8,7 @@
         gets machine json object.
         """
         var:machineId int,, ID of machine
-        var:result json
+        result:json
 
     method:create
         """
