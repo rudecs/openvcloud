@@ -3,6 +3,13 @@
     machine manager
     """
 
+    method:get
+        """
+        gets machine json object.
+        """
+        var:machineId int,, ID of machine
+        var:result json
+
     method:create
         """
         Create a machine based on the available sizes, in a certain space.
