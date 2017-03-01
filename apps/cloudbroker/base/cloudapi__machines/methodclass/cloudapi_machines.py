@@ -388,7 +388,8 @@ class cloudapi_machines(BaseActor):
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
-            volumes = provider.client.ex_clone_disks(diskmapping)
+            snapshotTimestamp = self.snapshot(vm.id, vm.name)
+            volumes = provider.client.ex_clone_disks(diskmapping, snapshotTimestamp)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
             size = self.models.size.get(vm.sizeId)
