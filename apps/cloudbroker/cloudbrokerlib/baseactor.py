@@ -1,6 +1,7 @@
 from . import cloudbroker
-from JumpScale.baselib.http_client.HttpClient import HTTPError
+#from JumpScale.baselib.http_client.HttpClient import HTTPError
 from JumpScale.portal.portal import exceptions
+from JumpScale.portal.portal.PortalClient2 import ApiError
 
 from JumpScale import j
 
@@ -18,10 +19,10 @@ def wrap_remote(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except HTTPError, e:
-            ctype = e.httperror.headers.type or 'text/plain'
+        except ApiError as e:
+            ctype = e.response.headers['Content-Type'] or 'text/plain'
             headers = [('Content-Type', ctype), ]
-            statuscode = e.status_code or 500
-            raise exceptions.BaseError(statuscode, headers, e.msg)
+            statuscode = e.response.status_code or 500
+            raise exceptions.BaseError(statuscode, headers, e.response.content)
 
     return wrapper
