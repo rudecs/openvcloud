@@ -677,7 +677,7 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine to snapshot
         :param name: name to give snapshot
-        :return the snapshot name
+        :return the timestamp
         """
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         node = provider.client.ex_get_node_details(node.id)
@@ -849,6 +849,9 @@ class cloudapi_machines(BaseActor):
 
         clone.id = self.models.vmachine.set(clone)[0]
         size = self.cb.machine.getSize(provider, clone)
+        if not snapshotTimestamp:
+            snapshotTimestamp = self.snapshot(machineId, name)
+
         try:
             node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
