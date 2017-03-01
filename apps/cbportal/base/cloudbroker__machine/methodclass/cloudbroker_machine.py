@@ -495,7 +495,7 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def detachExternalNetwork(self, machineId, **kwargs):
-        return self.cb.actors.cloudapi.machines.detachExternalNetwork(machineId)
+        return self.cb.actors.cloudapi.machines.detachExternalNetwork(machineId=machineId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
