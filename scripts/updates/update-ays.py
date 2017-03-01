@@ -196,7 +196,7 @@ def applyOnServices(services, func, kwargs=None):
     for service, proc in procs:
         proc.join()
         if proc.exitcode:
-            funcname = getattr(func, 'func_name', default=str(func))
+            funcname = getattr(func, 'func_name', str(func))
             j.console.warning('Failed to execute {} on {}'.format(funcname, service))
             error = True
     if error:
