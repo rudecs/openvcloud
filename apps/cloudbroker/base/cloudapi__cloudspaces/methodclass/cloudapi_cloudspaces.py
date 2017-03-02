@@ -23,7 +23,7 @@ class cloudapi_cloudspaces(BaseActor):
     def __init__(self):
         super(cloudapi_cloudspaces, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
-        self.netmgr = j.apps.jumpscale.netmgr
+        self.netmgr = self.cb.netmgr
         self.network = network.Network(self.models)
         self._minimum_days_of_credit_required = float(
             self.hrd.get("instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))

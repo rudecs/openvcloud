@@ -7,6 +7,7 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
+from .netmgr import NetManager
 import random
 import time
 import string
@@ -87,11 +88,12 @@ class CloudBroker(object):
     def __init__(self):
         self.Dummy = Dummy
         self._actors = None
-        self.machine = Machine(self)
-        self.cloudspace = CloudSpace(self)
         self.syscl = j.clients.osis.getNamespace('system')
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
         self.agentcontroller = j.clients.agentcontroller.get()
+        self.machine = Machine(self)
+        self.cloudspace = CloudSpace(self)
+        self.netmgr = NetManager(self)
 
     @property
     def actors(self):
@@ -444,7 +446,6 @@ class CloudSpace(object):
 
     def __init__(self, cb):
         self.cb = cb
-        self.netmgr = j.apps.jumpscale.netmgr
         self.libvirt_actor = j.apps.libcloud.libvirt
         self.network = network.Network(models)
 
@@ -452,17 +453,17 @@ class CloudSpace(object):
         #  delete routeros
         fwguid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         try:
-            fw = self.netmgr._getVFWObject(fwguid)
+            fw = self.cb.netmgr._getVFWObject(fwguid)
         except exceptions.ServiceUnavailable:
             pass
         else:
             stack = next(iter(models.stack.search({'referenceId': str(fw.nid), 'gid': fw.gid})[1:]), None)
             if stack and stack['status'] != 'DECOMISSIONED':
                 # destroy vm and model
-                self.netmgr.fw_delete(fwguid, cloudspace.gid)
+                self.cb.netmgr.fw_delete(fwguid, cloudspace.gid)
             else:
                 # destroy model only
-                self.netmgr.fw_destroy(fwguid)
+                self.cb.netmgr.fw_destroy(fwguid)
         if cloudspace.networkId and releasenetwork:
             self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
             cloudspace.networkId = None
@@ -476,7 +477,7 @@ class Machine(object):
 
     def __init__(self, cb):
         self.cb = cb
-        self.acl = j.clients.agentcontroller.get()
+        self.acl = self.cb.agentcontroller
 
     def cleanup(self, machine):
         for diskid in machine.disks:

@@ -15,7 +15,7 @@ class cloudapi_portforwarding(BaseActor):
 
     def __init__(self):
         super(cloudapi_portforwarding, self).__init__()
-        self.netmgr = j.apps.jumpscale.netmgr
+        self.netmgr = self.cb.netmgr
 
     def _getLocalIp(self, machine):
         for nic in machine['interfaces']:

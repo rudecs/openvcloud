@@ -18,7 +18,6 @@ class cloudapi_disks(BaseActor):
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
         self._minimum_days_of_credit_required = float(self.hrd.get(
             "instance.openvcloud.cloudbroker.creditcheck.daysofcreditrequired"))
-        self.netmgr = j.apps.jumpscale.netmgr
 
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):

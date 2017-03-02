@@ -1,27 +1,21 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import cloudbroker
 
-class jumpscale_netmgr(j.code.classGetBase()):
+
+class NetManager(object):
     """
     net manager
 
     """
-    def __init__(self):
+    def __init__(self, cb):
         self.client = j.clients.osis.getByInstance('main')
         self.osisvfw = j.clients.osis.getCategory(self.client, 'vfw', 'virtualfirewall')
         self.nodeclient = j.clients.osis.getCategory(self.client, 'system', 'node')
         self.gridclient = j.clients.osis.getCategory(self.client, 'system', 'grid')
-        self.agentcontroller = j.clients.agentcontroller.get()
         self.json = j.db.serializers.getSerializerType('j')
         self._ovsdata = {}
-        self._cb = None
-
-    @property
-    def cb(self):
-        if self._cb is None:
-            self._cb = cloudbroker.CloudBroker()
-        return self._cb
+        self.cb = cb
+        self.agentcontroller = self.cb.agentcontroller
 
     def get_ovs_credentials(self, gid):
         cachekey = 'credentials_{}'.format(gid)

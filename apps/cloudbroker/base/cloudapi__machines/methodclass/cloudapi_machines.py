@@ -39,11 +39,11 @@ class cloudapi_machines(BaseActor):
     def __init__(self):
         super(cloudapi_machines, self).__init__()
         self.osisclient = j.core.portal.active.osis
-        self.acl = j.clients.agentcontroller.get()
         self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
-        self.netmgr = j.apps.jumpscale.netmgr
         self.network = network.Network(self.models)
         self.systemodel = j.clients.osis.getNamespace('system')
+        self.netmgr = self.cb.netmgr
+        self.acl = self.cb.agentcontroller
 
     def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """

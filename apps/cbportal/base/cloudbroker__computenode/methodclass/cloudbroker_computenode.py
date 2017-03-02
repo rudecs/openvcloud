@@ -4,7 +4,6 @@ import functools
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import random
-import urlparse
 
 
 class cloudbroker_computenode(BaseActor):
@@ -167,14 +166,14 @@ class cloudbroker_computenode(BaseActor):
                                  'nid': int(stack['referenceId'])})[1:]
         for vfw in vfws:
             ctx.events.sendMessage(title, 'Stopping Virtual Firewal %s' % vfw['id'])
-            j.apps.jumpscale.netmgr.fw_stop(vfw['guid'])
+            self.cb.netmgr.fw_stop(vfw['guid'])
 
     def _start_vfws(self, stack, title, ctx):
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
         for vfw in vfws:
             ctx.events.sendMessage(title, 'Starting Virtual Firewal %s' % vfw['id'])
-            j.apps.jumpscale.netmgr.fw_start(vfw['guid'])
+            self.cb.netmgr.fw_start(vfw['guid'])
 
     def _move_virtual_machines(self, stack, title, ctx):
         machines_actor = j.apps.cloudbroker.machine
@@ -194,7 +193,7 @@ class cloudbroker_computenode(BaseActor):
         for vfw in vfws:
             randomnode = random.choice(othernodes)
             ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
-            j.apps.jumpscale.netmgr.fw_move(vfw['guid'], randomnode['id'])
+            self.cb.netmgr.fw_move(vfw['guid'], randomnode['id'])
 
     @auth(['level2', 'level3'], True)
     @wrap_remote

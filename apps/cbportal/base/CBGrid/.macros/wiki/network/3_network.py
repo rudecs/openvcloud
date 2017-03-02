@@ -1,5 +1,4 @@
 def main(j, args, params, tags, tasklet):
-
     params.result = (args.doc, args.doc)
     id = args.requestContext.params.get('id')
     gid = args.requestContext.params.get('gid')
@@ -36,7 +35,7 @@ def main(j, args, params, tags, tasklet):
     else:
         obj['nodename'] = str(obj['nid'])
     obj['pubips'] = ', '.join(obj['pubips'])
-    obj['running'] = j.apps.jumpscale.netmgr.fw_check(network.guid)
+    obj['running'] = j.apps.cloudbroker.iaas.cb.netmgr.fw_check(network.guid)
 
     args.doc.applyTemplate(obj, True)
     return params

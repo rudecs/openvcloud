@@ -107,7 +107,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-        j.apps.jumpscale.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid))
+        self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid))
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -169,7 +169,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
-        return j.apps.jumpscale.netmgr.fw_start(fwid=fwid)
+        return self.cb.netmgr.fw_start(fwid=fwid)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -183,7 +183,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
-        return j.apps.jumpscale.netmgr.fw_stop(fwid=fwid)
+        return self.cb.netmgr.fw_stop(fwid=fwid)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -200,9 +200,9 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     def _destroyVFW(self, gid, cloudspaceId):
-        fws = j.apps.jumpscale.netmgr.fw_list(gid=int(gid), domain=str(cloudspaceId))
+        fws = self.cb.netmgr.fw_list(gid=int(gid), domain=str(cloudspaceId))
         if fws:
-            j.apps.jumpscale.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid)
+            self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid)
             return True
         return False
 
