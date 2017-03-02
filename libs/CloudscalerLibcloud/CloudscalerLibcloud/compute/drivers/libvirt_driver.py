@@ -306,6 +306,7 @@ class CSLibvirtNodeDriver(object):
     def _create_disk(self, vm_id, size, image, disk_role='base'):
         templateguid = str(uuid.UUID(image.id))
         edgeclient = self.getNextEdgeClient('vmstor')
+
         diskname = '{0}/bootdisk-{0}'.format(vm_id)
         kwargs = {'ovs_connection': self.ovs_connection,
                   'storagerouterguid': edgeclient['storagerouterguid'],
@@ -313,7 +314,12 @@ class CSLibvirtNodeDriver(object):
                   'templateguid': templateguid,
                   'diskname': diskname,
                   'pagecache_ratio': self.ovs_settings['vpool_vmstor_metadatacache']}
-        vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
+
+        try:
+            vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
+        except Exception, ex:
+            raise StorageException(ex.msg)
+
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
 
@@ -333,7 +339,10 @@ class CSLibvirtNodeDriver(object):
                       'diskname': diskname,
                       'size': volume['size'],
                       'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
-            vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
+            try:
+                vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
+            except Exception, ex:
+                raise StorageException(ex.msg)
             volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
             stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
             stvol.dev = volume['dev']
