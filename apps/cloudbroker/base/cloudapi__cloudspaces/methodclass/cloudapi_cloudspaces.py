@@ -962,7 +962,7 @@ class cloudapi_cloudspaces(BaseActor):
         if cloudspace.status != 'DEPLOYED':
             raise exceptions.NotFound('Can not get openvpn config for a cloudspace which is not deployed')
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-        config = j.apps.jumpscale.netmgr.fw_get_openvpn_config(fwid)
+        config = self.cb.netmgr.fw_get_openvpn_config(fwid)
         ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
                                       ('content-disposition', "inline; filename = openvpn.zip")])
         fp = StringIO()
