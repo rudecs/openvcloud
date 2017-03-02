@@ -61,9 +61,9 @@ h2. Account: ${name}
     label: Email is sent when a user is granted access to a resource
     type: dropdown
     values:
-     - label: Yes
+     - label: "Yes"
        value: 1
-     - label: No
+     - label: "No"
        value: 0
 
   - name: accountId
