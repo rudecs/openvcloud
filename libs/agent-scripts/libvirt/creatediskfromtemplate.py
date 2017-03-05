@@ -44,7 +44,7 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid, page
 
     poolpath = "/vpools/{vpoolguid}".format(vpoolguid=vpoolguid)
     pool = ovs.get(poolpath)
-    backend_name = pool['backend_info']['name']
+    backend_name = pool['metadata']['backend']['backend_info']['name']
 
     # backends
     free = sum([stat.val for stat in statsclient.statsByPrefix("ovs.backend.free@{backend_name}".format(backend_name=backend_name))])
@@ -75,3 +75,16 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid, page
         raise Exception("Could not create disk:\n{}".format(result))
 
     return diskguid
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--storagerouterguid')
+    parser.add_argument('-d', '--diskname')
+    parser.add_argument('-t', '--templateguid')
+    parser.add_argument('-sz', '--size', type=int)
+    options = parser.parse_args()
+    scl = j.clients.osis.getNamespace('system')
+    ovs = scl.grid.get(j.application.whoAmI.gid).settings['ovs_credentials']
+    action(ovs, options.storagerouterguid, options.diskname, options.size, options.templateguid, 20)
