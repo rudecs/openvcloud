@@ -32,7 +32,7 @@ def action(link, username, passwd, path, machine):
 
     with openvstorage.TempStorage() as ts:
         with tarfile.open(mode='r|*', fileobj=StreamUnifier(get_ova_streams())) as tar:
-            disks = [disk['path'] for disk in machine['disks']]
+            disks = [disk['file'] for disk in machine['disks']]
             for member in tar:
                 print('Iterating %s' % member.name)
                 if member.name in disks:

@@ -39,14 +39,14 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size, pagecac
     poolpath = "/vpools/{vpoolguid}".format(vpoolguid=vpoolguid)
     pool = ovs.get(poolpath)
     path = "/vdisks/"
-    backend_name = pool['backend_info']['name']
+    backend_name = pool['metadata']['backend']['backend_info']['name']
 
     # backends
     free = sum([stat.val for stat in statsclient.statsByPrefix("ovs.backend.free@{backend_name}".format(backend_name=backend_name))])
     used = sum([stat.val for stat in statsclient.statsByPrefix("ovs.backend.used@{backend_name}".format(backend_name=backend_name))])
 
     total = free + used
-    if (used * 100.0 / total) >= 80:
+    if total and (used * 100.0 / total) >= 80:
         raise Exception("Used capacity on {backend_name} >= 80%".format(backend_name=backend_name))
 
     data = dict(name=diskname, size=size * 1024**3, storagerouter_guid=storagerouterguid,

@@ -371,13 +371,14 @@ class cloudapi_machines(BaseActor):
                 [self._sendImportCompletionMail(email, url, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
-        except:
+        except Exception as e:
+            eco = j.errorconditionhandler.processPythonExceptionObject(e)
+            eco.process()
             error = True
             if not callbackUrl:
                 [self._sendImportCompletionMail(email, '', success=False, error=error) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
-            raise
 
     def syncExportOVF(self, uploaddata, vm, provider, cloudspace, user, callbackUrl):
         try:

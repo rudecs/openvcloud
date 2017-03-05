@@ -65,9 +65,9 @@ def find_ova_files(webdavcon, path='/'):
         if 'directory' in fileobj.contenttype:
             continue
         filename = fileobj.name
-        if filename == '.ova':
+        if filename.endswith('.ova'):
             return [filename]
-        elif filename == '.ova.gz':
+        elif filename.endswith('.ova.gz'):
             return [filename]
         elif rec.match(filename):
             ovafiles.append(filename)
