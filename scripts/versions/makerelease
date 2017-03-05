@@ -118,7 +118,7 @@ def prepare_source(repo, force, push_target=True):
             j.console.info('Creathing branch {} on repo {}'.format(target.name, repo['name']))
             client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
         if push_target:
-            client.repo.git.push('origin', target.name)
+            client.repo.git.push('-u', 'origin', target.name)
 
 
 def main(manifest, force, dry):
@@ -135,6 +135,7 @@ def main(manifest, force, dry):
         if j.system.fs.exists(repo['info'].path):
             repo['client'] = j.clients.git.get(repo['info'].path)
             repo['client'].repo.git.fetch('origin', '{0}:remotes/origin/{0}'.format(source.name))
+            repo['client'].repo.git.reset('--hard', 'remotes/origin/{0}'.format(source.name))
         else:
             j.console.info('Cloning {}/{}'.format(repo['info'].account, repo['info'].reponame))
             j.do.pullGitRepo(repo['url'], **{target.type: target.name})
