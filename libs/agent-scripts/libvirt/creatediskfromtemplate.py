@@ -51,7 +51,7 @@ def action(ovs_connection, storagerouterguid, diskname, size, templateguid, page
     used = sum([stat.val for stat in statsclient.statsByPrefix("ovs.backend.used@{backend_name}".format(backend_name=backend_name))])
 
     total = free + used
-    if (used * 100.0 / total) >= 80:
+    if total and (used * 100.0 / total) >= 80:
         raise Exception("Used capacity on {backend_name} >= 80%".format(backend_name=backend_name))
     # First create the disk
     path = "/vdisks/{}/create_from_template".format(templateguid)
