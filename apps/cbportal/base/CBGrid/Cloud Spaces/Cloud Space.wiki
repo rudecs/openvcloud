@@ -188,7 +188,7 @@ h3. Users Access
 {{action: id:'action-GrantUserAccess' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Grant User Access'}}
 ||User Name||E-Mail||ACL||Status||Revoke Access||
 {% for user in users -%}
-    | {%if user.userstatus!='INVITED' %} [${user.id}|/CBGrid/user?id=${user.id}] {%else%} ${user.id} {% endif %} |${", ".join(user.emails)}|${user.acl}|${user.userstatus if user.userstatus else 'N/A'}|{{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}}|
+    | {%if user.userstatus!='INVITED' %} [${user.id}|/CBGrid/user?id=${user.id}] {%else%} ${user.id} {% endif %} |${", ".join(user.emails)}|${user.acl}|${user.userstatus if user.userstatus else 'N/A'}|{% if user.accessUserType == 'acc' %} User access via account [page |account?id=${accountId}] {% else %} {{action deleterow:true id:'action-RevokeUserAccess' data-username:'${user.id}' class:'glyphicon glyphicon-remove'}} {% endif %}|
 {% endfor %}
 
 h3. Port Forwards

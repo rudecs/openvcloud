@@ -5,16 +5,18 @@ except Exception:
 from JumpScale.portal.portal import exceptions
 
 
-def generateUsersList(sclient, vmachinedict):
+def generateUsersList(sclient, objdict, accessUserType, users):
     """
     Generate the list of users that have ACEs on the account
 
     :param sclient: osis client for system model
-    :param vmachinedict: dict with the vmachine data
+    :param objdict: dict with the object data
+    :param accessUserType: specifies whether object is account, vmachine or cloudspace
     :return: list of users have access to vmachine
     """
-    users = list()
-    for acl in vmachinedict['acl']:
+    for acl in objdict['acl']:
+        if acl['userGroupId'] in [user['id'] for user in users]:
+            continue
         if acl['type'] == 'U':
             eusers = sclient.user.simpleSearch({'id': acl['userGroupId']})
             if eusers:
@@ -31,6 +33,7 @@ def generateUsersList(sclient, vmachinedict):
                 user['emails'] = ['N/A']
                 user['userstatus'] = 'N/A'
             user['acl'] = acl['right']
+            user['accessUserType'] = accessUserType
             users.append(user)
     return users
 
@@ -174,8 +177,10 @@ def main(j, args, params, tags, tasklet):
                 size, unit = j.tools.units.bytes.converToBestUnit(stats['disk_size'], 'K')
                 v = '%.2f %siB' % (size, unit)
         data['stats_%s' % k] = v
-
-    data['users'] = generateUsersList(sosis, data)
+    users = list()
+    users = generateUsersList(sosis, account, 'acc', users)
+    users = generateUsersList(sosis, space, 'cl', users)
+    data['users'] = generateUsersList(sosis, data, 'vm', users)
 
     data['referenceId'] = data['referenceId'].replace('-', '%2d')
     args.doc.applyTemplate(data, False)
