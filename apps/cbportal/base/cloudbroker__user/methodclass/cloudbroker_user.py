@@ -100,7 +100,7 @@ class cloudbroker_user(BaseActor):
                 self.models.account.set(accountobj)
             else:
                 try:
-                    j.apps.cloudbroker.account.deleteUser(accountId=account['id'], userId=username,
+                    j.apps.cloudbroker.account.deleteUser(accountId=account['id'], username=username,
                                                                   recursivedelete=True)
                 except HTTPError as ex:
                     if ex.status_code == 400 and ex.msg.count('is the last admin on the account'):
