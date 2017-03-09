@@ -106,10 +106,12 @@ class CloudBroker(object):
         oldauth = ctx.env.get('HTTP_AUTHORIZATION', None)
         if oldauth is not None:
             cl._session.headers.update({'Authorization': oldauth})
-        else:
+        elif ctx.env.get('HTTP_COOKIE', None):
             cookie = ctx.env.get('HTTP_COOKIE', None)
-            if cookie is not None:
-                cl._session.headers.update({'Cookie': cookie})
+            cl._session.headers.update({'Cookie': cookie})
+        elif 'authkey' in ctx.params:
+            secret = ctx.params['authkey']
+            cl._session.headers.update({'Authorization': 'authkey {}'.format(secret)})
         return cl
 
     def getProviderByStackId(self, stackId):
