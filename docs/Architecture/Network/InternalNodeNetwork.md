@@ -8,7 +8,7 @@ The above diagram only shows one cloud space:
 - 1 virtual firewall
 - 1 virtual switch, connecting the cloud space to the VXLAN (via the VTEP)
 
-Color schema:
+Color scheme:
 
 - Red: virtual machines
   - The one that is labeled as `fw_00ca` is running the MikroTik RouterOS, turning the VM into a network router; there is one per cloud space, implementing various additional features, such as firewalling
