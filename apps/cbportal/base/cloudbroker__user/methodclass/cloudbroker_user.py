@@ -120,7 +120,8 @@ class cloudbroker_user(BaseActor):
 
         # Set the user to inactive
         userobj.active = False
-        gid, uid = userobj.guid.split('_')
+        gid = userobj.gid
+        uid = userobj.id
         userobj.id = 'DELETED_%i_%s' % (time.time(), uid)
         userobj.guid = '%s_DELETED_%i_%s' % (gid, time.time(), uid)
         userobj.protected = False
