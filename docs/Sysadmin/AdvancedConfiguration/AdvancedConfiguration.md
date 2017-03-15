@@ -22,8 +22,8 @@ This can be applied to the following configuration settings:
 Open `jsshell` on any node that is part of the grid you want to configure, and type:
 
 ```python
-from cloudscalerlibcloud.utils.gridconfig import gridconfig
-config = gridconfig()
+from CloudscalerLibcloud.utils.gridconfig import GridConfig
+config = GridConfig()
 config.set('<config key>', <config value>)
 ```
 
