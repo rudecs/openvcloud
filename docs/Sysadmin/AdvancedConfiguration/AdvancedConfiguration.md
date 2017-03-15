@@ -36,7 +36,7 @@ A config file can be any valid Python object structure (simple types + list and 
 Open `jsshell` on any node that is part of the grid you want to configure, and type:
 
 ```python
-from cloudscalerlibcloud.utils.gridconfig import gridconfig
+from CloudscalerLibcloud.utils.gridconfig import GridConfig
 config = gridconfig()
 configvalue = config.get('<config key>')
 ```
