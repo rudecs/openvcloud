@@ -323,6 +323,39 @@ class cloudapi_cloudspaces(BaseActor):
         self.models.cloudspace.set(cloudspace)
         return True
 
+    @authenticator.auth(acl={'account': set('A')})
+    def disable(self, cloudspaceId, reason, **kwargs):
+        """
+        Disable a cloud space
+        :param cloudspaceId id of the cloudspace
+        :param reason reason of disabling
+        :return True if cloudspace is disabled
+        """
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        vmachines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
+                                                 'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                 })[1:]
+        for vmachine in vmachines:
+            self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
+        self.netmgr.fw_stop(cloudspace.networkId)
+        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': 'DISABLED'}})
+        return True
+
+    @authenticator.auth(acl={'account': set('A')})
+    def enable(self, cloudspaceId, reason, **kwargs):
+        """
+        Enable a cloud space
+        :param cloudspaceId id of the cloudspaceId
+        :param reason reason of enabling
+        :return True if cloudspace is enabled
+        """
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        self.netmgr.fw_start(cloudspace.networkId)
+        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': 'DEPLOYED'}})
+        return True
+
     @authenticator.auth(acl={'cloudspace': set('R')})
     def get(self, cloudspaceId, **kwargs):
         """

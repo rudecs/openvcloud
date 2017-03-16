@@ -34,6 +34,22 @@
         var:cloudspaceId int,, id of the cloudspace
         result:bool, True if deletion was successful
 
+    method:disable
+        """
+        Disable the cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:reason str,, reason for disabling
+        result:bool, True if disabling was successful
+
+    method:enable
+        """
+        Enable the cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:reason str,, reason for enabling
+        result:bool, True if enabling was successful
+
     method:list
         """
         List all cloudspaces the user has access to

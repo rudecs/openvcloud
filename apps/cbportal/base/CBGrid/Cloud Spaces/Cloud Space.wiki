@@ -81,6 +81,22 @@ h2. Cloud Space: ${name}
   input:
   - reason
 
+{% if status != "DISABLED" %}
+- display: Disable Cloud Space
+  action: /restmachine/cloudapi/cloudspaces/disable
+  data:
+   cloudspaceId: $$id
+  input:
+  - reason
+{% else %}
+- display: Enable Cloud Space
+  action: /restmachine/cloudapi/cloudspaces/enable
+  data:
+   cloudspaceId: $$id
+  input:
+  - reason
+{% endif %}
+
 - display: Grant User Access
   hide: true
   action: /restmachine/cloudbroker/cloudspace/addUser
