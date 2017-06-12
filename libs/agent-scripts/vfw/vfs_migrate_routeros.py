@@ -48,6 +48,7 @@ def action(networkid, sourceip, vlan):
     else:
         import jinja2
         acl = j.clients.agentcontroller.get()
+        networkidHex = '%04x' % int(networkid)
         devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
         edgeip, edgeport, edgetransport = acl.execute(
             'greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
